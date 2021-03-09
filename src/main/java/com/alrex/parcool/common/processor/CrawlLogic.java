@@ -5,6 +5,7 @@ import com.alrex.parcool.common.capability.ICrawl;
 import com.alrex.parcool.common.capability.IFastRunning;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.network.SyncCrawlMessage;
+import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.RenderType;
@@ -49,7 +50,7 @@ public class CrawlLogic {
         crawl.setCrawling(crawl.canCrawl());
         boolean oldSliding=crawl.isSliding();
         crawl.setSliding(crawl.canSliding());
-        crawl.updateSlidingTime();
+        crawl.updateSlidingTime(playerClient);
 
         if (crawl.isCrawling()!=oldCrawling || crawl.isSliding()!=oldSliding){
             SyncCrawlMessage.sync(playerClient);
@@ -76,7 +77,7 @@ public class CrawlLogic {
         ICrawl crawl=crawlOptional.resolve().get();
 
         if (crawl.isSliding()) {
-            player.rotationYaw=(float) (Math.atan2(slidingVec.getZ(), slidingVec.getX()) * 180.0 /Math.PI - 90.0);
+            player.rotationYaw=(float) VectorUtil.toYawDegree(slidingVec);
         }
     }
 }

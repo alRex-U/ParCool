@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.ParCool;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -29,7 +30,8 @@ public interface ICrawl {
     public void setCrawling(boolean crawling);
     public boolean isSliding();
     public void setSliding(boolean sliding);
-    public void updateSlidingTime();
+    @OnlyIn(Dist.CLIENT)
+    public void updateSlidingTime(ClientPlayerEntity player);
 
     public static class CrawlStorage implements Capability.IStorage<ICrawl>{
         @Override

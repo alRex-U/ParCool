@@ -1,9 +1,6 @@
 package com.alrex.parcool.common.event;
 
-import com.alrex.parcool.common.capability.ICrawl;
-import com.alrex.parcool.common.capability.IFastRunning;
-import com.alrex.parcool.common.capability.IJumpBoost;
-import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -20,5 +17,6 @@ public class EventAttachCapability {
         event.addCapability(IFastRunning.FastRunningProvider.CAPABILITY_LOCATION,new IFastRunning.FastRunningProvider());
         event.addCapability(IJumpBoost.JumpBoostProvider.CAPABILITY_LOCATION,new IJumpBoost.JumpBoostProvider());
         event.addCapability(IStamina.StaminaProvider.CAPABILITY_LOCATION,new IStamina.StaminaProvider());
+        event.addCapability(IWallJump.WallJumpProvider.CAPABILITY_LOCATION,new IWallJump.WallJumpProvider());
     }
 }

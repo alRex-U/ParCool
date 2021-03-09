@@ -3,8 +3,6 @@ package com.alrex.parcool.common.capability;
 import com.alrex.parcool.client.input.KeyBindings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class Crawl implements ICrawl{
@@ -49,11 +47,11 @@ public class Crawl implements ICrawl{
     }
 
     @Override
-    public void updateSlidingTime() {
+    public void updateSlidingTime(ClientPlayerEntity player) {
         if (slidingTime<0 && KeyBindings.getKeyCrawl().isKeyDown())return;
 
         if (isSliding()) slidingTime++; else slidingTime=0;
-        if (slidingTime>maxSlidingTime){
+        if ((slidingTime>maxSlidingTime && player.isOnGround())|| player.isInWaterOrBubbleColumn()){
             slidingTime=-1;
             setSliding(false);
         }
