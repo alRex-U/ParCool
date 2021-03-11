@@ -40,20 +40,28 @@ public class FastRunningLogic {
         if (!event.player.world.isRemote || event.phase != TickEvent.Phase.START)return;
         ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player != event.player)return;
-        LazyOptional<IFastRunning> fastRunningOptional=player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
-        if (!fastRunningOptional.isPresent())return;
-        IFastRunning fastRunning=fastRunningOptional.resolve().get();
+
+        IFastRunning fastRunning;
+        IStamina stamina;
+        {
+            LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
+            LazyOptional<IFastRunning> fastRunningOptional=player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
+            if (!fastRunningOptional.isPresent() || !staminaOptional.isPresent())return;
+            stamina = staminaOptional.resolve().get();
+            fastRunning=fastRunningOptional.resolve().get();
+        }
 
         ModifiableAttributeInstance attr=player.getAttribute(Attributes.MOVEMENT_SPEED);
         if (attr==null)return;
 
         boolean oldFastRunning=fastRunning.isFastRunning();
-        fastRunning.setFastRunning(fastRunning.canFastRunning());
+        fastRunning.setFastRunning(fastRunning.canFastRunning(player));
 
         if (fastRunning.isFastRunning()!=oldFastRunning) SyncFastRunningMessage.sync(player);
 
         if (fastRunning.isFastRunning()){
             if (!attr.hasModifier(FAST_RUNNING_MODIFIER))attr.applyPersistentModifier(FAST_RUNNING_MODIFIER);
+            stamina.consume(5);
         }else {
             if (attr.hasModifier(FAST_RUNNING_MODIFIER))attr.removeModifier(FAST_RUNNING_MODIFIER);
         }

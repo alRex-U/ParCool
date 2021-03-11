@@ -23,9 +23,9 @@ import javax.annotation.Nullable;
 
 public interface ICrawl {
     @OnlyIn(Dist.CLIENT)
-    public boolean canCrawl();
+    public boolean canCrawl(ClientPlayerEntity player);
     @OnlyIn(Dist.CLIENT)
-    public boolean canSliding();
+    public boolean canSliding(ClientPlayerEntity player);
     public boolean isCrawling();
     public void setCrawling(boolean crawling);
     public boolean isSliding();

@@ -5,8 +5,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class Stamina implements IStamina{
+    private static final int COOL_TIME=20;
+
     private int stamina = 0;
     private boolean exhausted=false;
+    private int coolTime=0;
 
     @Override
     public void setStamina(int stamina) {
@@ -26,6 +29,7 @@ public class Stamina implements IStamina{
     @Override
     public void consume(int amount) {
         stamina-=amount;
+        coolTime=COOL_TIME;
         if (stamina<=0){
             stamina=0;
             setExhausted(true);
@@ -34,6 +38,8 @@ public class Stamina implements IStamina{
 
     @Override
     public void recover(int amount) {
+        if (coolTime>0)return;
+
         stamina+=amount;
         if (stamina>=getMaxStamina()){
             stamina=getMaxStamina();
@@ -54,4 +60,12 @@ public class Stamina implements IStamina{
     public void syncState(ClientPlayerEntity player){
 
     }
+
+    @Override
+    public void updateRecoveryCoolTime() {
+        if (coolTime>0)coolTime--;
+    }
+
+    @Override
+    public int getRecoveryCoolTime() { return coolTime; }
 }

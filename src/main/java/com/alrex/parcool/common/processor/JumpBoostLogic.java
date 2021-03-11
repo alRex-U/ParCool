@@ -21,13 +21,11 @@ public class JumpBoostLogic {
         if (player != event.getEntityLiving())return;
         LazyOptional<ICrawl> crawlOptional=player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
         LazyOptional<IJumpBoost> jumpBoostOptional=player.getCapability(IJumpBoost.JumpBoostProvider.JUMP_BOOST_CAPABILITY);
-        LazyOptional<IStamina> staminaOptional=player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
-        if (!jumpBoostOptional.isPresent() || !staminaOptional.isPresent() || !crawlOptional.isPresent())return;
+        if (!jumpBoostOptional.isPresent() || !crawlOptional.isPresent())return;
         IJumpBoost jumpBoost=jumpBoostOptional.resolve().get();
-        IStamina stamina=staminaOptional.resolve().get();
         ICrawl crawl=crawlOptional.resolve().get();
 
-        if (jumpBoost.canJumpBoost() && !stamina.isExhausted() && !player.isSneaking())player.addVelocity(0,0.12,0);
+        if (jumpBoost.canJumpBoost(player) && !player.isSneaking())player.addVelocity(0,jumpBoost.getBoostValue(player),0);
         if (crawl.isSliding()){
             Vector3d vec=player.getMotion();
             player.setMotion(vec.getX(),0,vec.getZ());

@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.ParCool;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -22,7 +23,7 @@ import javax.annotation.Nullable;
 
 public interface IFastRunning {
     @OnlyIn(Dist.CLIENT)
-    public boolean canFastRunning();
+    public boolean canFastRunning(ClientPlayerEntity player);
     public boolean isFastRunning();
     public void setFastRunning(boolean fastRunning);
 

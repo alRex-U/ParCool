@@ -47,9 +47,9 @@ public class CrawlLogic {
         if (event.phase != TickEvent.Phase.START)return;
 
         boolean oldCrawling=crawl.isCrawling();
-        crawl.setCrawling(crawl.canCrawl());
+        crawl.setCrawling(crawl.canCrawl(playerClient));
         boolean oldSliding=crawl.isSliding();
-        crawl.setSliding(crawl.canSliding());
+        crawl.setSliding(crawl.canSliding(playerClient));
         crawl.updateSlidingTime(playerClient);
 
         if (crawl.isCrawling()!=oldCrawling || crawl.isSliding()!=oldSliding){

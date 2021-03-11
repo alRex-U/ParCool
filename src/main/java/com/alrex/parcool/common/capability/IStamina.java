@@ -27,6 +27,8 @@ public interface IStamina {
     public void setExhausted(boolean exhausted);
     public void consume(int amount);
     public void recover(int amount);
+    public void updateRecoveryCoolTime();
+    public int getRecoveryCoolTime();
 
     public static class StaminaStorage implements Capability.IStorage<IStamina>{
         private static final String STAMINA="stamina";

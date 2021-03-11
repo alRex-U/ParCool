@@ -6,6 +6,7 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 
@@ -17,7 +18,13 @@ public class WallJump implements IWallJump{
 
     @Override
     public boolean canWallJump(ClientPlayerEntity player) {
-        return !player.isOnGround() && !player.isElytraFlying() && !player.abilities.isFlying && KeyRecorder.keyJumpState.isPressed() && getWall(player)!=null;
+        IStamina stamina;
+        {
+            LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
+            if (!staminaOptional.isPresent()) return false;
+            stamina = staminaOptional.resolve().get();
+        }
+        return !stamina.isExhausted() && !player.isOnGround() && !player.isElytraFlying() && !player.abilities.isFlying && KeyRecorder.keyJumpState.isPressed() && getWall(player)!=null;
     }
     @Override @Nullable
     public Vector3d getJumpDirection(ClientPlayerEntity player){

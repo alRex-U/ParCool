@@ -1,11 +1,14 @@
 package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.ParCool;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -20,7 +23,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public interface IJumpBoost {
-    public boolean canJumpBoost();
+    @OnlyIn(Dist.CLIENT)
+    public boolean canJumpBoost(ClientPlayerEntity player);
+    @OnlyIn(Dist.CLIENT)
+    public double getBoostValue(ClientPlayerEntity player);
 
     public static class JumpBoostStorage implements Capability.IStorage<IJumpBoost>{
         @Override

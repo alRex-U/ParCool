@@ -13,9 +13,7 @@ public class FastRunning implements IFastRunning{
     public void setFastRunning(boolean fastRunning) { this.fastRunning=fastRunning; }
 
     @Override
-    public boolean canFastRunning() {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
-        if (player==null)return false;
+    public boolean canFastRunning(ClientPlayerEntity player) {
 
         LazyOptional<IStamina> staminaOptional =player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
         LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
@@ -23,7 +21,7 @@ public class FastRunning implements IFastRunning{
         IStamina stamina=staminaOptional.resolve().get();
         ICrawl crawl=crawlOptional.resolve().get();
 
-        return !stamina.isExhausted() && !crawl.isCrawling() && !crawl.isSliding() && KeyBindings.getKeySprint().isKeyDown() && !player.isInWaterOrBubbleColumn();
+        return !stamina.isExhausted() && !crawl.isCrawling() && !crawl.isSliding() && player.isSprinting() && KeyBindings.getKeySprint().isKeyDown() && !player.isInWaterOrBubbleColumn();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.processor;
 
 import com.alrex.parcool.client.input.KeyBindings;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.IWallJump;
 import com.alrex.parcool.common.network.ResetFallDistanceMessage;
 import net.minecraft.client.Minecraft;
@@ -19,9 +20,15 @@ public class WallJumpLogic {
         ClientPlayerEntity player=Minecraft.getInstance().player;
         if (event.player != player)return;
 
-        LazyOptional<IWallJump> wallJumpOptional=player.getCapability(IWallJump.WallJumpProvider.WALL_JUMP_CAPABILITY);
-        if (!wallJumpOptional.isPresent())return;
-        IWallJump wallJump=wallJumpOptional.resolve().get();
+        IWallJump wallJump;
+        IStamina stamina;
+        {
+            LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
+            LazyOptional<IWallJump> wallJumpOptional=player.getCapability(IWallJump.WallJumpProvider.WALL_JUMP_CAPABILITY);
+            if (!wallJumpOptional.isPresent() || !staminaOptional.isPresent())return;
+            stamina = staminaOptional.resolve().get();
+            wallJump= wallJumpOptional.resolve().get();
+        }
 
         if (wallJump.canWallJump(player)){
             Vector3d jumpDirection=wallJump.getJumpDirection(player);
@@ -30,6 +37,7 @@ public class WallJumpLogic {
             Vector3d direction=new Vector3d(jumpDirection.getX(), 1.4, jumpDirection.getZ()).scale(wallJump.getJumpPower());
             Vector3d motion=player.getMotion();
 
+            stamina.consume(200);
             player.setMotion(
                     motion.getX()+direction.getX(),
                     motion.getY() > direction.getY() ? motion.y+direction.getY() : direction.getY(),
