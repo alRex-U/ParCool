@@ -45,7 +45,7 @@ public interface ICrawl {
     public static class CrawlProvider implements ICapabilityProvider {
         @CapabilityInject(ICrawl.class)
         public static final Capability<ICrawl> CRAWL_CAPABILITY = null;
-        public static final ResourceLocation CAPABILITY_LOCATION=new ResourceLocation(ParCool.MOD_ID,"parcool.capability.crawl");
+        public static final ResourceLocation CAPABILITY_LOCATION=new ResourceLocation(ParCool.MOD_ID,"capability.parcool.crawl");
 
         private LazyOptional<ICrawl> instance=LazyOptional.of(CRAWL_CAPABILITY::getDefaultInstance);
 

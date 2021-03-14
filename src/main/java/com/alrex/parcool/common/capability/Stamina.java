@@ -7,7 +7,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class Stamina implements IStamina{
     private static final int COOL_TIME=20;
 
-    private int stamina = 0;
+    private int stamina = getMaxStamina();
     private boolean exhausted=false;
     private int coolTime=0;
 

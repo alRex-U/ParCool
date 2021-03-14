@@ -1,12 +1,13 @@
 package com.alrex.parcool.common.capability;
 
+import com.alrex.parcool.client.input.KeyBindings;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class JumpBoost implements IJumpBoost{
     @Override
     public boolean canJumpBoost(ClientPlayerEntity player) {
-        return true;
+        return !player.isSneaking();
     }
 
     @Override

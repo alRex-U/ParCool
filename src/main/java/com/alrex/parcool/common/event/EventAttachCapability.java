@@ -18,5 +18,7 @@ public class EventAttachCapability {
         event.addCapability(IJumpBoost.JumpBoostProvider.CAPABILITY_LOCATION,new IJumpBoost.JumpBoostProvider());
         event.addCapability(IStamina.StaminaProvider.CAPABILITY_LOCATION,new IStamina.StaminaProvider());
         event.addCapability(IWallJump.WallJumpProvider.CAPABILITY_LOCATION,new IWallJump.WallJumpProvider());
+        event.addCapability(ICatLeap.CatLeapProvider.CAPABILITY_LOCATION,new ICatLeap.CatLeapProvider());
+        event.addCapability(IGrabCliff.GrabCliffProvider.CAPABILITY_LOCATION,new IGrabCliff.GrabCliffProvider());
     }
 }

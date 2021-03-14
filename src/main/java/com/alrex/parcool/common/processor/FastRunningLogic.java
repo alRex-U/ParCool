@@ -57,6 +57,8 @@ public class FastRunningLogic {
         boolean oldFastRunning=fastRunning.isFastRunning();
         fastRunning.setFastRunning(fastRunning.canFastRunning(player));
 
+        fastRunning.updateTime();
+
         if (fastRunning.isFastRunning()!=oldFastRunning) SyncFastRunningMessage.sync(player);
 
         if (fastRunning.isFastRunning()){

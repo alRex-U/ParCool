@@ -20,12 +20,17 @@ import org.lwjgl.glfw.GLFW;
 public class KeyBindings {
     private static final GameSettings settings= Minecraft.getInstance().gameSettings;
     private static final KeyBinding keyBindCrawl=new KeyBinding("key.crawl.description", GLFW.GLFW_KEY_C ,"key.categories.movement");
+    private static final KeyBinding keyBindGrabWall=new KeyBinding("key.grab.description",GLFW.GLFW_MOUSE_BUTTON_RIGHT,"key.categories.movement");
+
     public static KeyBinding getKeySprint(){ return settings.keyBindSprint; }
     public static KeyBinding getKeyJump(){return settings.keyBindJump;}
+    public static KeyBinding getKeySneak(){return settings.keyBindSneak;}
     public static KeyBinding getKeyCrawl(){return keyBindCrawl;}
+    public static KeyBinding getKeyGrabWall(){return keyBindGrabWall;}
 
     @SubscribeEvent
     public static void register(FMLClientSetupEvent event){
         ClientRegistry.registerKeyBinding(keyBindCrawl);
+        ClientRegistry.registerKeyBinding(keyBindGrabWall);
     }
 }

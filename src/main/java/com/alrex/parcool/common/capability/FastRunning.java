@@ -7,6 +7,8 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class FastRunning implements IFastRunning{
     private boolean fastRunning=false;
+    private int runningTime=0;
+    private int notRunningTime=0;
     @Override
     public boolean isFastRunning() { return fastRunning; }
     @Override
@@ -24,4 +26,19 @@ public class FastRunning implements IFastRunning{
         return !stamina.isExhausted() && !crawl.isCrawling() && !crawl.isSliding() && player.isSprinting() && KeyBindings.getKeySprint().isKeyDown() && !player.isInWaterOrBubbleColumn();
     }
 
+    @Override
+    public int getRunningTime() { return runningTime; }
+    @Override
+    public int getNotRunningTime() { return notRunningTime; }
+
+    @Override
+    public void updateTime() {
+        if(isFastRunning()){
+            notRunningTime=0;
+            runningTime++;
+        }else {
+            runningTime=0;
+            notRunningTime++;
+        }
+    }
 }

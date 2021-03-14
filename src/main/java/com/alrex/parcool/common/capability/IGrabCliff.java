@@ -2,7 +2,6 @@ package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.ParCool;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -13,7 +12,6 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -21,47 +19,49 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface IFastRunning {
+public interface IGrabCliff {
     @OnlyIn(Dist.CLIENT)
-    public boolean canFastRunning(ClientPlayerEntity player);
-    public boolean isFastRunning();
-    public void setFastRunning(boolean fastRunning);
+    public boolean canGrabCliff(ClientPlayerEntity player);
+    @OnlyIn(Dist.CLIENT)
+    public boolean canJumpOnCliff(ClientPlayerEntity player);
+    public boolean isGrabbing();
+    public void setGrabbing(boolean grabbing);
     public void updateTime();
-    public int getRunningTime();
-    public int getNotRunningTime();
+    public int getGrabbingTime();
+    public int getNotGrabbingTime();
 
-    public static class FastRunningStorage implements Capability.IStorage<IFastRunning>{
+    public static class GrabCliffStorage implements Capability.IStorage<IGrabCliff>{
         @Override
-        public void readNBT(Capability<IFastRunning> capability, IFastRunning instance, Direction side, INBT nbt) { }
+        public void readNBT(Capability<IGrabCliff> capability, IGrabCliff instance, Direction side, INBT nbt) { }
         @Nullable @Override
-        public INBT writeNBT(Capability<IFastRunning> capability, IFastRunning instance, Direction side) {
+        public INBT writeNBT(Capability<IGrabCliff> capability, IGrabCliff instance, Direction side) {
             return null;
         }
     }
 
-    public static class FastRunningProvider implements ICapabilityProvider {
-        @CapabilityInject(IFastRunning.class)
-        public static final Capability<IFastRunning> FAST_RUNNING_CAPABILITY = null;
-        public static final ResourceLocation CAPABILITY_LOCATION=new ResourceLocation(ParCool.MOD_ID,"capability.parcool.fastrunning");
+    public static class GrabCliffProvider implements ICapabilityProvider {
+        @CapabilityInject(IGrabCliff.class)
+        public static final Capability<IGrabCliff> GRAB_CLIFF_CAPABILITY = null;
+        public static final ResourceLocation CAPABILITY_LOCATION=new ResourceLocation(ParCool.MOD_ID,"capability.parcool.grabcliff");
 
-        private LazyOptional<IFastRunning> instance=LazyOptional.of(FAST_RUNNING_CAPABILITY::getDefaultInstance);
+        private LazyOptional<IGrabCliff> instance=LazyOptional.of(GRAB_CLIFF_CAPABILITY::getDefaultInstance);
 
         @Nonnull
         @Override
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-            return cap == FAST_RUNNING_CAPABILITY ? instance.cast() : LazyOptional.empty();
+            return cap == GRAB_CLIFF_CAPABILITY ? instance.cast() : LazyOptional.empty();
         }
         @Nonnull @Override
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
-            return cap == FAST_RUNNING_CAPABILITY ? instance.cast() : LazyOptional.empty();
+            return cap == GRAB_CLIFF_CAPABILITY ? instance.cast() : LazyOptional.empty();
         }
     }
 
     @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class FastRunningRegistry{
+    public static class GrabCliffRegistry{
         @SubscribeEvent
         public static void register(FMLCommonSetupEvent event){
-            CapabilityManager.INSTANCE.register(IFastRunning.class,new FastRunningStorage(),FastRunning::new);
+            CapabilityManager.INSTANCE.register(IGrabCliff.class,new IGrabCliff.GrabCliffStorage(),GrabCliff::new);
         }
     }
 }

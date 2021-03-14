@@ -51,7 +51,7 @@ public interface IStamina {
     public static class StaminaProvider implements ICapabilityProvider{
         @CapabilityInject(IStamina.class)
         public static final Capability<IStamina> STAMINA_CAPABILITY = null;
-        public static final ResourceLocation CAPABILITY_LOCATION=new ResourceLocation(ParCool.MOD_ID,"parcool.capability.stamina");
+        public static final ResourceLocation CAPABILITY_LOCATION=new ResourceLocation(ParCool.MOD_ID,"capability.parcool.stamina");
 
         private LazyOptional<IStamina> instance=LazyOptional.of(STAMINA_CAPABILITY::getDefaultInstance);
 

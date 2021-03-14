@@ -2,8 +2,6 @@ package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.ParCool;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -14,7 +12,6 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -22,42 +19,52 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface IJumpBoost {
+public interface ICatLeap {
     @OnlyIn(Dist.CLIENT)
-    public boolean canJumpBoost(ClientPlayerEntity player);
+    public boolean canCatLeap(ClientPlayerEntity player);
+    @OnlyIn(Dist.CLIENT)
+    public boolean canReadyLeap(ClientPlayerEntity player);
     @OnlyIn(Dist.CLIENT)
     public double getBoostValue(ClientPlayerEntity player);
+    public boolean isLeaping();
+    public void setLeaping(boolean leaping);
+    public boolean isReady();
+    public void setReady(boolean ready);
+    public void updateReadyTime();
+    public int getReadyTime();
 
-    public static class JumpBoostStorage implements Capability.IStorage<IJumpBoost>{
+    public static class CatLeapStorage implements Capability.IStorage<ICatLeap>{
         @Override
-        public void readNBT(Capability<IJumpBoost> capability, IJumpBoost instance, Direction side, INBT nbt) { }
+        public void readNBT(Capability<ICatLeap> capability, ICatLeap instance, Direction side, INBT nbt) { }
         @Nullable @Override
-        public INBT writeNBT(Capability<IJumpBoost> capability, IJumpBoost instance, Direction side) { return null; }
+        public INBT writeNBT(Capability<ICatLeap> capability, ICatLeap instance, Direction side) {
+            return null;
+        }
     }
 
-    public static class JumpBoostProvider implements ICapabilityProvider {
-        @CapabilityInject(IJumpBoost.class)
-        public static final Capability<IJumpBoost> JUMP_BOOST_CAPABILITY = null;
-        public static final ResourceLocation CAPABILITY_LOCATION=new ResourceLocation(ParCool.MOD_ID,"capability.parcool.jumpboost");
+    public static class CatLeapProvider implements ICapabilityProvider {
+        @CapabilityInject(ICatLeap.class)
+        public static final Capability<ICatLeap> CAT_LEAP_CAPABILITY = null;
+        public static final ResourceLocation CAPABILITY_LOCATION=new ResourceLocation(ParCool.MOD_ID,"capability.parcool.catleap");
 
-        private LazyOptional<IJumpBoost> instance=LazyOptional.of(JUMP_BOOST_CAPABILITY::getDefaultInstance);
+        private LazyOptional<ICatLeap> instance=LazyOptional.of(CAT_LEAP_CAPABILITY::getDefaultInstance);
 
         @Nonnull
         @Override
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-            return cap == JUMP_BOOST_CAPABILITY ? instance.cast() : LazyOptional.empty();
+            return cap == CAT_LEAP_CAPABILITY ? instance.cast() : LazyOptional.empty();
         }
         @Nonnull @Override
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
-            return cap == JUMP_BOOST_CAPABILITY ? instance.cast() : LazyOptional.empty();
+            return cap == CAT_LEAP_CAPABILITY ? instance.cast() : LazyOptional.empty();
         }
     }
 
     @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class JumpBoostRegistry{
+    public static class CatLeapRegistry{
         @SubscribeEvent
         public static void register(FMLCommonSetupEvent event){
-            CapabilityManager.INSTANCE.register(IJumpBoost.class,new IJumpBoost.JumpBoostStorage(),JumpBoost::new);
+            CapabilityManager.INSTANCE.register(ICatLeap.class,new ICatLeap.CatLeapStorage(),CatLeap::new);
         }
     }
 }

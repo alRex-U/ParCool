@@ -36,7 +36,7 @@ public interface IWallJump {
     public static class WallJumpProvider implements ICapabilityProvider {
         @CapabilityInject(IWallJump.class)
         public static final Capability<IWallJump> WALL_JUMP_CAPABILITY = null;
-        public static final ResourceLocation CAPABILITY_LOCATION=new ResourceLocation(ParCool.MOD_ID,"parcool.capability.walljump");
+        public static final ResourceLocation CAPABILITY_LOCATION=new ResourceLocation(ParCool.MOD_ID,"capability.parcool.walljump");
 
         private LazyOptional<IWallJump> instance=LazyOptional.of(WALL_JUMP_CAPABILITY::getDefaultInstance);
 
