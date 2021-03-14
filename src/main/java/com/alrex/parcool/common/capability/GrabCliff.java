@@ -20,7 +20,7 @@ public class GrabCliff implements IGrabCliff{
             if (!staminaOptional.isPresent()) return false;
             stamina = staminaOptional.resolve().get();
         }
-        return !stamina.isExhausted() && KeyBindings.getKeyGrabWall().isKeyDown() && existsGrabbableWall(player);
+        return !stamina.isExhausted() && KeyBindings.getKeyGrabWall().isKeyDown() && player.getHeldItemMainhand().isEmpty() && player.getHeldItemOffhand().isEmpty() && existsGrabbableWall(player);
     }
 
     @Override
