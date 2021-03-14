@@ -12,15 +12,29 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
+enum VersionStatus{
+    alpha,beta,release
+
+    @Override
+    String toString() {
+        switch (this){
+            case alpha: return "α"
+            case beta: return "β"
+            case release: return "R"
+        }
+    }
+}
+
 def config=[
         mc_version:'1.16.4',
-        forge_version:'1.16.4-35.1.4'
+        forge_version:'1.16.4-35.1.4',
+        versionStatus:VersionStatus.alpha
 ]
 
-//Version Format (MCVERSION-MAJORMOD.MAJORAPI.MINOR.PATCH)
-version = "${config.mc_version}-0.0.0.0"
+//Version Format (MCVERSION-MAJORMOD.MAJORAPI.MINOR.PATCH-VersionStatus)
+version = "${config.mc_version}-0.0.0.0-${config.versionStatus.toString()}"
 group = 'com.alrex.parcool'
-archivesBaseName = 'parcool'
+archivesBaseName = 'ParCool'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
