@@ -22,6 +22,11 @@ public class StaminaLogic {
             stamina = staminaOptional.resolve().get();
         }
 
+        if (player.isCreative()){
+            stamina.setStamina(stamina.getMaxStamina());
+            stamina.setExhausted(false);
+            return;
+        }
         if (stamina.getRecoveryCoolTime()<=0)stamina.recover(stamina.getMaxStamina()/100);
         stamina.updateRecoveryCoolTime();
 

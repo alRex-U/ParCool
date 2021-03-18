@@ -28,7 +28,7 @@ public class WallJump implements IWallJump{
             stamina = staminaOptional.resolve().get();
             grabCliff = grabCliffOptional.resolve().get();
         }
-        return !stamina.isExhausted() && !player.isOnGround() && !player.isElytraFlying() && !player.abilities.isFlying && !grabCliff.isGrabbing() && KeyRecorder.keyJumpState.isPressed() && WorldUtil.getWall(player)!=null;
+        return !stamina.isExhausted() && !player.isOnGround() && !player.isInWaterOrBubbleColumn() && !player.isElytraFlying() && !player.abilities.isFlying && !grabCliff.isGrabbing() && KeyRecorder.keyJumpState.isPressed() && WorldUtil.getWall(player)!=null;
     }
     @Override @Nullable
     public Vector3d getJumpDirection(ClientPlayerEntity player){

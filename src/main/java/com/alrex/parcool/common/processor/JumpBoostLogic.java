@@ -55,12 +55,20 @@ public class JumpBoostLogic {
         if (player != event.getEntityLiving())return;
 
         ICrawl crawl;
+        IStamina stamina;
         {
+            LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
             LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
-            if (!crawlOptional.isPresent()) return;
+            if (!crawlOptional.isPresent()|| !staminaOptional.isPresent()) return;
             crawl=crawlOptional.resolve().get();
+            stamina=staminaOptional.resolve().get();
         }
 
+        if (stamina.isExhausted()){
+            Vector3d vec=player.getMotion();
+            player.setMotion(vec.getX(),0.3,vec.getZ());
+            return;
+        }
         if (crawl.isSliding()){
             Vector3d vec=player.getMotion();
             player.setMotion(vec.getX(),0,vec.getZ());

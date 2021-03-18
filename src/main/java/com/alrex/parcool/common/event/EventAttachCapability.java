@@ -19,5 +19,6 @@ public class EventAttachCapability {
         event.addCapability(IWallJump.WallJumpProvider.CAPABILITY_LOCATION,new IWallJump.WallJumpProvider());
         event.addCapability(ICatLeap.CatLeapProvider.CAPABILITY_LOCATION,new ICatLeap.CatLeapProvider());
         event.addCapability(IGrabCliff.GrabCliffProvider.CAPABILITY_LOCATION,new IGrabCliff.GrabCliffProvider());
+        event.addCapability(IVault.VaultProvider.CAPABILITY_LOCATION,new IVault.VaultProvider());
     }
 }

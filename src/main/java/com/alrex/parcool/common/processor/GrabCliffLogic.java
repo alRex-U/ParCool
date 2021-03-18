@@ -3,6 +3,7 @@ package com.alrex.parcool.common.processor;
 import com.alrex.parcool.common.capability.ICrawl;
 import com.alrex.parcool.common.capability.IGrabCliff;
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.network.ResetFallDistanceMessage;
 import com.alrex.parcool.common.network.SyncGrabCliffMessage;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
@@ -34,12 +35,16 @@ public class GrabCliffLogic {
         boolean oldGrabbing= grabCliff.isGrabbing();
         grabCliff.setGrabbing(grabCliff.canGrabCliff(player));
 
-        if (oldGrabbing != grabCliff.isGrabbing()) SyncGrabCliffMessage.sync(player);
+        if (oldGrabbing != grabCliff.isGrabbing()){
+            SyncGrabCliffMessage.sync(player);
+            ResetFallDistanceMessage.sync(player);
+        }
 
         grabCliff.updateTime();
 
         if (grabCliff.isGrabbing()){
-            player.setMotion(0,0,0);
+            Vector3d vec=player.getMotion();
+            player.setMotion(vec.getX()/10,vec.getY()>0.1? vec.getY()/10 : 0,vec.getZ()/10);
             stamina.consume(3);
         }
         if (grabCliff.canJumpOnCliff(player)){
@@ -49,6 +54,7 @@ public class GrabCliffLogic {
     }
     @SubscribeEvent
     public static void onRender(TickEvent.RenderTickEvent event){
+        if (event.phase != TickEvent.Phase.END)return;
         ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player==null)return;
 
