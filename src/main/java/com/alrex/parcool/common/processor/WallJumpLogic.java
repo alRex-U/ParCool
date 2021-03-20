@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.processor;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.IWallJump;
@@ -19,6 +20,7 @@ public class WallJumpLogic {
         if (event.phase == TickEvent.Phase.END)return;
         ClientPlayerEntity player=Minecraft.getInstance().player;
         if (event.player != player)return;
+        if (!ParCool.isActive())return;
 
         IWallJump wallJump;
         IStamina stamina;

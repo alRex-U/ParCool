@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.processor;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.FastRunning;
 import com.alrex.parcool.common.capability.IFastRunning;
@@ -53,6 +54,11 @@ public class FastRunningLogic {
 
         ModifiableAttributeInstance attr=player.getAttribute(Attributes.MOVEMENT_SPEED);
         if (attr==null)return;
+
+        if (!ParCool.isActive()){
+            if (attr.hasModifier(FAST_RUNNING_MODIFIER))attr.removeModifier(FAST_RUNNING_MODIFIER);
+            return;
+        }
 
         boolean oldFastRunning=fastRunning.isFastRunning();
         fastRunning.setFastRunning(fastRunning.canFastRunning(player));

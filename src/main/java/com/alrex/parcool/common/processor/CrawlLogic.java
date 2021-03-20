@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.processor;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.ICrawl;
 import com.alrex.parcool.common.capability.IFastRunning;
@@ -42,9 +43,10 @@ public class CrawlLogic {
 
         if (!event.player.world.isRemote)return;
 
+
+        if (!ParCool.isActive())return;
         ClientPlayerEntity playerClient = Minecraft.getInstance().player;
-        if (playerClient != player)return;
-        if (event.phase != TickEvent.Phase.START)return;
+        if (playerClient != player || event.phase != TickEvent.Phase.START)return;
 
         boolean oldCrawling=crawl.isCrawling();
         crawl.setCrawling(crawl.canCrawl(playerClient));
@@ -70,7 +72,7 @@ public class CrawlLogic {
     @SubscribeEvent
     public static void onRender(TickEvent.RenderTickEvent event){
         ClientPlayerEntity player = Minecraft.getInstance().player;
-        if (player==null)return;
+        if (player==null || !ParCool.isActive())return;
 
         LazyOptional<ICrawl> crawlOptional=player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
         if (!crawlOptional.isPresent())return;

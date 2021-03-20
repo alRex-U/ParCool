@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.processor;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.ICatLeap;
 import com.alrex.parcool.common.capability.ICrawl;
 import com.alrex.parcool.common.capability.IStamina;
@@ -53,6 +54,7 @@ public class JumpBoostLogic {
 
         ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player != event.getEntityLiving())return;
+        if (!ParCool.isActive())return;
 
         ICrawl crawl;
         IStamina stamina;

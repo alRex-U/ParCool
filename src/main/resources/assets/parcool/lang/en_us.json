@@ -1,4 +1,10 @@
 {
   "key.crawl.description": "Crawl",
-  "key.grab.description": "GrabCliff"
+  "key.grab.description": "Grab Cliff",
+  "key.parcool.activate": "Activate ParCool",
+  "key.categories.parcool": "ParCool",
+
+  "message.activation.active": "Active",
+  "message.activation.inactive": "Inactive",
+  "warning.activation.exhausted": "You can't inactivate ParCool because you are exhausted!"
 }

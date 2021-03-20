@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.processor;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.IStamina;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -14,6 +15,7 @@ public class StaminaLogic {
     public static void onTick(TickEvent.PlayerTickEvent event){
         if (event.phase != TickEvent.Phase.END || event.player != Minecraft.getInstance().player)return;
         ClientPlayerEntity player = Minecraft.getInstance().player;
+        if (!ParCool.isActive())return;
 
         IStamina stamina;
         {

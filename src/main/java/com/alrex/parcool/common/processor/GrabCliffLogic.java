@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.processor;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.ICrawl;
 import com.alrex.parcool.common.capability.IGrabCliff;
 import com.alrex.parcool.common.capability.IStamina;
@@ -21,6 +22,7 @@ public class GrabCliffLogic {
     public static void onTick(TickEvent.PlayerTickEvent event){
         if (event.phase != TickEvent.Phase.END)return;
         if (event.player != Minecraft.getInstance().player)return;
+        if (!ParCool.isActive())return;
         ClientPlayerEntity player = Minecraft.getInstance().player;
         IStamina stamina;
         IGrabCliff grabCliff;
@@ -57,6 +59,7 @@ public class GrabCliffLogic {
         if (event.phase != TickEvent.Phase.END)return;
         ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player==null)return;
+        if (!ParCool.isActive())return;
 
         LazyOptional<IGrabCliff> grabCliffOptional=player.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
         if (!grabCliffOptional.isPresent())return;
