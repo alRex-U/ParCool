@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.common.capability.ICatLeap;
+import com.alrex.parcool.common.capability.IDodge;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,17 +19,17 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public class SyncCatLeapMessage {
-    private boolean isLeaping=false;
+public class SyncDodgeMessage {
     private UUID playerID=null;
+    private boolean isDodging=false;
     private void encode(PacketBuffer packet) {
-        packet.writeBoolean(this.isLeaping);
+        packet.writeBoolean(this.isDodging);
         packet.writeLong(this.playerID.getMostSignificantBits());
         packet.writeLong(this.playerID.getLeastSignificantBits());
     }
-    private static SyncCatLeapMessage decode(PacketBuffer packet) {
-        SyncCatLeapMessage message = new SyncCatLeapMessage();
-        message.isLeaping=packet.readBoolean();
+    private static SyncDodgeMessage decode(PacketBuffer packet) {
+        SyncDodgeMessage message = new SyncDodgeMessage();
+        message.isDodging=packet.readBoolean();
         message.playerID=new UUID(packet.readLong(), packet.readLong());
         return message;
     }
@@ -38,25 +38,25 @@ public class SyncCatLeapMessage {
             PlayerEntity player;
             if (contextSupplier.get().getNetworkManager().getDirection() == PacketDirection.CLIENTBOUND){
                 player= Minecraft.getInstance().world.getPlayerByUuid(playerID);
-
             }else {
                 player = contextSupplier.get().getSender();
             }
-            LazyOptional<ICatLeap> catLeapOptional=player.getCapability(ICatLeap.CatLeapProvider.CAT_LEAP_CAPABILITY);
-            if (!catLeapOptional.isPresent())return;
-            ICatLeap catLeap=catLeapOptional.resolve().get();
-            catLeap.setLeaping(this.isLeaping);
+            if (player==null)return;
+            LazyOptional<IDodge> dodgeOptional=player.getCapability(IDodge.DodgeProvider.DODGE_CAPABILITY);
+            if (!dodgeOptional.isPresent())return;
+            IDodge dodge=dodgeOptional.resolve().get();
+            dodge.setDodging(this.isDodging);
         });
         contextSupplier.get().setPacketHandled(true);
     }
     @OnlyIn(Dist.CLIENT)
     public static void sync(ClientPlayerEntity player){
-        LazyOptional<ICatLeap> fastOptional=player.getCapability(ICatLeap.CatLeapProvider.CAT_LEAP_CAPABILITY);
+        LazyOptional<IDodge> fastOptional=player.getCapability(IDodge.DodgeProvider.DODGE_CAPABILITY);
         if (!fastOptional.isPresent())return;
-        ICatLeap catLeap=fastOptional.resolve().get();
+        IDodge Dodge=fastOptional.resolve().get();
 
-        SyncCatLeapMessage message=new SyncCatLeapMessage();
-        message.isLeaping= catLeap.isLeaping();
+        SyncDodgeMessage message=new SyncDodgeMessage();
+        message.isDodging= Dodge.isDodging();
         message.playerID=player.getUniqueID();
 
         ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(),message);
@@ -69,10 +69,10 @@ public class SyncCatLeapMessage {
         public static void register(FMLCommonSetupEvent event){
             ParCool.CHANNEL_INSTANCE.registerMessage(
                     ID,
-                    SyncCatLeapMessage.class,
-                    SyncCatLeapMessage::encode,
-                    SyncCatLeapMessage::decode,
-                    SyncCatLeapMessage::handle
+                    SyncDodgeMessage.class,
+                    SyncDodgeMessage::encode,
+                    SyncDodgeMessage::decode,
+                    SyncDodgeMessage::handle
             );
         }
     }

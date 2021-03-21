@@ -26,6 +26,10 @@ public class KeyBindings {
     public static KeyBinding getKeySprint(){ return settings.keyBindSprint; }
     public static KeyBinding getKeyJump(){return settings.keyBindJump;}
     public static KeyBinding getKeySneak(){return settings.keyBindSneak;}
+    public static KeyBinding getKeyLeft(){return settings.keyBindLeft;}
+    public static KeyBinding getKeyRight(){return settings.keyBindRight;}
+    public static KeyBinding getKeyForward(){return settings.keyBindForward;}
+    public static KeyBinding getKeyBack(){return settings.keyBindBack;}
     public static KeyBinding getKeyCrawl(){return keyBindCrawl;}
     public static KeyBinding getKeyGrabWall(){return keyBindGrabWall;}
     public static KeyBinding getKeyActivateParCool(){return keyBindActivateParCool;}

@@ -20,5 +20,6 @@ public class EventAttachCapability {
         event.addCapability(ICatLeap.CatLeapProvider.CAPABILITY_LOCATION,new ICatLeap.CatLeapProvider());
         event.addCapability(IGrabCliff.GrabCliffProvider.CAPABILITY_LOCATION,new IGrabCliff.GrabCliffProvider());
         event.addCapability(IVault.VaultProvider.CAPABILITY_LOCATION,new IVault.VaultProvider());
+        event.addCapability(IDodge.DodgeProvider.CAPABILITY_LOCATION,new IDodge.DodgeProvider());
     }
 }
