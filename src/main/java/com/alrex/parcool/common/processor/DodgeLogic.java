@@ -14,7 +14,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.logging.log4j.core.util.SystemNanoClock;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class DodgeLogic {
@@ -24,8 +23,6 @@ public class DodgeLogic {
 
         if (event.side== LogicalSide.SERVER)return;
         ClientPlayerEntity player= Minecraft.getInstance().player;
-
-        if (event.player!=player || !ParCool.isActive())return;
         IStamina stamina;
         IDodge dodge;
         {
@@ -36,6 +33,9 @@ public class DodgeLogic {
             dodge=dodgeOptional.resolve().get();
         }
 
+        dodge.updateDodgingTime();
+        if (event.player!=player || !ParCool.isActive())return;
+
         boolean start=dodge.canDodge(player);
         boolean oldDodging= dodge.isDodging();
         dodge.setDodging(start ||(dodge.isDodging() && dodge.canContinueDodge(player)));
@@ -44,7 +44,6 @@ public class DodgeLogic {
             if (vec!=null) {
                 vec=vec.scale(0.57);
                 IDodge.DodgeDirection direction = dodge.getDirection();
-                player.sendChatMessage(vec.toString());
                 player.setMotion(vec.getX(), direction != IDodge.DodgeDirection.Back ? 0.23 : 0.4, vec.getZ());
                 stamina.consume(200);
             }
@@ -52,7 +51,5 @@ public class DodgeLogic {
         if (oldDodging!=dodge.isDodging()){
             SyncDodgeMessage.sync(player);
         }
-
-        dodge.updateDodgingTime();
     }
 }
