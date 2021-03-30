@@ -29,7 +29,7 @@ public class ParCool
     public static final Logger LOGGER = LogManager.getLogger();
 
     @OnlyIn(Dist.CLIENT)
-    public static boolean active=false;
+    public static boolean active=true;
     @OnlyIn(Dist.CLIENT)
     public static boolean isActive(){return active;}
     @OnlyIn(Dist.CLIENT)

@@ -2,25 +2,19 @@ package com.alrex.parcool.common.event;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.input.KeyRecorder;
+import com.alrex.parcool.client.particle.ParticleProvider;
 import com.alrex.parcool.common.capability.*;
-import com.alrex.parcool.common.network.SyncCatLeapMessage;
-import com.alrex.parcool.common.network.SyncCrawlMessage;
-import com.alrex.parcool.common.network.SyncFastRunningMessage;
-import com.alrex.parcool.common.network.SyncGrabCliffMessage;
+import com.alrex.parcool.common.network.*;
 import com.alrex.parcool.constants.TranslateKeys;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.logging.log4j.Level;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -42,19 +36,27 @@ public class EventActivateParCool {
                 return;
             }
             boolean active=!ParCool.isActive();
+            boolean can = active ? activate() : inactivate();
+            if (!can)return;
             ParCool.setActivation(active);
             if (I18n.hasKey(TranslateKeys.MESSAGE_ACTIVATION_ACTIVE)){
                 player.sendChatMessage(
                         "ParCool:" + I18n.format(active? TranslateKeys.MESSAGE_ACTIVATION_ACTIVE:TranslateKeys.MESSAGE_ACTIVATION_INACTIVE)
                 );
+            }else {
+                player.sendChatMessage(
+                        "ParCool:" + (active? "Active" : "Inactive")
+                );
             }
-            if (active)activate();else inactivate();
         }
     }
-    public static void activate(){
-
+    public static boolean activate(){
+        ClientPlayerEntity player=Minecraft.getInstance().player;
+        if (player==null)return false;
+        ParticleProvider.spawnEffectActivateParCool(player);
+        return true;
     }
-    public static void inactivate(){
+    public static boolean inactivate(){
         ClientPlayerEntity player=Minecraft.getInstance().player;
 
         ICatLeap catLeap;
@@ -62,21 +64,24 @@ public class EventActivateParCool {
         IFastRunning fastRunning;
         IGrabCliff grabCliff;
         IVault vault;
+        IDodge dodge;
         IWallJump wallJump;
         {
+            LazyOptional<IDodge> dodgeOptional =player.getCapability(IDodge.DodgeProvider.DODGE_CAPABILITY);
             LazyOptional<ICatLeap> catLeapOptional=player.getCapability(ICatLeap.CatLeapProvider.CAT_LEAP_CAPABILITY);
             LazyOptional<ICrawl> crawlOptional=player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
             LazyOptional<IFastRunning> fastRunningOptional=player.getCapability(IFastRunning .FastRunningProvider.FAST_RUNNING_CAPABILITY);
             LazyOptional<IGrabCliff> grabCliffOptional=player.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
             LazyOptional<IVault> vaultOptional=player.getCapability(IVault.VaultProvider.VAULT_CAPABILITY);
             LazyOptional<IWallJump> wallJumpOptional=player.getCapability(IWallJump.WallJumpProvider.WALL_JUMP_CAPABILITY);
-            if (!catLeapOptional.isPresent() || !crawlOptional.isPresent() || !fastRunningOptional.isPresent() || !grabCliffOptional.isPresent() || !vaultOptional.isPresent() || wallJumpOptional.isPresent())return;
+            if (!dodgeOptional.isPresent() || !catLeapOptional.isPresent() || !crawlOptional.isPresent() || !fastRunningOptional.isPresent() || !grabCliffOptional.isPresent() || !vaultOptional.isPresent() || !wallJumpOptional.isPresent())return false;
             catLeap=catLeapOptional.resolve().get();
             crawl=crawlOptional.resolve().get();
             fastRunning=fastRunningOptional.resolve().get();
             grabCliff=grabCliffOptional.resolve().get();
             vault=vaultOptional.resolve().get();
             wallJump=wallJumpOptional.resolve().get();
+            dodge=dodgeOptional.resolve().get();
         }
         catLeap.setReady(false);
         catLeap.setLeaping(false);
@@ -85,10 +90,13 @@ public class EventActivateParCool {
         fastRunning.setFastRunning(false);
         grabCliff.setGrabbing(false);
         vault.setVaulting(false);
+        dodge.setDodging(false);
 
         SyncCatLeapMessage.sync(player);
         SyncCrawlMessage.sync(player);
         SyncGrabCliffMessage.sync(player);
         SyncFastRunningMessage.sync(player);
+        SyncDodgeMessage.sync(player);
+        return true;
     }
 }
