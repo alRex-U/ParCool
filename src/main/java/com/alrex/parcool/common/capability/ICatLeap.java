@@ -32,6 +32,7 @@ public interface ICatLeap {
     public void setReady(boolean ready);
     public void updateReadyTime();
     public int getReadyTime();
+    public int getStaminaConsumption();
 
     public static class CatLeapStorage implements Capability.IStorage<ICatLeap>{
         @Override

@@ -29,6 +29,8 @@ public interface IGrabCliff {
     public void updateTime();
     public int getGrabbingTime();
     public int getNotGrabbingTime();
+    public int getStaminaConsumptionGrab();
+    public int getStaminaConsumptionClimbUp();
 
     public static class GrabCliffStorage implements Capability.IStorage<IGrabCliff>{
         @Override

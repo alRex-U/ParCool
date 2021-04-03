@@ -39,7 +39,7 @@ public class WallJumpLogic {
             Vector3d direction=new Vector3d(jumpDirection.getX(), 1.4, jumpDirection.getZ()).scale(wallJump.getJumpPower());
             Vector3d motion=player.getMotion();
 
-            stamina.consume(200);
+            stamina.consume(wallJump.getStaminaConsumption());
             player.setMotion(
                     motion.getX()+direction.getX(),
                     motion.getY() > direction.getY() ? motion.y+direction.getY() : direction.getY(),

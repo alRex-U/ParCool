@@ -69,7 +69,7 @@ public class FastRunningLogic {
 
         if (fastRunning.isFastRunning()){
             if (!attr.hasModifier(FAST_RUNNING_MODIFIER))attr.applyPersistentModifier(FAST_RUNNING_MODIFIER);
-            stamina.consume(5);
+            stamina.consume(fastRunning.getStaminaConsumption());
         }else {
             if (attr.hasModifier(FAST_RUNNING_MODIFIER))attr.removeModifier(FAST_RUNNING_MODIFIER);
         }

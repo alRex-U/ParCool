@@ -39,7 +39,7 @@ public class JumpBoostLogic {
             Vector3d motionVec=player.getMotion();
             Vector3d vec=new Vector3d(motionVec.getX(), 0, motionVec.getZ()).normalize();
             player.setMotion(vec.getX(),catLeap.getBoostValue(player),vec.getZ());
-            stamina.consume(400);
+            stamina.consume(catLeap.getStaminaConsumption());
             catLeap.setLeaping(true);
             catLeap.setReady(false);
         }else if (catLeap.isLeaping() && (player.collidedHorizontally || player.isOnGround() || player.isInWaterOrBubbleColumn())){

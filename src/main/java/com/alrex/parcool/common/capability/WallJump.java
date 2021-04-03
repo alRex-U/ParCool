@@ -50,4 +50,6 @@ public class WallJump implements IWallJump{
         return value.normalize().add(wall.scale(-0.7));
     }
 
+    @Override
+    public int getStaminaConsumption() { return 200; }
 }

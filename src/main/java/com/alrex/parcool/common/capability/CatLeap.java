@@ -48,4 +48,7 @@ public class CatLeap implements ICatLeap{
     public void updateReadyTime() {
         if (ready)readyTime++; else readyTime=0;
     }
+
+    @Override
+    public int getStaminaConsumption() { return 200; }
 }

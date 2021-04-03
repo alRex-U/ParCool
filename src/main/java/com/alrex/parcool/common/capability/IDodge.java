@@ -34,6 +34,7 @@ public interface IDodge {
     public void setDodging(boolean dodging);
     public int getDodgingTime();
     public void updateDodgingTime();
+    public int getStaminaConsumption();
 
     public static class DodgeStorage implements Capability.IStorage<IDodge>{
         @Override

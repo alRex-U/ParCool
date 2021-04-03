@@ -50,4 +50,10 @@ public class GrabCliff implements IGrabCliff{
             grabbingTime=0;
         }
     }
+
+    @Override
+    public int getStaminaConsumptionGrab() { return 4; }
+
+    @Override
+    public int getStaminaConsumptionClimbUp() { return 200; }
 }

@@ -45,7 +45,7 @@ public class DodgeLogic {
                 vec=vec.scale(0.57);
                 IDodge.DodgeDirection direction = dodge.getDirection();
                 player.setMotion(vec.getX(), direction != IDodge.DodgeDirection.Back ? 0.23 : 0.4, vec.getZ());
-                stamina.consume(200);
+                stamina.consume(dodge.getStaminaConsumption());
             }
         }
         if (oldDodging!=dodge.isDodging()){

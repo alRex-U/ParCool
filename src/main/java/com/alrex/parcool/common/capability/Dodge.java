@@ -66,4 +66,7 @@ public class Dodge implements IDodge{
         if (coolTime>0)coolTime--;
         if (dodging){ dodgingTime++; }else { dodgingTime=0; }
     }
+
+    @Override
+    public int getStaminaConsumption() { return 100; }
 }

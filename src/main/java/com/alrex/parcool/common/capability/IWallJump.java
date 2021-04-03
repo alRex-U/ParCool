@@ -26,6 +26,8 @@ public interface IWallJump {
     public boolean canWallJump(ClientPlayerEntity player);
     @OnlyIn(Dist.CLIENT)
     public Vector3d getJumpDirection(ClientPlayerEntity player);
+    public int getStaminaConsumption();
+
     public static class WallJumpStorage implements Capability.IStorage<IWallJump>{
         @Override
         public void readNBT(Capability<IWallJump> capability, IWallJump instance, Direction side, INBT nbt) { }

@@ -41,4 +41,7 @@ public class FastRunning implements IFastRunning{
             notRunningTime++;
         }
     }
+
+    @Override
+    public int getStaminaConsumption() { return 4; }
 }

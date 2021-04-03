@@ -47,11 +47,11 @@ public class GrabCliffLogic {
         if (grabCliff.isGrabbing()){
             Vector3d vec=player.getMotion();
             player.setMotion(vec.getX()/10,vec.getY()>0.1? vec.getY()/10 : 0,vec.getZ()/10);
-            stamina.consume(3);
+            stamina.consume(grabCliff.getStaminaConsumptionGrab());
         }
         if (grabCliff.canJumpOnCliff(player)){
             player.addVelocity(0,0.6,0);
-            stamina.consume(300);
+            stamina.consume(grabCliff.getStaminaConsumptionClimbUp());
         }
     }
     @SubscribeEvent

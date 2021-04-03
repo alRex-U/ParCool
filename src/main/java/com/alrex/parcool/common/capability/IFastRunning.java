@@ -29,6 +29,7 @@ public interface IFastRunning {
     public void updateTime();
     public int getRunningTime();
     public int getNotRunningTime();
+    public int getStaminaConsumption();
 
     public static class FastRunningStorage implements Capability.IStorage<IFastRunning>{
         @Override
@@ -64,4 +65,5 @@ public interface IFastRunning {
             CapabilityManager.INSTANCE.register(IFastRunning.class,new FastRunningStorage(),FastRunning::new);
         }
     }
+
 }
