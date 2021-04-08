@@ -1,6 +1,7 @@
 {
   "key.crawl.description": "匍匐移動",
   "key.grab.description": "崖つかまり",
+  "key.roll.description": "ロール",
   "key.parcool.activate": "ParCool 有効化",
   "key.categories.parcool": "ParCool",
 

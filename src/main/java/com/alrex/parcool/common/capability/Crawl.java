@@ -26,16 +26,22 @@ public class Crawl implements ICrawl{
 
     @Override
     public boolean canCrawl(ClientPlayerEntity player) {
-        return KeyBindings.getKeyCrawl().isKeyDown() && !player.isInWaterOrBubbleColumn() && player.isOnGround();
+        LazyOptional<IRoll> rollOptional=player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
+        if (!rollOptional.isPresent())return false;
+        IRoll roll=rollOptional.resolve().get();
+
+        return KeyBindings.getKeyCrawl().isKeyDown() && !roll.isRolling() && !player.isInWaterOrBubbleColumn() && player.isOnGround();
     }
 
     @Override
     public boolean canSliding(ClientPlayerEntity player) {
         LazyOptional<IFastRunning> fastOptional=player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
-        if (!fastOptional.isPresent())return false;
+        LazyOptional<IRoll> rollOptional=player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
+        if (!fastOptional.isPresent() || !rollOptional.isPresent())return false;
         IFastRunning fastRunning=fastOptional.resolve().get();
+        IRoll roll=rollOptional.resolve().get();
 
-    if (!isSliding() && fastRunning.isFastRunning() && KeyBindings.getKeyCrawl().isKeyDown() && slidingTime>=0){
+        if (!isSliding() && fastRunning.isFastRunning() && !roll.isRollReady() && !roll.isRolling() && player.isOnGround() && KeyBindings.getKeyCrawl().isKeyDown() && slidingTime>=0){
             return true;
         }
         if (isSliding() && slidingTime<=maxSlidingTime)return true;
