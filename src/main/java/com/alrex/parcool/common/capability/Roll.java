@@ -2,8 +2,7 @@ package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.client.input.KeyBindings;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.LazyOptional;
 
 public class Roll implements IRoll{
     private boolean rollReady=false;
@@ -12,12 +11,24 @@ public class Roll implements IRoll{
 
     @Override
     public boolean canContinueRollReady(ClientPlayerEntity player) {
-        return rollReady && KeyBindings.getKeyRoll().isKeyDown() && !rolling && !player.isInWaterOrBubbleColumn();
+        ICrawl crawl;
+        {
+            LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
+            if (!crawlOptional.isPresent()) return false;
+            crawl = crawlOptional.resolve().get();
+        }
+        return rollReady && !crawl.isCrawling() && !crawl.isSliding() && KeyBindings.getKeyRoll().isKeyDown() && !rolling && !player.isInWaterOrBubbleColumn();
     }
 
     @Override
     public boolean canRollReady(ClientPlayerEntity player) {
-        return !player.isOnGround() && KeyBindings.getKeyRoll().isKeyDown() && !player.isInWaterOrBubbleColumn();
+        ICrawl crawl;
+        {
+            LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
+            if (!crawlOptional.isPresent()) return false;
+            crawl = crawlOptional.resolve().get();
+        }
+        return !player.isOnGround() && !crawl.isCrawling() && !crawl.isSliding() && KeyBindings.getKeyRoll().isKeyDown() && !player.isInWaterOrBubbleColumn();
     }
 
     @Override
