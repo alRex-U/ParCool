@@ -2,7 +2,9 @@ package com.alrex.parcool.client.renderer;
 
 import com.alrex.parcool.common.capability.IRoll;
 import com.alrex.parcool.utilities.RenderUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -24,6 +26,9 @@ public class PlayerRollRenderer {
         }
 
         if (roll.isRolling()) {
+            ClientPlayerEntity mainPlayer = Minecraft.getInstance().player;
+            if (mainPlayer == null) return;
+
             Vector3d lookVec = player.getLookVec().rotateYaw((float) Math.PI / 2);
             Vector3f vec = new Vector3f((float) lookVec.getX(), 0, (float) lookVec.getZ());
 
@@ -33,6 +38,10 @@ public class PlayerRollRenderer {
 
             PlayerRenderer renderer = event.getRenderer();
             PlayerModel<AbstractClientPlayerEntity> model = renderer.getEntityModel();
+
+            event.getMatrixStack().push();
+            Vector3d posOffset = RenderUtil.getPlayerOffset(mainPlayer, player, event.getPartialRenderTick());
+            event.getMatrixStack().translate(posOffset.getX(), posOffset.getY(), posOffset.getZ());
 
             model.bipedRightArm.showModel = true;
             RenderUtil.rotateRightArm(player, model.bipedRightArm,
@@ -132,6 +141,7 @@ public class PlayerRollRenderer {
                     renderer.getPackedLight(player, event.getPartialRenderTick()),
                     0
             );
+            event.getMatrixStack().pop();
             model.bipedRightArm.showModel = false;
             model.bipedRightArmwear.showModel = false;
             model.bipedLeftArm.showModel = false;

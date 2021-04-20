@@ -2,11 +2,14 @@ package com.alrex.parcool.client.renderer;
 
 import com.alrex.parcool.common.capability.IGrabCliff;
 import com.alrex.parcool.utilities.RenderUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -22,8 +25,15 @@ public class PlayerGrabCliffRenderer {
             grabCliff = grabCliffOptional.resolve().get();
         }
         if (grabCliff.isGrabbing()) {
+            ClientPlayerEntity mainPlayer = Minecraft.getInstance().player;
+            if (mainPlayer == null) return;
+
             PlayerRenderer renderer = event.getRenderer();
             PlayerModel<AbstractClientPlayerEntity> model = renderer.getEntityModel();
+
+            event.getMatrixStack().push();
+            Vector3d posOffset = RenderUtil.getPlayerOffset(mainPlayer, player, event.getPartialRenderTick());
+            event.getMatrixStack().translate(posOffset.getX(), posOffset.getY(), posOffset.getZ());
 
             model.bipedRightArm.showModel = true;
             RenderUtil.rotateRightArm(player, model.bipedRightArm,
@@ -75,6 +85,7 @@ public class PlayerGrabCliffRenderer {
                     renderer.getPackedLight(player, event.getPartialRenderTick()),
                     0
             );
+            event.getMatrixStack().pop();
             model.bipedRightArm.showModel = false;
             model.bipedRightArmwear.showModel = false;
             model.bipedLeftArm.showModel = false;

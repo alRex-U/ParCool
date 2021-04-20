@@ -2,7 +2,9 @@ package com.alrex.parcool.utilities;
 
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -36,5 +38,13 @@ public class RenderUtil {
         leftLeg.rotateAngleX = angleX;
         leftLeg.rotateAngleY = angleY;
         leftLeg.rotateAngleZ = angleZ;
+    }
+
+    public static Vector3d getPlayerOffset(PlayerEntity basePlayer, PlayerEntity targetPlayer, float partialTick) {
+        return new Vector3d(
+                (basePlayer.lastTickPosX + ((basePlayer.getPosX() - basePlayer.lastTickPosX) * partialTick)) - (targetPlayer.lastTickPosX + ((targetPlayer.getPosX() - targetPlayer.lastTickPosX) * partialTick)),
+                (basePlayer.lastTickPosY + ((basePlayer.getPosY() - basePlayer.lastTickPosY) * partialTick)) - (targetPlayer.lastTickPosY + ((targetPlayer.getPosY() - targetPlayer.lastTickPosY) * partialTick)),
+                (basePlayer.lastTickPosZ + ((basePlayer.getPosZ() - basePlayer.lastTickPosZ) * partialTick)) - (targetPlayer.lastTickPosZ + ((targetPlayer.getPosZ() - targetPlayer.lastTickPosZ) * partialTick))
+        );
     }
 }
