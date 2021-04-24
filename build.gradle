@@ -12,12 +12,12 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-enum VersionStatus{
-    alpha,beta,release
+enum VersionStatus {
+    alpha, beta, release
 
     @Override
     String toString() {
-        switch (this){
+        switch (this) {
             case alpha: return "α"
             case beta: return "β"
             case release: return "R"
@@ -25,10 +25,10 @@ enum VersionStatus{
     }
 }
 
-def config=[
-        mc_version:'1.16.4',
-        forge_version:'1.16.4-35.1.4',
-        versionStatus:VersionStatus.alpha
+def config = [
+        mc_version   : '1.16.4',
+        forge_version: '1.16.4-35.1.4',
+        versionStatus: VersionStatus.alpha
 ]
 
 //Version Format (MCVERSION-MAJORMOD.MAJORAPI.MINOR.PATCH-VersionStatus)
@@ -107,13 +107,13 @@ dependencies {
 jar {
     manifest {
         attributes([
-            "Specification-Title": "ParCool!",
-            "Specification-Vendor": "alRex",
-            "Specification-Version": "1", // We are version 1 of ourselves
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"alRex",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Specification-Title"     : "ParCool!",
+                "Specification-Vendor"    : "alRex",
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : "alRex",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }

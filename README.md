@@ -1,6 +1,6 @@
 ![ParCool_Logo](./src/main/resources/parcool_logo.png)
 
-#  ParCool MOD
+# ParCool MOD
 
 ---
 

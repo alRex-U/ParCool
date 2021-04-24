@@ -4,7 +4,6 @@
   "key.roll.description": "Roll",
   "key.parcool.activate": "Activate ParCool",
   "key.categories.parcool": "ParCool",
-
   "message.activation.active": "Active",
   "message.activation.inactive": "Inactive",
   "warning.activation.exhausted": "You can't inactivate ParCool because you are exhausted!"

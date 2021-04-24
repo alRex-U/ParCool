@@ -21,50 +21,68 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public interface IDodge {
-    enum DodgeDirection{Left,Right,Back}
-    @OnlyIn(Dist.CLIENT)
-    public boolean canDodge(ClientPlayerEntity player);
-    @OnlyIn(Dist.CLIENT) @Nullable
-    public Vector3d getDodgeDirection(ClientPlayerEntity player);
-    @OnlyIn(Dist.CLIENT)
-    public boolean canContinueDodge(ClientPlayerEntity player);
-    public boolean isDodging();
-    @Nullable
-    public DodgeDirection getDirection();
-    public void setDodging(boolean dodging);
-    public int getDodgingTime();
-    public void updateDodgingTime();
-    public int getStaminaConsumption();
+	enum DodgeDirection {Left, Right, Back}
 
-    public static class DodgeStorage implements Capability.IStorage<IDodge>{
-        @Override
-        public void readNBT(Capability<IDodge> capability, IDodge instance, Direction side, INBT nbt) { }
-        @Nullable @Override
-        public INBT writeNBT(Capability<IDodge> capability, IDodge instance, Direction side) { return null; }
-    }
+	@OnlyIn(Dist.CLIENT)
+	public boolean canDodge(ClientPlayerEntity player);
 
-    public static class DodgeProvider implements ICapabilityProvider {
-        @CapabilityInject(IDodge.class)
-        public static final Capability<IDodge> DODGE_CAPABILITY = null;
-        public static final ResourceLocation CAPABILITY_LOCATION=new ResourceLocation(ParCool.MOD_ID,"capability.parcool.dodge");
+	@OnlyIn(Dist.CLIENT)
+	@Nullable
+	public Vector3d getDodgeDirection(ClientPlayerEntity player);
 
-        private LazyOptional<IDodge> instance=LazyOptional.of(DODGE_CAPABILITY::getDefaultInstance);
+	@OnlyIn(Dist.CLIENT)
+	public boolean canContinueDodge(ClientPlayerEntity player);
 
-        @Nonnull @Override
-        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-            return cap == DODGE_CAPABILITY ? instance.cast() : LazyOptional.empty();
-        }
-        @Nonnull @Override
-        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
-            return cap == DODGE_CAPABILITY ? instance.cast() : LazyOptional.empty();
-        }
-    }
+	public boolean isDodging();
 
-    @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class DodgeRegistry{
-        @SubscribeEvent
-        public static void register(FMLCommonSetupEvent event){
-            CapabilityManager.INSTANCE.register(IDodge.class,new IDodge.DodgeStorage(),Dodge::new);
-        }
-    }
+	@Nullable
+	public DodgeDirection getDirection();
+
+	public void setDodging(boolean dodging);
+
+	public int getDodgingTime();
+
+	public void updateDodgingTime();
+
+	public int getStaminaConsumption();
+
+	public static class DodgeStorage implements Capability.IStorage<IDodge> {
+		@Override
+		public void readNBT(Capability<IDodge> capability, IDodge instance, Direction side, INBT nbt) {
+		}
+
+		@Nullable
+		@Override
+		public INBT writeNBT(Capability<IDodge> capability, IDodge instance, Direction side) {
+			return null;
+		}
+	}
+
+	public static class DodgeProvider implements ICapabilityProvider {
+		@CapabilityInject(IDodge.class)
+		public static final Capability<IDodge> DODGE_CAPABILITY = null;
+		public static final ResourceLocation CAPABILITY_LOCATION = new ResourceLocation(ParCool.MOD_ID, "capability.parcool.dodge");
+
+		private LazyOptional<IDodge> instance = LazyOptional.of(DODGE_CAPABILITY::getDefaultInstance);
+
+		@Nonnull
+		@Override
+		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+			return cap == DODGE_CAPABILITY ? instance.cast() : LazyOptional.empty();
+		}
+
+		@Nonnull
+		@Override
+		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
+			return cap == DODGE_CAPABILITY ? instance.cast() : LazyOptional.empty();
+		}
+	}
+
+	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+	public static class DodgeRegistry {
+		@SubscribeEvent
+		public static void register(FMLCommonSetupEvent event) {
+			CapabilityManager.INSTANCE.register(IDodge.class, new IDodge.DodgeStorage(), Dodge::new);
+		}
+	}
 }

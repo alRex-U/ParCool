@@ -7,14 +7,18 @@ import net.minecraftforge.fml.config.ModConfig;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ParCoolConfig {
-    private static final ForgeConfigSpec.Builder CLIENT_BUILDER=new ForgeConfigSpec.Builder();
-    public static ForgeConfigSpec CLIENT;
+	private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
+	public static ForgeConfigSpec CLIENT;
 
-    static {
-        CLIENT=CLIENT_BUILDER.build();
-    }
-    @SubscribeEvent
-    public static void onLoad(ModConfig.Loading event){ }
-    @SubscribeEvent
-    public static void onReload(ModConfig.Reloading event){ }
+	static {
+		CLIENT = CLIENT_BUILDER.build();
+	}
+
+	@SubscribeEvent
+	public static void onLoad(ModConfig.Loading event) {
+	}
+
+	@SubscribeEvent
+	public static void onReload(ModConfig.Reloading event) {
+	}
 }

@@ -20,52 +20,66 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public interface ICatLeap {
-    @OnlyIn(Dist.CLIENT)
-    public boolean canCatLeap(ClientPlayerEntity player);
-    @OnlyIn(Dist.CLIENT)
-    public boolean canReadyLeap(ClientPlayerEntity player);
-    @OnlyIn(Dist.CLIENT)
-    public double getBoostValue(ClientPlayerEntity player);
-    public boolean isLeaping();
-    public void setLeaping(boolean leaping);
-    public boolean isReady();
-    public void setReady(boolean ready);
-    public void updateReadyTime();
-    public int getReadyTime();
-    public int getStaminaConsumption();
+	@OnlyIn(Dist.CLIENT)
+	public boolean canCatLeap(ClientPlayerEntity player);
 
-    public static class CatLeapStorage implements Capability.IStorage<ICatLeap>{
-        @Override
-        public void readNBT(Capability<ICatLeap> capability, ICatLeap instance, Direction side, INBT nbt) { }
-        @Nullable @Override
-        public INBT writeNBT(Capability<ICatLeap> capability, ICatLeap instance, Direction side) {
-            return null;
-        }
-    }
+	@OnlyIn(Dist.CLIENT)
+	public boolean canReadyLeap(ClientPlayerEntity player);
 
-    public static class CatLeapProvider implements ICapabilityProvider {
-        @CapabilityInject(ICatLeap.class)
-        public static final Capability<ICatLeap> CAT_LEAP_CAPABILITY = null;
-        public static final ResourceLocation CAPABILITY_LOCATION=new ResourceLocation(ParCool.MOD_ID,"capability.parcool.catleap");
+	@OnlyIn(Dist.CLIENT)
+	public double getBoostValue(ClientPlayerEntity player);
 
-        private LazyOptional<ICatLeap> instance=LazyOptional.of(CAT_LEAP_CAPABILITY::getDefaultInstance);
+	public boolean isLeaping();
 
-        @Nonnull
-        @Override
-        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-            return cap == CAT_LEAP_CAPABILITY ? instance.cast() : LazyOptional.empty();
-        }
-        @Nonnull @Override
-        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
-            return cap == CAT_LEAP_CAPABILITY ? instance.cast() : LazyOptional.empty();
-        }
-    }
+	public void setLeaping(boolean leaping);
 
-    @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class CatLeapRegistry{
-        @SubscribeEvent
-        public static void register(FMLCommonSetupEvent event){
-            CapabilityManager.INSTANCE.register(ICatLeap.class,new ICatLeap.CatLeapStorage(),CatLeap::new);
-        }
-    }
+	public boolean isReady();
+
+	public void setReady(boolean ready);
+
+	public void updateReadyTime();
+
+	public int getReadyTime();
+
+	public int getStaminaConsumption();
+
+	public static class CatLeapStorage implements Capability.IStorage<ICatLeap> {
+		@Override
+		public void readNBT(Capability<ICatLeap> capability, ICatLeap instance, Direction side, INBT nbt) {
+		}
+
+		@Nullable
+		@Override
+		public INBT writeNBT(Capability<ICatLeap> capability, ICatLeap instance, Direction side) {
+			return null;
+		}
+	}
+
+	public static class CatLeapProvider implements ICapabilityProvider {
+		@CapabilityInject(ICatLeap.class)
+		public static final Capability<ICatLeap> CAT_LEAP_CAPABILITY = null;
+		public static final ResourceLocation CAPABILITY_LOCATION = new ResourceLocation(ParCool.MOD_ID, "capability.parcool.catleap");
+
+		private LazyOptional<ICatLeap> instance = LazyOptional.of(CAT_LEAP_CAPABILITY::getDefaultInstance);
+
+		@Nonnull
+		@Override
+		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+			return cap == CAT_LEAP_CAPABILITY ? instance.cast() : LazyOptional.empty();
+		}
+
+		@Nonnull
+		@Override
+		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
+			return cap == CAT_LEAP_CAPABILITY ? instance.cast() : LazyOptional.empty();
+		}
+	}
+
+	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+	public static class CatLeapRegistry {
+		@SubscribeEvent
+		public static void register(FMLCommonSetupEvent event) {
+			CapabilityManager.INSTANCE.register(ICatLeap.class, new ICatLeap.CatLeapStorage(), CatLeap::new);
+		}
+	}
 }

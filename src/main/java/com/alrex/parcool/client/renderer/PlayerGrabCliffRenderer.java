@@ -14,82 +14,82 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class PlayerGrabCliffRenderer {
-    public static void onRender(RenderPlayerEvent.Pre event) {
-        if (!(event.getPlayer() instanceof AbstractClientPlayerEntity)) return;
-        AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) event.getPlayer();
+	public static void onRender(RenderPlayerEvent.Pre event) {
+		if (!(event.getPlayer() instanceof AbstractClientPlayerEntity)) return;
+		AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) event.getPlayer();
 
-        IGrabCliff grabCliff;
-        {
-            LazyOptional<IGrabCliff> grabCliffOptional = player.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
-            if (!grabCliffOptional.isPresent()) return;
-            grabCliff = grabCliffOptional.resolve().get();
-        }
-        if (grabCliff.isGrabbing()) {
-            ClientPlayerEntity mainPlayer = Minecraft.getInstance().player;
-            if (mainPlayer == null) return;
+		IGrabCliff grabCliff;
+		{
+			LazyOptional<IGrabCliff> grabCliffOptional = player.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
+			if (!grabCliffOptional.isPresent()) return;
+			grabCliff = grabCliffOptional.resolve().get();
+		}
+		if (grabCliff.isGrabbing()) {
+			ClientPlayerEntity mainPlayer = Minecraft.getInstance().player;
+			if (mainPlayer == null) return;
 
-            PlayerRenderer renderer = event.getRenderer();
-            PlayerModel<AbstractClientPlayerEntity> model = renderer.getEntityModel();
+			PlayerRenderer renderer = event.getRenderer();
+			PlayerModel<AbstractClientPlayerEntity> model = renderer.getEntityModel();
 
-            event.getMatrixStack().push();
-            Vector3d posOffset = RenderUtil.getPlayerOffset(mainPlayer, player, event.getPartialRenderTick());
-            event.getMatrixStack().translate(posOffset.getX(), posOffset.getY(), posOffset.getZ());
+			event.getMatrixStack().push();
+			Vector3d posOffset = RenderUtil.getPlayerOffset(mainPlayer, player, event.getPartialRenderTick());
+			event.getMatrixStack().translate(posOffset.getX(), posOffset.getY(), posOffset.getZ());
 
-            model.bipedRightArm.showModel = true;
-            RenderUtil.rotateRightArm(player, model.bipedRightArm,
-                    (float) Math.toRadians(20.0F),
-                    (float) -Math.toRadians(player.renderYawOffset),
-                    (float) Math.toRadians(0.0F)
-            );
-            model.bipedRightArmwear.showModel = true;
-            RenderUtil.rotateRightArm(player, model.bipedRightArmwear,
-                    (float) Math.toRadians(20.0F),
-                    (float) -Math.toRadians(player.renderYawOffset),
-                    (float) Math.toRadians(0.0F)
-            );
-            model.bipedLeftArm.showModel = true;
-            RenderUtil.rotateLeftArm(player, model.bipedLeftArm,
-                    (float) Math.toRadians(20.0F),
-                    (float) -Math.toRadians(player.renderYawOffset),
-                    (float) Math.toRadians(0.0F)
-            );
-            model.bipedLeftArmwear.showModel = true;
-            RenderUtil.rotateLeftArm(player, model.bipedLeftArmwear,
-                    (float) Math.toRadians(20.0F),
-                    (float) -Math.toRadians(player.renderYawOffset),
-                    (float) Math.toRadians(0.0F)
-            );
-            ResourceLocation location = renderer.getEntityTexture(player);
-            renderer.getRenderManager().textureManager.bindTexture(location);
-            model.bipedRightArm.render(
-                    event.getMatrixStack(),
-                    event.getBuffers().getBuffer(RenderType.getEntitySolid(location)),
-                    renderer.getPackedLight(player, event.getPartialRenderTick()),
-                    0
-            );
-            model.bipedRightArmwear.render(
-                    event.getMatrixStack(),
-                    event.getBuffers().getBuffer(RenderType.getArmorEntityGlint()),
-                    renderer.getPackedLight(player, event.getPartialRenderTick()),
-                    0
-            );
-            model.bipedLeftArm.render(
-                    event.getMatrixStack(),
-                    event.getBuffers().getBuffer(RenderType.getEntitySolid(location)),
-                    renderer.getPackedLight(player, event.getPartialRenderTick()),
-                    0
-            );
-            model.bipedLeftArmwear.render(
-                    event.getMatrixStack(),
-                    event.getBuffers().getBuffer(RenderType.getArmorEntityGlint()),
-                    renderer.getPackedLight(player, event.getPartialRenderTick()),
-                    0
-            );
-            event.getMatrixStack().pop();
-            model.bipedRightArm.showModel = false;
-            model.bipedRightArmwear.showModel = false;
-            model.bipedLeftArm.showModel = false;
-            model.bipedLeftArmwear.showModel = false;
-        }
-    }
+			model.bipedRightArm.showModel = true;
+			RenderUtil.rotateRightArm(player, model.bipedRightArm,
+					(float) Math.toRadians(20.0F),
+					(float) -Math.toRadians(player.renderYawOffset),
+					(float) Math.toRadians(0.0F)
+			);
+			model.bipedRightArmwear.showModel = true;
+			RenderUtil.rotateRightArm(player, model.bipedRightArmwear,
+					(float) Math.toRadians(20.0F),
+					(float) -Math.toRadians(player.renderYawOffset),
+					(float) Math.toRadians(0.0F)
+			);
+			model.bipedLeftArm.showModel = true;
+			RenderUtil.rotateLeftArm(player, model.bipedLeftArm,
+					(float) Math.toRadians(20.0F),
+					(float) -Math.toRadians(player.renderYawOffset),
+					(float) Math.toRadians(0.0F)
+			);
+			model.bipedLeftArmwear.showModel = true;
+			RenderUtil.rotateLeftArm(player, model.bipedLeftArmwear,
+					(float) Math.toRadians(20.0F),
+					(float) -Math.toRadians(player.renderYawOffset),
+					(float) Math.toRadians(0.0F)
+			);
+			ResourceLocation location = renderer.getEntityTexture(player);
+			renderer.getRenderManager().textureManager.bindTexture(location);
+			model.bipedRightArm.render(
+					event.getMatrixStack(),
+					event.getBuffers().getBuffer(RenderType.getEntitySolid(location)),
+					renderer.getPackedLight(player, event.getPartialRenderTick()),
+					0
+			);
+			model.bipedRightArmwear.render(
+					event.getMatrixStack(),
+					event.getBuffers().getBuffer(RenderType.getArmorEntityGlint()),
+					renderer.getPackedLight(player, event.getPartialRenderTick()),
+					0
+			);
+			model.bipedLeftArm.render(
+					event.getMatrixStack(),
+					event.getBuffers().getBuffer(RenderType.getEntitySolid(location)),
+					renderer.getPackedLight(player, event.getPartialRenderTick()),
+					0
+			);
+			model.bipedLeftArmwear.render(
+					event.getMatrixStack(),
+					event.getBuffers().getBuffer(RenderType.getArmorEntityGlint()),
+					renderer.getPackedLight(player, event.getPartialRenderTick()),
+					0
+			);
+			event.getMatrixStack().pop();
+			model.bipedRightArm.showModel = false;
+			model.bipedRightArmwear.showModel = false;
+			model.bipedLeftArm.showModel = false;
+			model.bipedLeftArmwear.showModel = false;
+		}
+	}
 }

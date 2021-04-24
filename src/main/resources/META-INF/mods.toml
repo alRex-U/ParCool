@@ -1,29 +1,29 @@
-modLoader="javafml" #mandatory
-loaderVersion="[35,)"
-license="All rights reserved"
-issueTrackerURL="http://my.issue.tracker/" #optional
+modLoader = "javafml" #mandatory
+loaderVersion = "[35,)"
+license = "All rights reserved"
+issueTrackerURL = "http://my.issue.tracker/" #optional
 [[mods]] #mandatory
-modId="parcool" #mandatory
-version="${file.jarVersion}" #mandatory
-displayName="ParCool!" #mandatory
-displayURL="http://example.com/" #optional
-logoFile="parcool_logo.png" #optional
-credits="Thanks for Java, and Developers of Minecraft and Minecraft Forge" #optional
+modId = "parcool" #mandatory
+version = "${file.jarVersion}" #mandatory
+displayName = "ParCool!" #mandatory
+displayURL = "http://example.com/" #optional
+logoFile = "parcool_logo.png" #optional
+credits = "Thanks for Java, and Developers of Minecraft and Minecraft Forge" #optional
 
-description='''
+description = '''
     this enable us act like parkour player
 '''
 [[dependencies.parcool]] #optional
-    modId="forge" #mandatory
-    mandatory=true #mandatory
-    versionRange="[35,)" #mandatory
-    ordering="NONE"
-    side="BOTH"
+modId = "forge" #mandatory
+mandatory = true #mandatory
+versionRange = "[35,)" #mandatory
+ordering = "NONE"
+side = "BOTH"
 
 [[dependencies.parcool]]
-    modId="minecraft"
-    mandatory=true
+modId = "minecraft"
+mandatory = true
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
-    versionRange="[1.16.4,1.17)"
-    ordering="NONE"
-    side="BOTH"
+versionRange = "[1.16.4,1.17)"
+ordering = "NONE"
+side = "BOTH"
