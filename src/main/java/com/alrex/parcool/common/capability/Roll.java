@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.capability;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.input.KeyBindings;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraftforge.common.util.LazyOptional;
@@ -17,7 +18,7 @@ public class Roll implements IRoll {
 			if (!crawlOptional.isPresent()) return false;
 			crawl = crawlOptional.resolve().get();
 		}
-		return rollReady && !crawl.isCrawling() && !crawl.isSliding() && KeyBindings.getKeyRoll().isKeyDown() && !rolling && !player.isInWaterOrBubbleColumn();
+		return rollReady && ParCoolConfig.CONFIG_CLIENT.canRoll.get() && !crawl.isCrawling() && !crawl.isSliding() && KeyBindings.getKeyRoll().isKeyDown() && !rolling && !player.isInWaterOrBubbleColumn();
 	}
 
 	@Override
@@ -28,7 +29,7 @@ public class Roll implements IRoll {
 			if (!crawlOptional.isPresent()) return false;
 			crawl = crawlOptional.resolve().get();
 		}
-		return !player.isOnGround() && !crawl.isCrawling() && !crawl.isSliding() && KeyBindings.getKeyRoll().isKeyDown() && !player.isInWaterOrBubbleColumn();
+		return !player.isOnGround() && ParCoolConfig.CONFIG_CLIENT.canRoll.get() && !crawl.isCrawling() && !crawl.isSliding() && KeyBindings.getKeyRoll().isKeyDown() && !player.isInWaterOrBubbleColumn();
 	}
 
 	@Override

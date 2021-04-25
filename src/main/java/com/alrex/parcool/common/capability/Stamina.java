@@ -1,8 +1,6 @@
 package com.alrex.parcool.common.capability;
 
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import com.alrex.parcool.ParCoolConfig;
 
 public class Stamina implements IStamina {
 	private static final int COOL_TIME = 20;
@@ -23,7 +21,7 @@ public class Stamina implements IStamina {
 
 	@Override
 	public int getMaxStamina() {
-		return 1000;
+		return ParCoolConfig.CONFIG_CLIENT.maxStamina.get();
 	}
 
 	@Override
@@ -55,11 +53,6 @@ public class Stamina implements IStamina {
 	@Override
 	public boolean isExhausted() {
 		return exhausted;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public void syncState(ClientPlayerEntity player) {
-
 	}
 
 	@Override

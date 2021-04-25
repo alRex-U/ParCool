@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.capability;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.input.KeyBindings;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraftforge.common.util.LazyOptional;
@@ -28,7 +29,7 @@ public class FastRunning implements IFastRunning {
 		IStamina stamina = staminaOptional.resolve().get();
 		ICrawl crawl = crawlOptional.resolve().get();
 
-		return !stamina.isExhausted() && !crawl.isCrawling() && !crawl.isSliding() && player.isSprinting() && KeyBindings.getKeySprint().isKeyDown() && !player.isInWaterOrBubbleColumn();
+		return !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canFastRunning.get() && !crawl.isCrawling() && !crawl.isSliding() && player.isSprinting() && KeyBindings.getKeySprint().isKeyDown() && !player.isInWaterOrBubbleColumn();
 	}
 
 	@Override

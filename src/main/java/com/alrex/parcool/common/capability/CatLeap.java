@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.capability;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.input.KeyBindings;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraftforge.common.util.LazyOptional;
@@ -17,7 +18,7 @@ public class CatLeap implements ICatLeap {
 			if (!staminaOptional.isPresent()) return false;
 			stamina = staminaOptional.resolve().get();
 		}
-		return player.isOnGround() && !stamina.isExhausted() && ready && readyTime < 10 && !KeyBindings.getKeySneak().isKeyDown();
+		return player.isOnGround() && ParCoolConfig.CONFIG_CLIENT.canCatLeap.get() && !stamina.isExhausted() && ready && readyTime < 10 && !KeyBindings.getKeySneak().isKeyDown();
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.capability;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -25,7 +26,7 @@ public class WallJump implements IWallJump {
 			stamina = staminaOptional.resolve().get();
 			grabCliff = grabCliffOptional.resolve().get();
 		}
-		return !stamina.isExhausted() && !player.isOnGround() && !player.isInWaterOrBubbleColumn() && !player.isElytraFlying() && !player.abilities.isFlying && !grabCliff.isGrabbing() && KeyRecorder.keyJumpState.isPressed() && WorldUtil.getWall(player) != null;
+		return !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canWallJump.get() && !player.isOnGround() && !player.isInWaterOrBubbleColumn() && !player.isElytraFlying() && !player.abilities.isFlying && !grabCliff.isGrabbing() && KeyRecorder.keyJumpState.isPressed() && WorldUtil.getWall(player) != null;
 	}
 
 	@Override

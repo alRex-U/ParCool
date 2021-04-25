@@ -1,24 +1,53 @@
 package com.alrex.parcool;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ParCoolConfig {
-	private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
-	public static ForgeConfigSpec CLIENT;
+	private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
-	static {
-		CLIENT = CLIENT_BUILDER.build();
+	@OnlyIn(Dist.CLIENT)
+	public static final Client CONFIG_CLIENT = new Client(BUILDER);
+
+	@OnlyIn(Dist.CLIENT)
+	public static class Client {
+		public final ForgeConfigSpec.BooleanValue canCatLeap;
+		public final ForgeConfigSpec.BooleanValue canCrawl;
+		public final ForgeConfigSpec.BooleanValue canDodge;
+		public final ForgeConfigSpec.BooleanValue canFastRunning;
+		public final ForgeConfigSpec.BooleanValue canGrabCliff;
+		public final ForgeConfigSpec.BooleanValue canRoll;
+		public final ForgeConfigSpec.BooleanValue canVault;
+		public final ForgeConfigSpec.BooleanValue canWallJump;
+		public final ForgeConfigSpec.IntValue maxStamina;
+		public final ForgeConfigSpec.BooleanValue ParCoolActivation;
+
+		Client(ForgeConfigSpec.Builder builder) {
+			builder.comment("Enable ParCool Actions").push("Possibility of Actions");
+			{
+				canCatLeap = builder.comment("Possibility to CatLeap").define("canCatLeap", true);
+				canCrawl = builder.comment("Possibility to Crawl").define("canCrawl", true);
+				canDodge = builder.comment("Possibility to Dodge").define("canDodge", true);
+				canFastRunning = builder.comment("Possibility to FastRunning").define("canFastRunning", true);
+				canGrabCliff = builder.comment("Possibility to GrabCliff").define("canGrabCliff", true);
+				canRoll = builder.comment("Possibility to Roll").define("canRoll", true);
+				canVault = builder.comment("Possibility to Vault").define("canVault", true);
+				canWallJump = builder.comment("Possibility to WallJump").define("canWallJump", true);
+			}
+			builder.pop();
+			builder.comment("Values").push("Modify Values");
+			{
+				maxStamina = builder.comment("Max Value of Stamina").defineInRange("maxStamina", 1000, 10, 5000);
+			}
+			builder.pop();
+			builder.comment("About ParCool").push("ParCool");
+			{
+				ParCoolActivation = builder.comment("ParCool is Active").define("ParCool_Activation", true);
+			}
+			builder.pop();
+		}
 	}
 
-	@SubscribeEvent
-	public static void onLoad(ModConfig.Loading event) {
-	}
-
-	@SubscribeEvent
-	public static void onReload(ModConfig.Reloading event) {
-	}
+	public static final ForgeConfigSpec spec = BUILDER.build();
 }

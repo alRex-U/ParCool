@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.capability;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.utilities.WorldUtil;
@@ -19,12 +20,12 @@ public class GrabCliff implements IGrabCliff {
 			if (!staminaOptional.isPresent()) return false;
 			stamina = staminaOptional.resolve().get();
 		}
-		return !stamina.isExhausted() && KeyBindings.getKeyGrabWall().isKeyDown() && player.getHeldItemMainhand().isEmpty() && player.getHeldItemOffhand().isEmpty() && WorldUtil.existsGrabbableWall(player);
+		return !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canGrabCliff.get() && KeyBindings.getKeyGrabWall().isKeyDown() && player.getHeldItemMainhand().isEmpty() && player.getHeldItemOffhand().isEmpty() && WorldUtil.existsGrabbableWall(player);
 	}
 
 	@Override
 	public boolean canJumpOnCliff(ClientPlayerEntity player) {
-		return grabbing && grabbingTime > 5 && KeyRecorder.keyJumpState.isPressed();
+		return grabbing && ParCoolConfig.CONFIG_CLIENT.canGrabCliff.get() && grabbingTime > 5 && KeyRecorder.keyJumpState.isPressed();
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.capability;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -22,7 +23,7 @@ public class Dodge implements IDodge {
 			if (!staminaOptional.isPresent()) return false;
 			stamina = staminaOptional.resolve().get();
 		}
-		return coolTime <= 0 && player.isOnGround() && !player.isSneaking() && !stamina.isExhausted() && (KeyRecorder.keyBack.isDoubleTapped() || KeyRecorder.keyLeft.isDoubleTapped() || KeyRecorder.keyRight.isDoubleTapped());
+		return coolTime <= 0 && player.isOnGround() && !player.isSneaking() && !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canDodge.get() && (KeyRecorder.keyBack.isDoubleTapped() || KeyRecorder.keyLeft.isDoubleTapped() || KeyRecorder.keyRight.isDoubleTapped());
 	}
 
 	@Nullable
@@ -71,7 +72,7 @@ public class Dodge implements IDodge {
 
 	@Override
 	public boolean canContinueDodge(ClientPlayerEntity player) {
-		return dodging && !player.isOnGround() && !player.isInWaterOrBubbleColumn() && !player.isElytraFlying() && !player.abilities.isFlying;
+		return dodging && !player.isOnGround() && !player.isInWaterOrBubbleColumn() && !player.isElytraFlying() && !player.abilities.isFlying && ParCoolConfig.CONFIG_CLIENT.canDodge.get();
 	}
 
 	@Override

@@ -30,17 +30,15 @@ public class ParCool {
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
-	@OnlyIn(Dist.CLIENT)
-	public static boolean active = true;
 
 	@OnlyIn(Dist.CLIENT)
 	public static boolean isActive() {
-		return active;
+		return ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.get();
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public static void setActivation(boolean activation) {
-		active = activation;
+		ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.set(activation);
 	}
 
 	public ParCool() {
@@ -51,7 +49,7 @@ public class ParCool {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModLoadingContext context = ModLoadingContext.get();
-		context.registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.CLIENT);
+		context.registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.spec);
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {

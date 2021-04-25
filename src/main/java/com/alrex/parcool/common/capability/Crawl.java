@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.capability;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.input.KeyBindings;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraftforge.common.util.LazyOptional;
@@ -37,7 +38,7 @@ public class Crawl implements ICrawl {
 		if (!rollOptional.isPresent()) return false;
 		IRoll roll = rollOptional.resolve().get();
 
-		return KeyBindings.getKeyCrawl().isKeyDown() && !roll.isRolling() && !player.isInWaterOrBubbleColumn() && player.isOnGround();
+		return KeyBindings.getKeyCrawl().isKeyDown() && ParCoolConfig.CONFIG_CLIENT.canCrawl.get() && !roll.isRolling() && !player.isInWaterOrBubbleColumn() && player.isOnGround();
 	}
 
 	@Override
@@ -48,7 +49,7 @@ public class Crawl implements ICrawl {
 		IFastRunning fastRunning = fastOptional.resolve().get();
 		IRoll roll = rollOptional.resolve().get();
 
-		if (!isSliding() && fastRunning.isFastRunning() && !roll.isRollReady() && !roll.isRolling() && player.isOnGround() && KeyBindings.getKeyCrawl().isKeyDown() && slidingTime >= 0) {
+		if (!isSliding() && ParCoolConfig.CONFIG_CLIENT.canCrawl.get() && fastRunning.isFastRunning() && !roll.isRollReady() && !roll.isRolling() && player.isOnGround() && KeyBindings.getKeyCrawl().isKeyDown() && slidingTime >= 0) {
 			return true;
 		}
 		if (isSliding() && slidingTime <= maxSlidingTime) return true;
