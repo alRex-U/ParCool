@@ -8,7 +8,7 @@ import com.alrex.parcool.common.network.*;
 import com.alrex.parcool.constants.TranslateKeys;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
@@ -32,22 +32,14 @@ public class EventActivateParCool {
 				stamina = staminaOptional.resolve().get();
 			}
 			if (stamina.isExhausted()) {
-				player.sendChatMessage(I18n.format(TranslateKeys.WARNING_ACTIVATION_EXHAUSTED));
+				player.sendStatusMessage(new TranslationTextComponent(TranslateKeys.WARNING_ACTIVATION_EXHAUSTED), false);
 				return;
 			}
 			boolean active = !ParCool.isActive();
 			boolean can = active ? activate() : inactivate();
 			if (!can) return;
 			ParCool.setActivation(active);
-			if (I18n.hasKey(TranslateKeys.MESSAGE_ACTIVATION_ACTIVE)) {
-				player.sendChatMessage(
-						"ParCool:" + I18n.format(active ? TranslateKeys.MESSAGE_ACTIVATION_ACTIVE : TranslateKeys.MESSAGE_ACTIVATION_INACTIVE)
-				);
-			} else {
-				player.sendChatMessage(
-						"ParCool:" + (active ? "Active" : "Inactive")
-				);
-			}
+			player.sendStatusMessage(new TranslationTextComponent(active ? TranslateKeys.MESSAGE_ACTIVATION_ACTIVE : TranslateKeys.MESSAGE_ACTIVATION_INACTIVE), false);
 		}
 	}
 

@@ -1,9 +1,11 @@
 package com.alrex.parcool;
 
+import com.alrex.parcool.common.command.ParCoolCommands;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -46,6 +48,8 @@ public class ParCool {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+		MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
+
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModLoadingContext context = ModLoadingContext.get();
@@ -62,5 +66,9 @@ public class ParCool {
 	}
 
 	private void processIMC(final InterModProcessEvent event) {
+	}
+
+	private void registerCommand(final RegisterCommandsEvent event) {
+		ParCoolCommands.register(event.getDispatcher());
 	}
 }

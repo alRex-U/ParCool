@@ -4,7 +4,9 @@
   "key.roll.description": "ロール",
   "key.parcool.activate": "ParCool 有効化",
   "key.categories.parcool": "ParCool",
-  "message.activation.active": "起動",
-  "message.activation.inactive": "停止",
-  "warning.activation.exhausted": "疲労状態の間はParCoolをオフにできません!"
+  "message.activation.active": "§bParCool:§2起動",
+  "message.activation.inactive": "§bParCool:§7停止",
+  "warning.activation.exhausted": "§4疲労状態の間はParCoolをオフにできません!",
+  "command.error.actionname.invalid": "存在しない名前 [%s]",
+  "command.error.boolean.invalid": "\"true\" か \"false\" のみが使用できます [%s]"
 }

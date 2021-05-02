@@ -1,6 +1,7 @@
 package com.alrex.parcool.client.hud;
 
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.IStamina;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.MainWindow;
@@ -15,6 +16,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class StaminaHUD extends AbstractGui {
 	public static void render(RenderGameOverlayEvent event) {
+		if (!ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.get()) return;
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		IStamina stamina;
 		{
@@ -38,7 +40,7 @@ public class StaminaHUD extends AbstractGui {
 		int color = getStaminaColor(staminaScale, stamina.isExhausted());
 
 		AbstractGui.fill(event.getMatrixStack(), x, y, x + boxWidth, y + boxHeight, 0xAA585654);
-		AbstractGui.fill(event.getMatrixStack(), x + 2, y + 2, x + boxWidth - 2, y + boxHeight - 2, 0xAAC6C6C6);
+		AbstractGui.fill(event.getMatrixStack(), x + 2, y + 2, x + boxWidth - 2, y + boxHeight - 2, 0xAA898989);
 		AbstractGui.fill(event.getMatrixStack(), x + heartWidth + 7, y + 4, x + heartWidth + 6 + staminaWidth, y + 5 + heartWidth, 0xAA2B2B2B);
 		AbstractGui.fill(event.getMatrixStack(), x + heartWidth + 7, y + 4, x + heartWidth + 6 + (int) Math.round(staminaWidth * staminaScale), y + 5 + heartWidth, color);
 		renderYellowHeart(event.getMatrixStack(), x + 4, y + 4, heartWidth, heartWidth);

@@ -15,9 +15,10 @@ public class ParticleProvider {
 		final double y = player.getPosY() + 0.1;
 		final double z = player.getPosZ();
 
+		Vector3d motion = player.getMotion();
 		Vector3d vec = new Vector3d(0, 0, 0.3);
 		for (int i = 0; i < 16; i++) {
-			Vector3d direction = vec.rotateYaw((float) (Math.PI / 8 * i));
+			Vector3d direction = vec.rotateYaw((float) (Math.PI / 8 * i)).add(motion);
 			world.addParticle(ParticleTypes.LARGE_SMOKE, x, y, z, direction.getX(), 0, direction.getZ());
 		}
 	}

@@ -4,7 +4,9 @@
   "key.roll.description": "Roll",
   "key.parcool.activate": "Activate ParCool",
   "key.categories.parcool": "ParCool",
-  "message.activation.active": "Active",
-  "message.activation.inactive": "Inactive",
-  "warning.activation.exhausted": "You can't inactivate ParCool because you are exhausted!"
+  "message.activation.active": "§bParCool:§2Active",
+  "message.activation.inactive": "§bParCool:§7Inactive",
+  "warning.activation.exhausted": "§4You can't inactivate ParCool because you are exhausted!",
+  "command.error.actionname.invalid": "No such Action Name [%s]",
+  "command.error.boolean.invalid": "Only \"true\" or \"false\" can be used [%s]"
 }
