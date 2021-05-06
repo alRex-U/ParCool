@@ -20,12 +20,13 @@ public class GrabCliff implements IGrabCliff {
 			if (!staminaOptional.isPresent()) return false;
 			stamina = staminaOptional.resolve().get();
 		}
-		return !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canGrabCliff.get() && KeyBindings.getKeyGrabWall().isKeyDown() && player.getHeldItemMainhand().isEmpty() && player.getHeldItemOffhand().isEmpty() && WorldUtil.existsGrabbableWall(player);
+		double ySpeed = player.getMotion().y;
+		return !stamina.isExhausted() && ySpeed < 0.2 && ParCoolConfig.CONFIG_CLIENT.canGrabCliff.get() && KeyBindings.getKeyGrabWall().isKeyDown() && player.getHeldItemMainhand().isEmpty() && player.getHeldItemOffhand().isEmpty() && WorldUtil.existsGrabbableWall(player);
 	}
 
 	@Override
 	public boolean canJumpOnCliff(ClientPlayerEntity player) {
-		return grabbing && ParCoolConfig.CONFIG_CLIENT.canGrabCliff.get() && grabbingTime > 5 && KeyRecorder.keyJumpState.isPressed();
+		return grabbing && ParCoolConfig.CONFIG_CLIENT.canGrabCliff.get() && grabbingTime > 3 && KeyRecorder.keyJumpState.isPressed();
 	}
 
 	@Override
