@@ -41,8 +41,8 @@ public class StaminaHUD extends AbstractGui {
 
 		AbstractGui.fill(event.getMatrixStack(), x, y, x + boxWidth, y + boxHeight, 0xAA585654);
 		AbstractGui.fill(event.getMatrixStack(), x + 2, y + 2, x + boxWidth - 2, y + boxHeight - 2, 0xAA898989);
-		AbstractGui.fill(event.getMatrixStack(), x + heartWidth + 7, y + 4, x + heartWidth + 6 + staminaWidth, y + 5 + heartWidth, 0xAA2B2B2B);
-		AbstractGui.fill(event.getMatrixStack(), x + heartWidth + 7, y + 4, x + heartWidth + 6 + (int) Math.round(staminaWidth * staminaScale), y + 5 + heartWidth, color);
+		AbstractGui.fill(event.getMatrixStack(), x + heartWidth + 7, y + 4, x + heartWidth + 7 + staminaWidth, y + 5 + heartWidth, 0xAA2B2B2B);
+		AbstractGui.fill(event.getMatrixStack(), x + heartWidth + 7, y + 4, x + heartWidth + 7 + (int) Math.round(staminaWidth * staminaScale), y + 5 + heartWidth, color);
 		renderYellowHeart(event.getMatrixStack(), x + 4, y + 4, heartWidth, heartWidth);
 	}
 
