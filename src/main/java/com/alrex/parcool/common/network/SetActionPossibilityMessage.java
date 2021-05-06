@@ -77,7 +77,7 @@ public class SetActionPossibilityMessage {
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class MessageRegistry {
-		private static final int ID = 10;
+		private static final int ID = 1;
 
 		@SubscribeEvent
 		public static void register(FMLCommonSetupEvent event) {

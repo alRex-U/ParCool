@@ -69,7 +69,7 @@ public class SyncFastRunningMessage {
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class MessageRegistry {
-		private static final int ID = 2;
+		private static final int ID = 6;
 
 		@SubscribeEvent
 		public static void register(FMLCommonSetupEvent event) {

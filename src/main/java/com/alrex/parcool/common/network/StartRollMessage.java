@@ -63,7 +63,7 @@ public class StartRollMessage {
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class MessageRegistry {
-		private static final int ID = 9;
+		private static final int ID = 2;
 
 		@SubscribeEvent
 		public static void register(FMLCommonSetupEvent event) {

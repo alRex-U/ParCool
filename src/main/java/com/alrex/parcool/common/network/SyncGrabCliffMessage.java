@@ -40,8 +40,9 @@ public class SyncGrabCliffMessage {
 		contextSupplier.get().enqueueWork(() -> {
 			PlayerEntity player;
 			if (contextSupplier.get().getNetworkManager().getDirection() == PacketDirection.CLIENTBOUND) {
-				player = Minecraft.getInstance().world.getPlayerByUuid(playerID);
-
+				ClientPlayerEntity clientPlayer = Minecraft.getInstance().player;
+				if (clientPlayer == null || playerID.equals(clientPlayer.getUniqueID())) return;
+				player = clientPlayer.world.getPlayerByUuid(playerID);
 			} else {
 				player = contextSupplier.get().getSender();
 			}
@@ -69,7 +70,7 @@ public class SyncGrabCliffMessage {
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class MessageRegistry {
-		private static final int ID = 4;
+		private static final int ID = 7;
 
 		@SubscribeEvent
 		public static void register(FMLCommonSetupEvent event) {

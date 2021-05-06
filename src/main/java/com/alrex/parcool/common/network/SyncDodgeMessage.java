@@ -69,7 +69,7 @@ public class SyncDodgeMessage {
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class MessageRegistry {
-		private static final int ID = 4;
+		private static final int ID = 5;
 
 		@SubscribeEvent
 		public static void register(FMLCommonSetupEvent event) {

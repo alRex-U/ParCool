@@ -9,10 +9,12 @@ import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -20,18 +22,22 @@ public class GrabCliffLogic {
 	@SubscribeEvent
 	public static void onTick(TickEvent.PlayerTickEvent event) {
 		if (event.phase != TickEvent.Phase.END) return;
-		if (event.player != Minecraft.getInstance().player) return;
-		if (!ParCool.isActive()) return;
-		ClientPlayerEntity player = Minecraft.getInstance().player;
+		if (event.side == LogicalSide.SERVER) return;
+		PlayerEntity entity = event.player;
 		IStamina stamina;
 		IGrabCliff grabCliff;
 		{
-			LazyOptional<IGrabCliff> grabCliffOptional = player.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
-			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
+			LazyOptional<IGrabCliff> grabCliffOptional = entity.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
+			LazyOptional<IStamina> staminaOptional = entity.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
 			if (!staminaOptional.isPresent() || !grabCliffOptional.isPresent()) return;
 			stamina = staminaOptional.resolve().get();
 			grabCliff = grabCliffOptional.resolve().get();
 		}
+		grabCliff.updateTime();
+
+		if (event.player != Minecraft.getInstance().player) return;
+		if (!ParCool.isActive()) return;
+		ClientPlayerEntity player = Minecraft.getInstance().player;
 
 		boolean oldGrabbing = grabCliff.isGrabbing();
 		grabCliff.setGrabbing(grabCliff.canGrabCliff(player));
@@ -40,8 +46,6 @@ public class GrabCliffLogic {
 			SyncGrabCliffMessage.sync(player);
 			ResetFallDistanceMessage.sync(player);
 		}
-
-		grabCliff.updateTime();
 
 		if (grabCliff.isGrabbing()) {
 			Vector3d vec = player.getMotion();
