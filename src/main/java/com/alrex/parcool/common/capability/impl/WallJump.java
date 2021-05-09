@@ -1,7 +1,10 @@
-package com.alrex.parcool.common.capability;
+package com.alrex.parcool.common.capability.impl;
 
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.input.KeyRecorder;
+import com.alrex.parcool.common.capability.IGrabCliff;
+import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.IWallJump;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;

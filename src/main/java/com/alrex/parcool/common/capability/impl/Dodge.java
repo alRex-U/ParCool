@@ -1,8 +1,10 @@
-package com.alrex.parcool.common.capability;
+package com.alrex.parcool.common.capability.impl;
 
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
+import com.alrex.parcool.common.capability.IDodge;
+import com.alrex.parcool.common.capability.IStamina;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.util.LazyOptional;

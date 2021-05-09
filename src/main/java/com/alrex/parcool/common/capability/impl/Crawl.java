@@ -1,7 +1,10 @@
-package com.alrex.parcool.common.capability;
+package com.alrex.parcool.common.capability.impl;
 
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.input.KeyBindings;
+import com.alrex.parcool.common.capability.ICrawl;
+import com.alrex.parcool.common.capability.IFastRunning;
+import com.alrex.parcool.common.capability.IRoll;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraftforge.common.util.LazyOptional;
 

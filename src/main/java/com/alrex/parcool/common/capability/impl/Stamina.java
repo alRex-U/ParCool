@@ -1,6 +1,7 @@
-package com.alrex.parcool.common.capability;
+package com.alrex.parcool.common.capability.impl;
 
 import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.common.capability.IStamina;
 
 public class Stamina implements IStamina {
 	private static final int COOL_TIME = 20;

@@ -30,7 +30,7 @@ public class StaminaHUD extends AbstractGui {
 		final int boxWidth = 100;
 		final int boxHeight = 20;
 		final int heartWidth = boxHeight - 9;
-		final int staminaWidth = boxWidth - heartWidth - 10;
+		final int staminaWidth = boxWidth - heartWidth - 11;
 		int x = width - boxWidth - 1;
 		int y = height - boxHeight - 1;
 
@@ -39,11 +39,11 @@ public class StaminaHUD extends AbstractGui {
 		if (staminaScale > 1) staminaScale = 1;
 		int color = getStaminaColor(staminaScale, stamina.isExhausted());
 
-		AbstractGui.fill(event.getMatrixStack(), x, y, x + boxWidth, y + boxHeight, 0xAA585654);
-		AbstractGui.fill(event.getMatrixStack(), x + 2, y + 2, x + boxWidth - 2, y + boxHeight - 2, 0xAA898989);
-		AbstractGui.fill(event.getMatrixStack(), x + heartWidth + 7, y + 4, x + heartWidth + 7 + staminaWidth, y + 5 + heartWidth, 0xAA2B2B2B);
+		AbstractGui.fill(event.getMatrixStack(), x, y, x + boxWidth, y + boxHeight, 0x99585654);
+		AbstractGui.fill(event.getMatrixStack(), x + 2, y + 2, x + boxWidth - 2, y + boxHeight - 2, 0x66898989);
+		AbstractGui.fill(event.getMatrixStack(), x + heartWidth + 7, y + 4, x + heartWidth + 7 + staminaWidth, y + 5 + heartWidth, 0x992B2B2B);
 		AbstractGui.fill(event.getMatrixStack(), x + heartWidth + 7, y + 4, x + heartWidth + 7 + (int) Math.round(staminaWidth * staminaScale), y + 5 + heartWidth, color);
-		renderYellowHeart(event.getMatrixStack(), x + 4, y + 4, heartWidth, heartWidth);
+		renderYellowHeart(event.getMatrixStack(), x + 4, y + 5, heartWidth, heartWidth);
 	}
 
 	private static void renderYellowHeart(MatrixStack stack, int x, int y, int width, int height) {
@@ -64,7 +64,7 @@ public class StaminaHUD extends AbstractGui {
 	}
 
 	@SubscribeEvent
-	public static void onOverlay(RenderGameOverlayEvent.Post event) {
+	public static void onOverlay(RenderGameOverlayEvent.Pre event) {
 		if (event.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE) return;
 		render(event);
 	}

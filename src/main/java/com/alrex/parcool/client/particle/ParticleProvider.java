@@ -7,6 +7,8 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.Random;
+
 @OnlyIn(Dist.CLIENT)
 public class ParticleProvider {
 	public static void spawnEffectActivateParCool(AbstractClientPlayerEntity player) {
@@ -21,5 +23,20 @@ public class ParticleProvider {
 			Vector3d direction = vec.rotateYaw((float) (Math.PI / 8 * i)).add(motion);
 			world.addParticle(ParticleTypes.LARGE_SMOKE, x, y, z, direction.getX(), 0, direction.getZ());
 		}
+	}
+
+	public static void spawnEffectSweat(AbstractClientPlayerEntity player) {
+		ClientWorld world = player.worldClient;
+		Random random = player.getRNG();
+		final double x = player.getPosX();
+		final double y = player.getPosY();
+		final double z = player.getPosZ();
+		world.addParticle(
+				ParticleTypes.DRIPPING_WATER,
+				x + random.nextInt(10) / 10d - 0.5,
+				y + random.nextInt(20) / 10d,
+				z + random.nextInt(10) / 10d - 0.5,
+				0, 0, 0
+		);
 	}
 }

@@ -15,23 +15,31 @@ Tutorial-Guide§r
 §l[Index]§r
 
 1.About this Mod
-2.CatLeap
-3.Crawl
-4.Dodge
-5.FastRunning
-6.GrabCliff
-7.Roll
-8.Vault
-9.WallJump
+2.Stamina
+3.CatLeap
+4.Crawl
+5.Dodge
+6.FastRunning
+7.GrabCliff
+8.Roll
+9.Vault
+10.WallJump
 ======
 §l[About this Mod]§r
 §lParCool MOD§r is a mod of Minecraft,
 for more §oCool§r Actions like §oParkour§r.
 
-This author is §lNOT§r familiar with
-what called \"Parkour\"§m,Modding and English§r.
+This author is §lNOT§r familiar withwhat called \"Parkour\"§m,Modding and English§r.
 (simply regarding it as something cool)
 so I love your advice to improve this!
+======
+§l[Stamina]§r
+This mod add a concept of Stamina.
+Stamina is consumed when you use ParCool Actions.
+If you consumed all stamina,
+1.You can’t use ParCool Actions.
+2.You can’t sprint.
+Be careful.
 ======
 §l[CatLeap]§r
 CatLeap is a skill used to land on walls,fence or etc...

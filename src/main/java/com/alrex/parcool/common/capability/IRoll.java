@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.common.capability.impl.Roll;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
