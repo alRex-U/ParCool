@@ -31,7 +31,7 @@ public class Roll implements IRoll {
 			if (!crawlOptional.isPresent()) return false;
 			crawl = crawlOptional.resolve().get();
 		}
-		return !player.isOnGround() && ParCoolConfig.CONFIG_CLIENT.canRoll.get() && !crawl.isCrawling() && !crawl.isSliding() && KeyBindings.getKeyRoll().isKeyDown() && !player.isInWaterOrBubbleColumn();
+		return !player.isOnGround() && ParCoolConfig.CONFIG_CLIENT.canRoll.get() && player.getMotion().getY() < -0.25 && !crawl.isCrawling() && !crawl.isSliding() && KeyBindings.getKeyRoll().isKeyDown() && !player.isInWaterOrBubbleColumn();
 	}
 
 	@Override

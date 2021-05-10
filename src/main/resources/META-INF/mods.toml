@@ -1,6 +1,6 @@
 modLoader = "javafml" #mandatory
 loaderVersion = "[35,)"
-license = "All rights reserved"
+license = "GNU GENERAL PUBLIC LICENSE Version 3"
 issueTrackerURL = "http://my.issue.tracker/" #optional
 [[mods]] #mandatory
 modId = "parcool" #mandatory
@@ -9,9 +9,12 @@ displayName = "ParCool!" #mandatory
 displayURL = "http://example.com/" #optional
 logoFile = "parcool_logo.png" #optional
 credits = "Thanks for Java, and Developers of Minecraft and Minecraft Forge" #optional
+authors = "alRex"
 
 description = '''
-    this enable us act like parkour player
+    This enable us act like parkour players.
+    Enjoy Minecraft with cool actions!
+    If you need more information, use "/parcool giveTutorialBook"
 '''
 [[dependencies.parcool]] #optional
 modId = "forge" #mandatory
