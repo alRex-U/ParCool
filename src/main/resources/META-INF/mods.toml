@@ -1,7 +1,7 @@
 modLoader = "javafml" #mandatory
 loaderVersion = "[35,)"
 license = "GNU GENERAL PUBLIC LICENSE Version 3"
-issueTrackerURL = "http://my.issue.tracker/" #optional
+issueTrackerURL = "https://github.com/alRex-U/ParCool/issues" #optional
 [[mods]] #mandatory
 modId = "parcool" #mandatory
 version = "${file.jarVersion}" #mandatory
