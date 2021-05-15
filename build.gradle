@@ -32,7 +32,7 @@ def config = [
 ]
 
 //Version Format (MCVERSION-MAJORMOD.MAJORAPI.MINOR.PATCH-VersionStatus)
-version = "${config.mc_version}-0.0.0.0-${config.versionStatus.toString()}"
+version = "${config.mc_version}-1.0.0.0-${config.versionStatus.toString()}"
 group = 'com.alrex.parcool'
 archivesBaseName = 'ParCool'
 

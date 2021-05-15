@@ -6,10 +6,10 @@ issueTrackerURL = "https://github.com/alRex-U/ParCool/issues" #optional
 modId = "parcool" #mandatory
 version = "${file.jarVersion}" #mandatory
 displayName = "ParCool!" #mandatory
-displayURL = "http://example.com/" #optional
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/parcool" #optional
 logoFile = "parcool_logo.png" #optional
 credits = "Thanks for Java, and Developers of Minecraft and Minecraft Forge" #optional
-authors = "alRex"
+authors = "alRex-U"
 
 description = '''
     This enable us act like parkour players.
