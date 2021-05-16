@@ -20,7 +20,7 @@ public class GrabCliff implements IGrabCliff {
 		{
 			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
 			if (!staminaOptional.isPresent()) return false;
-			stamina = staminaOptional.resolve().get();
+			stamina = staminaOptional.orElseThrow(NullPointerException::new);
 		}
 		double ySpeed = player.getMotion().y;
 		return !stamina.isExhausted() && ySpeed < 0.2 && ParCoolConfig.CONFIG_CLIENT.canGrabCliff.get() && KeyBindings.getKeyGrabWall().isKeyDown() && player.getHeldItemMainhand().isEmpty() && player.getHeldItemOffhand().isEmpty() && WorldUtil.existsGrabbableWall(player);

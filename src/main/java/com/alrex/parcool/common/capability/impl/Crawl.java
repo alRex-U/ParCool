@@ -39,9 +39,9 @@ public class Crawl implements ICrawl {
 	public boolean canCrawl(ClientPlayerEntity player) {
 		LazyOptional<IRoll> rollOptional = player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
 		if (!rollOptional.isPresent()) return false;
-		IRoll roll = rollOptional.resolve().get();
+		IRoll roll = rollOptional.orElseThrow(NullPointerException::new);
 
-		return KeyBindings.getKeyCrawl().isKeyDown() && ParCoolConfig.CONFIG_CLIENT.canCrawl.get() && !roll.isRolling() && !player.isInWaterOrBubbleColumn() && player.isOnGround();
+		return KeyBindings.getKeyCrawl().isKeyDown() && ParCoolConfig.CONFIG_CLIENT.canCrawl.get() && !roll.isRolling() && !player.isInWaterOrBubbleColumn() && player.collidedVertically;
 	}
 
 	@Override
@@ -49,10 +49,10 @@ public class Crawl implements ICrawl {
 		LazyOptional<IFastRunning> fastOptional = player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
 		LazyOptional<IRoll> rollOptional = player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
 		if (!fastOptional.isPresent() || !rollOptional.isPresent()) return false;
-		IFastRunning fastRunning = fastOptional.resolve().get();
-		IRoll roll = rollOptional.resolve().get();
+		IFastRunning fastRunning = fastOptional.orElseThrow(NullPointerException::new);
+		IRoll roll = rollOptional.orElseThrow(NullPointerException::new);
 
-		if (!isSliding() && ParCoolConfig.CONFIG_CLIENT.canCrawl.get() && fastRunning.isFastRunning() && !roll.isRollReady() && !roll.isRolling() && player.isOnGround() && KeyBindings.getKeyCrawl().isKeyDown() && slidingTime >= 0) {
+		if (!isSliding() && ParCoolConfig.CONFIG_CLIENT.canCrawl.get() && fastRunning.isFastRunning() && !roll.isRollReady() && !roll.isRolling() && player.collidedVertically && KeyBindings.getKeyCrawl().isKeyDown() && slidingTime >= 0) {
 			return true;
 		}
 		if (isSliding() && slidingTime <= maxSlidingTime) return true;
@@ -65,7 +65,7 @@ public class Crawl implements ICrawl {
 
 		if (isSliding()) slidingTime++;
 		else slidingTime = 0;
-		if ((slidingTime > maxSlidingTime && player.isOnGround()) || player.isInWaterOrBubbleColumn()) {
+		if ((slidingTime > maxSlidingTime && player.collidedVertically) || player.isInWaterOrBubbleColumn()) {
 			slidingTime = -1;
 			setSliding(false);
 		}

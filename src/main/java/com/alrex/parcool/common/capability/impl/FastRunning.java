@@ -29,8 +29,8 @@ public class FastRunning implements IFastRunning {
 		LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
 		LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
 		if (!staminaOptional.isPresent() || !crawlOptional.isPresent()) return false;
-		IStamina stamina = staminaOptional.resolve().get();
-		ICrawl crawl = crawlOptional.resolve().get();
+		IStamina stamina = staminaOptional.orElseThrow(NullPointerException::new);
+		ICrawl crawl = crawlOptional.orElseThrow(NullPointerException::new);
 
 		return !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canFastRunning.get() && !crawl.isCrawling() && !crawl.isSliding() && player.isSprinting() && KeyBindings.getKeySprint().isKeyDown() && !player.isInWaterOrBubbleColumn();
 	}

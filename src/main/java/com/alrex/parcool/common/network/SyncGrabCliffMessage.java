@@ -48,7 +48,7 @@ public class SyncGrabCliffMessage {
 			}
 			LazyOptional<IGrabCliff> fastOptional = player.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
 			if (!fastOptional.isPresent()) return;
-			IGrabCliff grabCliff = fastOptional.resolve().get();
+			IGrabCliff grabCliff = fastOptional.orElseThrow(NullPointerException::new);
 			grabCliff.setGrabbing(this.isGrabbing);
 		});
 		contextSupplier.get().setPacketHandled(true);
@@ -58,7 +58,7 @@ public class SyncGrabCliffMessage {
 	public static void sync(ClientPlayerEntity player) {
 		LazyOptional<IGrabCliff> fastOptional = player.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
 		if (!fastOptional.isPresent()) return;
-		IGrabCliff grabCliff = fastOptional.resolve().get();
+		IGrabCliff grabCliff = fastOptional.orElseThrow(NullPointerException::new);
 
 		SyncGrabCliffMessage message = new SyncGrabCliffMessage();
 		message.isGrabbing = grabCliff.isGrabbing();

@@ -23,7 +23,7 @@ public class StaminaLogic {
 		{
 			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
 			if (!staminaOptional.isPresent()) return;
-			stamina = staminaOptional.resolve().get();
+			stamina = staminaOptional.orElseThrow(NullPointerException::new);
 		}
 		if (stamina.isExhausted() && player.world.getRandom().nextInt(10) == 0 && player instanceof AbstractClientPlayerEntity) {
 			ParticleProvider.spawnEffectSweat((AbstractClientPlayerEntity) player);

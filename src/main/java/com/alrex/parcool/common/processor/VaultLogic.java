@@ -28,7 +28,7 @@ public class VaultLogic {
 		{
 			LazyOptional<IVault> vaultOptional = event.player.getCapability(IVault.VaultProvider.VAULT_CAPABILITY);
 			if (!vaultOptional.isPresent()) return;
-			vault = vaultOptional.resolve().get();
+			vault = vaultOptional.orElseThrow(NullPointerException::new);
 		}
 		vault.updateVaultingTime();
 

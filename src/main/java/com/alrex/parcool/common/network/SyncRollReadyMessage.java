@@ -47,7 +47,7 @@ public class SyncRollReadyMessage {
 			if (player == null) return;
 			LazyOptional<IRoll> rollOptional = player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
 			if (!rollOptional.isPresent()) return;
-			IRoll roll = rollOptional.resolve().get();
+			IRoll roll = rollOptional.orElseThrow(NullPointerException::new);
 			roll.setRollReady(rollReady);
 		});
 		contextSupplier.get().setPacketHandled(true);
@@ -57,7 +57,7 @@ public class SyncRollReadyMessage {
 	public static void sync(ClientPlayerEntity player) {
 		LazyOptional<IRoll> fastOptional = player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
 		if (!fastOptional.isPresent()) return;
-		IRoll roll = fastOptional.resolve().get();
+		IRoll roll = fastOptional.orElseThrow(NullPointerException::new);
 
 		SyncRollReadyMessage message = new SyncRollReadyMessage();
 		message.rollReady = roll.isRollReady();

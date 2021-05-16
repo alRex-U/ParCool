@@ -14,7 +14,7 @@ public class PlayerDodgeRenderer {
 		{
 			LazyOptional<IDodge> dodgeOptional = player.getCapability(IDodge.DodgeProvider.DODGE_CAPABILITY);
 			if (!dodgeOptional.isPresent()) return;
-			dodge = dodgeOptional.resolve().get();
+			dodge = dodgeOptional.orElseThrow(NullPointerException::new);
 		}
 
 		if (dodge.isDodging() && dodge.getDirection() == IDodge.DodgeDirection.Back) {

@@ -26,10 +26,10 @@ public class WallJump implements IWallJump {
 			LazyOptional<IGrabCliff> grabCliffOptional = player.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
 			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
 			if (!staminaOptional.isPresent() || !grabCliffOptional.isPresent()) return false;
-			stamina = staminaOptional.resolve().get();
-			grabCliff = grabCliffOptional.resolve().get();
+			stamina = staminaOptional.orElseThrow(NullPointerException::new);
+			grabCliff = grabCliffOptional.orElseThrow(NullPointerException::new);
 		}
-		return !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canWallJump.get() && !player.isOnGround() && !player.isInWaterOrBubbleColumn() && !player.isElytraFlying() && !player.abilities.isFlying && !grabCliff.isGrabbing() && KeyRecorder.keyJumpState.isPressed() && WorldUtil.getWall(player) != null;
+		return !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canWallJump.get() && !player.collidedVertically && !player.isInWaterOrBubbleColumn() && !player.isElytraFlying() && !player.abilities.isFlying && !grabCliff.isGrabbing() && KeyRecorder.keyJumpState.isPressed() && WorldUtil.getWall(player) != null;
 	}
 
 	@Override

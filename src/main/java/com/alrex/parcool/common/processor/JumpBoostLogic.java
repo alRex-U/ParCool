@@ -28,8 +28,8 @@ public class JumpBoostLogic {
 			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
 			LazyOptional<ICatLeap> catLeapOptional = player.getCapability(ICatLeap.CatLeapProvider.CAT_LEAP_CAPABILITY);
 			if (!catLeapOptional.isPresent() || !staminaOptional.isPresent()) return;
-			catLeap = catLeapOptional.resolve().get();
-			stamina = staminaOptional.resolve().get();
+			catLeap = catLeapOptional.orElseThrow(NullPointerException::new);
+			stamina = staminaOptional.orElseThrow(NullPointerException::new);
 		}
 
 		catLeap.updateReadyTime();
@@ -42,7 +42,7 @@ public class JumpBoostLogic {
 			stamina.consume(catLeap.getStaminaConsumption());
 			catLeap.setLeaping(true);
 			catLeap.setReady(false);
-		} else if (catLeap.isLeaping() && (player.collidedHorizontally || player.isOnGround() || player.isInWaterOrBubbleColumn())) {
+		} else if (catLeap.isLeaping() && (player.collidedHorizontally || player.collidedVertically || player.isInWaterOrBubbleColumn())) {
 			catLeap.setLeaping(false);
 		}
 		catLeap.setReady(catLeap.canReadyLeap(player));
@@ -63,8 +63,8 @@ public class JumpBoostLogic {
 			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
 			LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
 			if (!crawlOptional.isPresent() || !staminaOptional.isPresent()) return;
-			crawl = crawlOptional.resolve().get();
-			stamina = staminaOptional.resolve().get();
+			crawl = crawlOptional.orElseThrow(NullPointerException::new);
+			stamina = staminaOptional.orElseThrow(NullPointerException::new);
 		}
 
 		if (stamina.isExhausted()) {

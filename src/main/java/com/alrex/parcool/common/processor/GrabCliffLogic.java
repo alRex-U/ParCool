@@ -30,8 +30,8 @@ public class GrabCliffLogic {
 			LazyOptional<IGrabCliff> grabCliffOptional = entity.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
 			LazyOptional<IStamina> staminaOptional = entity.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
 			if (!staminaOptional.isPresent() || !grabCliffOptional.isPresent()) return;
-			stamina = staminaOptional.resolve().get();
-			grabCliff = grabCliffOptional.resolve().get();
+			stamina = staminaOptional.orElseThrow(NullPointerException::new);
+			grabCliff = grabCliffOptional.orElseThrow(NullPointerException::new);
 		}
 		grabCliff.updateTime();
 
@@ -67,7 +67,7 @@ public class GrabCliffLogic {
 
 		LazyOptional<IGrabCliff> grabCliffOptional = player.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
 		if (!grabCliffOptional.isPresent()) return;
-		IGrabCliff grabCliff = grabCliffOptional.resolve().get();
+		IGrabCliff grabCliff = grabCliffOptional.orElseThrow(NullPointerException::new);
 
 		if (grabCliff.isGrabbing()) {
 			Vector3d wall = WorldUtil.getWall(player);

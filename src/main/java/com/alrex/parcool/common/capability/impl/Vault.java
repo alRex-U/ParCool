@@ -23,13 +23,13 @@ public class Vault implements IVault {
 		{
 			LazyOptional<IFastRunning> fastRunningOptional = player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
 			if (!fastRunningOptional.isPresent()) return false;
-			fastRunning = fastRunningOptional.resolve().get();
+			fastRunning = fastRunningOptional.orElseThrow(NullPointerException::new);
 		}
 		Vector3d lookVec = player.getLookVec();
 		lookVec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize();
 		Vector3d wall = WorldUtil.getWall(player);
 		if (wall == null) return false;
-		return !vaulting && ParCoolConfig.CONFIG_CLIENT.canVault.get() && fastRunning.isFastRunning() && fastRunning.getRunningTime() > 20 && player.isOnGround() && (wall.dotProduct(lookVec) / wall.length() / lookVec.length()) > 0.707106 /*check facing wall*/ && WorldUtil.getStep(player) != null && WorldUtil.getWallHeight(player) > 0.8;
+		return !vaulting && ParCoolConfig.CONFIG_CLIENT.canVault.get() && fastRunning.isFastRunning() && fastRunning.getRunningTime() > 20 && player.collidedVertically && (wall.dotProduct(lookVec) / wall.length() / lookVec.length()) > 0.707106 /*check facing wall*/ && WorldUtil.getStep(player) != null && WorldUtil.getWallHeight(player) > 0.8;
 	}
 
 	@Override

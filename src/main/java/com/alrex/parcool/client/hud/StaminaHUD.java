@@ -22,7 +22,7 @@ public class StaminaHUD extends AbstractGui {
 		{
 			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
 			if (!staminaOptional.isPresent()) return;
-			stamina = staminaOptional.resolve().get();
+			stamina = staminaOptional.orElseThrow(NullPointerException::new);
 		}
 		MainWindow window = Minecraft.getInstance().getMainWindow();
 		final int width = window.getScaledWidth();
@@ -39,15 +39,15 @@ public class StaminaHUD extends AbstractGui {
 		if (staminaScale > 1) staminaScale = 1;
 		int color = getStaminaColor(staminaScale, stamina.isExhausted());
 
-		AbstractGui.fill(event.getMatrixStack(), x, y, x + boxWidth, y + boxHeight, 0x99585654);
-		AbstractGui.fill(event.getMatrixStack(), x + 2, y + 2, x + boxWidth - 2, y + boxHeight - 2, 0x66898989);
-		AbstractGui.fill(event.getMatrixStack(), x + heartWidth + 7, y + 4, x + heartWidth + 7 + staminaWidth, y + 5 + heartWidth, 0x992B2B2B);
-		AbstractGui.fill(event.getMatrixStack(), x + heartWidth + 7, y + 4, x + heartWidth + 7 + (int) Math.round(staminaWidth * staminaScale), y + 5 + heartWidth, color);
+		AbstractGui.func_238467_a_(event.getMatrixStack(), x, y, x + boxWidth, y + boxHeight, 0x99585654);
+		AbstractGui.func_238467_a_(event.getMatrixStack(), x + 2, y + 2, x + boxWidth - 2, y + boxHeight - 2, 0x66898989);
+		AbstractGui.func_238467_a_(event.getMatrixStack(), x + heartWidth + 7, y + 4, x + heartWidth + 7 + staminaWidth, y + 5 + heartWidth, 0x992B2B2B);
+		AbstractGui.func_238467_a_(event.getMatrixStack(), x + heartWidth + 7, y + 4, x + heartWidth + 7 + (int) Math.round(staminaWidth * staminaScale), y + 5 + heartWidth, color);
 		renderYellowHeart(event.getMatrixStack(), x + 4, y + 5, heartWidth, heartWidth);
 	}
 
 	private static void renderYellowHeart(MatrixStack stack, int x, int y, int width, int height) {
-		AbstractGui.blit(stack, x, y, width, height, 161f, 1f, 7, 7, 256, 256);
+		AbstractGui.func_238466_a_(stack, x, y, width, height, 161f, 1f, 7, 7, 256, 256);
 	}
 
 	private static int getStaminaColor(double factor, boolean exhausted) {

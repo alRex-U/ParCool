@@ -47,7 +47,7 @@ public class SyncDodgeMessage {
 			if (player == null) return;
 			LazyOptional<IDodge> dodgeOptional = player.getCapability(IDodge.DodgeProvider.DODGE_CAPABILITY);
 			if (!dodgeOptional.isPresent()) return;
-			IDodge dodge = dodgeOptional.resolve().get();
+			IDodge dodge = dodgeOptional.orElseThrow(NullPointerException::new);
 			dodge.setDodging(this.isDodging);
 		});
 		contextSupplier.get().setPacketHandled(true);
@@ -57,7 +57,7 @@ public class SyncDodgeMessage {
 	public static void sync(ClientPlayerEntity player) {
 		LazyOptional<IDodge> fastOptional = player.getCapability(IDodge.DodgeProvider.DODGE_CAPABILITY);
 		if (!fastOptional.isPresent()) return;
-		IDodge Dodge = fastOptional.resolve().get();
+		IDodge Dodge = fastOptional.orElseThrow(NullPointerException::new);
 
 		SyncDodgeMessage message = new SyncDodgeMessage();
 		message.isDodging = Dodge.isDodging();

@@ -19,9 +19,9 @@ public class CatLeap implements ICatLeap {
 		{
 			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
 			if (!staminaOptional.isPresent()) return false;
-			stamina = staminaOptional.resolve().get();
+			stamina = staminaOptional.orElseThrow(NullPointerException::new);
 		}
-		return player.isOnGround() && ParCoolConfig.CONFIG_CLIENT.canCatLeap.get() && !stamina.isExhausted() && ready && readyTime < 10 && !KeyBindings.getKeySneak().isKeyDown();
+		return player.collidedVertically && ParCoolConfig.CONFIG_CLIENT.canCatLeap.get() && !stamina.isExhausted() && ready && readyTime < 10 && !KeyBindings.getKeySneak().isKeyDown();
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class CatLeap implements ICatLeap {
 		{
 			LazyOptional<IFastRunning> fastRunningOptional = player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
 			if (!fastRunningOptional.isPresent()) return false;
-			fastRunning = fastRunningOptional.resolve().get();
+			fastRunning = fastRunningOptional.orElseThrow(NullPointerException::new);
 		}
 		return (fastRunning.getNotRunningTime() < 10 && KeyBindings.getKeySneak().isKeyDown()) || (ready && KeyBindings.getKeySneak().isKeyDown() && readyTime < 10);
 	}

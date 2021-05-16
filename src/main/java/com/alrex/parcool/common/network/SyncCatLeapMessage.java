@@ -47,7 +47,7 @@ public class SyncCatLeapMessage {
 			}
 			LazyOptional<ICatLeap> catLeapOptional = player.getCapability(ICatLeap.CatLeapProvider.CAT_LEAP_CAPABILITY);
 			if (!catLeapOptional.isPresent()) return;
-			ICatLeap catLeap = catLeapOptional.resolve().get();
+			ICatLeap catLeap = catLeapOptional.orElseThrow(NullPointerException::new);
 			catLeap.setLeaping(this.isLeaping);
 		});
 		contextSupplier.get().setPacketHandled(true);
@@ -57,7 +57,7 @@ public class SyncCatLeapMessage {
 	public static void sync(ClientPlayerEntity player) {
 		LazyOptional<ICatLeap> fastOptional = player.getCapability(ICatLeap.CatLeapProvider.CAT_LEAP_CAPABILITY);
 		if (!fastOptional.isPresent()) return;
-		ICatLeap catLeap = fastOptional.resolve().get();
+		ICatLeap catLeap = fastOptional.orElseThrow(NullPointerException::new);
 
 		SyncCatLeapMessage message = new SyncCatLeapMessage();
 		message.isLeaping = catLeap.isLeaping();

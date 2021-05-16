@@ -51,7 +51,7 @@ public class SyncCrawlMessage {
 			}
 			LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
 			if (!crawlOptional.isPresent()) return;
-			ICrawl crawl = crawlOptional.resolve().get();
+			ICrawl crawl = crawlOptional.orElseThrow(NullPointerException::new);
 			crawl.setCrawling(this.isCrawling);
 			crawl.setSliding(this.isSliding);
 		});
@@ -62,7 +62,7 @@ public class SyncCrawlMessage {
 	public static void sync(ClientPlayerEntity player) {
 		LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
 		if (!crawlOptional.isPresent()) return;
-		ICrawl crawl = crawlOptional.resolve().get();
+		ICrawl crawl = crawlOptional.orElseThrow(NullPointerException::new);
 
 		SyncCrawlMessage message = new SyncCrawlMessage();
 		message.isCrawling = crawl.isCrawling();

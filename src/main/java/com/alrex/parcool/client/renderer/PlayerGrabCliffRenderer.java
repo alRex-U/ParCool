@@ -22,7 +22,7 @@ public class PlayerGrabCliffRenderer {
 		{
 			LazyOptional<IGrabCliff> grabCliffOptional = player.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
 			if (!grabCliffOptional.isPresent()) return;
-			grabCliff = grabCliffOptional.resolve().get();
+			grabCliff = grabCliffOptional.orElseThrow(NullPointerException::new);
 		}
 		if (grabCliff.isGrabbing()) {
 			ClientPlayerEntity mainPlayer = Minecraft.getInstance().player;
@@ -69,7 +69,7 @@ public class PlayerGrabCliffRenderer {
 			);
 			model.bipedRightArmwear.render(
 					event.getMatrixStack(),
-					event.getBuffers().getBuffer(RenderType.getArmorEntityGlint()),
+					event.getBuffers().getBuffer(RenderType.getEntityGlint()),
 					renderer.getPackedLight(player, event.getPartialRenderTick()),
 					0
 			);
@@ -81,7 +81,7 @@ public class PlayerGrabCliffRenderer {
 			);
 			model.bipedLeftArmwear.render(
 					event.getMatrixStack(),
-					event.getBuffers().getBuffer(RenderType.getArmorEntityGlint()),
+					event.getBuffers().getBuffer(RenderType.getEntityGlint()),
 					renderer.getPackedLight(player, event.getPartialRenderTick()),
 					0
 			);

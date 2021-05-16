@@ -29,7 +29,7 @@ public class EventActivateParCool {
 			{
 				LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
 				if (!staminaOptional.isPresent()) return;
-				stamina = staminaOptional.resolve().get();
+				stamina = staminaOptional.orElseThrow(NullPointerException::new);
 			}
 			if (stamina.isExhausted()) {
 				player.sendStatusMessage(new TranslationTextComponent(TranslateKeys.WARNING_ACTIVATION_EXHAUSTED), false);
@@ -70,13 +70,13 @@ public class EventActivateParCool {
 			LazyOptional<IWallJump> wallJumpOptional = player.getCapability(IWallJump.WallJumpProvider.WALL_JUMP_CAPABILITY);
 			if (!dodgeOptional.isPresent() || !catLeapOptional.isPresent() || !crawlOptional.isPresent() || !fastRunningOptional.isPresent() || !grabCliffOptional.isPresent() || !vaultOptional.isPresent() || !wallJumpOptional.isPresent())
 				return false;
-			catLeap = catLeapOptional.resolve().get();
-			crawl = crawlOptional.resolve().get();
-			fastRunning = fastRunningOptional.resolve().get();
-			grabCliff = grabCliffOptional.resolve().get();
-			vault = vaultOptional.resolve().get();
-			wallJump = wallJumpOptional.resolve().get();
-			dodge = dodgeOptional.resolve().get();
+			catLeap = catLeapOptional.orElseThrow(NullPointerException::new);
+			crawl = crawlOptional.orElseThrow(NullPointerException::new);
+			fastRunning = fastRunningOptional.orElseThrow(NullPointerException::new);
+			grabCliff = grabCliffOptional.orElseThrow(NullPointerException::new);
+			vault = vaultOptional.orElseThrow(NullPointerException::new);
+			wallJump = wallJumpOptional.orElseThrow(NullPointerException::new);
+			dodge = dodgeOptional.orElseThrow(NullPointerException::new);
 		}
 		catLeap.setReady(false);
 		catLeap.setLeaping(false);
