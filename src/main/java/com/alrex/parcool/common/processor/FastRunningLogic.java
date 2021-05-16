@@ -40,11 +40,11 @@ public class FastRunningLogic {
 			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
 			LazyOptional<IFastRunning> fastRunningOptional = player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
 			if (!fastRunningOptional.isPresent() || !staminaOptional.isPresent()) return;
-			stamina = staminaOptional.resolve().get();
-			fastRunning = fastRunningOptional.resolve().get();
+			stamina = staminaOptional.orElseThrow(NullPointerException::new);
+			fastRunning = fastRunningOptional.orElseThrow(NullPointerException::new);
 		}
 
-		ModifiableAttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
+		ModifiableAttributeInstance attr = player.getAttribute(Attributes.field_233821_d_);
 		if (attr == null) return;
 
 		if (!ParCool.isActive()) {
@@ -60,7 +60,7 @@ public class FastRunningLogic {
 		if (fastRunning.isFastRunning() != oldFastRunning) SyncFastRunningMessage.sync(player);
 
 		if (fastRunning.isFastRunning()) {
-			if (!attr.hasModifier(FAST_RUNNING_MODIFIER)) attr.applyPersistentModifier(FAST_RUNNING_MODIFIER);
+			if (!attr.hasModifier(FAST_RUNNING_MODIFIER)) attr.func_233769_c_(FAST_RUNNING_MODIFIER);
 			stamina.consume(fastRunning.getStaminaConsumption());
 		} else {
 			if (attr.hasModifier(FAST_RUNNING_MODIFIER)) attr.removeModifier(FAST_RUNNING_MODIFIER);

@@ -13,14 +13,14 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.LineIterator;
+import org.apache.logging.log4j.Level;
 
-import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -65,27 +65,31 @@ public class GiveTutorialBookCommand implements Command<CommandSource> {
 		final String path = "/assets/parcool/book/parcool_tutorial_book.txt";
 		ArrayList<String> arrayList = new ArrayList<>();
 		try {
-			InputStream stream = new BufferedInputStream(ParCool.MOD_ID.getClass().getResourceAsStream(path));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(ParCool.class.getResourceAsStream(path), StandardCharsets.UTF_8));
 
-			LineIterator iterator = IOUtils.lineIterator(stream, StandardCharsets.UTF_8);
-
+			Iterator<String> iterator = reader.lines().iterator();
 			//=======
 			// replace division line -> \\n and set to list
 			Pattern division = Pattern.compile("===+");
 			AtomicReference<StringBuilder> builder = new AtomicReference<>(new StringBuilder());
-			iterator.forEachRemaining(line -> {
+			iterator.forEachRemaining((line -> {
 				if (!division.matcher(line).matches()) {
 					builder.get().append(line).append("\\n");
 				} else {//division line
 					arrayList.add(builder.toString());
 					if (iterator.hasNext()) builder.set(new StringBuilder());
 				}
-			});
+			}));
 			//=======
 
-			stream.close();
+			reader.close();
 		} catch (IOException | NullPointerException e) {
-			return Stream.of(StringNBT.valueOf("Data were invalid."));
+			ParCool.LOGGER.log(Level.ERROR, "ParCool CommandError.");
+			ParCool.LOGGER.log(Level.ERROR, e.toString() + ":" + e.getMessage());
+			for (StackTraceElement stackTraceElement : e.getStackTrace()) {
+				ParCool.LOGGER.log(Level.ERROR, stackTraceElement.toString());
+			}
+			return Stream.of(StringNBT.valueOf("Error, please check log"));
 		}
 		return arrayList.stream().map(item -> StringNBT.valueOf(String.format("{\"text\":\"%s\"}", item)));
 	}

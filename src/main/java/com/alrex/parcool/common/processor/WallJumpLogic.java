@@ -27,8 +27,8 @@ public class WallJumpLogic {
 			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
 			LazyOptional<IWallJump> wallJumpOptional = player.getCapability(IWallJump.WallJumpProvider.WALL_JUMP_CAPABILITY);
 			if (!wallJumpOptional.isPresent() || !staminaOptional.isPresent()) return;
-			stamina = staminaOptional.resolve().get();
-			wallJump = wallJumpOptional.resolve().get();
+			stamina = staminaOptional.orElseThrow(NullPointerException::new);
+			wallJump = wallJumpOptional.orElseThrow(NullPointerException::new);
 		}
 
 		if (wallJump.canWallJump(player)) {

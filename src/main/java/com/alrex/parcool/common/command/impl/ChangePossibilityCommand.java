@@ -34,7 +34,7 @@ public class ChangePossibilityCommand {
 		boolean possibility = commandContext.getArgument(ARGS_NAME_POSSIBILITY, Boolean.class);
 		ActionsEnum actionsEnum = commandContext.getArgument(ARGS_NAME_ACTION, ActionsEnum.class);
 		SetActionPossibilityMessage.send(commandContext.getSource().asPlayer(), actionsEnum, possibility);
-		commandContext.getSource().sendFeedback(ITextComponent.getTextComponentOrEmpty(String.format("%s : %b", actionsEnum.name(), possibility)), false);
+		commandContext.getSource().sendFeedback(ITextComponent.func_241827_a_(String.format("%s : %b", actionsEnum.name(), possibility)), false);
 		return 0;
 	}
 

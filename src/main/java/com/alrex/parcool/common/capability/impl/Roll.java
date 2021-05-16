@@ -18,7 +18,7 @@ public class Roll implements IRoll {
 		{
 			LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
 			if (!crawlOptional.isPresent()) return false;
-			crawl = crawlOptional.resolve().get();
+			crawl = crawlOptional.orElseThrow(NullPointerException::new);
 		}
 		return rollReady && ParCoolConfig.CONFIG_CLIENT.canRoll.get() && !crawl.isCrawling() && !crawl.isSliding() && KeyBindings.getKeyRoll().isKeyDown() && !rolling && !player.isInWaterOrBubbleColumn();
 	}
@@ -29,9 +29,9 @@ public class Roll implements IRoll {
 		{
 			LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
 			if (!crawlOptional.isPresent()) return false;
-			crawl = crawlOptional.resolve().get();
+			crawl = crawlOptional.orElseThrow(NullPointerException::new);
 		}
-		return !player.isOnGround() && ParCoolConfig.CONFIG_CLIENT.canRoll.get() && player.getMotion().getY() < -0.25 && !crawl.isCrawling() && !crawl.isSliding() && KeyBindings.getKeyRoll().isKeyDown() && !player.isInWaterOrBubbleColumn();
+		return !player.collidedVertically && ParCoolConfig.CONFIG_CLIENT.canRoll.get() && player.getMotion().getY() < -0.25 && !crawl.isCrawling() && !crawl.isSliding() && KeyBindings.getKeyRoll().isKeyDown() && !player.isInWaterOrBubbleColumn();
 	}
 
 	@Override

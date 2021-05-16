@@ -47,7 +47,7 @@ public class SyncFastRunningMessage {
 			}
 			LazyOptional<IFastRunning> fastOptional = player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
 			if (!fastOptional.isPresent()) return;
-			IFastRunning fastRunning = fastOptional.resolve().get();
+			IFastRunning fastRunning = fastOptional.orElseThrow(NullPointerException::new);
 			fastRunning.setFastRunning(this.isFastRunning);
 		});
 		contextSupplier.get().setPacketHandled(true);
@@ -57,7 +57,7 @@ public class SyncFastRunningMessage {
 	public static void sync(ClientPlayerEntity player) {
 		LazyOptional<IFastRunning> fastOptional = player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
 		if (!fastOptional.isPresent()) return;
-		IFastRunning fastRunning = fastOptional.resolve().get();
+		IFastRunning fastRunning = fastOptional.orElseThrow(NullPointerException::new);
 
 		SyncFastRunningMessage message = new SyncFastRunningMessage();
 		message.isFastRunning = fastRunning.isFastRunning();

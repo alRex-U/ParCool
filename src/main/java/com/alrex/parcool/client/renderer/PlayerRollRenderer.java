@@ -22,7 +22,7 @@ public class PlayerRollRenderer {
 		{
 			LazyOptional<IRoll> rollOptional = player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
 			if (!rollOptional.isPresent()) return;
-			roll = rollOptional.resolve().get();
+			roll = rollOptional.orElseThrow(NullPointerException::new);
 		}
 
 		if (roll.isRolling()) {
@@ -101,7 +101,7 @@ public class PlayerRollRenderer {
 			);
 			model.bipedRightArmwear.render(
 					event.getMatrixStack(),
-					event.getBuffers().getBuffer(RenderType.getArmorEntityGlint()),
+					event.getBuffers().getBuffer(RenderType.getEntityGlint()),
 					renderer.getPackedLight(player, event.getPartialRenderTick()),
 					0
 			);
@@ -113,7 +113,7 @@ public class PlayerRollRenderer {
 			);
 			model.bipedLeftArmwear.render(
 					event.getMatrixStack(),
-					event.getBuffers().getBuffer(RenderType.getArmorEntityGlint()),
+					event.getBuffers().getBuffer(RenderType.getEntityGlint()),
 					renderer.getPackedLight(player, event.getPartialRenderTick()),
 					0
 			);
@@ -125,7 +125,7 @@ public class PlayerRollRenderer {
 			);
 			model.bipedLeftLegwear.render(
 					event.getMatrixStack(),
-					event.getBuffers().getBuffer(RenderType.getArmorEntityGlint()),
+					event.getBuffers().getBuffer(RenderType.getEntityGlint()),
 					renderer.getPackedLight(player, event.getPartialRenderTick()),
 					0
 			);
@@ -137,7 +137,7 @@ public class PlayerRollRenderer {
 			);
 			model.bipedRightLegwear.render(
 					event.getMatrixStack(),
-					event.getBuffers().getBuffer(RenderType.getArmorEntityGlint()),
+					event.getBuffers().getBuffer(RenderType.getEntityGlint()),
 					renderer.getPackedLight(player, event.getPartialRenderTick()),
 					0
 			);

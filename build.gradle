@@ -26,13 +26,13 @@ enum VersionStatus {
 }
 
 def config = [
-        mc_version   : '1.16.4',
-        forge_version: '1.16.4-35.1.4',
+        mc_version   : '1.16.1',
+        forge_version: '1.16.1-32.0.108',
         versionStatus: VersionStatus.alpha
 ]
 
 //Version Format (MCVERSION-MAJORMOD.MAJORAPI.MINOR.PATCH-VersionStatus)
-version = "${config.mc_version}-1.0.0.0-${config.versionStatus.toString()}"
+version = "${config.mc_version}-1.0.0.1-${config.versionStatus.toString()}"
 group = 'com.alrex.parcool'
 archivesBaseName = 'ParCool'
 
@@ -40,7 +40,7 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'snapshot', version: '20201028-1.16.3'
+    mappings channel: 'snapshot', version: '20200514-1.16'
 
     runs {
         client {

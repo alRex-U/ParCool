@@ -27,7 +27,7 @@ public class CrawlLogic {
 
 		LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
 		if (!crawlOptional.isPresent()) return;
-		ICrawl crawl = crawlOptional.resolve().get();
+		ICrawl crawl = crawlOptional.orElseThrow(NullPointerException::new);
 
 		if (crawl.isCrawling() || crawl.isSliding()) {
 			player.setPose(Pose.SWIMMING);
@@ -57,7 +57,7 @@ public class CrawlLogic {
 			slidingVec = new Vector3d(vec.getX(), 0, vec.getZ()).scale(3.0);
 		}
 		if (crawl.isSliding()) {
-			if (playerClient.isOnGround()) player.setMotion(slidingVec);
+			if (playerClient.collidedVertically) player.setMotion(slidingVec);
 			slidingVec = slidingVec.scale(0.9);
 		}
 		if (crawl.isSliding()) {
@@ -72,7 +72,7 @@ public class CrawlLogic {
 
 		LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
 		if (!crawlOptional.isPresent()) return;
-		ICrawl crawl = crawlOptional.resolve().get();
+		ICrawl crawl = crawlOptional.orElseThrow(NullPointerException::new);
 
 		if (crawl.isSliding()) {
 			player.rotationYaw = (float) VectorUtil.toYawDegree(slidingVec);

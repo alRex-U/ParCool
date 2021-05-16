@@ -41,7 +41,7 @@ public class ShowActionPossibilityMessage {
 		contextSupplier.get().enqueueWork(() -> {
 			ClientPlayerEntity player = Minecraft.getInstance().player;
 			if (player == null) return;
-			player.sendStatusMessage(ITextComponent.getTextComponentOrEmpty(getText(action)), false);
+			player.sendStatusMessage(ITextComponent.func_241827_a_(getText(action)), false);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}

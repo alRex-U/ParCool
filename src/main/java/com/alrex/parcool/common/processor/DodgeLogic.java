@@ -27,8 +27,8 @@ public class DodgeLogic {
 			LazyOptional<IDodge> dodgeOptional = player.getCapability(IDodge.DodgeProvider.DODGE_CAPABILITY);
 			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
 			if (!staminaOptional.isPresent() || !dodgeOptional.isPresent()) return;
-			stamina = staminaOptional.resolve().get();
-			dodge = dodgeOptional.resolve().get();
+			stamina = staminaOptional.orElseThrow(NullPointerException::new);
+			dodge = dodgeOptional.orElseThrow(NullPointerException::new);
 		}
 
 		dodge.updateDodgingTime();

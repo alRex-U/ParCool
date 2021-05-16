@@ -34,7 +34,7 @@ public class RollLogic {
 		{
 			LazyOptional<IRoll> rollOptional = player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
 			if (!rollOptional.isPresent()) return;
-			roll = rollOptional.resolve().get();
+			roll = rollOptional.orElseThrow(NullPointerException::new);
 		}
 		roll.setRollReady(false);
 		roll.setRolling(true);
@@ -58,8 +58,8 @@ public class RollLogic {
 			LazyOptional<IStamina> staminaOptional = event.player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
 			LazyOptional<IRoll> rollOptional = event.player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
 			if (!staminaOptional.isPresent() || !rollOptional.isPresent()) return;
-			stamina = staminaOptional.resolve().get();
-			roll = rollOptional.resolve().get();
+			stamina = staminaOptional.orElseThrow(NullPointerException::new);
+			roll = rollOptional.orElseThrow(NullPointerException::new);
 		}
 		roll.updateRollingTime();
 
@@ -105,7 +105,7 @@ public class RollLogic {
 		{
 			LazyOptional<IRoll> rollOptional = player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
 			if (!rollOptional.isPresent()) return;
-			roll = rollOptional.resolve().get();
+			roll = rollOptional.orElseThrow(NullPointerException::new);
 		}
 		if (roll.isRollReady()) {
 			roll.setRollReady(false);

@@ -45,7 +45,7 @@ public class StartRollMessage {
 					{
 						LazyOptional<IRoll> rollOptional = startPlayer.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
 						if (!rollOptional.isPresent()) return;
-						roll = rollOptional.resolve().get();
+						roll = rollOptional.orElseThrow(NullPointerException::new);
 					}
 					roll.setRollReady(false);
 					roll.setRolling(true);
