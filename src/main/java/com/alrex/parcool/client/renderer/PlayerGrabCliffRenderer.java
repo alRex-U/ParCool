@@ -8,6 +8,7 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -59,31 +60,32 @@ public class PlayerGrabCliffRenderer {
 					(float) -Math.toRadians(player.renderYawOffset),
 					(float) Math.toRadians(0.0F)
 			);
-			ResourceLocation location = renderer.getEntityTexture(player);
+			ResourceLocation location = player.getLocationSkin();
+			int light = renderer.getPackedLight(player, event.getPartialRenderTick());
 			renderer.getRenderManager().textureManager.bindTexture(location);
 			model.bipedRightArm.render(
 					event.getMatrixStack(),
 					event.getBuffers().getBuffer(RenderType.getEntitySolid(location)),
-					renderer.getPackedLight(player, event.getPartialRenderTick()),
-					0
+					light,
+					OverlayTexture.NO_OVERLAY
 			);
 			model.bipedRightArmwear.render(
 					event.getMatrixStack(),
-					event.getBuffers().getBuffer(RenderType.getEntityGlint()),
-					renderer.getPackedLight(player, event.getPartialRenderTick()),
-					0
+					event.getBuffers().getBuffer(RenderType.getEntityTranslucent(location)),
+					light,
+					OverlayTexture.NO_OVERLAY
 			);
 			model.bipedLeftArm.render(
 					event.getMatrixStack(),
 					event.getBuffers().getBuffer(RenderType.getEntitySolid(location)),
-					renderer.getPackedLight(player, event.getPartialRenderTick()),
-					0
+					light,
+					OverlayTexture.NO_OVERLAY
 			);
 			model.bipedLeftArmwear.render(
 					event.getMatrixStack(),
-					event.getBuffers().getBuffer(RenderType.getEntityGlint()),
-					renderer.getPackedLight(player, event.getPartialRenderTick()),
-					0
+					event.getBuffers().getBuffer(RenderType.getEntityTranslucent(location)),
+					light,
+					OverlayTexture.NO_OVERLAY
 			);
 			event.getMatrixStack().pop();
 			model.bipedRightArm.showModel = false;
