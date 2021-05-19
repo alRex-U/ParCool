@@ -28,11 +28,11 @@ enum VersionStatus {
 def config = [
         mc_version   : '1.16.1',
         forge_version: '1.16.1-32.0.108',
-        versionStatus: VersionStatus.alpha
+        versionStatus: VersionStatus.beta
 ]
 
 //Version Format (MCVERSION-MAJORMOD.MAJORAPI.MINOR.PATCH-VersionStatus)
-version = "${config.mc_version}-1.0.0.1-${config.versionStatus.toString()}"
+version = "${config.mc_version}-1.0.0.2-${config.versionStatus.toString()}"
 group = 'com.alrex.parcool'
 archivesBaseName = 'ParCool'
 
