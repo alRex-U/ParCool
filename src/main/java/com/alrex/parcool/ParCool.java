@@ -51,15 +51,16 @@ public class ParCool {
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
 
 		MinecraftForge.EVENT_BUS.register(this);
-
-		ModLoadingContext context = ModLoadingContext.get();
-		context.registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.spec);
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
+		ModLoadingContext context = ModLoadingContext.get();
+		context.registerConfig(ModConfig.Type.COMMON, ParCoolConfig.spec);
 	}
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
+		ModLoadingContext context = ModLoadingContext.get();
+		context.registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.spec);
 	}
 
 	private void enqueueIMC(final InterModEnqueueEvent event) {

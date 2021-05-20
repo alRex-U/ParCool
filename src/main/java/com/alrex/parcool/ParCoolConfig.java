@@ -1,16 +1,13 @@
 package com.alrex.parcool;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ParCoolConfig {
 	private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
-	@OnlyIn(Dist.CLIENT)
 	public static final Client CONFIG_CLIENT = new Client(BUILDER);
+	public static final Common CONFIG_COMMON = new Common(BUILDER);
 
-	@OnlyIn(Dist.CLIENT)
 	public static class Client {
 		public final ForgeConfigSpec.BooleanValue canCatLeap;
 		public final ForgeConfigSpec.BooleanValue canCrawl;
@@ -46,6 +43,12 @@ public class ParCoolConfig {
 				ParCoolActivation = builder.comment("ParCool is Active").define("ParCool_Activation", true);
 			}
 			builder.pop();
+		}
+	}
+
+	public static class Common {
+		Common(ForgeConfigSpec.Builder builder) {
+
 		}
 	}
 

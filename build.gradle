@@ -25,14 +25,18 @@ enum VersionStatus {
     }
 }
 
-def config = [
-        mc_version   : '1.16.1',
+def config = [ //https://mcforge.readthedocs.io/en/latest/conventions/versioning/
+        mc_version   : '1.16.1',//supported minimum Minecraft version
+        major_mod:'1',//Removing items, blocks, tile entities, etc.
+        major_api:'0',//Changing the order or variables of enums. etc
+        minor:'0',//Adding items, blocks, tile entities, etc.
+        patch:'3',//bugfix
         forge_version: '1.16.1-32.0.108',
         versionStatus: VersionStatus.beta
 ]
 
-//Version Format (MCVERSION-MAJORMOD.MAJORAPI.MINOR.PATCH-VersionStatus)
-version = "${config.mc_version}-1.0.0.2-${config.versionStatus.toString()}"
+//Version Format (McVersion-MajorMOD.MajorAPI.Minor.Patch-VersionStatus)
+version = "${config.mc_version}-${config.major_mod}.${config.major_api}.${config.minor}.${config.patch}-${config.versionStatus.toString()}"
 group = 'com.alrex.parcool'
 archivesBaseName = 'ParCool'
 
