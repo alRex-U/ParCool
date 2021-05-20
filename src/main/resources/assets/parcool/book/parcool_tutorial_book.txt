@@ -24,6 +24,7 @@ Tutorial-Guide§r
 8.Roll
 9.Vault
 10.WallJump
+11.Sliding
 ======
 §l[About this Mod]§r
 §lParCool MOD§r is a mod of Minecraft,
@@ -114,4 +115,14 @@ with WallJump. you can kick walls to jump.
 
 §9<How to use>§r
 1.Jump by walls in the air
+======
+§l[Sliding]§r
+I don't think it's possible to slide infinitely on ice.
+
+
+
+
+§9<How to use>§r
+1.do FastRunning
+2.do Crawl
 ======
