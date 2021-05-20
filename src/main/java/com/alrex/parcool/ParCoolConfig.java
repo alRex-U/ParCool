@@ -6,7 +6,6 @@ public class ParCoolConfig {
 	private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
 	public static final Client CONFIG_CLIENT = new Client(BUILDER);
-	public static final Common CONFIG_COMMON = new Common(BUILDER);
 
 	public static class Client {
 		public final ForgeConfigSpec.BooleanValue canCatLeap;
@@ -43,12 +42,6 @@ public class ParCoolConfig {
 				ParCoolActivation = builder.comment("ParCool is Active").define("ParCool_Activation", true);
 			}
 			builder.pop();
-		}
-	}
-
-	public static class Common {
-		Common(ForgeConfigSpec.Builder builder) {
-
 		}
 	}
 
