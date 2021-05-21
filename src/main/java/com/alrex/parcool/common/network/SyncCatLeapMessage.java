@@ -7,8 +7,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -53,7 +51,7 @@ public class SyncCatLeapMessage {
 		contextSupplier.get().setPacketHandled(true);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	public static void sync(ClientPlayerEntity player) {
 		LazyOptional<ICatLeap> fastOptional = player.getCapability(ICatLeap.CatLeapProvider.CAT_LEAP_CAPABILITY);
 		if (!fastOptional.isPresent()) return;

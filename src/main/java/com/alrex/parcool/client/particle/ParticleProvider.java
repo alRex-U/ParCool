@@ -4,12 +4,10 @@ import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Random;
 
-@OnlyIn(Dist.CLIENT)
+//only in Client
 public class ParticleProvider {
 	public static void spawnEffectActivateParCool(AbstractClientPlayerEntity player) {
 		ClientWorld world = player.worldClient;

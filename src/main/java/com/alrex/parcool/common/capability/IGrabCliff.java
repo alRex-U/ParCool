@@ -6,8 +6,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -21,10 +19,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public interface IGrabCliff {
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	public boolean canGrabCliff(ClientPlayerEntity player);
 
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	public boolean canJumpOnCliff(ClientPlayerEntity player);
 
 	public boolean isGrabbing();

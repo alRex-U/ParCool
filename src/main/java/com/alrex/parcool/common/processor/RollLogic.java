@@ -10,8 +10,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
@@ -22,10 +20,10 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class RollLogic {
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	private static Vector3d rollDirection = null;
 
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	public static void rollStart() {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		if (player == null) return;

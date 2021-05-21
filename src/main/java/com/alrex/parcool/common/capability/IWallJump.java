@@ -7,8 +7,6 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -24,10 +22,10 @@ import javax.annotation.Nullable;
 public interface IWallJump {
 	public double getJumpPower();
 
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	public boolean canWallJump(ClientPlayerEntity player);
 
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	public Vector3d getJumpDirection(ClientPlayerEntity player);
 
 	public int getStaminaConsumption();

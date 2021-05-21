@@ -7,8 +7,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -54,7 +52,7 @@ public class SyncGrabCliffMessage {
 		contextSupplier.get().setPacketHandled(true);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	public static void sync(ClientPlayerEntity player) {
 		LazyOptional<IGrabCliff> fastOptional = player.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
 		if (!fastOptional.isPresent()) return;

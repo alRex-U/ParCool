@@ -6,8 +6,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -45,7 +43,7 @@ public class ResetFallDistanceMessage {
 		contextSupplier.get().setPacketHandled(true);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	public static void sync(ClientPlayerEntity player) {
 		player.fallDistance = 0;
 		ResetFallDistanceMessage message = new ResetFallDistanceMessage();

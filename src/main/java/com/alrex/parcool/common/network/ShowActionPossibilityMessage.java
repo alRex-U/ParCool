@@ -8,8 +8,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -46,7 +44,7 @@ public class ShowActionPossibilityMessage {
 		contextSupplier.get().setPacketHandled(true);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	private static String getText(ActionsEnum action) {
 		ParCoolConfig.Client c = ParCoolConfig.CONFIG_CLIENT;
 		if (action != null) switch (action) {

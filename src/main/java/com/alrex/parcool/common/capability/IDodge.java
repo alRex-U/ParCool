@@ -7,8 +7,6 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -24,14 +22,14 @@ import javax.annotation.Nullable;
 public interface IDodge {
 	enum DodgeDirection {Left, Right, Back}
 
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	public boolean canDodge(ClientPlayerEntity player);
 
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	@Nullable
 	public Vector3d getDodgeDirection(ClientPlayerEntity player);
 
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	public boolean canContinueDodge(ClientPlayerEntity player);
 
 	public boolean isDodging();

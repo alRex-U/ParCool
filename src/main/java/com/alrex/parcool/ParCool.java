@@ -2,8 +2,6 @@ package com.alrex.parcool;
 
 import com.alrex.parcool.common.command.ParCoolCommands;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -33,12 +31,12 @@ public class ParCool {
 	public static final Logger LOGGER = LogManager.getLogger();
 
 
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	public static boolean isActive() {
 		return ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.get();
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	public static void setActivation(boolean activation) {
 		ParCoolConfig.CONFIG_CLIENT.canWallJump.get();
 		ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.set(activation);
