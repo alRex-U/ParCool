@@ -3,6 +3,7 @@ package com.alrex.parcool.common.capability;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.impl.Dodge;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -55,6 +56,12 @@ public interface IDodge {
 		public INBT writeNBT(Capability<IDodge> capability, IDodge instance, Direction side) {
 			return null;
 		}
+	}
+
+	public static IDodge get(PlayerEntity entity) {
+		LazyOptional<IDodge> optional = entity.getCapability(DodgeProvider.DODGE_CAPABILITY);
+		if (!optional.isPresent()) return null;
+		return optional.orElseThrow(IllegalStateException::new);
 	}
 
 	public static class DodgeProvider implements ICapabilityProvider {

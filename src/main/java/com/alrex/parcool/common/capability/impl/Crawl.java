@@ -6,7 +6,6 @@ import com.alrex.parcool.common.capability.ICrawl;
 import com.alrex.parcool.common.capability.IFastRunning;
 import com.alrex.parcool.common.capability.IRoll;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class Crawl implements ICrawl {
 	private static final int maxSlidingTime = 15;
@@ -37,20 +36,17 @@ public class Crawl implements ICrawl {
 
 	@Override
 	public boolean canCrawl(ClientPlayerEntity player) {
-		LazyOptional<IRoll> rollOptional = player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
-		if (!rollOptional.isPresent()) return false;
-		IRoll roll = rollOptional.orElseThrow(NullPointerException::new);
+		IRoll roll = IRoll.get(player);
+		if (roll == null) return false;
 
 		return KeyBindings.getKeyCrawl().isKeyDown() && ParCoolConfig.CONFIG_CLIENT.canCrawl.get() && !roll.isRolling() && !player.isInWaterOrBubbleColumn() && player.collidedVertically;
 	}
 
 	@Override
 	public boolean canSliding(ClientPlayerEntity player) {
-		LazyOptional<IFastRunning> fastOptional = player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
-		LazyOptional<IRoll> rollOptional = player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
-		if (!fastOptional.isPresent() || !rollOptional.isPresent()) return false;
-		IFastRunning fastRunning = fastOptional.orElseThrow(NullPointerException::new);
-		IRoll roll = rollOptional.orElseThrow(NullPointerException::new);
+		IFastRunning fastRunning = IFastRunning.get(player);
+		IRoll roll = IRoll.get(player);
+		if (fastRunning == null || roll == null) return false;
 
 		if (!isSliding() && ParCoolConfig.CONFIG_CLIENT.canCrawl.get() && fastRunning.isFastRunning() && !roll.isRollReady() && !roll.isRolling() && player.collidedVertically && KeyBindings.getKeyCrawl().isKeyDown() && slidingTime >= 0) {
 			return true;

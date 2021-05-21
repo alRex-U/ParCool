@@ -9,7 +9,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -23,9 +22,8 @@ public class CrawlLogic {
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		PlayerEntity player = event.player;
 
-		LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
-		if (!crawlOptional.isPresent()) return;
-		ICrawl crawl = crawlOptional.orElseThrow(NullPointerException::new);
+		ICrawl crawl = ICrawl.get(player);
+		if (crawl == null) return;
 
 		if (crawl.isCrawling() || crawl.isSliding()) {
 			player.setPose(Pose.SWIMMING);
@@ -68,9 +66,8 @@ public class CrawlLogic {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		if (player == null || !ParCool.isActive()) return;
 
-		LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
-		if (!crawlOptional.isPresent()) return;
-		ICrawl crawl = crawlOptional.orElseThrow(NullPointerException::new);
+		ICrawl crawl = ICrawl.get(player);
+		if (crawl == null) return;
 
 		if (crawl.isSliding()) {
 			player.rotationYaw = (float) VectorUtil.toYawDegree(slidingVec);

@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.processor;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.IRoll;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.network.StartRollMessage;
@@ -11,7 +12,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -28,12 +28,9 @@ public class RollLogic {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		if (player == null) return;
 
-		IRoll roll;
-		{
-			LazyOptional<IRoll> rollOptional = player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
-			if (!rollOptional.isPresent()) return;
-			roll = rollOptional.orElseThrow(NullPointerException::new);
-		}
+		IRoll roll = IRoll.get(player);
+		if (roll == null) return;
+
 		roll.setRollReady(false);
 		roll.setRolling(true);
 
@@ -50,15 +47,10 @@ public class RollLogic {
 	public static void onTick(TickEvent.PlayerTickEvent event) {
 		if (event.phase != TickEvent.Phase.END) return;
 		if (event.side != LogicalSide.CLIENT) return;
-		IStamina stamina;
-		IRoll roll;
-		{
-			LazyOptional<IStamina> staminaOptional = event.player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
-			LazyOptional<IRoll> rollOptional = event.player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
-			if (!staminaOptional.isPresent() || !rollOptional.isPresent()) return;
-			stamina = staminaOptional.orElseThrow(NullPointerException::new);
-			roll = rollOptional.orElseThrow(NullPointerException::new);
-		}
+		IStamina stamina = IStamina.get(event.player);
+		IRoll roll = IRoll.get(event.player);
+		if (stamina == null || roll == null) return;
+
 		roll.updateRollingTime();
 
 		ClientPlayerEntity player = Minecraft.getInstance().player;
@@ -99,13 +91,10 @@ public class RollLogic {
 			return;
 		ServerPlayerEntity player = (ServerPlayerEntity) event.getEntityLiving();
 
-		IRoll roll;
-		{
-			LazyOptional<IRoll> rollOptional = player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
-			if (!rollOptional.isPresent()) return;
-			roll = rollOptional.orElseThrow(NullPointerException::new);
-		}
-		if (roll.isRollReady()) {
+		IRoll roll = IRoll.get(player);
+		if (roll == null) return;
+
+		if (roll.isRollReady() && ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.get() && ParCoolConfig.CONFIG_CLIENT.canRoll.get()) {
 			roll.setRollReady(false);
 			StartRollMessage.send(player);
 			float damage = event.getAmount();

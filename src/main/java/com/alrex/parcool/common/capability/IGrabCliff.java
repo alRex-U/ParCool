@@ -3,6 +3,7 @@ package com.alrex.parcool.common.capability;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.impl.GrabCliff;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -49,6 +50,12 @@ public interface IGrabCliff {
 		public INBT writeNBT(Capability<IGrabCliff> capability, IGrabCliff instance, Direction side) {
 			return null;
 		}
+	}
+
+	public static IGrabCliff get(PlayerEntity entity) {
+		LazyOptional<IGrabCliff> optional = entity.getCapability(GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
+		if (!optional.isPresent()) return null;
+		return optional.orElseThrow(IllegalStateException::new);
 	}
 
 	public static class GrabCliffProvider implements ICapabilityProvider {

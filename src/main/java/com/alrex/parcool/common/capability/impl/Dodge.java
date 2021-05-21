@@ -7,7 +7,6 @@ import com.alrex.parcool.common.capability.IDodge;
 import com.alrex.parcool.common.capability.IStamina;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 
@@ -19,12 +18,8 @@ public class Dodge implements IDodge {
 
 	@Override
 	public boolean canDodge(ClientPlayerEntity player) {
-		IStamina stamina;
-		{
-			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
-			if (!staminaOptional.isPresent()) return false;
-			stamina = staminaOptional.orElseThrow(NullPointerException::new);
-		}
+		IStamina stamina = IStamina.get(player);
+		if (stamina == null) return false;
 		return coolTime <= 0 && player.collidedVertically && !player.isSneaking() && !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canDodge.get() && (KeyRecorder.keyBack.isDoubleTapped() || KeyRecorder.keyLeft.isDoubleTapped() || KeyRecorder.keyRight.isDoubleTapped());
 	}
 

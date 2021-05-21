@@ -6,7 +6,6 @@ import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -22,12 +21,9 @@ public class VaultLogic {
 	public static void onTick(TickEvent.PlayerTickEvent event) {
 		if (event.phase != TickEvent.Phase.START || !event.player.world.isRemote) return;
 
-		IVault vault;
-		{
-			LazyOptional<IVault> vaultOptional = event.player.getCapability(IVault.VaultProvider.VAULT_CAPABILITY);
-			if (!vaultOptional.isPresent()) return;
-			vault = vaultOptional.orElseThrow(NullPointerException::new);
-		}
+		IVault vault = IVault.get(event.player);
+		if (vault == null) return;
+
 		vault.updateVaultingTime();
 
 		ClientPlayerEntity player = Minecraft.getInstance().player;

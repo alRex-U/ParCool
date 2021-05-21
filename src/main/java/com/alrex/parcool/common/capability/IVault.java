@@ -3,6 +3,7 @@ package com.alrex.parcool.common.capability;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.impl.Vault;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -42,6 +43,12 @@ public interface IVault {
 		public INBT writeNBT(Capability<IVault> capability, IVault instance, Direction side) {
 			return null;
 		}
+	}
+
+	public static IVault get(PlayerEntity entity) {
+		LazyOptional<IVault> optional = entity.getCapability(VaultProvider.VAULT_CAPABILITY);
+		if (!optional.isPresent()) return null;
+		return optional.orElseThrow(IllegalStateException::new);
 	}
 
 	public static class VaultProvider implements ICapabilityProvider {

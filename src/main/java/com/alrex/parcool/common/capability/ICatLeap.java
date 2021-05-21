@@ -3,6 +3,7 @@ package com.alrex.parcool.common.capability;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.impl.CatLeap;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -52,6 +53,13 @@ public interface ICatLeap {
 		public INBT writeNBT(Capability<ICatLeap> capability, ICatLeap instance, Direction side) {
 			return null;
 		}
+	}
+
+	@Nullable
+	public static ICatLeap get(PlayerEntity entity) {
+		LazyOptional<ICatLeap> optional = entity.getCapability(CatLeapProvider.CAT_LEAP_CAPABILITY);
+		if (!optional.isPresent()) return null;
+		return optional.orElseThrow(IllegalStateException::new);
 	}
 
 	public static class CatLeapProvider implements ICapabilityProvider {

@@ -7,7 +7,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -43,9 +42,9 @@ public class SyncCatLeapMessage {
 			} else {
 				player = contextSupplier.get().getSender();
 			}
-			LazyOptional<ICatLeap> catLeapOptional = player.getCapability(ICatLeap.CatLeapProvider.CAT_LEAP_CAPABILITY);
-			if (!catLeapOptional.isPresent()) return;
-			ICatLeap catLeap = catLeapOptional.orElseThrow(NullPointerException::new);
+			ICatLeap catLeap = ICatLeap.get(player);
+			if (catLeap == null) return;
+
 			catLeap.setLeaping(this.isLeaping);
 		});
 		contextSupplier.get().setPacketHandled(true);
@@ -53,9 +52,8 @@ public class SyncCatLeapMessage {
 
 	//only in Client
 	public static void sync(ClientPlayerEntity player) {
-		LazyOptional<ICatLeap> fastOptional = player.getCapability(ICatLeap.CatLeapProvider.CAT_LEAP_CAPABILITY);
-		if (!fastOptional.isPresent()) return;
-		ICatLeap catLeap = fastOptional.orElseThrow(NullPointerException::new);
+		ICatLeap catLeap = ICatLeap.get(player);
+		if (catLeap == null) return;
 
 		SyncCatLeapMessage message = new SyncCatLeapMessage();
 		message.isLeaping = catLeap.isLeaping();

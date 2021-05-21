@@ -13,18 +13,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class PlayerRollRenderer {
 	public static void onRender(RenderPlayerEvent.Pre event) {
 		if (!(event.getPlayer() instanceof AbstractClientPlayerEntity)) return;
 		AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) event.getPlayer();
-		IRoll roll;
-		{
-			LazyOptional<IRoll> rollOptional = player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
-			if (!rollOptional.isPresent()) return;
-			roll = rollOptional.orElseThrow(NullPointerException::new);
-		}
+		IRoll roll = IRoll.get(player);
+		if (roll == null) return;
 
 		if (roll.isRolling()) {
 			ClientPlayerEntity mainPlayer = Minecraft.getInstance().player;

@@ -3,6 +3,7 @@ package com.alrex.parcool.common.capability;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.impl.Crawl;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -46,6 +47,12 @@ public interface ICrawl {
 		public INBT writeNBT(Capability<ICrawl> capability, ICrawl instance, Direction side) {
 			return null;
 		}
+	}
+
+	public static ICrawl get(PlayerEntity entity) {
+		LazyOptional<ICrawl> optional = entity.getCapability(CrawlProvider.CRAWL_CAPABILITY);
+		if (!optional.isPresent()) return null;
+		return optional.orElseThrow(IllegalStateException::new);
 	}
 
 	public static class CrawlProvider implements ICapabilityProvider {

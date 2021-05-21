@@ -7,7 +7,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -44,9 +43,9 @@ public class SyncGrabCliffMessage {
 			} else {
 				player = contextSupplier.get().getSender();
 			}
-			LazyOptional<IGrabCliff> fastOptional = player.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
-			if (!fastOptional.isPresent()) return;
-			IGrabCliff grabCliff = fastOptional.orElseThrow(NullPointerException::new);
+			IGrabCliff grabCliff = IGrabCliff.get(player);
+			if (grabCliff == null) return;
+
 			grabCliff.setGrabbing(this.isGrabbing);
 		});
 		contextSupplier.get().setPacketHandled(true);
@@ -54,9 +53,7 @@ public class SyncGrabCliffMessage {
 
 	//only in Client
 	public static void sync(ClientPlayerEntity player) {
-		LazyOptional<IGrabCliff> fastOptional = player.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
-		if (!fastOptional.isPresent()) return;
-		IGrabCliff grabCliff = fastOptional.orElseThrow(NullPointerException::new);
+		IGrabCliff grabCliff = IGrabCliff.get(player);
 
 		SyncGrabCliffMessage message = new SyncGrabCliffMessage();
 		message.isGrabbing = grabCliff.isGrabbing();

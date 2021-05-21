@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -18,12 +17,10 @@ public class StaminaHUD extends AbstractGui {
 	public static void render(RenderGameOverlayEvent event) {
 		if (!ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.get()) return;
 		ClientPlayerEntity player = Minecraft.getInstance().player;
-		IStamina stamina;
-		{
-			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
-			if (!staminaOptional.isPresent()) return;
-			stamina = staminaOptional.orElseThrow(NullPointerException::new);
-		}
+		if (player == null) return;
+		IStamina stamina = IStamina.get(player);
+		if (stamina == null) return;
+
 		MainWindow window = Minecraft.getInstance().getMainWindow();
 		final int width = window.getScaledWidth();
 		final int height = window.getScaledHeight();

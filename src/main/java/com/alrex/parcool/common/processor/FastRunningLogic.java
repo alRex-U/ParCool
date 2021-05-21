@@ -9,7 +9,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -34,15 +33,9 @@ public class FastRunningLogic {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		if (player != event.player) return;
 
-		IFastRunning fastRunning;
-		IStamina stamina;
-		{
-			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
-			LazyOptional<IFastRunning> fastRunningOptional = player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
-			if (!fastRunningOptional.isPresent() || !staminaOptional.isPresent()) return;
-			stamina = staminaOptional.orElseThrow(NullPointerException::new);
-			fastRunning = fastRunningOptional.orElseThrow(NullPointerException::new);
-		}
+		IFastRunning fastRunning = IFastRunning.get(player);
+		IStamina stamina = IStamina.get(player);
+		if (stamina == null || fastRunning == null) return;
 
 		ModifiableAttributeInstance attr = player.getAttribute(Attributes.field_233821_d_);
 		if (attr == null) return;

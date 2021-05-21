@@ -6,7 +6,6 @@ import com.alrex.parcool.common.capability.ICrawl;
 import com.alrex.parcool.common.capability.IFastRunning;
 import com.alrex.parcool.common.capability.IStamina;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class FastRunning implements IFastRunning {
 	private boolean fastRunning = false;
@@ -25,12 +24,9 @@ public class FastRunning implements IFastRunning {
 
 	@Override
 	public boolean canFastRunning(ClientPlayerEntity player) {
-
-		LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
-		LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
-		if (!staminaOptional.isPresent() || !crawlOptional.isPresent()) return false;
-		IStamina stamina = staminaOptional.orElseThrow(NullPointerException::new);
-		ICrawl crawl = crawlOptional.orElseThrow(NullPointerException::new);
+		IStamina stamina = IStamina.get(player);
+		ICrawl crawl = ICrawl.get(player);
+		if (stamina == null || crawl == null) return false;
 
 		return !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canFastRunning.get() && !crawl.isCrawling() && !crawl.isSliding() && player.isSprinting() && KeyBindings.getKeySprint().isKeyDown() && !player.isInWaterOrBubbleColumn();
 	}

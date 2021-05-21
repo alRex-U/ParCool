@@ -7,7 +7,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -43,9 +42,7 @@ public class SyncFastRunningMessage {
 			} else {
 				player = contextSupplier.get().getSender();
 			}
-			LazyOptional<IFastRunning> fastOptional = player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
-			if (!fastOptional.isPresent()) return;
-			IFastRunning fastRunning = fastOptional.orElseThrow(NullPointerException::new);
+			IFastRunning fastRunning = IFastRunning.get(player);
 			fastRunning.setFastRunning(this.isFastRunning);
 		});
 		contextSupplier.get().setPacketHandled(true);
@@ -53,9 +50,7 @@ public class SyncFastRunningMessage {
 
 	//only in Client
 	public static void sync(ClientPlayerEntity player) {
-		LazyOptional<IFastRunning> fastOptional = player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
-		if (!fastOptional.isPresent()) return;
-		IFastRunning fastRunning = fastOptional.orElseThrow(NullPointerException::new);
+		IFastRunning fastRunning = IFastRunning.get(player);
 
 		SyncFastRunningMessage message = new SyncFastRunningMessage();
 		message.isFastRunning = fastRunning.isFastRunning();

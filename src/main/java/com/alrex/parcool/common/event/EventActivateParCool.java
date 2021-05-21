@@ -9,7 +9,6 @@ import com.alrex.parcool.constants.TranslateKeys;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -23,12 +22,9 @@ public class EventActivateParCool {
 		if (KeyRecorder.keyActivateParCoolState.isPressed()) {
 			ClientPlayerEntity player = Minecraft.getInstance().player;
 			if (player == null) return;
-			IStamina stamina;
-			{
-				LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
-				if (!staminaOptional.isPresent()) return;
-				stamina = staminaOptional.orElseThrow(NullPointerException::new);
-			}
+			IStamina stamina = IStamina.get(player);
+			if (stamina == null) return;
+
 			if (stamina.isExhausted()) {
 				player.sendStatusMessage(new TranslationTextComponent(TranslateKeys.WARNING_ACTIVATION_EXHAUSTED), false);
 				return;
@@ -51,31 +47,23 @@ public class EventActivateParCool {
 	public static boolean inactivate() {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 
-		ICatLeap catLeap;
-		ICrawl crawl;
-		IFastRunning fastRunning;
-		IGrabCliff grabCliff;
-		IVault vault;
-		IDodge dodge;
-		IWallJump wallJump;
-		{
-			LazyOptional<IDodge> dodgeOptional = player.getCapability(IDodge.DodgeProvider.DODGE_CAPABILITY);
-			LazyOptional<ICatLeap> catLeapOptional = player.getCapability(ICatLeap.CatLeapProvider.CAT_LEAP_CAPABILITY);
-			LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
-			LazyOptional<IFastRunning> fastRunningOptional = player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
-			LazyOptional<IGrabCliff> grabCliffOptional = player.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
-			LazyOptional<IVault> vaultOptional = player.getCapability(IVault.VaultProvider.VAULT_CAPABILITY);
-			LazyOptional<IWallJump> wallJumpOptional = player.getCapability(IWallJump.WallJumpProvider.WALL_JUMP_CAPABILITY);
-			if (!dodgeOptional.isPresent() || !catLeapOptional.isPresent() || !crawlOptional.isPresent() || !fastRunningOptional.isPresent() || !grabCliffOptional.isPresent() || !vaultOptional.isPresent() || !wallJumpOptional.isPresent())
-				return false;
-			catLeap = catLeapOptional.orElseThrow(NullPointerException::new);
-			crawl = crawlOptional.orElseThrow(NullPointerException::new);
-			fastRunning = fastRunningOptional.orElseThrow(NullPointerException::new);
-			grabCliff = grabCliffOptional.orElseThrow(NullPointerException::new);
-			vault = vaultOptional.orElseThrow(NullPointerException::new);
-			wallJump = wallJumpOptional.orElseThrow(NullPointerException::new);
-			dodge = dodgeOptional.orElseThrow(NullPointerException::new);
-		}
+		ICatLeap catLeap = ICatLeap.get(player);
+		ICrawl crawl = ICrawl.get(player);
+		IFastRunning fastRunning = IFastRunning.get(player);
+		IGrabCliff grabCliff = IGrabCliff.get(player);
+		IVault vault = IVault.get(player);
+		IDodge dodge = IDodge.get(player);
+		IWallJump wallJump = IWallJump.get(player);
+		if (
+				catLeap == null ||
+						crawl == null ||
+						fastRunning == null ||
+						grabCliff == null ||
+						vault == null ||
+						dodge == null ||
+						wallJump == null
+		) return false;
+
 		catLeap.setReady(false);
 		catLeap.setLeaping(false);
 		crawl.setCrawling(false);

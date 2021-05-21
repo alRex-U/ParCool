@@ -8,7 +8,6 @@ import com.alrex.parcool.common.network.SyncCatLeapMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -22,15 +21,9 @@ public class JumpBoostLogic {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		if (player != event.player) return;
 
-		ICatLeap catLeap;
-		IStamina stamina;
-		{
-			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
-			LazyOptional<ICatLeap> catLeapOptional = player.getCapability(ICatLeap.CatLeapProvider.CAT_LEAP_CAPABILITY);
-			if (!catLeapOptional.isPresent() || !staminaOptional.isPresent()) return;
-			catLeap = catLeapOptional.orElseThrow(NullPointerException::new);
-			stamina = staminaOptional.orElseThrow(NullPointerException::new);
-		}
+		ICatLeap catLeap = ICatLeap.get(player);
+		IStamina stamina = IStamina.get(player);
+		if (catLeap == null || stamina == null) return;
 
 		catLeap.updateReadyTime();
 
@@ -57,15 +50,9 @@ public class JumpBoostLogic {
 		if (player != event.getEntityLiving()) return;
 		if (!ParCool.isActive()) return;
 
-		ICrawl crawl;
-		IStamina stamina;
-		{
-			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
-			LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
-			if (!crawlOptional.isPresent() || !staminaOptional.isPresent()) return;
-			crawl = crawlOptional.orElseThrow(NullPointerException::new);
-			stamina = staminaOptional.orElseThrow(NullPointerException::new);
-		}
+		ICrawl crawl = ICrawl.get(player);
+		IStamina stamina = IStamina.get(player);
+		if (crawl == null || stamina == null) return;
 
 		if (stamina.isExhausted()) {
 			Vector3d vec = player.getMotion();

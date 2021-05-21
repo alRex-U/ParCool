@@ -3,6 +3,7 @@ package com.alrex.parcool.common.capability;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.impl.FastRunning;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -44,6 +45,12 @@ public interface IFastRunning {
 		public INBT writeNBT(Capability<IFastRunning> capability, IFastRunning instance, Direction side) {
 			return null;
 		}
+	}
+
+	public static IFastRunning get(PlayerEntity entity) {
+		LazyOptional<IFastRunning> optional = entity.getCapability(FastRunningProvider.FAST_RUNNING_CAPABILITY);
+		if (!optional.isPresent()) return null;
+		return optional.orElseThrow(IllegalStateException::new);
 	}
 
 	public static class FastRunningProvider implements ICapabilityProvider {

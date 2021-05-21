@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -19,12 +18,8 @@ public class StaminaLogic {
 		if (event.phase != TickEvent.Phase.END) return;
 		PlayerEntity player = event.player;
 		if (!ParCool.isActive()) return;
-		IStamina stamina;
-		{
-			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
-			if (!staminaOptional.isPresent()) return;
-			stamina = staminaOptional.orElseThrow(NullPointerException::new);
-		}
+		IStamina stamina = IStamina.get(player);
+		if (stamina == null) return;
 		if (stamina.isExhausted() && player.world.getRandom().nextInt(10) == 0 && player instanceof AbstractClientPlayerEntity) {
 			ParticleProvider.spawnEffectSweat((AbstractClientPlayerEntity) player);
 		}

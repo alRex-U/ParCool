@@ -7,7 +7,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -43,9 +42,9 @@ public class SyncRollReadyMessage {
 				player = contextSupplier.get().getSender();
 			}
 			if (player == null) return;
-			LazyOptional<IRoll> rollOptional = player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
-			if (!rollOptional.isPresent()) return;
-			IRoll roll = rollOptional.orElseThrow(NullPointerException::new);
+			IRoll roll = IRoll.get(player);
+			if (roll == null) return;
+
 			roll.setRollReady(rollReady);
 		});
 		contextSupplier.get().setPacketHandled(true);
@@ -53,9 +52,8 @@ public class SyncRollReadyMessage {
 
 	//only in Client
 	public static void sync(ClientPlayerEntity player) {
-		LazyOptional<IRoll> fastOptional = player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
-		if (!fastOptional.isPresent()) return;
-		IRoll roll = fastOptional.orElseThrow(NullPointerException::new);
+		IRoll roll = IRoll.get(player);
+		if (roll == null) return;
 
 		SyncRollReadyMessage message = new SyncRollReadyMessage();
 		message.rollReady = roll.isRollReady();

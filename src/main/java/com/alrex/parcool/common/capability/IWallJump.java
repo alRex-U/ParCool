@@ -3,6 +3,7 @@ package com.alrex.parcool.common.capability;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.impl.WallJump;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -40,6 +41,12 @@ public interface IWallJump {
 		public INBT writeNBT(Capability<IWallJump> capability, IWallJump instance, Direction side) {
 			return null;
 		}
+	}
+
+	public static IWallJump get(PlayerEntity entity) {
+		LazyOptional<IWallJump> optional = entity.getCapability(WallJumpProvider.WALL_JUMP_CAPABILITY);
+		if (!optional.isPresent()) return null;
+		return optional.orElseThrow(IllegalStateException::new);
 	}
 
 	public static class WallJumpProvider implements ICapabilityProvider {

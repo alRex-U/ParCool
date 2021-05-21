@@ -7,7 +7,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -43,9 +42,9 @@ public class SyncDodgeMessage {
 				player = contextSupplier.get().getSender();
 			}
 			if (player == null) return;
-			LazyOptional<IDodge> dodgeOptional = player.getCapability(IDodge.DodgeProvider.DODGE_CAPABILITY);
-			if (!dodgeOptional.isPresent()) return;
-			IDodge dodge = dodgeOptional.orElseThrow(NullPointerException::new);
+			IDodge dodge = IDodge.get(player);
+			if (dodge == null) return;
+
 			dodge.setDodging(this.isDodging);
 		});
 		contextSupplier.get().setPacketHandled(true);
@@ -53,12 +52,11 @@ public class SyncDodgeMessage {
 
 	//only in Client
 	public static void sync(ClientPlayerEntity player) {
-		LazyOptional<IDodge> fastOptional = player.getCapability(IDodge.DodgeProvider.DODGE_CAPABILITY);
-		if (!fastOptional.isPresent()) return;
-		IDodge Dodge = fastOptional.orElseThrow(NullPointerException::new);
+		IDodge dodge = IDodge.get(player);
+		if (dodge == null) return;
 
 		SyncDodgeMessage message = new SyncDodgeMessage();
-		message.isDodging = Dodge.isDodging();
+		message.isDodging = dodge.isDodging();
 		message.playerID = player.getUniqueID();
 
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), message);

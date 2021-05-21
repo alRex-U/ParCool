@@ -6,7 +6,6 @@ import com.alrex.parcool.common.capability.ICatLeap;
 import com.alrex.parcool.common.capability.IFastRunning;
 import com.alrex.parcool.common.capability.IStamina;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class CatLeap implements ICatLeap {
 	private boolean leaping = false;
@@ -15,23 +14,15 @@ public class CatLeap implements ICatLeap {
 
 	@Override
 	public boolean canCatLeap(ClientPlayerEntity player) {
-		IStamina stamina;
-		{
-			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
-			if (!staminaOptional.isPresent()) return false;
-			stamina = staminaOptional.orElseThrow(NullPointerException::new);
-		}
+		IStamina stamina = IStamina.get(player);
+		if (stamina == null) return false;
 		return player.collidedVertically && ParCoolConfig.CONFIG_CLIENT.canCatLeap.get() && !stamina.isExhausted() && ready && readyTime < 10 && !KeyBindings.getKeySneak().isKeyDown();
 	}
 
 	@Override
 	public boolean canReadyLeap(ClientPlayerEntity player) {
-		IFastRunning fastRunning;
-		{
-			LazyOptional<IFastRunning> fastRunningOptional = player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
-			if (!fastRunningOptional.isPresent()) return false;
-			fastRunning = fastRunningOptional.orElseThrow(NullPointerException::new);
-		}
+		IFastRunning fastRunning = IFastRunning.get(player);
+		if (fastRunning == null) return false;
 		return (fastRunning.getNotRunningTime() < 10 && KeyBindings.getKeySneak().isKeyDown()) || (ready && KeyBindings.getKeySneak().isKeyDown() && readyTime < 10);
 	}
 

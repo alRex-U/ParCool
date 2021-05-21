@@ -3,6 +3,7 @@ package com.alrex.parcool.common.capability;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.impl.Roll;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -51,6 +52,12 @@ public interface IRoll {
 		public INBT writeNBT(Capability<IRoll> capability, IRoll instance, Direction side) {
 			return null;
 		}
+	}
+
+	public static IRoll get(PlayerEntity entity) {
+		LazyOptional<IRoll> optional = entity.getCapability(RollProvider.ROLL_CAPABILITY);
+		if (!optional.isPresent()) return null;
+		return optional.orElseThrow(IllegalStateException::new);
 	}
 
 	public static class RollProvider implements ICapabilityProvider {

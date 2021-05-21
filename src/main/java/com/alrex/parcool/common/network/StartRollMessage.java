@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.IRoll;
 import com.alrex.parcool.common.processor.RollLogic;
 import net.minecraft.client.Minecraft;
@@ -38,15 +39,18 @@ public class StartRollMessage {
 			if (contextSupplier.get().getNetworkManager().getDirection() == PacketDirection.CLIENTBOUND) {
 				ClientPlayerEntity clientPlayer = Minecraft.getInstance().player;
 				PlayerEntity startPlayer = clientPlayer.worldClient.getPlayerByUuid(playerID);
+
+				IRoll roll;
+				{
+					LazyOptional<IRoll> rollOptional = startPlayer.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
+					if (!rollOptional.isPresent()) return;
+					roll = rollOptional.orElseThrow(NullPointerException::new);
+				}
+				if (!ParCoolConfig.CONFIG_CLIENT.canRoll.get() || !ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.get())
+					return;
 				if (clientPlayer == startPlayer) {
 					RollLogic.rollStart();
 				} else {
-					IRoll roll;
-					{
-						LazyOptional<IRoll> rollOptional = startPlayer.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
-						if (!rollOptional.isPresent()) return;
-						roll = rollOptional.orElseThrow(NullPointerException::new);
-					}
 					roll.setRollReady(false);
 					roll.setRolling(true);
 				}

@@ -2,6 +2,7 @@ package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.impl.Stamina;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -56,6 +57,12 @@ public interface IStamina {
 			nbt.putBoolean(EXHAUSTED, instance.isExhausted());
 			return nbt;
 		}
+	}
+
+	public static IStamina get(PlayerEntity entity) {
+		LazyOptional<IStamina> optional = entity.getCapability(StaminaProvider.STAMINA_CAPABILITY);
+		if (!optional.isPresent()) return null;
+		return optional.orElseThrow(IllegalStateException::new);
 	}
 
 	public static class StaminaProvider implements ICapabilityProvider {

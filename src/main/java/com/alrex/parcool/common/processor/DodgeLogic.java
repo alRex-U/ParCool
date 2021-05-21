@@ -7,7 +7,6 @@ import com.alrex.parcool.common.network.SyncDodgeMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -21,15 +20,10 @@ public class DodgeLogic {
 
 		if (event.side == LogicalSide.SERVER) return;
 		ClientPlayerEntity player = Minecraft.getInstance().player;
-		IStamina stamina;
-		IDodge dodge;
-		{
-			LazyOptional<IDodge> dodgeOptional = player.getCapability(IDodge.DodgeProvider.DODGE_CAPABILITY);
-			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
-			if (!staminaOptional.isPresent() || !dodgeOptional.isPresent()) return;
-			stamina = staminaOptional.orElseThrow(NullPointerException::new);
-			dodge = dodgeOptional.orElseThrow(NullPointerException::new);
-		}
+		IStamina stamina = IStamina.get(player);
+		IDodge dodge = IDodge.get(player);
+		if (dodge == null || stamina == null) return;
+
 
 		dodge.updateDodgingTime();
 		if (event.player != player || !ParCool.isActive()) return;
