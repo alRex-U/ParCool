@@ -11,6 +11,7 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 
 //only in Client
@@ -18,7 +19,7 @@ import net.minecraftforge.fml.common.Mod;
 public class EventActivateParCool {
 	@SubscribeEvent
 	public static void onTick(TickEvent.ClientTickEvent event) {
-		if (event.phase != TickEvent.Phase.START) return;
+		if (event.phase != TickEvent.Phase.START && event.side != LogicalSide.CLIENT) return;
 		if (KeyRecorder.keyActivateParCoolState.isPressed()) {
 			ClientPlayerEntity player = Minecraft.getInstance().player;
 			if (player == null) return;
