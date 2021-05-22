@@ -5,9 +5,11 @@ import com.alrex.parcool.common.capability.IVault;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 
 public class VaultLogic {
 	//only in Client
@@ -17,9 +19,10 @@ public class VaultLogic {
 
 	@SubscribeEvent
 	public static void onTick(TickEvent.PlayerTickEvent event) {
-		if (event.phase != TickEvent.Phase.START || !event.player.world.isRemote) return;
+		if (event.phase != TickEvent.Phase.START || event.side == LogicalSide.SERVER) return;
 
-		IVault vault = IVault.get(event.player);
+		PlayerEntity playerEntity = event.player;
+		IVault vault = IVault.get(playerEntity);
 		if (vault == null) return;
 
 		vault.updateVaultingTime();

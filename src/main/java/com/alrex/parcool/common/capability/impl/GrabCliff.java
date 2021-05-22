@@ -7,12 +7,15 @@ import com.alrex.parcool.common.capability.IGrabCliff;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class GrabCliff implements IGrabCliff {
 	private boolean grabbing = false;
 	private int grabbingTime = 0;
 	private int notGrabbingTime = 0;
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canGrabCliff(ClientPlayerEntity player) {
 		IStamina stamina = IStamina.get(player);
@@ -22,6 +25,7 @@ public class GrabCliff implements IGrabCliff {
 		return !stamina.isExhausted() && ySpeed < 0.2 && ParCoolConfig.CONFIG_CLIENT.canGrabCliff.get() && KeyBindings.getKeyGrabWall().isKeyDown() && player.getHeldItemMainhand().isEmpty() && player.getHeldItemOffhand().isEmpty() && WorldUtil.existsGrabbableWall(player);
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canJumpOnCliff(ClientPlayerEntity player) {
 		return grabbing && ParCoolConfig.CONFIG_CLIENT.canGrabCliff.get() && grabbingTime > 3 && KeyRecorder.keyJumpState.isPressed();

@@ -6,12 +6,15 @@ import com.alrex.parcool.common.capability.ICatLeap;
 import com.alrex.parcool.common.capability.IFastRunning;
 import com.alrex.parcool.common.capability.IStamina;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class CatLeap implements ICatLeap {
 	private boolean leaping = false;
 	private boolean ready = false;
 	private int readyTime = 0;
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canCatLeap(ClientPlayerEntity player) {
 		IStamina stamina = IStamina.get(player);
@@ -19,6 +22,7 @@ public class CatLeap implements ICatLeap {
 		return player.collidedVertically && ParCoolConfig.CONFIG_CLIENT.canCatLeap.get() && !stamina.isExhausted() && ready && readyTime < 10 && !KeyBindings.getKeySneak().isKeyDown();
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canReadyLeap(ClientPlayerEntity player) {
 		IFastRunning fastRunning = IFastRunning.get(player);
@@ -26,6 +30,7 @@ public class CatLeap implements ICatLeap {
 		return (fastRunning.getNotRunningTime() < 10 && KeyBindings.getKeySneak().isKeyDown()) || (ready && KeyBindings.getKeySneak().isKeyDown() && readyTime < 10);
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public double getBoostValue(ClientPlayerEntity player) {
 		return 0.49;

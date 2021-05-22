@@ -6,6 +6,8 @@ import com.alrex.parcool.common.capability.IVault;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class Vault implements IVault {
 	private int vaultingTime = 0;
@@ -16,6 +18,7 @@ public class Vault implements IVault {
 		return 2;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canVault(ClientPlayerEntity player) {
 		IFastRunning fastRunning = IFastRunning.get(player);

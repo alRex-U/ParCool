@@ -1,6 +1,6 @@
 package com.alrex.parcool.common.event;
 
-import com.alrex.parcool.common.capability.*;
+import com.alrex.parcool.common.capability.provider.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -11,14 +11,14 @@ public class EventAttachCapability {
 	@SubscribeEvent
 	public static void onAttachCapability(AttachCapabilitiesEvent<Entity> event) {
 		if (!(event.getObject() instanceof PlayerEntity)) return;
-		event.addCapability(ICrawl.CrawlProvider.CAPABILITY_LOCATION, new ICrawl.CrawlProvider());
-		event.addCapability(IFastRunning.FastRunningProvider.CAPABILITY_LOCATION, new IFastRunning.FastRunningProvider());
-		event.addCapability(IStamina.StaminaProvider.CAPABILITY_LOCATION, new IStamina.StaminaProvider());
-		event.addCapability(IWallJump.WallJumpProvider.CAPABILITY_LOCATION, new IWallJump.WallJumpProvider());
-		event.addCapability(ICatLeap.CatLeapProvider.CAPABILITY_LOCATION, new ICatLeap.CatLeapProvider());
-		event.addCapability(IGrabCliff.GrabCliffProvider.CAPABILITY_LOCATION, new IGrabCliff.GrabCliffProvider());
-		event.addCapability(IVault.VaultProvider.CAPABILITY_LOCATION, new IVault.VaultProvider());
-		event.addCapability(IDodge.DodgeProvider.CAPABILITY_LOCATION, new IDodge.DodgeProvider());
-		event.addCapability(IRoll.RollProvider.CAPABILITY_LOCATION, new IRoll.RollProvider());
+		event.addCapability(CrawlProvider.CAPABILITY_LOCATION, new CrawlProvider());
+		event.addCapability(FastRunningProvider.CAPABILITY_LOCATION, new FastRunningProvider());
+		event.addCapability(StaminaProvider.CAPABILITY_LOCATION, new StaminaProvider());
+		event.addCapability(WallJumpProvider.CAPABILITY_LOCATION, new WallJumpProvider());
+		event.addCapability(CatLeapProvider.CAPABILITY_LOCATION, new CatLeapProvider());
+		event.addCapability(GrabCliffProvider.CAPABILITY_LOCATION, new GrabCliffProvider());
+		event.addCapability(VaultProvider.CAPABILITY_LOCATION, new VaultProvider());
+		event.addCapability(DodgeProvider.CAPABILITY_LOCATION, new DodgeProvider());
+		event.addCapability(RollProvider.CAPABILITY_LOCATION, new RollProvider());
 	}
 }

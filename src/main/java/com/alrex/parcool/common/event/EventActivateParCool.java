@@ -13,13 +13,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
 
 @OnlyIn(Dist.CLIENT)
 public class EventActivateParCool {
 	@SubscribeEvent
 	public static void onTick(TickEvent.ClientTickEvent event) {
-		if (event.phase != TickEvent.Phase.START && event.side != LogicalSide.CLIENT) return;
+		if (event.phase != TickEvent.Phase.START) return;
 		if (KeyRecorder.keyActivateParCoolState.isPressed()) {
 			ClientPlayerEntity player = Minecraft.getInstance().player;
 			if (player == null) return;

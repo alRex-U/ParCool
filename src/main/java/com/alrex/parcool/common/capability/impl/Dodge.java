@@ -7,6 +7,8 @@ import com.alrex.parcool.common.capability.IDodge;
 import com.alrex.parcool.common.capability.IStamina;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
@@ -16,6 +18,7 @@ public class Dodge implements IDodge {
 	private int coolTime = 0;
 	private DodgeDirection direction = null;
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canDodge(ClientPlayerEntity player) {
 		IStamina stamina = IStamina.get(player);
@@ -23,6 +26,7 @@ public class Dodge implements IDodge {
 		return coolTime <= 0 && player.collidedVertically && !player.isSneaking() && !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canDodge.get() && (KeyRecorder.keyBack.isDoubleTapped() || KeyRecorder.keyLeft.isDoubleTapped() || KeyRecorder.keyRight.isDoubleTapped());
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Nullable
 	@Override
 	public Vector3d getDodgeDirection(ClientPlayerEntity player) {
@@ -67,6 +71,7 @@ public class Dodge implements IDodge {
 		return direction;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canContinueDodge(ClientPlayerEntity player) {
 		return dodging && !player.collidedVertically && !player.isInWaterOrBubbleColumn() && !player.isElytraFlying() && !player.abilities.isFlying && ParCoolConfig.CONFIG_CLIENT.canDodge.get();

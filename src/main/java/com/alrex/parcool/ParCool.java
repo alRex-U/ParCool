@@ -1,23 +1,27 @@
 package com.alrex.parcool;
 
+import com.alrex.parcool.client.input.KeyBindings;
+import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.command.ParCoolCommands;
+import com.alrex.parcool.common.network.registry.MessageRegistry;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
 import com.alrex.parcool.common.registries.EventBusModRegistry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import javax.annotation.Nullable;
 
 @Mod(ParCool.MOD_ID)
 public class ParCool {
@@ -29,6 +33,12 @@ public class ParCool {
 			PROTOCOL_VERSION::equals,
 			PROTOCOL_VERSION::equals
 	);
+	private static LogicalSide runningSide = null;
+
+	@Nullable
+	public static LogicalSide getRunningSide() {
+		return runningSide;
+	}
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
@@ -49,20 +59,36 @@ public class ParCool {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loaded);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doServerStuff);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
 
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModLoadingContext context = ModLoadingContext.get();
 		context.registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.spec);
+
+	}
+
+	private void loaded(FMLLoadCompleteEvent event) {
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
 		EventBusForgeRegistry.register(MinecraftForge.EVENT_BUS);
 		EventBusModRegistry.registry(FMLJavaModLoadingContext.get().getModEventBus());
+		Capabilities.registerAll(CapabilityManager.INSTANCE);
+		MessageRegistry.register(CHANNEL_INSTANCE);
 	}
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
+		KeyBindings.register(event);
+		EventBusForgeRegistry.registerClient(MinecraftForge.EVENT_BUS);
+		EventBusModRegistry.registerClient(FMLJavaModLoadingContext.get().getModEventBus());
+		runningSide = LogicalSide.CLIENT;
+	}
+
+	private void doServerStuff(final FMLDedicatedServerSetupEvent event) {
+		runningSide = LogicalSide.SERVER;
 	}
 
 	private void enqueueIMC(final InterModEnqueueEvent event) {

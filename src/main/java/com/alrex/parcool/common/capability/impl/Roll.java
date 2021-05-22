@@ -5,12 +5,15 @@ import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.ICrawl;
 import com.alrex.parcool.common.capability.IRoll;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class Roll implements IRoll {
 	private boolean rollReady = false;
 	private boolean rolling = false;
 	private int rollingTime = 0;
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canContinueRollReady(ClientPlayerEntity player) {
 		ICrawl crawl = ICrawl.get(player);
@@ -19,6 +22,7 @@ public class Roll implements IRoll {
 		return rollReady && ParCoolConfig.CONFIG_CLIENT.canRoll.get() && !crawl.isCrawling() && !crawl.isSliding() && KeyBindings.getKeyRoll().isKeyDown() && !rolling && !player.isInWaterOrBubbleColumn();
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canRollReady(ClientPlayerEntity player) {
 		ICrawl crawl = ICrawl.get(player);

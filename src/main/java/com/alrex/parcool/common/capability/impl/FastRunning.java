@@ -6,6 +6,8 @@ import com.alrex.parcool.common.capability.ICrawl;
 import com.alrex.parcool.common.capability.IFastRunning;
 import com.alrex.parcool.common.capability.IStamina;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class FastRunning implements IFastRunning {
 	private boolean fastRunning = false;
@@ -22,6 +24,7 @@ public class FastRunning implements IFastRunning {
 		this.fastRunning = fastRunning;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canFastRunning(ClientPlayerEntity player) {
 		IStamina stamina = IStamina.get(player);

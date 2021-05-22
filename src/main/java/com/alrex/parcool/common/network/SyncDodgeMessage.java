@@ -7,8 +7,8 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -19,20 +19,20 @@ public class SyncDodgeMessage {
 	private UUID playerID = null;
 	private boolean isDodging = false;
 
-	private void encode(PacketBuffer packet) {
+	public void encode(PacketBuffer packet) {
 		packet.writeBoolean(this.isDodging);
 		packet.writeLong(this.playerID.getMostSignificantBits());
 		packet.writeLong(this.playerID.getLeastSignificantBits());
 	}
 
-	private static SyncDodgeMessage decode(PacketBuffer packet) {
+	public static SyncDodgeMessage decode(PacketBuffer packet) {
 		SyncDodgeMessage message = new SyncDodgeMessage();
 		message.isDodging = packet.readBoolean();
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
 		return message;
 	}
 
-	private void handle(Supplier<NetworkEvent.Context> contextSupplier) {
+	public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
 			PlayerEntity player;
 			if (contextSupplier.get().getNetworkManager().getDirection() == PacketDirection.CLIENTBOUND) {
@@ -49,7 +49,7 @@ public class SyncDodgeMessage {
 		contextSupplier.get().setPacketHandled(true);
 	}
 
-	//only in Client
+	@OnlyIn(Dist.CLIENT)
 	public static void sync(ClientPlayerEntity player) {
 		IDodge dodge = IDodge.get(player);
 		if (dodge == null) return;
@@ -60,20 +60,5 @@ public class SyncDodgeMessage {
 
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), message);
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);
-	}
-
-	public static class MessageRegistry {
-		private static final int ID = 5;
-
-		@SubscribeEvent
-		public static void register(FMLCommonSetupEvent event) {
-			ParCool.CHANNEL_INSTANCE.registerMessage(
-					ID,
-					SyncDodgeMessage.class,
-					SyncDodgeMessage::encode,
-					SyncDodgeMessage::decode,
-					SyncDodgeMessage::handle
-			);
-		}
 	}
 }

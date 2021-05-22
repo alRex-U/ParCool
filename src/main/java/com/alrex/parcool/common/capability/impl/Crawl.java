@@ -6,6 +6,9 @@ import com.alrex.parcool.common.capability.ICrawl;
 import com.alrex.parcool.common.capability.IFastRunning;
 import com.alrex.parcool.common.capability.IRoll;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class Crawl implements ICrawl {
 	private static final int maxSlidingTime = 15;
@@ -34,6 +37,7 @@ public class Crawl implements ICrawl {
 		this.sliding = sliding;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canCrawl(ClientPlayerEntity player) {
 		IRoll roll = IRoll.get(player);
@@ -42,6 +46,7 @@ public class Crawl implements ICrawl {
 		return KeyBindings.getKeyCrawl().isKeyDown() && ParCoolConfig.CONFIG_CLIENT.canCrawl.get() && !roll.isRolling() && !player.isInWaterOrBubbleColumn() && player.collidedVertically;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canSliding(ClientPlayerEntity player) {
 		IFastRunning fastRunning = IFastRunning.get(player);
@@ -56,7 +61,7 @@ public class Crawl implements ICrawl {
 	}
 
 	@Override
-	public void updateSlidingTime(ClientPlayerEntity player) {
+	public void updateSlidingTime(PlayerEntity player) {
 		if (slidingTime < 0 && KeyBindings.getKeyCrawl().isKeyDown()) return;
 
 		if (isSliding()) slidingTime++;

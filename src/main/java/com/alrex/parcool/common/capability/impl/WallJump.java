@@ -8,6 +8,8 @@ import com.alrex.parcool.common.capability.IWallJump;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
@@ -17,6 +19,7 @@ public class WallJump implements IWallJump {
 		return 0.3;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canWallJump(ClientPlayerEntity player) {
 		IStamina stamina = IStamina.get(player);
@@ -26,6 +29,7 @@ public class WallJump implements IWallJump {
 		return !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canWallJump.get() && !player.collidedVertically && !player.isInWaterOrBubbleColumn() && !player.isElytraFlying() && !player.abilities.isFlying && !grabCliff.isGrabbing() && KeyRecorder.keyJumpState.isPressed() && WorldUtil.getWall(player) != null;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	@Nullable
 	public Vector3d getJumpDirection(ClientPlayerEntity player) {

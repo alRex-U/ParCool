@@ -9,15 +9,18 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CrawlLogic {
-	//only in Client
+	@OnlyIn(Dist.CLIENT)
 	private static Vector3d slidingVec = null;
 
+	@OnlyIn(Dist.DEDICATED_SERVER)
 	@SubscribeEvent
-	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+	public static void onTickServer(TickEvent.PlayerTickEvent event) {
 		PlayerEntity player = event.player;
 
 		ICrawl crawl = ICrawl.get(player);
@@ -29,10 +32,22 @@ public class CrawlLogic {
 		if (crawl.isCrawling()) {
 			player.setSprinting(false);
 		}
+	}
 
-		if (!event.player.world.isRemote) return;
+	@OnlyIn(Dist.CLIENT)
+	@SubscribeEvent
+	public static void onTickClient(TickEvent.PlayerTickEvent event) {
+		PlayerEntity player = event.player;
 
+		ICrawl crawl = ICrawl.get(player);
+		if (crawl == null) return;
 
+		if (crawl.isCrawling() || crawl.isSliding()) {
+			player.setPose(Pose.SWIMMING);
+		}
+		if (crawl.isCrawling()) {
+			player.setSprinting(false);
+		}
 		if (!ParCool.isActive()) return;
 		ClientPlayerEntity playerClient = Minecraft.getInstance().player;
 		if (playerClient != player || event.phase != TickEvent.Phase.START) return;
@@ -59,6 +74,8 @@ public class CrawlLogic {
 		}
 	}
 
+
+	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void onRender(TickEvent.RenderTickEvent event) {
 		ClientPlayerEntity player = Minecraft.getInstance().player;

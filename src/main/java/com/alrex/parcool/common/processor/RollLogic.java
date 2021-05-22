@@ -8,9 +8,12 @@ import com.alrex.parcool.common.network.SyncRollReadyMessage;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -18,10 +21,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 
 public class RollLogic {
-	//only in Client
 	private static Vector3d rollDirection = null;
 
-	//only in Client
+	@OnlyIn(Dist.CLIENT)
 	public static void rollStart() {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		if (player == null) return;
@@ -45,8 +47,9 @@ public class RollLogic {
 	public static void onTick(TickEvent.PlayerTickEvent event) {
 		if (event.phase != TickEvent.Phase.END) return;
 		if (event.side != LogicalSide.CLIENT) return;
-		IStamina stamina = IStamina.get(event.player);
-		IRoll roll = IRoll.get(event.player);
+		PlayerEntity playerEntity = event.player;
+		IStamina stamina = IStamina.get(playerEntity);
+		IRoll roll = IRoll.get(playerEntity);
 		if (stamina == null || roll == null) return;
 
 		roll.updateRollingTime();
@@ -76,6 +79,7 @@ public class RollLogic {
 		}
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void onRender(RenderPlayerEvent event) {
 		if (event.getPlayer() != Minecraft.getInstance().player) return;

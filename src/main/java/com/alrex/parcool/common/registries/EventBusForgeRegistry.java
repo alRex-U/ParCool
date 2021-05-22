@@ -10,11 +10,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 
 public class EventBusForgeRegistry {
 	public static void register(IEventBus bus) {
-		bus.register(new StaminaHUD());
-		bus.register(KeyRecorder.class);
-		bus.register(PlayerRenderEventHandler.class);
-
-		bus.register(EventActivateParCool.class);
 		bus.register(EventAttachCapability.class);
 
 		bus.register(CrawlLogic.class);
@@ -26,5 +21,12 @@ public class EventBusForgeRegistry {
 		bus.register(StaminaLogic.class);
 		bus.register(VaultLogic.class);
 		bus.register(WallJumpLogic.class);
+	}
+
+	public static void registerClient(IEventBus bus) {
+		bus.register(StaminaHUD.class);
+		bus.register(KeyRecorder.class);
+		bus.register(PlayerRenderEventHandler.class);
+		bus.register(EventActivateParCool.class);
 	}
 }
