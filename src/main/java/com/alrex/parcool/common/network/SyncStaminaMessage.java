@@ -3,7 +3,6 @@ package com.alrex.parcool.common.network;
 import com.alrex.parcool.ParCool;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -38,7 +37,6 @@ public class SyncStaminaMessage {
 		contextSupplier.get().setPacketHandled(true);
 	}
 
-	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class MessageRegistry {
 		private static final int ID = 9;
 

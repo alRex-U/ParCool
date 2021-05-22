@@ -9,13 +9,13 @@ import com.alrex.parcool.constants.TranslateKeys;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.Mod;
 
-//only in Client
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
+@OnlyIn(Dist.CLIENT)
 public class EventActivateParCool {
 	@SubscribeEvent
 	public static void onTick(TickEvent.ClientTickEvent event) {

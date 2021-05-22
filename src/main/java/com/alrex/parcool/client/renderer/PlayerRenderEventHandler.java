@@ -3,12 +3,12 @@ package com.alrex.parcool.client.renderer;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
-//only in Client
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
+@OnlyIn(Dist.CLIENT)
 public class PlayerRenderEventHandler {
 	@SubscribeEvent
 	public static void onPlayerRenderPre(RenderPlayerEvent.Pre event) {

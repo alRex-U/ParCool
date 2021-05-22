@@ -12,7 +12,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -65,7 +64,6 @@ public class StartRollMessage {
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), message);
 	}
 
-	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 	public static class MessageRegistry {
 		private static final int ID = 2;
 

@@ -1,6 +1,8 @@
 package com.alrex.parcool;
 
 import com.alrex.parcool.common.command.ParCoolCommands;
+import com.alrex.parcool.common.registries.EventBusForgeRegistry;
+import com.alrex.parcool.common.registries.EventBusModRegistry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -56,6 +58,8 @@ public class ParCool {
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
+		EventBusForgeRegistry.register(MinecraftForge.EVENT_BUS);
+		EventBusModRegistry.registry(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 
 	private void doClientStuff(final FMLClientSetupEvent event) {

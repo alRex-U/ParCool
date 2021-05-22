@@ -11,11 +11,9 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 import java.util.UUID;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class FastRunningLogic {
 	private static final String FAST_RUNNING_MODIFIER_NAME = "parCool.modifier.fastrunnning";
 	private static final UUID FAST_RUNNING_MODIFIER_UUID = UUID.randomUUID();

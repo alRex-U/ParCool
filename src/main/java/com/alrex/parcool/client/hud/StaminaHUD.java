@@ -8,11 +8,12 @@ import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
+@OnlyIn(Dist.CLIENT)
 public class StaminaHUD extends AbstractGui {
 	public static void render(RenderGameOverlayEvent event) {
 		if (!ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.get()) return;
