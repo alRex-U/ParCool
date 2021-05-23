@@ -26,25 +26,24 @@ public class JumpBoostLogic {
 		IStamina stamina = IStamina.get(player);
 		if (catLeap == null || stamina == null) return;
 
-		ClientPlayerEntity playerClient = Minecraft.getInstance().player;
-		if (playerClient != event.player) return;
+		if (!player.isUser()) return;
 
 
 		catLeap.updateReadyTime();
 
 		boolean oldLeaping = catLeap.isLeaping();
-		if (catLeap.canCatLeap(playerClient)) {
-			Vector3d motionVec = playerClient.getMotion();
+		if (catLeap.canCatLeap(player)) {
+			Vector3d motionVec = player.getMotion();
 			Vector3d vec = new Vector3d(motionVec.getX(), 0, motionVec.getZ()).normalize();
-			playerClient.setMotion(vec.getX(), catLeap.getBoostValue(playerClient), vec.getZ());
+			player.setMotion(vec.getX(), catLeap.getBoostValue(player), vec.getZ());
 			stamina.consume(catLeap.getStaminaConsumption());
 			catLeap.setLeaping(true);
 			catLeap.setReady(false);
-		} else if (catLeap.isLeaping() && (playerClient.collidedHorizontally || playerClient.collidedVertically || playerClient.isInWaterOrBubbleColumn())) {
+		} else if (catLeap.isLeaping() && (player.collidedHorizontally || player.collidedVertically || player.isInWaterOrBubbleColumn())) {
 			catLeap.setLeaping(false);
 		}
-		catLeap.setReady(catLeap.canReadyLeap(playerClient));
-		if (oldLeaping != catLeap.isLeaping()) SyncCatLeapMessage.sync(playerClient);
+		catLeap.setReady(catLeap.canReadyLeap(player));
+		if (oldLeaping != catLeap.isLeaping()) SyncCatLeapMessage.sync(player);
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -6,7 +6,7 @@ import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.capability.IGrabCliff;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -17,7 +17,7 @@ public class GrabCliff implements IGrabCliff {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canGrabCliff(ClientPlayerEntity player) {
+	public boolean canGrabCliff(PlayerEntity player) {
 		IStamina stamina = IStamina.get(player);
 		if (stamina == null) return false;
 
@@ -27,7 +27,7 @@ public class GrabCliff implements IGrabCliff {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canJumpOnCliff(ClientPlayerEntity player) {
+	public boolean canJumpOnCliff(PlayerEntity player) {
 		return grabbing && ParCoolConfig.CONFIG_CLIENT.canGrabCliff.get() && grabbingTime > 3 && KeyRecorder.keyJumpState.isPressed();
 	}
 

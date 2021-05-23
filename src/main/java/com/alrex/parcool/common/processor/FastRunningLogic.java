@@ -5,8 +5,6 @@ import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.IFastRunning;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.network.SyncFastRunningMessage;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
@@ -35,11 +33,9 @@ public class FastRunningLogic {
 		IFastRunning fastRunning = IFastRunning.get(player);
 		IStamina stamina = IStamina.get(player);
 		if (stamina == null || fastRunning == null) return;
+		if (!player.isUser() || !ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.get()) return;
 
-		ClientPlayerEntity playerClient = Minecraft.getInstance().player;
-		if (playerClient != event.player || !ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.get()) return;
-
-		ModifiableAttributeInstance attr = playerClient.getAttribute(Attributes.field_233821_d_);
+		ModifiableAttributeInstance attr = player.getAttribute(Attributes.field_233821_d_);
 		if (attr == null) return;
 
 		if (!ParCool.isActive()) {
@@ -48,11 +44,11 @@ public class FastRunningLogic {
 		}
 
 		boolean oldFastRunning = fastRunning.isFastRunning();
-		fastRunning.setFastRunning(fastRunning.canFastRunning(playerClient));
+		fastRunning.setFastRunning(fastRunning.canFastRunning(player));
 
 		fastRunning.updateTime();
 
-		if (fastRunning.isFastRunning() != oldFastRunning) SyncFastRunningMessage.sync(playerClient);
+		if (fastRunning.isFastRunning() != oldFastRunning) SyncFastRunningMessage.sync(player);
 
 		if (fastRunning.isFastRunning()) {
 			if (!attr.hasModifier(FAST_RUNNING_MODIFIER)) attr.func_233769_c_(FAST_RUNNING_MODIFIER);

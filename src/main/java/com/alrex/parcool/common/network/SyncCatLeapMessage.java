@@ -2,8 +2,6 @@ package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.ICatLeap;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
@@ -36,10 +34,16 @@ public class SyncCatLeapMessage {
 		contextSupplier.get().enqueueWork(() -> {
 			PlayerEntity player;
 			if (contextSupplier.get().getNetworkManager().getDirection() == PacketDirection.CLIENTBOUND) {
-				player = Minecraft.getInstance().world.getPlayerByUuid(playerID);
-
+				/*
+				World world=Minecraft.getInstance().world;
+				if (world==null)return;
+				player=world.getPlayerByUuid(playerID);
+				if (player==null||player.isUser())return;
+				 */
+				return;
 			} else {
 				player = contextSupplier.get().getSender();
+				ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 			}
 			ICatLeap catLeap = ICatLeap.get(player);
 			if (catLeap == null) return;
@@ -50,7 +54,7 @@ public class SyncCatLeapMessage {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void sync(ClientPlayerEntity player) {
+	public static void sync(PlayerEntity player) {
 		ICatLeap catLeap = ICatLeap.get(player);
 		if (catLeap == null) return;
 
@@ -58,7 +62,6 @@ public class SyncCatLeapMessage {
 		message.isLeaping = catLeap.isLeaping();
 		message.playerID = player.getUniqueID();
 
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), message);
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);
 	}
 }

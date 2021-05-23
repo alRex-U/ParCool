@@ -3,8 +3,6 @@ package com.alrex.parcool.common.processor;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.IVault;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.event.TickEvent;
@@ -21,14 +19,14 @@ public class VaultLogic {
 	public static void onTick(TickEvent.PlayerTickEvent event) {
 		if (event.phase != TickEvent.Phase.START || event.side == LogicalSide.SERVER) return;
 
-		PlayerEntity playerEntity = event.player;
-		IVault vault = IVault.get(playerEntity);
+		PlayerEntity player = event.player;
+		IVault vault = IVault.get(player);
 		if (vault == null) return;
 
 		vault.updateVaultingTime();
 
-		ClientPlayerEntity player = Minecraft.getInstance().player;
-		if (player != event.player) return;
+
+		if (!player.isUser()) return;
 		if (!ParCool.isActive()) return;
 
 		if (!vault.isVaulting() && vault.canVault(player)) {

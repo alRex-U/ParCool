@@ -47,15 +47,14 @@ public class RollLogic {
 	public static void onTick(TickEvent.PlayerTickEvent event) {
 		if (event.phase != TickEvent.Phase.END) return;
 		if (event.side != LogicalSide.CLIENT) return;
-		PlayerEntity playerEntity = event.player;
-		IStamina stamina = IStamina.get(playerEntity);
-		IRoll roll = IRoll.get(playerEntity);
+		PlayerEntity player = event.player;
+		IStamina stamina = IStamina.get(player);
+		IRoll roll = IRoll.get(player);
 		if (stamina == null || roll == null) return;
 
 		roll.updateRollingTime();
 
-		ClientPlayerEntity player = Minecraft.getInstance().player;
-		if (player != event.player) return;
+		if (!player.isUser()) return;
 
 		boolean oldReady = roll.isRollReady();
 		if (roll.isRollReady()) {

@@ -2,8 +2,6 @@ package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.IGrabCliff;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
@@ -36,11 +34,16 @@ public class SyncGrabCliffMessage {
 		contextSupplier.get().enqueueWork(() -> {
 			PlayerEntity player;
 			if (contextSupplier.get().getNetworkManager().getDirection() == PacketDirection.CLIENTBOUND) {
-				ClientPlayerEntity clientPlayer = Minecraft.getInstance().player;
-				if (clientPlayer == null || playerID.equals(clientPlayer.getUniqueID())) return;
-				player = clientPlayer.world.getPlayerByUuid(playerID);
+				/*
+				World world=Minecraft.getInstance().world;
+				if (world==null)return;
+				player=world.getPlayerByUuid(playerID);
+				if (player==null||player.isUser())return;
+				 */
+				return;
 			} else {
 				player = contextSupplier.get().getSender();
+				ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 			}
 			IGrabCliff grabCliff = IGrabCliff.get(player);
 			if (grabCliff == null) return;
@@ -51,14 +54,14 @@ public class SyncGrabCliffMessage {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void sync(ClientPlayerEntity player) {
+	public static void sync(PlayerEntity player) {
 		IGrabCliff grabCliff = IGrabCliff.get(player);
+		if (grabCliff == null) return;
 
 		SyncGrabCliffMessage message = new SyncGrabCliffMessage();
 		message.isGrabbing = grabCliff.isGrabbing();
 		message.playerID = player.getUniqueID();
 
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), message);
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);
 	}
 

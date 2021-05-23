@@ -2,8 +2,6 @@ package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.IDodge;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
@@ -36,9 +34,16 @@ public class SyncDodgeMessage {
 		contextSupplier.get().enqueueWork(() -> {
 			PlayerEntity player;
 			if (contextSupplier.get().getNetworkManager().getDirection() == PacketDirection.CLIENTBOUND) {
-				player = Minecraft.getInstance().world.getPlayerByUuid(playerID);
+				/*
+				World world=Minecraft.getInstance().world;
+				if (world==null)return;
+				player=world.getPlayerByUuid(playerID);
+				if (player==null||player.isUser())return;
+				 */
+				return;
 			} else {
 				player = contextSupplier.get().getSender();
+				ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 			}
 			if (player == null) return;
 			IDodge dodge = IDodge.get(player);
@@ -50,7 +55,7 @@ public class SyncDodgeMessage {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void sync(ClientPlayerEntity player) {
+	public static void sync(PlayerEntity player) {
 		IDodge dodge = IDodge.get(player);
 		if (dodge == null) return;
 
@@ -58,7 +63,6 @@ public class SyncDodgeMessage {
 		message.isDodging = dodge.isDodging();
 		message.playerID = player.getUniqueID();
 
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), message);
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);
 	}
 }

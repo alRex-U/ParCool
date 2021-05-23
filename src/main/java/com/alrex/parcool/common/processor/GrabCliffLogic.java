@@ -22,16 +22,15 @@ public class GrabCliffLogic {
 	public static void onTick(TickEvent.PlayerTickEvent event) {
 		if (event.phase != TickEvent.Phase.END) return;
 		if (event.side == LogicalSide.SERVER) return;
-		PlayerEntity entity = event.player;
-		IStamina stamina = IStamina.get(entity);
-		IGrabCliff grabCliff = IGrabCliff.get(entity);
+		PlayerEntity player = event.player;
+		IStamina stamina = IStamina.get(player);
+		IGrabCliff grabCliff = IGrabCliff.get(player);
 		if (stamina == null || grabCliff == null) return;
 
 		grabCliff.updateTime();
 
-		if (event.player != Minecraft.getInstance().player) return;
+		if (!player.isUser()) return;
 		if (!ParCool.isActive()) return;
-		ClientPlayerEntity player = Minecraft.getInstance().player;
 
 		boolean oldGrabbing = grabCliff.isGrabbing();
 		grabCliff.setGrabbing(grabCliff.canGrabCliff(player));

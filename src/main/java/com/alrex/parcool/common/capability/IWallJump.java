@@ -1,7 +1,6 @@
 package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
@@ -12,10 +11,10 @@ public interface IWallJump {
 	public double getJumpPower();
 
 	@OnlyIn(Dist.CLIENT)
-	public boolean canWallJump(ClientPlayerEntity player);
+	public boolean canWallJump(PlayerEntity player);
 
 	@OnlyIn(Dist.CLIENT)
-	public Vector3d getJumpDirection(ClientPlayerEntity player);
+	public Vector3d getJumpDirection(PlayerEntity player);
 
 	public int getStaminaConsumption();
 

@@ -1,7 +1,6 @@
 package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -9,7 +8,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public interface IFastRunning {
 	@OnlyIn(Dist.CLIENT)
-	public boolean canFastRunning(ClientPlayerEntity player);
+	public boolean canFastRunning(PlayerEntity player);
 
 	public boolean isFastRunning();
 

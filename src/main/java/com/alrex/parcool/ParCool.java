@@ -15,6 +15,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.*;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -26,9 +27,9 @@ import javax.annotation.Nullable;
 @Mod(ParCool.MOD_ID)
 public class ParCool {
 	public static final String MOD_ID = "parcool";
-	private static final String PROTOCOL_VERSION = "1";
+	private static final String PROTOCOL_VERSION = "1.0";
 	public static final SimpleChannel CHANNEL_INSTANCE = NetworkRegistry.newSimpleChannel(
-			new ResourceLocation(ParCool.MOD_ID, "parcool.message"),
+			new ResourceLocation(ParCool.MOD_ID, "message"),
 			() -> PROTOCOL_VERSION,
 			PROTOCOL_VERSION::equals,
 			PROTOCOL_VERSION::equals
@@ -56,7 +57,6 @@ public class ParCool {
 
 	public ParCool() {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loaded);
@@ -64,10 +64,10 @@ public class ParCool {
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
 
 		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 
 		ModLoadingContext context = ModLoadingContext.get();
 		context.registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.spec);
-
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {
@@ -91,7 +91,8 @@ public class ParCool {
 		runningSide = LogicalSide.SERVER;
 	}
 
-	private void enqueueIMC(final InterModEnqueueEvent event) {
+	private void serverStarting(final FMLServerAboutToStartEvent event) {
+
 	}
 
 	private void processIMC(final InterModProcessEvent event) {

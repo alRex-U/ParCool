@@ -5,7 +5,6 @@ import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.ICrawl;
 import com.alrex.parcool.common.capability.IFastRunning;
 import com.alrex.parcool.common.capability.IRoll;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -39,7 +38,7 @@ public class Crawl implements ICrawl {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canCrawl(ClientPlayerEntity player) {
+	public boolean canCrawl(PlayerEntity player) {
 		IRoll roll = IRoll.get(player);
 		if (roll == null) return false;
 
@@ -48,7 +47,7 @@ public class Crawl implements ICrawl {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canSliding(ClientPlayerEntity player) {
+	public boolean canSliding(PlayerEntity player) {
 		IFastRunning fastRunning = IFastRunning.get(player);
 		IRoll roll = IRoll.get(player);
 		if (fastRunning == null || roll == null) return false;

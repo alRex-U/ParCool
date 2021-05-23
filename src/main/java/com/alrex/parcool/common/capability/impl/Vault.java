@@ -4,7 +4,7 @@ import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.IFastRunning;
 import com.alrex.parcool.common.capability.IVault;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -20,7 +20,7 @@ public class Vault implements IVault {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canVault(ClientPlayerEntity player) {
+	public boolean canVault(PlayerEntity player) {
 		IFastRunning fastRunning = IFastRunning.get(player);
 		if (fastRunning == null) return false;
 

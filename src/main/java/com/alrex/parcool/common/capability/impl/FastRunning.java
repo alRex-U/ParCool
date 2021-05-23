@@ -5,7 +5,7 @@ import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.ICrawl;
 import com.alrex.parcool.common.capability.IFastRunning;
 import com.alrex.parcool.common.capability.IStamina;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -26,7 +26,7 @@ public class FastRunning implements IFastRunning {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canFastRunning(ClientPlayerEntity player) {
+	public boolean canFastRunning(PlayerEntity player) {
 		IStamina stamina = IStamina.get(player);
 		ICrawl crawl = ICrawl.get(player);
 		if (stamina == null || crawl == null) return false;

@@ -1,7 +1,6 @@
 package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -11,13 +10,13 @@ import javax.annotation.Nullable;
 
 public interface ICatLeap {
 	@OnlyIn(Dist.CLIENT)
-	public boolean canCatLeap(ClientPlayerEntity player);
+	public boolean canCatLeap(PlayerEntity player);
 
 	@OnlyIn(Dist.CLIENT)
-	public boolean canReadyLeap(ClientPlayerEntity player);
+	public boolean canReadyLeap(PlayerEntity player);
 
 	@OnlyIn(Dist.CLIENT)
-	public double getBoostValue(ClientPlayerEntity player);
+	public double getBoostValue(PlayerEntity player);
 
 	public boolean isLeaping();
 

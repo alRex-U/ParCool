@@ -15,28 +15,10 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CrawlLogic {
-	@OnlyIn(Dist.CLIENT)
 	private static Vector3d slidingVec = null;
 
-	@OnlyIn(Dist.DEDICATED_SERVER)
 	@SubscribeEvent
-	public static void onTickServer(TickEvent.PlayerTickEvent event) {
-		PlayerEntity player = event.player;
-
-		ICrawl crawl = ICrawl.get(player);
-		if (crawl == null) return;
-
-		if (crawl.isCrawling() || crawl.isSliding()) {
-			player.setPose(Pose.SWIMMING);
-		}
-		if (crawl.isCrawling()) {
-			player.setSprinting(false);
-		}
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@SubscribeEvent
-	public static void onTickClient(TickEvent.PlayerTickEvent event) {
+	public static void onTick(TickEvent.PlayerTickEvent event) {
 		PlayerEntity player = event.player;
 
 		ICrawl crawl = ICrawl.get(player);
@@ -49,24 +31,23 @@ public class CrawlLogic {
 			player.setSprinting(false);
 		}
 		if (!ParCool.isActive()) return;
-		ClientPlayerEntity playerClient = Minecraft.getInstance().player;
-		if (playerClient != player || event.phase != TickEvent.Phase.START) return;
+		if (!player.isUser() || event.phase != TickEvent.Phase.START) return;
 
 		boolean oldCrawling = crawl.isCrawling();
-		crawl.setCrawling(crawl.canCrawl(playerClient));
+		crawl.setCrawling(crawl.canCrawl(player));
 		boolean oldSliding = crawl.isSliding();
-		crawl.setSliding(crawl.canSliding(playerClient));
-		crawl.updateSlidingTime(playerClient);
+		crawl.setSliding(crawl.canSliding(player));
+		crawl.updateSlidingTime(player);
 
 		if (crawl.isCrawling() != oldCrawling || crawl.isSliding() != oldSliding) {
-			SyncCrawlMessage.sync(playerClient);
+			SyncCrawlMessage.sync(player);
 		}
 		if (!oldSliding && crawl.isSliding()) {
 			Vector3d vec = player.getMotion();
 			slidingVec = new Vector3d(vec.getX(), 0, vec.getZ()).scale(3.0);
 		}
 		if (crawl.isSliding()) {
-			if (playerClient.collidedVertically) player.setMotion(slidingVec);
+			if (player.collidedVertically) player.setMotion(slidingVec);
 			slidingVec = slidingVec.scale(0.9);
 		}
 		if (crawl.isSliding()) {

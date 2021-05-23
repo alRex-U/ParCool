@@ -1,7 +1,6 @@
 package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -9,10 +8,10 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public interface IRoll {
 	@OnlyIn(Dist.CLIENT)
-	public boolean canRollReady(ClientPlayerEntity player);
+	public boolean canRollReady(PlayerEntity player);
 
 	@OnlyIn(Dist.CLIENT)
-	public boolean canContinueRollReady(ClientPlayerEntity player);
+	public boolean canContinueRollReady(PlayerEntity player);
 
 	public boolean isRollReady();
 

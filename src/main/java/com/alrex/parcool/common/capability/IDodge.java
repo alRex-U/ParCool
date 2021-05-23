@@ -1,7 +1,6 @@
 package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
@@ -14,14 +13,14 @@ public interface IDodge {
 	enum DodgeDirection {Left, Right, Back}
 
 	@OnlyIn(Dist.CLIENT)
-	public boolean canDodge(ClientPlayerEntity player);
+	public boolean canDodge(PlayerEntity player);
 
 	@OnlyIn(Dist.CLIENT)
 	@Nullable
-	public Vector3d getDodgeDirection(ClientPlayerEntity player);
+	public Vector3d getDodgeDirection(PlayerEntity player);
 
 	@OnlyIn(Dist.CLIENT)
-	public boolean canContinueDodge(ClientPlayerEntity player);
+	public boolean canContinueDodge(PlayerEntity player);
 
 	public boolean isDodging();
 

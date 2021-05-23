@@ -4,7 +4,7 @@ import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.ICrawl;
 import com.alrex.parcool.common.capability.IRoll;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -15,7 +15,7 @@ public class Roll implements IRoll {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinueRollReady(ClientPlayerEntity player) {
+	public boolean canContinueRollReady(PlayerEntity player) {
 		ICrawl crawl = ICrawl.get(player);
 		if (crawl == null) return false;
 
@@ -24,7 +24,7 @@ public class Roll implements IRoll {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canRollReady(ClientPlayerEntity player) {
+	public boolean canRollReady(PlayerEntity player) {
 		ICrawl crawl = ICrawl.get(player);
 		if (crawl == null) return false;
 		return !player.collidedVertically && ParCoolConfig.CONFIG_CLIENT.canRoll.get() && player.getMotion().getY() < -0.25 && !crawl.isCrawling() && !crawl.isSliding() && KeyBindings.getKeyRoll().isKeyDown() && !player.isInWaterOrBubbleColumn();

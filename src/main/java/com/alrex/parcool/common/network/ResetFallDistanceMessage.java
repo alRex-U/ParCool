@@ -1,13 +1,10 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -29,24 +26,21 @@ public class ResetFallDistanceMessage {
 	public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
 			PlayerEntity player;
-			if (contextSupplier.get().getNetworkManager().getDirection() == PacketDirection.CLIENTBOUND) {
-				player = Minecraft.getInstance().world.getPlayerByUuid(playerID);
-
-			} else {
+			if (contextSupplier.get().getNetworkManager().getDirection() != PacketDirection.CLIENTBOUND) {
 				player = contextSupplier.get().getSender();
-			}
+				if (player == null) return;
+			} else return;
 			player.fallDistance = 0;
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
 
 	//only in Client
-	public static void sync(ClientPlayerEntity player) {
+	public static void sync(PlayerEntity player) {
 		player.fallDistance = 0;
 		ResetFallDistanceMessage message = new ResetFallDistanceMessage();
 		message.playerID = player.getUniqueID();
 
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), message);
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);
 	}
 }

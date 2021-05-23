@@ -1,7 +1,6 @@
 package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -9,10 +8,10 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public interface ICrawl {
 	@OnlyIn(Dist.CLIENT)
-	public boolean canCrawl(ClientPlayerEntity player);
+	public boolean canCrawl(PlayerEntity player);
 
 	@OnlyIn(Dist.CLIENT)
-	public boolean canSliding(ClientPlayerEntity player);
+	public boolean canSliding(PlayerEntity player);
 
 	public boolean isCrawling();
 
