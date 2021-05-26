@@ -1,10 +1,14 @@
-package com.alrex.parcool.common.network.registry;
+package com.alrex.parcool.proxy;
 
 import com.alrex.parcool.common.network.*;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-public class MessageRegistry {
-	public static void register(SimpleChannel instance) {
+@OnlyIn(Dist.DEDICATED_SERVER)
+public class ServerProxy extends CommonProxy {
+	@Override
+	public void registerMessages(SimpleChannel instance) {
 		instance.registerMessage(
 				0,
 				ResetFallDistanceMessage.class,
@@ -38,49 +42,49 @@ public class MessageRegistry {
 				SyncCatLeapMessage.class,
 				SyncCatLeapMessage::encode,
 				SyncCatLeapMessage::decode,
-				SyncCatLeapMessage::handle
+				SyncCatLeapMessage::handleServer
 		);
 		instance.registerMessage(
 				5,
 				SyncCrawlMessage.class,
 				SyncCrawlMessage::encode,
 				SyncCrawlMessage::decode,
-				SyncCrawlMessage::handle
+				SyncCrawlMessage::handleServer
 		);
 		instance.registerMessage(
 				6,
 				SyncDodgeMessage.class,
 				SyncDodgeMessage::encode,
 				SyncDodgeMessage::decode,
-				SyncDodgeMessage::handle
+				SyncDodgeMessage::handleServer
 		);
 		instance.registerMessage(
 				7,
 				SyncFastRunningMessage.class,
 				SyncFastRunningMessage::encode,
 				SyncFastRunningMessage::decode,
-				SyncFastRunningMessage::handle
+				SyncFastRunningMessage::handleServer
 		);
 		instance.registerMessage(
 				8,
 				SyncGrabCliffMessage.class,
 				SyncGrabCliffMessage::encode,
 				SyncGrabCliffMessage::decode,
-				SyncGrabCliffMessage::handle
+				SyncGrabCliffMessage::handleServer
 		);
 		instance.registerMessage(
 				9,
 				SyncRollReadyMessage.class,
 				SyncRollReadyMessage::encode,
 				SyncRollReadyMessage::decode,
-				SyncRollReadyMessage::handle
+				SyncRollReadyMessage::handleServer
 		);
 		instance.registerMessage(
 				10,
 				SyncStaminaMessage.class,
 				SyncStaminaMessage::encode,
 				SyncStaminaMessage::decode,
-				SyncStaminaMessage::handle
+				SyncStaminaMessage::handleServer
 		);
 	}
 }

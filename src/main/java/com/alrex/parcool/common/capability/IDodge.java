@@ -10,14 +10,17 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nullable;
 
 public interface IDodge {
-	enum DodgeDirection {Left, Right, Back}
+	enum DodgeDirection {Left, Right, Back, Front}
 
 	@OnlyIn(Dist.CLIENT)
 	public boolean canDodge(PlayerEntity player);
 
 	@OnlyIn(Dist.CLIENT)
+	public void setDirection(DodgeDirection direction);
+
+	@OnlyIn(Dist.CLIENT)
 	@Nullable
-	public Vector3d getDodgeDirection(PlayerEntity player);
+	public Vector3d getAndSetDodgeDirection(PlayerEntity player);
 
 	@OnlyIn(Dist.CLIENT)
 	public boolean canContinueDodge(PlayerEntity player);

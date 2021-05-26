@@ -23,19 +23,31 @@ public class Dodge implements IDodge {
 	public boolean canDodge(PlayerEntity player) {
 		IStamina stamina = IStamina.get(player);
 		if (stamina == null) return false;
-		return coolTime <= 0 && player.collidedVertically && !player.isSneaking() && !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canDodge.get() && (KeyRecorder.keyBack.isDoubleTapped() || KeyRecorder.keyLeft.isDoubleTapped() || KeyRecorder.keyRight.isDoubleTapped());
+		return coolTime <= 0 && player.collidedVertically && !player.isSneaking() && !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canDodge.get() && (KeyRecorder.keyBack.isDoubleTapped() || KeyRecorder.keyLeft.isDoubleTapped() || KeyRecorder.keyRight.isDoubleTapped() || (ParCoolConfig.CONFIG_CLIENT.canFrontFlip.get() && KeyRecorder.keyForward.isDoubleTapped()));
 	}
+
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public void setDirection(DodgeDirection direction) {
+		this.direction = direction;
+	}
+
+	;
 
 	@OnlyIn(Dist.CLIENT)
 	@Nullable
 	@Override
-	public Vector3d getDodgeDirection(PlayerEntity player) {
+	public Vector3d getAndSetDodgeDirection(PlayerEntity player) {
 		Vector3d lookVec = player.getLookVec();
 		lookVec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize();
 
 		if (KeyBindings.getKeyBack().isKeyDown()) {
 			direction = DodgeDirection.Back;
 			return lookVec.inverse();
+		}
+		if (KeyBindings.getKeyForward().isKeyDown()) {
+			direction = DodgeDirection.Front;
+			return lookVec;
 		}
 		if (KeyBindings.getKeyLeft().isKeyDown() && KeyBindings.getKeyRight().isKeyDown()) return null;
 		Vector3d vecToRight = lookVec.rotateYaw((float) Math.PI / -2);

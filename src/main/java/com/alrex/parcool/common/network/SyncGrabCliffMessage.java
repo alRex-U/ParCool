@@ -2,9 +2,10 @@ package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.IGrabCliff;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.PacketDirection;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -30,21 +31,32 @@ public class SyncGrabCliffMessage {
 		return message;
 	}
 
-	public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
+	@OnlyIn(Dist.DEDICATED_SERVER)
+	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
 			PlayerEntity player;
-			if (contextSupplier.get().getNetworkManager().getDirection() == PacketDirection.CLIENTBOUND) {
-				/*
-				World world=Minecraft.getInstance().world;
-				if (world==null)return;
-				player=world.getPlayerByUuid(playerID);
-				if (player==null||player.isUser())return;
-				 */
-				return;
-			} else {
-				player = contextSupplier.get().getSender();
-				ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
-			}
+			player = contextSupplier.get().getSender();
+			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
+			if (player == null) return;
+
+			IGrabCliff grabCliff = IGrabCliff.get(player);
+			if (grabCliff == null) return;
+
+			grabCliff.setGrabbing(this.isGrabbing);
+		});
+		contextSupplier.get().setPacketHandled(true);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
+		contextSupplier.get().enqueueWork(() -> {
+			PlayerEntity player;
+
+			World world = Minecraft.getInstance().world;
+			if (world == null) return;
+			player = world.getPlayerByUuid(playerID);
+			if (player == null || player.isUser()) return;
+
 			IGrabCliff grabCliff = IGrabCliff.get(player);
 			if (grabCliff == null) return;
 

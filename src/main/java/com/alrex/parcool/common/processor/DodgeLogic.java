@@ -28,11 +28,15 @@ public class DodgeLogic {
 		boolean oldDodging = dodge.isDodging();
 		dodge.setDodging(start || (dodge.isDodging() && dodge.canContinueDodge(player)));
 		if (start) {
-			Vector3d vec = dodge.getDodgeDirection(player);
+			Vector3d vec = dodge.getAndSetDodgeDirection(player);
 			if (vec != null) {
 				vec = vec.scale(0.57);
 				IDodge.DodgeDirection direction = dodge.getDirection();
-				player.setMotion(vec.getX(), direction != IDodge.DodgeDirection.Back ? 0.23 : 0.4, vec.getZ());
+				if (direction == IDodge.DodgeDirection.Back || direction == IDodge.DodgeDirection.Front) {
+					player.setMotion(vec.getX(), 0.4, vec.getZ());
+				} else {
+					player.setMotion(vec.getX(), 0.23, vec.getZ());
+				}
 				stamina.consume(dodge.getStaminaConsumption());
 			}
 		}
