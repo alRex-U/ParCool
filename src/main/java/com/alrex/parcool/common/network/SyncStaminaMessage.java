@@ -1,11 +1,15 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.common.capability.IStamina;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -16,14 +20,14 @@ public class SyncStaminaMessage {
 	private boolean exhausted = false;
 	private UUID playerID = null;
 
-	private void encode(PacketBuffer packet) {
+	public void encode(PacketBuffer packet) {
 		packet.writeInt(this.stamina);
 		packet.writeBoolean(this.exhausted);
 		packet.writeLong(this.playerID.getMostSignificantBits());
 		packet.writeLong(this.playerID.getLeastSignificantBits());
 	}
 
-	private static SyncStaminaMessage decode(PacketBuffer packet) {
+	public static SyncStaminaMessage decode(PacketBuffer packet) {
 		SyncStaminaMessage message = new SyncStaminaMessage();
 		message.stamina = packet.readInt();
 		message.exhausted = packet.readBoolean();
@@ -31,26 +35,49 @@ public class SyncStaminaMessage {
 		return message;
 	}
 
-	private void handle(Supplier<NetworkEvent.Context> contextSupplier) {
+	@OnlyIn(Dist.DEDICATED_SERVER)
+	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
+			PlayerEntity player;
+			player = contextSupplier.get().getSender();
+			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
+			if (player == null) return;
+			IStamina stamina = IStamina.get(player);
+			if (stamina == null) return;
 
+			stamina.setStamina(this.stamina);
+			stamina.setExhausted(this.exhausted);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
 
-	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-	public static class MessageRegistry {
-		private static final int ID = 9;
+	@OnlyIn(Dist.CLIENT)
+	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
+		contextSupplier.get().enqueueWork(() -> {
+			PlayerEntity player;
+			World world = Minecraft.getInstance().world;
+			if (world == null) return;
+			player = world.getPlayerByUuid(playerID);
+			if (player == null || player.isUser()) return;
+			IStamina stamina = IStamina.get(player);
+			if (stamina == null) return;
 
-		@SubscribeEvent
-		public static void register(FMLCommonSetupEvent event) {
-			ParCool.CHANNEL_INSTANCE.registerMessage(
-					ID,
-					SyncStaminaMessage.class,
-					SyncStaminaMessage::encode,
-					SyncStaminaMessage::decode,
-					SyncStaminaMessage::handle
-			);
-		}
+			stamina.setStamina(this.stamina);
+			stamina.setExhausted(this.exhausted);
+		});
+		contextSupplier.get().setPacketHandled(true);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public static void sync(PlayerEntity player) {
+		IStamina stamina = IStamina.get(player);
+		if (stamina == null) return;
+
+		SyncStaminaMessage message = new SyncStaminaMessage();
+		message.stamina = stamina.getStamina();
+		message.exhausted = stamina.isExhausted();
+		message.playerID = player.getUniqueID();
+
+		ParCool.CHANNEL_INSTANCE.sendToServer(message);
 	}
 }

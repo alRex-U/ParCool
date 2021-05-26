@@ -4,9 +4,10 @@ import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.IFastRunning;
 import com.alrex.parcool.common.capability.IVault;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class Vault implements IVault {
 	private int vaultingTime = 0;
@@ -17,14 +18,12 @@ public class Vault implements IVault {
 		return 2;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canVault(ClientPlayerEntity player) {
-		IFastRunning fastRunning;
-		{
-			LazyOptional<IFastRunning> fastRunningOptional = player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
-			if (!fastRunningOptional.isPresent()) return false;
-			fastRunning = fastRunningOptional.orElseThrow(NullPointerException::new);
-		}
+	public boolean canVault(PlayerEntity player) {
+		IFastRunning fastRunning = IFastRunning.get(player);
+		if (fastRunning == null) return false;
+
 		Vector3d lookVec = player.getLookVec();
 		lookVec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize();
 		Vector3d wall = WorldUtil.getWall(player);

@@ -5,38 +5,34 @@ import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.ICatLeap;
 import com.alrex.parcool.common.capability.IFastRunning;
 import com.alrex.parcool.common.capability.IStamina;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class CatLeap implements ICatLeap {
 	private boolean leaping = false;
 	private boolean ready = false;
 	private int readyTime = 0;
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canCatLeap(ClientPlayerEntity player) {
-		IStamina stamina;
-		{
-			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
-			if (!staminaOptional.isPresent()) return false;
-			stamina = staminaOptional.orElseThrow(NullPointerException::new);
-		}
+	public boolean canCatLeap(PlayerEntity player) {
+		IStamina stamina = IStamina.get(player);
+		if (stamina == null) return false;
 		return player.collidedVertically && ParCoolConfig.CONFIG_CLIENT.canCatLeap.get() && !stamina.isExhausted() && ready && readyTime < 10 && !KeyBindings.getKeySneak().isKeyDown();
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canReadyLeap(ClientPlayerEntity player) {
-		IFastRunning fastRunning;
-		{
-			LazyOptional<IFastRunning> fastRunningOptional = player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
-			if (!fastRunningOptional.isPresent()) return false;
-			fastRunning = fastRunningOptional.orElseThrow(NullPointerException::new);
-		}
+	public boolean canReadyLeap(PlayerEntity player) {
+		IFastRunning fastRunning = IFastRunning.get(player);
+		if (fastRunning == null) return false;
 		return (fastRunning.getNotRunningTime() < 10 && KeyBindings.getKeySneak().isKeyDown()) || (ready && KeyBindings.getKeySneak().isKeyDown() && readyTime < 10);
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
-	public double getBoostValue(ClientPlayerEntity player) {
+	public double getBoostValue(PlayerEntity player) {
 		return 0.49;
 	}
 

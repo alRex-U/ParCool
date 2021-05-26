@@ -11,23 +11,18 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CrawlLogic {
-	@OnlyIn(Dist.CLIENT)
 	private static Vector3d slidingVec = null;
 
 	@SubscribeEvent
-	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+	public static void onTick(TickEvent.PlayerTickEvent event) {
 		PlayerEntity player = event.player;
 
-		LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
-		if (!crawlOptional.isPresent()) return;
-		ICrawl crawl = crawlOptional.orElseThrow(NullPointerException::new);
+		ICrawl crawl = ICrawl.get(player);
+		if (crawl == null) return;
 
 		if (crawl.isCrawling() || crawl.isSliding()) {
 			player.setPose(Pose.SWIMMING);
@@ -35,29 +30,24 @@ public class CrawlLogic {
 		if (crawl.isCrawling()) {
 			player.setSprinting(false);
 		}
-
-		if (!event.player.world.isRemote) return;
-
-
 		if (!ParCool.isActive()) return;
-		ClientPlayerEntity playerClient = Minecraft.getInstance().player;
-		if (playerClient != player || event.phase != TickEvent.Phase.START) return;
+		if (!player.isUser() || event.phase != TickEvent.Phase.START) return;
 
 		boolean oldCrawling = crawl.isCrawling();
-		crawl.setCrawling(crawl.canCrawl(playerClient));
+		crawl.setCrawling(crawl.canCrawl(player));
 		boolean oldSliding = crawl.isSliding();
-		crawl.setSliding(crawl.canSliding(playerClient));
-		crawl.updateSlidingTime(playerClient);
+		crawl.setSliding(crawl.canSliding(player));
+		crawl.updateSlidingTime(player);
 
 		if (crawl.isCrawling() != oldCrawling || crawl.isSliding() != oldSliding) {
-			SyncCrawlMessage.sync(playerClient);
+			SyncCrawlMessage.sync(player);
 		}
 		if (!oldSliding && crawl.isSliding()) {
 			Vector3d vec = player.getMotion();
 			slidingVec = new Vector3d(vec.getX(), 0, vec.getZ()).scale(3.0);
 		}
 		if (crawl.isSliding()) {
-			if (playerClient.collidedVertically) player.setMotion(slidingVec);
+			if (player.collidedVertically) player.setMotion(slidingVec);
 			slidingVec = slidingVec.scale(0.9);
 		}
 		if (crawl.isSliding()) {
@@ -65,14 +55,15 @@ public class CrawlLogic {
 		}
 	}
 
+
+	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void onRender(TickEvent.RenderTickEvent event) {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		if (player == null || !ParCool.isActive()) return;
 
-		LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
-		if (!crawlOptional.isPresent()) return;
-		ICrawl crawl = crawlOptional.orElseThrow(NullPointerException::new);
+		ICrawl crawl = ICrawl.get(player);
+		if (crawl == null) return;
 
 		if (crawl.isSliding()) {
 			player.rotationYaw = (float) VectorUtil.toYawDegree(slidingVec);

@@ -1,22 +1,20 @@
 package com.alrex.parcool.common.processor;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.IFastRunning;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.network.SyncFastRunningMessage;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.LogicalSide;
 
 import java.util.UUID;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class FastRunningLogic {
 	private static final String FAST_RUNNING_MODIFIER_NAME = "parCool.modifier.fastrunnning";
 	private static final UUID FAST_RUNNING_MODIFIER_UUID = UUID.randomUUID();
@@ -30,19 +28,12 @@ public class FastRunningLogic {
 
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-		if (!event.player.world.isRemote || event.phase != TickEvent.Phase.START) return;
-		ClientPlayerEntity player = Minecraft.getInstance().player;
-		if (player != event.player) return;
-
-		IFastRunning fastRunning;
-		IStamina stamina;
-		{
-			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
-			LazyOptional<IFastRunning> fastRunningOptional = player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
-			if (!fastRunningOptional.isPresent() || !staminaOptional.isPresent()) return;
-			stamina = staminaOptional.orElseThrow(NullPointerException::new);
-			fastRunning = fastRunningOptional.orElseThrow(NullPointerException::new);
-		}
+		if (event.side == LogicalSide.SERVER || event.phase != TickEvent.Phase.START) return;
+		PlayerEntity player = event.player;
+		IFastRunning fastRunning = IFastRunning.get(player);
+		IStamina stamina = IStamina.get(player);
+		if (stamina == null || fastRunning == null) return;
+		if (!player.isUser() || !ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.get()) return;
 
 		ModifiableAttributeInstance attr = player.getAttribute(Attributes.field_233821_d_);
 		if (attr == null) return;

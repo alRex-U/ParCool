@@ -12,19 +12,15 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class PlayerGrabCliffRenderer {
 	public static void onRender(RenderPlayerEvent.Pre event) {
 		if (!(event.getPlayer() instanceof AbstractClientPlayerEntity)) return;
 		AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) event.getPlayer();
 
-		IGrabCliff grabCliff;
-		{
-			LazyOptional<IGrabCliff> grabCliffOptional = player.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
-			if (!grabCliffOptional.isPresent()) return;
-			grabCliff = grabCliffOptional.orElseThrow(NullPointerException::new);
-		}
+		IGrabCliff grabCliff = IGrabCliff.get(player);
+		if (grabCliff == null) return;
+
 		if (grabCliff.isGrabbing()) {
 			ClientPlayerEntity mainPlayer = Minecraft.getInstance().player;
 			if (mainPlayer == null) return;

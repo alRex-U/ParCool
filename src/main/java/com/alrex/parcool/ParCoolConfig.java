@@ -12,6 +12,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue canCrawl;
 		public final ForgeConfigSpec.BooleanValue canDodge;
 		public final ForgeConfigSpec.BooleanValue canFastRunning;
+		public final ForgeConfigSpec.BooleanValue canFrontFlip;
 		public final ForgeConfigSpec.BooleanValue canGrabCliff;
 		public final ForgeConfigSpec.BooleanValue canRoll;
 		public final ForgeConfigSpec.BooleanValue canVault;
@@ -24,6 +25,7 @@ public class ParCoolConfig {
 			{
 				canCatLeap = builder.comment("Possibility to CatLeap").define("canCatLeap", true);
 				canCrawl = builder.comment("Possibility to Crawl").define("canCrawl", true);
+				canFrontFlip = builder.comment("Possibility to FrontFlip").define("canFrontFlip", true);
 				canDodge = builder.comment("Possibility to Dodge").define("canDodge", true);
 				canFastRunning = builder.comment("Possibility to FastRunning").define("canFastRunning", true);
 				canGrabCliff = builder.comment("Possibility to GrabCliff").define("canGrabCliff", true);

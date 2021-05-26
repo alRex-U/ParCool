@@ -6,9 +6,10 @@ import com.alrex.parcool.common.capability.IGrabCliff;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.IWallJump;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
@@ -18,23 +19,20 @@ public class WallJump implements IWallJump {
 		return 0.3;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canWallJump(ClientPlayerEntity player) {
-		IStamina stamina;
-		IGrabCliff grabCliff;
-		{
-			LazyOptional<IGrabCliff> grabCliffOptional = player.getCapability(IGrabCliff.GrabCliffProvider.GRAB_CLIFF_CAPABILITY);
-			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
-			if (!staminaOptional.isPresent() || !grabCliffOptional.isPresent()) return false;
-			stamina = staminaOptional.orElseThrow(NullPointerException::new);
-			grabCliff = grabCliffOptional.orElseThrow(NullPointerException::new);
-		}
+	public boolean canWallJump(PlayerEntity player) {
+		IStamina stamina = IStamina.get(player);
+		IGrabCliff grabCliff = IGrabCliff.get(player);
+		if (stamina == null || grabCliff == null) return false;
+
 		return !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canWallJump.get() && !player.collidedVertically && !player.isInWaterOrBubbleColumn() && !player.isElytraFlying() && !player.abilities.isFlying && !grabCliff.isGrabbing() && KeyRecorder.keyJumpState.isPressed() && WorldUtil.getWall(player) != null;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	@Nullable
-	public Vector3d getJumpDirection(ClientPlayerEntity player) {
+	public Vector3d getJumpDirection(PlayerEntity player) {
 		Vector3d wall = WorldUtil.getWall(player);
 		if (wall == null) return null;
 

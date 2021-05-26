@@ -5,8 +5,9 @@ import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.ICrawl;
 import com.alrex.parcool.common.capability.IFastRunning;
 import com.alrex.parcool.common.capability.IRoll;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class Crawl implements ICrawl {
 	private static final int maxSlidingTime = 15;
@@ -35,22 +36,21 @@ public class Crawl implements ICrawl {
 		this.sliding = sliding;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canCrawl(ClientPlayerEntity player) {
-		LazyOptional<IRoll> rollOptional = player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
-		if (!rollOptional.isPresent()) return false;
-		IRoll roll = rollOptional.orElseThrow(NullPointerException::new);
+	public boolean canCrawl(PlayerEntity player) {
+		IRoll roll = IRoll.get(player);
+		if (roll == null) return false;
 
 		return KeyBindings.getKeyCrawl().isKeyDown() && ParCoolConfig.CONFIG_CLIENT.canCrawl.get() && !roll.isRolling() && !player.isInWaterOrBubbleColumn() && player.collidedVertically;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canSliding(ClientPlayerEntity player) {
-		LazyOptional<IFastRunning> fastOptional = player.getCapability(IFastRunning.FastRunningProvider.FAST_RUNNING_CAPABILITY);
-		LazyOptional<IRoll> rollOptional = player.getCapability(IRoll.RollProvider.ROLL_CAPABILITY);
-		if (!fastOptional.isPresent() || !rollOptional.isPresent()) return false;
-		IFastRunning fastRunning = fastOptional.orElseThrow(NullPointerException::new);
-		IRoll roll = rollOptional.orElseThrow(NullPointerException::new);
+	public boolean canSliding(PlayerEntity player) {
+		IFastRunning fastRunning = IFastRunning.get(player);
+		IRoll roll = IRoll.get(player);
+		if (fastRunning == null || roll == null) return false;
 
 		if (!isSliding() && ParCoolConfig.CONFIG_CLIENT.canCrawl.get() && fastRunning.isFastRunning() && !roll.isRollReady() && !roll.isRolling() && player.collidedVertically && KeyBindings.getKeyCrawl().isKeyDown() && slidingTime >= 0) {
 			return true;
@@ -60,7 +60,7 @@ public class Crawl implements ICrawl {
 	}
 
 	@Override
-	public void updateSlidingTime(ClientPlayerEntity player) {
+	public void updateSlidingTime(PlayerEntity player) {
 		if (slidingTime < 0 && KeyBindings.getKeyCrawl().isKeyDown()) return;
 
 		if (isSliding()) slidingTime++;

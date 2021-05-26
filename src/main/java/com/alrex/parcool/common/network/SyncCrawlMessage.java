@@ -3,16 +3,11 @@ package com.alrex.parcool.common.network;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.ICrawl;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.PacketDirection;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -25,14 +20,14 @@ public class SyncCrawlMessage {
 	private boolean isSliding = false;
 	private UUID playerID = null;
 
-	private void encode(PacketBuffer packet) {
+	public void encode(PacketBuffer packet) {
 		packet.writeBoolean(this.isCrawling);
 		packet.writeBoolean(this.isSliding);
 		packet.writeLong(this.playerID.getMostSignificantBits());
 		packet.writeLong(this.playerID.getLeastSignificantBits());
 	}
 
-	private static SyncCrawlMessage decode(PacketBuffer packet) {
+	public static SyncCrawlMessage decode(PacketBuffer packet) {
 		SyncCrawlMessage message = new SyncCrawlMessage();
 		message.isCrawling = packet.readBoolean();
 		message.isSliding = packet.readBoolean();
@@ -40,18 +35,16 @@ public class SyncCrawlMessage {
 		return message;
 	}
 
-	private void handle(Supplier<NetworkEvent.Context> contextSupplier) {
+	@OnlyIn(Dist.DEDICATED_SERVER)
+	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
 			PlayerEntity player;
-			if (contextSupplier.get().getNetworkManager().getDirection() == PacketDirection.CLIENTBOUND) {
-				player = Minecraft.getInstance().world.getPlayerByUuid(playerID);
+			player = contextSupplier.get().getSender();
+			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 
-			} else {
-				player = contextSupplier.get().getSender();
-			}
-			LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
-			if (!crawlOptional.isPresent()) return;
-			ICrawl crawl = crawlOptional.orElseThrow(NullPointerException::new);
+			ICrawl crawl = ICrawl.get(player);
+			if (crawl == null) return;
+
 			crawl.setCrawling(this.isCrawling);
 			crawl.setSliding(this.isSliding);
 		});
@@ -59,33 +52,32 @@ public class SyncCrawlMessage {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void sync(ClientPlayerEntity player) {
-		LazyOptional<ICrawl> crawlOptional = player.getCapability(ICrawl.CrawlProvider.CRAWL_CAPABILITY);
-		if (!crawlOptional.isPresent()) return;
-		ICrawl crawl = crawlOptional.orElseThrow(NullPointerException::new);
+	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
+		contextSupplier.get().enqueueWork(() -> {
+			PlayerEntity player;
+			World world = Minecraft.getInstance().world;
+			if (world == null) return;
+			player = world.getPlayerByUuid(playerID);
+			if (player == null || player.isUser()) return;
+
+			ICrawl crawl = ICrawl.get(player);
+			if (crawl == null) return;
+
+			crawl.setCrawling(this.isCrawling);
+			crawl.setSliding(this.isSliding);
+		});
+		contextSupplier.get().setPacketHandled(true);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public static void sync(PlayerEntity player) {
+		ICrawl crawl = ICrawl.get(player);
 
 		SyncCrawlMessage message = new SyncCrawlMessage();
 		message.isCrawling = crawl.isCrawling();
 		message.isSliding = crawl.isSliding();
 		message.playerID = player.getUniqueID();
 
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), message);
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);
-	}
-
-	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-	public static class MessageRegistry {
-		private static final int ID = 4;
-
-		@SubscribeEvent
-		public static void register(FMLCommonSetupEvent event) {
-			ParCool.CHANNEL_INSTANCE.registerMessage(
-					ID,
-					SyncCrawlMessage.class,
-					SyncCrawlMessage::encode,
-					SyncCrawlMessage::decode,
-					SyncCrawlMessage::handle
-			);
-		}
 	}
 }

@@ -8,11 +8,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -21,12 +16,12 @@ import java.util.function.Supplier;
 public class ShowActionPossibilityMessage {
 	ActionsEnum action = null;
 
-	private void encode(PacketBuffer packet) {
+	public void encode(PacketBuffer packet) {
 		packet.writeBoolean(action != null);
 		if (action != null) packet.writeString(action.name());
 	}
 
-	private static ShowActionPossibilityMessage decode(PacketBuffer packet) {
+	public static ShowActionPossibilityMessage decode(PacketBuffer packet) {
 		ShowActionPossibilityMessage message = new ShowActionPossibilityMessage();
 		try {
 			if (packet.readBoolean()) message.action = ActionsEnum.valueOf(packet.readString());
@@ -37,7 +32,7 @@ public class ShowActionPossibilityMessage {
 		return message;
 	}
 
-	private void handle(Supplier<NetworkEvent.Context> contextSupplier) {
+	public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
 			ClientPlayerEntity player = Minecraft.getInstance().player;
 			if (player == null) return;
@@ -46,7 +41,7 @@ public class ShowActionPossibilityMessage {
 		contextSupplier.get().setPacketHandled(true);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	private static String getText(ActionsEnum action) {
 		ParCoolConfig.Client c = ParCoolConfig.CONFIG_CLIENT;
 		if (action != null) switch (action) {
@@ -86,19 +81,4 @@ public class ShowActionPossibilityMessage {
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
 	}
 
-	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-	public static class MessageRegistry {
-		private static final int ID = 10;
-
-		@SubscribeEvent
-		public static void register(FMLCommonSetupEvent event) {
-			ParCool.CHANNEL_INSTANCE.registerMessage(
-					ID,
-					ShowActionPossibilityMessage.class,
-					ShowActionPossibilityMessage::encode,
-					ShowActionPossibilityMessage::decode,
-					ShowActionPossibilityMessage::handle
-			);
-		}
-	}
 }

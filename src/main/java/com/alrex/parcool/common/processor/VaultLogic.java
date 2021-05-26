@@ -3,37 +3,30 @@ package com.alrex.parcool.common.processor;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.IVault;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.LogicalSide;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class VaultLogic {
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	private static double wallHeight = 0;
-	@OnlyIn(Dist.CLIENT)
+	//only in Client
 	private static Vector3d stepDirection = null;
 
 	@SubscribeEvent
 	public static void onTick(TickEvent.PlayerTickEvent event) {
-		if (event.phase != TickEvent.Phase.START || !event.player.world.isRemote) return;
+		if (event.phase != TickEvent.Phase.START || event.side == LogicalSide.SERVER) return;
 
-		IVault vault;
-		{
-			LazyOptional<IVault> vaultOptional = event.player.getCapability(IVault.VaultProvider.VAULT_CAPABILITY);
-			if (!vaultOptional.isPresent()) return;
-			vault = vaultOptional.orElseThrow(NullPointerException::new);
-		}
+		PlayerEntity player = event.player;
+		IVault vault = IVault.get(player);
+		if (vault == null) return;
+
 		vault.updateVaultingTime();
 
-		ClientPlayerEntity player = Minecraft.getInstance().player;
-		if (player != event.player) return;
+
+		if (!player.isUser()) return;
 		if (!ParCool.isActive()) return;
 
 		if (!vault.isVaulting() && vault.canVault(player)) {

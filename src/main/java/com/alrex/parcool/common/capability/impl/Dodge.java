@@ -5,9 +5,10 @@ import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.capability.IDodge;
 import com.alrex.parcool.common.capability.IStamina;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
@@ -17,26 +18,36 @@ public class Dodge implements IDodge {
 	private int coolTime = 0;
 	private DodgeDirection direction = null;
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canDodge(ClientPlayerEntity player) {
-		IStamina stamina;
-		{
-			LazyOptional<IStamina> staminaOptional = player.getCapability(IStamina.StaminaProvider.STAMINA_CAPABILITY);
-			if (!staminaOptional.isPresent()) return false;
-			stamina = staminaOptional.orElseThrow(NullPointerException::new);
-		}
-		return coolTime <= 0 && player.collidedVertically && !player.isSneaking() && !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canDodge.get() && (KeyRecorder.keyBack.isDoubleTapped() || KeyRecorder.keyLeft.isDoubleTapped() || KeyRecorder.keyRight.isDoubleTapped());
+	public boolean canDodge(PlayerEntity player) {
+		IStamina stamina = IStamina.get(player);
+		if (stamina == null) return false;
+		return coolTime <= 0 && player.collidedVertically && !player.isSneaking() && !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canDodge.get() && (KeyRecorder.keyBack.isDoubleTapped() || KeyRecorder.keyLeft.isDoubleTapped() || KeyRecorder.keyRight.isDoubleTapped() || (ParCoolConfig.CONFIG_CLIENT.canFrontFlip.get() && KeyRecorder.keyForward.isDoubleTapped()));
 	}
 
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public void setDirection(DodgeDirection direction) {
+		this.direction = direction;
+	}
+
+	;
+
+	@OnlyIn(Dist.CLIENT)
 	@Nullable
 	@Override
-	public Vector3d getDodgeDirection(ClientPlayerEntity player) {
+	public Vector3d getAndSetDodgeDirection(PlayerEntity player) {
 		Vector3d lookVec = player.getLookVec();
 		lookVec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize();
 
 		if (KeyBindings.getKeyBack().isKeyDown()) {
 			direction = DodgeDirection.Back;
 			return lookVec.inverse();
+		}
+		if (KeyBindings.getKeyForward().isKeyDown()) {
+			direction = DodgeDirection.Front;
+			return lookVec;
 		}
 		if (KeyBindings.getKeyLeft().isKeyDown() && KeyBindings.getKeyRight().isKeyDown()) return null;
 		Vector3d vecToRight = lookVec.rotateYaw((float) Math.PI / -2);
@@ -72,8 +83,9 @@ public class Dodge implements IDodge {
 		return direction;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinueDodge(ClientPlayerEntity player) {
+	public boolean canContinueDodge(PlayerEntity player) {
 		return dodging && !player.collidedVertically && !player.isInWaterOrBubbleColumn() && !player.isElytraFlying() && !player.abilities.isFlying && ParCoolConfig.CONFIG_CLIENT.canDodge.get();
 	}
 
