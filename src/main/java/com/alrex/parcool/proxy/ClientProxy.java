@@ -38,7 +38,7 @@ public class ClientProxy extends CommonProxy {
 				StartRollMessage.class,
 				StartRollMessage::encode,
 				StartRollMessage::decode,
-				StartRollMessage::handle
+				StartRollMessage::handleClient
 		);
 		instance.registerMessage(
 				4,

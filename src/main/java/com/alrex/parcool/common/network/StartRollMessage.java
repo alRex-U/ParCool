@@ -10,6 +10,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -30,7 +32,8 @@ public class StartRollMessage {
 		return message;
 	}
 
-	public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
+	@OnlyIn(Dist.CLIENT)
+	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
 			if (contextSupplier.get().getNetworkManager().getDirection() == PacketDirection.CLIENTBOUND) {
 				World world = Minecraft.getInstance().world;
@@ -52,6 +55,10 @@ public class StartRollMessage {
 			}
 		});
 		contextSupplier.get().setPacketHandled(true);
+	}
+
+	@OnlyIn(Dist.DEDICATED_SERVER)
+	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
 	}
 
 	public static void send(ServerPlayerEntity player) {

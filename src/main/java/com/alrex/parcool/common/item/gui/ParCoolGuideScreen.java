@@ -35,7 +35,7 @@ public class ParCoolGuideScreen extends Screen {
 
 	private static final int PAGE_HOME = -1;
 	private static final int PAGE_SETTINGS = -2;
-	private int currentPage = PAGE_HOME;
+	private static int currentPage = PAGE_HOME;
 	private List<ITextProperties> pages = getPages();
 	private final List<Button> menuButtons = Arrays.asList(
 			new Button(0, 0, 0, 0, ITextComponent.func_241827_a_("About This Mod"), this::onPress),
@@ -149,7 +149,6 @@ public class ParCoolGuideScreen extends Screen {
 					int width = button.func_230998_h_();
 					return (x < mouseX && mouseX < x + width && y < mouseY && mouseY < y + height);
 				}).findFirst().ifPresent(CheckboxButton::func_230930_b_);
-				return true;
 			}
 			menuButtons.stream().filter(button -> {
 				int x = button.field_230690_l_;
