@@ -1,6 +1,5 @@
 package com.alrex.parcool.common.processor;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.IRoll;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.network.StartRollMessage;
@@ -95,7 +94,7 @@ public class RollLogic {
 		IRoll roll = IRoll.get(player);
 		if (roll == null) return;
 
-		if (roll.isRollReady() && ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.get() && ParCoolConfig.CONFIG_CLIENT.canRoll.get()) {
+		if (roll.isRollReady()) {
 			roll.setRollReady(false);
 			StartRollMessage.send(player);
 			float damage = event.getAmount();

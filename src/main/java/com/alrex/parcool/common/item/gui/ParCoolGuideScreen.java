@@ -11,9 +11,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.button.CheckboxButton;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.ITextProperties;
-import net.minecraft.util.text.Style;
+import net.minecraft.util.text.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
@@ -51,16 +49,17 @@ public class ParCoolGuideScreen extends Screen {
 			new Button(0, 0, 0, 0, ITextComponent.func_241827_a_("Sliding"), this::onPress),
 			new Button(0, 0, 0, 0, ITextComponent.func_241827_a_("Settings"), this::openSetting)
 	);
+	private final Color color = Color.func_240743_a_(getColorCodeFromARGB(0xFF, 0x99, 0x99, 0xBB));
 	private final List<CheckboxButton> settingButtons = Arrays.asList(
-			new CheckboxButton(0, 0, 0, 0, ITextComponent.func_241827_a_("CatLeap"), ParCoolConfig.CONFIG_CLIENT.canCatLeap.get()),
-			new CheckboxButton(0, 0, 0, 0, ITextComponent.func_241827_a_("Crawl"), ParCoolConfig.CONFIG_CLIENT.canCrawl.get()),
-			new CheckboxButton(0, 0, 0, 0, ITextComponent.func_241827_a_("Dodge"), ParCoolConfig.CONFIG_CLIENT.canDodge.get()),
-			new CheckboxButton(0, 0, 0, 0, ITextComponent.func_241827_a_("FastRunning"), ParCoolConfig.CONFIG_CLIENT.canFastRunning.get()),
-			new CheckboxButton(0, 0, 0, 0, ITextComponent.func_241827_a_("FrontFlip"), ParCoolConfig.CONFIG_CLIENT.canFrontFlip.get()),
-			new CheckboxButton(0, 0, 0, 0, ITextComponent.func_241827_a_("GrabCliff"), ParCoolConfig.CONFIG_CLIENT.canGrabCliff.get()),
-			new CheckboxButton(0, 0, 0, 0, ITextComponent.func_241827_a_("Roll"), ParCoolConfig.CONFIG_CLIENT.canRoll.get()),
-			new CheckboxButton(0, 0, 0, 0, ITextComponent.func_241827_a_("Vault"), ParCoolConfig.CONFIG_CLIENT.canVault.get()),
-			new CheckboxButton(0, 0, 0, 0, ITextComponent.func_241827_a_("WallJump"), ParCoolConfig.CONFIG_CLIENT.canWallJump.get())
+			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("CatLeap").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canCatLeap.get()),
+			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("Crawl").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canCrawl.get()),
+			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("Dodge").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canDodge.get()),
+			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("FastRunning").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canFastRunning.get()),
+			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("FrontFlip").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canFrontFlip.get()),
+			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("GrabCliff").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canGrabCliff.get()),
+			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("Roll").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canRoll.get()),
+			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("Vault").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canVault.get()),
+			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("WallJump").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canWallJump.get())
 	);
 
 	private void syncSettings() {
