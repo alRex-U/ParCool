@@ -3,15 +3,13 @@ package com.alrex.parcool.common.network;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.IRoll;
-import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.processor.RollLogic;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -35,18 +33,17 @@ public class StartRollMessage {
 	public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
 			if (contextSupplier.get().getNetworkManager().getDirection() == PacketDirection.CLIENTBOUND) {
-				ClientPlayerEntity clientPlayer = Minecraft.getInstance().player;
-				PlayerEntity startPlayer = clientPlayer.worldClient.getPlayerByUuid(playerID);
+				World world = Minecraft.getInstance().world;
+				if (world == null) return;
+				PlayerEntity startPlayer = world.getPlayerByUuid(playerID);
+				if (startPlayer == null) return;
 
-				IRoll roll;
-				{
-					LazyOptional<IRoll> rollOptional = startPlayer.getCapability(Capabilities.ROLL_CAPABILITY);
-					if (!rollOptional.isPresent()) return;
-					roll = rollOptional.orElseThrow(NullPointerException::new);
-				}
+				IRoll roll = IRoll.get(startPlayer);
+				if (roll == null) return;
+
 				if (!ParCoolConfig.CONFIG_CLIENT.canRoll.get() || !ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.get())
 					return;
-				if (clientPlayer == startPlayer) {
+				if (startPlayer.isUser()) {
 					RollLogic.rollStart();
 				} else {
 					roll.setRollReady(false);

@@ -1,6 +1,9 @@
 package com.alrex.parcool.proxy;
 
+import com.alrex.parcool.common.item.gui.ParCoolGuideScreen;
 import com.alrex.parcool.common.network.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -86,5 +89,10 @@ public class ClientProxy extends CommonProxy {
 				SyncStaminaMessage::decode,
 				SyncStaminaMessage::handleClient
 		);
+	}
+
+	@Override
+	public void showParCoolGuideScreen(PlayerEntity playerIn) {
+		Minecraft.getInstance().displayGuiScreen(new ParCoolGuideScreen());
 	}
 }

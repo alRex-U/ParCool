@@ -8,5 +8,6 @@
   "message.activation.inactive": "§bParCool:§7停止",
   "warning.activation.exhausted": "§4疲労状態の間はParCoolをオフにできません!",
   "command.error.actionname.invalid": "存在しない名前 [%s]",
-  "command.error.boolean.invalid": "\"true\" か \"false\" のみが使用できます [%s]"
+  "command.error.boolean.invalid": "\"true\" か \"false\" のみが使用できます [%s]",
+  "item.parcool.parcool_guide": "ParCool ガイド"
 }
