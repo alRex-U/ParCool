@@ -28,11 +28,14 @@ public class FastRunningLogic {
 
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-		if (event.side == LogicalSide.SERVER || event.phase != TickEvent.Phase.START) return;
+		if (event.side == LogicalSide.SERVER) return;
 		PlayerEntity player = event.player;
 		IFastRunning fastRunning = IFastRunning.get(player);
 		IStamina stamina = IStamina.get(player);
 		if (stamina == null || fastRunning == null) return;
+		if (fastRunning.isFastRunning()) player.setSprinting(true);
+
+		if (event.phase != TickEvent.Phase.START) return;
 		if (!player.isUser() || !ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.get()) return;
 
 		ModifiableAttributeInstance attr = player.getAttribute(Attributes.field_233821_d_);

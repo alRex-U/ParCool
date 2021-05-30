@@ -23,7 +23,15 @@ public class Dodge implements IDodge {
 	public boolean canDodge(PlayerEntity player) {
 		IStamina stamina = IStamina.get(player);
 		if (stamina == null) return false;
-		return coolTime <= 0 && player.collidedVertically && !player.isSneaking() && !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canDodge.get() && (KeyRecorder.keyBack.isDoubleTapped() || KeyRecorder.keyLeft.isDoubleTapped() || KeyRecorder.keyRight.isDoubleTapped() || (ParCoolConfig.CONFIG_CLIENT.canFrontFlip.get() && KeyRecorder.keyForward.isDoubleTapped()));
+		return coolTime <= 0 && player.collidedVertically && !player.isSneaking() && !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canDodge.get() && (
+				KeyRecorder.keyBack.isDoubleTapped() ||
+						KeyRecorder.keyLeft.isDoubleTapped() ||
+						KeyRecorder.keyRight.isDoubleTapped() ||
+						(ParCoolConfig.CONFIG_CLIENT.canFrontFlip.get() &&
+								(KeyBindings.getKeyForward().conflicts(KeyBindings.getKeyFrontFlip()) ?
+										KeyRecorder.keyFrontFlip.isDoubleTapped() :
+										KeyRecorder.keyFrontFlip.isPressed()))
+		);
 	}
 
 	@Override
@@ -42,7 +50,7 @@ public class Dodge implements IDodge {
 			direction = DodgeDirection.Back;
 			return lookVec.inverse();
 		}
-		if (KeyBindings.getKeyForward().isKeyDown()) {
+		if (KeyBindings.getKeyFrontFlip().isKeyDown()) {
 			direction = DodgeDirection.Front;
 			return lookVec;
 		}

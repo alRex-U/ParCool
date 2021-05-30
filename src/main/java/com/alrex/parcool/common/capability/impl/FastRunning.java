@@ -31,7 +31,7 @@ public class FastRunning implements IFastRunning {
 		ICrawl crawl = ICrawl.get(player);
 		if (stamina == null || crawl == null) return false;
 
-		return !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canFastRunning.get() && !crawl.isCrawling() && !crawl.isSliding() && player.isSprinting() && KeyBindings.getKeySprint().isKeyDown() && !player.isInWaterOrBubbleColumn();
+		return !stamina.isExhausted() && ParCoolConfig.CONFIG_CLIENT.canFastRunning.get() && !crawl.isCrawling() && !crawl.isSliding() && KeyBindings.getKeyFastRunning().isKeyDown() && !player.isInWaterOrBubbleColumn();
 	}
 
 	@Override

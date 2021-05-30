@@ -2,6 +2,8 @@
   "key.crawl.description": "Crawl",
   "key.grab.description": "Grab Cliff",
   "key.roll.description": "Roll",
+  "key.fastrunning.description": "Fast Running",
+  "key.frontflip.description": "Front Flip",
   "key.parcool.activate": "Activate ParCool",
   "key.categories.parcool": "ParCool",
   "message.activation.active": "§bParCool:§2Active",
