@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -36,7 +36,7 @@ public class ShowActionPossibilityMessage {
 		contextSupplier.get().enqueueWork(() -> {
 			ClientPlayerEntity player = Minecraft.getInstance().player;
 			if (player == null) return;
-			player.sendStatusMessage(ITextComponent.func_241827_a_(getText(action)), false);
+			player.sendStatusMessage(new StringTextComponent(getText(action)), false);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}

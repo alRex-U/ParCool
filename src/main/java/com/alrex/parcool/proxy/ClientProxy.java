@@ -1,6 +1,6 @@
 package com.alrex.parcool.proxy;
 
-import com.alrex.parcool.common.item.gui.ParCoolGuideScreen;
+import com.alrex.parcool.client.gui.ParCoolGuideScreen;
 import com.alrex.parcool.common.network.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -93,6 +93,8 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void showParCoolGuideScreen(PlayerEntity playerIn) {
-		Minecraft.getInstance().displayGuiScreen(new ParCoolGuideScreen());
+		if (playerIn.world.isRemote()) {
+			Minecraft.getInstance().displayGuiScreen(new ParCoolGuideScreen());
+		}
 	}
 }

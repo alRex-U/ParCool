@@ -1,4 +1,4 @@
-package com.alrex.parcool.common.item.gui;
+package com.alrex.parcool.client.gui;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.ParCoolConfig;
@@ -36,18 +36,18 @@ public class ParCoolGuideScreen extends Screen {
 	private static int currentPage = PAGE_HOME;
 	private List<ITextProperties> pages = getPages();
 	private final List<Button> menuButtons = Arrays.asList(
-			new Button(0, 0, 0, 0, ITextComponent.func_241827_a_("About This Mod"), this::onPress),
-			new Button(0, 0, 0, 0, ITextComponent.func_241827_a_("Stamina"), this::onPress),
-			new Button(0, 0, 0, 0, ITextComponent.func_241827_a_("CatLeap"), this::onPress),
-			new Button(0, 0, 0, 0, ITextComponent.func_241827_a_("Crawl"), this::onPress),
-			new Button(0, 0, 0, 0, ITextComponent.func_241827_a_("Dodge"), this::onPress),
-			new Button(0, 0, 0, 0, ITextComponent.func_241827_a_("FastRunning"), this::onPress),
-			new Button(0, 0, 0, 0, ITextComponent.func_241827_a_("GrabCliff"), this::onPress),
-			new Button(0, 0, 0, 0, ITextComponent.func_241827_a_("Roll"), this::onPress),
-			new Button(0, 0, 0, 0, ITextComponent.func_241827_a_("Vault"), this::onPress),
-			new Button(0, 0, 0, 0, ITextComponent.func_241827_a_("WallJump"), this::onPress),
-			new Button(0, 0, 0, 0, ITextComponent.func_241827_a_("Sliding"), this::onPress),
-			new Button(0, 0, 0, 0, ITextComponent.func_241827_a_("Settings"), this::openSetting)
+			new Button(0, 0, 0, 0, new StringTextComponent("About This Mod"), this::onPress),
+			new Button(0, 0, 0, 0, new StringTextComponent("Stamina"), this::onPress),
+			new Button(0, 0, 0, 0, new StringTextComponent("CatLeap"), this::onPress),
+			new Button(0, 0, 0, 0, new StringTextComponent("Crawl"), this::onPress),
+			new Button(0, 0, 0, 0, new StringTextComponent("Dodge"), this::onPress),
+			new Button(0, 0, 0, 0, new StringTextComponent("FastRunning"), this::onPress),
+			new Button(0, 0, 0, 0, new StringTextComponent("GrabCliff"), this::onPress),
+			new Button(0, 0, 0, 0, new StringTextComponent("Roll"), this::onPress),
+			new Button(0, 0, 0, 0, new StringTextComponent("Vault"), this::onPress),
+			new Button(0, 0, 0, 0, new StringTextComponent("WallJump"), this::onPress),
+			new Button(0, 0, 0, 0, new StringTextComponent("Sliding"), this::onPress),
+			new Button(0, 0, 0, 0, new StringTextComponent("Settings"), this::openSetting)
 	);
 	private final Color color = Color.func_240743_a_(getColorCodeFromARGB(0xFF, 0x99, 0x99, 0xBB));
 	private final List<CheckboxButton> settingButtons = Arrays.asList(
@@ -81,7 +81,7 @@ public class ParCoolGuideScreen extends Screen {
 	}
 
 	public ParCoolGuideScreen() {
-		super(ITextComponent.func_241827_a_("ParCool"));
+		super(new StringTextComponent("ParCool"));
 	}
 
 	//init?

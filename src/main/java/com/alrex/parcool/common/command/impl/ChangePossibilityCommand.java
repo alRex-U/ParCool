@@ -11,7 +11,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 public class ChangePossibilityCommand {
 	private static final String ARGS_NAME_ACTION = "targetAction";
@@ -34,7 +34,7 @@ public class ChangePossibilityCommand {
 		boolean possibility = commandContext.getArgument(ARGS_NAME_POSSIBILITY, Boolean.class);
 		ActionsEnum actionsEnum = commandContext.getArgument(ARGS_NAME_ACTION, ActionsEnum.class);
 		SetActionPossibilityMessage.send(commandContext.getSource().asPlayer(), actionsEnum, possibility);
-		commandContext.getSource().sendFeedback(ITextComponent.func_241827_a_(String.format("%s : %b", actionsEnum.name(), possibility)), false);
+		commandContext.getSource().sendFeedback(new StringTextComponent(String.format("%s : %b", actionsEnum.name(), possibility)), false);
 		return 0;
 	}
 
