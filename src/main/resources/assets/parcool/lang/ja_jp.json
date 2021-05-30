@@ -9,5 +9,7 @@
   "warning.activation.exhausted": "§4疲労状態の間はParCoolをオフにできません!",
   "command.error.actionname.invalid": "存在しない名前 [%s]",
   "command.error.boolean.invalid": "\"true\" か \"false\" のみが使用できます [%s]",
-  "item.parcool.parcool_guide": "ParCool ガイド"
+  "item.parcool.parcool_guide": "§bParCool ガイド",
+  "itemGroup.ParCool": "ParCool!",
+  "toolTip.parcool_guide": "§7ParCool Modについて書かれた書物"
 }

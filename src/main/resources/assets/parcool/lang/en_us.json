@@ -9,5 +9,7 @@
   "warning.activation.exhausted": "§4You can't inactivate ParCool because you are exhausted!",
   "command.error.actionname.invalid": "No such Action Name [%s]",
   "command.error.boolean.invalid": "Only \"true\" or \"false\" can be used [%s]",
-  "item.parcool.parcool_guide": "ParCool Guide"
+  "item.parcool.parcool_guide": "§bParCool Guide",
+  "itemGroup.ParCool": "ParCool!",
+  "toolTip.parcool_guide": "§7A book written about ParCool"
 }
