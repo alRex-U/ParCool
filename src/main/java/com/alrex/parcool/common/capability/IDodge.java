@@ -15,7 +15,6 @@ public interface IDodge {
 	@OnlyIn(Dist.CLIENT)
 	public boolean canDodge(PlayerEntity player);
 
-	@OnlyIn(Dist.CLIENT)
 	public void setDirection(DodgeDirection direction);
 
 	@OnlyIn(Dist.CLIENT)

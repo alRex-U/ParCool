@@ -1,36 +1,9 @@
-
-
-§lParCool
-Tutorial-Guide§r
-
-
-
-
-
-
-
-
-§7by ParCool Mod§r
-======
-§l[Index]§r
-
-1.About this Mod
-2.Stamina
-3.CatLeap
-4.Crawl
-5.Dodge
-6.FastRunning
-7.GrabCliff
-8.Roll
-9.Vault
-10.WallJump
-11.Sliding
-======
 §l[About this Mod]§r
+
 §lParCool MOD§r is a mod of Minecraft,
 for more §oCool§r Actions like §oParkour§r.
 
-This author is §lNOT§r familiar withwhat called \"Parkour\"§m,Modding and English§r.
+This author is §lNOT§r familiar withwhat called "Parkour" §m,Modding and English§r.
 (simply regarding it as something cool)
 so I love your advice to improve this!
 ======

@@ -1,6 +1,9 @@
 package com.alrex.parcool.proxy;
 
+import com.alrex.parcool.client.gui.ParCoolGuideScreen;
 import com.alrex.parcool.common.network.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -35,7 +38,7 @@ public class ClientProxy extends CommonProxy {
 				StartRollMessage.class,
 				StartRollMessage::encode,
 				StartRollMessage::decode,
-				StartRollMessage::handle
+				StartRollMessage::handleClient
 		);
 		instance.registerMessage(
 				4,
@@ -86,5 +89,12 @@ public class ClientProxy extends CommonProxy {
 				SyncStaminaMessage::decode,
 				SyncStaminaMessage::handleClient
 		);
+	}
+
+	@Override
+	public void showParCoolGuideScreen(PlayerEntity playerIn) {
+		if (playerIn.world.isRemote()) {
+			Minecraft.getInstance().displayGuiScreen(new ParCoolGuideScreen());
+		}
 	}
 }

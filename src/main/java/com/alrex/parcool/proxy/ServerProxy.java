@@ -35,7 +35,7 @@ public class ServerProxy extends CommonProxy {
 				StartRollMessage.class,
 				StartRollMessage::encode,
 				StartRollMessage::decode,
-				StartRollMessage::handle
+				StartRollMessage::handleServer
 		);
 		instance.registerMessage(
 				4,
