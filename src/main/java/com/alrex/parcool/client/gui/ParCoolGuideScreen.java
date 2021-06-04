@@ -10,6 +10,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.button.CheckboxButton;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.*;
 import net.minecraftforge.api.distmarker.Dist;
@@ -61,6 +63,7 @@ public class ParCoolGuideScreen extends Screen {
 			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("Vault").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canVault.get()),
 			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("WallJump").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canWallJump.get())
 	);
+	private IRenderTypeBuffer renderTypeBuffer;
 
 	private void syncSettings() {
 		List<CheckboxButton> b = settingButtons;
@@ -144,7 +147,7 @@ public class ParCoolGuideScreen extends Screen {
 				settingButtons.stream().filter(button -> {
 					int x = button.field_230690_l_;
 					int y = button.field_230691_m_;
-					int height = button.getHeight();
+					int height = button.func_238483_d_();
 					int width = button.func_230998_h_();
 					return (x < mouseX && mouseX < x + width && y < mouseY && mouseY < y + height);
 				}).findFirst().ifPresent(CheckboxButton::func_230930_b_);
@@ -152,7 +155,7 @@ public class ParCoolGuideScreen extends Screen {
 			menuButtons.stream().filter(button -> {
 				int x = button.field_230690_l_;
 				int y = button.field_230691_m_;
-				int height = button.getHeight();
+				int height = button.func_238483_d_();
 				int width = button.func_230998_h_();
 				return (x < mouseX && mouseX < x + width && y < mouseY && mouseY < y + height);
 			}).findFirst().ifPresent(Button::func_230930_b_);
@@ -193,9 +196,23 @@ public class ParCoolGuideScreen extends Screen {
 		final int offsetX = 10;
 		if (currentPage < 0 || pages.size() <= currentPage) return;
 		ITextProperties text = pages.get(currentPage);
-		List<ITextProperties> wrappedLine = fontRenderer.func_238425_b_(text, width - offsetX * 2);
+		List<ITextProperties> wrappedLine = fontRenderer.func_238420_b_().func_238362_b_(text, width - offsetX * 2, Style.field_240709_b_);
 		for (int i = 0; i < wrappedLine.size(); i++) {
-			fontRenderer.func_238422_b_(stack, wrappedLine.get(i), left + offsetX, top + offsetY + i * (fontRenderer.FONT_HEIGHT) + 3, getColorCodeFromARGB(0xFF, 0, 0, 0));
+			IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+
+			fontRenderer.renderString(
+					wrappedLine.get(i).getString(),
+					left + offsetX,
+					top + offsetY + i * (fontRenderer.FONT_HEIGHT) + 3
+					, getColorCodeFromARGB(0xFF, 0, 0, 0),
+					false,
+					stack.getLast().getMatrix(),
+					renderTypeBuffer,
+					true,
+					0,
+					15728880
+			);
+			renderTypeBuffer.finish();
 		}
 	}
 
@@ -212,7 +229,7 @@ public class ParCoolGuideScreen extends Screen {
 			button.field_230690_l_ = left + offsetX;//x
 			button.field_230691_m_ = y;//y
 			button.func_230431_b_(stack, mouseX, mouseY, n);
-			y += button.getHeight();
+			y += fontRenderer.FONT_HEIGHT + 2;
 		}
 	}
 
@@ -229,14 +246,16 @@ public class ParCoolGuideScreen extends Screen {
 			button.field_230690_l_ = left + offsetX;
 			button.field_230691_m_ = y;
 			button.func_230431_b_(stack, mouseX, mouseY, n);
-			y += button.getHeight();
+			y += fontRenderer.FONT_HEIGHT + 4;
 		}
 	}
 
 	private void drawCenteredText(MatrixStack stack, ITextProperties text, int x, int y, int color) {
 		FontRenderer fontRenderer = this.field_230712_o_;
 		int width = fontRenderer.getStringWidth(text.getString());
-		fontRenderer.func_238422_b_(stack, text, x - (width >> 1), y - (fontRenderer.FONT_HEIGHT >> 1), color);
+		IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+		fontRenderer.renderString(text.getString(), x - (width >> 1), y - (fontRenderer.FONT_HEIGHT >> 1), color, false, stack.getLast().getMatrix(), renderTypeBuffer, true, 0, 15728880);
+		renderTypeBuffer.finish();
 	}
 
 	private static int getColorCodeFromARGB(int a, int r, int g, int b) {
