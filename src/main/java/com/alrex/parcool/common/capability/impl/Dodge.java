@@ -4,6 +4,8 @@ import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.capability.IDodge;
+import com.alrex.parcool.common.capability.IGrabCliff;
+import com.alrex.parcool.common.capability.IRoll;
 import com.alrex.parcool.common.capability.IStamina;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
@@ -91,7 +93,17 @@ public class Dodge implements IDodge {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canContinueDodge(PlayerEntity player) {
-		return dodging && !player.collidedVertically && !player.isInWaterOrBubbleColumn() && !player.isElytraFlying() && !player.abilities.isFlying && ParCoolConfig.CONFIG_CLIENT.canDodge.get();
+		IGrabCliff grabCliff = IGrabCliff.get(player);
+		IRoll roll = IRoll.get(player);
+		if (roll == null || grabCliff == null) return false;
+		return dodging &&
+				!roll.isRolling() &&
+				!grabCliff.isGrabbing() &&
+				!player.collidedVertically &&
+				!player.isInWaterOrBubbleColumn() &&
+				!player.isElytraFlying() &&
+				!player.abilities.isFlying &&
+				ParCoolConfig.CONFIG_CLIENT.canDodge.get();
 	}
 
 	@Override
