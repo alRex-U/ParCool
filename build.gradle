@@ -30,9 +30,9 @@ def config = [ //https://mcforge.readthedocs.io/en/latest/conventions/versioning
         major_mod:'1',//Removing items, blocks, tile entities, etc.
         major_api:'2',//Changing the order or variables of enums. etc
         minor:'2',//Adding items, blocks, tile entities, etc.
-        patch:'10',//bugfix
+        patch:'11',//bugfix
         forge_version: '1.16.1-32.0.108',
-        versionStatus: VersionStatus.beta
+        versionStatus: VersionStatus.release
 ]
 
 //Version Format (McVersion-MajorMOD.MajorAPI.Minor.Patch-VersionStatus)
