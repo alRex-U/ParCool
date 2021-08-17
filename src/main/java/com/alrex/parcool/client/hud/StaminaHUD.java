@@ -3,11 +3,13 @@ package com.alrex.parcool.client.hud;
 
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.utilities.FontUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.util.text.ITextProperties;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -42,7 +44,12 @@ public class StaminaHUD extends AbstractGui {
 		AbstractGui.func_238467_a_(event.getMatrixStack(), x + heartWidth + 7, y + 4, x + heartWidth + 7 + staminaWidth, y + 5 + heartWidth, 0x992B2B2B);
 		AbstractGui.func_238467_a_(event.getMatrixStack(), x + heartWidth + 7, y + 4, x + heartWidth + 7 + (int) Math.round(staminaWidth * staminaScale), y + 5 + heartWidth, color);
 		renderYellowHeart(event.getMatrixStack(), x + 4, y + 5, heartWidth, heartWidth);
+
+		if (player.isCreative() || (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && stamina.isAllowedInfiniteStamina())) {
+			FontUtil.drawCenteredText(event.getMatrixStack(), ITextProperties.func_240652_a_("Infinity"), x + heartWidth + 7 + staminaWidth / 2, y + 6 + heartWidth / 2, 0xFFFFFF);
+		}
 	}
+
 
 	private static void renderYellowHeart(MatrixStack stack, int x, int y, int width, int height) {
 		AbstractGui.func_238466_a_(stack, x, y, width, height, 161f, 1f, 7, 7, 256, 256);

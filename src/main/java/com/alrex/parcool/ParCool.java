@@ -66,7 +66,8 @@ public class ParCool {
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 
 		ModLoadingContext context = ModLoadingContext.get();
-		context.registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.spec);
+		context.registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.CLIENT_SPEC);
+		context.registerConfig(ModConfig.Type.SERVER, ParCoolConfig.SERVER_SPEC);
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {

@@ -5,12 +5,14 @@ import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.client.renderer.PlayerRenderEventHandler;
 import com.alrex.parcool.common.event.EventActivateParCool;
 import com.alrex.parcool.common.event.EventAttachCapability;
+import com.alrex.parcool.common.event.PlayerJoinEvent;
 import com.alrex.parcool.common.processor.*;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 public class EventBusForgeRegistry {
 	public static void register(IEventBus bus) {
 		bus.register(EventAttachCapability.class);
+		bus.register(PlayerJoinEvent.class);
 
 		bus.register(CrawlLogic.class);
 		bus.register(DodgeLogic.class);

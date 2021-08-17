@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.processor;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.particle.ParticleProvider;
 import com.alrex.parcool.common.capability.IStamina;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -29,7 +30,7 @@ public class StaminaLogic {
 
 		}
 
-		if (player.isCreative()) {
+		if (player.isCreative() || (stamina.isAllowedInfiniteStamina() && ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get())) {
 			stamina.setStamina(stamina.getMaxStamina());
 			stamina.setExhausted(false);
 			return;

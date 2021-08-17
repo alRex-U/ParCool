@@ -5,6 +5,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.util.LazyOptional;
 
 public interface IStamina {
+	public void allowInfiniteStamina(boolean allowed);
+
+	public boolean isAllowedInfiniteStamina();
+
 	public void setStamina(int newStamina);
 
 	public int getStamina();

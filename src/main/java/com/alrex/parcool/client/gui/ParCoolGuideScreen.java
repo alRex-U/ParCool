@@ -2,6 +2,7 @@ package com.alrex.parcool.client.gui;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.utilities.FontUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
@@ -185,8 +186,8 @@ public class ParCoolGuideScreen extends Screen {
 		final int center = left + width / 2;
 		ITextProperties textTitle = ITextProperties.func_240653_a_("ParCool!", Style.field_240709_b_.func_240713_a_(true));
 		ITextProperties textSubtitle = ITextProperties.func_240652_a_("Guide Book");
-		drawCenteredText(stack, textTitle, center, top + offsetY + 10, getColorCodeFromARGB(0xFF, 0x55, 0x55, 0xFF));
-		drawCenteredText(stack, textSubtitle, center, top + offsetY + 15 + fontRenderer.FONT_HEIGHT, getColorCodeFromARGB(0xFF, 0x44, 0x44, 0xBB));
+		FontUtil.drawCenteredText(stack, textTitle, center, top + offsetY + 10, getColorCodeFromARGB(0xFF, 0x55, 0x55, 0xFF));
+		FontUtil.drawCenteredText(stack, textSubtitle, center, top + offsetY + 15 + fontRenderer.FONT_HEIGHT, getColorCodeFromARGB(0xFF, 0x44, 0x44, 0xBB));
 	}
 
 	private void renderContentText(MatrixStack stack, int left, int top, int width, int height, int mouseX, int mouseY, float n) {
@@ -222,7 +223,7 @@ public class ParCoolGuideScreen extends Screen {
 		int offsetX = 20;
 		int buttonWidth = width - offsetX * 2;
 		int y = (int) (top + offsetY * 1.5);
-		drawCenteredText(stack, ITextProperties.func_240652_a_("Index"), left + width / 2, top + offsetY, getColorCodeFromARGB(0xFF, 0x66, 0x66, 0xFF));
+		FontUtil.drawCenteredText(stack, ITextProperties.func_240652_a_("Index"), left + width / 2, top + offsetY, getColorCodeFromARGB(0xFF, 0x66, 0x66, 0xFF));
 		for (Button button : menuButtons) {
 			button.func_230991_b_(buttonWidth);//width
 			button.setHeight(fontRenderer.FONT_HEIGHT + 2);
@@ -239,7 +240,7 @@ public class ParCoolGuideScreen extends Screen {
 		int offsetX = 20;
 		int buttonWidth = width - offsetX * 2;
 		int y = (int) (top + offsetY * 1.5);
-		drawCenteredText(stack, ITextProperties.func_240652_a_("Enabled Actions"), left + width / 2, top + offsetY, getColorCodeFromARGB(0xFF, 0x66, 0x66, 0xFF));
+		FontUtil.drawCenteredText(stack, ITextProperties.func_240652_a_("Enabled Actions"), left + width / 2, top + offsetY, getColorCodeFromARGB(0xFF, 0x66, 0x66, 0xFF));
 		for (CheckboxButton button : settingButtons) {
 			button.func_230991_b_(buttonWidth);
 			button.setHeight(fontRenderer.FONT_HEIGHT + 6);
@@ -250,13 +251,6 @@ public class ParCoolGuideScreen extends Screen {
 		}
 	}
 
-	private void drawCenteredText(MatrixStack stack, ITextProperties text, int x, int y, int color) {
-		FontRenderer fontRenderer = this.field_230712_o_;
-		int width = fontRenderer.getStringWidth(text.getString());
-		IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-		fontRenderer.renderString(text.getString(), x - (width >> 1), y - (fontRenderer.FONT_HEIGHT >> 1), color, false, stack.getLast().getMatrix(), renderTypeBuffer, true, 0, 15728880);
-		renderTypeBuffer.finish();
-	}
 
 	private static int getColorCodeFromARGB(int a, int r, int g, int b) {
 		return a * 0x1000000 + r * 0x10000 + g * 0x100 + b;

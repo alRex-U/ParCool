@@ -3,9 +3,11 @@ package com.alrex.parcool;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ParCoolConfig {
-	private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+	private static final ForgeConfigSpec.Builder C_BUILDER = new ForgeConfigSpec.Builder();
+	private static final ForgeConfigSpec.Builder S_BUILDER = new ForgeConfigSpec.Builder();
 
-	public static final Client CONFIG_CLIENT = new Client(BUILDER);
+	public static final Client CONFIG_CLIENT = new Client(C_BUILDER);
+	public static final Server CONFIG_SERVER = new Server(S_BUILDER);
 
 	public static class Client {
 		public final ForgeConfigSpec.BooleanValue canCatLeap;
@@ -17,6 +19,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue canRoll;
 		public final ForgeConfigSpec.BooleanValue canVault;
 		public final ForgeConfigSpec.BooleanValue canWallJump;
+		public final ForgeConfigSpec.BooleanValue infiniteStamina;
 		public final ForgeConfigSpec.IntValue maxStamina;
 		public final ForgeConfigSpec.BooleanValue ParCoolActivation;
 
@@ -39,6 +42,11 @@ public class ParCoolConfig {
 				maxStamina = builder.comment("Max Value of Stamina").defineInRange("maxStamina", 1000, 10, 5000);
 			}
 			builder.pop();
+			builder.comment("Others").push("Other configuration");
+			{
+				infiniteStamina = builder.comment("Infinite Stamina").define("infiniteStamina", false);
+			}
+			builder.pop();
 			builder.comment("About ParCool").push("ParCool");
 			{
 				ParCoolActivation = builder.comment("ParCool is Active").define("ParCool_Activation", true);
@@ -47,5 +55,17 @@ public class ParCoolConfig {
 		}
 	}
 
-	public static final ForgeConfigSpec spec = BUILDER.build();
+	public static class Server {
+		public final ForgeConfigSpec.BooleanValue allowInfiniteStamina;
+
+		Server(ForgeConfigSpec.Builder builder) {
+			builder.comment("Others").push("Other Configuration");
+			{
+				allowInfiniteStamina = builder.comment("allow Infinite Stamina").define("infiniteStamina", true);
+			}
+		}
+	}
+
+	public static final ForgeConfigSpec CLIENT_SPEC = C_BUILDER.build();
+	public static final ForgeConfigSpec SERVER_SPEC = S_BUILDER.build();
 }

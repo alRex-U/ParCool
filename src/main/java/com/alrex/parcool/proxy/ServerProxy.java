@@ -86,5 +86,12 @@ public class ServerProxy extends CommonProxy {
 				SyncStaminaMessage::decode,
 				SyncStaminaMessage::handleServer
 		);
+		instance.registerMessage(
+				11,
+				DisableInfiniteStaminaMessage.class,
+				DisableInfiniteStaminaMessage::encode,
+				DisableInfiniteStaminaMessage::decode,
+				null
+		);
 	}
 }

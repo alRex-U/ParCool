@@ -8,6 +8,8 @@
   "key.categories.parcool": "ParCool",
   "message.activation.active": "§bParCool:§2起動",
   "message.activation.inactive": "§bParCool:§7停止",
+  "message.server.enable.infinity": "サーバーが無限スタミナを有効にしました",
+  "message.server.disable.infinity": "このサーバーでは無限スタミナが禁止されています",
   "warning.activation.exhausted": "§4疲労状態の間はParCoolをオフにできません!",
   "command.error.actionname.invalid": "存在しない名前 [%s]",
   "command.error.boolean.invalid": "\"true\" か \"false\" のみが使用できます [%s]",
