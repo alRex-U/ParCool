@@ -19,7 +19,7 @@ public class ChangePossibilityCommand {
 
 	public static ArgumentBuilder<CommandSource, ?> register(CommandDispatcher<CommandSource> dispatcher) {
 		return Commands
-				.literal("ActionPossibility")
+				.literal("actionPossibility")
 				.requires(commandSource -> commandSource.hasPermissionLevel(0))
 				.then(Commands.literal("set")
 						.then(Commands.argument(ARGS_NAME_ACTION, new ActionNameArgument()).then(Commands.argument(ARGS_NAME_POSSIBILITY, new BooleanArgument())

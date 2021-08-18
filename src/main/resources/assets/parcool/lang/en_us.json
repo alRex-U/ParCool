@@ -13,6 +13,8 @@
   "warning.activation.exhausted": "§4You can't inactivate ParCool because you are exhausted!",
   "command.error.actionname.invalid": "No such Action Name [%s]",
   "command.error.boolean.invalid": "Only \"true\" or \"false\" can be used [%s]",
+  "command.server.send.allow.infinite": "Allow players to enable Infinite Stamina",
+  "command.server.send.not.allow.infinite": "Ban players from enabling Infinite Stamina",
   "item.parcool.parcool_guide": "§bParCool Guide",
   "itemGroup.ParCool": "ParCool!",
   "toolTip.parcool_guide": "§7A book written about ParCool"
