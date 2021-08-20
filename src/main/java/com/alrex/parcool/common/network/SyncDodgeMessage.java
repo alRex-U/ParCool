@@ -22,16 +22,21 @@ public class SyncDodgeMessage {
 
 	public void encode(PacketBuffer packet) {
 		packet.writeBoolean(this.isDodging);
-		packet.writeString(dodgeDirection);
 		packet.writeLong(this.playerID.getMostSignificantBits());
 		packet.writeLong(this.playerID.getLeastSignificantBits());
+		packet.writeBoolean(dodgeDirection != null);
+		if (dodgeDirection != null) {
+			packet.writeString(dodgeDirection);
+		}
 	}
 
 	public static SyncDodgeMessage decode(PacketBuffer packet) {
 		SyncDodgeMessage message = new SyncDodgeMessage();
 		message.isDodging = packet.readBoolean();
-		message.dodgeDirection = packet.readString(32767);
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
+		if (packet.readBoolean()) {
+			message.dodgeDirection = packet.readString(32767);
+		}
 		return message;
 	}
 
@@ -69,7 +74,7 @@ public class SyncDodgeMessage {
 
 			IDodge dodge = IDodge.get(player);
 			if (dodge == null) return;
-			dodge.setDirection(IDodge.DodgeDirection.valueOf(dodgeDirection));
+			if (dodgeDirection != null) dodge.setDirection(IDodge.DodgeDirection.valueOf(dodgeDirection));
 			dodge.setDodging(this.isDodging);
 		});
 		contextSupplier.get().setPacketHandled(true);
@@ -84,8 +89,9 @@ public class SyncDodgeMessage {
 		message.isDodging = dodge.isDodging();
 		message.playerID = player.getUniqueID();
 		IDodge.DodgeDirection direction = dodge.getDirection();
-		if (direction == null) return;
-		message.dodgeDirection = direction.name();
+		if (direction != null) {
+			message.dodgeDirection = direction.name();
+		}
 
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);
 	}

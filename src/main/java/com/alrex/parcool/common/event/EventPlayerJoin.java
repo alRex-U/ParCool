@@ -7,7 +7,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class PlayerJoinEvent {
+public class EventPlayerJoin {
 	@SubscribeEvent
 	public static void JoinEvent(EntityJoinWorldEvent event) {
 		Entity entity = event.getEntity();
