@@ -22,6 +22,8 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue infiniteStamina;
 		public final ForgeConfigSpec.IntValue maxStamina;
 		public final ForgeConfigSpec.BooleanValue ParCoolActivation;
+		public final ForgeConfigSpec.BooleanValue hideStaminaHUD;
+		public final ForgeConfigSpec.BooleanValue hideStaminaHUDWhileInfinite;
 
 		Client(ForgeConfigSpec.Builder builder) {
 			builder.comment("Enable ParCool Actions").push("Possibility of Actions");
@@ -40,6 +42,12 @@ public class ParCoolConfig {
 			builder.comment("Values").push("Modify Values");
 			{
 				maxStamina = builder.comment("Max Value of Stamina").defineInRange("maxStamina", 1000, 10, 5000);
+			}
+			builder.pop();
+			builder.comment("HUD").push("HUD configuration");
+			{
+				hideStaminaHUD = builder.comment("hide stamina HUD").define("hideStaminaHUD", false);
+				hideStaminaHUDWhileInfinite = builder.comment("hide stamina HUD while infinite stamina is enabled").define("hideStaminaHUDWhileInfinite", false);
 			}
 			builder.pop();
 			builder.comment("Others").push("Other configuration");
