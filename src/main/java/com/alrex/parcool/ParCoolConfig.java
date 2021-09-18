@@ -65,12 +65,33 @@ public class ParCoolConfig {
 
 	public static class Server {
 		public final ForgeConfigSpec.BooleanValue allowInfiniteStamina;
+		public final ForgeConfigSpec.BooleanValue allowCatLeap;
+		public final ForgeConfigSpec.BooleanValue allowCrawl;
+		public final ForgeConfigSpec.BooleanValue allowDodge;
+		public final ForgeConfigSpec.BooleanValue allowFastRunning;
+		public final ForgeConfigSpec.BooleanValue allowGrabCliff;
+		public final ForgeConfigSpec.BooleanValue allowRoll;
+		public final ForgeConfigSpec.BooleanValue allowVault;
+		public final ForgeConfigSpec.BooleanValue allowWallJump;
 
 		Server(ForgeConfigSpec.Builder builder) {
+			builder.comment("Action Permissions").push("Permissions");
+			{
+				allowCatLeap = builder.comment("allow CatLeap").define("allowCatLeap", true);
+				allowCrawl = builder.comment("allow Crawl").define("allowCrawl", true);
+				allowDodge = builder.comment("allow Dodge").define("allowDodge", true);
+				allowFastRunning = builder.comment("allow FastRunning").define("allowFastRunning", true);
+				allowGrabCliff = builder.comment("allow GrabCliff").define("allowGrabCliff", true);
+				allowRoll = builder.comment("allow Roll").define("allowRoll", true);
+				allowVault = builder.comment("allow Vault").define("allowVault", true);
+				allowWallJump = builder.comment("allowWallJump").define("allow WallJump", true);
+			}
+			builder.pop();
 			builder.comment("Others").push("Other Configuration");
 			{
 				allowInfiniteStamina = builder.comment("allow Infinite Stamina").define("infiniteStamina", true);
 			}
+			builder.pop();
 		}
 	}
 

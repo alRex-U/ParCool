@@ -7,6 +7,7 @@
   "key.frontflip.description": "正面翻转",
   "key.parcool.activate": "ParCool 激活",
   "key.categories.parcool": "ParCool",
+  "message.allowed.action": "允许的行动",
   "message.activation.active": "§bParCool:§2有效",
   "message.activation.inactive": "§bParCool:§7停止",
   "message.server.enable.infinity": "这个服务器启用了你的无限体力配置",

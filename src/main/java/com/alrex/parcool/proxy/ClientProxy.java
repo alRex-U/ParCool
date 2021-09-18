@@ -96,6 +96,13 @@ public class ClientProxy extends CommonProxy {
 				DisableInfiniteStaminaMessage::decode,
 				DisableInfiniteStaminaMessage::handle
 		);
+		instance.registerMessage(
+				12,
+				SendActionPermissionsMessage.class,
+				SendActionPermissionsMessage::encode,
+				SendActionPermissionsMessage::decode,
+				SendActionPermissionsMessage::handle
+		);
 	}
 
 	@Override

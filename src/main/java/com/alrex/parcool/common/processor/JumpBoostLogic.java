@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.processor;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.client.AllowedActions;
 import com.alrex.parcool.common.capability.ICatLeap;
 import com.alrex.parcool.common.capability.ICrawl;
 import com.alrex.parcool.common.capability.IStamina;
@@ -27,6 +28,7 @@ public class JumpBoostLogic {
 		if (catLeap == null || stamina == null) return;
 
 		if (!player.isUser()) return;
+		if (!AllowedActions.isAllowedCatLeap()) return;
 
 
 		catLeap.updateReadyTime();
