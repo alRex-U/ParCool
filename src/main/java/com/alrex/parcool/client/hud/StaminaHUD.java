@@ -21,8 +21,12 @@ public class StaminaHUD extends AbstractGui {
 		if (!ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.get()) return;
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		if (player == null) return;
+		if (player.isCreative()) return;
 		IStamina stamina = IStamina.get(player);
 		if (stamina == null) return;
+		if (ParCoolConfig.CONFIG_CLIENT.hideStaminaHUD.get() ||
+				(ParCoolConfig.CONFIG_CLIENT.hideStaminaHUDWhileInfinite.get() && ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && stamina.isAllowedInfiniteStamina()))
+			return;
 
 		MainWindow window = Minecraft.getInstance().getMainWindow();
 		final int width = window.getScaledWidth();
@@ -45,7 +49,7 @@ public class StaminaHUD extends AbstractGui {
 		AbstractGui.func_238467_a_(event.getMatrixStack(), x + heartWidth + 7, y + 4, x + heartWidth + 7 + (int) Math.round(staminaWidth * staminaScale), y + 5 + heartWidth, color);
 		renderYellowHeart(event.getMatrixStack(), x + 4, y + 5, heartWidth, heartWidth);
 
-		if (player.isCreative() || (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && stamina.isAllowedInfiniteStamina())) {
+		if (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && stamina.isAllowedInfiniteStamina()) {
 			FontUtil.drawCenteredText(event.getMatrixStack(), ITextProperties.func_240652_a_("Infinity"), x + heartWidth + 7 + staminaWidth / 2, y + 6 + heartWidth / 2, 0xFFFFFF);
 		}
 	}

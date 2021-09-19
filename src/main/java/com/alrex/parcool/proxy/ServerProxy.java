@@ -93,5 +93,12 @@ public class ServerProxy extends CommonProxy {
 				DisableInfiniteStaminaMessage::decode,
 				null
 		);
+		instance.registerMessage(
+				12,
+				SendActionPermissionsMessage.class,
+				SendActionPermissionsMessage::encode,
+				SendActionPermissionsMessage::decode,
+				null
+		);
 	}
 }

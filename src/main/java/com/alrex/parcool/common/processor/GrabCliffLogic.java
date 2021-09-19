@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.processor;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.client.AllowedActions;
 import com.alrex.parcool.common.capability.IGrabCliff;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.network.ResetFallDistanceMessage;
@@ -31,6 +32,7 @@ public class GrabCliffLogic {
 
 		if (!player.isUser()) return;
 		if (!ParCool.isActive()) return;
+		if (!AllowedActions.isAllowedGrabCliff()) return;
 
 		boolean oldGrabbing = grabCliff.isGrabbing();
 		grabCliff.setGrabbing(grabCliff.canGrabCliff(player));

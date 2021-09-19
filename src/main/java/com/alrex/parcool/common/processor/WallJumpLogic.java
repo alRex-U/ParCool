@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.processor;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.client.AllowedActions;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.IWallJump;
 import com.alrex.parcool.common.network.ResetFallDistanceMessage;
@@ -21,7 +22,7 @@ public class WallJumpLogic {
 		if (wallJump == null || stamina == null) return;
 
 		if (!player.isUser()) return;
-		if (!ParCool.isActive()) return;
+		if (!ParCool.isActive() || !AllowedActions.isAllowedWallJump()) return;
 
 		if (wallJump.canWallJump(player)) {
 			Vector3d jumpDirection = wallJump.getJumpDirection(player);

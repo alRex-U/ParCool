@@ -2,6 +2,7 @@ package com.alrex.parcool.common.event;
 
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.network.DisableInfiniteStaminaMessage;
+import com.alrex.parcool.common.network.SendActionPermissionsMessage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -14,6 +15,7 @@ public class EventPlayerJoin {
 		if (entity instanceof ServerPlayerEntity) {
 			ServerPlayerEntity player = (ServerPlayerEntity) entity;
 			DisableInfiniteStaminaMessage.send(player, ParCoolConfig.CONFIG_SERVER.allowInfiniteStamina.get());
+			SendActionPermissionsMessage.send(player);
 		}
 	}
 }

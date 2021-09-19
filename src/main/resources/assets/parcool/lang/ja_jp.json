@@ -6,6 +6,7 @@
   "key.frontflip.description": "フロントフリップ",
   "key.parcool.activate": "ParCool 有効化",
   "key.categories.parcool": "ParCool",
+  "message.allowed.action": "許可されたアクション",
   "message.activation.active": "§bParCool:§2起動",
   "message.activation.inactive": "§bParCool:§7停止",
   "message.server.enable.infinity": "サーバーが無限スタミナを有効にしました",

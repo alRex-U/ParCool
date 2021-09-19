@@ -22,6 +22,8 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue infiniteStamina;
 		public final ForgeConfigSpec.IntValue maxStamina;
 		public final ForgeConfigSpec.BooleanValue ParCoolActivation;
+		public final ForgeConfigSpec.BooleanValue hideStaminaHUD;
+		public final ForgeConfigSpec.BooleanValue hideStaminaHUDWhileInfinite;
 
 		Client(ForgeConfigSpec.Builder builder) {
 			builder.comment("Enable ParCool Actions").push("Possibility of Actions");
@@ -42,6 +44,12 @@ public class ParCoolConfig {
 				maxStamina = builder.comment("Max Value of Stamina").defineInRange("maxStamina", 1000, 10, 5000);
 			}
 			builder.pop();
+			builder.comment("HUD").push("HUD configuration");
+			{
+				hideStaminaHUD = builder.comment("hide stamina HUD").define("hideStaminaHUD", false);
+				hideStaminaHUDWhileInfinite = builder.comment("hide stamina HUD while infinite stamina is enabled").define("hideStaminaHUDWhileInfinite", false);
+			}
+			builder.pop();
 			builder.comment("Others").push("Other configuration");
 			{
 				infiniteStamina = builder.comment("Infinite Stamina").define("infiniteStamina", false);
@@ -57,12 +65,33 @@ public class ParCoolConfig {
 
 	public static class Server {
 		public final ForgeConfigSpec.BooleanValue allowInfiniteStamina;
+		public final ForgeConfigSpec.BooleanValue allowCatLeap;
+		public final ForgeConfigSpec.BooleanValue allowCrawl;
+		public final ForgeConfigSpec.BooleanValue allowDodge;
+		public final ForgeConfigSpec.BooleanValue allowFastRunning;
+		public final ForgeConfigSpec.BooleanValue allowGrabCliff;
+		public final ForgeConfigSpec.BooleanValue allowRoll;
+		public final ForgeConfigSpec.BooleanValue allowVault;
+		public final ForgeConfigSpec.BooleanValue allowWallJump;
 
 		Server(ForgeConfigSpec.Builder builder) {
+			builder.comment("Action Permissions").push("Permissions");
+			{
+				allowCatLeap = builder.comment("allow CatLeap").define("allowCatLeap", true);
+				allowCrawl = builder.comment("allow Crawl").define("allowCrawl", true);
+				allowDodge = builder.comment("allow Dodge").define("allowDodge", true);
+				allowFastRunning = builder.comment("allow FastRunning").define("allowFastRunning", true);
+				allowGrabCliff = builder.comment("allow GrabCliff").define("allowGrabCliff", true);
+				allowRoll = builder.comment("allow Roll").define("allowRoll", true);
+				allowVault = builder.comment("allow Vault").define("allowVault", true);
+				allowWallJump = builder.comment("allowWallJump").define("allow WallJump", true);
+			}
+			builder.pop();
 			builder.comment("Others").push("Other Configuration");
 			{
 				allowInfiniteStamina = builder.comment("allow Infinite Stamina").define("infiniteStamina", true);
 			}
+			builder.pop();
 		}
 	}
 

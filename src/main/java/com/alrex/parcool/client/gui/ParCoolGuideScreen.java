@@ -20,6 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -257,8 +258,13 @@ public class ParCoolGuideScreen extends Screen {
 	}
 
 	private static List<ITextProperties> getPages() {
-		final String path = "/assets/parcool/book/parcool_guide_content.txt";
-		BufferedReader reader = new BufferedReader(new InputStreamReader(ParCool.class.getResourceAsStream(path), StandardCharsets.UTF_8));
+		final String path = "/assets/parcool/book/parcool_guide_content_%s.txt";
+		String langCode = Minecraft.getInstance().getLanguageManager().getCurrentLanguage().getCode();
+		InputStream stream = ParCool.class.getResourceAsStream(String.format(path, langCode));
+		if (stream == null) {
+			stream = ParCool.class.getResourceAsStream(String.format(path, "en_us"));
+		}
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
 		ArrayList<String> texts = new ArrayList<>();
 		//=======
 		// replace division line -> \\n and set to list

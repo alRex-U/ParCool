@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.processor;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.client.AllowedActions;
 import com.alrex.parcool.common.capability.ICrawl;
 import com.alrex.parcool.common.network.SyncCrawlMessage;
 import com.alrex.parcool.utilities.VectorUtil;
@@ -31,6 +32,7 @@ public class CrawlLogic {
 			player.setSprinting(false);
 		}
 		if (!ParCool.isActive()) return;
+		if (!AllowedActions.isAllowedCrawl()) return;
 		if (!player.isUser() || event.phase != TickEvent.Phase.START) return;
 
 		boolean oldCrawling = crawl.isCrawling();
