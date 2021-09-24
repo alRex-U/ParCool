@@ -1,6 +1,6 @@
 package com.alrex.parcool.client;
 
-public class AllowedActions {
+public class ActionPermissions {
 	static private boolean allowedCatLeap = true;
 	static private boolean allowedCrawl = true;
 	static private boolean allowedDodge = true;
@@ -9,6 +9,7 @@ public class AllowedActions {
 	static private boolean allowedRoll = true;
 	static private boolean allowedVault = true;
 	static private boolean allowedWallJump = true;
+	static private boolean allowedInfiniteStamina = false;
 
 	public static boolean isAllowedCatLeap() {
 		return allowedCatLeap;
@@ -42,35 +43,43 @@ public class AllowedActions {
 		return allowedWallJump;
 	}
 
+	public static boolean isAllowedInfiniteStamina() {
+		return allowedInfiniteStamina;
+	}
+
 	public static void setAllowedCatLeap(boolean allowedCatLeap) {
-		AllowedActions.allowedCatLeap = allowedCatLeap;
+		ActionPermissions.allowedCatLeap = allowedCatLeap;
 	}
 
 	public static void setAllowedCrawl(boolean allowedCrawl) {
-		AllowedActions.allowedCrawl = allowedCrawl;
+		ActionPermissions.allowedCrawl = allowedCrawl;
 	}
 
 	public static void setAllowedDodge(boolean allowedDodge) {
-		AllowedActions.allowedDodge = allowedDodge;
+		ActionPermissions.allowedDodge = allowedDodge;
 	}
 
 	public static void setAllowedFastRunning(boolean allowedFastRunning) {
-		AllowedActions.allowedFastRunning = allowedFastRunning;
+		ActionPermissions.allowedFastRunning = allowedFastRunning;
 	}
 
 	public static void setAllowedGrabCliff(boolean allowedGrabCliff) {
-		AllowedActions.allowedGrabCliff = allowedGrabCliff;
+		ActionPermissions.allowedGrabCliff = allowedGrabCliff;
 	}
 
 	public static void setAllowedRoll(boolean allowedRoll) {
-		AllowedActions.allowedRoll = allowedRoll;
+		ActionPermissions.allowedRoll = allowedRoll;
 	}
 
 	public static void setAllowedVault(boolean allowedVault) {
-		AllowedActions.allowedVault = allowedVault;
+		ActionPermissions.allowedVault = allowedVault;
 	}
 
 	public static void setAllowedWallJump(boolean allowedWallJump) {
-		AllowedActions.allowedWallJump = allowedWallJump;
+		ActionPermissions.allowedWallJump = allowedWallJump;
+	}
+
+	public static void setAllowedInfiniteStamina(boolean allowedInfinite) {
+		allowedInfiniteStamina = allowedInfinite;
 	}
 }

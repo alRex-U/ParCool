@@ -2,7 +2,7 @@ package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.ParCoolConfig;
-import com.alrex.parcool.client.AllowedActions;
+import com.alrex.parcool.client.ActionPermissions;
 import com.alrex.parcool.constants.ActionsEnum;
 import com.alrex.parcool.constants.TranslateKeys;
 import net.minecraft.client.Minecraft;
@@ -55,14 +55,14 @@ public class SendActionPermissionsMessage {
 	@OnlyIn(Dist.CLIENT)
 	public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
-			AllowedActions.setAllowedCatLeap(allowedCatLeap);
-			AllowedActions.setAllowedCrawl(allowedCrawl);
-			AllowedActions.setAllowedDodge(allowedDodge);
-			AllowedActions.setAllowedFastRunning(allowedFastRunning);
-			AllowedActions.setAllowedGrabCliff(allowedGrabCliff);
-			AllowedActions.setAllowedRoll(allowedRoll);
-			AllowedActions.setAllowedVault(allowedVault);
-			AllowedActions.setAllowedWallJump(allowedWallJump);
+			ActionPermissions.setAllowedCatLeap(allowedCatLeap);
+			ActionPermissions.setAllowedCrawl(allowedCrawl);
+			ActionPermissions.setAllowedDodge(allowedDodge);
+			ActionPermissions.setAllowedFastRunning(allowedFastRunning);
+			ActionPermissions.setAllowedGrabCliff(allowedGrabCliff);
+			ActionPermissions.setAllowedRoll(allowedRoll);
+			ActionPermissions.setAllowedVault(allowedVault);
+			ActionPermissions.setAllowedWallJump(allowedWallJump);
 			PlayerEntity player = Minecraft.getInstance().player;
 			if (player == null) return;
 			player.sendStatusMessage(ITextComponent.func_241827_a_(new StringBuilder()

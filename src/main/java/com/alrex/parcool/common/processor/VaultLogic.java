@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.processor;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.client.AllowedActions;
+import com.alrex.parcool.client.ActionPermissions;
 import com.alrex.parcool.common.capability.IVault;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,7 +28,7 @@ public class VaultLogic {
 
 
 		if (!player.isUser()) return;
-		if (!ParCool.isActive() || !AllowedActions.isAllowedVault()) return;
+		if (!ParCool.isActive() || !ActionPermissions.isAllowedVault()) return;
 
 		if (!vault.isVaulting() && vault.canVault(player)) {
 			vault.setVaulting(true);

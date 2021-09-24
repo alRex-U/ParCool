@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.processor;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.client.AllowedActions;
+import com.alrex.parcool.client.ActionPermissions;
 import com.alrex.parcool.common.capability.IRoll;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.network.StartRollMessage;
@@ -95,7 +95,7 @@ public class RollLogic {
 
 		IRoll roll = IRoll.get(player);
 		if (roll == null) return;
-		if (!ParCool.isActive() || !AllowedActions.isAllowedRoll()) return;
+		if (!ParCool.isActive() || !ActionPermissions.isAllowedRoll()) return;
 
 		if (roll.isRollReady()) {
 			roll.setRollReady(false);

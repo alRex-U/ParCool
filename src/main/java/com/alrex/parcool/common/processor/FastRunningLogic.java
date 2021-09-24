@@ -2,7 +2,7 @@ package com.alrex.parcool.common.processor;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.ParCoolConfig;
-import com.alrex.parcool.client.AllowedActions;
+import com.alrex.parcool.client.ActionPermissions;
 import com.alrex.parcool.common.capability.IFastRunning;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.network.SyncFastRunningMessage;
@@ -42,7 +42,7 @@ public class FastRunningLogic {
 		ModifiableAttributeInstance attr = player.getAttribute(Attributes.field_233821_d_);
 		if (attr == null) return;
 
-		if (!ParCool.isActive() || !AllowedActions.isAllowedFastRunning()) {
+		if (!ParCool.isActive() || !ActionPermissions.isAllowedFastRunning()) {
 			if (attr.hasModifier(FAST_RUNNING_MODIFIER)) attr.removeModifier(FAST_RUNNING_MODIFIER);
 			return;
 		}

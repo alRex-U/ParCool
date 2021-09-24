@@ -9,17 +9,6 @@ public class Stamina implements IStamina {
 	private int stamina = getMaxStamina();
 	private boolean exhausted = false;
 	private int coolTime = 0;
-	private boolean infiniteAllowed = false;
-
-	@Override
-	public void allowInfiniteStamina(boolean allowed) {
-		infiniteAllowed = allowed;
-	}
-
-	@Override
-	public boolean isAllowedInfiniteStamina() {
-		return infiniteAllowed;
-	}
 
 	@Override
 	public void setStamina(int stamina) {
