@@ -27,6 +27,7 @@ public class Stamina implements IStamina {
 
 	@Override
 	public void consume(int amount) {
+		if (exhausted) return;
 		stamina -= amount;
 		coolTime = COOL_TIME;
 		if (stamina <= 0) {

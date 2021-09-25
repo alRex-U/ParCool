@@ -15,6 +15,12 @@ public interface IDodge {
 	@OnlyIn(Dist.CLIENT)
 	public boolean canDodge(PlayerEntity player);
 
+	public int getDamageCoolTime();
+
+	public void resetDamageCoolTime();
+
+	public void updateDamageCoolTime();
+
 	public void setDirection(DodgeDirection direction);
 
 	@OnlyIn(Dist.CLIENT)
@@ -23,6 +29,8 @@ public interface IDodge {
 
 	@OnlyIn(Dist.CLIENT)
 	public boolean canContinueDodge(PlayerEntity player);
+
+	public int getStaminaConsumptionOfAvoiding(float damage);
 
 	public boolean isDodging();
 

@@ -18,6 +18,7 @@ public class Dodge implements IDodge {
 	private int dodgingTime = 0;
 	private boolean dodging = false;
 	private int coolTime = 0;
+	private int damageCoolTime = 0;
 	private DodgeDirection direction = null;
 
 	@OnlyIn(Dist.CLIENT)
@@ -34,6 +35,21 @@ public class Dodge implements IDodge {
 										KeyRecorder.keyFrontFlip.isDoubleTapped() :
 										KeyRecorder.keyFrontFlip.isPressed()))
 		);
+	}
+
+	@Override
+	public int getDamageCoolTime() {
+		return damageCoolTime;
+	}
+
+	@Override
+	public void resetDamageCoolTime() {
+		damageCoolTime = 0;
+	}
+
+	@Override
+	public void updateDamageCoolTime() {
+		damageCoolTime++;
 	}
 
 	@Override
@@ -104,6 +120,11 @@ public class Dodge implements IDodge {
 				!player.isElytraFlying() &&
 				!player.abilities.isFlying &&
 				ParCoolConfig.CONFIG_CLIENT.canDodge.get();
+	}
+
+	@Override
+	public int getStaminaConsumptionOfAvoiding(float damage) {
+		return Math.round(150 + damage * 30);
 	}
 
 	@Override

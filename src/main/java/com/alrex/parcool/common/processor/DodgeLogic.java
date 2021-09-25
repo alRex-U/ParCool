@@ -21,6 +21,7 @@ public class DodgeLogic {
 		if (dodge == null || stamina == null) return;
 
 		dodge.updateDodgingTime();
+		dodge.updateDamageCoolTime();
 		if (event.side == LogicalSide.SERVER) return;
 
 		if (!ActionPermissions.isAllowedDodge()) return;

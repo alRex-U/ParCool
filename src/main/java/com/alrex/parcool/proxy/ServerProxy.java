@@ -100,5 +100,12 @@ public class ServerProxy extends CommonProxy {
 				SendActionPermissionsMessage::decode,
 				null
 		);
+		instance.registerMessage(
+				13,
+				AvoidDamageMessage.class,
+				AvoidDamageMessage::encode,
+				AvoidDamageMessage::decode,
+				null
+		);
 	}
 }
