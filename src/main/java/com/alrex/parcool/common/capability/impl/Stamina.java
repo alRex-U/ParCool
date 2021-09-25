@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.capability.impl;
 
 import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.client.ActionPermissions;
 import com.alrex.parcool.common.capability.IStamina;
 
 public class Stamina implements IStamina {
@@ -27,7 +28,8 @@ public class Stamina implements IStamina {
 
 	@Override
 	public void consume(int amount) {
-		if (exhausted) return;
+		if (exhausted || (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && ActionPermissions.isAllowedInfiniteStamina()))
+			return;
 		stamina -= amount;
 		coolTime = COOL_TIME;
 		if (stamina <= 0) {
