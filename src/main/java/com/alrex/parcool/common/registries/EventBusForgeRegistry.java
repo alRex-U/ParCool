@@ -1,5 +1,8 @@
 package com.alrex.parcool.common.registries;
 
+import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.client.hud.HUDRegistry;
+import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.client.hud.StaminaHUD;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.client.renderer.PlayerRenderEventHandler;
@@ -28,7 +31,16 @@ public class EventBusForgeRegistry {
 	}
 
 	public static void registerClient(IEventBus bus) {
-		bus.register(StaminaHUD.class);
+		bus.register(HUDRegistry.getInstance());
+		HUDRegistry.getInstance().getHuds().add(
+				new StaminaHUD(
+						new Position(
+								ParCoolConfig.CONFIG_CLIENT.alignHorizontalStaminaHUD.get(),
+								ParCoolConfig.CONFIG_CLIENT.alignVerticalStaminaHUD.get(),
+								ParCoolConfig.CONFIG_CLIENT.marginHorizontalStaminaHUD.get(),
+								ParCoolConfig.CONFIG_CLIENT.marginVerticalStaminaHUD.get()
+						)
+				));
 		bus.register(KeyRecorder.class);
 		bus.register(PlayerRenderEventHandler.class);
 		bus.register(EventActivateParCool.class);
