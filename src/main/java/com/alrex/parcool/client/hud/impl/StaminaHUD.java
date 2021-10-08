@@ -1,8 +1,10 @@
-package com.alrex.parcool.client.hud;
+package com.alrex.parcool.client.hud.impl;
 
 
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.ActionPermissions;
+import com.alrex.parcool.client.hud.AbstractHUD;
+import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.common.capability.IStamina;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.MainWindow;

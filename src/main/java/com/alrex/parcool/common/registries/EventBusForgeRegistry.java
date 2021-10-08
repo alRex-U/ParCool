@@ -3,7 +3,7 @@ package com.alrex.parcool.common.registries;
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.hud.Position;
-import com.alrex.parcool.client.hud.StaminaHUD;
+import com.alrex.parcool.client.hud.impl.StaminaHUD;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.client.renderer.PlayerRenderEventHandler;
 import com.alrex.parcool.common.event.EventActivateParCool;
