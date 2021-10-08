@@ -73,7 +73,7 @@ public class Roll implements IRoll {
 
 	@Override
 	public int getRollAnimateTime() {
-		return 10;
+		return 8;
 	}
 
 }

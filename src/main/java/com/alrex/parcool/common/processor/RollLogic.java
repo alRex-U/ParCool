@@ -71,6 +71,7 @@ public class RollLogic {
 			if (rollDirection == null) return;
 			rollDirection.scale(0.7);
 			Vector3d motion = player.getMotion();
+			float scale = (roll.getRollAnimateTime() * 2 - roll.getRollingTime()) / (roll.getRollAnimateTime() * 2);
 			player.setMotion(rollDirection.getX(), motion.getY(), rollDirection.getZ());
 		}
 		if (roll.getRollingTime() >= roll.getRollAnimateTime()) {
