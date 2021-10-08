@@ -45,6 +45,8 @@ public interface IDodge {
 
 	public int getStaminaConsumption();
 
+	public float getDodgeCoolTimeScale();
+
 	public static IDodge get(PlayerEntity entity) {
 		LazyOptional<IDodge> optional = entity.getCapability(Capabilities.DODGE_CAPABILITY);
 		if (!optional.isPresent()) return null;

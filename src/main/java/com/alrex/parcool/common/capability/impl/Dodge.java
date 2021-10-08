@@ -145,4 +145,9 @@ public class Dodge implements IDodge {
 	public int getStaminaConsumption() {
 		return 100;
 	}
+
+	@Override
+	public float getDodgeCoolTimeScale() {
+		return (10f - coolTime) / 10f;
+	}
 }
