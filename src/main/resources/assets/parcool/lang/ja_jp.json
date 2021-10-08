@@ -3,7 +3,7 @@
   "key.grab.description": "崖つかまり",
   "key.roll.description": "ロール",
   "key.fastrunning.description": "ファストラン",
-  "key.frontflip.description": "フロントフリップ",
+  "key.dodge.description": "ドッジロール",
   "key.parcool.activate": "ParCool 有効化",
   "key.categories.parcool": "ParCool",
   "message.allowed.action": "許可されたアクション",

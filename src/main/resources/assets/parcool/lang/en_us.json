@@ -3,7 +3,7 @@
   "key.grab.description": "Grab Cliff",
   "key.roll.description": "Roll",
   "key.fastrunning.description": "Fast Running",
-  "key.frontflip.description": "Front Flip",
+  "key.dodge.description": "Dodge",
   "key.parcool.activate": "Activate ParCool",
   "key.categories.parcool": "ParCool",
   "message.allowed.action": "Allowed Actions",

@@ -4,7 +4,7 @@
   "key.grab.description": "悬崖勒马",
   "key.roll.description": "被动的",
   "key.fastrunning.description": "快速运行",
-  "key.frontflip.description": "正面翻转",
+  "key.dodge.description": "躲避",
   "key.parcool.activate": "ParCool 激活",
   "key.categories.parcool": "ParCool",
   "message.allowed.action": "允许的行动",

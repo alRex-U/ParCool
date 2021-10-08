@@ -30,10 +30,14 @@ public class Dodge implements IDodge {
 				KeyRecorder.keyBack.isDoubleTapped() ||
 						KeyRecorder.keyLeft.isDoubleTapped() ||
 						KeyRecorder.keyRight.isDoubleTapped() ||
-						(ParCoolConfig.CONFIG_CLIENT.canFrontFlip.get() &&
-								(KeyBindings.getKeyForward().conflicts(KeyBindings.getKeyFrontFlip()) ?
-										KeyRecorder.keyFrontFlip.isDoubleTapped() :
-										KeyRecorder.keyFrontFlip.isPressed()))
+						(ParCoolConfig.CONFIG_CLIENT.canFrontFlip.get() && KeyRecorder.keyForward.isDoubleTapped()) ||
+						(KeyBindings.getKeyDodge().isKeyDown() && (
+								KeyBindings.getKeyForward().isKeyDown() ||
+										KeyBindings.getKeyBack().isKeyDown() ||
+										KeyBindings.getKeyLeft().isKeyDown() ||
+										KeyBindings.getKeyRight().isKeyDown()
+						)
+						)
 		);
 	}
 
@@ -68,7 +72,7 @@ public class Dodge implements IDodge {
 			direction = DodgeDirection.Back;
 			return lookVec.inverse();
 		}
-		if (KeyBindings.getKeyFrontFlip().isKeyDown()) {
+		if (KeyBindings.getKeyForward().isKeyDown()) {
 			direction = DodgeDirection.Front;
 			return lookVec;
 		}
