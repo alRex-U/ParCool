@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.processor;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.client.AllowedActions;
+import com.alrex.parcool.client.ActionPermissions;
 import com.alrex.parcool.common.capability.IRoll;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.network.StartRollMessage;
@@ -71,6 +71,7 @@ public class RollLogic {
 			if (rollDirection == null) return;
 			rollDirection.scale(0.7);
 			Vector3d motion = player.getMotion();
+			float scale = (roll.getRollAnimateTime() * 2 - roll.getRollingTime()) / (roll.getRollAnimateTime() * 2);
 			player.setMotion(rollDirection.getX(), motion.getY(), rollDirection.getZ());
 		}
 		if (roll.getRollingTime() >= roll.getRollAnimateTime()) {
@@ -95,7 +96,7 @@ public class RollLogic {
 
 		IRoll roll = IRoll.get(player);
 		if (roll == null) return;
-		if (!ParCool.isActive() || !AllowedActions.isAllowedRoll()) return;
+		if (!ParCool.isActive() || !ActionPermissions.isAllowedRoll()) return;
 
 		if (roll.isRollReady()) {
 			roll.setRollReady(false);

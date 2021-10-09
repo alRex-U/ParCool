@@ -39,6 +39,8 @@ You will be very Cool if you should avoid bullets with this!
 
 §9<How to use>§r
 1.quickly press Movement Key twice
+
+1.Hold down the dodge roll key and press the moving key
 ======
 §l[FastRunning]§r
 It goes without saying.

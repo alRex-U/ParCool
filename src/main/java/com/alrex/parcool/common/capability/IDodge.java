@@ -15,6 +15,12 @@ public interface IDodge {
 	@OnlyIn(Dist.CLIENT)
 	public boolean canDodge(PlayerEntity player);
 
+	public int getDamageCoolTime();
+
+	public void resetDamageCoolTime();
+
+	public void updateDamageCoolTime();
+
 	public void setDirection(DodgeDirection direction);
 
 	@OnlyIn(Dist.CLIENT)
@@ -23,6 +29,8 @@ public interface IDodge {
 
 	@OnlyIn(Dist.CLIENT)
 	public boolean canContinueDodge(PlayerEntity player);
+
+	public int getStaminaConsumptionOfAvoiding(float damage);
 
 	public boolean isDodging();
 
@@ -36,6 +44,8 @@ public interface IDodge {
 	public void updateDodgingTime();
 
 	public int getStaminaConsumption();
+
+	public float getDodgeCoolTimeScale();
 
 	public static IDodge get(PlayerEntity entity) {
 		LazyOptional<IDodge> optional = entity.getCapability(Capabilities.DODGE_CAPABILITY);

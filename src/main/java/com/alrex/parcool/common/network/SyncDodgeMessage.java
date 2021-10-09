@@ -51,7 +51,7 @@ public class SyncDodgeMessage {
 
 			IDodge dodge = IDodge.get(player);
 			if (dodge == null) return;
-			dodge.setDirection(IDodge.DodgeDirection.valueOf(dodgeDirection));
+			if (dodgeDirection != null) dodge.setDirection(IDodge.DodgeDirection.valueOf(dodgeDirection));
 			dodge.setDodging(this.isDodging);
 		});
 		contextSupplier.get().setPacketHandled(true);

@@ -103,6 +103,13 @@ public class ClientProxy extends CommonProxy {
 				SendActionPermissionsMessage::decode,
 				SendActionPermissionsMessage::handle
 		);
+		instance.registerMessage(
+				13,
+				AvoidDamageMessage.class,
+				AvoidDamageMessage::encode,
+				AvoidDamageMessage::decode,
+				AvoidDamageMessage::handleClient
+		);
 	}
 
 	@Override

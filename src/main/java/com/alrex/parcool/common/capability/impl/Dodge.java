@@ -18,6 +18,7 @@ public class Dodge implements IDodge {
 	private int dodgingTime = 0;
 	private boolean dodging = false;
 	private int coolTime = 0;
+	private int damageCoolTime = 0;
 	private DodgeDirection direction = null;
 
 	@OnlyIn(Dist.CLIENT)
@@ -29,11 +30,30 @@ public class Dodge implements IDodge {
 				KeyRecorder.keyBack.isDoubleTapped() ||
 						KeyRecorder.keyLeft.isDoubleTapped() ||
 						KeyRecorder.keyRight.isDoubleTapped() ||
-						(ParCoolConfig.CONFIG_CLIENT.canFrontFlip.get() &&
-								(KeyBindings.getKeyForward().conflicts(KeyBindings.getKeyFrontFlip()) ?
-										KeyRecorder.keyFrontFlip.isDoubleTapped() :
-										KeyRecorder.keyFrontFlip.isPressed()))
+						(ParCoolConfig.CONFIG_CLIENT.canFrontFlip.get() && KeyRecorder.keyForward.isDoubleTapped()) ||
+						(KeyBindings.getKeyDodge().isKeyDown() && (
+								KeyBindings.getKeyForward().isKeyDown() ||
+										KeyBindings.getKeyBack().isKeyDown() ||
+										KeyBindings.getKeyLeft().isKeyDown() ||
+										KeyBindings.getKeyRight().isKeyDown()
+						)
+						)
 		);
+	}
+
+	@Override
+	public int getDamageCoolTime() {
+		return damageCoolTime;
+	}
+
+	@Override
+	public void resetDamageCoolTime() {
+		damageCoolTime = 0;
+	}
+
+	@Override
+	public void updateDamageCoolTime() {
+		damageCoolTime++;
 	}
 
 	@Override
@@ -52,7 +72,7 @@ public class Dodge implements IDodge {
 			direction = DodgeDirection.Back;
 			return lookVec.inverse();
 		}
-		if (KeyBindings.getKeyFrontFlip().isKeyDown()) {
+		if (KeyBindings.getKeyForward().isKeyDown()) {
 			direction = DodgeDirection.Front;
 			return lookVec;
 		}
@@ -107,6 +127,11 @@ public class Dodge implements IDodge {
 	}
 
 	@Override
+	public int getStaminaConsumptionOfAvoiding(float damage) {
+		return Math.round(150 + damage * 30);
+	}
+
+	@Override
 	public void updateDodgingTime() {
 		if (coolTime > 0) coolTime--;
 		if (dodging) {
@@ -119,5 +144,10 @@ public class Dodge implements IDodge {
 	@Override
 	public int getStaminaConsumption() {
 		return 100;
+	}
+
+	@Override
+	public float getDodgeCoolTimeScale() {
+		return (10f - coolTime) / 10f;
 	}
 }

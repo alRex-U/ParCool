@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.processor;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.client.AllowedActions;
+import com.alrex.parcool.client.ActionPermissions;
 import com.alrex.parcool.common.capability.IDodge;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.network.SyncDodgeMessage;
@@ -21,9 +21,10 @@ public class DodgeLogic {
 		if (dodge == null || stamina == null) return;
 
 		dodge.updateDodgingTime();
+		dodge.updateDamageCoolTime();
 		if (event.side == LogicalSide.SERVER) return;
 
-		if (!AllowedActions.isAllowedDodge()) return;
+		if (!ActionPermissions.isAllowedDodge()) return;
 		if (!player.isUser() || !ParCool.isActive()) return;
 
 		boolean start = dodge.canDodge(player);

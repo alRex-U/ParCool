@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.capability.impl;
 
 import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.client.ActionPermissions;
 import com.alrex.parcool.common.capability.IStamina;
 
 public class Stamina implements IStamina {
@@ -9,17 +10,6 @@ public class Stamina implements IStamina {
 	private int stamina = getMaxStamina();
 	private boolean exhausted = false;
 	private int coolTime = 0;
-	private boolean infiniteAllowed = false;
-
-	@Override
-	public void allowInfiniteStamina(boolean allowed) {
-		infiniteAllowed = allowed;
-	}
-
-	@Override
-	public boolean isAllowedInfiniteStamina() {
-		return infiniteAllowed;
-	}
 
 	@Override
 	public void setStamina(int stamina) {
@@ -38,6 +28,8 @@ public class Stamina implements IStamina {
 
 	@Override
 	public void consume(int amount) {
+		if (exhausted || (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && ActionPermissions.isAllowedInfiniteStamina()))
+			return;
 		stamina -= amount;
 		coolTime = COOL_TIME;
 		if (stamina <= 0) {

@@ -29,7 +29,7 @@ public class PlayerRollRenderer {
 			Vector3f vec = new Vector3f((float) lookVec.getX(), 0, (float) lookVec.getZ());
 
 			event.getMatrixStack().translate(0, player.getHeight() / 2, 0);
-			event.getMatrixStack().rotate(vec.rotationDegrees((roll.getRollingTime() + event.getPartialRenderTick()) * 40));
+			event.getMatrixStack().rotate(vec.rotationDegrees((roll.getRollingTime() + event.getPartialRenderTick()) * (360 / roll.getRollAnimateTime())));
 			event.getMatrixStack().translate(0, -player.getHeight() / 2, 0);
 
 			PlayerRenderer renderer = event.getRenderer();

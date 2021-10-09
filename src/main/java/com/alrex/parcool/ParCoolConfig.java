@@ -1,5 +1,6 @@
 package com.alrex.parcool;
 
+import com.alrex.parcool.client.hud.Position;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ParCoolConfig {
@@ -23,7 +24,10 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.IntValue maxStamina;
 		public final ForgeConfigSpec.BooleanValue ParCoolActivation;
 		public final ForgeConfigSpec.BooleanValue hideStaminaHUD;
-		public final ForgeConfigSpec.BooleanValue hideStaminaHUDWhileInfinite;
+		public final ForgeConfigSpec.EnumValue<Position.Horizontal> alignHorizontalStaminaHUD;
+		public final ForgeConfigSpec.EnumValue<Position.Vertical> alignVerticalStaminaHUD;
+		public final ForgeConfigSpec.IntValue marginHorizontalStaminaHUD;
+		public final ForgeConfigSpec.IntValue marginVerticalStaminaHUD;
 
 		Client(ForgeConfigSpec.Builder builder) {
 			builder.comment("Enable ParCool Actions").push("Possibility of Actions");
@@ -44,10 +48,13 @@ public class ParCoolConfig {
 				maxStamina = builder.comment("Max Value of Stamina").defineInRange("maxStamina", 1000, 10, 5000);
 			}
 			builder.pop();
-			builder.comment("HUD").push("HUD configuration");
+			builder.comment("HUD").push("Stamina HUD configuration");
 			{
-				hideStaminaHUD = builder.comment("hide stamina HUD").define("hideStaminaHUD", false);
-				hideStaminaHUDWhileInfinite = builder.comment("hide stamina HUD while infinite stamina is enabled").define("hideStaminaHUDWhileInfinite", false);
+				hideStaminaHUD = builder.comment("hide stamina HUD").define("hideS_HUD", false);
+				alignHorizontalStaminaHUD = builder.comment("horizontal alignment").defineEnum("align_H_S_HUD", Position.Horizontal.Right);
+				alignVerticalStaminaHUD = builder.comment("vertical alignment").defineEnum("align_V_S_HUD", Position.Vertical.Bottom);
+				marginHorizontalStaminaHUD = builder.comment("horizontal margin").defineInRange("margin_H_S_HUD", 3, 0, 100);
+				marginVerticalStaminaHUD = builder.comment("vertical margin").defineInRange("margin_V_S_HUD", 3, 0, 100);
 			}
 			builder.pop();
 			builder.comment("Others").push("Other configuration");
