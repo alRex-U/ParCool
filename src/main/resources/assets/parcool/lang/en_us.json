@@ -6,7 +6,7 @@
   "key.dodge.description": "Dodge",
   "key.parcool.activate": "Activate ParCool",
   "key.categories.parcool": "ParCool",
-  "message.allowed.action": "Allowed Actions",
+  "message.prohibited.action": "Prohibited Actions",
   "message.activation.active": "§bParCool:§2Active",
   "message.activation.inactive": "§bParCool:§7Inactive",
   "message.server.enable.infinity": "This Server enabled your infinite stamina configuration",

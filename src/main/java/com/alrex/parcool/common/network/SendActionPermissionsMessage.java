@@ -10,7 +10,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -65,19 +65,20 @@ public class SendActionPermissionsMessage {
 			ActionPermissions.setAllowedWallJump(allowedWallJump);
 			PlayerEntity player = Minecraft.getInstance().player;
 			if (player == null) return;
-			player.sendStatusMessage(ITextComponent.func_241827_a_(new StringBuilder()
-					.append("ParCool : ")
-					.append(I18n.format(TranslateKeys.MESSAGE_ALLOWED_ACTION)).append('\n')
-					.append(ActionsEnum.CatLeap.name()).append(" : ").append(allowedCatLeap).append('\n')
-					.append(ActionsEnum.Crawl.name()).append(" : ").append(allowedCrawl).append('\n')
-					.append(ActionsEnum.Dodge.name()).append(" : ").append(allowedDodge).append('\n')
-					.append(ActionsEnum.FastRunning.name()).append(" : ").append(allowedFastRunning).append('\n')
-					.append(ActionsEnum.GrabCliff.name()).append(" : ").append(allowedGrabCliff).append('\n')
-					.append(ActionsEnum.Roll.name()).append(" : ").append(allowedRoll).append('\n')
-					.append(ActionsEnum.Vault.name()).append(" : ").append(allowedVault).append('\n')
-					.append(ActionsEnum.WallJump.name()).append(" : ").append(allowedWallJump)
-					.toString()), false
-			);
+			StringBuilder text = new StringBuilder();
+			if (allowedCatLeap && allowedCrawl && allowedDodge && allowedFastRunning && allowedFastRunning
+					&& allowedGrabCliff && allowedRoll && allowedVault && allowedWallJump)
+				return;
+			text.append("ParCool : ").append(I18n.format(TranslateKeys.MESSAGE_PROHIBITED_ACTION));
+			if (!allowedCatLeap) text.append("\n+- ").append(ActionsEnum.CatLeap);
+			if (!allowedCrawl) text.append("\n+- ").append(ActionsEnum.Crawl);
+			if (!allowedDodge) text.append("\n+- ").append(ActionsEnum.Dodge);
+			if (!allowedFastRunning) text.append("\n+- ").append(ActionsEnum.FastRunning);
+			if (!allowedGrabCliff) text.append("\n+- ").append(ActionsEnum.GrabCliff);
+			if (!allowedRoll) text.append("\n+- ").append(ActionsEnum.Roll);
+			if (!allowedVault) text.append("\n+- ").append(ActionsEnum.Vault);
+			if (!allowedWallJump) text.append("\n+- ").append(ActionsEnum.WallJump);
+			player.sendStatusMessage(new StringTextComponent(text.toString()), false);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}

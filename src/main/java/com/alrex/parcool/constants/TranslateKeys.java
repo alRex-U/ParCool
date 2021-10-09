@@ -1,7 +1,7 @@
 package com.alrex.parcool.constants;
 
 public class TranslateKeys {
-	public static final String MESSAGE_ALLOWED_ACTION = "message.allowed.action";
+	public static final String MESSAGE_PROHIBITED_ACTION = "message.prohibited.action";
 	public static final String MESSAGE_ACTIVATION_ACTIVE = "message.activation.active";
 	public static final String MESSAGE_ACTIVATION_INACTIVE = "message.activation.inactive";
 	public static final String MESSAGE_SERVER_ENABLE_INFINITE_STAMINA = "message.server.enable.infinity";
