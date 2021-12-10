@@ -20,3 +20,4 @@ Detail about the bug
 
 **Additional Data**
 Such as Screenshots or Crash Reports
+(I am happy and fix the bug more easily if you send me these)
