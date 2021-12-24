@@ -96,7 +96,7 @@ public class ParCoolConfig {
 			builder.pop();
 			builder.comment("Others").push("Other Configuration");
 			{
-				allowInfiniteStamina = builder.comment("allow Infinite Stamina").define("infiniteStamina", true);
+				allowInfiniteStamina = builder.comment("allow Infinite Stamina").define("infiniteStamina", false);
 			}
 			builder.pop();
 		}
