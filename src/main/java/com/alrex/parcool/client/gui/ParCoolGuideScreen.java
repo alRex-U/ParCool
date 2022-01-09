@@ -60,7 +60,7 @@ public class ParCoolGuideScreen extends Screen {
 			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("Dodge").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canDodge.get()),
 			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("FastRunning").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canFastRunning.get()),
 			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("FrontFlip").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canFrontFlip.get()),
-			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("GrabCliff").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canGrabCliff.get()),
+			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("GrabCliff").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canClingToCliff.get()),
 			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("Roll").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canRoll.get()),
 			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("Vault").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canVault.get()),
 			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("WallJump").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canWallJump.get())
@@ -75,7 +75,7 @@ public class ParCoolGuideScreen extends Screen {
 		ParCoolConfig.CONFIG_CLIENT.canDodge.set(b.get(2).isChecked());
 		ParCoolConfig.CONFIG_CLIENT.canFastRunning.set(b.get(3).isChecked());
 		ParCoolConfig.CONFIG_CLIENT.canFrontFlip.set(b.get(4).isChecked());
-		ParCoolConfig.CONFIG_CLIENT.canGrabCliff.set(b.get(5).isChecked());
+		ParCoolConfig.CONFIG_CLIENT.canClingToCliff.set(b.get(5).isChecked());
 		ParCoolConfig.CONFIG_CLIENT.canRoll.set(b.get(6).isChecked());
 		ParCoolConfig.CONFIG_CLIENT.canVault.set(b.get(7).isChecked());
 		ParCoolConfig.CONFIG_CLIENT.canWallJump.set(b.get(8).isChecked());

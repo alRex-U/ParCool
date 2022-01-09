@@ -1,7 +1,8 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.common.capability.IFastRunning;
+import com.alrex.parcool.common.action.impl.FastRun;
+import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -16,18 +17,22 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public class SyncFastRunningMessage {
-	private boolean isFastRunning = false;
+	private boolean fastRunning = false;
 	private UUID playerID = null;
 
+	public boolean isFastRunning() {
+		return fastRunning;
+	}
+
 	public void encode(PacketBuffer packet) {
-		packet.writeBoolean(this.isFastRunning);
+		packet.writeBoolean(this.fastRunning);
 		packet.writeLong(this.playerID.getMostSignificantBits());
 		packet.writeLong(this.playerID.getLeastSignificantBits());
 	}
 
 	public static SyncFastRunningMessage decode(PacketBuffer packet) {
 		SyncFastRunningMessage message = new SyncFastRunningMessage();
-		message.isFastRunning = packet.readBoolean();
+		message.fastRunning = packet.readBoolean();
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
 		return message;
 	}
@@ -40,9 +45,9 @@ public class SyncFastRunningMessage {
 			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 			if (player == null) return;
 
-			IFastRunning fastRunning = IFastRunning.get(player);
-			if (fastRunning == null) return;
-			fastRunning.setFastRunning(this.isFastRunning);
+			Parkourability parkourability = Parkourability.get(player);
+			if (parkourability == null) return;
+			parkourability.getFastRun().synchronize(this);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
@@ -62,18 +67,17 @@ public class SyncFastRunningMessage {
 				if (player == null) return;
 			}
 
-			IFastRunning fastRunning = IFastRunning.get(player);
-			if (fastRunning == null) return;
-			fastRunning.setFastRunning(this.isFastRunning);
+			Parkourability parkourability = Parkourability.get(player);
+			if (parkourability == null) return;
+			parkourability.getFastRun().synchronize(this);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void sync(PlayerEntity player) {
-		IFastRunning fastRunning = IFastRunning.get(player);
+	public static void sync(PlayerEntity player, FastRun fastRun) {
 		SyncFastRunningMessage message = new SyncFastRunningMessage();
-		message.isFastRunning = fastRunning.isFastRunning();
+		message.fastRunning = fastRun.isRunning();
 		message.playerID = player.getUniqueID();
 
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);

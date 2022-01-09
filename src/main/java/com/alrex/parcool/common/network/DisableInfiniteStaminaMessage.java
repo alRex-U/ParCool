@@ -2,8 +2,7 @@ package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.ParCoolConfig;
-import com.alrex.parcool.client.ActionPermissions;
-import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.constants.TranslateKeys;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -35,10 +34,10 @@ public class DisableInfiniteStaminaMessage {
 		contextSupplier.get().enqueueWork(() -> {
 			ClientPlayerEntity player = Minecraft.getInstance().player;
 			if (player == null) return;
-			IStamina stamina = IStamina.get(player);
+
+			Stamina stamina = Stamina.get(player);
 			if (stamina == null) return;
 			if (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get()) {
-				ActionPermissions.setAllowedInfiniteStamina(infiniteStamina);
 				player.sendStatusMessage(
 						new TranslationTextComponent(
 								infiniteStamina ?

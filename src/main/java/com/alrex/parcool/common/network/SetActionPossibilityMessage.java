@@ -54,7 +54,7 @@ public class SetActionPossibilityMessage {
 						c.canWallJump.set(possibility);
 						break;
 					case GrabCliff:
-						c.canGrabCliff.set(possibility);
+						c.canClingToCliff.set(possibility);
 						break;
 					case InfiniteStamina:
 						c.infiniteStamina.set(possibility);

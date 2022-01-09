@@ -75,7 +75,7 @@ public class ParCool {
 
 	private void setup(final FMLCommonSetupEvent event) {
 		EventBusForgeRegistry.register(MinecraftForge.EVENT_BUS);
-		EventBusModRegistry.registry(FMLJavaModLoadingContext.get().getModEventBus());
+		EventBusModRegistry.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Capabilities.registerAll(CapabilityManager.INSTANCE);
 		PROXY.registerMessages(CHANNEL_INSTANCE);
 	}

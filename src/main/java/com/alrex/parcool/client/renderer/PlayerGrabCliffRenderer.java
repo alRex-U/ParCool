@@ -1,6 +1,7 @@
 package com.alrex.parcool.client.renderer;
 
-import com.alrex.parcool.common.capability.IGrabCliff;
+import com.alrex.parcool.common.action.impl.ClingToCliff;
+import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -18,10 +19,11 @@ public class PlayerGrabCliffRenderer {
 		if (!(event.getPlayer() instanceof AbstractClientPlayerEntity)) return;
 		AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) event.getPlayer();
 
-		IGrabCliff grabCliff = IGrabCliff.get(player);
-		if (grabCliff == null) return;
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) return;
+		ClingToCliff clingToCliff = parkourability.getClingToCliff();
 
-		if (grabCliff.isGrabbing()) {
+		if (clingToCliff.isCling()) {
 			ClientPlayerEntity mainPlayer = Minecraft.getInstance().player;
 			if (mainPlayer == null) return;
 

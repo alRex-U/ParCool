@@ -1,6 +1,7 @@
 package com.alrex.parcool.client.renderer;
 
-import com.alrex.parcool.common.capability.IRoll;
+import com.alrex.parcool.common.action.impl.Roll;
+import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -18,8 +19,9 @@ public class PlayerRollRenderer {
 	public static void onRender(RenderPlayerEvent.Pre event) {
 		if (!(event.getPlayer() instanceof AbstractClientPlayerEntity)) return;
 		AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) event.getPlayer();
-		IRoll roll = IRoll.get(player);
-		if (roll == null) return;
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) return;
+		Roll roll = parkourability.getRoll();
 
 		if (roll.isRolling()) {
 			ClientPlayerEntity mainPlayer = Minecraft.getInstance().player;
@@ -29,7 +31,7 @@ public class PlayerRollRenderer {
 			Vector3f vec = new Vector3f((float) lookVec.getX(), 0, (float) lookVec.getZ());
 
 			event.getMatrixStack().translate(0, player.getHeight() / 2, 0);
-			event.getMatrixStack().rotate(vec.rotationDegrees((roll.getRollingTime() + event.getPartialRenderTick()) * (360 / roll.getRollAnimateTime())));
+			event.getMatrixStack().rotate(vec.rotationDegrees((roll.getRollingTick() + event.getPartialRenderTick()) * (360 / roll.getRollMaxTick())));
 			event.getMatrixStack().translate(0, -player.getHeight() / 2, 0);
 
 			PlayerRenderer renderer = event.getRenderer();
