@@ -1,8 +1,10 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.client.animation.impl.ClingToCliffAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.common.network.SyncClingToCliffMessage;
@@ -49,6 +51,10 @@ public class ClingToCliff extends Action {
 				player.getHeldItemMainhand().isEmpty() &&
 				player.getHeldItemOffhand().isEmpty() &&
 				WorldUtil.existsGrabbableWall(player);
+		if (cling) {
+			Animation animation = Animation.get(player);
+			if (animation != null) animation.setAnimator(new ClingToCliffAnimator());
+		}
 
 		if (canClimbUp(player, parkourability, stamina)) {
 			cling = false;

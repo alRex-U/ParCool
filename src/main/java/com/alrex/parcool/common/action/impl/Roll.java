@@ -1,7 +1,9 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.client.animation.impl.RollAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.common.network.StartRollMessage;
@@ -65,6 +67,8 @@ public class Roll extends Action {
 			Vector3d vec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize().scale(2);
 			player.addVelocity(vec.getX(), 0, vec.getZ());
 			player.velocityChanged = true;
+			Animation animation = Animation.get(player);
+			if (animation != null) animation.setAnimator(new RollAnimator());
 			start = false;
 		}
 	}

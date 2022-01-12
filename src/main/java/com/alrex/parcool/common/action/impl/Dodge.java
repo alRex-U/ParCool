@@ -1,9 +1,11 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.client.animation.impl.DodgeAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.common.network.SyncDodgeMessage;
@@ -48,10 +50,6 @@ public class Dodge extends Action {
 			dodgingTick++;
 		} else {
 			dodgingTick = 0;
-		}
-		if (player.collidedVertically) {
-			dodging = false;
-			avoided = false;
 		}
 	}
 
@@ -101,6 +99,10 @@ public class Dodge extends Action {
 
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+		if (player.collidedVertically) {
+			dodging = false;
+			avoided = false;
+		}
 		if (!dodging && canDodge(player, parkourability, stamina)) {
 			dodging = true;
 			avoided = false;
@@ -130,6 +132,8 @@ public class Dodge extends Action {
 					jump = 0.3;
 					break;
 			}
+			Animation animation = Animation.get(player);
+			if (animation != null) animation.setAnimator(new DodgeAnimator());
 			coolTime = 10;
 			dodgeVec = dodgeVec.scale(0.4);
 			player.addVelocity(dodgeVec.getX(), jump, dodgeVec.getZ());
