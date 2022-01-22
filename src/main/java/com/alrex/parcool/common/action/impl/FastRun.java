@@ -44,11 +44,12 @@ public class FastRun extends Action {
 
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		fastRunning = parkourability.getPermission().canFastRunning()
-				&& player.isSprinting()
-				&& KeyBindings.getKeyFastRunning().isKeyDown()
-				&& !stamina.isExhausted();
-
+		if (player.isUser()) {
+			fastRunning = parkourability.getPermission().canFastRunning()
+					&& player.isSprinting()
+					&& KeyBindings.getKeyFastRunning().isKeyDown()
+					&& !stamina.isExhausted();
+		}
 		ModifiableAttributeInstance attr = player.getAttribute(Attributes.field_233821_d_);
 		if (attr == null) return;
 

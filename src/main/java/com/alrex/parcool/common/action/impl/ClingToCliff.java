@@ -38,34 +38,36 @@ public class ClingToCliff extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	public boolean canClimbUp(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		return cling && parkourability.getPermission().canClingToCliff() && clingTick > 3 && KeyRecorder.keyJumpState.isPressed();
+		return cling && parkourability.getPermission().canClingToCliff() && clingTick > 2 && KeyRecorder.keyJumpState.isPressed();
 	}
 
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		double ySpeed = player.getMotion().getY();
-		cling = !stamina.isExhausted() &&
-				ySpeed < 0.2 &&
-				parkourability.getPermission().canClingToCliff() &&
-				KeyBindings.getKeyGrabWall().isKeyDown() &&
-				player.getHeldItemMainhand().isEmpty() &&
-				player.getHeldItemOffhand().isEmpty() &&
-				WorldUtil.existsGrabbableWall(player);
+		if (player.isUser()) {
+			double ySpeed = player.getMotion().getY();
+			cling = !stamina.isExhausted() &&
+					ySpeed < 0.2 &&
+					parkourability.getPermission().canClingToCliff() &&
+					KeyBindings.getKeyGrabWall().isKeyDown() &&
+					player.getHeldItemMainhand().isEmpty() &&
+					player.getHeldItemOffhand().isEmpty() &&
+					WorldUtil.existsGrabbableWall(player);
+
+			if (canClimbUp(player, parkourability, stamina)) {
+				cling = false;
+				clingTick = 0;
+				player.addVelocity(0, 0.6, 0);
+				player.velocityChanged = true;
+				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionClimbUp(), parkourability.getActionInfo());
+			}
+			if (cling) {
+				player.setVelocity(0, 0, 0);
+				player.velocityChanged = true;
+			}
+		}
 		if (cling) {
 			Animation animation = Animation.get(player);
 			if (animation != null) animation.setAnimator(new ClingToCliffAnimator());
-		}
-
-		if (canClimbUp(player, parkourability, stamina)) {
-			cling = false;
-			clingTick = 0;
-			player.addVelocity(0, 0.6, 0);
-			player.velocityChanged = true;
-			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionClimbUp(), parkourability.getActionInfo());
-		}
-		if (cling) {
-			player.setVelocity(0, 0, 0);
-			player.velocityChanged = true;
 		}
 	}
 

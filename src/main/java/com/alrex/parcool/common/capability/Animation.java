@@ -28,6 +28,10 @@ public class Animation {
 		if (animator.isRemoved()) animator = null;
 	}
 
+	public void tick() {
+		if (animator != null) animator.tick();
+	}
+
 	public void removeAnimator() {
 		animator = null;
 	}

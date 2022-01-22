@@ -22,6 +22,9 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue canWallJump;
 		public final ForgeConfigSpec.BooleanValue infiniteStamina;
 		public final ForgeConfigSpec.BooleanValue autoTurningWallJump;
+		public final ForgeConfigSpec.BooleanValue disableWallJumpTowardWall;
+		public final ForgeConfigSpec.BooleanValue disableCameraRolling;
+		public final ForgeConfigSpec.BooleanValue disableCameraDodge;
 		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
 		public final ForgeConfigSpec.BooleanValue ParCoolActivation;
 		public final ForgeConfigSpec.BooleanValue hideStaminaHUD;
@@ -44,7 +47,7 @@ public class ParCoolConfig {
 				canWallJump = builder.comment("Possibility to WallJump").define("canWallJump", true);
 			}
 			builder.pop();
-			builder.comment("Values").push("Modify Values");
+			builder.comment("Values").push("Modifier Values");
 			{
 				fastRunningModifier = builder.comment("FastRun Speed Modifier").defineInRange("fastRunModifier", 5, 0.001, 5);
 			}
@@ -61,7 +64,12 @@ public class ParCoolConfig {
 			builder.comment("Others").push("Other configuration");
 			{
 				autoTurningWallJump = builder.comment("Auto turning forward when WallJump").define("autoTurningWallJump", false);
-				infiniteStamina = builder.comment("Infinite Stamina").define("infiniteStamina", false);
+				disableWallJumpTowardWall = builder.comment("Disable WallJump toward a wall").define("disableWallJumpTowardWall", false);
+				disableCameraRolling = builder.comment("Disable Roll rotation of camera").define("disableCameraRotationRolling", false);
+				disableCameraDodge = builder.comment("Disable Dodge rotation of camera").define("disableCameraRotationDodge", false);
+				infiniteStamina = builder
+						.comment("Infinite Stamina(this needs a permission from server, even if it is on single player's game)\nPlease check 'parcool-server.toml' in 'serverconfig' directory")
+						.define("infiniteStamina", false);
 			}
 			builder.pop();
 			builder.comment("About ParCool").push("ParCool");

@@ -8,6 +8,10 @@ public abstract class Animator {
 	private int tick = 0;
 	protected boolean removal = false;
 
+	public final void tick() {
+		tick++;
+	}
+
 	protected int getTick() {
 		return tick;
 	}

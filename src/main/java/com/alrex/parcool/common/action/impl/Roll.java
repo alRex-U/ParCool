@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.RollAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
@@ -12,11 +13,13 @@ import com.alrex.parcool.utilities.BufferUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
 
 public class Roll extends Action {
+	private float cameraPitch = 0;
 	private boolean ready = false;
 	private int readyTick = 0;
 	private boolean start = false;
@@ -28,7 +31,7 @@ public class Roll extends Action {
 	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (rolling) {
 			rollingTick++;
-			if (rollingTick > getRollMaxTick()) rolling = false;
+			if (rollingTick >= getRollMaxTick()) rolling = false;
 		} else {
 			rollingTick = 0;
 		}
@@ -47,26 +50,31 @@ public class Roll extends Action {
 
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (
-				!ready
-						&& parkourability.getPermission().canRoll()
-						&& KeyRecorder.keyCrawlState.isPressed()
-						&& !player.collidedVertically
-						&& readyCoolTick <= 0
-		) {
-			ready = true;
-			readyTick = 10;
-			readyCoolTick = 30;
-		}
-		if (!ready) {
-			ready = !player.collidedVertically
-					&& KeyRecorder.keyCrawlState.isPressed();
+		if (player.isUser()) {
+			if (
+					!ready
+							&& parkourability.getPermission().canRoll()
+							&& KeyRecorder.keyCrawlState.isPressed()
+							&& !player.collidedVertically
+							&& readyCoolTick <= 0
+			) {
+				ready = true;
+				readyTick = 10;
+				readyCoolTick = 30;
+				player.sendStatusMessage(new StringTextComponent("Roll Ready.."), true);
+			}
+			if (!ready) {
+				ready = !player.collidedVertically
+						&& KeyRecorder.keyCrawlState.isPressed();
+			}
 		}
 		if (start) {
-			Vector3d lookVec = player.getLookVec();
-			Vector3d vec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize().scale(2);
-			player.addVelocity(vec.getX(), 0, vec.getZ());
-			player.velocityChanged = true;
+			if (player.isUser()) {
+				Vector3d lookVec = player.getLookVec();
+				Vector3d vec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize().scale(1.4);
+				player.addVelocity(vec.getX(), 0, vec.getZ());
+				player.velocityChanged = true;
+			}
 			Animation animation = Animation.get(player);
 			if (animation != null) animation.setAnimator(new RollAnimator());
 			start = false;
@@ -75,7 +83,10 @@ public class Roll extends Action {
 
 	@Override
 	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
-
+		if (rolling && player.isUser() && Minecraft.getInstance().gameSettings.thirdPersonView == 0 && !ParCoolConfig.CONFIG_CLIENT.disableCameraRolling.get()) {
+			float factor = RollAnimator.calculateMovementFactor((getRollingTick() + event.renderTickTime) / (float) getRollMaxTick());
+			player.rotationPitch = (factor > 0.5 ? factor - 1 : factor) * 360f + cameraPitch;
+		}
 	}
 
 	@Override
@@ -102,10 +113,12 @@ public class Roll extends Action {
 			this.rolling = true;
 			this.ready = false;
 			this.start = true;
+			if (Minecraft.getInstance().player != null) {
+				this.cameraPitch = Minecraft.getInstance().player.rotationPitch;
+			}
 
 			sendSynchronization(Minecraft.getInstance().player);
 		}
-
 	}
 
 	@Override
@@ -132,6 +145,6 @@ public class Roll extends Action {
 	}
 
 	public int getRollMaxTick() {
-		return 5;
+		return 7;
 	}
 }

@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action;
 
+import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import net.minecraft.client.Minecraft;
@@ -20,20 +21,23 @@ public class ActionProcessor {
 		PlayerEntity player = event.player;
 		Parkourability parkourability = Parkourability.get(player);
 		Stamina stamina = Stamina.get(player);
-		if (parkourability == null || stamina == null) return;
+		Animation animation = Animation.get(player);
+		if (parkourability == null || stamina == null || animation == null) return;
 		List<Action> actions = parkourability.getList();
 		stamina.onTick();
 		if (stamina.getRecoveryCoolTime() == 0) stamina.recover(stamina.getMaxStamina() / 60);
+		animation.tick();
+		boolean needSync = event.side == LogicalSide.CLIENT && player.isUser();
 
 		for (Action action : actions) {
-			if (event.side == LogicalSide.CLIENT) {
+			if (needSync) {
 				buffer.clear();
 				action.saveState(buffer);
 				buffer.flip();
 			}
 			action.onTick(player, parkourability, stamina);
 
-			if (event.side == LogicalSide.CLIENT) {
+			if (needSync) {
 				action.onClientTick(player, parkourability, stamina);
 				if (action.needSynchronization(buffer)) {
 					action.sendSynchronization(player);

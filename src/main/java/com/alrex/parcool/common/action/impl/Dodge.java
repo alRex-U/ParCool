@@ -10,6 +10,7 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.common.network.SyncDodgeMessage;
 import com.alrex.parcool.utilities.BufferUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
@@ -29,6 +30,7 @@ public class Dodge extends Action {
 	@OnlyIn(Dist.CLIENT)
 	private int coolTime = 0;
 	private int dodgingTick = 0;
+	private boolean needPitchReset = false;
 	private int damageCoolTime = 0;
 	private boolean avoided = false;
 	private boolean dodging = false;
@@ -99,58 +101,73 @@ public class Dodge extends Action {
 
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (player.collidedVertically) {
-			dodging = false;
-			avoided = false;
-		}
-		if (!dodging && canDodge(player, parkourability, stamina)) {
-			dodging = true;
-			avoided = false;
-
-			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionDodge(), parkourability.getActionInfo());
-			dodgeDirection = getDirectionFromInput();
-
-			Vector3d lookVec = player.getLookVec();
-			lookVec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize();
-			double jump = 0;
-			Vector3d dodgeVec = Vector3d.ZERO;
-			switch (dodgeDirection) {
-				case Front:
-					dodgeVec = lookVec;
-					jump = 0.5;
-					break;
-				case Back:
-					dodgeVec = lookVec.inverse();
-					jump = 0.5;
-					break;
-				case Right:
-					dodgeVec = lookVec.rotateYaw((float) Math.PI / -2);
-					jump = 0.3;
-					break;
-				case Left:
-					dodgeVec = lookVec.rotateYaw((float) Math.PI / 2);
-					jump = 0.3;
-					break;
+		if (player.isUser()) {
+			if (canContinue(player, parkourability, stamina)) {
+				dodging = true;
+			} else {
+				if (dodging && (dodgeDirection == DodgeDirections.Front || dodgeDirection == DodgeDirections.Back)) {
+					if (!ParCoolConfig.CONFIG_CLIENT.disableCameraDodge.get()) {
+						needPitchReset = true;
+					}
+				}
+				dodgingTick = 0;
+				dodging = false;
+				avoided = false;
 			}
+			if (!dodging && canDodge(player, parkourability, stamina)) {
+				dodging = true;
+				avoided = false;
+
+				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionDodge(), parkourability.getActionInfo());
+				dodgeDirection = getDirectionFromInput();
+
+				Vector3d lookVec = player.getLookVec();
+				lookVec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize();
+				double jump = 0;
+				Vector3d dodgeVec = Vector3d.ZERO;
+				switch (dodgeDirection) {
+					case Front:
+						dodgeVec = lookVec;
+						jump = 0.5;
+						break;
+					case Back:
+						dodgeVec = lookVec.inverse();
+						jump = 0.5;
+						break;
+					case Right:
+						dodgeVec = lookVec.rotateYaw((float) Math.PI / -2);
+						jump = 0.3;
+						break;
+					case Left:
+						dodgeVec = lookVec.rotateYaw((float) Math.PI / 2);
+						jump = 0.3;
+						break;
+				}
+				coolTime = 10;
+				dodgeVec = dodgeVec.scale(0.4);
+				player.addVelocity(dodgeVec.getX(), jump, dodgeVec.getZ());
+			}
+		}
+		if (dodging) {
 			Animation animation = Animation.get(player);
 			if (animation != null) animation.setAnimator(new DodgeAnimator());
-			coolTime = 10;
-			dodgeVec = dodgeVec.scale(0.4);
-			player.addVelocity(dodgeVec.getX(), jump, dodgeVec.getZ());
 		}
-
-		if (canContinue(player, parkourability, stamina)) {
-			dodging = true;
-		} else {
-			dodgingTick = 0;
-			dodging = false;
-		}
-
 	}
 
 	@Override
 	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
-
+		if (!player.isUser() || Minecraft.getInstance().gameSettings.thirdPersonView != 0 || ParCoolConfig.CONFIG_CLIENT.disableCameraDodge.get())
+			return;
+		if (needPitchReset) {
+			player.rotationPitch = 0;
+			needPitchReset = false;
+		}
+		if (!dodging) return;
+		if (dodgeDirection == DodgeDirections.Front) {
+			player.rotationPitch = (getDodgingTick() + event.renderTickTime) * 30;
+		} else if (dodgeDirection == DodgeDirections.Back) {
+			player.rotationPitch = (getDodgingTick() + event.renderTickTime) * -24;
+		}
 	}
 
 	@Override

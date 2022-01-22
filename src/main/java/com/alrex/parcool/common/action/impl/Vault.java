@@ -1,6 +1,8 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.client.animation.impl.VaultAnimator;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.utilities.WorldUtil;
@@ -50,35 +52,40 @@ public class Vault extends Action {
 
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (!this.isVaulting() && this.canVault(player, parkourability, stamina)) {
-			vauting = true;
-			vaultingTick = 0;
-			stepDirection = WorldUtil.getStep(player);
-			stepHeight = WorldUtil.getWallHeight(player);
-		}
+		if (player.isUser()) {
+			if (!this.isVaulting() && this.canVault(player, parkourability, stamina)) {
+				vauting = true;
+				vaultingTick = 0;
+				stepDirection = WorldUtil.getStep(player);
+				stepHeight = WorldUtil.getWallHeight(player);
+				if (player.isUser()) {
+					Animation animation = Animation.get(player);
+					if (animation != null) animation.setAnimator(new VaultAnimator());
+				}
+			}
 
-		if (vauting) {
-			player.setMotion(
-					stepDirection.getX() / 10,
-					(stepHeight + 0.05) / this.getVaultAnimateTime(),
-					stepDirection.getZ() / 10
-			);
-		}
+			if (vauting) {
+				player.setMotion(
+						stepDirection.getX() / 10,
+						(stepHeight + 0.05) / this.getVaultAnimateTime(),
+						stepDirection.getZ() / 10
+				);
+			}
 
-		if (vaultingTick >= this.getVaultAnimateTime()) {
-			vauting = false;
-			stepDirection = stepDirection.normalize();
-			player.setMotion(
-					stepDirection.getX() * 0.45,
-					0.15,
-					stepDirection.getZ() * 0.45
-			);
+			if (vaultingTick >= this.getVaultAnimateTime()) {
+				vauting = false;
+				stepDirection = stepDirection.normalize();
+				player.setMotion(
+						stepDirection.getX() * 0.45,
+						0.15,
+						stepDirection.getZ() * 0.45
+				);
+			}
 		}
 	}
 
 	@Override
 	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
-
 	}
 
 	@Override

@@ -1,10 +1,12 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.common.network.ResetFallDistanceMessage;
+import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
@@ -34,6 +36,7 @@ public class WallJump extends Action {
 		Vector3d value;
 
 		if (wall.dotProduct(vec) > 0) {//To Wall
+			if (ParCoolConfig.CONFIG_CLIENT.disableWallJumpTowardWall.get()) return null;
 			double dot = vec.inverse().dotProduct(wall);
 			value = vec.add(wall.scale(2 * dot / wall.length())); // Perfect.
 		} else {//back on Wall
@@ -60,9 +63,12 @@ public class WallJump extends Action {
 
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (canWallJump(player, parkourability, stamina)) {
+		if (player.isUser() && canWallJump(player, parkourability, stamina)) {
 			Vector3d jumpDirection = getJumpDirection(player);
 			if (jumpDirection == null) return;
+			if (ParCoolConfig.CONFIG_CLIENT.autoTurningWallJump.get()) {
+				player.rotationYaw = (float) VectorUtil.toYawDegree(jumpDirection);
+			}
 
 			Vector3d direction = new Vector3d(jumpDirection.getX(), 1.4, jumpDirection.getZ()).scale(0.3);
 			Vector3d motion = player.getMotion();

@@ -33,46 +33,48 @@ public class Crawl extends Action {
 
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (
-				parkourability.getPermission().canCrawl()
-						&& !crawling
-						&& KeyRecorder.keyCrawlState.isPressed()
-						&& !parkourability.getRoll().isRolling()
-						&& !player.isInWaterOrBubbleColumn()
-						&& player.collidedVertically
-		) {
-			//sliding
-			if (parkourability.getFastRun().getRunningTick() > 5) {
-				sliding = true;
-				Vector3d lookVec = player.getLookVec();
-				slidingVec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize();
+		if (player.isUser()) {
+			if (
+					parkourability.getPermission().canCrawl()
+							&& !crawling
+							&& KeyRecorder.keyCrawlState.isPressed()
+							&& !parkourability.getRoll().isRolling()
+							&& !player.isInWaterOrBubbleColumn()
+							&& player.collidedVertically
+			) {
+				//sliding
+				if (parkourability.getFastRun().getRunningTick() > 5) {
+					sliding = true;
+					Vector3d lookVec = player.getLookVec();
+					slidingVec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize();
+				}
+				//crawl
+				else {
+					sliding = false;
+					slidingVec = null;
+				}
+				crawling = true;
 			}
-			//crawl
-			else {
+			if (slidingVec == null) {
+				sliding = false;
+			}
+			if (sliding) {
+				if (player.collidedVertically) {
+					Vector3d vec = slidingVec.scale(0.2);
+					player.addVelocity(vec.getX(), vec.getY(), vec.getZ());
+				}
+			}
+			if (slidingTick >= parkourability.getActionInfo().getMaxSlidingTick()) {
+				sliding = false;
+				slidingTick = 0;
+				crawling = true;
+				slidingVec = null;
+			}
+			if (crawling && !KeyBindings.getKeyCrawl().isKeyDown()) {
+				crawling = false;
 				sliding = false;
 				slidingVec = null;
 			}
-			crawling = true;
-		}
-		if (slidingVec == null) {
-			sliding = false;
-		}
-		if (sliding) {
-			if (player.collidedVertically) {
-				Vector3d vec = slidingVec.scale(0.2);
-				player.addVelocity(vec.getX(), vec.getY(), vec.getZ());
-			}
-		}
-		if (slidingTick >= parkourability.getActionInfo().getMaxSlidingTick()) {
-			sliding = false;
-			slidingTick = 0;
-			crawling = true;
-			slidingVec = null;
-		}
-		if (crawling && !KeyBindings.getKeyCrawl().isKeyDown()) {
-			crawling = false;
-			sliding = false;
-			slidingVec = null;
 		}
 	}
 

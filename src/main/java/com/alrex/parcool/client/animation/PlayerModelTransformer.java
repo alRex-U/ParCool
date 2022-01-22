@@ -120,6 +120,9 @@ public class PlayerModelTransformer {
 					light,
 					OverlayTexture.NO_OVERLAY
 			);
+
+			model.bipedRightLeg.rotationPointX = 2.1F;
+			model.bipedRightLeg.rotationPointZ = 0;
 			model.bipedRightLeg.showModel = false;
 			model.bipedRightLegwear.showModel = false;
 		}
@@ -138,6 +141,8 @@ public class PlayerModelTransformer {
 					light,
 					OverlayTexture.NO_OVERLAY
 			);
+			model.bipedLeftLeg.rotationPointX = -2.1F;
+			model.bipedLeftLeg.rotationPointZ = 0;
 			model.bipedLeftLeg.showModel = false;
 			model.bipedLeftLegwear.showModel = false;
 		}
@@ -163,12 +168,16 @@ public class PlayerModelTransformer {
 	}
 
 	private static void setRightLeg(AbstractClientPlayerEntity player, ModelRenderer rightLeg, float angleX, float angleY, float angleZ) {
+		rightLeg.rotationPointX = -MathHelper.cos((float) Math.toRadians(player.renderYawOffset)) * 2.1F;
+		rightLeg.rotationPointZ = -MathHelper.sin((float) Math.toRadians(player.renderYawOffset)) * 2.5F;
 		rightLeg.rotateAngleX = angleX;
 		rightLeg.rotateAngleY = angleY;
 		rightLeg.rotateAngleZ = angleZ;
 	}
 
 	private static void setLeftLeg(AbstractClientPlayerEntity player, ModelRenderer leftLeg, float angleX, float angleY, float angleZ) {
+		leftLeg.rotationPointX = MathHelper.cos((float) Math.toRadians(player.renderYawOffset)) * 2.1F;
+		leftLeg.rotationPointZ = MathHelper.sin((float) Math.toRadians(player.renderYawOffset)) * 2.5F;
 		leftLeg.rotateAngleX = angleX;
 		leftLeg.rotateAngleY = angleY;
 		leftLeg.rotateAngleZ = angleZ;

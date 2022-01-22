@@ -11,10 +11,13 @@ public class AnimationHandler {
 	public void onRender(RenderPlayerEvent.Pre event) {
 		Animation animation = Animation.get(event.getPlayer());
 		if (animation == null) return;
+		event.getMatrixStack().push();
 		animation.animate(event);
 	}
 
+	@SubscribeEvent
 	public void onRenderPost(RenderPlayerEvent.Post event) {
+		event.getMatrixStack().pop();
 		PlayerModel<AbstractClientPlayerEntity> model = event.getRenderer().getEntityModel();
 		model.bipedRightArm.showModel = true;
 		model.bipedLeftArm.showModel = true;

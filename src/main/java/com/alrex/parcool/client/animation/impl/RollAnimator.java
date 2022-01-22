@@ -4,6 +4,7 @@ import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.Roll;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -15,6 +16,14 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
 public class RollAnimator extends Animator {
+	public static float calculateMovementFactor(float progress) {
+		if (progress <= 0.2) {
+			return 8 * MathUtil.squaring(progress);
+		} else {
+			return -0.5f * MathUtil.squaring(progress - 1.5f) + 1.12f;
+		}
+	}
+
 	@Override
 	public void animate(RenderPlayerEvent.Pre event, AbstractClientPlayerEntity player, Parkourability parkourability) {
 		Roll roll = parkourability.getRoll();
@@ -25,12 +34,13 @@ public class RollAnimator extends Animator {
 
 		ClientPlayerEntity mainPlayer = Minecraft.getInstance().player;
 		if (mainPlayer == null) return;
+		float factor = calculateMovementFactor((roll.getRollingTick() + event.getPartialRenderTick()) / (float) roll.getRollMaxTick());
 
 		Vector3d lookVec = player.getLookVec().rotateYaw((float) Math.PI / 2);
 		Vector3f vec = new Vector3f((float) lookVec.getX(), 0, (float) lookVec.getZ());
 
 		event.getMatrixStack().translate(0, player.getHeight() / 2, 0);
-		event.getMatrixStack().rotate(vec.rotationDegrees((roll.getRollingTick() + event.getPartialRenderTick()) * (360 / roll.getRollMaxTick())));
+		event.getMatrixStack().rotate(vec.rotationDegrees(MathUtil.lerp(0, 360, factor)));
 		event.getMatrixStack().translate(0, -player.getHeight() / 2, 0);
 
 		PlayerRenderer renderer = event.getRenderer();
@@ -42,22 +52,22 @@ public class RollAnimator extends Animator {
 			event.getMatrixStack().translate(posOffset.getX(), posOffset.getY(), posOffset.getZ());
 			PlayerModelTransformer.wrap(player, model, getTick(), event.getPartialRenderTick())
 					.rotateLeftArm(
-							(float) Math.toRadians(110.0F),
+							(float) Math.toRadians(MathUtil.lerp(110f, 180f, factor)),
 							(float) -Math.toRadians(player.renderYawOffset),
-							(float) Math.toRadians(-20.0F)
+							(float) Math.toRadians(MathUtil.lerp(-20f, 0f, factor))
 					)
 					.rotateRightArm(
-							(float) Math.toRadians(110.0F),
+							(float) Math.toRadians(MathUtil.lerp(110f, 180f, factor)),
 							(float) -Math.toRadians(player.renderYawOffset),
-							(float) Math.toRadians(20.0F)
+							(float) Math.toRadians(MathUtil.lerp(20f, 0f, factor))
 					)
 					.rotateLeftLeg(
-							(float) Math.toRadians(90.0f),
+							(float) Math.toRadians(MathUtil.lerp(80f, 170f, factor)),
 							(float) -Math.toRadians(player.renderYawOffset),
 							(float) Math.toRadians(0F)
 					)
 					.rotateRightLeg(
-							(float) Math.toRadians(90.0f),
+							(float) Math.toRadians(MathUtil.lerp(90f, 190f, factor)),
 							(float) -Math.toRadians(player.renderYawOffset),
 							(float) Math.toRadians(0F)
 					)
@@ -66,7 +76,6 @@ public class RollAnimator extends Animator {
 							event.getBuffers(),
 							event.getRenderer()
 					);
-
 		}
 		event.getMatrixStack().pop();
 	}
