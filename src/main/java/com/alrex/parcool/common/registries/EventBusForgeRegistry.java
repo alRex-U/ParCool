@@ -4,6 +4,7 @@ import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.AnimationHandler;
 import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.hud.Position;
+import com.alrex.parcool.client.hud.impl.LightStaminaHUD;
 import com.alrex.parcool.client.hud.impl.StaminaHUD;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.ActionProcessor;
@@ -32,6 +33,9 @@ public class EventBusForgeRegistry {
 								ParCoolConfig.CONFIG_CLIENT.marginVerticalStaminaHUD.get()
 						)
 				));
+		HUDRegistry.getInstance().getHuds().add(
+				new LightStaminaHUD(null)
+		);
 		bus.register(KeyRecorder.class);
 		bus.register(new AnimationHandler());
 		bus.register(EventActivateParCool.class);

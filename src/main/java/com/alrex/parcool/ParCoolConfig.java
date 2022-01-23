@@ -28,6 +28,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
 		public final ForgeConfigSpec.BooleanValue ParCoolActivation;
 		public final ForgeConfigSpec.BooleanValue hideStaminaHUD;
+		public final ForgeConfigSpec.BooleanValue useLightHUD;
 		public final ForgeConfigSpec.EnumValue<Position.Horizontal> alignHorizontalStaminaHUD;
 		public final ForgeConfigSpec.EnumValue<Position.Vertical> alignVerticalStaminaHUD;
 		public final ForgeConfigSpec.IntValue marginHorizontalStaminaHUD;
@@ -54,7 +55,8 @@ public class ParCoolConfig {
 			builder.pop();
 			builder.comment("HUD").push("Stamina HUD configuration");
 			{
-				hideStaminaHUD = builder.comment("hide stamina HUD").define("hideS_HUD", false);
+				hideStaminaHUD = builder.comment("hide stamina HUD when Stamina is infinite").define("hideS_HUD", false);
+				useLightHUD = builder.comment("use Light Stamina HUD").define("useLightHUD", false);
 				alignHorizontalStaminaHUD = builder.comment("horizontal alignment").defineEnum("align_H_S_HUD", Position.Horizontal.Right);
 				alignVerticalStaminaHUD = builder.comment("vertical alignment").defineEnum("align_V_S_HUD", Position.Vertical.Bottom);
 				marginHorizontalStaminaHUD = builder.comment("horizontal margin").defineInRange("margin_H_S_HUD", 3, 0, 100);
