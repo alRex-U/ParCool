@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
@@ -69,7 +70,16 @@ public class PlayerModelTransformer {
 		ResourceLocation location = player.getLocationSkin();
 		int light = renderer.getPackedLight(player, partial);
 		renderer.getRenderManager().textureManager.bindTexture(location);
-		if (renderRightArm) {
+		boolean rightHandHoldingItem;
+		boolean leftHandHoldingItem;
+		if (player.getPrimaryHand() == HandSide.RIGHT) {
+			rightHandHoldingItem = !player.getHeldItemMainhand().isEmpty();
+			leftHandHoldingItem = !player.getHeldItemOffhand().isEmpty();
+		} else {
+			rightHandHoldingItem = !player.getHeldItemOffhand().isEmpty();
+			leftHandHoldingItem = !player.getHeldItemMainhand().isEmpty();
+		}
+		if (renderRightArm && !rightHandHoldingItem) {
 			model.bipedRightArm.showModel = true;
 			model.bipedRightArmwear.showModel = true;
 			model.bipedRightArm.render(
@@ -87,7 +97,7 @@ public class PlayerModelTransformer {
 			model.bipedRightArm.showModel = false;
 			model.bipedRightArmwear.showModel = false;
 		}
-		if (renderLeftArm) {
+		if (renderLeftArm && !leftHandHoldingItem) {
 			model.bipedLeftArm.showModel = true;
 			model.bipedLeftArmwear.showModel = true;
 			model.bipedLeftArm.render(
