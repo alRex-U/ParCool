@@ -1,7 +1,7 @@
 package com.alrex.parcool.proxy;
 
-import com.alrex.parcool.client.gui.ParCoolGuideScreen;
 import com.alrex.parcool.common.network.*;
+import com.alrex.parcool.constants.gui.ParCoolGuideScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
