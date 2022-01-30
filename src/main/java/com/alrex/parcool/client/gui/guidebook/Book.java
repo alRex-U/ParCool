@@ -1,4 +1,4 @@
-package com.alrex.parcool.constants.gui.guidebook;
+package com.alrex.parcool.client.gui.guidebook;
 
 import net.minecraft.util.text.ITextProperties;
 

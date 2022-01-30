@@ -2,10 +2,15 @@
 
 {B}ParCool MOD{reset} is a mod of Minecraft,
 for more {I}Cool{reset} Actions like {I}Parkour{reset}.
-
+Some actions added are inspired by parkour techniques.
 This author is {B}NOT{reset} familiar with what called "Parkour" {-},Modding and English{reset}.
-(simply regarding it as something cool)
 so I love your advice to improve this!
+======
+{B}[Parkour]{reset}
+
+A {I}{B}Parkour{reset} is a kind of sports, organized by {I}Devid Belle{reset}.
+The name comes from 'parcours' of French. And the players called 'Traceur'.
+There is another similar word, {I}'Free Running'{reset}. This is said to be a word of 'Parkour' translated into English.
 ======
 {B}[Stamina]{reset}
 
@@ -19,7 +24,9 @@ Be careful.
 {B}[CatLeap]{reset}
 
 CatLeap is a skill used to land on walls,fence or etc...
-In this Mod,this is implemented simply as a long jump.
+This is said to be one of basic skills of parkour.
+Traceurs absorb an impact of landing with movement of legs.
+Let's use also 'Cling to Cliff'!
 
 {blue}<How to use>{reset}
 1.do FastRunning
@@ -39,6 +46,7 @@ It’s easier to do something than worry about it.
 {B}[Dodge]{reset}
 
 Side Step and Back Flip are named Dodge herein.
+(This is not a skill of the parkour)
 You will be very Cool if you should avoid bullets with this!
 
 {blue}<How to use>{reset}
@@ -49,18 +57,17 @@ You will be very Cool if you should avoid bullets with this!
 {B}[FastRunning]{reset}
 
 It goes without saying.
-
-
-
+By the way,do you know? Steve can run as fast as 5.6 meters per seconds.
+This is same as a speed of marathon runners.
 
 
 
 {blue}<How to use>{reset}
 1.continue to press Sprint Key
 ======
-{B}[GrabCliff]{reset}
+{B}[Cling to Cliff]{reset}
 
-You can grab cliff.
+You can cling to cliffs.
 only when you don’t have any items in your hands,
 
 
@@ -71,17 +78,20 @@ only when you don’t have any items in your hands,
 {B}[Roll]{reset}
 
 Roll is one of BreakFalls(skill for protect our from impact of landing)
+This technique change an impact of landing into energy of rolling.
+There are other breakfalls in parkour techniques.
 
 
 
 {blue}<How to use>{reset}
 1.fall
-2.land while you are pressing Roll Key(Normally it’s mapped to C)
+2.land just when you press Roll Key(Normally it’s mapped to C)
 ======
 {B}[Vault]{reset}
 
 Vault is skills used to get over obstacles like fence.
-
+There are numerous variations. Why don't you google 'parkour vault'?
+The one this mod add is called 'Speed Vault'.
 
 
 
@@ -93,7 +103,9 @@ Vault is skills used to get over obstacles like fence.
 
 with WallJump. you can kick walls to jump.
 {-}looks like Mari○!{reset}
-
+By the way, 'Wall Jump' do not exist in parkour techniques.
+Parkour has techniques called 'Wall Run' and 'Tic Tac'.
+However, in fact the 'Wall Run' may be not what you imaged like ninja. Let's google it!
 
 
 
@@ -102,12 +114,23 @@ with WallJump. you can kick walls to jump.
 ======
 {B}[Sliding]{reset}
 
+You can do a slide (This is not a skill of parkour)
 I don't think it's possible to slide infinitely on ice.
-
 
 
 
 {blue}<How to use>{reset}
 1.do FastRunning
 2.do Crawl
+======
+{B}[Credit]{reset}
+
+I saw following websites while developing of this mod.
+I appreciate them.
+
+{B}・Japan Parkour Federation{reset}
+{I}https://jpf-parkourfederation.jp/{reset}
+
+{B}・Fandom Parkour Wiki{reset}
+{I}https://parkour.fandom.com/wiki/Parkour{reset}
 ======

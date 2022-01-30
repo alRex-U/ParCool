@@ -1,4 +1,4 @@
-package com.alrex.parcool.constants.gui.widget;
+package com.alrex.parcool.client.gui.widget;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.FontRenderer;

@@ -1,19 +1,18 @@
-日本語で打ちます
-BookDecoderクラスによって読み込まれます
+It will be read by the BookDecoder class.
 
-最初の一行は項目のタイトルになります
-その直後の一行の内容は無視されます
-それ以降の内容が本文となります
-三文字以上の = 文字によってページ切り替えとなります
-最後のページ切り替え以降の内容は無視されます
+The first line will be the title of the item
+The content of the first line is the title of the item, and the content of the line after that is ignored.
+The content after that becomes the body text.
+Three or more = characters will cause a page switch.
+The content after the last page switch will be ignored
 
-装飾コード
-{}の中に書きMinecraftの装飾コードに置換されます
-obfuscate:難読化
-B:太字
-I:斜体
-_:アンダーバー
--:横線
-reset:装飾のリセット
-複数適応する場合は都度羅列します
-対応する色はBookDecoderを参照してください
+Decoration code
+Replace {} with the Minecraft decoration code
+obfuscate:obfuscate
+B:Bold
+I:Italic
+_:underscore
+-:horizontal line
+reset: Reset decoration
+If more than one color is applied, they will be listed separately.
+See BookDecoder for supported colors.

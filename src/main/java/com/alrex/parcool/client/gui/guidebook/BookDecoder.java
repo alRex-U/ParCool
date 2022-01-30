@@ -1,4 +1,4 @@
-package com.alrex.parcool.constants.gui.guidebook;
+package com.alrex.parcool.client.gui.guidebook;
 
 import com.alrex.parcool.ParCool;
 import net.minecraft.client.Minecraft;

@@ -1,8 +1,8 @@
-package com.alrex.parcool.constants.gui;
+package com.alrex.parcool.client.gui;
 
-import com.alrex.parcool.constants.gui.guidebook.Book;
-import com.alrex.parcool.constants.gui.guidebook.BookDecoder;
-import com.alrex.parcool.constants.gui.widget.ListView;
+import com.alrex.parcool.client.gui.guidebook.Book;
+import com.alrex.parcool.client.gui.guidebook.BookDecoder;
+import com.alrex.parcool.client.gui.widget.ListView;
 import com.alrex.parcool.utilities.FontUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.MainWindow;
@@ -13,7 +13,10 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
@@ -31,15 +34,14 @@ public class ParCoolGuideScreen extends Screen {
 	private List<ITextProperties> cachedPage = null;
 	private int currentPage = PAGE_HOME;
 	private int scrollValue = 0;
-	private Book book = BookDecoder.getInstance().getBook();
+	private final Book book = BookDecoder.getInstance().getBook();
 	private final List<String> menuList = book.getPages()
 			.stream()
 			.map((Book.Page::getTitle))
 			.map(ITextProperties::getString)
 			.collect(Collectors.toList());
-	private int width = 300;
+	private final int width = 300;
 	private int height = (int) (width * 0.75);
-	private final Color color = Color.func_240743_a_(getColorCodeFromARGB(0xFF, 0x99, 0x99, 0xBB));
 	private final int menuOffsetX = 20;
 	private final int menuOffsetY = 30;
 	private int bookOffsetX = 0;
@@ -89,20 +91,24 @@ public class ParCoolGuideScreen extends Screen {
 		super.func_238651_a_(p_238651_1_, p_238651_2_);
 	}
 
+	//mouseScrolled?
+	@Override
+	public boolean func_231043_a_(double x, double y, double value) {
+		super.func_231043_a_(x, y, value);
+		scroll((int) -value);
+		return true;
+	}
+
 	//keyPressed?
 	@Override
 	public boolean func_231046_a_(int type, int p_231046_2_, int p_231046_3_) {
 		if (super.func_231046_a_(type, p_231046_2_, p_231046_3_)) return true;
 		switch (type) {
 			case GLFW.GLFW_KEY_UP:
-				scrollValue--;
-				if (scrollValue < 0) scrollValue = 0;
+				scroll(-1);
 				return true;
 			case GLFW.GLFW_KEY_DOWN:
-				if (cachedPage != null) {
-					scrollValue++;
-					if (cachedPage.size() < scrollValue) scrollValue = cachedPage.size();
-				}
+				scroll(1);
 				return true;
 		}
 		return false;
@@ -121,6 +127,14 @@ public class ParCoolGuideScreen extends Screen {
 		} else {
 			renderContentText(stack, left, top, width, height, mouseX, mouseY, n);
 		}
+	}
+
+	private void scroll(int value) {
+		if (cachedPage == null) return;
+
+		scrollValue += value;
+		if (scrollValue < 0) scrollValue = 0;
+		if (cachedPage.size() < scrollValue) scrollValue = cachedPage.size();
 	}
 
 	private void renderHome(MatrixStack stack, int left, int top, int width, int height, int mouseX, int mouseY, float n) {
@@ -164,11 +178,11 @@ public class ParCoolGuideScreen extends Screen {
 		FontUtil.drawCenteredText(stack, page.getTitle(), left + width / 2, top + offsetY + titleHeight / 2, getColorCodeFromARGB(255, 0, 0, 0));
 
 		IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-		for (int i = 0; i + scrollValue < Math.min(contentLine, cachedPage.size()); i++) {
+		for (int i = 0; i + scrollValue < Math.min(contentLine + scrollValue, cachedPage.size()); i++) {
 			fontRenderer.renderString(
 					cachedPage.get(i + scrollValue).getString(),
 					left + offsetX,
-					top + offsetY + titleHeight + (i + scrollValue) * (lineHeight),
+					top + offsetY + titleHeight + i * (lineHeight),
 					getColorCodeFromARGB(0xFF, 0, 0, 0),
 					false,
 					stack.getLast().getMatrix(),
