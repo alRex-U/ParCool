@@ -43,7 +43,7 @@ public class Crawl extends Action {
 							&& player.collidedVertically
 			) {
 				//sliding
-				if (parkourability.getFastRun().getRunningTick() > 5) {
+				if (parkourability.getFastRun().getDashTick(parkourability.getAdditionalProperties()) > 5) {
 					sliding = true;
 					Vector3d lookVec = player.getLookVec();
 					slidingVec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize();

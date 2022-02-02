@@ -39,7 +39,7 @@ public class Vault extends Action {
 		if (wall == null) return false;
 		return !this.vauting &&
 				parkourability.getPermission().canVault() &&
-				parkourability.getFastRun().isRunning() &&
+				parkourability.getFastRun().canActWithRunning(player) &&
 				player.collidedVertically &&
 				(wall.dotProduct(lookVec) / wall.length() / lookVec.length()) > 0.707106 /*check facing wall*/ &&
 				WorldUtil.getStep(player) != null &&

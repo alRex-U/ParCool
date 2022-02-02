@@ -11,6 +11,8 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
@@ -100,5 +102,16 @@ public class FastRun extends Action {
 
 	public boolean isRunning() {
 		return fastRunning;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public boolean canActWithRunning(PlayerEntity player) {
+		return ParCoolConfig.CONFIG_CLIENT.substituteSprintForFastRun.get() ? player.isSprinting() : this.isRunning();
+	}
+
+	//return sprinting tick if substitute sprint is on
+	@OnlyIn(Dist.CLIENT)
+	public int getDashTick(AdditionalProperties properties) {
+		return ParCoolConfig.CONFIG_CLIENT.substituteSprintForFastRun.get() ? properties.getSprintingTick() : this.getRunningTick();
 	}
 }
