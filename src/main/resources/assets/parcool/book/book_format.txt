@@ -1,0 +1,18 @@
+It will be read by the BookDecoder class.
+
+The first line will be the title of the item
+The content of the first line is the title of the item, and the content of the line after that is ignored.
+The content after that becomes the body text.
+Three or more = characters will cause a page switch.
+The content after the last page switch will be ignored
+
+Decoration code
+Replace {} with the Minecraft decoration code
+obfuscate:obfuscate
+B:Bold
+I:Italic
+_:underscore
+-:horizontal line
+reset: Reset decoration
+If more than one color is applied, they will be listed separately.
+See BookDecoder for supported colors.

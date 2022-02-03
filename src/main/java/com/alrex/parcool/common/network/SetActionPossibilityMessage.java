@@ -3,8 +3,6 @@ package com.alrex.parcool.common.network;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.constants.ActionsEnum;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
@@ -56,10 +54,12 @@ public class SetActionPossibilityMessage {
 						c.canWallJump.set(possibility);
 						break;
 					case GrabCliff:
-						c.canGrabCliff.set(possibility);
+						c.canClingToCliff.set(possibility);
+						break;
+					case InfiniteStamina:
+						c.infiniteStamina.set(possibility);
 						break;
 				}
-				ClientPlayerEntity player = Minecraft.getInstance().player;
 			}
 		});
 		contextSupplier.get().setPacketHandled(true);

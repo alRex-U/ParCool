@@ -40,9 +40,9 @@ public class RenderUtil {
 
 	public static Vector3d getPlayerOffset(PlayerEntity basePlayer, PlayerEntity targetPlayer, float partialTick) {
 		return new Vector3d(
-				(basePlayer.lastTickPosX + ((basePlayer.getPosX() - basePlayer.lastTickPosX) * partialTick)) - (targetPlayer.lastTickPosX + ((targetPlayer.getPosX() - targetPlayer.lastTickPosX) * partialTick)),
-				(basePlayer.lastTickPosY + ((basePlayer.getPosY() - basePlayer.lastTickPosY) * partialTick)) - (targetPlayer.lastTickPosY + ((targetPlayer.getPosY() - targetPlayer.lastTickPosY) * partialTick)),
-				(basePlayer.lastTickPosZ + ((basePlayer.getPosZ() - basePlayer.lastTickPosZ) * partialTick)) - (targetPlayer.lastTickPosZ + ((targetPlayer.getPosZ() - targetPlayer.lastTickPosZ) * partialTick))
+				(targetPlayer.lastTickPosX + ((targetPlayer.getPosX() - targetPlayer.lastTickPosX) * partialTick)) - (basePlayer.lastTickPosX + ((basePlayer.getPosX() - basePlayer.lastTickPosX) * partialTick)),
+				(targetPlayer.lastTickPosY + ((targetPlayer.getPosY() - targetPlayer.lastTickPosY) * partialTick)) - (basePlayer.lastTickPosY + ((basePlayer.getPosY() - basePlayer.lastTickPosY) * partialTick)),
+				(targetPlayer.lastTickPosZ + ((targetPlayer.getPosZ() - targetPlayer.lastTickPosZ) * partialTick)) - (basePlayer.lastTickPosZ + ((basePlayer.getPosZ() - basePlayer.lastTickPosZ) * partialTick))
 		);
 	}
 }

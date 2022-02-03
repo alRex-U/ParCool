@@ -1,32 +1,28 @@
 package com.alrex.parcool.client.gui;
 
-import com.alrex.parcool.ParCool;
-import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.client.gui.guidebook.Book;
+import com.alrex.parcool.client.gui.guidebook.BookDecoder;
+import com.alrex.parcool.client.gui.widget.ListView;
+import com.alrex.parcool.utilities.FontUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.gui.widget.button.CheckboxButton;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @OnlyIn(Dist.CLIENT)
@@ -34,50 +30,23 @@ public class ParCoolGuideScreen extends Screen {
 	public static final ResourceLocation BACKGROUND_LOCATION = new ResourceLocation("parcool:textures/gui/book_background.png");
 
 	private static final int PAGE_HOME = -1;
-	private static final int PAGE_SETTINGS = -2;
-	private static int currentPage = PAGE_HOME;
-	private List<ITextProperties> pages = getPages();
-	private final List<Button> menuButtons = Arrays.asList(
-			new Button(0, 0, 0, 0, new StringTextComponent("About This Mod"), this::onPress),
-			new Button(0, 0, 0, 0, new StringTextComponent("Stamina"), this::onPress),
-			new Button(0, 0, 0, 0, new StringTextComponent("CatLeap"), this::onPress),
-			new Button(0, 0, 0, 0, new StringTextComponent("Crawl"), this::onPress),
-			new Button(0, 0, 0, 0, new StringTextComponent("Dodge"), this::onPress),
-			new Button(0, 0, 0, 0, new StringTextComponent("FastRunning"), this::onPress),
-			new Button(0, 0, 0, 0, new StringTextComponent("GrabCliff"), this::onPress),
-			new Button(0, 0, 0, 0, new StringTextComponent("Roll"), this::onPress),
-			new Button(0, 0, 0, 0, new StringTextComponent("Vault"), this::onPress),
-			new Button(0, 0, 0, 0, new StringTextComponent("WallJump"), this::onPress),
-			new Button(0, 0, 0, 0, new StringTextComponent("Sliding"), this::onPress),
-			new Button(0, 0, 0, 0, new StringTextComponent("Settings"), this::openSetting)
-	);
-	private final Color color = Color.func_240743_a_(getColorCodeFromARGB(0xFF, 0x99, 0x99, 0xBB));
-	private final List<CheckboxButton> settingButtons = Arrays.asList(
-			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("CatLeap").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canCatLeap.get()),
-			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("Crawl").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canCrawl.get()),
-			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("Dodge").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canDodge.get()),
-			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("FastRunning").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canFastRunning.get()),
-			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("FrontFlip").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canFrontFlip.get()),
-			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("GrabCliff").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canGrabCliff.get()),
-			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("Roll").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canRoll.get()),
-			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("Vault").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canVault.get()),
-			new CheckboxButton(0, 0, 0, 0, new StringTextComponent("WallJump").func_230530_a_(Style.field_240709_b_.func_240718_a_(color)), ParCoolConfig.CONFIG_CLIENT.canWallJump.get())
-	);
-	private IRenderTypeBuffer renderTypeBuffer;
-
-	private void syncSettings() {
-		List<CheckboxButton> b = settingButtons;
-		assert b.size() == 9;
-		ParCoolConfig.CONFIG_CLIENT.canCatLeap.set(b.get(0).isChecked());
-		ParCoolConfig.CONFIG_CLIENT.canCrawl.set(b.get(1).isChecked());
-		ParCoolConfig.CONFIG_CLIENT.canDodge.set(b.get(2).isChecked());
-		ParCoolConfig.CONFIG_CLIENT.canFastRunning.set(b.get(3).isChecked());
-		ParCoolConfig.CONFIG_CLIENT.canFrontFlip.set(b.get(4).isChecked());
-		ParCoolConfig.CONFIG_CLIENT.canGrabCliff.set(b.get(5).isChecked());
-		ParCoolConfig.CONFIG_CLIENT.canRoll.set(b.get(6).isChecked());
-		ParCoolConfig.CONFIG_CLIENT.canVault.set(b.get(7).isChecked());
-		ParCoolConfig.CONFIG_CLIENT.canWallJump.set(b.get(8).isChecked());
-	}
+	private int cachedPageNumber = 0;
+	private List<ITextProperties> cachedPage = null;
+	private int currentPage = PAGE_HOME;
+	private int scrollValue = 0;
+	private final Book book = BookDecoder.getInstance().getBook();
+	private final List<String> menuList = book.getPages()
+			.stream()
+			.map((Book.Page::getTitle))
+			.map(ITextProperties::getString)
+			.collect(Collectors.toList());
+	private final int width = 300;
+	private int height = (int) (width * 0.75);
+	private final int menuOffsetX = 20;
+	private final int menuOffsetY = 30;
+	private int bookOffsetX = 0;
+	private int bookOffsetY = 0;
+	private final ListView menu = new ListView(menuList);
 
 	protected ParCoolGuideScreen(ITextComponent titleIn) {
 		super(titleIn);
@@ -90,6 +59,7 @@ public class ParCoolGuideScreen extends Screen {
 	//init?
 	@Override
 	public void func_231023_e_() {
+		menu.setListener(this::changePage);
 		super.func_231023_e_();
 	}
 
@@ -101,14 +71,12 @@ public class ParCoolGuideScreen extends Screen {
 		mc.getTextureManager().bindTexture(BACKGROUND_LOCATION);
 		func_238651_a_(stack, getColorCodeFromARGB(0x77, 0x66, 0x66, 0xCC));
 		MainWindow window = mc.getMainWindow();
-		int width = 250;
-		int height = (int) (width * 0.75);
-		int offsetX = (window.getScaledWidth() - width) / 2;
-		int offsetY = (window.getScaledHeight() - height) / 2;
+		bookOffsetX = (window.getScaledWidth() - width) / 2;
+		bookOffsetY = (window.getScaledHeight() - height) / 2;
 
-		AbstractGui.func_238466_a_(stack, offsetX, offsetY, width, height, 0f, 0f, 256, 192, 256, 256);
-		renderContent(stack, offsetX, offsetY, width / 2, height, mouseX, mouseY, n);
-		renderMenu(stack, offsetX + width / 2, offsetY, width / 2, height, mouseX, mouseY, n);
+		AbstractGui.func_238466_a_(stack, bookOffsetX, bookOffsetY, width, height, 0f, 0f, 256, 194, 256, 256);
+		renderContent(stack, bookOffsetX, bookOffsetY, width / 2, height, mouseX, mouseY, n);
+		renderMenu(stack, bookOffsetX + width / 2, bookOffsetY, width / 2, height, mouseX, mouseY, n);
 	}
 
 	//renderBackground?
@@ -123,17 +91,24 @@ public class ParCoolGuideScreen extends Screen {
 		super.func_238651_a_(p_238651_1_, p_238651_2_);
 	}
 
+	//mouseScrolled?
+	@Override
+	public boolean func_231043_a_(double x, double y, double value) {
+		super.func_231043_a_(x, y, value);
+		scroll((int) -value);
+		return true;
+	}
+
 	//keyPressed?
 	@Override
 	public boolean func_231046_a_(int type, int p_231046_2_, int p_231046_3_) {
-		syncSettings();
 		if (super.func_231046_a_(type, p_231046_2_, p_231046_3_)) return true;
 		switch (type) {
 			case GLFW.GLFW_KEY_UP:
-				changePage(currentPage - 1);
+				scroll(-1);
 				return true;
 			case GLFW.GLFW_KEY_DOWN:
-				changePage(currentPage + 1);
+				scroll(1);
 				return true;
 		}
 		return false;
@@ -142,40 +117,24 @@ public class ParCoolGuideScreen extends Screen {
 	//mouseClicked?
 	@Override
 	public boolean func_231044_a_(double mouseX, double mouseY, int type) {//type:1->right 0->left
-		if (type == 0) {
-			if (currentPage == PAGE_SETTINGS) {
-				settingButtons.stream().filter(button -> {
-					int x = button.field_230690_l_;
-					int y = button.field_230691_m_;
-					int height = button.func_238483_d_();
-					int width = button.func_230998_h_();
-					return (x < mouseX && mouseX < x + width && y < mouseY && mouseY < y + height);
-				}).findFirst().ifPresent(CheckboxButton::func_230930_b_);
-			}
-			menuButtons.stream().filter(button -> {
-				int x = button.field_230690_l_;
-				int y = button.field_230691_m_;
-				int height = button.func_238483_d_();
-				int width = button.func_230998_h_();
-				return (x < mouseX && mouseX < x + width && y < mouseY && mouseY < y + height);
-			}).findFirst().ifPresent(Button::func_230930_b_);
-			return true;
-		}
+		menu.onClick(type, mouseX, mouseY);
 		return false;
 	}
 
 	private void renderContent(MatrixStack stack, int left, int top, int width, int height, int mouseX, int mouseY, float n) {
-		switch (currentPage) {
-			case PAGE_HOME:
-				renderHome(stack, left, top, width, height, mouseX, mouseY, n);
-				break;
-			case PAGE_SETTINGS:
-				renderSettings(stack, left, top, width, height, mouseX, mouseY, n);
-				break;
-			default:
-				renderContentText(stack, left, top, width, height, mouseX, mouseY, n);
-				break;
+		if (currentPage == PAGE_HOME) {
+			renderHome(stack, left, top, width, height, mouseX, mouseY, n);
+		} else {
+			renderContentText(stack, left, top, width, height, mouseX, mouseY, n);
 		}
+	}
+
+	private void scroll(int value) {
+		if (cachedPage == null) return;
+
+		scrollValue += value;
+		if (scrollValue < 0) scrollValue = 0;
+		if (cachedPage.size() < scrollValue) scrollValue = cachedPage.size();
 	}
 
 	private void renderHome(MatrixStack stack, int left, int top, int width, int height, int mouseX, int mouseY, float n) {
@@ -185,26 +144,46 @@ public class ParCoolGuideScreen extends Screen {
 		final int center = left + width / 2;
 		ITextProperties textTitle = ITextProperties.func_240653_a_("ParCool!", Style.field_240709_b_.func_240713_a_(true));
 		ITextProperties textSubtitle = ITextProperties.func_240652_a_("Guide Book");
-		drawCenteredText(stack, textTitle, center, top + offsetY + 10, getColorCodeFromARGB(0xFF, 0x55, 0x55, 0xFF));
-		drawCenteredText(stack, textSubtitle, center, top + offsetY + 15 + fontRenderer.FONT_HEIGHT, getColorCodeFromARGB(0xFF, 0x44, 0x44, 0xBB));
+		AbstractGui.func_238466_a_(stack, left + width / 4, top + offsetY + 50, width / 2, width / 2, 0f, 207f, 52, 49, 256, 256);
+		FontUtil.drawCenteredText(stack, textTitle, center, top + offsetY + 10, getColorCodeFromARGB(0xFF, 0x55, 0x55, 0xFF));
+		FontUtil.drawCenteredText(stack, textSubtitle, center, top + offsetY + 15 + fontRenderer.FONT_HEIGHT, getColorCodeFromARGB(0xFF, 0x44, 0x44, 0xBB));
 	}
 
 	private void renderContentText(MatrixStack stack, int left, int top, int width, int height, int mouseX, int mouseY, float n) {
 		Minecraft mc = this.getMinecraft();
 		FontRenderer fontRenderer = this.field_230712_o_;
-		final int offsetY = 20;
-		final int offsetX = 10;
-		if (currentPage < 0 || pages.size() <= currentPage) return;
-		ITextProperties text = pages.get(currentPage);
-		List<ITextProperties> wrappedLine = fontRenderer.func_238420_b_().func_238362_b_(text, width - offsetX * 2, Style.field_240709_b_);
-		for (int i = 0; i < wrappedLine.size(); i++) {
-			IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 
+		final int offsetY = 15;
+		final int offsetX = 14;
+		final int lineHeight = fontRenderer.FONT_HEIGHT + 1;
+		final int titleHeight = fontRenderer.FONT_HEIGHT + 10;
+		final int contentHeight = height - offsetX * 2 - titleHeight;
+		final int contentLine = contentHeight / lineHeight;
+
+		if (currentPage < 0 || book.getPages().size() <= currentPage) return;
+
+		Book.Page page = book.getPages().get(currentPage);
+		if (cachedPageNumber != currentPage || cachedPage == null) {
+			ArrayList<ITextProperties> wrappedLines = new ArrayList<>();
+			page.getContent().forEach((ITextProperties text) -> {
+				if (text.getString().isEmpty()) {
+					wrappedLines.add(StringTextComponent.field_240750_d_);
+				} else
+					wrappedLines.addAll(fontRenderer.func_238420_b_().func_238362_b_(text, (int) (width - offsetX * 1.6), Style.field_240709_b_));
+			});
+			cachedPage = wrappedLines;
+			cachedPageNumber = currentPage;
+		}
+
+		FontUtil.drawCenteredText(stack, page.getTitle(), left + width / 2, top + offsetY + titleHeight / 2, getColorCodeFromARGB(255, 0, 0, 0));
+
+		IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+		for (int i = 0; i + scrollValue < Math.min(contentLine + scrollValue, cachedPage.size()); i++) {
 			fontRenderer.renderString(
-					wrappedLine.get(i).getString(),
+					cachedPage.get(i + scrollValue).getString(),
 					left + offsetX,
-					top + offsetY + i * (fontRenderer.FONT_HEIGHT) + 3
-					, getColorCodeFromARGB(0xFF, 0, 0, 0),
+					top + offsetY + titleHeight + i * (lineHeight),
+					getColorCodeFromARGB(0xFF, 0, 0, 0),
 					false,
 					stack.getLast().getMatrix(),
 					renderTypeBuffer,
@@ -212,87 +191,30 @@ public class ParCoolGuideScreen extends Screen {
 					0,
 					15728880
 			);
-			renderTypeBuffer.finish();
 		}
+		renderTypeBuffer.finish();
 	}
 
 	private void renderMenu(MatrixStack stack, int left, int top, int width, int height, int mouseX, int mouseY, float n) {
 		FontRenderer fontRenderer = this.field_230712_o_;
 		int offsetY = 20;
-		int offsetX = 20;
-		int buttonWidth = width - offsetX * 2;
-		int y = (int) (top + offsetY * 1.5);
-		drawCenteredText(stack, ITextProperties.func_240652_a_("Index"), left + width / 2, top + offsetY, getColorCodeFromARGB(0xFF, 0x66, 0x66, 0xFF));
-		for (Button button : menuButtons) {
-			button.func_230991_b_(buttonWidth);//width
-			button.setHeight(fontRenderer.FONT_HEIGHT + 2);
-			button.field_230690_l_ = left + offsetX;//x
-			button.field_230691_m_ = y;//y
-			button.func_230431_b_(stack, mouseX, mouseY, n);
-			y += fontRenderer.FONT_HEIGHT + 2;
-		}
-	}
+		FontUtil.drawCenteredText(stack, ITextProperties.func_240652_a_("Index"), left + width / 2, top + offsetY, getColorCodeFromARGB(0xFF, 0x66, 0x66, 0xFF));
 
-	private void renderSettings(MatrixStack stack, int left, int top, int width, int height, int mouseX, int mouseY, float n) {
-		FontRenderer fontRenderer = this.field_230712_o_;
-		int offsetY = 20;
-		int offsetX = 20;
-		int buttonWidth = width - offsetX * 2;
-		int y = (int) (top + offsetY * 1.5);
-		drawCenteredText(stack, ITextProperties.func_240652_a_("Enabled Actions"), left + width / 2, top + offsetY, getColorCodeFromARGB(0xFF, 0x66, 0x66, 0xFF));
-		for (CheckboxButton button : settingButtons) {
-			button.func_230991_b_(buttonWidth);
-			button.setHeight(fontRenderer.FONT_HEIGHT + 6);
-			button.field_230690_l_ = left + offsetX;
-			button.field_230691_m_ = y;
-			button.func_230431_b_(stack, mouseX, mouseY, n);
-			y += fontRenderer.FONT_HEIGHT + 4;
-		}
-	}
-
-	private void drawCenteredText(MatrixStack stack, ITextProperties text, int x, int y, int color) {
-		FontRenderer fontRenderer = this.field_230712_o_;
-		int width = fontRenderer.getStringWidth(text.getString());
-		IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-		fontRenderer.renderString(text.getString(), x - (width >> 1), y - (fontRenderer.FONT_HEIGHT >> 1), color, false, stack.getLast().getMatrix(), renderTypeBuffer, true, 0, 15728880);
-		renderTypeBuffer.finish();
+		menu.setX(left + menuOffsetX);
+		menu.setY(top + menuOffsetY);
+		menu.setWidth(width - menuOffsetX * 2);
+		menu.setHeight(height - menuOffsetY * 2);
+		menu.render(stack, fontRenderer);
 	}
 
 	private static int getColorCodeFromARGB(int a, int r, int g, int b) {
 		return a * 0x1000000 + r * 0x10000 + g * 0x100 + b;
 	}
 
-	private static List<ITextProperties> getPages() {
-		final String path = "/assets/parcool/book/parcool_guide_content.txt";
-		BufferedReader reader = new BufferedReader(new InputStreamReader(ParCool.class.getResourceAsStream(path), StandardCharsets.UTF_8));
-		ArrayList<String> texts = new ArrayList<>();
-		//=======
-		// replace division line -> \\n and set to list
-		Iterator<String> iterator = reader.lines().iterator();
-		Pattern division = Pattern.compile("===+");
-		AtomicReference<StringBuilder> builder = new AtomicReference<>(new StringBuilder());
-		iterator.forEachRemaining((line -> {
-			if (!division.matcher(line).matches()) {
-				builder.get().append(line).append("\n");
-			} else {//division line
-				texts.add(builder.toString());
-				if (iterator.hasNext()) builder.set(new StringBuilder());
-			}
-		}));
-		//=======
-		return texts.stream().map(ITextProperties::func_240652_a_).collect(Collectors.toList());
-	}
-
 	private void changePage(int i) {
-		if (i != PAGE_HOME && i != PAGE_SETTINGS && (i < 0 || pages.size() <= i)) return;
+		if (i != PAGE_HOME && (i < 0 || book.getPages().size() <= i)) return;
+		scrollValue = 0;
 		currentPage = i;
 	}
 
-	private void onPress(Button button) {
-		changePage(menuButtons.indexOf(button));
-	}
-
-	private void openSetting(Button button) {
-		changePage(PAGE_SETTINGS);
-	}
 }

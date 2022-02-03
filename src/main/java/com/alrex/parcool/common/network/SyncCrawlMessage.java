@@ -1,7 +1,8 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.common.capability.ICrawl;
+import com.alrex.parcool.common.action.impl.Crawl;
+import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -17,21 +18,29 @@ import java.util.function.Supplier;
 
 public class SyncCrawlMessage {
 
-	private boolean isCrawling = false;
-	private boolean isSliding = false;
+	private boolean crawling = false;
+	private boolean sliding = false;
 	private UUID playerID = null;
 
+	public boolean isCrawling() {
+		return crawling;
+	}
+
+	public boolean isSliding() {
+		return sliding;
+	}
+
 	public void encode(PacketBuffer packet) {
-		packet.writeBoolean(this.isCrawling);
-		packet.writeBoolean(this.isSliding);
+		packet.writeBoolean(this.crawling);
+		packet.writeBoolean(this.sliding);
 		packet.writeLong(this.playerID.getMostSignificantBits());
 		packet.writeLong(this.playerID.getLeastSignificantBits());
 	}
 
 	public static SyncCrawlMessage decode(PacketBuffer packet) {
 		SyncCrawlMessage message = new SyncCrawlMessage();
-		message.isCrawling = packet.readBoolean();
-		message.isSliding = packet.readBoolean();
+		message.crawling = packet.readBoolean();
+		message.sliding = packet.readBoolean();
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
 		return message;
 	}
@@ -44,11 +53,9 @@ public class SyncCrawlMessage {
 			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 			if (player == null) return;
 
-			ICrawl crawl = ICrawl.get(player);
-			if (crawl == null) return;
-
-			crawl.setCrawling(this.isCrawling);
-			crawl.setSliding(this.isSliding);
+			Parkourability parkourability = Parkourability.get(player);
+			if (parkourability == null) return;
+			parkourability.getCrawl().synchronize(this);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
@@ -68,22 +75,18 @@ public class SyncCrawlMessage {
 				if (player == null) return;
 			}
 
-			ICrawl crawl = ICrawl.get(player);
-			if (crawl == null) return;
-
-			crawl.setCrawling(this.isCrawling);
-			crawl.setSliding(this.isSliding);
+			Parkourability parkourability = Parkourability.get(player);
+			if (parkourability == null) return;
+			parkourability.getCrawl().synchronize(this);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void sync(PlayerEntity player) {
-		ICrawl crawl = ICrawl.get(player);
-
+	public static void sync(PlayerEntity player, Crawl crawl) {
 		SyncCrawlMessage message = new SyncCrawlMessage();
-		message.isCrawling = crawl.isCrawling();
-		message.isSliding = crawl.isSliding();
+		message.crawling = crawl.isCrawling();
+		message.sliding = crawl.isSliding();
 		message.playerID = player.getUniqueID();
 
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);

@@ -67,17 +67,17 @@ public class ServerProxy extends CommonProxy {
 		);
 		instance.registerMessage(
 				8,
-				SyncGrabCliffMessage.class,
-				SyncGrabCliffMessage::encode,
-				SyncGrabCliffMessage::decode,
-				SyncGrabCliffMessage::handleServer
+				SyncClingToCliffMessage.class,
+				SyncClingToCliffMessage::encode,
+				SyncClingToCliffMessage::decode,
+				SyncClingToCliffMessage::handleServer
 		);
 		instance.registerMessage(
 				9,
-				SyncRollReadyMessage.class,
-				SyncRollReadyMessage::encode,
-				SyncRollReadyMessage::decode,
-				SyncRollReadyMessage::handleServer
+				SyncRollMessage.class,
+				SyncRollMessage::encode,
+				SyncRollMessage::decode,
+				SyncRollMessage::handleServer
 		);
 		instance.registerMessage(
 				10,
@@ -85,6 +85,27 @@ public class ServerProxy extends CommonProxy {
 				SyncStaminaMessage::encode,
 				SyncStaminaMessage::decode,
 				SyncStaminaMessage::handleServer
+		);
+		instance.registerMessage(
+				11,
+				DisableInfiniteStaminaMessage.class,
+				DisableInfiniteStaminaMessage::encode,
+				DisableInfiniteStaminaMessage::decode,
+				null
+		);
+		instance.registerMessage(
+				12,
+				ActionPermissionsMessage.class,
+				ActionPermissionsMessage::encode,
+				ActionPermissionsMessage::decode,
+				null
+		);
+		instance.registerMessage(
+				13,
+				AvoidDamageMessage.class,
+				AvoidDamageMessage::encode,
+				AvoidDamageMessage::decode,
+				null
 		);
 	}
 }

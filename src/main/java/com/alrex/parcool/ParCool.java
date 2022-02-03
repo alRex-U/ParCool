@@ -66,7 +66,8 @@ public class ParCool {
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 
 		ModLoadingContext context = ModLoadingContext.get();
-		context.registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.spec);
+		context.registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.CLIENT_SPEC);
+		context.registerConfig(ModConfig.Type.SERVER, ParCoolConfig.SERVER_SPEC);
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {
@@ -74,7 +75,7 @@ public class ParCool {
 
 	private void setup(final FMLCommonSetupEvent event) {
 		EventBusForgeRegistry.register(MinecraftForge.EVENT_BUS);
-		EventBusModRegistry.registry(FMLJavaModLoadingContext.get().getModEventBus());
+		EventBusModRegistry.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Capabilities.registerAll(CapabilityManager.INSTANCE);
 		PROXY.registerMessages(CHANNEL_INSTANCE);
 	}
