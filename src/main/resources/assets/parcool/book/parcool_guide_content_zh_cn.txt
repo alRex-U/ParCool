@@ -1,6 +1,6 @@
 {B}[关于此模组]{reset}
 
-ParCool 模组是我的世界的一个模组。
+跑酷模组是我的世界的一个模组。
 当中有很多像跑酷动作和是跑酷动作的酷炫动作。
 一些动作的添加是由跑酷运动所启发的。
 我很愿意你能提出建议来完善这个模组。
@@ -17,7 +17,7 @@ ParCool 模组是我的世界的一个模组。
 这个模组增加了体力的概念。
 当你使用ParCool动作时，会消耗体力。
 如果你耗尽了所有的体力，那么
-1.你将无法使用ParCool动作。
+1.你将无法使用跑酷动作。
 2.你将不能进行冲刺。
 要小心。
 ======
@@ -132,7 +132,7 @@ ParCool 模组是我的世界的一个模组。
 日本跑酷联盟
 https://jpf-parkourfederation.jp/
 
-跑酷粉丝圈维基
+维基跑酷粉丝圈
 https://parkour.fandom.com/wiki/Parkour
 
 This book is translated by CatalystGinger.
