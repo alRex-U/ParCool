@@ -22,6 +22,6 @@ public class HUDRegistry {
 	@SubscribeEvent
 	public void onOverlay(RenderGameOverlayEvent.Pre event) {
 		if (event.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE) return;
-		huds.forEach((hud) -> hud.render(event.getMatrixStack()));
+		huds.forEach((hud) -> hud.render(event, event.getMatrixStack()));
 	}
 }

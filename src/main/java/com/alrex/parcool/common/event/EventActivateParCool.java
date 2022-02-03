@@ -3,8 +3,7 @@ package com.alrex.parcool.common.event;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.client.particle.ParticleProvider;
-import com.alrex.parcool.common.capability.*;
-import com.alrex.parcool.common.network.*;
+import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.constants.TranslateKeys;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -22,7 +21,7 @@ public class EventActivateParCool {
 		if (KeyRecorder.keyActivateParCoolState.isPressed()) {
 			ClientPlayerEntity player = Minecraft.getInstance().player;
 			if (player == null) return;
-			IStamina stamina = IStamina.get(player);
+			Stamina stamina = Stamina.get(player);
 			if (stamina == null) return;
 
 			if (stamina.isExhausted()) {
@@ -47,37 +46,6 @@ public class EventActivateParCool {
 	public static boolean inactivate() {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 
-		ICatLeap catLeap = ICatLeap.get(player);
-		ICrawl crawl = ICrawl.get(player);
-		IFastRunning fastRunning = IFastRunning.get(player);
-		IGrabCliff grabCliff = IGrabCliff.get(player);
-		IVault vault = IVault.get(player);
-		IDodge dodge = IDodge.get(player);
-		IWallJump wallJump = IWallJump.get(player);
-		if (
-				catLeap == null ||
-						crawl == null ||
-						fastRunning == null ||
-						grabCliff == null ||
-						vault == null ||
-						dodge == null ||
-						wallJump == null
-		) return false;
-
-		catLeap.setReady(false);
-		catLeap.setLeaping(false);
-		crawl.setCrawling(false);
-		crawl.setSliding(false);
-		fastRunning.setFastRunning(false);
-		grabCliff.setGrabbing(false);
-		vault.setVaulting(false);
-		dodge.setDodging(false);
-
-		SyncCatLeapMessage.sync(player);
-		SyncCrawlMessage.sync(player);
-		SyncGrabCliffMessage.sync(player);
-		SyncFastRunningMessage.sync(player);
-		SyncDodgeMessage.sync(player);
 		return true;
 	}
 }

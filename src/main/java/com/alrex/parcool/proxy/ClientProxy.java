@@ -70,17 +70,17 @@ public class ClientProxy extends CommonProxy {
 		);
 		instance.registerMessage(
 				8,
-				SyncGrabCliffMessage.class,
-				SyncGrabCliffMessage::encode,
-				SyncGrabCliffMessage::decode,
-				SyncGrabCliffMessage::handleClient
+				SyncClingToCliffMessage.class,
+				SyncClingToCliffMessage::encode,
+				SyncClingToCliffMessage::decode,
+				SyncClingToCliffMessage::handleClient
 		);
 		instance.registerMessage(
 				9,
-				SyncRollReadyMessage.class,
-				SyncRollReadyMessage::encode,
-				SyncRollReadyMessage::decode,
-				SyncRollReadyMessage::handleClient
+				SyncRollMessage.class,
+				SyncRollMessage::encode,
+				SyncRollMessage::decode,
+				SyncRollMessage::handleClient
 		);
 		instance.registerMessage(
 				10,
@@ -98,10 +98,10 @@ public class ClientProxy extends CommonProxy {
 		);
 		instance.registerMessage(
 				12,
-				SendActionPermissionsMessage.class,
-				SendActionPermissionsMessage::encode,
-				SendActionPermissionsMessage::decode,
-				SendActionPermissionsMessage::handle
+				ActionPermissionsMessage.class,
+				ActionPermissionsMessage::encode,
+				ActionPermissionsMessage::decode,
+				ActionPermissionsMessage::handle
 		);
 		instance.registerMessage(
 				13,

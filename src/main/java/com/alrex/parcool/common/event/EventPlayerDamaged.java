@@ -1,33 +1,52 @@
 package com.alrex.parcool.common.event;
 
-import com.alrex.parcool.common.capability.IDodge;
-import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.action.impl.Dodge;
+import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.common.network.AvoidDamageMessage;
+import com.alrex.parcool.common.network.StartRollMessage;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.DamageSource;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class EventPlayerDamaged {
 	@SubscribeEvent
-	public static void onDamage(LivingAttackEvent event) {
+	public static void onDamage(LivingDamageEvent event) {
 		if (!(event.getEntity() instanceof ServerPlayerEntity)) return;
 		ServerPlayerEntity player = (ServerPlayerEntity) event.getEntity();
 
-		IDodge dodge = IDodge.get(player);
-		if (dodge == null) return;
-		IStamina stamina = IStamina.get(player);
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) return;
+		Stamina stamina = Stamina.get(player);
 		if (stamina == null) return;
 		DamageSource damageSource = event.getSource();
 
-		if (dodge.getDamageCoolTime() < 10) {
+		if (
+				damageSource.getDamageType().equals(DamageSource.FALL.getDamageType())
+						&& parkourability.getRoll().isReady()
+		) {
+			StartRollMessage.send(player);
+			float damage = event.getAmount();
+			if (damage < 2) {
+				event.setCanceled(true);
+			} else {
+				event.setAmount((damage - 2) / 2);
+			}
+			return;
+		}
+		Dodge dodge = parkourability.getDodge();
+		if (dodge.isAvoided() && dodge.getDamageCoolTime() > 0) {
 			event.setCanceled(true);
 			return;
 		}
-		if (!stamina.isExhausted() && dodge.isDodging() && (dodge.getDirection() == IDodge.DodgeDirection.Front || dodge.getDirection() == IDodge.DodgeDirection.Back)) {
+		if (dodge.isDodging() &&
+				(dodge.getDodgeDirection() == Dodge.DodgeDirections.Front ||
+						dodge.getDodgeDirection() == Dodge.DodgeDirections.Back)
+		) {
 			if (!(damageSource.isFireDamage() || damageSource.isMagicDamage() || damageSource.isUnblockable()) && event.getAmount() < 15f) {
 				AvoidDamageMessage.send(player, event.getAmount());
-				dodge.resetDamageCoolTime();
+				dodge.avoidDamage(player);
 				event.setCanceled(true);
 			}
 		}

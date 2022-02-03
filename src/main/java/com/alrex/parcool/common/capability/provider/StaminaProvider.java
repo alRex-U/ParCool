@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.capability.provider;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 public class StaminaProvider implements ICapabilityProvider {
 	public static final ResourceLocation CAPABILITY_LOCATION = new ResourceLocation(ParCool.MOD_ID, "capability.parcool.stamina");
 
-	private LazyOptional<IStamina> instance = LazyOptional.of(Capabilities.STAMINA_CAPABILITY::getDefaultInstance);
+	private LazyOptional<Stamina> instance = LazyOptional.of(Capabilities.STAMINA_CAPABILITY::getDefaultInstance);
 
 	@Nonnull
 	@Override

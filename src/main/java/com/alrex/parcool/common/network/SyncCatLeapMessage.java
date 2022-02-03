@@ -1,7 +1,8 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.common.capability.ICatLeap;
+import com.alrex.parcool.common.action.impl.CatLeap;
+import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -16,18 +17,30 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public class SyncCatLeapMessage {
-	private boolean isLeaping = false;
+	private boolean leaping = false;
+	private boolean ready = false;
+
+	public boolean isReady() {
+		return ready;
+	}
+
+	public boolean isLeaping() {
+		return leaping;
+	}
+
 	private UUID playerID = null;
 
 	public void encode(PacketBuffer packet) {
-		packet.writeBoolean(this.isLeaping);
+		packet.writeBoolean(this.leaping);
+		packet.writeBoolean(this.ready);
 		packet.writeLong(this.playerID.getMostSignificantBits());
 		packet.writeLong(this.playerID.getLeastSignificantBits());
 	}
 
 	public static SyncCatLeapMessage decode(PacketBuffer packet) {
 		SyncCatLeapMessage message = new SyncCatLeapMessage();
-		message.isLeaping = packet.readBoolean();
+		message.leaping = packet.readBoolean();
+		message.ready = packet.readBoolean();
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
 		return message;
 	}
@@ -41,10 +54,10 @@ public class SyncCatLeapMessage {
 			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 			if (player == null) return;
 
-			ICatLeap catLeap = ICatLeap.get(player);
-			if (catLeap == null) return;
+			Parkourability parkourability = Parkourability.get(player);
+			if (parkourability == null) return;
 
-			catLeap.setLeaping(this.isLeaping);
+			parkourability.getCatLeap().synchronize(this);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
@@ -64,21 +77,19 @@ public class SyncCatLeapMessage {
 				if (player == null) return;
 			}
 
-			ICatLeap catLeap = ICatLeap.get(player);
-			if (catLeap == null) return;
+			Parkourability parkourability = Parkourability.get(player);
+			if (parkourability == null) return;
 
-			catLeap.setLeaping(this.isLeaping);
+			parkourability.getCatLeap().synchronize(this);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void sync(PlayerEntity player) {
-		ICatLeap catLeap = ICatLeap.get(player);
-		if (catLeap == null) return;
-
+	public static void sync(PlayerEntity player, CatLeap catLeap) {
 		SyncCatLeapMessage message = new SyncCatLeapMessage();
-		message.isLeaping = catLeap.isLeaping();
+		message.leaping = catLeap.isLeaping();
+		message.ready = catLeap.isReady();
 		message.playerID = player.getUniqueID();
 
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);

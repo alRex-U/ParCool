@@ -2,8 +2,8 @@ package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.particle.ParticleProvider;
-import com.alrex.parcool.common.capability.IDodge;
-import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.capability.Stamina;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -39,10 +39,10 @@ public class AvoidDamageMessage {
 		contextSupplier.get().enqueueWork(() -> {
 			AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) Minecraft.getInstance().world.getPlayerByUuid(playerID);
 			if (player == null) return;
-			IStamina stamina = IStamina.get(player);
-			IDodge dodge = IDodge.get(player);
-			if (stamina == null || dodge == null) return;
-			stamina.consume(dodge.getStaminaConsumptionOfAvoiding(damage));
+			Stamina stamina = Stamina.get(player);
+			Parkourability parkourability = Parkourability.get(player);
+			if (stamina == null || parkourability == null) return;
+			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionDodgeAvoid(damage), parkourability.getActionInfo());
 			ParticleProvider.spawnEffectAvoidDamage(player);
 			player.playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.6f, 1);
 		});

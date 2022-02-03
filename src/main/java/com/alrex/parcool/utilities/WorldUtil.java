@@ -120,8 +120,14 @@ public class WorldUtil {
 		final double d = 0.3;
 		World world = entity.getEntityWorld();
 		double distance = entity.getWidth() / 2;
-		double baseLine = entity.getEyeHeight() + (entity.getHeight() - entity.getEyeHeight()) / 2;
+		double baseLine1 = entity.getEyeHeight() + (entity.getHeight() - entity.getEyeHeight()) / 2;
+		double baseLine2 = entity.getHeight() + (entity.getHeight() - entity.getEyeHeight()) / 2;
+		return existsGrabbableWall(entity, distance, baseLine1) || existsGrabbableWall(entity, distance, baseLine2);
+	}
 
+	private static boolean existsGrabbableWall(LivingEntity entity, double distance, double baseLine) {
+		final double d = 0.3;
+		World world = entity.getEntityWorld();
 		AxisAlignedBB baseBoxSide = new AxisAlignedBB(
 				entity.getPosX() - d,
 				entity.getPosY() + baseLine - entity.getHeight() / 6,

@@ -23,5 +23,7 @@ Players can do more actions such as...
 
 If it made you traceurs or traceuses ; parkour practitioners, I couldn't be happier!!
 
+This project is always ready to accept your contribution.
+
 *ParCool* are licensed under  
 **GNU GENERAL PUBLIC LICENSE Version 3**.
