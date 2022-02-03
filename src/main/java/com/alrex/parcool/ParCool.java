@@ -96,6 +96,5 @@ public class ParCool {
 	}
 
 	private void registerCommand(final RegisterCommandsEvent event) {
-		ParCoolCommands.register(event.getDispatcher());
 	}
 }
