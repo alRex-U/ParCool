@@ -2,7 +2,6 @@ package com.alrex.parcool;
 
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
-import com.alrex.parcool.common.command.ParCoolCommands;
 import com.alrex.parcool.common.item.ItemRegistry;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
 import com.alrex.parcool.common.registries.EventBusModRegistry;
