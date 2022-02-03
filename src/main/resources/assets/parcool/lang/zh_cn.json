@@ -5,8 +5,8 @@
   "key.roll.description": "落地翻滚",
   "key.fastrunning.description": "快速奔跑",
   "key.dodge.description": "躲闪",
-  "key.parcool.activate": "ParCool 激活",
-  "key.categories.parcool": "ParCool",
+  "key.parcool.activate": "跑酷激活",
+  "key.categories.parcool": "跑酷",
   "message.prohibited.action": "禁止的动作",
   "message.activation.active": "§bParCool:§2开启",
   "message.activation.inactive": "§bParCool:§7关闭",
@@ -17,7 +17,7 @@
   "command.error.boolean.invalid": "只能使用 \"true\" 或 \"false\"。 [%s]",
   "command.server.send.allow.infinite": "允许玩家启用无限的体力",
   "command.server.send.not.allow.infinite": "禁止玩家启用无限体力",
-  "item.parcool.parcool_guide": "§bParCool指南",
-  "itemGroup.ParCool": "ParCool!",
-  "toolTip.parcool_guide": "§7一本关于ParCool的书"
+  "item.parcool.parcool_guide": "§b跑酷指南",
+  "itemGroup.ParCool": "跑酷!",
+  "toolTip.parcool_guide": "§7一本关于跑酷的书"
 }
