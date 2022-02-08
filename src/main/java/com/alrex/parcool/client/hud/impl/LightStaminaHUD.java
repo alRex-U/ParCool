@@ -55,7 +55,7 @@ public class LightStaminaHUD extends AbstractHUD {
 
 		mc.getTextureManager().bindTexture(StaminaHUD.STAMINA);
 		int baseX = scaledWidth / 2 + 92;
-		int y = scaledHeight - 49;
+		int y = scaledHeight - 49 + ParCoolConfig.CONFIG_CLIENT.offsetVerticalLightStaminaHUD.get();
 		for (int i = 1; i <= 10; i++) {
 			int x = baseX - i * 8 - 1;
 			int textureX;

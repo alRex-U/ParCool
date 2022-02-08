@@ -34,6 +34,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.EnumValue<Position.Vertical> alignVerticalStaminaHUD;
 		public final ForgeConfigSpec.IntValue marginHorizontalStaminaHUD;
 		public final ForgeConfigSpec.IntValue marginVerticalStaminaHUD;
+		public final ForgeConfigSpec.IntValue offsetVerticalLightStaminaHUD;
 
 		Client(ForgeConfigSpec.Builder builder) {
 			builder.comment("Enable ParCool Actions").push("Possibility of Actions");
@@ -62,6 +63,7 @@ public class ParCoolConfig {
 				alignVerticalStaminaHUD = builder.comment("vertical alignment").defineEnum("align_V_S_HUD", Position.Vertical.Bottom);
 				marginHorizontalStaminaHUD = builder.comment("horizontal margin").defineInRange("margin_H_S_HUD", 3, 0, 100);
 				marginVerticalStaminaHUD = builder.comment("vertical margin").defineInRange("margin_V_S_HUD", 3, 0, 100);
+				offsetVerticalLightStaminaHUD = builder.comment("vertical offset of light stamina HUD").defineInRange("offset_V_LS_HUD", 0, -50, 50);
 			}
 			builder.pop();
 			builder.comment("Others").push("Other configuration");
