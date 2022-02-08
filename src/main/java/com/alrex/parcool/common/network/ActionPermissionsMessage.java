@@ -125,7 +125,7 @@ public class ActionPermissionsMessage {
 		message.allowedCrawl = config.allowCrawl.get();
 		message.allowedDodge = config.allowDodge.get();
 		message.allowedFastRunning = config.allowFastRunning.get();
-		message.allowedClingToCliff = config.allowGrabCliff.get();
+		message.allowedClingToCliff = config.allowClingToCliff.get();
 		message.allowedRoll = config.allowRoll.get();
 		message.allowedVault = config.allowVault.get();
 		message.allowedWallJump = config.allowWallJump.get();

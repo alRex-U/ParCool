@@ -90,7 +90,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue allowCrawl;
 		public final ForgeConfigSpec.BooleanValue allowDodge;
 		public final ForgeConfigSpec.BooleanValue allowFastRunning;
-		public final ForgeConfigSpec.BooleanValue allowGrabCliff;
+		public final ForgeConfigSpec.BooleanValue allowClingToCliff;
 		public final ForgeConfigSpec.BooleanValue allowRoll;
 		public final ForgeConfigSpec.BooleanValue allowVault;
 		public final ForgeConfigSpec.BooleanValue allowWallJump;
@@ -102,7 +102,7 @@ public class ParCoolConfig {
 				allowCrawl = builder.comment("allow Crawl").define("allowCrawl", true);
 				allowDodge = builder.comment("allow Dodge").define("allowDodge", true);
 				allowFastRunning = builder.comment("allow FastRunning").define("allowFastRunning", true);
-				allowGrabCliff = builder.comment("allow GrabCliff").define("allowGrabCliff", true);
+				allowClingToCliff = builder.comment("allow ClingToCliff").define("allowClingToCliff", true);
 				allowRoll = builder.comment("allow Roll").define("allowRoll", true);
 				allowVault = builder.comment("allow Vault").define("allowVault", true);
 				allowWallJump = builder.comment("allow WallJump").define("allow WallJump", true);
