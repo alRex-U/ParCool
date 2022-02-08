@@ -3,10 +3,7 @@ package com.alrex.parcool.common.info;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.network.ActionPermissionsMessage;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class ActionPermission {
 	private boolean haveReceived = false;
 	private boolean allowedCatLeap = true;

@@ -14,6 +14,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
@@ -48,6 +50,7 @@ public class Roll extends Action {
 		}
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (player.isUser()) {
@@ -75,12 +78,17 @@ public class Roll extends Action {
 				player.addVelocity(vec.getX(), 0, vec.getZ());
 				player.velocityChanged = true;
 			}
+			if (Minecraft.getInstance().player != null) {
+				this.cameraPitch = Minecraft.getInstance().player.rotationPitch;
+			}
+			sendSynchronization(Minecraft.getInstance().player);
 			Animation animation = Animation.get(player);
 			if (animation != null) animation.setAnimator(new RollAnimator());
 			start = false;
 		}
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
 		if (rolling && player.isUser() && Minecraft.getInstance().gameSettings.thirdPersonView == 0 && !ParCoolConfig.CONFIG_CLIENT.disableCameraRolling.get()) {
@@ -113,11 +121,7 @@ public class Roll extends Action {
 			this.rolling = true;
 			this.ready = false;
 			this.start = true;
-			if (Minecraft.getInstance().player != null) {
-				this.cameraPitch = Minecraft.getInstance().player.rotationPitch;
-			}
 
-			sendSynchronization(Minecraft.getInstance().player);
 		}
 	}
 

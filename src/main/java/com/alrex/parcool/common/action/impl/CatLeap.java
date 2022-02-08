@@ -10,6 +10,8 @@ import com.alrex.parcool.common.network.SyncCatLeapMessage;
 import com.alrex.parcool.utilities.BufferUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
@@ -27,12 +29,18 @@ public class CatLeap extends Action {
 		} else {
 			leapingTick = 0;
 		}
-		if (leapingTick > 1 && player.collidedVertically) {
+		if (
+				(leapingTick > 1 && player.collidedVertically) ||
+						player.isElytraFlying() ||
+						player.isInWaterOrBubbleColumn() ||
+						player.isInLava()
+		) {
 			leaping = false;
 			leapingTick = 0;
 		}
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (player.isUser()) {

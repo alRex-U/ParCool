@@ -5,6 +5,8 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -15,18 +17,26 @@ import java.util.List;
 public class ActionProcessor {
 	public final ByteBuffer buffer = ByteBuffer.allocate(128);
 
+	@OnlyIn(Dist.CLIENT)
+	@SubscribeEvent
+	public void onTickInClient(TickEvent.PlayerTickEvent event) {
+		if (event.phase == TickEvent.Phase.START) return;
+		PlayerEntity player = event.player;
+		Animation animation = Animation.get(player);
+		if (animation == null) return;
+		animation.tick();
+	}
+
 	@SubscribeEvent
 	public void onTick(TickEvent.PlayerTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) return;
 		PlayerEntity player = event.player;
 		Parkourability parkourability = Parkourability.get(player);
 		Stamina stamina = Stamina.get(player);
-		Animation animation = Animation.get(player);
-		if (parkourability == null || stamina == null || animation == null) return;
+		if (parkourability == null || stamina == null) return;
 		List<Action> actions = parkourability.getList();
 		stamina.onTick();
 		if (stamina.getRecoveryCoolTime() == 0) stamina.recover(stamina.getMaxStamina() / 60);
-		animation.tick();
 		boolean needSync = event.side == LogicalSide.CLIENT && player.isUser();
 
 		for (Action action : actions) {
@@ -46,6 +56,7 @@ public class ActionProcessor {
 		}
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public void onRenderTick(TickEvent.RenderTickEvent event) {
 		PlayerEntity player = Minecraft.getInstance().player;

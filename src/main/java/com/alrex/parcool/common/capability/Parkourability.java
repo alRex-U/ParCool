@@ -14,8 +14,7 @@ import java.util.List;
 public class Parkourability {
 	public static Parkourability get(PlayerEntity player) {
 		LazyOptional<Parkourability> optional = player.getCapability(Capabilities.PARKOURABILITY_CAPABILITY);
-		if (!optional.isPresent()) return null;
-		return optional.orElseThrow(IllegalStateException::new);
+		return optional.orElse(null);
 	}
 
 	private final CatLeap catLeap = new CatLeap();

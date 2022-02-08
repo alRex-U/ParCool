@@ -4,9 +4,12 @@ import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.LazyOptional;
 
+@OnlyIn(Dist.CLIENT)
 public class Animation {
 	public static Animation get(PlayerEntity player) {
 		LazyOptional<Animation> optional = player.getCapability(Capabilities.ANIMATION_CAPABILITY);

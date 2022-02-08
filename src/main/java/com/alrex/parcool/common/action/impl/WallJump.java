@@ -61,6 +61,7 @@ public class WallJump extends Action {
 				&& WorldUtil.getWall(player) != null;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (player.isUser() && canWallJump(player, parkourability, stamina)) {

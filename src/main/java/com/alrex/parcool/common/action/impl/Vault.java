@@ -17,9 +17,9 @@ import java.nio.ByteBuffer;
 public class Vault extends Action {
 	private boolean vauting = false;
 	private int vaultingTick = 0;
-	@OnlyIn(Dist.CLIENT)
+
+	//only in client
 	private double stepHeight = 0;
-	@OnlyIn(Dist.CLIENT)
 	private Vector3d stepDirection = null;
 
 	@Override
@@ -50,6 +50,7 @@ public class Vault extends Action {
 		return 2;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (player.isUser()) {

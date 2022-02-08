@@ -15,6 +15,8 @@ public class EventAttachCapability {
 		if (!(event.getObject() instanceof PlayerEntity)) return;
 		event.addCapability(ParkourabilityProvider.CAPABILITY_LOCATION, new ParkourabilityProvider());
 		event.addCapability(StaminaProvider.CAPABILITY_LOCATION, new StaminaProvider());
-		event.addCapability(AnimationProvider.CAPABILITY_LOCATION, new AnimationProvider());
+		if (event.getObject().getEntityWorld().isRemote) {
+			event.addCapability(AnimationProvider.CAPABILITY_LOCATION, new AnimationProvider());
+		}
 	}
 }

@@ -27,7 +27,6 @@ public class Dodge extends Action {
 	}
 
 	private DodgeDirections dodgeDirection = null;
-	@OnlyIn(Dist.CLIENT)
 	private int coolTime = 0;
 	private int dodgingTick = 0;
 	private boolean needPitchReset = false;
@@ -99,6 +98,7 @@ public class Dodge extends Action {
 		}
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (player.isUser()) {
