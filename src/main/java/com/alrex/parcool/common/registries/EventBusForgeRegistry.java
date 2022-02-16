@@ -8,8 +8,8 @@ import com.alrex.parcool.client.hud.impl.LightStaminaHUD;
 import com.alrex.parcool.client.hud.impl.StaminaHUD;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.ActionProcessor;
-import com.alrex.parcool.common.event.EventActivateParCool;
 import com.alrex.parcool.common.event.EventAttachCapability;
+import com.alrex.parcool.common.event.EventOpenSettingsParCool;
 import com.alrex.parcool.common.event.EventPlayerDamaged;
 import com.alrex.parcool.common.event.EventPlayerJoin;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -38,6 +38,6 @@ public class EventBusForgeRegistry {
 		);
 		bus.register(KeyRecorder.class);
 		bus.register(new AnimationHandler());
-		bus.register(EventActivateParCool.class);
+		bus.register(EventOpenSettingsParCool.class);
 	}
 }

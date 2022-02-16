@@ -16,7 +16,11 @@ public abstract class Widget {
 		this.height = height;
 	}
 
-	abstract public void render(MatrixStack stack, FontRenderer fontRenderer);
+	public boolean contains(double x, double y) {
+		return this.x < x && x < this.x + width && this.y < y && y < this.y + height;
+	}
+
+	abstract public void render(MatrixStack stack, FontRenderer fontRenderer, int mouseX, int mouseY, float partial);
 
 	public void setX(int x) {
 		this.x = x;

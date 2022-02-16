@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.alrex.parcool.utilities.ColorUtil.getColorCodeFromARGB;
+
 @OnlyIn(Dist.CLIENT)
 public class ParCoolGuideScreen extends Screen {
 	public static final ResourceLocation BACKGROUND_LOCATION = new ResourceLocation("parcool:textures/gui/book_background.png");
@@ -204,11 +206,7 @@ public class ParCoolGuideScreen extends Screen {
 		menu.setY(top + menuOffsetY);
 		menu.setWidth(width - menuOffsetX * 2);
 		menu.setHeight(height - menuOffsetY * 2);
-		menu.render(stack, fontRenderer);
-	}
-
-	private static int getColorCodeFromARGB(int a, int r, int g, int b) {
-		return a * 0x1000000 + r * 0x10000 + g * 0x100 + b;
+		menu.render(stack, fontRenderer, mouseX, mouseY, n);
 	}
 
 	private void changePage(int i) {

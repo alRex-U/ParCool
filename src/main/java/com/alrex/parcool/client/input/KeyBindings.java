@@ -18,7 +18,7 @@ public class KeyBindings {
 	private static final KeyBinding keyBindRoll = new KeyBinding("key.roll.description", GLFW.GLFW_KEY_C, "key.categories.movement");
 	private static final KeyBinding keyBindFastRunning = new KeyBinding("key.fastrunning.description", GLFW.GLFW_KEY_LEFT_CONTROL, "key.categories.movement");
 	private static final KeyBinding keyBindDodge = new KeyBinding("key.dodge.description", GLFW.GLFW_KEY_DELETE, "key.categories.movement");
-	private static final KeyBinding keyBindActivateParCool = new KeyBinding("key.parcool.activate", GLFW.GLFW_KEY_P, "key.categories.parcool");
+	private static final KeyBinding keyBindOpenSettings = new KeyBinding("key.parcool.setting.open", GLFW.GLFW_KEY_P, "key.categories.parcool");
 
 	public static KeyBinding getKeySprint() {
 		return settings.keyBindSprint;
@@ -57,7 +57,7 @@ public class KeyBindings {
 	}
 
 	public static KeyBinding getKeyActivateParCool() {
-		return keyBindActivateParCool;
+		return keyBindOpenSettings;
 	}
 
 	public static KeyBinding getKeyRoll() {
@@ -79,6 +79,6 @@ public class KeyBindings {
 		ClientRegistry.registerKeyBinding(keyBindRoll);
 		ClientRegistry.registerKeyBinding(keyBindFastRunning);
 		ClientRegistry.registerKeyBinding(keyBindDodge);
-		ClientRegistry.registerKeyBinding(keyBindActivateParCool);
+		ClientRegistry.registerKeyBinding(keyBindOpenSettings);
 	}
 }

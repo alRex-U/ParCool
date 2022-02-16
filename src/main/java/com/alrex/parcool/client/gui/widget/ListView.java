@@ -26,7 +26,7 @@ public class ListView extends Widget {
 	}
 
 	@Override
-	public void render(MatrixStack stack, FontRenderer fontRenderer) {
+	public void render(MatrixStack stack, FontRenderer fontRenderer, int mouseX, int mouseY, float partial) {
 
 		IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
 		for (int i = 0; i < items.size(); i++) {
