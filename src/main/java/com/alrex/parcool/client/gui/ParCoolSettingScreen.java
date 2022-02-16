@@ -8,6 +8,8 @@ import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.CheckboxButton;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -124,6 +126,9 @@ public class ParCoolSettingScreen extends Screen {
 			//reverse value?
 			item.getB().func_230930_b_();
 			selected.setter.accept(item.getB().isChecked());
+
+			PlayerEntity player = Minecraft.getInstance().player;
+			if (player != null) player.playSound(SoundEvents.UI_BUTTON_CLICK, 1.0f, 1.0f);
 		}
 		return false;
 	}

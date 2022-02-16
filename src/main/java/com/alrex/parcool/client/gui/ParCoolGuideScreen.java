@@ -12,7 +12,9 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
@@ -213,6 +215,8 @@ public class ParCoolGuideScreen extends Screen {
 		if (i != PAGE_HOME && (i < 0 || book.getPages().size() <= i)) return;
 		scrollValue = 0;
 		currentPage = i;
+		PlayerEntity player = Minecraft.getInstance().player;
+		if (player != null) player.playSound(SoundEvents.ITEM_BOOK_PAGE_TURN, 1.0f, 1.0f);
 	}
 
 }
