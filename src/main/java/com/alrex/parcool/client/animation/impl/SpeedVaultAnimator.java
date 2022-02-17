@@ -17,8 +17,16 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import static com.alrex.parcool.utilities.MathUtil.lerp;
 import static com.alrex.parcool.utilities.MathUtil.squaring;
 
-public class VaultAnimator extends Animator {
+public class SpeedVaultAnimator extends Animator {
 	private static final int MAX_TIME = 11;
+
+	public enum Type {Right, Left}
+
+	private Type type;
+
+	public SpeedVaultAnimator(Type type) {
+		this.type = type;
+	}
 
 	@Override
 	public void animate(RenderPlayerEvent.Pre event, AbstractClientPlayerEntity player, Parkourability parkourability) {
@@ -41,19 +49,33 @@ public class VaultAnimator extends Animator {
 		Vector3f vec = new Vector3f((float) lookVec.getX(), 0, (float) lookVec.getZ());
 		Vector3d rightVec = new Vector3d(vec.getX(), 0, vec.getZ()).rotateYaw((float) -Math.PI / 2).normalize().scale(1.4 * factor);
 		event.getMatrixStack().translate(0, player.getHeight() / 2, 0);
-		stack.rotate(vec.rotationDegrees(factor * (-70)));
+		stack.rotate(vec.rotationDegrees(factor * 70 * (type == Type.Right ? -1 : 1)));
 		event.getMatrixStack().translate(0, -player.getHeight() / 2 - 0.2 * factor, 0);
 		stack.push();
 		{
-			PlayerModelTransformer
-					.wrap(player, model, getTick(), partial)
-					.rotateLeftArm(
-							(float) Math.toRadians(180 - factor * 70),
-							(float) -Math.toRadians(player.renderYawOffset + lerp(-35, -145, phase)),
-							(float) Math.toRadians(0)
-					)
-					.render(stack, event.getBuffers(), renderer)
-			;
+			switch (type) {
+				case Right:
+					PlayerModelTransformer
+							.wrap(player, model, getTick(), partial)
+							.rotateLeftArm(
+									(float) Math.toRadians(180 - factor * 70),
+									(float) -Math.toRadians(player.renderYawOffset + lerp(-35, -145, phase)),
+									(float) Math.toRadians(0)
+							)
+							.render(stack, event.getBuffers(), renderer);
+					break;
+
+				case Left:
+					PlayerModelTransformer
+							.wrap(player, model, getTick(), partial)
+							.rotateRightArm(
+									(float) Math.toRadians(180 + factor * 70),
+									(float) -Math.toRadians(player.renderYawOffset + lerp(-35, -145, phase)),
+									(float) Math.toRadians(0)
+							)
+							.render(stack, event.getBuffers(), renderer);
+					break;
+			}
 		}
 		stack.pop();
 	}

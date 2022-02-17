@@ -1,6 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.client.animation.impl.VaultAnimator;
+import com.alrex.parcool.client.animation.impl.SpeedVaultAnimator;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
@@ -59,10 +59,20 @@ public class Vault extends Action {
 				vaultingTick = 0;
 				stepDirection = WorldUtil.getStep(player);
 				stepHeight = WorldUtil.getWallHeight(player);
-				if (player.isUser()) {
-					Animation animation = Animation.get(player);
-					if (animation != null) animation.setAnimator(new VaultAnimator());
-				}
+
+				Vector3d lookVec = player.getLookVec();
+				Vector3d vec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize();
+				Vector3d s = stepDirection;
+
+				//doing "vec/stepDirection" as complex number(x + z i) to calculate difference of player's direction to steps
+				Vector3d dividedVec =
+						new Vector3d(
+								vec.getX() * s.getX() + vec.getZ() * s.getZ(), 0,
+								-vec.getX() * s.getZ() + vec.getZ() * s.getX()
+						);
+				Animation animation = Animation.get(player);
+				if (animation != null)
+					animation.setAnimator(new SpeedVaultAnimator(dividedVec.getZ() > 0 ? SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left));
 			}
 
 			if (vauting) {
