@@ -149,6 +149,6 @@ public class Roll extends Action {
 	}
 
 	public int getRollMaxTick() {
-		return 7;
+		return 9;
 	}
 }

@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.registries;
 
 import com.alrex.parcool.ParCoolConfig;
-import com.alrex.parcool.client.animation.impl.AnimationHandler;
+import com.alrex.parcool.client.animation.AnimationHandler;
 import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.client.hud.impl.LightStaminaHUD;

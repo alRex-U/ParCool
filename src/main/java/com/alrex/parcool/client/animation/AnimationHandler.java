@@ -1,4 +1,4 @@
-package com.alrex.parcool.client.animation.impl;
+package com.alrex.parcool.client.animation;
 
 import com.alrex.parcool.common.capability.Animation;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;

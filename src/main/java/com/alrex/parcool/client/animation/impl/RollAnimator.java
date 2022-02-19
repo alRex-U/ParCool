@@ -17,11 +17,7 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 
 public class RollAnimator extends Animator {
 	public static float calculateMovementFactor(float progress) {
-		if (progress <= 0.2) {
-			return 8 * MathUtil.squaring(progress);
-		} else {
-			return -0.5f * MathUtil.squaring(progress - 1.5f) + 1.12f;
-		}
+		return -MathUtil.squaring(progress - 1) + 1;
 	}
 
 	@Override
