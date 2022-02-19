@@ -28,6 +28,10 @@ public class Stamina {
 		return maxStamina;
 	}
 
+	public void setStamina(int stamina) {
+		this.stamina = stamina;
+	}
+
 	public void consume(int amount, ActionInfo info) {
 		if (exhausted || (info.isStaminaInfinite())) return;
 		stamina -= amount;
