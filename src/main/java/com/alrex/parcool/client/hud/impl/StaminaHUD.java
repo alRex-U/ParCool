@@ -29,16 +29,15 @@ public class StaminaHUD extends AbstractHUD {
 	private float shadowScale = 1f;
 
 	public void render(RenderGameOverlayEvent.Pre event, MatrixStack stack) {
-		if (event.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE) return;
-		if (!ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.get() || ParCoolConfig.CONFIG_CLIENT.useLightHUD.get())
-			return;
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		if (player == null) return;
 		if (player.isCreative()) return;
+
 		Stamina stamina = Stamina.get(player);
 		Parkourability parkourability = Parkourability.get(player);
 		if (stamina == null || parkourability == null) return;
-		if (ParCoolConfig.CONFIG_CLIENT.hideStaminaHUD.get() && ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && parkourability.getActionInfo().isStaminaInfinite())
+
+		if (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && parkourability.getActionInfo().isStaminaInfinite())
 			return;
 		int renderGage = (int) ((new Date().getTime() / 500) % 3);
 
@@ -64,8 +63,5 @@ public class StaminaHUD extends AbstractHUD {
 			AbstractHUD.func_238463_a_(stack, pos.getA(), pos.getB(), 0f, 68f, Math.round(16 + 69 * staminaScale) + 1, 16, 128, 128);
 		}
 		shadowScale = staminaScale - (staminaScale - shadowScale) / 1.1f;
-	}
-	private static int getColorCodeFromARGB(int a, int r, int g, int b) {
-		return a * 0x1000000 + r * 0x10000 + g * 0x100 + b;
 	}
 }

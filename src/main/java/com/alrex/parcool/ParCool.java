@@ -43,13 +43,13 @@ public class ParCool {
 
 	//only in Client
 	public static boolean isActive() {
-		return ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.get();
+		return ParCoolConfig.CONFIG_CLIENT.parCoolActivation.get();
 	}
 
 	//only in Client
 	public static void setActivation(boolean activation) {
 		ParCoolConfig.CONFIG_CLIENT.canWallJump.get();
-		ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.set(activation);
+		ParCoolConfig.CONFIG_CLIENT.parCoolActivation.set(activation);
 	}
 
 	public ParCool() {

@@ -27,7 +27,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue disableCameraDodge;
 		public final ForgeConfigSpec.BooleanValue substituteSprintForFastRun;
 		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
-		public final ForgeConfigSpec.BooleanValue ParCoolActivation;
+		public final ForgeConfigSpec.BooleanValue parCoolActivation;
 		public final ForgeConfigSpec.BooleanValue hideStaminaHUD;
 		public final ForgeConfigSpec.BooleanValue useLightHUD;
 		public final ForgeConfigSpec.EnumValue<Position.Horizontal> alignHorizontalStaminaHUD;
@@ -80,7 +80,7 @@ public class ParCoolConfig {
 			builder.pop();
 			builder.comment("About ParCool").push("ParCool");
 			{
-				ParCoolActivation = builder.comment("ParCool is Active").define("ParCool_Activation", true);
+				parCoolActivation = builder.comment("ParCool is Active").define("ParCool_Activation", true);
 			}
 			builder.pop();
 		}
