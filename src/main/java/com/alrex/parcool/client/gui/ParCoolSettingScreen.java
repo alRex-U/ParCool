@@ -41,22 +41,20 @@ public class ParCoolSettingScreen extends Screen {
 			new ButtonSet("use light Stamina HUD", CONFIG_CLIENT.useLightHUD::set, CONFIG_CLIENT.useLightHUD::get),
 			new ButtonSet("auto-turning when WallJump", CONFIG_CLIENT.autoTurningWallJump::set, CONFIG_CLIENT.autoTurningWallJump::get),
 			new ButtonSet("disable WallJump toward walls", CONFIG_CLIENT.disableWallJumpTowardWall::set, CONFIG_CLIENT.disableWallJumpTowardWall::get),
-			new ButtonSet("infinite Stamina", CONFIG_CLIENT.infiniteStamina::set, CONFIG_CLIENT.infiniteStamina::get),
 			new ButtonSet("disable a camera rotation of Rolling", CONFIG_CLIENT.disableCameraRolling::set, CONFIG_CLIENT.disableCameraRolling::get),
 			new ButtonSet("disable a camera rotation of Dodge", CONFIG_CLIENT.disableCameraDodge::set, CONFIG_CLIENT.disableCameraDodge::get),
+			new ButtonSet("ParCool is active", CONFIG_CLIENT.parCoolActivation::set, CONFIG_CLIENT.parCoolActivation::get)
 	};
 	private final WidgetListView<CheckboxButton> buttons = new WidgetListView<CheckboxButton>(
 			0, 0, 0, 0,
 			Arrays.stream(itemList)
 					.map((ButtonSet item) ->
-					{
-						return new CheckboxButton
-								(
-										0, 0, 0, 0,
-										new TranslationTextComponent(item.name),
-										item.getter.getAsBoolean()
-								);
-					})
+							new CheckboxButton
+									(
+											0, 0, 0, 0,
+											new TranslationTextComponent(item.name),
+											item.getter.getAsBoolean()
+									))
 					.collect(Collectors.toList()),
 			Minecraft.getInstance().fontRenderer.FONT_HEIGHT + 11
 	);
