@@ -13,7 +13,6 @@ import com.alrex.parcool.utilities.BufferUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -21,6 +20,8 @@ import net.minecraftforge.event.TickEvent;
 import java.nio.ByteBuffer;
 
 public class Roll extends Action {
+	public static final int ROLL_DEFERMENT_TICK = 10;
+
 	private float cameraPitch = 0;
 	private boolean ready = false;
 	private int readyTick = 0;
@@ -62,9 +63,8 @@ public class Roll extends Action {
 							&& readyCoolTick <= 0
 			) {
 				ready = true;
-				readyTick = 10;
+				readyTick = ROLL_DEFERMENT_TICK;
 				readyCoolTick = 30;
-				player.sendStatusMessage(new StringTextComponent("Roll Ready.."), true);
 			}
 			if (!ready) {
 				ready = !player.collidedVertically

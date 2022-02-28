@@ -3,6 +3,7 @@ package com.alrex.parcool.client.hud;
 import net.minecraft.util.Tuple;
 
 public class Position {
+	public static final Position DEFAULT = new Position(Horizontal.Left, Vertical.Top, 0, 0);
 	public static enum Horizontal {Left, Right}
 
 	public static enum Vertical {Top, Bottom}
