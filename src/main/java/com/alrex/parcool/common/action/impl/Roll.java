@@ -77,11 +77,9 @@ public class Roll extends Action {
 				Vector3d vec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize().scale(1.4);
 				player.addVelocity(vec.getX(), 0, vec.getZ());
 				player.velocityChanged = true;
+				this.cameraPitch = player.rotationPitch;
+				sendSynchronization(player);
 			}
-			if (Minecraft.getInstance().player != null) {
-				this.cameraPitch = Minecraft.getInstance().player.rotationPitch;
-			}
-			sendSynchronization(Minecraft.getInstance().player);
 			Animation animation = Animation.get(player);
 			if (animation != null) animation.setAnimator(new RollAnimator());
 			start = false;
@@ -121,7 +119,6 @@ public class Roll extends Action {
 			this.rolling = true;
 			this.ready = false;
 			this.start = true;
-
 		}
 	}
 

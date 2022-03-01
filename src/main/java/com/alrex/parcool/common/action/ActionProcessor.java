@@ -47,8 +47,10 @@ public class ActionProcessor {
 			}
 			action.onTick(player, parkourability, stamina);
 
-			if (needSync) {
+			if (event.side == LogicalSide.CLIENT) {
 				action.onClientTick(player, parkourability, stamina);
+			}
+			if (needSync) {
 				if (action.needSynchronization(buffer)) {
 					action.sendSynchronization(player);
 				}

@@ -5,7 +5,9 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
+import com.alrex.parcool.common.network.StartVaultMessage;
 import com.alrex.parcool.utilities.WorldUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
@@ -112,6 +114,14 @@ public class Vault extends Action {
 
 	@Override
 	public void synchronize(Object message) {
+		if (message instanceof StartVaultMessage) {
+			PlayerEntity player = Minecraft.getInstance().player;
+			if (player == null) return;
+			PlayerEntity startPlayer = player.getEntityWorld().getPlayerByUuid(((StartVaultMessage) message).getPlayerID());
+			Animation animation = Animation.get(player);
+			if (animation != null)
+				animation.setAnimator(new SpeedVaultAnimator(SpeedVaultAnimator.Type.Right));
+		}
 
 	}
 

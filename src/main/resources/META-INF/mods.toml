@@ -27,6 +27,6 @@ side = "BOTH"
 modId = "minecraft"
 mandatory = true
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
-versionRange = "[1.16.1,1.16.5)"
+versionRange = "[1.16.1,1.17)"
 ordering = "NONE"
 side = "BOTH"

@@ -15,7 +15,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public class StartRollMessage {
+public class StartVaultMessage {
 	UUID playerID = null;
 
 	public UUID getPlayerID() {
@@ -27,8 +27,8 @@ public class StartRollMessage {
 		packet.writeLong(playerID.getLeastSignificantBits());
 	}
 
-	public static StartRollMessage decode(PacketBuffer packet) {
-		StartRollMessage message = new StartRollMessage();
+	public static StartVaultMessage decode(PacketBuffer packet) {
+		StartVaultMessage message = new StartVaultMessage();
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
 		return message;
 	}
@@ -45,7 +45,7 @@ public class StartRollMessage {
 				Parkourability parkourability = Parkourability.get(startPlayer);
 				if (parkourability == null) return;
 
-				parkourability.getRoll().synchronize(this);
+				parkourability.getVault().synchronize(this);
 			}
 		});
 		contextSupplier.get().setPacketHandled(true);
