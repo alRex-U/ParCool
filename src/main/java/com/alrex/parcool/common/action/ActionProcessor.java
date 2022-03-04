@@ -37,7 +37,7 @@ public class ActionProcessor {
 		List<Action> actions = parkourability.getList();
 		stamina.onTick();
 		if (stamina.getRecoveryCoolTime() == 0) stamina.recover(stamina.getMaxStamina() / 60);
-		boolean needSync = event.side == LogicalSide.CLIENT && player.isUser();
+		boolean needSync = event.side == LogicalSide.CLIENT && player.isLocalPlayer();
 
 		for (Action action : actions) {
 			if (needSync) {

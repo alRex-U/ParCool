@@ -16,7 +16,7 @@ public class EventOpenSettingsParCool {
 		if (event.phase == TickEvent.Phase.END) return;
 
 		if (KeyRecorder.keyOpenSettingsState.isPressed()) {
-			Minecraft.getInstance().displayGuiScreen(new ParCoolSettingScreen(new StringTextComponent("Setting")));
+			Minecraft.getInstance().setScreen(new ParCoolSettingScreen(new StringTextComponent("Setting")));
 		}
 	}
 }

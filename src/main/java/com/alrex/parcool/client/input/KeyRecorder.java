@@ -37,9 +37,9 @@ public class KeyRecorder {
 	}
 
 	private static void record(KeyBinding keyBinding, KeyState state) {
-		state.pressed = (keyBinding.isKeyDown() && state.tickKeyDown == 0);
-		state.doubleTapped = (keyBinding.isKeyDown() && 0 < state.tickNotKeyDown && state.tickNotKeyDown <= 2);
-		if (keyBinding.isKeyDown()) {
+		state.pressed = (keyBinding.isDown() && state.tickKeyDown == 0);
+		state.doubleTapped = (keyBinding.isDown() && 0 < state.tickNotKeyDown && state.tickNotKeyDown <= 2);
+		if (keyBinding.isDown()) {
 			state.tickKeyDown++;
 			state.tickNotKeyDown = 0;
 		} else {

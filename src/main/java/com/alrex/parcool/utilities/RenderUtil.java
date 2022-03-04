@@ -9,40 +9,42 @@ import net.minecraft.util.math.vector.Vector3d;
 //only in Client
 public class RenderUtil {
 	public static void rotateRightArm(AbstractClientPlayerEntity player, ModelRenderer rightArm, float angleX, float angleY, float angleZ) {
-		rightArm.rotationPointX = -MathHelper.cos((float) Math.toRadians(player.renderYawOffset)) * 4.2F;
-		rightArm.rotationPointY = 20.5f;
-		rightArm.rotationPointZ = -MathHelper.sin((float) Math.toRadians(player.renderYawOffset)) * 5.0F;
-		rightArm.rotateAngleX = angleX;
-		rightArm.rotateAngleY = angleY;
-		rightArm.rotateAngleZ = angleZ;
+		rightArm.x = -MathHelper.cos((float) Math.toRadians(player.yBodyRot)) * 4.2F;
+		rightArm.y = 20.5f;
+		rightArm.z = -MathHelper.sin((float) Math.toRadians(player.yBodyRot)) * 5.0F;
+		rightArm.xRot = angleX;
+		rightArm.yRot = angleY;
+		rightArm.zRot = angleZ;
 	}
 
 	public static void rotateLeftArm(AbstractClientPlayerEntity player, ModelRenderer leftArm, float angleX, float angleY, float angleZ) {
-		leftArm.rotationPointX = MathHelper.cos((float) Math.toRadians(player.renderYawOffset)) * 4.2F;
-		leftArm.rotationPointY = 20.5f;
-		leftArm.rotationPointZ = MathHelper.sin((float) Math.toRadians(player.renderYawOffset)) * 5.0F;
-		leftArm.rotateAngleX = angleX;
-		leftArm.rotateAngleY = angleY;
-		leftArm.rotateAngleZ = angleZ;
+		leftArm.x = MathHelper.cos((float) Math.toRadians(player.yBodyRot)) * 4.2F;
+		leftArm.y = 20.5f;
+		leftArm.z = MathHelper.sin((float) Math.toRadians(player.yBodyRot)) * 5.0F;
+		leftArm.xRot = angleX;
+		leftArm.yRot = angleY;
+		leftArm.zRot = angleZ;
 	}
 
 	public static void rotateRightLeg(AbstractClientPlayerEntity player, ModelRenderer rightLeg, float angleX, float angleY, float angleZ) {
-		rightLeg.rotateAngleX = angleX;
-		rightLeg.rotateAngleY = angleY;
-		rightLeg.rotateAngleZ = angleZ;
+		rightLeg.xRot = angleX;
+		rightLeg.yRot = angleY;
+		rightLeg.zRot = angleZ;
 	}
 
 	public static void rotateLeftLeg(AbstractClientPlayerEntity player, ModelRenderer leftLeg, float angleX, float angleY, float angleZ) {
-		leftLeg.rotateAngleX = angleX;
-		leftLeg.rotateAngleY = angleY;
-		leftLeg.rotateAngleZ = angleZ;
+		leftLeg.xRot = angleX;
+		leftLeg.yRot = angleY;
+		leftLeg.zRot = angleZ;
 	}
 
 	public static Vector3d getPlayerOffset(PlayerEntity basePlayer, PlayerEntity targetPlayer, float partialTick) {
+		Vector3d posTarget = targetPlayer.position();
+		Vector3d posBase = basePlayer.position();
 		return new Vector3d(
-				(targetPlayer.lastTickPosX + ((targetPlayer.getPosX() - targetPlayer.lastTickPosX) * partialTick)) - (basePlayer.lastTickPosX + ((basePlayer.getPosX() - basePlayer.lastTickPosX) * partialTick)),
-				(targetPlayer.lastTickPosY + ((targetPlayer.getPosY() - targetPlayer.lastTickPosY) * partialTick)) - (basePlayer.lastTickPosY + ((basePlayer.getPosY() - basePlayer.lastTickPosY) * partialTick)),
-				(targetPlayer.lastTickPosZ + ((targetPlayer.getPosZ() - targetPlayer.lastTickPosZ) * partialTick)) - (basePlayer.lastTickPosZ + ((basePlayer.getPosZ() - basePlayer.lastTickPosZ) * partialTick))
+				(targetPlayer.xOld + ((posTarget.x() - targetPlayer.xOld) * partialTick)) - (basePlayer.xOld + ((posBase.x() - basePlayer.xOld) * partialTick)),
+				(targetPlayer.yOld + ((posTarget.y() - targetPlayer.yOld) * partialTick)) - (basePlayer.yOld + ((posBase.y() - basePlayer.yOld) * partialTick)),
+				(targetPlayer.zOld + ((posTarget.z() - targetPlayer.zOld) * partialTick)) - (basePlayer.zOld + ((posBase.z() - basePlayer.zOld) * partialTick))
 		);
 	}
 }

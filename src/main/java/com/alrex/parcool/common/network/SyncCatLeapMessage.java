@@ -67,10 +67,10 @@ public class SyncCatLeapMessage {
 		contextSupplier.get().enqueueWork(() -> {
 			PlayerEntity player;
 			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-				World world = Minecraft.getInstance().world;
+				World world = Minecraft.getInstance().level;
 				if (world == null) return;
-				player = world.getPlayerByUuid(playerID);
-				if (player == null || player.isUser()) return;
+				player = world.getPlayerByUUID(playerID);
+				if (player == null || player.isLocalPlayer()) return;
 			} else {
 				player = contextSupplier.get().getSender();
 				ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
@@ -90,7 +90,7 @@ public class SyncCatLeapMessage {
 		SyncCatLeapMessage message = new SyncCatLeapMessage();
 		message.leaping = catLeap.isLeaping();
 		message.ready = catLeap.isReady();
-		message.playerID = player.getUniqueID();
+		message.playerID = player.getUUID();
 
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);
 	}

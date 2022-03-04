@@ -10,6 +10,7 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.common.network.SyncDodgeMessage;
 import com.alrex.parcool.utilities.BufferUtil;
+import com.alrex.parcool.utilities.EntityUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -56,16 +57,16 @@ public class Dodge extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	private boolean canDodge(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		return parkourability.getPermission().canDodge() && coolTime <= 0 && player.collidedVertically && !player.isSneaking() && !stamina.isExhausted() && (
+		return parkourability.getPermission().canDodge() && coolTime <= 0 && player.isOnGround() && !player.isShiftKeyDown() && !stamina.isExhausted() && (
 				KeyRecorder.keyBack.isDoubleTapped() ||
 						KeyRecorder.keyLeft.isDoubleTapped() ||
 						KeyRecorder.keyRight.isDoubleTapped() ||
 						(ParCoolConfig.CONFIG_CLIENT.canFrontFlip.get() && KeyRecorder.keyForward.isDoubleTapped()) ||
-						(KeyBindings.getKeyDodge().isKeyDown() && (
-								KeyBindings.getKeyForward().isKeyDown() ||
-										KeyBindings.getKeyBack().isKeyDown() ||
-										KeyBindings.getKeyLeft().isKeyDown() ||
-										KeyBindings.getKeyRight().isKeyDown()
+						(KeyBindings.getKeyDodge().isDown() && (
+								KeyBindings.getKeyForward().isDown() ||
+										KeyBindings.getKeyBack().isDown() ||
+										KeyBindings.getKeyLeft().isDown() ||
+										KeyBindings.getKeyRight().isDown()
 						)
 						)
 		);
@@ -76,22 +77,22 @@ public class Dodge extends Action {
 		return dodging &&
 				!parkourability.getRoll().isRolling() &&
 				!parkourability.getClingToCliff().isCling() &&
-				!player.collidedVertically &&
-				!player.isInWaterOrBubbleColumn() &&
-				!player.isElytraFlying() &&
-				!player.abilities.isFlying &&
+				!player.isOnGround() &&
+				!player.isInWaterOrBubble() &&
+				!player.isFallFlying() &&
+				!player.abilities.flying &&
 				parkourability.getPermission().canClingToCliff();
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	private DodgeDirections getDirectionFromInput() {
-		if (KeyBindings.getKeyBack().isKeyDown()) {
+		if (KeyBindings.getKeyBack().isDown()) {
 			return DodgeDirections.Back;
 		}
-		if (KeyBindings.getKeyForward().isKeyDown()) {
+		if (KeyBindings.getKeyForward().isDown()) {
 			return DodgeDirections.Front;
 		}
-		if (KeyBindings.getKeyLeft().isKeyDown()) {
+		if (KeyBindings.getKeyLeft().isDown()) {
 			return DodgeDirections.Left;
 		} else {
 			return DodgeDirections.Right;
@@ -101,7 +102,7 @@ public class Dodge extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (player.isUser()) {
+		if (player.isLocalPlayer()) {
 			if (canContinue(player, parkourability, stamina)) {
 				dodging = true;
 			} else {
@@ -121,8 +122,8 @@ public class Dodge extends Action {
 				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionDodge(), parkourability.getActionInfo());
 				dodgeDirection = getDirectionFromInput();
 
-				Vector3d lookVec = player.getLookVec();
-				lookVec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize();
+				Vector3d lookVec = player.getLookAngle();
+				lookVec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
 				double jump = 0;
 				Vector3d dodgeVec = Vector3d.ZERO;
 				switch (dodgeDirection) {
@@ -131,21 +132,21 @@ public class Dodge extends Action {
 						jump = 0.5;
 						break;
 					case Back:
-						dodgeVec = lookVec.inverse();
+						dodgeVec = lookVec.reverse();
 						jump = 0.5;
 						break;
 					case Right:
-						dodgeVec = lookVec.rotateYaw((float) Math.PI / -2);
+						dodgeVec = lookVec.yRot((float) Math.PI / -2);
 						jump = 0.3;
 						break;
 					case Left:
-						dodgeVec = lookVec.rotateYaw((float) Math.PI / 2);
+						dodgeVec = lookVec.yRot((float) Math.PI / 2);
 						jump = 0.3;
 						break;
 				}
 				coolTime = 10;
 				dodgeVec = dodgeVec.scale(0.4);
-				player.addVelocity(dodgeVec.getX(), jump, dodgeVec.getZ());
+				EntityUtil.addVelocity(player, new Vector3d(dodgeVec.x(), jump, dodgeVec.z()));
 			}
 		}
 		if (dodging) {
@@ -156,17 +157,17 @@ public class Dodge extends Action {
 
 	@Override
 	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
-		if (!player.isUser() || Minecraft.getInstance().gameSettings.thirdPersonView != 0 || ParCoolConfig.CONFIG_CLIENT.disableCameraDodge.get())
+		if (!player.isLocalPlayer() || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || ParCoolConfig.CONFIG_CLIENT.disableCameraDodge.get())
 			return;
 		if (needPitchReset) {
-			player.rotationPitch = 0;
+			player.xRot = 0;
 			needPitchReset = false;
 		}
 		if (!dodging) return;
 		if (dodgeDirection == DodgeDirections.Front) {
-			player.rotationPitch = (getDodgingTick() + event.renderTickTime) * 30;
+			player.xRot = (getDodgingTick() + event.renderTickTime) * 30;
 		} else if (dodgeDirection == DodgeDirections.Back) {
-			player.rotationPitch = (getDodgingTick() + event.renderTickTime) * -24;
+			player.xRot = (getDodgingTick() + event.renderTickTime) * -24;
 		}
 	}
 

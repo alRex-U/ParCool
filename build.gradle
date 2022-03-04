@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -29,13 +29,13 @@ compileJava.options.encoding("UTF-8")
 compileTestJava.options.encoding("UTF-8")
 
 def config = [ //https://mcforge.readthedocs.io/en/latest/conventions/versioning/
-               mc_version   : '1.16.1',//supported minimum Minecraft version
+               mc_version   : '1.16.5',//supported minimum Minecraft version
                major_mod    : '1',//Removing items, blocks, tile entities, etc.
-               major_api    : '3',//Changing the order or variables of enums. etc
-               minor        : '3',//Adding items, blocks, tile entities, etc.
-               patch        : '12',//bugfix
-               forge_version: '1.16.1-32.0.108',
-               versionStatus: VersionStatus.beta
+               major_api    : '4',//Changing the order or variables of enums. etc
+               minor        : '0',//Adding items, blocks, tile entities, etc.
+               patch        : '0',//bugfix
+               forge_version: '1.16.5-36.2.20',
+               versionStatus: VersionStatus.release
 ]
 
 //Version Format (McVersion-MajorMOD.MajorAPI.Minor.Patch-VersionStatus)
@@ -47,7 +47,7 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'snapshot', version: '20200514-1.16'
+    mappings channel: 'official', version: '1.16.5'
 
     runs {
         client {

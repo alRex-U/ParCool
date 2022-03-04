@@ -14,6 +14,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -44,7 +45,8 @@ public class SyncDodgeMessage {
 		packet.writeBoolean(this.avoided);
 		packet.writeBoolean(dodgeDirection != null);
 		if (dodgeDirection != null) {
-			packet.writeString(dodgeDirection);
+			packet.writeInt(dodgeDirection.length());
+			packet.writeCharSequence(dodgeDirection, StandardCharsets.UTF_8);
 		}
 	}
 
@@ -54,7 +56,7 @@ public class SyncDodgeMessage {
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
 		message.avoided = packet.readBoolean();
 		if (packet.readBoolean()) {
-			message.dodgeDirection = packet.readString(32767);
+			message.dodgeDirection = packet.readCharSequence(packet.readInt(), StandardCharsets.UTF_8).toString();
 		}
 		return message;
 	}
@@ -80,10 +82,10 @@ public class SyncDodgeMessage {
 		contextSupplier.get().enqueueWork(() -> {
 			PlayerEntity player;
 			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-				World world = Minecraft.getInstance().world;
+				World world = Minecraft.getInstance().level;
 				if (world == null) return;
-				player = world.getPlayerByUuid(playerID);
-				if (player == null || player.isUser()) return;
+				player = world.getPlayerByUUID(playerID);
+				if (player == null || player.isLocalPlayer()) return;
 			} else {
 				player = contextSupplier.get().getSender();
 				ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
@@ -101,7 +103,7 @@ public class SyncDodgeMessage {
 		SyncDodgeMessage message = new SyncDodgeMessage();
 		message.dodging = dodge.isDodging();
 		message.avoided = dodge.isAvoided();
-		message.playerID = player.getUniqueID();
+		message.playerID = player.getUUID();
 		Dodge.DodgeDirections direction = dodge.getDodgeDirection();
 		if (direction != null) {
 			message.dodgeDirection = direction.name();

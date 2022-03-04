@@ -104,7 +104,7 @@ public class ActionPermissionsMessage {
 			if (allowedCatLeap && allowedCrawl && allowedDodge && allowedFastRunning && allowedFastRunning
 					&& allowedClingToCliff && allowedRoll && allowedVault && allowedWallJump)
 				return;
-			text.append("ParCool : ").append(I18n.format(TranslateKeys.MESSAGE_PROHIBITED_ACTION));
+			text.append("ParCool : ").append(I18n.get(TranslateKeys.MESSAGE_PROHIBITED_ACTION));
 			if (!allowedCatLeap) text.append("\n+- ").append(ActionsEnum.CatLeap);
 			if (!allowedCrawl) text.append("\n+- ").append(ActionsEnum.Crawl);
 			if (!allowedDodge) text.append("\n+- ").append(ActionsEnum.Dodge);
@@ -113,7 +113,7 @@ public class ActionPermissionsMessage {
 			if (!allowedRoll) text.append("\n+- ").append(ActionsEnum.Roll);
 			if (!allowedVault) text.append("\n+- ").append(ActionsEnum.Vault);
 			if (!allowedWallJump) text.append("\n+- ").append(ActionsEnum.WallJump);
-			player.sendStatusMessage(new StringTextComponent(text.toString()), false);
+			player.displayClientMessage(new StringTextComponent(text.toString()), false);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}

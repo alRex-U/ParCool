@@ -9,6 +9,7 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.common.network.SyncClingToCliffMessage;
 import com.alrex.parcool.utilities.BufferUtil;
+import com.alrex.parcool.utilities.EntityUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
@@ -44,26 +45,24 @@ public class ClingToCliff extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (player.isUser()) {
-			double ySpeed = player.getMotion().getY();
+		if (player.isLocalPlayer()) {
+			double ySpeed = player.getDeltaMovement().y();
 			cling = !stamina.isExhausted() &&
 					ySpeed < 0.2 &&
 					parkourability.getPermission().canClingToCliff() &&
-					KeyBindings.getKeyGrabWall().isKeyDown() &&
-					player.getHeldItemMainhand().isEmpty() &&
-					player.getHeldItemOffhand().isEmpty() &&
+					KeyBindings.getKeyGrabWall().isDown() &&
+					player.getMainHandItem().isEmpty() &&
+					player.getOffhandItem().isEmpty() &&
 					WorldUtil.existsGrabbableWall(player);
 
 			if (canClimbUp(player, parkourability, stamina)) {
 				cling = false;
 				clingTick = 0;
-				player.addVelocity(0, 0.6, 0);
-				player.velocityChanged = true;
+				EntityUtil.addVelocity(player, new Vector3d(0, 0.6, 0));
 				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionClimbUp(), parkourability.getActionInfo());
 			}
 			if (cling) {
-				player.setVelocity(0, 0, 0);
-				player.velocityChanged = true;
+				player.setDeltaMovement(0, 0, 0);
 			}
 		}
 		if (cling) {
@@ -77,7 +76,7 @@ public class ClingToCliff extends Action {
 		if (cling) {
 			Vector3d wall = WorldUtil.getWall(player);
 			if (wall != null) {
-				player.rotationYaw = (float) VectorUtil.toYawDegree(wall.normalize());
+				player.yRot = (float) VectorUtil.toYawDegree(wall.normalize());
 			}
 		}
 	}

@@ -40,18 +40,18 @@ public class SpeedVaultAnimator extends Animator {
 		float partial = event.getPartialRenderTick();
 		MatrixStack stack = event.getMatrixStack();
 		PlayerRenderer renderer = event.getRenderer();
-		PlayerModel<AbstractClientPlayerEntity> model = renderer.getEntityModel();
+		PlayerModel<AbstractClientPlayerEntity> model = renderer.getModel();
 
 		float phase = (getTick() + partial) / MAX_TIME;
 		float factor = -squaring(((getTick() + partial) - MAX_TIME / 2f) / (MAX_TIME / 2f)) + 1;
 
-		Vector3d lookVec = player.getLookVec();
-		Vector3f vec = new Vector3f((float) lookVec.getX(), 0, (float) lookVec.getZ());
-		Vector3d rightVec = new Vector3d(vec.getX(), 0, vec.getZ()).rotateYaw((float) -Math.PI / 2).normalize().scale(1.4 * factor);
-		event.getMatrixStack().translate(0, player.getHeight() / 2, 0);
-		stack.rotate(vec.rotationDegrees(factor * 70 * (type == Type.Right ? -1 : 1)));
-		event.getMatrixStack().translate(0, -player.getHeight() / 2 - 0.2 * factor, 0);
-		stack.push();
+		Vector3d lookVec = player.getLookAngle();
+		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
+		Vector3d rightVec = new Vector3d(vec.x(), 0, vec.z()).yRot((float) -Math.PI / 2).normalize().scale(1.4 * factor);
+		event.getMatrixStack().translate(0, player.getBbHeight() / 2, 0);
+		stack.mulPose(vec.rotationDegrees(factor * 70 * (type == Type.Right ? -1 : 1)));
+		event.getMatrixStack().translate(0, -player.getBbHeight() / 2 - 0.2 * factor, 0);
+		stack.pushPose();
 		{
 			switch (type) {
 				case Right:
@@ -59,7 +59,7 @@ public class SpeedVaultAnimator extends Animator {
 							.wrap(player, model, getTick(), partial)
 							.rotateLeftArm(
 									(float) Math.toRadians(180 - factor * 70),
-									(float) -Math.toRadians(player.renderYawOffset + lerp(-35, -145, phase)),
+									(float) -Math.toRadians(player.yBodyRot + lerp(-35, -145, phase)),
 									(float) Math.toRadians(0)
 							)
 							.render(stack, event.getBuffers(), renderer);
@@ -70,13 +70,13 @@ public class SpeedVaultAnimator extends Animator {
 							.wrap(player, model, getTick(), partial)
 							.rotateRightArm(
 									(float) Math.toRadians(180 + factor * 70),
-									(float) -Math.toRadians(player.renderYawOffset + lerp(-35, -145, phase)),
+									(float) -Math.toRadians(player.yBodyRot + lerp(-35, -145, phase)),
 									(float) Math.toRadians(0)
 							)
 							.render(stack, event.getBuffers(), renderer);
 					break;
 			}
 		}
-		stack.pop();
+		stack.popPose();
 	}
 }

@@ -35,13 +35,13 @@ public class RollDefermentHUD extends AbstractHUD {
 		float scale = (roll.getReadyTick() + (1 - event.getPartialTicks())) / (float) Roll.ROLL_DEFERMENT_TICK;
 
 		MainWindow window = event.getWindow();
-		int width = window.getScaledWidth();
+		int width = window.getGuiScaledWidth();
 		int halfWidth = width / 2;
 		int boxWidth = (int) (halfWidth * scale);
 		int color = ColorUtil.getColorCodeFromARGB(128, 20, 120, 60);
-		FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
-		func_238467_a_(stack, halfWidth, 0, halfWidth + boxWidth, fontRenderer.FONT_HEIGHT, color);
-		func_238467_a_(stack, halfWidth - boxWidth, 0, halfWidth, fontRenderer.FONT_HEIGHT, color);
-		FontUtil.drawCenteredText(stack, new StringTextComponent("<Roll Ready>"), halfWidth, Minecraft.getInstance().fontRenderer.FONT_HEIGHT / 2 + 1, ColorUtil.getColorCodeFromARGB(0, 240, 240, 240));
+		FontRenderer fontRenderer = Minecraft.getInstance().font;
+		fill(stack, halfWidth, 0, halfWidth + boxWidth, fontRenderer.lineHeight, color);
+		fill(stack, halfWidth - boxWidth, 0, halfWidth, fontRenderer.lineHeight, color);
+		FontUtil.drawCenteredText(stack, new StringTextComponent("<Roll Ready>"), halfWidth, Minecraft.getInstance().font.lineHeight / 2 + 1, ColorUtil.getColorCodeFromARGB(0, 240, 240, 240));
 	}
 }

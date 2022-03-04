@@ -11,21 +11,21 @@ public class AnimationHandler {
 	public void onRender(RenderPlayerEvent.Pre event) {
 		Animation animation = Animation.get(event.getPlayer());
 		if (animation == null) return;
-		event.getMatrixStack().push();
+		event.getMatrixStack().pushPose();
 		animation.animate(event);
 	}
 
 	@SubscribeEvent
 	public void onRenderPost(RenderPlayerEvent.Post event) {
-		event.getMatrixStack().pop();
-		PlayerModel<AbstractClientPlayerEntity> model = event.getRenderer().getEntityModel();
-		model.bipedRightArm.showModel = true;
-		model.bipedLeftArm.showModel = true;
-		model.bipedLeftLeg.showModel = true;
-		model.bipedRightLeg.showModel = true;
-		model.bipedLeftArmwear.showModel = true;
-		model.bipedRightArmwear.showModel = true;
-		model.bipedLeftLegwear.showModel = true;
-		model.bipedRightLegwear.showModel = true;
+		event.getMatrixStack().popPose();
+		PlayerModel<AbstractClientPlayerEntity> model = event.getRenderer().getModel();
+		model.rightArm.visible = true;
+		model.leftArm.visible = true;
+		model.leftLeg.visible = true;
+		model.rightLeg.visible = true;
+		model.leftSleeve.visible = true;
+		model.leftPants.visible = true;
+		model.rightSleeve.visible = true;
+		model.rightPants.visible = true;
 	}
 }

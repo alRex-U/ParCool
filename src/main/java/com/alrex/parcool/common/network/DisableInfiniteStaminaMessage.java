@@ -38,7 +38,7 @@ public class DisableInfiniteStaminaMessage {
 			Stamina stamina = Stamina.get(player);
 			if (stamina == null) return;
 			if (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get()) {
-				player.sendStatusMessage(
+				player.displayClientMessage(
 						new TranslationTextComponent(
 								infiniteStamina ?
 										TranslateKeys.MESSAGE_SERVER_ENABLE_INFINITE_STAMINA :

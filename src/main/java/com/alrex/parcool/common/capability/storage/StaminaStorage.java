@@ -18,7 +18,7 @@ public class StaminaStorage implements Capability.IStorage<Stamina> {
 	@Override
 	public void readNBT(Capability<Stamina> capability, Stamina instance, Direction side, INBT nbt) {
 		if (nbt instanceof IntNBT) {
-			instance.setStamina(((IntNBT) nbt).getInt());
+			instance.setStamina(((IntNBT) nbt).getAsInt());
 		}
 	}
 }

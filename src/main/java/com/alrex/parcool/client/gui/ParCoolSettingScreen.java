@@ -56,7 +56,7 @@ public class ParCoolSettingScreen extends Screen {
 											item.getter.getAsBoolean()
 									))
 					.collect(Collectors.toList()),
-			Minecraft.getInstance().fontRenderer.FONT_HEIGHT + 11
+			Minecraft.getInstance().font.lineHeight + 11
 	);
 
 	public ParCoolSettingScreen(ITextComponent titleIn) {
@@ -65,35 +65,35 @@ public class ParCoolSettingScreen extends Screen {
 
 	//render?
 	@Override
-	public void func_230430_a_(MatrixStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
-		super.func_230430_a_(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
+	public void render(MatrixStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+		super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
 
-		MainWindow window = Minecraft.getInstance().getMainWindow();
-		buttons.setX((window.getScaledWidth() - width) + xOffset);
-		buttons.setY((window.getScaledHeight() - height) + yOffset);
+		MainWindow window = Minecraft.getInstance().getWindow();
+		buttons.setX((window.getGuiScaledWidth() - width) + xOffset);
+		buttons.setY((window.getGuiScaledHeight() - height) + yOffset);
 		buttons.setWidth(width - (xOffset * 2));
 		buttons.setHeight(height - (yOffset * 2));
 
-		func_238651_a_(p_230430_1_, ColorUtil.getColorCodeFromARGB(0x77, 0x66, 0x66, 0xCC));
-		buttons.render(p_230430_1_, Minecraft.getInstance().fontRenderer, p_230430_2_, p_230430_3_, p_230430_4_);
-		FontUtil.drawCenteredText(p_230430_1_, new StringTextComponent("ParCool Settings"), window.getScaledWidth() / 2, yOffset, 0x8888FF);
+		renderBackground(p_230430_1_, ColorUtil.getColorCodeFromARGB(0x77, 0x66, 0x66, 0xCC));
+		buttons.render(p_230430_1_, Minecraft.getInstance().font, p_230430_2_, p_230430_3_, p_230430_4_);
+		FontUtil.drawCenteredText(p_230430_1_, new StringTextComponent("ParCool Settings"), window.getGuiScaledWidth() / 2, yOffset, 0x8888FF);
 	}
 
 	//renderBackground?
 	@Override
-	public void func_230446_a_(MatrixStack p_230446_1_) {
-		super.func_230446_a_(p_230446_1_);
+	public void renderBackground(MatrixStack p_230446_1_) {
+		super.renderBackground(p_230446_1_);
 	}
 
 	//renderBackground?
 	@Override
-	public void func_238651_a_(MatrixStack p_238651_1_, int p_238651_2_) {
-		super.func_238651_a_(p_238651_1_, p_238651_2_);
+	public void renderBackground(MatrixStack p_238651_1_, int p_238651_2_) {
+		super.renderBackground(p_238651_1_, p_238651_2_);
 	}
 
 	//mouseScrolled?
 	@Override
-	public boolean func_231043_a_(double x, double y, double value) {
+	public boolean mouseScrolled(double x, double y, double value) {
 		if (buttons.contains(x, y)) {
 			buttons.scroll((int) -value);
 		}
@@ -114,16 +114,15 @@ public class ParCoolSettingScreen extends Screen {
 
 	//mouseClicked?
 	@Override
-	public boolean func_231044_a_(double mouseX, double mouseY, int type) {//type:1->right 0->left
+	public boolean mouseClicked(double mouseX, double mouseY, int type) {//type:1->right 0->left
 		if (buttons.contains(mouseX, mouseY)) {
 			Tuple<Integer, CheckboxButton> item = buttons.clicked(mouseX, mouseY, type);
 			if (item == null) return false;
 			if (item.getA() < 0 || itemList.length <= item.getA()) return false;
 			ButtonSet selected = itemList[item.getA()];
 
-			//reverse value?
-			item.getB().func_230930_b_();
-			selected.setter.accept(item.getB().isChecked());
+			item.getB().onPress();
+			selected.setter.accept(item.getB().selected());
 
 			PlayerEntity player = Minecraft.getInstance().player;
 			if (player != null) player.playSound(SoundEvents.UI_BUTTON_CLICK, 1.0f, 1.0f);

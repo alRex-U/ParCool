@@ -39,7 +39,7 @@ public class StartRollMessage {
 			if (contextSupplier.get().getNetworkManager().getDirection() == PacketDirection.CLIENTBOUND) {
 				PlayerEntity player = Minecraft.getInstance().player;
 				if (player == null) return;
-				PlayerEntity startPlayer = player.getEntityWorld().getPlayerByUuid(playerID);
+				PlayerEntity startPlayer = player.level.getPlayerByUUID(playerID);
 
 				if (startPlayer == null) return;
 				Parkourability parkourability = Parkourability.get(startPlayer);
@@ -57,7 +57,7 @@ public class StartRollMessage {
 
 	public static void send(ServerPlayerEntity player) {
 		StartRollMessage message = new StartRollMessage();
-		message.playerID = player.getUniqueID();
+		message.playerID = player.getUUID();
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), message);
 	}
 }

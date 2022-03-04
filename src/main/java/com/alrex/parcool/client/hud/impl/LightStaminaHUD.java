@@ -21,9 +21,8 @@ public class LightStaminaHUD extends AbstractHUD {
 
 	@Override
 	public void render(RenderGameOverlayEvent.Pre event, MatrixStack stack) {
-		if (event.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE) return;
 		ClientPlayerEntity player = Minecraft.getInstance().player;
-		if (player == null || player.areEyesInFluid(FluidTags.WATER)) return;
+		if (player == null || player.isEyeInFluid(FluidTags.WATER)) return;
 		if (player.isCreative()) return;
 
 		Stamina stamina = Stamina.get(player);
@@ -34,7 +33,7 @@ public class LightStaminaHUD extends AbstractHUD {
 			return;
 
 		if (stamina.getStamina() == 0) return;
-		long gameTime = player.getEntityWorld().getGameTime();
+		long gameTime = player.level.getGameTime();
 		if (stamina.getStamina() != oldValue) {
 			lastChangedTick = gameTime;
 		} else if (gameTime - lastChangedTick > 40) return;
@@ -44,13 +43,13 @@ public class LightStaminaHUD extends AbstractHUD {
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
 		Minecraft mc = Minecraft.getInstance();
-		int scaledWidth = mc.getMainWindow().getScaledWidth();
-		int scaledHeight = mc.getMainWindow().getScaledHeight();
+		int scaledWidth = mc.getWindow().getGuiScaledWidth();
+		int scaledHeight = mc.getWindow().getGuiScaledHeight();
 
 		int iconNumber = (int) Math.floor(staminaScale * 10);
 		float iconPartial = (staminaScale * 10) - iconNumber;
 
-		mc.getTextureManager().bindTexture(StaminaHUD.STAMINA);
+		mc.getTextureManager().bind(StaminaHUD.STAMINA);
 		int baseX = scaledWidth / 2 + 92;
 		int y = scaledHeight - 49 + ParCoolConfig.CONFIG_CLIENT.offsetVerticalLightStaminaHUD.get();
 		for (int i = 1; i <= 10; i++) {
@@ -64,7 +63,7 @@ public class LightStaminaHUD extends AbstractHUD {
 			if (stamina.isExhausted()) {
 				textureX += 16;
 			}
-			AbstractHUD.func_238463_a_(stack, x, y, textureX, 119f, 8, 9, 128, 128);
+			AbstractHUD.blit(stack, x, y, textureX, 119f, 8, 9, 128, 128);
 		}
 	}
 }

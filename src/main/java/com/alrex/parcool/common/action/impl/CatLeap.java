@@ -30,9 +30,9 @@ public class CatLeap extends Action {
 			leapingTick = 0;
 		}
 		if (
-				(leapingTick > 1 && player.collidedVertically) ||
-						player.isElytraFlying() ||
-						player.isInWaterOrBubbleColumn() ||
+				(leapingTick > 1 && player.isOnGround()) ||
+						player.isFallFlying() ||
+						player.isInWaterOrBubble() ||
 						player.isInLava()
 		) {
 			leaping = false;
@@ -43,21 +43,21 @@ public class CatLeap extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (player.isUser()) {
+		if (player.isLocalPlayer()) {
 			if (!leaping) leaping = parkourability.getPermission().canCatLeap() &&
-					player.collidedVertically &&
+					player.isOnGround() &&
 					!stamina.isExhausted() &&
 					ready && readyTick < 10 &&
-					!KeyBindings.getKeySneak().isKeyDown();
+					!KeyBindings.getKeySneak().isDown();
 
 			if (ready && leaping) {
-				Vector3d motionVec = player.getMotion();
-				Vector3d vec = new Vector3d(motionVec.getX(), 0, motionVec.getZ()).normalize();
-				player.setMotion(vec.getX(), parkourability.getActionInfo().getCatLeapPower(), vec.getZ());
+				Vector3d motionVec = player.getDeltaMovement();
+				Vector3d vec = new Vector3d(motionVec.x(), 0, motionVec.z()).normalize();
+				player.setDeltaMovement(vec.x(), parkourability.getActionInfo().getCatLeapPower(), vec.z());
 				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionCatLeap(), parkourability.getActionInfo());
 			}
 
-			ready = !leaping && ((parkourability.getFastRun().getNotRunningTick() < 10 && KeyBindings.getKeySneak().isKeyDown()) || (ready && KeyBindings.getKeySneak().isKeyDown() && readyTick < 10));
+			ready = !leaping && ((parkourability.getFastRun().getNotRunningTick() < 10 && KeyBindings.getKeySneak().isDown()) || (ready && KeyBindings.getKeySneak().isDown() && readyTick < 10));
 			if (ready) readyTick++;
 			else readyTick = 0;
 		}

@@ -114,8 +114,8 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void showParCoolGuideScreen(PlayerEntity playerIn) {
-		if (playerIn.world.isRemote()) {
-			Minecraft.getInstance().displayGuiScreen(new ParCoolGuideScreen());
+		if (playerIn.level.isClientSide) {
+			Minecraft.getInstance().setScreen(new ParCoolGuideScreen());
 		}
 	}
 }

@@ -7,6 +7,7 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.common.network.SyncCrawlMessage;
 import com.alrex.parcool.utilities.BufferUtil;
+import com.alrex.parcool.utilities.EntityUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,20 +37,20 @@ public class Crawl extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (player.isUser()) {
+		if (player.isLocalPlayer()) {
 			if (
 					parkourability.getPermission().canCrawl()
 							&& !crawling
 							&& KeyRecorder.keyCrawlState.isPressed()
 							&& !parkourability.getRoll().isRolling()
-							&& !player.isInWaterOrBubbleColumn()
-							&& player.collidedVertically
+							&& !player.isInWaterOrBubble()
+							&& player.isOnGround()
 			) {
 				//sliding
 				if (parkourability.getFastRun().getDashTick(parkourability.getAdditionalProperties()) > 5) {
 					sliding = true;
-					Vector3d lookVec = player.getLookVec();
-					slidingVec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize();
+					Vector3d lookVec = player.getLookAngle();
+					slidingVec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
 				}
 				//crawl
 				else {
@@ -62,9 +63,9 @@ public class Crawl extends Action {
 				sliding = false;
 			}
 			if (sliding) {
-				if (player.collidedVertically) {
+				if (player.isOnGround()) {
 					Vector3d vec = slidingVec.scale(0.2);
-					player.addVelocity(vec.getX(), vec.getY(), vec.getZ());
+					EntityUtil.addVelocity(player, vec);
 				}
 			}
 			if (slidingTick >= parkourability.getActionInfo().getMaxSlidingTick()) {
@@ -73,7 +74,7 @@ public class Crawl extends Action {
 				crawling = true;
 				slidingVec = null;
 			}
-			if (crawling && !KeyBindings.getKeyCrawl().isKeyDown()) {
+			if (crawling && !KeyBindings.getKeyCrawl().isDown()) {
 				crawling = false;
 				sliding = false;
 				slidingVec = null;
@@ -84,7 +85,7 @@ public class Crawl extends Action {
 	@Override
 	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
 		if (slidingVec == null || !sliding) return;
-		player.rotationYaw = (float) VectorUtil.toYawDegree(slidingVec);
+		player.yRot = (float) VectorUtil.toYawDegree(slidingVec);
 	}
 
 	@Override

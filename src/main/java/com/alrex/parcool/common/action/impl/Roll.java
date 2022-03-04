@@ -54,12 +54,12 @@ public class Roll extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (player.isUser()) {
+		if (player.isLocalPlayer()) {
 			if (
 					!ready
 							&& parkourability.getPermission().canRoll()
 							&& KeyRecorder.keyCrawlState.isPressed()
-							&& !player.collidedVertically
+							&& !player.isOnGround()
 							&& readyCoolTick <= 0
 			) {
 				ready = true;
@@ -67,17 +67,16 @@ public class Roll extends Action {
 				readyCoolTick = 30;
 			}
 			if (!ready) {
-				ready = !player.collidedVertically
+				ready = !player.isOnGround()
 						&& KeyRecorder.keyCrawlState.isPressed();
 			}
 		}
 		if (start) {
-			if (player.isUser()) {
-				Vector3d lookVec = player.getLookVec();
-				Vector3d vec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize().scale(1.4);
-				player.addVelocity(vec.getX(), 0, vec.getZ());
-				player.velocityChanged = true;
-				this.cameraPitch = player.rotationPitch;
+			if (player.isLocalPlayer()) {
+				Vector3d lookVec = player.getLookAngle();
+				Vector3d vec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize().scale(1.4);
+				player.setDeltaMovement(vec.x(), 0, vec.z());
+				this.cameraPitch = player.xRot;
 				sendSynchronization(player);
 			}
 			Animation animation = Animation.get(player);
@@ -89,9 +88,9 @@ public class Roll extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
-		if (rolling && player.isUser() && Minecraft.getInstance().gameSettings.thirdPersonView == 0 && !ParCoolConfig.CONFIG_CLIENT.disableCameraRolling.get()) {
+		if (rolling && player.isLocalPlayer() && Minecraft.getInstance().options.getCameraType().isFirstPerson() && !ParCoolConfig.CONFIG_CLIENT.disableCameraRolling.get()) {
 			float factor = RollAnimator.calculateMovementFactor((getRollingTick() + event.renderTickTime) / (float) getRollMaxTick());
-			player.rotationPitch = (factor > 0.5 ? factor - 1 : factor) * 360f + cameraPitch;
+			player.xRot = (factor > 0.5 ? factor - 1 : factor) * 360f + cameraPitch;
 		}
 	}
 

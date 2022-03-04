@@ -31,8 +31,8 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer rotateRightArm(float angleX, float angleY, float angleZ) {
-		ModelRenderer rightArm = model.bipedRightArm;
-		ModelRenderer rightWear = model.bipedRightArmwear;
+		ModelRenderer rightArm = model.rightArm;
+		ModelRenderer rightWear = model.rightSleeve;
 		setRightArm(player, rightArm, angleX, angleY, angleZ);
 		setRightArm(player, rightWear, angleX, angleY, angleZ);
 		renderRightArm = true;
@@ -40,8 +40,8 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer rotateLeftArm(float angleX, float angleY, float angleZ) {
-		ModelRenderer leftArm = model.bipedLeftArm;
-		ModelRenderer leftWear = model.bipedLeftArmwear;
+		ModelRenderer leftArm = model.leftArm;
+		ModelRenderer leftWear = model.leftSleeve;
 		setLeftArm(player, leftArm, angleX, angleY, angleZ);
 		setLeftArm(player, leftWear, angleX, angleY, angleZ);
 		renderLeftArm = true;
@@ -49,8 +49,8 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer rotateRightLeg(float angleX, float angleY, float angleZ) {
-		ModelRenderer rightLeg = model.bipedRightLeg;
-		ModelRenderer rightWear = model.bipedRightLegwear;
+		ModelRenderer rightLeg = model.rightLeg;
+		ModelRenderer rightWear = model.rightPants;
 		setRightLeg(player, rightLeg, angleX, angleY, angleZ);
 		setRightLeg(player, rightWear, angleX, angleY, angleZ);
 		renderRightLeg = true;
@@ -58,8 +58,8 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer rotateLeftLeg(float angleX, float angleY, float angleZ) {
-		ModelRenderer leftLeg = model.bipedLeftLeg;
-		ModelRenderer leftWear = model.bipedLeftLegwear;
+		ModelRenderer leftLeg = model.leftLeg;
+		ModelRenderer leftWear = model.leftPants;
 		setLeftLeg(player, leftLeg, angleX, angleY, angleZ);
 		setLeftLeg(player, leftWear, angleX, angleY, angleZ);
 		renderLeftLeg = true;
@@ -67,129 +67,129 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer render(MatrixStack stack, IRenderTypeBuffer buffer, PlayerRenderer renderer) {
-		ResourceLocation location = player.getLocationSkin();
-		int light = renderer.getPackedLight(player, partial);
-		renderer.getRenderManager().textureManager.bindTexture(location);
+		ResourceLocation location = player.getSkinTextureLocation();
+		int light = renderer.getPackedLightCoords(player, partial);
+		renderer.getDispatcher().textureManager.bind(location);
 		boolean rightHandHoldingItem;
 		boolean leftHandHoldingItem;
-		if (player.getPrimaryHand() == HandSide.RIGHT) {
-			rightHandHoldingItem = !player.getHeldItemMainhand().isEmpty();
-			leftHandHoldingItem = !player.getHeldItemOffhand().isEmpty();
+		if (player.getMainArm() == HandSide.RIGHT) {
+			rightHandHoldingItem = !player.getMainHandItem().isEmpty();
+			leftHandHoldingItem = !player.getOffhandItem().isEmpty();
 		} else {
-			rightHandHoldingItem = !player.getHeldItemOffhand().isEmpty();
-			leftHandHoldingItem = !player.getHeldItemMainhand().isEmpty();
+			rightHandHoldingItem = !player.getOffhandItem().isEmpty();
+			leftHandHoldingItem = !player.getMainHandItem().isEmpty();
 		}
 		if (renderRightArm && !rightHandHoldingItem) {
-			model.bipedRightArm.showModel = true;
-			model.bipedRightArmwear.showModel = true;
-			model.bipedRightArm.render(
+			model.rightArm.visible = true;
+			model.rightSleeve.visible = true;
+			model.rightArm.render(
 					stack,
-					buffer.getBuffer(RenderType.getEntitySolid(location)),
+					buffer.getBuffer(RenderType.entitySolid(location)),
 					light,
 					OverlayTexture.NO_OVERLAY
 			);
-			model.bipedRightArmwear.render(
+			model.rightSleeve.render(
 					stack,
-					buffer.getBuffer(RenderType.getEntityTranslucent(location)),
+					buffer.getBuffer(RenderType.entityTranslucent(location)),
 					light,
 					OverlayTexture.NO_OVERLAY
 			);
-			model.bipedRightArm.showModel = false;
-			model.bipedRightArmwear.showModel = false;
+			model.rightArm.visible = false;
+			model.rightSleeve.visible = false;
 		}
 		if (renderLeftArm && !leftHandHoldingItem) {
-			model.bipedLeftArm.showModel = true;
-			model.bipedLeftArmwear.showModel = true;
-			model.bipedLeftArm.render(
+			model.leftArm.visible = true;
+			model.leftSleeve.visible = true;
+			model.leftArm.render(
 					stack,
-					buffer.getBuffer(RenderType.getEntitySolid(location)),
+					buffer.getBuffer(RenderType.entitySolid(location)),
 					light,
 					OverlayTexture.NO_OVERLAY
 			);
-			model.bipedLeftArmwear.render(
+			model.leftSleeve.render(
 					stack,
-					buffer.getBuffer(RenderType.getEntityTranslucent(location)),
+					buffer.getBuffer(RenderType.entityTranslucent(location)),
 					light,
 					OverlayTexture.NO_OVERLAY
 			);
-			model.bipedLeftArm.showModel = false;
-			model.bipedLeftArmwear.showModel = false;
+			model.leftArm.visible = false;
+			model.leftSleeve.visible = false;
 		}
 		if (renderRightLeg) {
-			model.bipedRightLeg.showModel = true;
-			model.bipedRightLegwear.showModel = true;
-			model.bipedRightLeg.render(
+			model.rightLeg.visible = true;
+			model.rightPants.visible = true;
+			model.rightLeg.render(
 					stack,
-					buffer.getBuffer(RenderType.getEntitySolid(location)),
+					buffer.getBuffer(RenderType.entitySolid(location)),
 					light,
 					OverlayTexture.NO_OVERLAY
 			);
-			model.bipedRightLegwear.render(
+			model.rightPants.render(
 					stack,
-					buffer.getBuffer(RenderType.getEntityTranslucent(location)),
+					buffer.getBuffer(RenderType.entityTranslucent(location)),
 					light,
 					OverlayTexture.NO_OVERLAY
 			);
 
-			model.bipedRightLeg.rotationPointX = 2.1F;
-			model.bipedRightLeg.rotationPointZ = 0;
-			model.bipedRightLeg.showModel = false;
-			model.bipedRightLegwear.showModel = false;
+			model.rightLeg.x = 2.1F;
+			model.rightLeg.z = 0;
+			model.rightLeg.visible = false;
+			model.rightPants.visible = false;
 		}
 		if (renderLeftLeg) {
-			model.bipedLeftLeg.showModel = true;
-			model.bipedLeftLegwear.showModel = true;
-			model.bipedLeftLeg.render(
+			model.leftLeg.visible = true;
+			model.leftPants.visible = true;
+			model.leftLeg.render(
 					stack,
-					buffer.getBuffer(RenderType.getEntitySolid(location)),
+					buffer.getBuffer(RenderType.entitySolid(location)),
 					light,
 					OverlayTexture.NO_OVERLAY
 			);
-			model.bipedLeftLegwear.render(
+			model.leftPants.render(
 					stack,
-					buffer.getBuffer(RenderType.getEntityTranslucent(location)),
+					buffer.getBuffer(RenderType.entityTranslucent(location)),
 					light,
 					OverlayTexture.NO_OVERLAY
 			);
-			model.bipedLeftLeg.rotationPointX = -2.1F;
-			model.bipedLeftLeg.rotationPointZ = 0;
-			model.bipedLeftLeg.showModel = false;
-			model.bipedLeftLegwear.showModel = false;
+			model.leftLeg.x = -2.1F;
+			model.leftLeg.z = 0;
+			model.leftLeg.visible = false;
+			model.leftPants.visible = false;
 		}
 		return this;
 	}
 
 	private static void setRightArm(AbstractClientPlayerEntity player, ModelRenderer rightArm, float angleX, float angleY, float angleZ) {
-		rightArm.rotationPointX = -MathHelper.cos((float) Math.toRadians(player.renderYawOffset)) * 4.2F;
-		rightArm.rotationPointY = 20.5f;
-		rightArm.rotationPointZ = -MathHelper.sin((float) Math.toRadians(player.renderYawOffset)) * 5.0F;
-		rightArm.rotateAngleX = angleX;
-		rightArm.rotateAngleY = angleY;
-		rightArm.rotateAngleZ = angleZ;
+		rightArm.x = -MathHelper.cos((float) Math.toRadians(player.yBodyRot)) * 4.2F;
+		rightArm.y = 20.5f;
+		rightArm.z = -MathHelper.sin((float) Math.toRadians(player.yBodyRot)) * 5.0F;
+		rightArm.xRot = angleX;
+		rightArm.yRot = angleY;
+		rightArm.zRot = angleZ;
 	}
 
 	private static void setLeftArm(AbstractClientPlayerEntity player, ModelRenderer leftArm, float angleX, float angleY, float angleZ) {
-		leftArm.rotationPointX = MathHelper.cos((float) Math.toRadians(player.renderYawOffset)) * 4.2F;
-		leftArm.rotationPointY = 20.5f;
-		leftArm.rotationPointZ = MathHelper.sin((float) Math.toRadians(player.renderYawOffset)) * 5.0F;
-		leftArm.rotateAngleX = angleX;
-		leftArm.rotateAngleY = angleY;
-		leftArm.rotateAngleZ = angleZ;
+		leftArm.x = MathHelper.cos((float) Math.toRadians(player.yBodyRot)) * 4.2F;
+		leftArm.y = 20.5f;
+		leftArm.z = MathHelper.sin((float) Math.toRadians(player.yBodyRot)) * 5.0F;
+		leftArm.xRot = angleX;
+		leftArm.yRot = angleY;
+		leftArm.zRot = angleZ;
 	}
 
 	private static void setRightLeg(AbstractClientPlayerEntity player, ModelRenderer rightLeg, float angleX, float angleY, float angleZ) {
-		rightLeg.rotationPointX = -MathHelper.cos((float) Math.toRadians(player.renderYawOffset)) * 2.1F;
-		rightLeg.rotationPointZ = -MathHelper.sin((float) Math.toRadians(player.renderYawOffset)) * 2.5F;
-		rightLeg.rotateAngleX = angleX;
-		rightLeg.rotateAngleY = angleY;
-		rightLeg.rotateAngleZ = angleZ;
+		rightLeg.x = -MathHelper.cos((float) Math.toRadians(player.yBodyRot)) * 2.1F;
+		rightLeg.z = -MathHelper.sin((float) Math.toRadians(player.yBodyRot)) * 2.5F;
+		rightLeg.xRot = angleX;
+		rightLeg.yRot = angleY;
+		rightLeg.zRot = angleZ;
 	}
 
 	private static void setLeftLeg(AbstractClientPlayerEntity player, ModelRenderer leftLeg, float angleX, float angleY, float angleZ) {
-		leftLeg.rotationPointX = MathHelper.cos((float) Math.toRadians(player.renderYawOffset)) * 2.1F;
-		leftLeg.rotationPointZ = MathHelper.sin((float) Math.toRadians(player.renderYawOffset)) * 2.5F;
-		leftLeg.rotateAngleX = angleX;
-		leftLeg.rotateAngleY = angleY;
-		leftLeg.rotateAngleZ = angleZ;
+		leftLeg.x = MathHelper.cos((float) Math.toRadians(player.yBodyRot)) * 2.1F;
+		leftLeg.z = MathHelper.sin((float) Math.toRadians(player.yBodyRot)) * 2.5F;
+		leftLeg.xRot = angleX;
+		leftLeg.yRot = angleY;
+		leftLeg.zRot = angleZ;
 	}
 }

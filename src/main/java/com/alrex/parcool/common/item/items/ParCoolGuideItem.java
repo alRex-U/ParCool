@@ -20,9 +20,9 @@ import java.util.List;
 public class ParCoolGuideItem extends Item {
 	public static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(ParCool.MOD_ID, "parcool_guide");
 	public static final ParCoolGuideItem INSTANCE = new ParCoolGuideItem(
-			new Item.Properties()
-					.group(ParCoolItemGroup.INSTANCE)
-					.maxStackSize(1)
+			new Properties()
+					.tab(ParCoolItemGroup.INSTANCE)
+					.stacksTo(1)
 	);
 	private static final List<ITextComponent> toolTips = Arrays.asList(
 			new TranslationTextComponent("toolTip.parcool_guide")
@@ -33,9 +33,9 @@ public class ParCoolGuideItem extends Item {
 		setRegistryName(RESOURCE_LOCATION);
 	}
 
-	@Override
-	public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		super.addInformation(stack, worldIn, tooltip, flagIn);
+
+	public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 		tooltip.addAll(toolTips);
 	}
 
@@ -45,9 +45,10 @@ public class ParCoolGuideItem extends Item {
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+	public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
 		ParCool.PROXY.showParCoolGuideScreen(playerIn);
-		return ActionResult.resultConsume(playerIn.getHeldItem(handIn));
+		return ActionResult.consume(playerIn.getMainHandItem());
 	}
+
 
 }

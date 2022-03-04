@@ -9,6 +9,7 @@ import net.minecraft.network.PacketDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
+import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
 public class SetActionPossibilityMessage {
@@ -17,13 +18,14 @@ public class SetActionPossibilityMessage {
 
 	public void encode(PacketBuffer packet) {
 		packet.writeBoolean(possibility);
-		packet.writeString(actionsEnum.name());
+		packet.writeInt(actionsEnum.name().length());
+		packet.writeCharSequence(actionsEnum.name(), StandardCharsets.UTF_8);
 	}
 
 	public static SetActionPossibilityMessage decode(PacketBuffer packet) {
 		SetActionPossibilityMessage message = new SetActionPossibilityMessage();
 		message.possibility = packet.readBoolean();
-		message.actionsEnum = ActionsEnum.valueOf(packet.readString());
+		message.actionsEnum = ActionsEnum.valueOf(packet.readCharSequence(packet.readInt(), StandardCharsets.UTF_8).toString());
 		return message;
 	}
 

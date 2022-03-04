@@ -37,21 +37,21 @@ public class AvoidDamageMessage {
 	@OnlyIn(Dist.CLIENT)
 	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
-			AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) Minecraft.getInstance().world.getPlayerByUuid(playerID);
+			AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) Minecraft.getInstance().level.getPlayerByUUID(playerID);
 			if (player == null) return;
 			Stamina stamina = Stamina.get(player);
 			Parkourability parkourability = Parkourability.get(player);
 			if (stamina == null || parkourability == null) return;
 			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionDodgeAvoid(damage), parkourability.getActionInfo());
 			ParticleProvider.spawnEffectAvoidDamage(player);
-			player.playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.6f, 1);
+			player.playSound(SoundEvents.ANVIL_LAND, 0.6f, 0.7f);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
 
 	public static void send(ServerPlayerEntity player, float damage) {
 		AvoidDamageMessage message = new AvoidDamageMessage();
-		message.playerID = player.getUniqueID();
+		message.playerID = player.getUUID();
 		message.damage = damage;
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), message);
 	}

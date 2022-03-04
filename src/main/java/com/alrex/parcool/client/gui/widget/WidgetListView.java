@@ -32,7 +32,7 @@ public class WidgetListView<T extends net.minecraft.client.gui.widget.Widget> ex
 			WidgetUtil.setHeight(item, itemHeight);
 			if (renderingY + item.getHeight() > this.height) break;
 
-			item.func_230430_a_(stack, mouseX, mouseY, partial);
+			item.render(stack, mouseX, mouseY, partial);
 
 			renderingY += item.getHeight();
 		}

@@ -4,15 +4,15 @@ import net.minecraft.client.gui.widget.Widget;
 
 public class WidgetUtil {
 	public static void setX(Widget widget, int x) {
-		widget.field_230690_l_ = x;
+		widget.x = x;
 	}
 
 	public static void setY(Widget widget, int y) {
-		widget.field_230691_m_ = y;
+		widget.y = y;
 	}
 
 	public static void setWidth(Widget widget, int width) {
-		widget.func_230991_b_(width);
+		widget.setWidth(width);
 	}
 
 	public static void setHeight(Widget widget, int height) {

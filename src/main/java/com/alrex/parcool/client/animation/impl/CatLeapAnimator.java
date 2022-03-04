@@ -29,32 +29,32 @@ public class CatLeapAnimator extends Animator {
 		float partial = event.getPartialRenderTick();
 		MatrixStack stack = event.getMatrixStack();
 		PlayerRenderer renderer = event.getRenderer();
-		PlayerModel<AbstractClientPlayerEntity> model = renderer.getEntityModel();
-		stack.push();
+		PlayerModel<AbstractClientPlayerEntity> model = renderer.getModel();
+		stack.pushPose();
 		{
 			float factor = (catLeap.getLeapingTick() + event.getPartialRenderTick()) / 30f;
 			if (factor > 1) factor = 1f;
 			Vector3d posOffset = RenderUtil.getPlayerOffset(mainPlayer, player, partial);
-			stack.translate(posOffset.getX(), posOffset.getY(), posOffset.getZ());
+			stack.translate(posOffset.x(), posOffset.y(), posOffset.z());
 			PlayerModelTransformer.wrap(player, model, getTick(), event.getPartialRenderTick())
 					.rotateLeftArm(
 							(float) Math.toRadians(lerp(20f, 180f, factor)),
-							(float) -Math.toRadians(player.renderYawOffset),
+							(float) -Math.toRadians(player.yBodyRot),
 							(float) Math.toRadians(0)
 					)
 					.rotateRightArm(
 							(float) Math.toRadians(lerp(20f, 180f, factor)),
-							(float) -Math.toRadians(player.renderYawOffset),
+							(float) -Math.toRadians(player.yBodyRot),
 							(float) Math.toRadians(0)
 					)
 					.rotateLeftLeg(
 							(float) Math.toRadians(lerp(120f, 170f, factor)),
-							(float) -Math.toRadians(player.renderYawOffset),
+							(float) -Math.toRadians(player.yBodyRot),
 							(float) Math.toRadians(0F)
 					)
 					.rotateRightLeg(
 							(float) Math.toRadians(lerp(240f, 190f, factor)),
-							(float) -Math.toRadians(player.renderYawOffset),
+							(float) -Math.toRadians(player.yBodyRot),
 							(float) Math.toRadians(0F)
 					)
 					.render(
@@ -63,6 +63,6 @@ public class CatLeapAnimator extends Animator {
 							event.getRenderer()
 					);
 		}
-		stack.pop();
+		stack.popPose();
 	}
 }

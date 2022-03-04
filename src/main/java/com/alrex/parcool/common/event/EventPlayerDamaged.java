@@ -23,7 +23,7 @@ public class EventPlayerDamaged {
 		DamageSource damageSource = event.getSource();
 
 		if (
-				damageSource.getDamageType().equals(DamageSource.FALL.getDamageType())
+				damageSource.msgId.equals(DamageSource.FALL.msgId)
 						&& parkourability.getRoll().isReady()
 		) {
 			StartRollMessage.send(player);
@@ -44,7 +44,7 @@ public class EventPlayerDamaged {
 				(dodge.getDodgeDirection() == Dodge.DodgeDirections.Front ||
 						dodge.getDodgeDirection() == Dodge.DodgeDirections.Back)
 		) {
-			if (!(damageSource.isFireDamage() || damageSource.isMagicDamage() || damageSource.isUnblockable()) && event.getAmount() < 15f) {
+			if (!(damageSource.isFire() || damageSource.isMagic()) && event.getAmount() < 15f) {
 				AvoidDamageMessage.send(player, event.getAmount());
 				dodge.avoidDamage(player);
 				event.setCanceled(true);

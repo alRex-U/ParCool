@@ -47,17 +47,17 @@ public class FastRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (player.isUser()) {
+		if (player.isLocalPlayer()) {
 			fastRunning = parkourability.getPermission().canFastRunning()
 					&& player.isSprinting()
-					&& KeyBindings.getKeyFastRunning().isKeyDown()
+					&& KeyBindings.getKeyFastRunning().isDown()
 					&& !stamina.isExhausted();
 		}
-		ModifiableAttributeInstance attr = player.getAttribute(Attributes.field_233821_d_);
+		ModifiableAttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (attr == null) return;
 
 		if (isRunning()) {
-			if (!attr.hasModifier(FAST_RUNNING_MODIFIER)) attr.func_233769_c_(FAST_RUNNING_MODIFIER);
+			if (!attr.hasModifier(FAST_RUNNING_MODIFIER)) attr.addTransientModifier(FAST_RUNNING_MODIFIER);
 			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionFastRun(), parkourability.getActionInfo());
 		} else {
 			if (attr.hasModifier(FAST_RUNNING_MODIFIER)) attr.removeModifier(FAST_RUNNING_MODIFIER);

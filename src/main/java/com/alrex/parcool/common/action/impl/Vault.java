@@ -35,15 +35,15 @@ public class Vault extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	private boolean canVault(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		Vector3d lookVec = player.getLookVec();
-		lookVec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize();
+		Vector3d lookVec = player.getLookAngle();
+		lookVec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
 		Vector3d wall = WorldUtil.getWall(player);
 		if (wall == null) return false;
 		return !this.vauting &&
 				parkourability.getPermission().canVault() &&
 				parkourability.getFastRun().canActWithRunning(player) &&
-				player.collidedVertically &&
-				(wall.dotProduct(lookVec) / wall.length() / lookVec.length()) > 0.707106 /*check facing wall*/ &&
+				player.isOnGround() &&
+				(wall.dot(lookVec) / wall.length() / lookVec.length()) > 0.707106 /*check facing wall*/ &&
 				WorldUtil.getStep(player) != null &&
 				WorldUtil.getWallHeight(player) > 0.8;
 	}
@@ -55,43 +55,43 @@ public class Vault extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (player.isUser()) {
+		if (player.isLocalPlayer()) {
 			if (!this.isVaulting() && this.canVault(player, parkourability, stamina)) {
 				vauting = true;
 				vaultingTick = 0;
 				stepDirection = WorldUtil.getStep(player);
 				stepHeight = WorldUtil.getWallHeight(player);
 
-				Vector3d lookVec = player.getLookVec();
-				Vector3d vec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize();
+				Vector3d lookVec = player.getLookAngle();
+				Vector3d vec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
 				Vector3d s = stepDirection;
 
 				//doing "vec/stepDirection" as complex number(x + z i) to calculate difference of player's direction to steps
 				Vector3d dividedVec =
 						new Vector3d(
-								vec.getX() * s.getX() + vec.getZ() * s.getZ(), 0,
-								-vec.getX() * s.getZ() + vec.getZ() * s.getX()
+								vec.x() * s.x() + vec.z() * s.z(), 0,
+								-vec.x() * s.z() + vec.z() * s.x()
 						);
 				Animation animation = Animation.get(player);
 				if (animation != null)
-					animation.setAnimator(new SpeedVaultAnimator(dividedVec.getZ() > 0 ? SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left));
+					animation.setAnimator(new SpeedVaultAnimator(dividedVec.z() > 0 ? SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left));
 			}
 
 			if (vauting) {
-				player.setMotion(
-						stepDirection.getX() / 10,
+				player.setDeltaMovement(
+						stepDirection.x() / 10,
 						(stepHeight + 0.05) / this.getVaultAnimateTime(),
-						stepDirection.getZ() / 10
+						stepDirection.z() / 10
 				);
 			}
 
 			if (vaultingTick >= this.getVaultAnimateTime()) {
 				vauting = false;
 				stepDirection = stepDirection.normalize();
-				player.setMotion(
-						stepDirection.getX() * 0.45,
+				player.setDeltaMovement(
+						stepDirection.x() * 0.45,
 						0.15,
-						stepDirection.getZ() * 0.45
+						stepDirection.z() * 0.45
 				);
 			}
 		}
@@ -117,7 +117,7 @@ public class Vault extends Action {
 		if (message instanceof StartVaultMessage) {
 			PlayerEntity player = Minecraft.getInstance().player;
 			if (player == null) return;
-			PlayerEntity startPlayer = player.getEntityWorld().getPlayerByUuid(((StartVaultMessage) message).getPlayerID());
+			PlayerEntity startPlayer = player.level.getPlayerByUUID(((StartVaultMessage) message).getPlayerID());
 			Animation animation = Animation.get(player);
 			if (animation != null)
 				animation.setAnimator(new SpeedVaultAnimator(SpeedVaultAnimator.Type.Right));

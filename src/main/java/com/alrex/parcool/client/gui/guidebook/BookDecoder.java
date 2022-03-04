@@ -31,7 +31,7 @@ public class BookDecoder {
 	}
 
 	public Book getBook() {
-		return getBook(Minecraft.getInstance().getLanguageManager().getCurrentLanguage().getCode());
+		return getBook(Minecraft.getInstance().getLanguageManager().getSelected().getCode());
 	}
 
 	public Book getBook(String langCode) {
@@ -66,8 +66,8 @@ public class BookDecoder {
 
 				if (division.matcher(line).matches()) {//end page
 					pages.add(new Book.Page(
-							ITextProperties.func_240652_a_(decodeDecoration(title)),
-							content.stream().map(this::decodeDecoration).map(ITextProperties::func_240652_a_).collect(Collectors.toList())
+							ITextProperties.of(decodeDecoration(title)),
+							content.stream().map(this::decodeDecoration).map(ITextProperties::of).collect(Collectors.toList())
 					));
 					break;
 				} else {

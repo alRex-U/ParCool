@@ -21,7 +21,7 @@ public class AdditionalProperties extends Action {
 		} else {
 			sprintingTick = 0;
 		}
-		if (player.collidedVertically) {
+		if (player.isOnGround()) {
 			notLandingTick = 0;
 		} else {
 			notLandingTick++;

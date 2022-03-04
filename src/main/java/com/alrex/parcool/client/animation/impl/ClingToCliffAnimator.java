@@ -27,21 +27,21 @@ public class ClingToCliffAnimator extends Animator {
 		float partial = event.getPartialRenderTick();
 		MatrixStack stack = event.getMatrixStack();
 		PlayerRenderer renderer = event.getRenderer();
-		PlayerModel<AbstractClientPlayerEntity> model = renderer.getEntityModel();
+		PlayerModel<AbstractClientPlayerEntity> model = renderer.getModel();
 
-		stack.push();
+		stack.pushPose();
 		{
 			Vector3d posOffset = RenderUtil.getPlayerOffset(mainPlayer, player, partial);
-			stack.translate(posOffset.getX(), posOffset.getY(), posOffset.getZ());
+			stack.translate(posOffset.x(), posOffset.y(), posOffset.z());
 			PlayerModelTransformer.wrap(player, model, getTick(), partial)
 					.rotateRightArm(
 							(float) Math.toRadians(20.0F),
-							(float) -Math.toRadians(player.renderYawOffset),
+							(float) -Math.toRadians(player.yBodyRot),
 							(float) Math.toRadians(0.0F)
 					)
 					.rotateLeftArm(
 							(float) Math.toRadians(20.0F),
-							(float) -Math.toRadians(player.renderYawOffset),
+							(float) -Math.toRadians(player.yBodyRot),
 							(float) Math.toRadians(0.0F)
 					).render(
 							stack,
@@ -49,6 +49,6 @@ public class ClingToCliffAnimator extends Animator {
 							renderer
 					);
 		}
-		stack.pop();
+		stack.popPose();
 	}
 }
