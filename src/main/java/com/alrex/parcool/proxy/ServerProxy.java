@@ -107,5 +107,12 @@ public class ServerProxy extends CommonProxy {
 				AvoidDamageMessage::decode,
 				null
 		);
+		instance.registerMessage(
+				14,
+				StartVaultMessage.class,
+				StartVaultMessage::encode,
+				StartVaultMessage::decode,
+				StartVaultMessage::handleServer
+		);
 	}
 }

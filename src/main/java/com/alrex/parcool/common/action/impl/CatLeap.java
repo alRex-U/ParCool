@@ -21,6 +21,8 @@ public class CatLeap extends Action {
 	private int leapingTick = 0;
 	private int readyTick = 0;
 	private boolean ready = false;
+	//flag to apply animation for not local player
+	private boolean start = false;
 
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
@@ -61,7 +63,8 @@ public class CatLeap extends Action {
 			if (ready) readyTick++;
 			else readyTick = 0;
 		}
-		if (leaping && leapingTick <= 1) {
+		if (leaping && leapingTick <= 1 || start) {
+			start = false;
 			Animation animation = Animation.get(player);
 			if (animation != null) animation.setAnimator(new CatLeapAnimator());
 		}
@@ -89,6 +92,9 @@ public class CatLeap extends Action {
 			SyncCatLeapMessage correctMessage = (SyncCatLeapMessage) message;
 			leaping = correctMessage.isLeaping();
 			ready = correctMessage.isReady();
+			if (leaping) {
+				start = true;
+			}
 		}
 	}
 

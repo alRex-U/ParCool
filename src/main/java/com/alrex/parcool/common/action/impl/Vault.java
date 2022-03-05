@@ -7,7 +7,6 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.common.network.StartVaultMessage;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,6 +22,9 @@ public class Vault extends Action {
 	//only in client
 	private double stepHeight = 0;
 	private Vector3d stepDirection = null;
+
+	//for not Local Player
+	private boolean start = false;
 
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
@@ -55,6 +57,12 @@ public class Vault extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+		if (start) {
+			start = false;
+			Animation animation = Animation.get(player);
+			if (animation != null)
+				animation.setAnimator(new SpeedVaultAnimator(SpeedVaultAnimator.Type.Right));
+		}
 		if (player.isLocalPlayer()) {
 			if (!this.isVaulting() && this.canVault(player, parkourability, stamina)) {
 				vauting = true;
@@ -73,8 +81,10 @@ public class Vault extends Action {
 								-vec.x() * s.z() + vec.z() * s.x()
 						);
 				Animation animation = Animation.get(player);
+				SpeedVaultAnimator.Type type = dividedVec.z() > 0 ? SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
 				if (animation != null)
-					animation.setAnimator(new SpeedVaultAnimator(dividedVec.z() > 0 ? SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left));
+					animation.setAnimator(new SpeedVaultAnimator(type));
+				StartVaultMessage.send(player);
 			}
 
 			if (vauting) {
@@ -115,14 +125,8 @@ public class Vault extends Action {
 	@Override
 	public void synchronize(Object message) {
 		if (message instanceof StartVaultMessage) {
-			PlayerEntity player = Minecraft.getInstance().player;
-			if (player == null) return;
-			PlayerEntity startPlayer = player.level.getPlayerByUUID(((StartVaultMessage) message).getPlayerID());
-			Animation animation = Animation.get(player);
-			if (animation != null)
-				animation.setAnimator(new SpeedVaultAnimator(SpeedVaultAnimator.Type.Right));
+			start = true;
 		}
-
 	}
 
 	@Override

@@ -4,11 +4,12 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -37,14 +38,20 @@ public class StartVaultMessage {
 	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
 			if (contextSupplier.get().getNetworkManager().getDirection() == PacketDirection.CLIENTBOUND) {
-				PlayerEntity player = Minecraft.getInstance().player;
-				if (player == null) return;
-				PlayerEntity startPlayer = player.level.getPlayerByUUID(playerID);
+				PlayerEntity player;
+				if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+					World world = Minecraft.getInstance().level;
+					if (world == null) return;
+					player = world.getPlayerByUUID(playerID);
+					if (player == null || player.isLocalPlayer()) return;
+				} else {
+					player = contextSupplier.get().getSender();
+					ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
+					if (player == null) return;
+				}
 
-				if (startPlayer == null) return;
-				Parkourability parkourability = Parkourability.get(startPlayer);
+				Parkourability parkourability = Parkourability.get(player);
 				if (parkourability == null) return;
-
 				parkourability.getVault().synchronize(this);
 			}
 		});
@@ -53,11 +60,14 @@ public class StartVaultMessage {
 
 	@OnlyIn(Dist.DEDICATED_SERVER)
 	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
+		contextSupplier.get().enqueueWork(() -> {
+			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
+		});
 	}
 
-	public static void send(ServerPlayerEntity player) {
-		StartRollMessage message = new StartRollMessage();
+	public static void send(PlayerEntity player) {
+		StartVaultMessage message = new StartVaultMessage();
 		message.playerID = player.getUUID();
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), message);
+		ParCool.CHANNEL_INSTANCE.sendToServer(message);
 	}
 }

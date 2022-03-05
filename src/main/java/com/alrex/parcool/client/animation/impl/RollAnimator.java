@@ -5,10 +5,7 @@ import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.Roll;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.MathUtil;
-import com.alrex.parcool.utilities.RenderUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.util.math.vector.Vector3d;
@@ -28,8 +25,6 @@ public class RollAnimator extends Animator {
 			return;
 		}
 
-		ClientPlayerEntity mainPlayer = Minecraft.getInstance().player;
-		if (mainPlayer == null) return;
 		float factor = calculateMovementFactor((roll.getRollingTick() + event.getPartialRenderTick()) / (float) roll.getRollMaxTick());
 
 		Vector3d lookVec = player.getLookAngle().yRot((float) Math.PI / 2);
@@ -44,8 +39,6 @@ public class RollAnimator extends Animator {
 
 		event.getMatrixStack().pushPose();
 		{
-			Vector3d posOffset = RenderUtil.getPlayerOffset(mainPlayer, player, event.getPartialRenderTick());
-			event.getMatrixStack().translate(posOffset.x(), posOffset.y(), posOffset.z());
 			PlayerModelTransformer.wrap(player, model, getTick(), event.getPartialRenderTick())
 					.rotateLeftArm(
 							(float) Math.toRadians(MathUtil.lerp(110f, 180f, factor)),

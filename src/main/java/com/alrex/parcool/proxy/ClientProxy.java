@@ -110,6 +110,13 @@ public class ClientProxy extends CommonProxy {
 				AvoidDamageMessage::decode,
 				AvoidDamageMessage::handleClient
 		);
+		instance.registerMessage(
+				14,
+				StartVaultMessage.class,
+				StartVaultMessage::encode,
+				StartVaultMessage::decode,
+				StartVaultMessage::handleClient
+		);
 	}
 
 	@Override
