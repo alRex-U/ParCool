@@ -20,7 +20,7 @@ import net.minecraftforge.event.TickEvent;
 import java.nio.ByteBuffer;
 
 public class Roll extends Action {
-	public static final int ROLL_DEFERMENT_TICK = 10;
+	public static final int ROLL_DEFERMENT_TICK = 9;
 
 	private float cameraPitch = 0;
 	private boolean ready = false;
@@ -76,7 +76,7 @@ public class Roll extends Action {
 				Vector3d lookVec = player.getLookAngle();
 				Vector3d vec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize().scale(1.4);
 				player.setDeltaMovement(vec.x(), 0, vec.z());
-				this.cameraPitch = player.xRot;
+				this.cameraPitch = 20;
 				sendSynchronization(player);
 			}
 			Animation animation = Animation.get(player);

@@ -28,10 +28,10 @@ public class EventPlayerDamaged {
 		) {
 			StartRollMessage.send(player);
 			float damage = event.getAmount();
-			if (damage < 2) {
+			if (damage < 4) {
 				event.setCanceled(true);
 			} else {
-				event.setAmount((damage - 2) / 2);
+				event.setAmount((damage - 4) / 2);
 			}
 			return;
 		}
