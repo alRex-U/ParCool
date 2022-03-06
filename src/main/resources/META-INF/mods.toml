@@ -1,5 +1,5 @@
 modLoader = "javafml" #mandatory
-loaderVersion = "[32,)"
+loaderVersion = "[36,)"
 license = "GNU GENERAL PUBLIC LICENSE Version 3"
 issueTrackerURL = "https://github.com/alRex-U/ParCool/issues" #optional
 [[mods]] #mandatory
@@ -9,17 +9,22 @@ displayName = "ParCool!" #mandatory
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/parcool" #optional
 logoFile = "parcool_logo.png" #optional
 credits = "Thanks for Java, and Developers of Minecraft and Minecraft Forge" #optional
-authors = "alRex-U"
+authors = '''
+
+    Owner: alRex_U
+    Tlanslators:
+        └zh_cn : CatalystGinger
+'''
 
 description = '''
     This enable us act like parkour players.
     Enjoy Minecraft with cool actions!
-    If you need more information, use "/parcool giveTutorialBook"
+    First, let's read ParCool Guide!
 '''
 [[dependencies.parcool]] #optional
 modId = "forge" #mandatory
 mandatory = true #mandatory
-versionRange = "[32,)" #mandatory
+versionRange = "[36,)" #mandatory
 ordering = "NONE"
 side = "BOTH"
 
@@ -27,6 +32,6 @@ side = "BOTH"
 modId = "minecraft"
 mandatory = true
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
-versionRange = "[1.16.1,1.17)"
+versionRange = "[1.16.5,1.17)"
 ordering = "NONE"
 side = "BOTH"
