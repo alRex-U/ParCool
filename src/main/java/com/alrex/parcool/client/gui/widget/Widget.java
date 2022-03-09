@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.gui.widget;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.FontRenderer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.Font;
 
 public abstract class Widget {
 	protected int x = 0;
@@ -20,7 +20,7 @@ public abstract class Widget {
 		return this.x < x && x < this.x + width && this.y < y && y < this.y + height;
 	}
 
-	abstract public void render(MatrixStack stack, FontRenderer fontRenderer, int mouseX, int mouseY, float partial);
+	abstract public void render(PoseStack stack, Font fontRenderer, int mouseX, int mouseY, float partial);
 
 	public void setX(int x) {
 		this.x = x;

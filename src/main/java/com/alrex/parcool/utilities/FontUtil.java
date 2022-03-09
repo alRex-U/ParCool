@@ -1,24 +1,19 @@
 package com.alrex.parcool.utilities;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.text.ITextProperties;
+import net.minecraft.client.gui.Font;
 
 public class FontUtil {
-	public static void drawCenteredText(MatrixStack stack, ITextProperties text, int x, int y, int color) {
-		FontRenderer fontRenderer = Minecraft.getInstance().font;
-		int width = fontRenderer.width(text.getString());
-		IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+	public static void drawCenteredText(PoseStack stack, String text, int x, int y, int color) {
+		Font fontRenderer = Minecraft.getInstance().font;
+		int width = fontRenderer.width(text);
 		fontRenderer.draw(
 				stack,
-				text.getString(),
+				text,
 				x - (width >> 1),
 				y - (fontRenderer.lineHeight >> 1),
 				color
 		);
-		renderTypeBuffer.endBatch();
 	}
 }

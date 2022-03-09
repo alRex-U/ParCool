@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.item;
 
 import com.alrex.parcool.common.item.items.ParCoolGuideItem;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 

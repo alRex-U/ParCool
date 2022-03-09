@@ -1,8 +1,8 @@
 package com.alrex.parcool.client.animation;
 
-import com.alrex.parcool.common.capability.Animation;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
+import com.alrex.parcool.common.capability.impl.Animation;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -18,7 +18,7 @@ public class AnimationHandler {
 	@SubscribeEvent
 	public void onRenderPost(RenderPlayerEvent.Post event) {
 		event.getMatrixStack().popPose();
-		PlayerModel<AbstractClientPlayerEntity> model = event.getRenderer().getModel();
+		PlayerModel<AbstractClientPlayer> model = event.getRenderer().getModel();
 		model.rightArm.visible = true;
 		model.leftArm.visible = true;
 		model.leftLeg.visible = true;

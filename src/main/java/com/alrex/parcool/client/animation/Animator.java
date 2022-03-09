@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.animation;
 
-import com.alrex.parcool.common.capability.Parkourability;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import com.alrex.parcool.common.capability.impl.Parkourability;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -23,5 +23,5 @@ public abstract class Animator {
 		return removal;
 	}
 
-	public abstract void animate(RenderPlayerEvent.Pre event, AbstractClientPlayerEntity player, Parkourability parkourability);
+	public abstract void animate(RenderPlayerEvent.Pre event, AbstractClientPlayer player, Parkourability parkourability);
 }

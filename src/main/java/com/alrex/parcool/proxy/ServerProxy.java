@@ -3,7 +3,7 @@ package com.alrex.parcool.proxy;
 import com.alrex.parcool.common.network.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
 @OnlyIn(Dist.DEDICATED_SERVER)
 public class ServerProxy extends CommonProxy {

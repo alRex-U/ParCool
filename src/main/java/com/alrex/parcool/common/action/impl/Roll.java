@@ -4,15 +4,15 @@ import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.RollAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
+import com.alrex.parcool.common.capability.impl.Animation;
+import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.impl.Stamina;
 import com.alrex.parcool.common.network.StartRollMessage;
 import com.alrex.parcool.common.network.SyncRollMessage;
 import com.alrex.parcool.utilities.BufferUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -31,7 +31,7 @@ public class Roll extends Action {
 	private int rollingTick = 0;
 
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (rolling) {
 			rollingTick++;
 			if (rollingTick >= getRollMaxTick()) rolling = false;
@@ -53,7 +53,7 @@ public class Roll extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onClientTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (player.isLocalPlayer()) {
 			if (
 					!ready
@@ -73,8 +73,8 @@ public class Roll extends Action {
 		}
 		if (start) {
 			if (player.isLocalPlayer()) {
-				Vector3d lookVec = player.getLookAngle();
-				Vector3d vec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize().scale(1.4);
+				Vec3 lookVec = player.getLookAngle();
+				Vec3 vec = new Vec3(lookVec.x(), 0, lookVec.z()).normalize().scale(1.4);
 				player.setDeltaMovement(vec.x(), 0, vec.z());
 				this.cameraPitch = 20;
 				sendSynchronization(player);
@@ -87,10 +87,10 @@ public class Roll extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRender(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
 		if (rolling && player.isLocalPlayer() && Minecraft.getInstance().options.getCameraType().isFirstPerson() && !ParCoolConfig.CONFIG_CLIENT.disableCameraRolling.get()) {
 			float factor = RollAnimator.calculateMovementFactor((getRollingTick() + event.renderTickTime) / (float) getRollMaxTick());
-			player.xRot = (factor > 0.5 ? factor - 1 : factor) * 360f + cameraPitch;
+			player.setXRot((factor > 0.5 ? factor - 1 : factor) * 360f + cameraPitch);
 		}
 	}
 
@@ -101,7 +101,7 @@ public class Roll extends Action {
 	}
 
 	@Override
-	public void sendSynchronization(PlayerEntity player) {
+	public void sendSynchronization(Player player) {
 		SyncRollMessage.sync(player, this);
 	}
 

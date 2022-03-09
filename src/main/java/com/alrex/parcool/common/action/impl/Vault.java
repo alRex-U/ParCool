@@ -2,13 +2,13 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.client.animation.impl.SpeedVaultAnimator;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
+import com.alrex.parcool.common.capability.impl.Animation;
+import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.impl.Stamina;
 import com.alrex.parcool.common.network.StartVaultMessage;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -21,13 +21,13 @@ public class Vault extends Action {
 
 	//only in client
 	private double stepHeight = 0;
-	private Vector3d stepDirection = null;
+	private Vec3 stepDirection = null;
 
 	//for not Local Player
 	private boolean start = false;
 
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (vauting) {
 			vaultingTick++;
 		} else {
@@ -36,10 +36,10 @@ public class Vault extends Action {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private boolean canVault(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		Vector3d lookVec = player.getLookAngle();
-		lookVec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
-		Vector3d wall = WorldUtil.getWall(player);
+	private boolean canVault(Player player, Parkourability parkourability, Stamina stamina) {
+		Vec3 lookVec = player.getLookAngle();
+		lookVec = new Vec3(lookVec.x(), 0, lookVec.z()).normalize();
+		Vec3 wall = WorldUtil.getWall(player);
 		if (wall == null) return false;
 		return !this.vauting &&
 				parkourability.getPermission().canVault() &&
@@ -56,7 +56,7 @@ public class Vault extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onClientTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (start) {
 			start = false;
 			Animation animation = Animation.get(player);
@@ -70,13 +70,13 @@ public class Vault extends Action {
 				stepDirection = WorldUtil.getStep(player);
 				stepHeight = WorldUtil.getWallHeight(player);
 
-				Vector3d lookVec = player.getLookAngle();
-				Vector3d vec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
-				Vector3d s = stepDirection;
+				Vec3 lookVec = player.getLookAngle();
+				Vec3 vec = new Vec3(lookVec.x(), 0, lookVec.z()).normalize();
+				Vec3 s = stepDirection;
 
 				//doing "vec/stepDirection" as complex number(x + z i) to calculate difference of player's direction to steps
-				Vector3d dividedVec =
-						new Vector3d(
+				Vec3 dividedVec =
+						new Vec3(
 								vec.x() * s.x() + vec.z() * s.z(), 0,
 								-vec.x() * s.z() + vec.z() * s.x()
 						);
@@ -108,7 +108,7 @@ public class Vault extends Action {
 	}
 
 	@Override
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRender(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public class Vault extends Action {
 	}
 
 	@Override
-	public void sendSynchronization(PlayerEntity player) {
+	public void sendSynchronization(Player player) {
 
 	}
 

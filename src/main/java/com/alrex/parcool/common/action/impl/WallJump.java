@@ -3,13 +3,13 @@ package com.alrex.parcool.common.action.impl;
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
+import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.impl.Stamina;
 import com.alrex.parcool.common.network.ResetFallDistanceMessage;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -20,20 +20,20 @@ import java.nio.ByteBuffer;
 public class WallJump extends Action {
 
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onTick(Player player, Parkourability parkourability, Stamina stamina) {
 	}
 
 
 	@OnlyIn(Dist.CLIENT)
 	@Nullable
-	private Vector3d getJumpDirection(PlayerEntity player) {
-		Vector3d wall = WorldUtil.getWall(player);
+	private Vec3 getJumpDirection(Player player) {
+		Vec3 wall = WorldUtil.getWall(player);
 		if (wall == null) return null;
 
-		Vector3d lookVec = player.getLookAngle();
-		Vector3d vec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
+		Vec3 lookVec = player.getLookAngle();
+		Vec3 vec = new Vec3(lookVec.x(), 0, lookVec.z()).normalize();
 
-		Vector3d value;
+		Vec3 value;
 
 		if (wall.dot(vec) > 0) {//To Wall
 			if (ParCoolConfig.CONFIG_CLIENT.disableWallJumpTowardWall.get()) return null;
@@ -47,13 +47,13 @@ public class WallJump extends Action {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private boolean canWallJump(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	private boolean canWallJump(Player player, Parkourability parkourability, Stamina stamina) {
 		return !stamina.isExhausted()
 				&& parkourability.getPermission().canWallJump()
 				&& !player.isOnGround()
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
-				&& !player.abilities.flying
+				&& !player.getAbilities().flying
 				&& !parkourability.getClingToCliff().isCling()
 				&& parkourability.getClingToCliff().getNotClingTick() > 3
 				&& KeyRecorder.keyJumpState.isPressed()
@@ -63,16 +63,16 @@ public class WallJump extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onClientTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (player.isLocalPlayer() && canWallJump(player, parkourability, stamina)) {
-			Vector3d jumpDirection = getJumpDirection(player);
+			Vec3 jumpDirection = getJumpDirection(player);
 			if (jumpDirection == null) return;
 			if (ParCoolConfig.CONFIG_CLIENT.autoTurningWallJump.get()) {
-				player.yRot = (float) VectorUtil.toYawDegree(jumpDirection);
+				player.setYRot((float) VectorUtil.toYawDegree(jumpDirection));
 			}
 
-			Vector3d direction = new Vector3d(jumpDirection.x(), 1.4, jumpDirection.z()).scale(0.3);
-			Vector3d motion = player.getDeltaMovement();
+			Vec3 direction = new Vec3(jumpDirection.x(), 1.4, jumpDirection.z()).scale(0.3);
+			Vec3 motion = player.getDeltaMovement();
 
 			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionWallJump(), parkourability.getActionInfo());
 			player.setDeltaMovement(
@@ -85,7 +85,7 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRender(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
 
 	}
 
@@ -95,7 +95,7 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public void sendSynchronization(PlayerEntity player) {
+	public void sendSynchronization(Player player) {
 
 	}
 

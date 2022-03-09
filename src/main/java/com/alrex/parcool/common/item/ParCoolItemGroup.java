@@ -1,10 +1,10 @@
 package com.alrex.parcool.common.item;
 
 import com.alrex.parcool.common.item.items.ParCoolGuideItem;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 
-public class ParCoolItemGroup extends ItemGroup {
+public class ParCoolItemGroup extends CreativeModeTab {
 	public static final ParCoolItemGroup INSTANCE = new ParCoolItemGroup();
 
 	public ParCoolItemGroup() {

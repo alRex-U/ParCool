@@ -2,19 +2,19 @@ package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.ParCoolConfig;
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.capability.impl.Parkourability;
 import com.alrex.parcool.constants.ActionsEnum;
 import com.alrex.parcool.constants.TranslateKeys;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import java.util.function.Supplier;
 
@@ -65,7 +65,7 @@ public class ActionPermissionsMessage {
 		return allowedInfiniteStamina;
 	}
 
-	public void encode(PacketBuffer packet) {
+	public void encode(FriendlyByteBuf packet) {
 		packet.writeBoolean(allowedCatLeap);
 		packet.writeBoolean(allowedCrawl);
 		packet.writeBoolean(allowedDodge);
@@ -77,7 +77,7 @@ public class ActionPermissionsMessage {
 		packet.writeBoolean(allowedInfiniteStamina);
 	}
 
-	public static ActionPermissionsMessage decode(PacketBuffer packet) {
+	public static ActionPermissionsMessage decode(FriendlyByteBuf packet) {
 		ActionPermissionsMessage message = new ActionPermissionsMessage();
 		message.allowedCatLeap = packet.readBoolean();
 		message.allowedCrawl = packet.readBoolean();
@@ -94,7 +94,7 @@ public class ActionPermissionsMessage {
 	@OnlyIn(Dist.CLIENT)
 	public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
-			PlayerEntity player = Minecraft.getInstance().player;
+			Player player = Minecraft.getInstance().player;
 			if (player == null) return;
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
@@ -113,7 +113,7 @@ public class ActionPermissionsMessage {
 			if (!allowedRoll) text.append("\n+- ").append(ActionsEnum.Roll);
 			if (!allowedVault) text.append("\n+- ").append(ActionsEnum.Vault);
 			if (!allowedWallJump) text.append("\n+- ").append(ActionsEnum.WallJump);
-			player.displayClientMessage(new StringTextComponent(text.toString()), false);
+			player.displayClientMessage(new TextComponent(text.toString()), false);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
@@ -133,7 +133,7 @@ public class ActionPermissionsMessage {
 		return message;
 	}
 
-	public static void send(ServerPlayerEntity player) {
+	public static void send(ServerPlayer player) {
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), newInstance());
 	}
 

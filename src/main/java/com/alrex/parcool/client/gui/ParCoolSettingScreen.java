@@ -3,17 +3,16 @@ package com.alrex.parcool.client.gui;
 import com.alrex.parcool.client.gui.widget.WidgetListView;
 import com.alrex.parcool.utilities.ColorUtil;
 import com.alrex.parcool.utilities.FontUtil;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.MainWindow;
+import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.button.CheckboxButton;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.Arrays;
 import java.util.function.BooleanSupplier;
@@ -45,30 +44,30 @@ public class ParCoolSettingScreen extends Screen {
 			new ButtonSet("disable a camera rotation of Dodge", CONFIG_CLIENT.disableCameraDodge::set, CONFIG_CLIENT.disableCameraDodge::get),
 			new ButtonSet("ParCool is active", CONFIG_CLIENT.parCoolActivation::set, CONFIG_CLIENT.parCoolActivation::get)
 	};
-	private final WidgetListView<CheckboxButton> buttons = new WidgetListView<CheckboxButton>(
+	private final WidgetListView<Checkbox> buttons = new WidgetListView<Checkbox>(
 			0, 0, 0, 0,
 			Arrays.stream(itemList)
 					.map((ButtonSet item) ->
-							new CheckboxButton
+							new Checkbox
 									(
 											0, 0, 0, 0,
-											new TranslationTextComponent(item.name),
+											new TranslatableComponent(item.name),
 											item.getter.getAsBoolean()
 									))
 					.collect(Collectors.toList()),
 			Minecraft.getInstance().font.lineHeight + 11
 	);
 
-	public ParCoolSettingScreen(ITextComponent titleIn) {
+	public ParCoolSettingScreen(Component titleIn) {
 		super(titleIn);
 	}
 
 	//render?
 	@Override
-	public void render(MatrixStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+	public void render(PoseStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
 		super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
 
-		MainWindow window = Minecraft.getInstance().getWindow();
+		Window window = Minecraft.getInstance().getWindow();
 		buttons.setX((window.getGuiScaledWidth() - width) + xOffset);
 		buttons.setY((window.getGuiScaledHeight() - height) + yOffset);
 		buttons.setWidth(width - (xOffset * 2));
@@ -76,18 +75,18 @@ public class ParCoolSettingScreen extends Screen {
 
 		renderBackground(p_230430_1_, ColorUtil.getColorCodeFromARGB(0x77, 0x66, 0x66, 0xCC));
 		buttons.render(p_230430_1_, Minecraft.getInstance().font, p_230430_2_, p_230430_3_, p_230430_4_);
-		FontUtil.drawCenteredText(p_230430_1_, new StringTextComponent("ParCool Settings"), window.getGuiScaledWidth() / 2, yOffset, 0x8888FF);
+		FontUtil.drawCenteredText(p_230430_1_, "ParCool Settings", window.getGuiScaledWidth() / 2, yOffset, 0x8888FF);
 	}
 
 	//renderBackground?
 	@Override
-	public void renderBackground(MatrixStack p_230446_1_) {
+	public void renderBackground(PoseStack p_230446_1_) {
 		super.renderBackground(p_230446_1_);
 	}
 
 	//renderBackground?
 	@Override
-	public void renderBackground(MatrixStack p_238651_1_, int p_238651_2_) {
+	public void renderBackground(PoseStack p_238651_1_, int p_238651_2_) {
 		super.renderBackground(p_238651_1_, p_238651_2_);
 	}
 
@@ -116,7 +115,7 @@ public class ParCoolSettingScreen extends Screen {
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int type) {//type:1->right 0->left
 		if (buttons.contains(mouseX, mouseY)) {
-			Tuple<Integer, CheckboxButton> item = buttons.clicked(mouseX, mouseY, type);
+			Tuple<Integer, Checkbox> item = buttons.clicked(mouseX, mouseY, type);
 			if (item == null) return false;
 			if (item.getA() < 0 || itemList.length <= item.getA()) return false;
 			ButtonSet selected = itemList[item.getA()];
@@ -124,7 +123,7 @@ public class ParCoolSettingScreen extends Screen {
 			item.getB().onPress();
 			selected.setter.accept(item.getB().selected());
 
-			PlayerEntity player = Minecraft.getInstance().player;
+			Player player = Minecraft.getInstance().player;
 			if (player != null) player.playSound(SoundEvents.UI_BUTTON_CLICK, 1.0f, 1.0f);
 		}
 		return false;

@@ -1,75 +1,75 @@
 package com.alrex.parcool.client.input;
 
-import net.minecraft.client.GameSettings;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.Options;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fmlclient.registry.ClientRegistry;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public class KeyBindings {
-	private static final GameSettings settings = Minecraft.getInstance().options;
-	private static final KeyBinding keyBindCrawl = new KeyBinding("key.crawl.description", GLFW.GLFW_KEY_C, "key.categories.movement");
-	private static final KeyBinding keyBindGrabWall = new KeyBinding("key.grab.description", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.movement");
-	private static final KeyBinding keyBindRoll = new KeyBinding("key.roll.description", GLFW.GLFW_KEY_C, "key.categories.movement");
-	private static final KeyBinding keyBindFastRunning = new KeyBinding("key.fastrunning.description", GLFW.GLFW_KEY_LEFT_CONTROL, "key.categories.movement");
-	private static final KeyBinding keyBindDodge = new KeyBinding("key.dodge.description", GLFW.GLFW_KEY_R, "key.categories.movement");
-	private static final KeyBinding keyBindOpenSettings = new KeyBinding("key.parcool.setting.open", GLFW.GLFW_KEY_P, "key.categories.parcool");
+	private static final Options settings = Minecraft.getInstance().options;
+	private static final KeyMapping keyBindCrawl = new KeyMapping("key.crawl.description", GLFW.GLFW_KEY_C, "key.categories.movement");
+	private static final KeyMapping keyBindGrabWall = new KeyMapping("key.grab.description", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.movement");
+	private static final KeyMapping keyBindRoll = new KeyMapping("key.roll.description", GLFW.GLFW_KEY_C, "key.categories.movement");
+	private static final KeyMapping keyBindFastRunning = new KeyMapping("key.fastrunning.description", GLFW.GLFW_KEY_LEFT_CONTROL, "key.categories.movement");
+	private static final KeyMapping keyBindDodge = new KeyMapping("key.dodge.description", GLFW.GLFW_KEY_R, "key.categories.movement");
+	private static final KeyMapping keyBindOpenSettings = new KeyMapping("key.parcool.setting.open", GLFW.GLFW_KEY_P, "key.categories.parcool");
 
-	public static KeyBinding getKeySprint() {
+	public static KeyMapping getKeySprint() {
 		return settings.keySprint;
 	}
 
-	public static KeyBinding getKeyJump() {
+	public static KeyMapping getKeyJump() {
 		return settings.keyJump;
 	}
 
-	public static KeyBinding getKeySneak() {
+	public static KeyMapping getKeySneak() {
 		return settings.keyShift;
 	}
 
-	public static KeyBinding getKeyLeft() {
+	public static KeyMapping getKeyLeft() {
 		return settings.keyLeft;
 	}
 
-	public static KeyBinding getKeyRight() {
+	public static KeyMapping getKeyRight() {
 		return settings.keyRight;
 	}
 
-	public static KeyBinding getKeyForward() {
+	public static KeyMapping getKeyForward() {
 		return settings.keyUp;
 	}
 
-	public static KeyBinding getKeyBack() {
+	public static KeyMapping getKeyBack() {
 		return settings.keyDown;
 	}
 
-	public static KeyBinding getKeyCrawl() {
+	public static KeyMapping getKeyCrawl() {
 		return keyBindCrawl;
 	}
 
-	public static KeyBinding getKeyGrabWall() {
+	public static KeyMapping getKeyGrabWall() {
 		return keyBindGrabWall;
 	}
 
-	public static KeyBinding getKeyActivateParCool() {
+	public static KeyMapping getKeyActivateParCool() {
 		return keyBindOpenSettings;
 	}
 
-	public static KeyBinding getKeyRoll() {
+	public static KeyMapping getKeyRoll() {
 		return keyBindRoll;
 	}
 
-	public static KeyBinding getKeyFastRunning() {
+	public static KeyMapping getKeyFastRunning() {
 		return keyBindFastRunning;
 	}
 
-	public static KeyBinding getKeyDodge() {
+	public static KeyMapping getKeyDodge() {
 		return keyBindDodge;
 	}
 

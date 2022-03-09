@@ -1,43 +1,43 @@
 package com.alrex.parcool.client.particle;
 
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Random;
 
 //only in Client
 public class ParticleProvider {
-	public static void spawnEffectActivateParCool(AbstractClientPlayerEntity player) {
-		ClientWorld world = player.clientLevel;
-		Vector3d pos = player.position();
+	public static void spawnEffectActivateParCool(AbstractClientPlayer player) {
+		ClientLevel world = player.clientLevel;
+		Vec3 pos = player.position();
 		final double x = pos.x();
 		final double y = pos.y() + 0.1;
 		final double z = pos.z();
 
-		Vector3d motion = player.getDeltaMovement();
-		Vector3d vec = new Vector3d(0, 0, 0.3);
+		Vec3 motion = player.getDeltaMovement();
+		Vec3 vec = new Vec3(0, 0, 0.3);
 		for (int i = 0; i < 16; i++) {
-			Vector3d direction = vec.yRot((float) (Math.PI / 8 * i)).add(motion);
+			Vec3 direction = vec.yRot((float) (Math.PI / 8 * i)).add(motion);
 			world.addParticle(ParticleTypes.LARGE_SMOKE, x, y, z, direction.x(), 0, direction.z());
 		}
 	}
 
-	public static void spawnEffectAvoidDamage(AbstractClientPlayerEntity player) {
-		ClientWorld world = player.clientLevel;
-		Vector3d vec = player.position();
+	public static void spawnEffectAvoidDamage(AbstractClientPlayer player) {
+		ClientLevel world = player.clientLevel;
+		Vec3 vec = player.position();
 		final double x = vec.x();
 		final double y = vec.y() + player.getBbHeight() / 2;
 		final double z = vec.z();
-		final BasicParticleType particleType = ParticleTypes.END_ROD;
-		Vector3d motion = player.getDeltaMovement();
+		final ParticleOptions particleType = ParticleTypes.END_ROD;
+		Vec3 motion = player.getDeltaMovement();
 
 		world.addParticle(particleType, x, y, z, motion.x(), 0.2 + motion.y(), motion.z());
-		Vector3d vec1 = new Vector3d(0.141421, 0.141421, 0);
-		Vector3d vec2 = new Vector3d(0.2, 0, 0);
-		Vector3d vec3 = new Vector3d(0.141421, -0.141421, 0);
+		Vec3 vec1 = new Vec3(0.141421, 0.141421, 0);
+		Vec3 vec2 = new Vec3(0.2, 0, 0);
+		Vec3 vec3 = new Vec3(0.141421, -0.141421, 0);
 		for (int i = 0; i < 8; i++) {
 			vec1 = vec1.yRot((float) (Math.PI / 4));
 			vec2 = vec2.yRot((float) (Math.PI / 4));
@@ -49,10 +49,10 @@ public class ParticleProvider {
 		world.addParticle(particleType, x, y, z, motion.x(), -0.2 + motion.y(), motion.z());
 	}
 
-	public static void spawnEffectSweat(AbstractClientPlayerEntity player) {
-		ClientWorld world = player.clientLevel;
+	public static void spawnEffectSweat(AbstractClientPlayer player) {
+		ClientLevel world = player.clientLevel;
 		Random random = player.getRandom();
-		Vector3d vec = player.position();
+		Vec3 vec = player.position();
 		final double x = vec.x();
 		final double y = vec.y();
 		final double z = vec.z();

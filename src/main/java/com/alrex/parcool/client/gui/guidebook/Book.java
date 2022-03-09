@@ -1,6 +1,5 @@
 package com.alrex.parcool.client.gui.guidebook;
 
-import net.minecraft.util.text.ITextProperties;
 
 import java.util.List;
 
@@ -16,18 +15,18 @@ public class Book {
 	}
 
 	public static class Page {
-		private ITextProperties title;
-		private List<ITextProperties> content;
+		private final String title;
+		private final List<String> content;
 
-		public ITextProperties getTitle() {
+		public String getTitle() {
 			return title;
 		}
 
-		public List<ITextProperties> getContent() {
+		public List<String> getContent() {
 			return content;
 		}
 
-		public Page(ITextProperties title, List<ITextProperties> content) {
+		public Page(String title, List<String> content) {
 			this.title = title;
 			this.content = content;
 		}

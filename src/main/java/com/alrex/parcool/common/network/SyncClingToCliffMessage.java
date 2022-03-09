@@ -2,16 +2,16 @@ package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.impl.ClingToCliff;
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.capability.impl.Parkourability;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -24,13 +24,13 @@ public class SyncClingToCliffMessage {
 		return cling;
 	}
 
-	public void encode(PacketBuffer packet) {
+	public void encode(FriendlyByteBuf packet) {
 		packet.writeBoolean(this.cling);
 		packet.writeLong(this.playerID.getMostSignificantBits());
 		packet.writeLong(this.playerID.getLeastSignificantBits());
 	}
 
-	public static SyncClingToCliffMessage decode(PacketBuffer packet) {
+	public static SyncClingToCliffMessage decode(FriendlyByteBuf packet) {
 		SyncClingToCliffMessage message = new SyncClingToCliffMessage();
 		message.cling = packet.readBoolean();
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
@@ -40,7 +40,7 @@ public class SyncClingToCliffMessage {
 	@OnlyIn(Dist.DEDICATED_SERVER)
 	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
-			PlayerEntity player;
+			Player player;
 			player = contextSupplier.get().getSender();
 			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 			if (player == null) return;
@@ -55,10 +55,10 @@ public class SyncClingToCliffMessage {
 	@OnlyIn(Dist.CLIENT)
 	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
-			PlayerEntity player;
+			Player player;
 
 			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-				World world = Minecraft.getInstance().level;
+				Level world = Minecraft.getInstance().level;
 				if (world == null) return;
 				player = world.getPlayerByUUID(playerID);
 				if (player == null || player.isLocalPlayer()) return;
@@ -75,7 +75,7 @@ public class SyncClingToCliffMessage {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void sync(PlayerEntity player, ClingToCliff clingToCliff) {
+	public static void sync(Player player, ClingToCliff clingToCliff) {
 		SyncClingToCliffMessage message = new SyncClingToCliffMessage();
 		message.cling = clingToCliff.isCling();
 		message.playerID = player.getUUID();

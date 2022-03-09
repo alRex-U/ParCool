@@ -1,14 +1,14 @@
-package com.alrex.parcool.common.capability;
+package com.alrex.parcool.common.capability.impl;
 
-import com.alrex.parcool.common.capability.capabilities.Capabilities;
+import com.alrex.parcool.common.capability.provider.StaminaProvider;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.network.SyncStaminaMessage;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class Stamina {
-	public static Stamina get(PlayerEntity player) {
-		LazyOptional<Stamina> optional = player.getCapability(Capabilities.STAMINA_CAPABILITY);
+	public static Stamina get(Player player) {
+		LazyOptional<Stamina> optional = player.getCapability(StaminaProvider.STAMINA_CAPABILITY);
 		if (!optional.isPresent()) return null;
 		return optional.orElseThrow(IllegalStateException::new);
 	}

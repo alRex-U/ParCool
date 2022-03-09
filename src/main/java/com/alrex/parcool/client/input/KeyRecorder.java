@@ -1,6 +1,6 @@
 package com.alrex.parcool.client.input;
 
-import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.KeyMapping;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -36,7 +36,7 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyDodge(), keyDodge);
 	}
 
-	private static void record(KeyBinding keyBinding, KeyState state) {
+	private static void record(KeyMapping keyBinding, KeyState state) {
 		state.pressed = (keyBinding.isDown() && state.tickKeyDown == 0);
 		state.doubleTapped = (keyBinding.isDown() && 0 < state.tickNotKeyDown && state.tickNotKeyDown <= 2);
 		if (keyBinding.isDown()) {

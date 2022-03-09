@@ -1,14 +1,14 @@
 package com.alrex.parcool.client.gui.widget;
 
 import com.alrex.parcool.utilities.WidgetUtil;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.FontRenderer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.Font;
 import net.minecraft.util.Tuple;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class WidgetListView<T extends net.minecraft.client.gui.widget.Widget> extends Widget {
+public class WidgetListView<T extends net.minecraft.client.gui.components.AbstractWidget> extends Widget {
 	List<T> items;
 	private int scrollValue = 0;
 	private final int itemHeight;
@@ -20,7 +20,7 @@ public class WidgetListView<T extends net.minecraft.client.gui.widget.Widget> ex
 	}
 
 	@Override
-	public void render(MatrixStack stack, FontRenderer fontRenderer, int mouseX, int mouseY, float partial) {
+	public void render(PoseStack stack, Font fontRenderer, int mouseX, int mouseY, float partial) {
 		int renderingY = 0;
 		for (int i = scrollValue; i < items.size(); i++) {
 

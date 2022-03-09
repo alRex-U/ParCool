@@ -1,9 +1,9 @@
-package com.alrex.parcool.common.capability;
+package com.alrex.parcool.common.capability.impl;
 
 import com.alrex.parcool.client.animation.Animator;
-import com.alrex.parcool.common.capability.capabilities.Capabilities;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import com.alrex.parcool.common.capability.provider.AnimationProvider;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -11,8 +11,8 @@ import net.minecraftforge.common.util.LazyOptional;
 
 @OnlyIn(Dist.CLIENT)
 public class Animation {
-	public static Animation get(PlayerEntity player) {
-		LazyOptional<Animation> optional = player.getCapability(Capabilities.ANIMATION_CAPABILITY);
+	public static Animation get(Player player) {
+		LazyOptional<Animation> optional = player.getCapability(AnimationProvider.ANIMATION_CAPABILITY);
 		if (!optional.isPresent()) return null;
 		return optional.orElseThrow(IllegalStateException::new);
 	}
@@ -25,7 +25,7 @@ public class Animation {
 
 	public void animate(RenderPlayerEvent.Pre event) {
 		if (animator == null) return;
-		AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) event.getPlayer();
+		AbstractClientPlayer player = (AbstractClientPlayer) event.getPlayer();
 		Parkourability parkourability = Parkourability.get(player);
 		animator.animate(event, player, parkourability);
 		if (animator.isRemoved()) animator = null;

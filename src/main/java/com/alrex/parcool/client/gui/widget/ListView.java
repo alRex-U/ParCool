@@ -1,12 +1,10 @@
 package com.alrex.parcool.client.gui.widget;
 
 import com.alrex.parcool.utilities.ColorUtil;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.MainWindow;
+import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.gui.Font;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -27,9 +25,8 @@ public class ListView extends Widget {
 	}
 
 	@Override
-	public void render(MatrixStack stack, FontRenderer fontRenderer, int mouseX, int mouseY, float partial) {
+	public void render(PoseStack stack, Font fontRenderer, int mouseX, int mouseY, float partial) {
 
-		IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
 		for (int i = 0; i < items.size(); i++) {
 			String item = items.get(i);
 			fontRenderer.draw(
@@ -40,12 +37,11 @@ public class ListView extends Widget {
 					ColorUtil.getColorCodeFromARGB(0, 0, 0, 0)
 			);
 		}
-		renderTypeBuffer.endBatch();
 	}
 
 	public void onClick(int type, double mouseX, double mouseY) {
 		if (type == 0) {
-			MainWindow window = Minecraft.getInstance().getWindow();
+			Window window = Minecraft.getInstance().getWindow();
 			for (int i = 0; i < items.size(); i++) {
 				int itemY = this.y + menuLineHeight * i;
 				if (itemY < mouseY && mouseY < itemY + menuLineHeight && x < mouseX && mouseX < x + width) {

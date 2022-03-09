@@ -1,24 +1,24 @@
 package com.alrex.parcool.utilities;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 
 public class WorldUtil {
 	@Nullable
-	public static Vector3d getWall(LivingEntity entity) {
+	public static Vec3 getWall(LivingEntity entity) {
 		final double d = 0.3;
 		double distance = entity.getBbWidth() / 2;
 		double wallX = 0;
 		double wallZ = 0;
 		byte wallNumX = 0;
 		byte wallNumZ = 0;
-		Vector3d pos = entity.position();
+		Vec3 pos = entity.position();
 
-		AxisAlignedBB baseBox = new AxisAlignedBB(
+		AABB baseBox = new AABB(
 				pos.x() - d,
 				pos.y(),
 				pos.z() - d,
@@ -45,20 +45,20 @@ public class WorldUtil {
 		}
 		if (wallNumX == 2 || wallNumZ == 2 || (wallNumX == 0 && wallNumZ == 0)) return null;
 
-		return new Vector3d(wallX, 0, wallZ);
+		return new Vec3(wallX, 0, wallZ);
 	}
 
 	@Nullable
-	public static Vector3d getStep(LivingEntity entity) {
+	public static Vec3 getStep(LivingEntity entity) {
 		final double d = 0.3;
-		World world = entity.level;
+		Level world = entity.level;
 		double distance = entity.getBbWidth() / 2;
 		double baseLine = 1.55;
 		double stepX = 0;
 		double stepZ = 0;
-		Vector3d pos = entity.position();
+		Vec3 pos = entity.position();
 
-		AxisAlignedBB baseBoxSide = new AxisAlignedBB(
+		AABB baseBoxSide = new AABB(
 				pos.x() - d,
 				pos.y(),
 				pos.z() - d,
@@ -66,7 +66,7 @@ public class WorldUtil {
 				pos.y() + baseLine,
 				pos.z() + d
 		);
-		AxisAlignedBB baseBoxTop = new AxisAlignedBB(
+		AABB baseBoxTop = new AABB(
 				pos.x() - d,
 				pos.y() + baseLine,
 				pos.z() - d,
@@ -88,17 +88,17 @@ public class WorldUtil {
 		}
 		if (stepX == 0 && stepZ == 0) return null;
 
-		return new Vector3d(stepX, 0, stepZ);
+		return new Vec3(stepX, 0, stepZ);
 	}
 
 	public static double getWallHeight(LivingEntity entity) {
-		Vector3d wall = getWall(entity);
+		Vec3 wall = getWall(entity);
 		if (wall == null) return 0;
-		World world = entity.level;
+		Level world = entity.level;
 		final double v = 0.1;
 		final double d = 0.3;
 		int loopNum = (int) Math.round(entity.getBbHeight() / v);
-		Vector3d pos = entity.position();
+		Vec3 pos = entity.position();
 		double x1 = pos.x() + d + (wall.x() > 0 ? 1 : 0);
 		double y1 = pos.y();
 		double z1 = pos.z() + d + (wall.z() > 0 ? 1 : 0);
@@ -106,7 +106,7 @@ public class WorldUtil {
 		double z2 = pos.z() - d + (wall.z() < 0 ? -1 : 0);
 		boolean canReturn = false;
 		for (int i = 0; i < loopNum; i++) {
-			AxisAlignedBB box = new AxisAlignedBB(
+			AABB box = new AABB(
 					x1, y1 + v * i, z1, x2, y1 + v * (i + 1), z2
 			);
 
@@ -121,7 +121,7 @@ public class WorldUtil {
 
 	public static boolean existsGrabbableWall(LivingEntity entity) {
 		final double d = 0.3;
-		World world = entity.level;
+		Level world = entity.level;
 		double distance = entity.getBbWidth() / 2;
 		double baseLine1 = entity.getEyeHeight() + (entity.getBbHeight() - entity.getEyeHeight()) / 2;
 		double baseLine2 = entity.getBbHeight() + (entity.getBbHeight() - entity.getEyeHeight()) / 2;
@@ -130,9 +130,9 @@ public class WorldUtil {
 
 	private static boolean existsGrabbableWall(LivingEntity entity, double distance, double baseLine) {
 		final double d = 0.3;
-		World world = entity.level;
-		Vector3d pos = entity.position();
-		AxisAlignedBB baseBoxSide = new AxisAlignedBB(
+		Level world = entity.level;
+		Vec3 pos = entity.position();
+		AABB baseBoxSide = new AABB(
 				pos.x() - d,
 				pos.y() + baseLine - entity.getBbHeight() / 6,
 				pos.z() - d,
@@ -140,7 +140,7 @@ public class WorldUtil {
 				pos.y() + baseLine,
 				pos.z() + d
 		);
-		AxisAlignedBB baseBoxTop = new AxisAlignedBB(
+		AABB baseBoxTop = new AABB(
 				pos.x() - d,
 				pos.y() + baseLine,
 				pos.z() - d,
