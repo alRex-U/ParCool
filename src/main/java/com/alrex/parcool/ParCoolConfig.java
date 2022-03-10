@@ -25,6 +25,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue disableWallJumpTowardWall;
 		public final ForgeConfigSpec.BooleanValue disableCameraRolling;
 		public final ForgeConfigSpec.BooleanValue disableCameraDodge;
+		public final ForgeConfigSpec.BooleanValue disableKongVault;
 		public final ForgeConfigSpec.BooleanValue substituteSprintForFastRun;
 		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
 		public final ForgeConfigSpec.BooleanValue parCoolActivation;
@@ -70,6 +71,7 @@ public class ParCoolConfig {
 			{
 				autoTurningWallJump = builder.comment("Auto turning forward when WallJump").define("autoTurningWallJump", false);
 				disableWallJumpTowardWall = builder.comment("Disable WallJump toward a wall").define("disableWallJumpTowardWall", false);
+				disableKongVault = builder.comment("Disable Kong Vault Animation").define("disableKongVault", true);
 				disableCameraRolling = builder.comment("Disable Roll rotation of camera").define("disableCameraRotationRolling", false);
 				disableCameraDodge = builder.comment("Disable Dodge rotation of camera").define("disableCameraRotationDodge", false);
 				substituteSprintForFastRun = builder.comment("Substitute a sprint of vanilla for the FastRunning").define("substituteSprint", false);

@@ -6,11 +6,9 @@ import com.alrex.parcool.common.action.impl.Vault;
 import com.alrex.parcool.common.capability.impl.Parkourability;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
@@ -18,13 +16,11 @@ import static com.alrex.parcool.utilities.MathUtil.lerp;
 import static com.alrex.parcool.utilities.MathUtil.squaring;
 
 public class SpeedVaultAnimator extends Animator {
-	private static final int MAX_TIME = 11;
+	public static final int MAX_TIME = 11;
 
-	public enum Type {Right, Left}
+	private final Vault.Type type;
 
-	private Type type;
-
-	public SpeedVaultAnimator(Type type) {
+	public SpeedVaultAnimator(Vault.Type type) {
 		this.type = type;
 	}
 
@@ -35,8 +31,6 @@ public class SpeedVaultAnimator extends Animator {
 			removal = true;
 			return;
 		}
-		Player mainPlayer = Minecraft.getInstance().player;
-		if (mainPlayer == null) return;
 		float partial = event.getPartialRenderTick();
 		PoseStack stack = event.getMatrixStack();
 		PlayerRenderer renderer = event.getRenderer();
@@ -49,7 +43,7 @@ public class SpeedVaultAnimator extends Animator {
 		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
 		Vec3 rightVec = new Vec3(vec.x(), 0, vec.z()).yRot((float) -Math.PI / 2).normalize().scale(1.4 * factor);
 		event.getMatrixStack().translate(0, player.getBbHeight() / 2, 0);
-		stack.mulPose(vec.rotationDegrees(factor * 70 * (type == Type.Right ? -1 : 1)));
+		stack.mulPose(vec.rotationDegrees(factor * 70 * (type == Vault.Type.Right ? -1 : 1)));
 		event.getMatrixStack().translate(0, -player.getBbHeight() / 2 - 0.2 * factor, 0);
 		stack.pushPose();
 		{

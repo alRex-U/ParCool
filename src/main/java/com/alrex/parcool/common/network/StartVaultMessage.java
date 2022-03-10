@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.common.action.impl.Vault;
 import com.alrex.parcool.common.capability.impl.Parkourability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -17,20 +18,33 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public class StartVaultMessage {
-	UUID playerID = null;
+	UUID playerID;
+	Vault.Type type;
+
+	StartVaultMessage(UUID id, Vault.Type type) {
+		this.playerID = id;
+		this.type = type;
+	}
 
 	public UUID getPlayerID() {
 		return playerID;
 	}
 
+	public Vault.Type getType() {
+		return type;
+	}
+
 	public void encode(FriendlyByteBuf packet) {
 		packet.writeLong(playerID.getMostSignificantBits());
 		packet.writeLong(playerID.getLeastSignificantBits());
+		packet.writeInt(type.getCode());
 	}
 
 	public static StartVaultMessage decode(FriendlyByteBuf packet) {
-		StartVaultMessage message = new StartVaultMessage();
-		message.playerID = new UUID(packet.readLong(), packet.readLong());
+		StartVaultMessage message = new StartVaultMessage(
+				new UUID(packet.readLong(), packet.readLong()),
+				Vault.Type.get(packet.readInt())
+		);
 		return message;
 	}
 
@@ -65,9 +79,8 @@ public class StartVaultMessage {
 		});
 	}
 
-	public static void send(Player player) {
-		StartVaultMessage message = new StartVaultMessage();
-		message.playerID = player.getUUID();
+	public static void send(Player player, Vault.Type type) {
+		StartVaultMessage message = new StartVaultMessage(player.getUUID(), type);
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);
 	}
 }

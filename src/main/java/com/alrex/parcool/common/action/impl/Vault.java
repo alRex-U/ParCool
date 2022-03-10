@@ -1,5 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.client.animation.impl.KongVaultAnimator;
 import com.alrex.parcool.client.animation.impl.SpeedVaultAnimator;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.impl.Animation;
@@ -13,6 +15,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
 public class Vault extends Action {
@@ -25,6 +28,7 @@ public class Vault extends Action {
 
 	//for not Local Player
 	private boolean start = false;
+	private Type startType = null;
 
 	@Override
 	public void onTick(Player player, Parkourability parkourability, Stamina stamina) {
@@ -60,8 +64,14 @@ public class Vault extends Action {
 		if (start) {
 			start = false;
 			Animation animation = Animation.get(player);
-			if (animation != null)
-				animation.setAnimator(new SpeedVaultAnimator(SpeedVaultAnimator.Type.Right));
+			if (animation != null) {
+				if (startType == Type.Right || startType == Type.Left) {
+					animation.setAnimator(new SpeedVaultAnimator(startType));
+				} else if (startType == Type.Kong) {
+					animation.setAnimator(new KongVaultAnimator());
+				}
+			}
+			startType = null;
 		}
 		if (player.isLocalPlayer()) {
 			if (!this.isVaulting() && this.canVault(player, parkourability, stamina)) {
@@ -72,19 +82,29 @@ public class Vault extends Action {
 
 				Vec3 lookVec = player.getLookAngle();
 				Vec3 vec = new Vec3(lookVec.x(), 0, lookVec.z()).normalize();
-				Vec3 s = stepDirection;
+				Vec3 s = stepDirection.normalize();
 
 				//doing "vec/stepDirection" as complex number(x + z i) to calculate difference of player's direction to steps
 				Vec3 dividedVec =
 						new Vec3(
 								vec.x() * s.x() + vec.z() * s.z(), 0,
 								-vec.x() * s.z() + vec.z() * s.x()
-						);
+						).normalize();
 				Animation animation = Animation.get(player);
-				SpeedVaultAnimator.Type type = dividedVec.z() > 0 ? SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
-				if (animation != null)
-					animation.setAnimator(new SpeedVaultAnimator(type));
-				StartVaultMessage.send(player);
+
+				Type type;
+				if (!ParCoolConfig.CONFIG_CLIENT.disableKongVault.get() && -0.09 < dividedVec.z() && dividedVec.z() < 0.09) {
+					type = Type.Kong;
+				} else type = dividedVec.z() > 0 ? Type.Right : Type.Left;
+
+				if (animation != null) {
+					animation.setAnimator(
+							type == Type.Kong ?
+									new KongVaultAnimator() :
+									new SpeedVaultAnimator(type)
+					);
+				}
+				StartVaultMessage.send(player, type);
 			}
 
 			if (vauting) {
@@ -126,6 +146,7 @@ public class Vault extends Action {
 	public void synchronize(Object message) {
 		if (message instanceof StartVaultMessage) {
 			start = true;
+			startType = ((StartVaultMessage) message).getType();
 		}
 	}
 
@@ -140,5 +161,31 @@ public class Vault extends Action {
 
 	public int getVaultingTick() {
 		return vaultingTick;
+	}
+
+	public enum Type {
+		Right(0),
+		Left(1),
+		Kong(2);
+
+		final int code;
+
+		Type(int code) {
+			this.code = code;
+		}
+
+		public int getCode() {
+			return code;
+		}
+
+		@Nullable
+		public static Type get(int code) {
+			return switch (code) {
+				case 0 -> Right;
+				case 1 -> Left;
+				case 2 -> Kong;
+				default -> null;
+			};
+		}
 	}
 }

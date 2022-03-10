@@ -130,7 +130,7 @@ public class PlayerModelTransformer {
 					OverlayTexture.NO_OVERLAY
 			);
 
-			model.rightLeg.x = 2.1F;
+			model.rightLeg.x = 2.0F;
 			model.rightLeg.z = 0;
 			model.rightLeg.visible = false;
 			model.rightPants.visible = false;
@@ -150,7 +150,7 @@ public class PlayerModelTransformer {
 					light,
 					OverlayTexture.NO_OVERLAY
 			);
-			model.leftLeg.x = -2.1F;
+			model.leftLeg.x = -2.0F;
 			model.leftLeg.z = 0;
 			model.leftLeg.visible = false;
 			model.leftPants.visible = false;

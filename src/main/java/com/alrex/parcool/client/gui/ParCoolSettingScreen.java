@@ -42,6 +42,7 @@ public class ParCoolSettingScreen extends Screen {
 			new ButtonSet("disable WallJump toward walls", CONFIG_CLIENT.disableWallJumpTowardWall::set, CONFIG_CLIENT.disableWallJumpTowardWall::get),
 			new ButtonSet("disable a camera rotation of Rolling", CONFIG_CLIENT.disableCameraRolling::set, CONFIG_CLIENT.disableCameraRolling::get),
 			new ButtonSet("disable a camera rotation of Dodge", CONFIG_CLIENT.disableCameraDodge::set, CONFIG_CLIENT.disableCameraDodge::get),
+			new ButtonSet("disable a Kong Vault Animation", CONFIG_CLIENT.disableKongVault::set, CONFIG_CLIENT.disableKongVault::get),
 			new ButtonSet("ParCool is active", CONFIG_CLIENT.parCoolActivation::set, CONFIG_CLIENT.parCoolActivation::get)
 	};
 	private final WidgetListView<Checkbox> buttons = new WidgetListView<Checkbox>(
