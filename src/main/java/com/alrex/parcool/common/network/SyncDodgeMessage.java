@@ -117,7 +117,6 @@ public class SyncDodgeMessage {
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);
 	}
 
-	@OnlyIn(Dist.DEDICATED_SERVER)
 	public static void broadcast(Player player, Dodge dodge) {
 		SyncDodgeMessage message = getInstance(player, dodge);
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), message);

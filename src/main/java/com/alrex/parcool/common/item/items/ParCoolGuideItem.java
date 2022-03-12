@@ -27,11 +27,6 @@ public class ParCoolGuideItem extends Item {
 	}
 
 	@Override
-	public Component getHighlightTip(ItemStack item, Component displayName) {
-		return toolTips;
-	}
-
-	@Override
 	public int getItemStackLimit(ItemStack stack) {
 		return 1;
 	}
