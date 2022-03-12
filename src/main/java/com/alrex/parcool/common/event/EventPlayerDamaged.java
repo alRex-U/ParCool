@@ -44,7 +44,7 @@ public class EventPlayerDamaged {
 				(dodge.getDodgeDirection() == Dodge.DodgeDirections.Front ||
 						dodge.getDodgeDirection() == Dodge.DodgeDirections.Back)
 		) {
-			if (!(damageSource.isFire() || damageSource.isMagic()) && event.getAmount() < 15f) {
+			if (!(damageSource.isFire() || damageSource.isMagic() || damageSource.getMsgId().equals(DamageSource.FALL.msgId)) && event.getAmount() < 15f) {
 				AvoidDamageMessage.send(player, event.getAmount());
 				dodge.avoidDamage(player);
 				event.setCanceled(true);

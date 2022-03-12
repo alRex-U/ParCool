@@ -198,7 +198,6 @@ public class Dodge extends Action {
 				.putBoolean(avoided);
 	}
 
-	@OnlyIn(Dist.DEDICATED_SERVER)
 	public void avoidDamage(ServerPlayerEntity player) {
 		avoided = true;
 		damageCoolTime = 10;
