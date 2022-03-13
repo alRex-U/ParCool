@@ -18,8 +18,8 @@ public class ClingToCliffAnimator extends Animator {
 			removal = true;
 			return;
 		}
-		float partial = event.getPartialRenderTick();
-		PoseStack stack = event.getMatrixStack();
+		float partial = event.getPartialTick();
+		PoseStack stack = event.getPoseStack();
 		PlayerRenderer renderer = event.getRenderer();
 		PlayerModel<AbstractClientPlayer> model = renderer.getModel();
 
@@ -37,7 +37,7 @@ public class ClingToCliffAnimator extends Animator {
 							(float) Math.toRadians(0.0F)
 					).render(
 							stack,
-							event.getBuffers(),
+							event.getMultiBufferSource(),
 							renderer
 					);
 		}

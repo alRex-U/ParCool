@@ -11,13 +11,13 @@ public class AnimationHandler {
 	public void onRender(RenderPlayerEvent.Pre event) {
 		Animation animation = Animation.get(event.getPlayer());
 		if (animation == null) return;
-		event.getMatrixStack().pushPose();
+		event.getPoseStack().pushPose();
 		animation.animate(event);
 	}
 
 	@SubscribeEvent
 	public void onRenderPost(RenderPlayerEvent.Post event) {
-		event.getMatrixStack().popPose();
+		event.getPoseStack().popPose();
 		PlayerModel<AbstractClientPlayer> model = event.getRenderer().getModel();
 		model.rightArm.visible = true;
 		model.leftArm.visible = true;

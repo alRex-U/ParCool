@@ -25,21 +25,21 @@ public class RollAnimator extends Animator {
 			return;
 		}
 
-		float factor = calculateMovementFactor((roll.getRollingTick() + event.getPartialRenderTick()) / (float) roll.getRollMaxTick());
+		float factor = calculateMovementFactor((roll.getRollingTick() + event.getPartialTick()) / (float) roll.getRollMaxTick());
 
 		Vec3 lookVec = player.getLookAngle().yRot((float) Math.PI / 2);
 		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
 
-		event.getMatrixStack().translate(0, player.getBbHeight() / 2, 0);
-		event.getMatrixStack().mulPose(vec.rotationDegrees(MathUtil.lerp(0, 360, factor)));
-		event.getMatrixStack().translate(0, -player.getBbHeight() / 2, 0);
+		event.getPoseStack().translate(0, player.getBbHeight() / 2, 0);
+		event.getPoseStack().mulPose(vec.rotationDegrees(MathUtil.lerp(0, 360, factor)));
+		event.getPoseStack().translate(0, -player.getBbHeight() / 2, 0);
 
 		PlayerRenderer renderer = event.getRenderer();
 		PlayerModel<AbstractClientPlayer> model = renderer.getModel();
 
-		event.getMatrixStack().pushPose();
+		event.getPoseStack().pushPose();
 		{
-			PlayerModelTransformer.wrap(player, model, getTick(), event.getPartialRenderTick())
+			PlayerModelTransformer.wrap(player, model, getTick(), event.getPartialTick())
 					.rotateLeftArm(
 							(float) Math.toRadians(MathUtil.lerp(110f, 180f, factor)),
 							(float) -Math.toRadians(player.yBodyRot),
@@ -61,11 +61,11 @@ public class RollAnimator extends Animator {
 							(float) Math.toRadians(0F)
 					)
 					.render(
-							event.getMatrixStack(),
-							event.getBuffers(),
+							event.getPoseStack(),
+							event.getMultiBufferSource(),
 							event.getRenderer()
 					);
 		}
-		event.getMatrixStack().popPose();
+		event.getPoseStack().popPose();
 	}
 }

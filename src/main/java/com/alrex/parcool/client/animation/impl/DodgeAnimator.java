@@ -21,16 +21,16 @@ public class DodgeAnimator extends Animator {
 			Vec3 lookVec = player.getLookAngle().yRot((float) Math.PI / 2);
 			Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
 
-			event.getMatrixStack().translate(0, player.getBbHeight() / 2, 0);
-			event.getMatrixStack().mulPose(vec.rotationDegrees((dodge.getDodgingTick() + event.getPartialRenderTick()) * -30));
-			event.getMatrixStack().translate(0, -player.getBbHeight() / 2, 0);
+			event.getPoseStack().translate(0, player.getBbHeight() / 2, 0);
+			event.getPoseStack().mulPose(vec.rotationDegrees((dodge.getDodgingTick() + event.getPartialTick()) * -30));
+			event.getPoseStack().translate(0, -player.getBbHeight() / 2, 0);
 		} else if (dodge.isDodging() && dodge.getDodgeDirection() == Dodge.DodgeDirections.Front) {
 			Vec3 lookVecRight = player.getLookAngle().yRot((float) Math.PI / 2);
 			Vector3f vec = new Vector3f((float) lookVecRight.x(), 0, (float) lookVecRight.z());
 
-			event.getMatrixStack().translate(0, player.getBbHeight() / 2, 0);
-			event.getMatrixStack().mulPose(vec.rotationDegrees((dodge.getDodgingTick() + event.getPartialRenderTick()) * 30));
-			event.getMatrixStack().translate(0, -player.getBbHeight() / 2, 0);
+			event.getPoseStack().translate(0, player.getBbHeight() / 2, 0);
+			event.getPoseStack().mulPose(vec.rotationDegrees((dodge.getDodgingTick() + event.getPartialTick()) * 30));
+			event.getPoseStack().translate(0, -player.getBbHeight() / 2, 0);
 		}
 	}
 }

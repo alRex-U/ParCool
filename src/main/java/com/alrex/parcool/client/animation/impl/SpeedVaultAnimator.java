@@ -31,8 +31,8 @@ public class SpeedVaultAnimator extends Animator {
 			removal = true;
 			return;
 		}
-		float partial = event.getPartialRenderTick();
-		PoseStack stack = event.getMatrixStack();
+		float partial = event.getPartialTick();
+		PoseStack stack = event.getPoseStack();
 		PlayerRenderer renderer = event.getRenderer();
 		PlayerModel<AbstractClientPlayer> model = renderer.getModel();
 
@@ -42,9 +42,9 @@ public class SpeedVaultAnimator extends Animator {
 		Vec3 lookVec = player.getLookAngle();
 		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
 		Vec3 rightVec = new Vec3(vec.x(), 0, vec.z()).yRot((float) -Math.PI / 2).normalize().scale(1.4 * factor);
-		event.getMatrixStack().translate(0, player.getBbHeight() / 2, 0);
+		event.getPoseStack().translate(0, player.getBbHeight() / 2, 0);
 		stack.mulPose(vec.rotationDegrees(factor * 70 * (type == Vault.Type.Right ? -1 : 1)));
-		event.getMatrixStack().translate(0, -player.getBbHeight() / 2 - 0.2 * factor, 0);
+		event.getPoseStack().translate(0, -player.getBbHeight() / 2 - 0.2 * factor, 0);
 		stack.pushPose();
 		{
 			switch (type) {
@@ -56,7 +56,7 @@ public class SpeedVaultAnimator extends Animator {
 									(float) -Math.toRadians(player.yBodyRot + lerp(-35, -145, phase)),
 									(float) Math.toRadians(0)
 							)
-							.render(stack, event.getBuffers(), renderer);
+							.render(stack, event.getMultiBufferSource(), renderer);
 					break;
 
 				case Left:
@@ -67,7 +67,7 @@ public class SpeedVaultAnimator extends Animator {
 									(float) -Math.toRadians(player.yBodyRot + lerp(-35, -145, phase)),
 									(float) Math.toRadians(0)
 							)
-							.render(stack, event.getBuffers(), renderer);
+							.render(stack, event.getMultiBufferSource(), renderer);
 					break;
 			}
 		}

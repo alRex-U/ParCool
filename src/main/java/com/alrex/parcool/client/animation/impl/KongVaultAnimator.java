@@ -24,8 +24,8 @@ public class KongVaultAnimator extends Animator {
 			removal = true;
 			return;
 		}
-		float partial = event.getPartialRenderTick();
-		PoseStack stack = event.getMatrixStack();
+		float partial = event.getPartialTick();
+		PoseStack stack = event.getPoseStack();
 		PlayerRenderer renderer = event.getRenderer();
 		PlayerModel<AbstractClientPlayer> model = renderer.getModel();
 
@@ -62,7 +62,7 @@ public class KongVaultAnimator extends Animator {
 							(float) -Math.toRadians(player.yBodyRot),
 							(float) Math.toRadians(0F)
 					)
-					.render(stack, event.getBuffers(), renderer);
+					.render(stack, event.getMultiBufferSource(), renderer);
 		}
 		stack.popPose();
 	}

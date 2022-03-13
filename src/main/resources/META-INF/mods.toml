@@ -1,5 +1,5 @@
 modLoader = "javafml" #mandatory
-loaderVersion = "[37,)"
+loaderVersion = "[39,)"
 license = "GNU GENERAL PUBLIC LICENSE Version 3"
 issueTrackerURL = "https://github.com/alRex-U/ParCool/issues" #optional
 [[mods]] #mandatory
@@ -24,7 +24,7 @@ description = '''
 [[dependencies.parcool]] #optional
 modId = "forge" #mandatory
 mandatory = true #mandatory
-versionRange = "[37,)" #mandatory
+versionRange = "[39,)" #mandatory
 ordering = "NONE"
 side = "BOTH"
 
@@ -32,6 +32,6 @@ side = "BOTH"
 modId = "minecraft"
 mandatory = true
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
-versionRange = "[1.17.1,1.18)"
+versionRange = "[1.18.1,1.19)"
 ordering = "NONE"
 side = "BOTH"

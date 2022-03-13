@@ -20,15 +20,15 @@ public class CatLeapAnimator extends Animator {
 			removal = true;
 			return;
 		}
-		float partial = event.getPartialRenderTick();
-		PoseStack stack = event.getMatrixStack();
+		float partial = event.getPartialTick();
+		PoseStack stack = event.getPoseStack();
 		PlayerRenderer renderer = event.getRenderer();
 		PlayerModel<AbstractClientPlayer> model = renderer.getModel();
 		stack.pushPose();
 		{
-			float factor = (catLeap.getLeapingTick() + event.getPartialRenderTick()) / 30f;
+			float factor = (catLeap.getLeapingTick() + event.getPartialTick()) / 30f;
 			if (factor > 1) factor = 1f;
-			PlayerModelTransformer.wrap(player, model, getTick(), event.getPartialRenderTick())
+			PlayerModelTransformer.wrap(player, model, getTick(), event.getPartialTick())
 					.rotateLeftArm(
 							(float) Math.toRadians(lerp(20f, 180f, factor)),
 							(float) -Math.toRadians(player.yBodyRot),
@@ -50,8 +50,8 @@ public class CatLeapAnimator extends Animator {
 							(float) Math.toRadians(0F)
 					)
 					.render(
-							event.getMatrixStack(),
-							event.getBuffers(),
+							event.getPoseStack(),
+							event.getMultiBufferSource(),
 							event.getRenderer()
 					);
 		}
