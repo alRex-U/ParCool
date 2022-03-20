@@ -6,6 +6,7 @@
   "key.dodge.description": "Dodge",
   "key.parcool.setting.open": "Open Settings",
   "key.categories.parcool": "ParCool",
+
   "action.name.catleap": "CatLeap",
   "action.name.crawl": "Crawl",
   "action.name.dodge": "Dodge",
@@ -27,5 +28,23 @@
   "command.server.send.not.allow.infinite": "Ban players from enabling Infinite Stamina",
   "item.parcool.parcool_guide": "§bParCool Guide",
   "itemGroup.ParCool": "ParCool!",
-  "toolTip.parcool_guide": "§7A book written about ParCool"
+  "toolTip.parcool_guide": "§7A book written about ParCool",
+  "achievement.parcool.root.title": "ParCool!",
+  "achievement.parcool.root.description": "Be a Traceur",
+  "achievement.parcool.catleap.title": "Leaping like a cat?",
+  "achievement.parcool.catleap.description": "Gain a technique of Catleap",
+  "achievement.parcool.crawl.title": "Able to go through even in a duct",
+  "achievement.parcool.crawl.description": "Gain a technique of Crawl",
+  "achievement.parcool.dodge.title": "Quick Step!",
+  "achievement.parcool.dodge.description": "Gain a technique of Dodge",
+  "achievement.parcool.fastrun.title": "Windy Sprint",
+  "achievement.parcool.fastrun.description": "Gain a technique of Fast-Running",
+  "achievement.parcool.clingtocliff.title": "The result of muscle training",
+  "achievement.parcool.clingtocliff.description": "Gain a technique of Cling To Walls",
+  "achievement.parcool.roll.title": "Nice Landing!",
+  "achievement.parcool.roll.description": "Gain a technique of Roll",
+  "achievement.parcool.vault.title": "No longer fences can be in our way",
+  "achievement.parcool.vault.description": "Gain a technique of Vault",
+  "achievement.parcool.walljump.title": "The red pipefitter",
+  "achievement.parcool.walljump.description": "Gain a technique of Wall-Jump"
 }

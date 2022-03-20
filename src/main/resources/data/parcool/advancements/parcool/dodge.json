@@ -1,0 +1,24 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:feather"
+    },
+    "title": {
+      "translate": "achievement.parcool.dodge.title"
+    },
+    "description": {
+      "translate": "achievement.parcool.dodge.description"
+    },
+    "background": "minecraft:textures/block/cyan_wool.png",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "parcool:parcool/start_line",
+  "criteria": {
+    "enable_dodge_action": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

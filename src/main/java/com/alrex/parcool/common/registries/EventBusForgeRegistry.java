@@ -11,13 +11,13 @@ import com.alrex.parcool.common.action.ActionProcessor;
 import com.alrex.parcool.common.event.EventAttachCapability;
 import com.alrex.parcool.common.event.EventOpenSettingsParCool;
 import com.alrex.parcool.common.event.EventPlayerDamaged;
-import com.alrex.parcool.common.event.EventPlayerJoin;
+import com.alrex.parcool.common.event.EventSendPermission;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 public class EventBusForgeRegistry {
 	public static void register(IEventBus bus) {
 		bus.register(EventAttachCapability.class);
-		bus.register(EventPlayerJoin.class);
+		bus.register(EventSendPermission.class);
 		bus.register(EventPlayerDamaged.class);
 		bus.register(new ActionProcessor());
 	}

@@ -3,12 +3,14 @@ package com.alrex.parcool.common.network;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.impl.Parkourability;
-import com.alrex.parcool.constants.ActionsEnum;
-import com.alrex.parcool.constants.TranslateKeys;
+import com.alrex.parcool.constants.Advancements;
+import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.PlayerAdvancements;
+import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -100,45 +102,36 @@ public class ActionPermissionsMessage {
 			if (parkourability == null) return;
 			parkourability.getPermission().receiveServerPermissions(this);
 			parkourability.getActionInfo().receiveServerPermissions(this);
-			StringBuilder text = new StringBuilder();
-			if (allowedCatLeap && allowedCrawl && allowedDodge && allowedFastRunning && allowedFastRunning
-					&& allowedClingToCliff && allowedRoll && allowedVault && allowedWallJump)
-				return;
-			text.append("ParCool : ").append(I18n.get(TranslateKeys.MESSAGE_PROHIBITED_ACTION));
-			if (!allowedCatLeap) text.append("\n+- ").append(ActionsEnum.CatLeap);
-			if (!allowedCrawl) text.append("\n+- ").append(ActionsEnum.Crawl);
-			if (!allowedDodge) text.append("\n+- ").append(ActionsEnum.Dodge);
-			if (!allowedFastRunning) text.append("\n+- ").append(ActionsEnum.FastRunning);
-			if (!allowedClingToCliff) text.append("\n+- ").append(ActionsEnum.GrabCliff);
-			if (!allowedRoll) text.append("\n+- ").append(ActionsEnum.Roll);
-			if (!allowedVault) text.append("\n+- ").append(ActionsEnum.Vault);
-			if (!allowedWallJump) text.append("\n+- ").append(ActionsEnum.WallJump);
-			player.displayClientMessage(new TextComponent(text.toString()), false);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
 
-	private static ActionPermissionsMessage newInstance() {
+	private static ActionPermissionsMessage newInstance(ServerPlayer player) {
 		ActionPermissionsMessage message = new ActionPermissionsMessage();
+		PlayerAdvancements adv = player.getAdvancements();
+		MinecraftServer server = player.server;
+		ServerAdvancementManager manager = server.getAdvancements();
+		boolean advEnabled = getProgress(adv, manager, Advancements.ROOT).isDone();
 		ParCoolConfig.Server config = ParCoolConfig.CONFIG_SERVER;
-		message.allowedCatLeap = config.allowCatLeap.get();
-		message.allowedCrawl = config.allowCrawl.get();
-		message.allowedDodge = config.allowDodge.get();
-		message.allowedFastRunning = config.allowFastRunning.get();
-		message.allowedClingToCliff = config.allowClingToCliff.get();
-		message.allowedRoll = config.allowRoll.get();
-		message.allowedVault = config.allowVault.get();
-		message.allowedWallJump = config.allowWallJump.get();
+
+		message.allowedCatLeap = config.allowCatLeap.get() && (!advEnabled || getProgress(adv, manager, Advancements.CATLEAP).isDone());
+		message.allowedCrawl = config.allowCrawl.get() && (!advEnabled || getProgress(adv, manager, Advancements.CRAWL).isDone());
+		message.allowedDodge = config.allowDodge.get() && (!advEnabled || getProgress(adv, manager, Advancements.DODGE).isDone());
+		message.allowedFastRunning = config.allowFastRunning.get() && (!advEnabled || getProgress(adv, manager, Advancements.FAST_RUN).isDone());
+		message.allowedClingToCliff = config.allowClingToCliff.get() && (!advEnabled || getProgress(adv, manager, Advancements.CLING_TO_CLIFF).isDone());
+		message.allowedRoll = config.allowRoll.get() && (!advEnabled || getProgress(adv, manager, Advancements.ROLL).isDone());
+		message.allowedVault = config.allowVault.get() && (!advEnabled || getProgress(adv, manager, Advancements.VAULT).isDone());
+		message.allowedWallJump = config.allowWallJump.get() && (!advEnabled || getProgress(adv, manager, Advancements.WALL_JUMP).isDone());
 		message.allowedInfiniteStamina = config.allowInfiniteStamina.get();
 		return message;
 	}
 
-	public static void send(ServerPlayer player) {
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), newInstance());
+	private static AdvancementProgress getProgress(PlayerAdvancements advancements, ServerAdvancementManager manager, ResourceLocation name) {
+		return advancements.getOrStartProgress(manager.getAdvancement(name));
 	}
 
-	public static void broadcast() {
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), newInstance());
+	public static void send(ServerPlayer player) {
+		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), newInstance(player));
 	}
 
 }

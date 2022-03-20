@@ -1,0 +1,24 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:iron_boots"
+    },
+    "title": {
+      "translate": "achievement.parcool.walljump.title"
+    },
+    "description": {
+      "translate": "achievement.parcool.walljump.description"
+    },
+    "background": "minecraft:textures/block/cyan_wool.png",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "parcool:parcool/start_line",
+  "criteria": {
+    "enable_walljump_action": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

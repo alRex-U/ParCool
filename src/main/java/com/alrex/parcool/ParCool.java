@@ -46,7 +46,6 @@ public class ParCool {
 
 	//only in Client
 	public static void setActivation(boolean activation) {
-		ParCoolConfig.CONFIG_CLIENT.canWallJump.get();
 		ParCoolConfig.CONFIG_CLIENT.parCoolActivation.set(activation);
 	}
 

@@ -1,0 +1,24 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:oak_fence"
+    },
+    "title": {
+      "translate": "achievement.parcool.vault.title"
+    },
+    "description": {
+      "translate": "achievement.parcool.vault.description"
+    },
+    "background": "minecraft:textures/block/cyan_wool.png",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "parcool:parcool/fastrun",
+  "criteria": {
+    "enable_vault_action": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}
