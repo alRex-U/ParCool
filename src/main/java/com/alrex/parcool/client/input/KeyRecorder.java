@@ -16,6 +16,7 @@ public class KeyRecorder {
 	public static final KeyState keyJumpState = new KeyState();
 	public static final KeyState keySprintState = new KeyState();
 	public static final KeyState keyCrawlState = new KeyState();
+	public static final KeyState keyRollState = new KeyState();
 	public static final KeyState keyOpenSettingsState = new KeyState();
 	public static final KeyState keyFastRunning = new KeyState();
 	public static final KeyState keyDodge = new KeyState();
@@ -31,6 +32,7 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyJump(), keyJumpState);
 		record(KeyBindings.getKeySprint(), keySprintState);
 		record(KeyBindings.getKeyCrawl(), keyCrawlState);
+		record(KeyBindings.getKeyRoll(), keyRollState);
 		record(KeyBindings.getKeyActivateParCool(), keyOpenSettingsState);
 		record(KeyBindings.getKeyFastRunning(), keyFastRunning);
 		record(KeyBindings.getKeyDodge(), keyDodge);

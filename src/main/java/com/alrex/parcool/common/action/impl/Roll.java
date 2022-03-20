@@ -58,17 +58,13 @@ public class Roll extends Action {
 			if (
 					!ready
 							&& parkourability.getPermission().canRoll()
-							&& KeyRecorder.keyCrawlState.isPressed()
+							&& KeyRecorder.keyRollState.isPressed()
 							&& !player.isOnGround()
 							&& readyCoolTick <= 0
 			) {
 				ready = true;
 				readyTick = ROLL_DEFERMENT_TICK;
 				readyCoolTick = 30;
-			}
-			if (!ready) {
-				ready = !player.isOnGround()
-						&& KeyRecorder.keyCrawlState.isPressed();
 			}
 		}
 		if (start) {
