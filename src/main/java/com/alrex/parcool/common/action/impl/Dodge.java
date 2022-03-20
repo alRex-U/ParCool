@@ -77,11 +77,11 @@ public class Dodge extends Action {
 		return dodging &&
 				!parkourability.getRoll().isRolling() &&
 				!parkourability.getClingToCliff().isCling() &&
-				!player.isOnGround() &&
+				(!player.isOnGround() || dodgingTick < 3) &&
 				!player.isInWaterOrBubble() &&
 				!player.isFallFlying() &&
 				!player.getAbilities().flying &&
-				parkourability.getPermission().canClingToCliff();
+				parkourability.getPermission().canDodge();
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -130,21 +130,24 @@ public class Dodge extends Action {
 					case Front:
 						dodgeVec = lookVec;
 						jump = 0.5;
+						coolTime = 30;
 						break;
 					case Back:
 						dodgeVec = lookVec.reverse();
 						jump = 0.5;
+						coolTime = 30;
 						break;
 					case Right:
 						dodgeVec = lookVec.yRot((float) Math.PI / -2);
 						jump = 0.3;
+						coolTime = 17;
 						break;
 					case Left:
 						dodgeVec = lookVec.yRot((float) Math.PI / 2);
 						jump = 0.3;
+						coolTime = 17;
 						break;
 				}
-				coolTime = 10;
 				dodgeVec = dodgeVec.scale(0.4);
 				EntityUtil.addVelocity(player, new Vec3(dodgeVec.x(), jump, dodgeVec.z()));
 			}
