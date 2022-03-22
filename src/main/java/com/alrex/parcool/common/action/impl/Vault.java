@@ -50,7 +50,7 @@ public class Vault extends Action {
 				parkourability.getFastRun().canActWithRunning(player) &&
 				player.isOnGround() &&
 				(wall.dot(lookVec) / wall.length() / lookVec.length()) > 0.707106 /*check facing wall*/ &&
-				WorldUtil.getStep(player) != null &&
+				WorldUtil.getVaultableStep(player) != null &&
 				WorldUtil.getWallHeight(player) > 0.8;
 	}
 
@@ -77,7 +77,7 @@ public class Vault extends Action {
 			if (!this.isVaulting() && this.canVault(player, parkourability, stamina)) {
 				vauting = true;
 				vaultingTick = 0;
-				stepDirection = WorldUtil.getStep(player);
+				stepDirection = WorldUtil.getVaultableStep(player);
 				stepHeight = WorldUtil.getWallHeight(player);
 
 				Vec3 lookVec = player.getLookAngle();

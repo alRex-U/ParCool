@@ -49,7 +49,7 @@ public class WorldUtil {
 	}
 
 	@Nullable
-	public static Vec3 getStep(LivingEntity entity) {
+	public static Vec3 getVaultableStep(LivingEntity entity) {
 		final double d = 0.3;
 		Level world = entity.level;
 		double distance = entity.getBbWidth() / 2;
@@ -74,16 +74,16 @@ public class WorldUtil {
 				pos.y() + entity.getBbHeight(),
 				pos.z() + d
 		);
-		if (!world.noCollision(baseBoxSide.expandTowards(distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards(distance, 0, 0))) {
+		if (!world.noCollision(baseBoxSide.expandTowards(distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards((distance + 1.8), 0, 0))) {
 			stepX++;
 		}
-		if (!world.noCollision(baseBoxSide.expandTowards(-distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards(-distance, 0, 0))) {
+		if (!world.noCollision(baseBoxSide.expandTowards(-distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards(-(distance + 1.8), 0, 0))) {
 			stepX--;
 		}
-		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, distance))) {
+		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, (distance + 1.8)))) {
 			stepZ++;
 		}
-		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, -distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, -distance))) {
+		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, -distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, -(distance + 1.8)))) {
 			stepZ--;
 		}
 		if (stepX == 0 && stepZ == 0) return null;
@@ -123,8 +123,8 @@ public class WorldUtil {
 		final double d = 0.3;
 		Level world = entity.level;
 		double distance = entity.getBbWidth() / 2;
-		double baseLine1 = entity.getEyeHeight() + (entity.getBbHeight() - entity.getEyeHeight()) / 2;
-		double baseLine2 = entity.getBbHeight() + (entity.getBbHeight() - entity.getEyeHeight()) / 2;
+		double baseLine1 = entity.getBbHeight() + (entity.getBbHeight() - entity.getEyeHeight()) / 2;
+		double baseLine2 = baseLine1 + 0.2;
 		return existsGrabbableWall(entity, distance, baseLine1) || existsGrabbableWall(entity, distance, baseLine2);
 	}
 
@@ -145,7 +145,7 @@ public class WorldUtil {
 				pos.y() + baseLine,
 				pos.z() - d,
 				pos.x() + d,
-				pos.y() + entity.getBbHeight(),
+				pos.y() + baseLine + entity.getBbHeight() / 6,
 				pos.z() + d
 		);
 

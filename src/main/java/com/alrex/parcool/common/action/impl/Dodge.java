@@ -57,7 +57,13 @@ public class Dodge extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	private boolean canDodge(Player player, Parkourability parkourability, Stamina stamina) {
-		return parkourability.getPermission().canDodge() && coolTime <= 0 && player.isOnGround() && !player.isShiftKeyDown() && !stamina.isExhausted() && (
+		return parkourability.getPermission().canDodge() &&
+				coolTime <= 0 &&
+				!parkourability.getCatLeap().isReady() &&
+				!parkourability.getCatLeap().isLeaping() &&
+				player.isOnGround() &&
+				!player.isShiftKeyDown() &&
+				!stamina.isExhausted() && (
 				KeyRecorder.keyBack.isDoubleTapped() ||
 						KeyRecorder.keyLeft.isDoubleTapped() ||
 						KeyRecorder.keyRight.isDoubleTapped() ||

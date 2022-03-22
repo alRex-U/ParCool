@@ -58,7 +58,7 @@ public class ClingToCliff extends Action {
 			if (canClimbUp(player, parkourability, stamina)) {
 				cling = false;
 				clingTick = 0;
-				EntityUtil.addVelocity(player, new Vec3(0, 0.6, 0));
+				EntityUtil.addVelocity(player, new Vec3(0, 0.65, 0));
 				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionClimbUp(), parkourability.getActionInfo());
 			}
 			if (cling) {
