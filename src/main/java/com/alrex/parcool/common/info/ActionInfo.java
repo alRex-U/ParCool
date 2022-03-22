@@ -6,21 +6,28 @@ import com.alrex.parcool.common.network.ActionPermissionsMessage;
 public class ActionInfo {
 	private boolean received = false;
 	private boolean allowedInfiniteStamina = false;
+	private int dodgeCoolTick = 0;
+	private int staminaConsumeCatleap;
+	private int staminaConsumeClimbUp;
+	private int staminaConsumeClingToCliff;
+	private int staminaConsumeDodge;
+	private int staminaConsumeFastRun;
+	private int staminaConsumeWallJump;
 
 	public int getStaminaConsumptionCatLeap() {
-		return 200;
+		return staminaConsumeCatleap;
 	}
 
 	public int getStaminaConsumptionClingToCliff() {
-		return 4;
+		return staminaConsumeClingToCliff;
 	}
 
 	public int getStaminaConsumptionClimbUp() {
-		return 200;
+		return staminaConsumeClimbUp;
 	}
 
 	public int getStaminaConsumptionDodge() {
-		return 100;
+		return staminaConsumeDodge;
 	}
 
 	public int getStaminaConsumptionDodgeAvoid(float damage) {
@@ -28,11 +35,11 @@ public class ActionInfo {
 	}
 
 	public int getStaminaConsumptionFastRun() {
-		return 4;
+		return staminaConsumeFastRun;
 	}
 
 	public int getStaminaConsumptionWallJump() {
-		return 200;
+		return staminaConsumeWallJump;
 	}
 
 	public double getCatLeapPower() {
@@ -40,7 +47,7 @@ public class ActionInfo {
 	}
 
 	public int getDodgeCoolTick() {
-		return 10;
+		return dodgeCoolTick;
 	}
 
 	public int getMaxSlidingTick() {
@@ -54,5 +61,12 @@ public class ActionInfo {
 	public void receiveServerPermissions(ActionPermissionsMessage message) {
 		received = true;
 		allowedInfiniteStamina = message.isAllowedInfiniteStamina();
+		dodgeCoolTick = message.getDodgeCoolTick();
+		staminaConsumeCatleap = message.getStaminaConsumeCatleap();
+		staminaConsumeClimbUp = message.getStaminaConsumeClimbUp();
+		staminaConsumeClingToCliff = message.getStaminaConsumeClingToCliff();
+		staminaConsumeDodge = message.getStaminaConsumeDodge();
+		staminaConsumeFastRun = message.getStaminaConsumeFastRun();
+		staminaConsumeWallJump = message.getStaminaConsumeWallJump();
 	}
 }

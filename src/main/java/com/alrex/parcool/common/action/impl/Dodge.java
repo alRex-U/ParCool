@@ -68,7 +68,7 @@ public class Dodge extends Action {
 										KeyBindings.getKeyLeft().isDown() ||
 										KeyBindings.getKeyRight().isDown()
 						)
-						)
+				)
 		);
 	}
 
@@ -130,24 +130,21 @@ public class Dodge extends Action {
 					case Front:
 						dodgeVec = lookVec;
 						jump = 0.5;
-						coolTime = 30;
 						break;
 					case Back:
 						dodgeVec = lookVec.reverse();
 						jump = 0.5;
-						coolTime = 30;
 						break;
 					case Right:
 						dodgeVec = lookVec.yRot((float) Math.PI / -2);
 						jump = 0.3;
-						coolTime = 17;
 						break;
 					case Left:
 						dodgeVec = lookVec.yRot((float) Math.PI / 2);
 						jump = 0.3;
-						coolTime = 17;
 						break;
 				}
+				coolTime = parkourability.getActionInfo().getDodgeCoolTick();
 				dodgeVec = dodgeVec.scale(0.4);
 				EntityUtil.addVelocity(player, new Vec3(dodgeVec.x(), jump, dodgeVec.z()));
 			}

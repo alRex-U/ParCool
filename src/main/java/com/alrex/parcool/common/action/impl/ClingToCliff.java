@@ -66,6 +66,7 @@ public class ClingToCliff extends Action {
 			}
 		}
 		if (cling) {
+			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionClingToCliff(), parkourability.getActionInfo());
 			Animation animation = Animation.get(player);
 			if (animation != null) animation.setAnimator(new ClingToCliffAnimator());
 		}

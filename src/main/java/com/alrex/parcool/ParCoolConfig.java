@@ -99,6 +99,15 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue allowVault;
 		public final ForgeConfigSpec.BooleanValue allowWallJump;
 
+		public final ForgeConfigSpec.IntValue staminaConsume_CatLeap;
+		public final ForgeConfigSpec.IntValue staminaConsume_ClingToCliff;
+		public final ForgeConfigSpec.IntValue staminaConsume_ClimbUp;
+		public final ForgeConfigSpec.IntValue staminaConsume_Dodge;
+		public final ForgeConfigSpec.IntValue staminaConsume_FastRun;
+		public final ForgeConfigSpec.IntValue staminaConsume_WallJump;
+
+		public final ForgeConfigSpec.IntValue dodgeCoolTick;
+
 		Server(ForgeConfigSpec.Builder builder) {
 			builder.comment("Action Permissions").push("Permissions");
 			{
@@ -112,8 +121,18 @@ public class ParCoolConfig {
 				allowWallJump = builder.comment("allow WallJump").define("allow WallJump", true);
 			}
 			builder.pop();
+			builder.comment("Stamina Consumptions").push("Needed Stamina of Actions");
+			{
+				staminaConsume_CatLeap = builder.defineInRange("S_C_Catleap", 200, 0, 2000);
+				staminaConsume_ClimbUp = builder.defineInRange("S_C_ClimbUp", 200, 0, 2000);
+				staminaConsume_ClingToCliff = builder.defineInRange("S_C_ClingToCliff", 4, 0, 40);
+				staminaConsume_Dodge = builder.defineInRange("S_C_Dodge", 150, 0, 1500);
+				staminaConsume_FastRun = builder.defineInRange("S_C_FastRun", 4, 0, 40);
+				staminaConsume_WallJump = builder.defineInRange("S_C_WallJump", 200, 0, 2000);
+			}
 			builder.comment("Others").push("Other Configuration");
 			{
+				dodgeCoolTick = builder.comment("cool-down tick of Dodge").defineInRange("dodgeCoolTick", 16, 0, 60);
 				allowInfiniteStamina = builder.comment("allow Infinite Stamina").define("infiniteStamina", false);
 			}
 			builder.pop();

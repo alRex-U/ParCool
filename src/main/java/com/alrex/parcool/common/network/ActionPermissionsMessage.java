@@ -30,6 +30,13 @@ public class ActionPermissionsMessage {
 	private boolean allowedVault;
 	private boolean allowedWallJump;
 	private boolean allowedInfiniteStamina;
+	private int staminaConsumeCatleap;
+	private int staminaConsumeClimbUp;
+	private int staminaConsumeClingToCliff;
+	private int staminaConsumeDodge;
+	private int staminaConsumeFastRun;
+	private int staminaConsumeWallJump;
+	private int dodgeCoolTick;
 
 	public boolean isAllowedCatLeap() {
 		return allowedCatLeap;
@@ -67,6 +74,34 @@ public class ActionPermissionsMessage {
 		return allowedInfiniteStamina;
 	}
 
+	public int getDodgeCoolTick() {
+		return dodgeCoolTick;
+	}
+
+	public int getStaminaConsumeCatleap() {
+		return staminaConsumeCatleap;
+	}
+
+	public int getStaminaConsumeClimbUp() {
+		return staminaConsumeClimbUp;
+	}
+
+	public int getStaminaConsumeClingToCliff() {
+		return staminaConsumeClingToCliff;
+	}
+
+	public int getStaminaConsumeDodge() {
+		return staminaConsumeDodge;
+	}
+
+	public int getStaminaConsumeFastRun() {
+		return staminaConsumeFastRun;
+	}
+
+	public int getStaminaConsumeWallJump() {
+		return staminaConsumeWallJump;
+	}
+
 	public void encode(FriendlyByteBuf packet) {
 		packet.writeBoolean(allowedCatLeap);
 		packet.writeBoolean(allowedCrawl);
@@ -77,6 +112,13 @@ public class ActionPermissionsMessage {
 		packet.writeBoolean(allowedVault);
 		packet.writeBoolean(allowedWallJump);
 		packet.writeBoolean(allowedInfiniteStamina);
+		packet.writeInt(dodgeCoolTick);
+		packet.writeInt(staminaConsumeCatleap);
+		packet.writeInt(staminaConsumeClimbUp);
+		packet.writeInt(staminaConsumeClingToCliff);
+		packet.writeInt(staminaConsumeDodge);
+		packet.writeInt(staminaConsumeFastRun);
+		packet.writeInt(staminaConsumeWallJump);
 	}
 
 	public static ActionPermissionsMessage decode(FriendlyByteBuf packet) {
@@ -90,6 +132,13 @@ public class ActionPermissionsMessage {
 		message.allowedVault = packet.readBoolean();
 		message.allowedWallJump = packet.readBoolean();
 		message.allowedInfiniteStamina = packet.readBoolean();
+		message.dodgeCoolTick = packet.readInt();
+		message.staminaConsumeCatleap = packet.readInt();
+		message.staminaConsumeClimbUp = packet.readInt();
+		message.staminaConsumeClingToCliff = packet.readInt();
+		message.staminaConsumeDodge = packet.readInt();
+		message.staminaConsumeFastRun = packet.readInt();
+		message.staminaConsumeWallJump = packet.readInt();
 		return message;
 	}
 
@@ -123,6 +172,13 @@ public class ActionPermissionsMessage {
 		message.allowedVault = config.allowVault.get() && (!advEnabled || getProgress(adv, manager, Advancements.VAULT).isDone());
 		message.allowedWallJump = config.allowWallJump.get() && (!advEnabled || getProgress(adv, manager, Advancements.WALL_JUMP).isDone());
 		message.allowedInfiniteStamina = config.allowInfiniteStamina.get();
+		message.dodgeCoolTick = config.dodgeCoolTick.get();
+		message.staminaConsumeCatleap = config.staminaConsume_CatLeap.get();
+		message.staminaConsumeClimbUp = config.staminaConsume_ClimbUp.get();
+		message.staminaConsumeClingToCliff = config.staminaConsume_ClingToCliff.get();
+		message.staminaConsumeDodge = config.staminaConsume_Dodge.get();
+		message.staminaConsumeFastRun = config.staminaConsume_FastRun.get();
+		message.staminaConsumeWallJump = config.staminaConsume_WallJump.get();
 		return message;
 	}
 
