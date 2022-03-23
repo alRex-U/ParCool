@@ -13,6 +13,7 @@ public class ActionInfo {
 	private int staminaConsumeDodge;
 	private int staminaConsumeFastRun;
 	private int staminaConsumeWallJump;
+	private int staminaConsumeWallSlide;
 
 	public int getStaminaConsumptionCatLeap() {
 		return staminaConsumeCatleap;
@@ -42,6 +43,10 @@ public class ActionInfo {
 		return staminaConsumeWallJump;
 	}
 
+	public int getStaminaConsumeWallSlide() {
+		return staminaConsumeWallSlide;
+	}
+
 	public double getCatLeapPower() {
 		return 0.49;
 	}
@@ -68,5 +73,6 @@ public class ActionInfo {
 		staminaConsumeDodge = message.getStaminaConsumeDodge();
 		staminaConsumeFastRun = message.getStaminaConsumeFastRun();
 		staminaConsumeWallJump = message.getStaminaConsumeWallJump();
+		staminaConsumeWallSlide = message.getStaminaConsumeWallSlide();
 	}
 }

@@ -117,6 +117,13 @@ public class ClientProxy extends CommonProxy {
 				StartVaultMessage::decode,
 				StartVaultMessage::handleClient
 		);
+		instance.registerMessage(
+				15,
+				SyncWallSlideMessage.class,
+				SyncWallSlideMessage::encode,
+				SyncWallSlideMessage::decode,
+				SyncWallSlideMessage::handleClient
+		);
 	}
 
 	@Override

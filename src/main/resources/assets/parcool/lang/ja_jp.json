@@ -15,6 +15,7 @@
   "action.name.roll": "ロール",
   "action.name.vault": "ヴォールト",
   "action.name.walljump": "壁キック",
+  "action.name.WallSlide": "壁滑り",
   "message.prohibited.action": "禁止されたアクション",
   "message.activation.active": "§bParCool:§2起動",
   "message.activation.inactive": "§bParCool:§7停止",
@@ -45,5 +46,7 @@
   "achievement.parcool.vault.title": "もはや柵など無意味",
   "achievement.parcool.vault.description": "ヴォールトを会得する",
   "achievement.parcool.walljump.title": "赤い配管工",
-  "achievement.parcool.walljump.description": "壁キックを会得する"
+  "achievement.parcool.walljump.description": "壁キックを会得する",
+  "achievement.parcool.wallslide.title": "手痛くないの?",
+  "achievement.parcool.wallslide.description": "壁滑りを会得する"
 }

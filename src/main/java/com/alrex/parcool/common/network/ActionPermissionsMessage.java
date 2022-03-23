@@ -36,6 +36,7 @@ public class ActionPermissionsMessage {
 	private int staminaConsumeDodge;
 	private int staminaConsumeFastRun;
 	private int staminaConsumeWallJump;
+	private int staminaConsumeWallSlide;
 	private int dodgeCoolTick;
 
 	public boolean isAllowedCatLeap() {
@@ -102,6 +103,10 @@ public class ActionPermissionsMessage {
 		return staminaConsumeWallJump;
 	}
 
+	public int getStaminaConsumeWallSlide() {
+		return staminaConsumeWallSlide;
+	}
+
 	public void encode(FriendlyByteBuf packet) {
 		packet.writeBoolean(allowedCatLeap);
 		packet.writeBoolean(allowedCrawl);
@@ -119,6 +124,7 @@ public class ActionPermissionsMessage {
 		packet.writeInt(staminaConsumeDodge);
 		packet.writeInt(staminaConsumeFastRun);
 		packet.writeInt(staminaConsumeWallJump);
+		packet.writeInt(staminaConsumeWallSlide);
 	}
 
 	public static ActionPermissionsMessage decode(FriendlyByteBuf packet) {
@@ -139,6 +145,7 @@ public class ActionPermissionsMessage {
 		message.staminaConsumeDodge = packet.readInt();
 		message.staminaConsumeFastRun = packet.readInt();
 		message.staminaConsumeWallJump = packet.readInt();
+		message.staminaConsumeWallSlide = packet.readInt();
 		return message;
 	}
 
@@ -179,6 +186,7 @@ public class ActionPermissionsMessage {
 		message.staminaConsumeDodge = config.staminaConsume_Dodge.get();
 		message.staminaConsumeFastRun = config.staminaConsume_FastRun.get();
 		message.staminaConsumeWallJump = config.staminaConsume_WallJump.get();
+		message.staminaConsumeWallSlide = config.staminaConsume_WallSlide.get();
 		return message;
 	}
 

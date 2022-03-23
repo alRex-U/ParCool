@@ -20,6 +20,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue canRoll;
 		public final ForgeConfigSpec.BooleanValue canVault;
 		public final ForgeConfigSpec.BooleanValue canWallJump;
+		public final ForgeConfigSpec.BooleanValue canWallSlide;
 		public final ForgeConfigSpec.BooleanValue infiniteStamina;
 		public final ForgeConfigSpec.BooleanValue autoTurningWallJump;
 		public final ForgeConfigSpec.BooleanValue disableWallJumpTowardWall;
@@ -49,6 +50,7 @@ public class ParCoolConfig {
 				canRoll = builder.comment("Possibility to Roll").define("canRoll", true);
 				canVault = builder.comment("Possibility to Vault").define("canVault", true);
 				canWallJump = builder.comment("Possibility to WallJump").define("canWallJump", true);
+				canWallSlide = builder.comment("Possibility to WallSlide").define("canWallSlide", true);
 			}
 			builder.pop();
 			builder.comment("Values").push("Modifier Values");
@@ -98,6 +100,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue allowRoll;
 		public final ForgeConfigSpec.BooleanValue allowVault;
 		public final ForgeConfigSpec.BooleanValue allowWallJump;
+		public final ForgeConfigSpec.BooleanValue allowWallSlide;
 
 		public final ForgeConfigSpec.IntValue staminaConsume_CatLeap;
 		public final ForgeConfigSpec.IntValue staminaConsume_ClingToCliff;
@@ -105,6 +108,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.IntValue staminaConsume_Dodge;
 		public final ForgeConfigSpec.IntValue staminaConsume_FastRun;
 		public final ForgeConfigSpec.IntValue staminaConsume_WallJump;
+		public final ForgeConfigSpec.IntValue staminaConsume_WallSlide;
 
 		public final ForgeConfigSpec.IntValue dodgeCoolTick;
 
@@ -118,7 +122,8 @@ public class ParCoolConfig {
 				allowClingToCliff = builder.comment("allow ClingToCliff").define("allowClingToCliff", true);
 				allowRoll = builder.comment("allow Roll").define("allowRoll", true);
 				allowVault = builder.comment("allow Vault").define("allowVault", true);
-				allowWallJump = builder.comment("allow WallJump").define("allow WallJump", true);
+				allowWallJump = builder.comment("allow WallJump").define("allowWallJump", true);
+				allowWallSlide = builder.comment("allow WallSlide").define("allowWallSlide", true);
 			}
 			builder.pop();
 			builder.comment("Stamina Consumptions").push("Needed Stamina of Actions");
@@ -129,6 +134,7 @@ public class ParCoolConfig {
 				staminaConsume_Dodge = builder.defineInRange("S_C_Dodge", 150, 0, 1500);
 				staminaConsume_FastRun = builder.defineInRange("S_C_FastRun", 4, 0, 40);
 				staminaConsume_WallJump = builder.defineInRange("S_C_WallJump", 200, 0, 2000);
+				staminaConsume_WallSlide = builder.defineInRange("S_C_WallSlide", 4, 0, 40);
 			}
 			builder.comment("Others").push("Other Configuration");
 			{

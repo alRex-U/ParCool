@@ -5,8 +5,8 @@
   "key.fastrunning.description": "Fast Running",
   "key.dodge.description": "Dodge",
   "key.parcool.setting.open": "Open Settings",
+  "key.parcool.wallslide.description": "Wall-Slide",
   "key.categories.parcool": "ParCool",
-
   "action.name.catleap": "CatLeap",
   "action.name.crawl": "Crawl",
   "action.name.dodge": "Dodge",
@@ -16,6 +16,7 @@
   "action.name.roll": "Roll",
   "action.name.vault": "Vault",
   "action.name.walljump": "Wall-Jump",
+  "action.name.WallSlide": "Wall-Slide",
   "message.prohibited.action": "Prohibited Actions",
   "message.activation.active": "§bParCool:§2Active",
   "message.activation.inactive": "§bParCool:§7Inactive",
@@ -46,5 +47,7 @@
   "achievement.parcool.vault.title": "No longer fences can be in our way",
   "achievement.parcool.vault.description": "Gain a technique of Vault",
   "achievement.parcool.walljump.title": "The red pipefitter",
-  "achievement.parcool.walljump.description": "Gain a technique of Wall-Jump"
+  "achievement.parcool.walljump.description": "Gain a technique of Wall-Jump",
+  "achievement.parcool.wallslide.title": "Doesn't it hurt your hands?",
+  "achievement.parcool.wallslide.description": "Gain a technique of Wall-Slide"
 }

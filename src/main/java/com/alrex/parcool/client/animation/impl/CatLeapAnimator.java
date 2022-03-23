@@ -31,22 +31,22 @@ public class CatLeapAnimator extends Animator {
 			PlayerModelTransformer.wrap(player, model, getTick(), event.getPartialTick())
 					.rotateLeftArm(
 							(float) Math.toRadians(lerp(20f, 180f, factor)),
-							(float) -Math.toRadians(player.yBodyRot),
+							(float) -Math.toRadians(lerp(player.yBodyRotO, player.yBodyRot, partial)),
 							(float) Math.toRadians(0)
 					)
 					.rotateRightArm(
 							(float) Math.toRadians(lerp(20f, 180f, factor)),
-							(float) -Math.toRadians(player.yBodyRot),
+							(float) -Math.toRadians(lerp(player.yBodyRotO, player.yBodyRot, partial)),
 							(float) Math.toRadians(0)
 					)
 					.rotateLeftLeg(
 							(float) Math.toRadians(lerp(120f, 170f, factor)),
-							(float) -Math.toRadians(player.yBodyRot),
+							(float) -Math.toRadians(lerp(player.yBodyRotO, player.yBodyRot, partial)),
 							(float) Math.toRadians(0F)
 					)
 					.rotateRightLeg(
 							(float) Math.toRadians(lerp(240f, 190f, factor)),
-							(float) -Math.toRadians(player.yBodyRot),
+							(float) -Math.toRadians(lerp(player.yBodyRotO, player.yBodyRot, partial)),
 							(float) Math.toRadians(0F)
 					)
 					.render(

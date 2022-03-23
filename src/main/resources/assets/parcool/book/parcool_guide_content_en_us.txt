@@ -99,9 +99,9 @@ The one this mod add is called 'Speed Vault'.
 1.do FastRunning
 2.collide with obstacles
 ======
-{B}[WallJump]{reset}
+{B}[Wall-Jump]{reset}
 
-with WallJump. you can kick walls to jump.
+With Wall-Jump. you can kick walls to jump.
 {-}looks like Mari○!{reset}
 By the way, 'Wall Jump' do not exist in parkour techniques.
 Parkour has techniques called 'Wall Run' and 'Tic Tac'.
@@ -111,6 +111,17 @@ However, in fact the 'Wall Run' may be not what you imaged like ninja. Let's goo
 
 {blue}<How to use>{reset}
 1.Jump by walls in the air
+======
+{B}[Wall-Slide]{reset}
+
+With Wall-Slide, you can fall slowly along walls.
+However, you cannot ignore the fall damage by using only this action.
+I recommend you use something like a Roll too.
+
+
+
+{blue}<How to use>{reset}
+1.Press Wall-Slide key by walls in the air(defaultly it is mapped to right-click)
 ======
 {B}[Sliding]{reset}
 
