@@ -62,5 +62,6 @@ public class ActionPermission {
 		allowedVault = message.isAllowedVault();
 		allowedWallJump = message.isAllowedWallJump();
 		haveReceived = true;
+		ParCool.LOGGER.info("Client received Permission from a server");
 	}
 }

@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.info;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.network.ActionPermissionsMessage;
 
@@ -74,5 +75,6 @@ public class ActionInfo {
 		staminaConsumeFastRun = message.getStaminaConsumeFastRun();
 		staminaConsumeWallJump = message.getStaminaConsumeWallJump();
 		staminaConsumeWallSlide = message.getStaminaConsumeWallSlide();
+		ParCool.LOGGER.info("Client received Information from a server");
 	}
 }

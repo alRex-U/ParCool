@@ -36,6 +36,7 @@ public class ParCoolSettingScreen extends Screen {
 			new ButtonSet("action.name.roll", CONFIG_CLIENT.canRoll::set, CONFIG_CLIENT.canRoll::get),
 			new ButtonSet("action.name.vault", CONFIG_CLIENT.canVault::set, CONFIG_CLIENT.canVault::get),
 			new ButtonSet("action.name.walljump", CONFIG_CLIENT.canWallJump::set, CONFIG_CLIENT.canWallJump::get),
+			new ButtonSet("action.name.wallslide", CONFIG_CLIENT.canWallSlide::set, CONFIG_CLIENT.canWallJump::get),
 			new ButtonSet("hide stamina HUD", CONFIG_CLIENT.hideStaminaHUD::set, CONFIG_CLIENT.hideStaminaHUD::get),
 			new ButtonSet("use light Stamina HUD", CONFIG_CLIENT.useLightHUD::set, CONFIG_CLIENT.useLightHUD::get),
 			new ButtonSet("auto-turning when WallJump", CONFIG_CLIENT.autoTurningWallJump::set, CONFIG_CLIENT.autoTurningWallJump::get),
