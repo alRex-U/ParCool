@@ -16,7 +16,7 @@
   "action.name.roll": "Roll",
   "action.name.vault": "Vault",
   "action.name.walljump": "Wall-Jump",
-  "action.name.WallSlide": "Wall-Slide",
+  "action.name.wallslide": "Wall-Slide",
   "message.prohibited.action": "Prohibited Actions",
   "message.activation.active": "§bParCool:§2Active",
   "message.activation.inactive": "§bParCool:§7Inactive",

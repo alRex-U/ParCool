@@ -16,7 +16,7 @@
   "action.name.roll": "ロール",
   "action.name.vault": "ヴォールト",
   "action.name.walljump": "壁キック",
-  "action.name.WallSlide": "壁滑り",
+  "action.name.wallslide": "壁滑り",
   "message.prohibited.action": "禁止されたアクション",
   "message.activation.active": "§bParCool:§2起動",
   "message.activation.inactive": "§bParCool:§7停止",
