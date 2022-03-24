@@ -55,7 +55,7 @@ public class ShowActionPossibilityMessage {
 				return action.name() + " : " + c.canDodge.get().toString();
 			case FastRunning:
 				return action.name() + " : " + c.canFastRunning.get().toString();
-			case GrabCliff:
+			case ClingToCliff:
 				return action.name() + " : " + c.canClingToCliff.get().toString();
 			case Roll:
 				return action.name() + " : " + c.canRoll.get().toString();
@@ -70,7 +70,7 @@ public class ShowActionPossibilityMessage {
 				.append(ActionsEnum.Crawl.name()).append(" : ").append(c.canCrawl.get().toString()).append('\n')
 				.append(ActionsEnum.Dodge.name()).append(" : ").append(c.canDodge.get().toString()).append('\n')
 				.append(ActionsEnum.FastRunning.name()).append(" : ").append(c.canFastRunning.get().toString()).append('\n')
-				.append(ActionsEnum.GrabCliff.name()).append(" : ").append(c.canClingToCliff.get().toString()).append('\n')
+				.append(ActionsEnum.ClingToCliff.name()).append(" : ").append(c.canClingToCliff.get().toString()).append('\n')
 				.append(ActionsEnum.Roll.name()).append(" : ").append(c.canRoll.get().toString()).append('\n')
 				.append(ActionsEnum.Vault.name()).append(" : ").append(c.canVault.get().toString()).append('\n')
 				.append(ActionsEnum.WallJump.name()).append(" : ").append(c.canWallJump.get().toString());
