@@ -17,16 +17,19 @@ There is another similar word, {I}'Free Running'{reset}. This is said to be a wo
 This mod add a concept of Stamina.
 Stamina is consumed when you use ParCool Actions.
 If you consumed all stamina,
-1.You can’t use ParCool Actions.
-2.You can’t sprint.
+1.{_}You can’t use ParCool Actions{reset}.
+2.{_}You can’t sprint{reset}.
 Be careful.
 ======
 {B}[CatLeap]{reset}
 
+{_}Climb the height of two squares quickly{reset}.
 CatLeap is a skill used to land on walls,fence or etc...
 This is said to be one of basic skills of parkour.
 Traceurs absorb an impact of landing with movement of legs.
 Let's use also 'Cling to Cliff'!
+
+
 
 {blue}<How to use>{reset}
 1.do FastRunning
@@ -35,6 +38,7 @@ Let's use also 'Cling to Cliff'!
 ======
 {B}[Crawl]{reset}
 
+{_}Through a square-height space{reset}.
 Crawl is... crawl.
 It’s easier to do something than worry about it.
 
@@ -45,9 +49,12 @@ It’s easier to do something than worry about it.
 ======
 {B}[Dodge]{reset}
 
+{_}Dodge the spider's pounce attack and the skeleton's arrow attack if you can handle the chance{reset}.
 Side Step and Back Flip are named Dodge herein.
 (This is not a skill of the parkour)
 You will be very Cool if you should avoid bullets with this!
+
+
 
 {blue}<How to use>{reset}
 1.quickly press Movement Key twice
@@ -56,6 +63,7 @@ You will be very Cool if you should avoid bullets with this!
 ======
 {B}[FastRunning]{reset}
 
+{_}It is faster more than original sprint{reset}.
 It goes without saying.
 By the way,do you know? Steve can run as fast as 5.6 meters per seconds.
 This is same as a speed of marathon runners.
@@ -67,8 +75,10 @@ This is same as a speed of marathon runners.
 ======
 {B}[Cling to Cliff]{reset}
 
+{_}Hang on the wall but must be empty-handed{reset}.
 You can cling to cliffs.
-only when you don’t have any items in your hands,
+only when you don’t have any items in your hands.
+Have you ever played Assassin's Creed?Yes, hang on the wall just like that.
 
 
 
@@ -77,6 +87,7 @@ only when you don’t have any items in your hands,
 ======
 {B}[Roll]{reset}
 
+{_}Greatly reduces fall damage{reset}.
 Roll is one of BreakFalls(skill for protect our from impact of landing)
 This technique change an impact of landing into energy of rolling.
 There are other breakfalls in parkour techniques.
@@ -89,6 +100,7 @@ There are other breakfalls in parkour techniques.
 ======
 {B}[Vault]{reset}
 
+{_}Quickly vaul the height of one square{reset}.
 Vault is skills used to get over obstacles like fence.
 There are numerous variations. Why don't you google 'parkour vault'?
 The one this mod add is called 'Speed Vault'.
@@ -101,6 +113,7 @@ The one this mod add is called 'Speed Vault'.
 ======
 {B}[WallJump]{reset}
 
+{_}You can push against the wall to use the power to jump{reset}.
 with WallJump. you can kick walls to jump.
 {-}looks like Mari○!{reset}
 By the way, 'Wall Jump' do not exist in parkour techniques.
@@ -114,6 +127,7 @@ However, in fact the 'Wall Run' may be not what you imaged like ninja. Let's goo
 ======
 {B}[Sliding]{reset}
 
+{_}Quickly through a square-height space{reset}.
 You can do a slide (This is not a skill of parkour)
 I don't think it's possible to slide infinitely on ice.
 
