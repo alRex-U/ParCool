@@ -10,12 +10,15 @@ import com.alrex.parcool.common.network.SyncWallSlideMessage;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
 
 public class WallSlide extends Action {
 	private boolean sliding = false;
+	private int slidingTick = 0;
 
 	public boolean isSliding() {
 		return sliding;
@@ -24,12 +27,19 @@ public class WallSlide extends Action {
 	@Override
 	public void onTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (sliding) {
-			if (parkourability.getAdditionalProperties().getNotLandingTick() > 15) {
-				player.fallDistance = (float) Math.abs(player.getDeltaMovement().y()) * 40;
+			slidingTick++;
+			if (parkourability.getAdditionalProperties().getNotLandingTick() > 10 &&
+					parkourability.getClingToCliff().getNotClingTick() > 10 &&
+					slidingTick > 10
+			) {
+				player.fallDistance = 2;
 			}
+		} else {
+			slidingTick = 0;
 		}
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (player.isLocalPlayer()) {
@@ -39,7 +49,8 @@ public class WallSlide extends Action {
 					WorldUtil.getWall(player) != null &&
 					KeyBindings.getKeyBindWallSlide().isDown() &&
 					!stamina.isExhausted() &&
-					!parkourability.getClingToCliff().isCling();
+					!parkourability.getClingToCliff().isCling() &&
+					parkourability.getClingToCliff().getNotClingTick() > 12;
 		}
 		if (sliding) {
 			stamina.consume(parkourability.getActionInfo().getStaminaConsumeWallSlide(), parkourability.getActionInfo());
