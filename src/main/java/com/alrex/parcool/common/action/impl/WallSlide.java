@@ -10,6 +10,8 @@ import com.alrex.parcool.common.network.SyncWallSlideMessage;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
@@ -37,6 +39,7 @@ public class WallSlide extends Action {
 		}
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (player.isLocalPlayer()) {
