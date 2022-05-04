@@ -12,7 +12,7 @@ public class DodgeAnimator extends Animator {
 	@Override
 	public void animate(RenderPlayerEvent.Pre event, AbstractClientPlayer player, Parkourability parkourability) {
 		Dodge dodge = parkourability.getDodge();
-		if (!dodge.isDodging()) {
+		if (!dodge.isDodging() || !dodge.isFlipping()) {
 			removal = true;
 			return;
 		}

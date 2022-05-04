@@ -22,6 +22,7 @@ public class SyncDodgeMessage {
 	private UUID playerID = null;
 	private boolean dodging = false;
 	private boolean avoided = false;
+	private boolean flipping = false;
 	@Nullable
 	private String dodgeDirection = null;
 
@@ -31,6 +32,10 @@ public class SyncDodgeMessage {
 
 	public boolean isAvoided() {
 		return avoided;
+	}
+
+	public boolean isFlipping() {
+		return flipping;
 	}
 
 	@Nullable
@@ -103,6 +108,7 @@ public class SyncDodgeMessage {
 		SyncDodgeMessage message = new SyncDodgeMessage();
 		message.dodging = dodge.isDodging();
 		message.avoided = dodge.isAvoided();
+		message.flipping = dodge.isFlipping();
 		message.playerID = player.getUUID();
 		Dodge.DodgeDirections direction = dodge.getDodgeDirection();
 		if (direction != null) {
