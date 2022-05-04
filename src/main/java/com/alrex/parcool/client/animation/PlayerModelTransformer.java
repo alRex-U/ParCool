@@ -186,35 +186,39 @@ public class PlayerModelTransformer {
 		return this;
 	}
 
-	private static void setRightArm(AbstractClientPlayer player, ModelPart rightArm, float angleX, float angleY, float angleZ) {
-		rightArm.x = -Mth.cos((float) Math.toRadians(player.yBodyRot)) * 4.2F;
+	private void setRightArm(AbstractClientPlayer player, ModelPart rightArm, float angleX, float angleY, float angleZ) {
+		float rot = Mth.lerp(partial, player.yBodyRotO, player.yBodyRot);
+		rightArm.x = -Mth.cos((float) Math.toRadians(rot)) * 4.2F;
 		rightArm.y = 20.5f;
-		rightArm.z = -Mth.sin((float) Math.toRadians(player.yBodyRot)) * 5.0F;
+		rightArm.z = -Mth.sin((float) Math.toRadians(rot)) * 5.0F;
 		rightArm.xRot = angleX;
 		rightArm.yRot = angleY;
 		rightArm.zRot = angleZ;
 	}
 
-	private static void setLeftArm(AbstractClientPlayer player, ModelPart leftArm, float angleX, float angleY, float angleZ) {
-		leftArm.x = Mth.cos((float) Math.toRadians(player.yBodyRot)) * 4.2F;
+	private void setLeftArm(AbstractClientPlayer player, ModelPart leftArm, float angleX, float angleY, float angleZ) {
+		float rot = Mth.lerp(partial, player.yBodyRotO, player.yBodyRot);
+		leftArm.x = Mth.cos((float) Math.toRadians(rot)) * 4.2F;
 		leftArm.y = 20.5f;
-		leftArm.z = Mth.sin((float) Math.toRadians(player.yBodyRot)) * 5.0F;
+		leftArm.z = Mth.sin((float) Math.toRadians(rot)) * 5.0F;
 		leftArm.xRot = angleX;
 		leftArm.yRot = angleY;
 		leftArm.zRot = angleZ;
 	}
 
-	private static void setRightLeg(AbstractClientPlayer player, ModelPart rightLeg, float angleX, float angleY, float angleZ) {
-		rightLeg.x = -Mth.cos((float) Math.toRadians(player.yBodyRot)) * 2.1F;
-		rightLeg.z = -Mth.sin((float) Math.toRadians(player.yBodyRot)) * 2.5F;
+	private void setRightLeg(AbstractClientPlayer player, ModelPart rightLeg, float angleX, float angleY, float angleZ) {
+		float rot = Mth.lerp(partial, player.yBodyRotO, player.yBodyRot);
+		rightLeg.x = -Mth.cos((float) Math.toRadians(rot)) * 2.1F;
+		rightLeg.z = -Mth.sin((float) Math.toRadians(rot)) * 2.5F;
 		rightLeg.xRot = angleX;
 		rightLeg.yRot = angleY;
 		rightLeg.zRot = angleZ;
 	}
 
-	private static void setLeftLeg(AbstractClientPlayer player, ModelPart leftLeg, float angleX, float angleY, float angleZ) {
-		leftLeg.x = Mth.cos((float) Math.toRadians(player.yBodyRot)) * 2.1F;
-		leftLeg.z = Mth.sin((float) Math.toRadians(player.yBodyRot)) * 2.5F;
+	private void setLeftLeg(AbstractClientPlayer player, ModelPart leftLeg, float angleX, float angleY, float angleZ) {
+		float rot = Mth.lerp(partial, player.yBodyRotO, player.yBodyRot);
+		leftLeg.x = Mth.cos((float) Math.toRadians(rot)) * 2.1F;
+		leftLeg.z = Mth.sin((float) Math.toRadians(rot)) * 2.5F;
 		leftLeg.xRot = angleX;
 		leftLeg.yRot = angleY;
 		leftLeg.zRot = angleZ;

@@ -62,13 +62,25 @@ public class ClingToCliff extends Action {
 				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionClimbUp(), parkourability.getActionInfo());
 			}
 			if (cling) {
-				player.setDeltaMovement(0, 0, 0);
+				if (KeyBindings.getKeyLeft().isDown() && KeyBindings.getKeyRight().isDown()) {
+					player.setDeltaMovement(0, 0, 0);
+				} else {
+					Vec3 wallDirection = WorldUtil.getWall(player);
+					if (wallDirection != null) {
+						Vec3 vec = wallDirection.yRot((float) (Math.PI / 2)).normalize().scale(0.1);
+						if (KeyBindings.getKeyLeft().isDown()) player.setDeltaMovement(vec);
+						else if (KeyBindings.getKeyRight().isDown()) player.setDeltaMovement(vec.reverse());
+						else player.setDeltaMovement(0, 0, 0);
+					}
+				}
 			}
 		}
 		if (cling) {
 			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionClingToCliff(), parkourability.getActionInfo());
-			Animation animation = Animation.get(player);
-			if (animation != null) animation.setAnimator(new ClingToCliffAnimator());
+			if (clingTick == 0) {
+				Animation animation = Animation.get(player);
+				if (animation != null) animation.setAnimator(new ClingToCliffAnimator());
+			}
 		}
 	}
 
@@ -77,7 +89,9 @@ public class ClingToCliff extends Action {
 		if (cling) {
 			Vec3 wall = WorldUtil.getWall(player);
 			if (wall != null) {
-				player.setYRot((float) VectorUtil.toYawDegree(wall.normalize()));
+				float yRot = (float) VectorUtil.toYawDegree(wall.normalize());
+				player.setYRot(yRot);
+				player.setYBodyRot(yRot);
 			}
 		}
 	}
