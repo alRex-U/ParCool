@@ -13,11 +13,19 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 
 public class PlayerModelTransformer {
-	private AbstractClientPlayer player;
-	private PlayerModel<AbstractClientPlayer> model;
+	private final AbstractClientPlayer player;
+	private final PlayerModel<AbstractClientPlayer> model;
 	private int tick;
-	private float partial;
-	private boolean renderRightArm = false, renderLeftArm = false, renderRightLeg = false, renderLeftLeg = false;
+	private final float partial;
+	private boolean
+			renderRightArm = false,
+			renderLeftArm = false,
+			renderRightLeg = false,
+			renderLeftLeg = false,
+			renderRightSleeve = false,
+			renderLeftSleeve = false,
+			renderRightPants = false,
+			renderLeftPants = false;
 
 	private PlayerModelTransformer(AbstractClientPlayer player, PlayerModel<AbstractClientPlayer> model, int tick, float partial) {
 		this.player = player;
@@ -33,36 +41,56 @@ public class PlayerModelTransformer {
 	public PlayerModelTransformer rotateRightArm(float angleX, float angleY, float angleZ) {
 		ModelPart rightArm = model.rightArm;
 		ModelPart rightWear = model.rightSleeve;
-		setRightArm(player, rightArm, angleX, angleY, angleZ);
-		setRightArm(player, rightWear, angleX, angleY, angleZ);
-		renderRightArm = true;
+		if (rightArm.visible) {
+			setRightArm(player, rightArm, angleX, angleY, angleZ);
+			renderRightArm = true;
+		}
+		if (rightWear.visible) {
+			setRightArm(player, rightWear, angleX, angleY, angleZ);
+			renderRightSleeve = true;
+		}
 		return this;
 	}
 
 	public PlayerModelTransformer rotateLeftArm(float angleX, float angleY, float angleZ) {
 		ModelPart leftArm = model.leftArm;
 		ModelPart leftWear = model.leftSleeve;
-		setLeftArm(player, leftArm, angleX, angleY, angleZ);
-		setLeftArm(player, leftWear, angleX, angleY, angleZ);
-		renderLeftArm = true;
+		if (leftArm.visible) {
+			setLeftArm(player, leftArm, angleX, angleY, angleZ);
+			renderLeftArm = true;
+		}
+		if (leftWear.visible) {
+			setLeftArm(player, leftWear, angleX, angleY, angleZ);
+			renderLeftSleeve = true;
+		}
 		return this;
 	}
 
 	public PlayerModelTransformer rotateRightLeg(float angleX, float angleY, float angleZ) {
 		ModelPart rightLeg = model.rightLeg;
 		ModelPart rightWear = model.rightPants;
-		setRightLeg(player, rightLeg, angleX, angleY, angleZ);
-		setRightLeg(player, rightWear, angleX, angleY, angleZ);
-		renderRightLeg = true;
+		if (rightLeg.visible) {
+			setRightLeg(player, rightLeg, angleX, angleY, angleZ);
+			renderRightLeg = true;
+		}
+		if (rightWear.visible) {
+			setRightLeg(player, rightWear, angleX, angleY, angleZ);
+			renderRightPants = true;
+		}
 		return this;
 	}
 
 	public PlayerModelTransformer rotateLeftLeg(float angleX, float angleY, float angleZ) {
 		ModelPart leftLeg = model.leftLeg;
 		ModelPart leftWear = model.leftPants;
-		setLeftLeg(player, leftLeg, angleX, angleY, angleZ);
-		setLeftLeg(player, leftWear, angleX, angleY, angleZ);
-		renderLeftLeg = true;
+		if (leftLeg.visible) {
+			setLeftLeg(player, leftLeg, angleX, angleY, angleZ);
+			renderLeftLeg = true;
+		}
+		if (leftWear.visible) {
+			setLeftLeg(player, leftWear, angleX, angleY, angleZ);
+			renderLeftPants = true;
+		}
 		return this;
 	}
 
@@ -80,7 +108,7 @@ public class PlayerModelTransformer {
 		}
 		if (renderRightArm && !rightHandHoldingItem) {
 			model.rightArm.visible = true;
-			model.rightSleeve.visible = true;
+			model.rightSleeve.visible = renderRightSleeve;
 			model.rightArm.render(
 					stack,
 					buffer.getBuffer(RenderType.entitySolid(location)),
@@ -98,7 +126,7 @@ public class PlayerModelTransformer {
 		}
 		if (renderLeftArm && !leftHandHoldingItem) {
 			model.leftArm.visible = true;
-			model.leftSleeve.visible = true;
+			model.leftSleeve.visible = renderLeftSleeve;
 			model.leftArm.render(
 					stack,
 					buffer.getBuffer(RenderType.entitySolid(location)),
@@ -116,7 +144,7 @@ public class PlayerModelTransformer {
 		}
 		if (renderRightLeg) {
 			model.rightLeg.visible = true;
-			model.rightPants.visible = true;
+			model.rightPants.visible = renderRightPants;
 			model.rightLeg.render(
 					stack,
 					buffer.getBuffer(RenderType.entitySolid(location)),
@@ -130,14 +158,14 @@ public class PlayerModelTransformer {
 					OverlayTexture.NO_OVERLAY
 			);
 
-			model.rightLeg.x = 2.0F;
+			model.rightLeg.x = -1.9F;
 			model.rightLeg.z = 0;
 			model.rightLeg.visible = false;
 			model.rightPants.visible = false;
 		}
 		if (renderLeftLeg) {
 			model.leftLeg.visible = true;
-			model.leftPants.visible = true;
+			model.leftPants.visible = renderLeftPants;
 			model.leftLeg.render(
 					stack,
 					buffer.getBuffer(RenderType.entitySolid(location)),
@@ -150,7 +178,7 @@ public class PlayerModelTransformer {
 					light,
 					OverlayTexture.NO_OVERLAY
 			);
-			model.leftLeg.x = -2.0F;
+			model.leftLeg.x = 1.9F;
 			model.leftLeg.z = 0;
 			model.leftLeg.visible = false;
 			model.leftPants.visible = false;
