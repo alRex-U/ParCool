@@ -158,7 +158,7 @@ public class PlayerModelTransformer {
 					OverlayTexture.NO_OVERLAY
 			);
 
-			model.rightLeg.x = -1.9F;
+			model.rightLeg.x = -1.95F;
 			model.rightLeg.z = 0;
 			model.rightLeg.visible = false;
 			model.rightPants.visible = false;
@@ -178,7 +178,7 @@ public class PlayerModelTransformer {
 					light,
 					OverlayTexture.NO_OVERLAY
 			);
-			model.leftLeg.x = 1.9F;
+			model.leftLeg.x = 1.95F;
 			model.leftLeg.z = 0;
 			model.leftLeg.visible = false;
 			model.leftPants.visible = false;
@@ -208,8 +208,8 @@ public class PlayerModelTransformer {
 
 	private void setRightLeg(AbstractClientPlayer player, ModelPart rightLeg, float angleX, float angleY, float angleZ) {
 		float rot = Mth.lerp(partial, player.yBodyRotO, player.yBodyRot);
-		rightLeg.x = -Mth.cos((float) Math.toRadians(rot)) * 2.1F;
-		rightLeg.z = -Mth.sin((float) Math.toRadians(rot)) * 2.5F;
+		rightLeg.x = -Mth.cos((float) Math.toRadians(rot)) * 1.95F;
+		rightLeg.z = -Mth.sin((float) Math.toRadians(rot)) * 1.95F;
 		rightLeg.xRot = angleX;
 		rightLeg.yRot = angleY;
 		rightLeg.zRot = angleZ;
@@ -217,8 +217,8 @@ public class PlayerModelTransformer {
 
 	private void setLeftLeg(AbstractClientPlayer player, ModelPart leftLeg, float angleX, float angleY, float angleZ) {
 		float rot = Mth.lerp(partial, player.yBodyRotO, player.yBodyRot);
-		leftLeg.x = Mth.cos((float) Math.toRadians(rot)) * 2.1F;
-		leftLeg.z = Mth.sin((float) Math.toRadians(rot)) * 2.5F;
+		leftLeg.x = Mth.cos((float) Math.toRadians(rot)) * 1.95F;
+		leftLeg.z = Mth.sin((float) Math.toRadians(rot)) * 1.95F;
 		leftLeg.xRot = angleX;
 		leftLeg.yRot = angleY;
 		leftLeg.zRot = angleZ;

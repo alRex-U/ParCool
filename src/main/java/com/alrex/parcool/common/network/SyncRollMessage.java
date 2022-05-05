@@ -20,6 +20,7 @@ public class SyncRollMessage {
 	private int readyTick = 0;
 	private boolean rollReady = false;
 	private boolean rolling = false;
+	private Roll.Type type = null;
 	private UUID playerID = null;
 
 	public boolean isRolling() {
@@ -34,12 +35,18 @@ public class SyncRollMessage {
 		return readyTick;
 	}
 
+	public Roll.Type getType() {
+		return type;
+	}
+
 	public void encode(FriendlyByteBuf packet) {
 		packet.writeLong(this.playerID.getMostSignificantBits());
 		packet.writeLong(this.playerID.getLeastSignificantBits());
 		packet.writeBoolean(rollReady);
 		packet.writeBoolean(rolling);
 		packet.writeInt(readyTick);
+		packet.writeBoolean(type != null);
+		packet.writeByte(type.getAsByte());
 	}
 
 	public static SyncRollMessage decode(FriendlyByteBuf packet) {
@@ -48,6 +55,7 @@ public class SyncRollMessage {
 		message.rollReady = packet.readBoolean();
 		message.rolling = packet.readBoolean();
 		message.readyTick = packet.readInt();
+		if (packet.readBoolean()) message.type = Roll.Type.getFromByte(packet.readByte());
 		return message;
 	}
 
@@ -94,6 +102,7 @@ public class SyncRollMessage {
 		message.rollReady = roll.isReady();
 		message.readyTick = roll.getReadyTick();
 		message.rolling = roll.isRolling();
+		message.type = roll.getType();
 		message.playerID = player.getUUID();
 
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);

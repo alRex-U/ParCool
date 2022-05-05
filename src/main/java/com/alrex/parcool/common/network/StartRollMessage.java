@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.common.action.impl.Roll;
 import com.alrex.parcool.common.capability.impl.Parkourability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -17,7 +18,7 @@ import java.util.function.Supplier;
 
 public class StartRollMessage {
 	UUID playerID = null;
-
+	Roll.Type type = null;
 	public UUID getPlayerID() {
 		return playerID;
 	}
