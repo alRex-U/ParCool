@@ -30,6 +30,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue disableDoubleTappingForDodge;
 		public final ForgeConfigSpec.BooleanValue disableFlipping;
 		public final ForgeConfigSpec.BooleanValue substituteSprintForFastRun;
+		public final ForgeConfigSpec.BooleanValue replaceSprintWithFastRun;
 		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
 		public final ForgeConfigSpec.BooleanValue parCoolActivation;
 		public final ForgeConfigSpec.BooleanValue hideStaminaHUD;
@@ -81,6 +82,7 @@ public class ParCoolConfig {
 				disableDoubleTappingForDodge = builder.comment("Disable Double-Tapping For Dodge. Please Use Dodge Key instead").define("disableDoubleTapping", false);
 				disableFlipping = builder.comment("Disable Flipping of Dodge").define("disableFlipping", false);
 				substituteSprintForFastRun = builder.comment("Substitute a sprint of vanilla for the FastRunning").define("substituteSprint", false);
+				replaceSprintWithFastRun = builder.comment("Replace vanilla sprint with Fast-Running").define("replaceSprintWithFastRun", true);
 				infiniteStamina = builder
 						.comment("Infinite Stamina(this needs a permission from server, even if it is on single player's game)\nPlease check 'parcool-server.toml' in 'serverconfig' directory")
 						.define("infiniteStamina", false);

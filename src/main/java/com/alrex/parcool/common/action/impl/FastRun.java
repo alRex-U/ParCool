@@ -48,10 +48,11 @@ public class FastRun extends Action {
 	@Override
 	public void onClientTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (player.isLocalPlayer()) {
-			fastRunning = parkourability.getPermission().canFastRunning()
-					&& player.isSprinting()
-					&& KeyBindings.getKeyFastRunning().isDown()
-					&& !stamina.isExhausted();
+			fastRunning =
+					parkourability.getPermission().canFastRunning()
+							&& player.isSprinting()
+							&& !stamina.isExhausted()
+							&& (KeyBindings.getKeyFastRunning().isDown() || ParCoolConfig.CONFIG_CLIENT.replaceSprintWithFastRun.get());
 		}
 		AttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (attr == null) return;
