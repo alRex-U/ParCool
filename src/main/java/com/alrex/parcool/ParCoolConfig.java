@@ -26,6 +26,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue disableCameraRolling;
 		public final ForgeConfigSpec.BooleanValue disableCameraDodge;
 		public final ForgeConfigSpec.BooleanValue substituteSprintForFastRun;
+		public final ForgeConfigSpec.BooleanValue replaceSprintWithFastRun;
 		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
 		public final ForgeConfigSpec.BooleanValue parCoolActivation;
 		public final ForgeConfigSpec.BooleanValue hideStaminaHUD;
@@ -72,6 +73,7 @@ public class ParCoolConfig {
 				disableWallJumpTowardWall = builder.comment("Disable WallJump toward a wall").define("disableWallJumpTowardWall", false);
 				disableCameraRolling = builder.comment("Disable Roll rotation of camera").define("disableCameraRotationRolling", false);
 				disableCameraDodge = builder.comment("Disable Dodge rotation of camera").define("disableCameraRotationDodge", false);
+				replaceSprintWithFastRun = builder.comment("Replace vanilla sprint with Fast-Running").define("replaceSprintWithFastRun", true);
 				substituteSprintForFastRun = builder.comment("Substitute a sprint of vanilla for the FastRunning").define("substituteSprint", false);
 				infiniteStamina = builder
 						.comment("Infinite Stamina(this needs a permission from server, even if it is on single player's game)\nPlease check 'parcool-server.toml' in 'serverconfig' directory")
