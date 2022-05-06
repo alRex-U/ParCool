@@ -17,7 +17,15 @@ public class PlayerModelTransformer {
 	private PlayerModel<AbstractClientPlayerEntity> model;
 	private int tick;
 	private float partial;
-	private boolean renderRightArm = false, renderLeftArm = false, renderRightLeg = false, renderLeftLeg = false;
+	private boolean
+			renderRightArm = false,
+			renderLeftArm = false,
+			renderRightLeg = false,
+			renderLeftLeg = false,
+			renderRightSleeve = false,
+			renderLeftSleeve = false,
+			renderRightPants = false,
+			renderLeftPants = false;
 
 	private PlayerModelTransformer(AbstractClientPlayerEntity player, PlayerModel<AbstractClientPlayerEntity> model, int tick, float partial) {
 		this.player = player;
@@ -33,36 +41,56 @@ public class PlayerModelTransformer {
 	public PlayerModelTransformer rotateRightArm(float angleX, float angleY, float angleZ) {
 		ModelRenderer rightArm = model.rightArm;
 		ModelRenderer rightWear = model.rightSleeve;
-		setRightArm(player, rightArm, angleX, angleY, angleZ);
-		setRightArm(player, rightWear, angleX, angleY, angleZ);
-		renderRightArm = true;
+		if (rightArm.visible) {
+			setRightArm(player, rightArm, angleX, angleY, angleZ);
+			renderRightArm = true;
+		}
+		if (rightWear.visible) {
+			setRightArm(player, rightWear, angleX, angleY, angleZ);
+			renderRightSleeve = true;
+		}
 		return this;
 	}
 
 	public PlayerModelTransformer rotateLeftArm(float angleX, float angleY, float angleZ) {
 		ModelRenderer leftArm = model.leftArm;
 		ModelRenderer leftWear = model.leftSleeve;
-		setLeftArm(player, leftArm, angleX, angleY, angleZ);
-		setLeftArm(player, leftWear, angleX, angleY, angleZ);
-		renderLeftArm = true;
+		if (leftArm.visible) {
+			setLeftArm(player, leftArm, angleX, angleY, angleZ);
+			renderLeftArm = true;
+		}
+		if (leftWear.visible) {
+			setLeftArm(player, leftWear, angleX, angleY, angleZ);
+			renderLeftSleeve = true;
+		}
 		return this;
 	}
 
 	public PlayerModelTransformer rotateRightLeg(float angleX, float angleY, float angleZ) {
 		ModelRenderer rightLeg = model.rightLeg;
 		ModelRenderer rightWear = model.rightPants;
-		setRightLeg(player, rightLeg, angleX, angleY, angleZ);
-		setRightLeg(player, rightWear, angleX, angleY, angleZ);
-		renderRightLeg = true;
+		if (rightLeg.visible) {
+			setRightLeg(player, rightLeg, angleX, angleY, angleZ);
+			renderRightLeg = true;
+		}
+		if (rightWear.visible) {
+			setRightLeg(player, rightWear, angleX, angleY, angleZ);
+			renderRightPants = true;
+		}
 		return this;
 	}
 
 	public PlayerModelTransformer rotateLeftLeg(float angleX, float angleY, float angleZ) {
 		ModelRenderer leftLeg = model.leftLeg;
 		ModelRenderer leftWear = model.leftPants;
-		setLeftLeg(player, leftLeg, angleX, angleY, angleZ);
-		setLeftLeg(player, leftWear, angleX, angleY, angleZ);
-		renderLeftLeg = true;
+		if (leftLeg.visible) {
+			setLeftLeg(player, leftLeg, angleX, angleY, angleZ);
+			renderLeftLeg = true;
+		}
+		if (leftWear.visible) {
+			setLeftLeg(player, leftWear, angleX, angleY, angleZ);
+			renderLeftPants = true;
+		}
 		return this;
 	}
 
@@ -131,7 +159,7 @@ public class PlayerModelTransformer {
 					OverlayTexture.NO_OVERLAY
 			);
 
-			model.rightLeg.x = 2.1F;
+			model.rightLeg.x = -1.95F;
 			model.rightLeg.z = 0;
 			model.rightLeg.visible = false;
 			model.rightPants.visible = false;
@@ -151,7 +179,7 @@ public class PlayerModelTransformer {
 					light,
 					OverlayTexture.NO_OVERLAY
 			);
-			model.leftLeg.x = -2.1F;
+			model.leftLeg.x = 1.95F;
 			model.leftLeg.z = 0;
 			model.leftLeg.visible = false;
 			model.leftPants.visible = false;
@@ -159,35 +187,39 @@ public class PlayerModelTransformer {
 		return this;
 	}
 
-	private static void setRightArm(AbstractClientPlayerEntity player, ModelRenderer rightArm, float angleX, float angleY, float angleZ) {
-		rightArm.x = -MathHelper.cos((float) Math.toRadians(player.yBodyRot)) * 4.2F;
+	private void setRightArm(AbstractClientPlayerEntity player, ModelRenderer rightArm, float angleX, float angleY, float angleZ) {
+		float rot = MathHelper.lerp(partial, player.yBodyRotO, player.yBodyRot);
+		rightArm.x = -MathHelper.cos((float) Math.toRadians(rot)) * 4.2F;
 		rightArm.y = 20.5f;
-		rightArm.z = -MathHelper.sin((float) Math.toRadians(player.yBodyRot)) * 5.0F;
+		rightArm.z = -MathHelper.sin((float) Math.toRadians(rot)) * 5.0F;
 		rightArm.xRot = angleX;
 		rightArm.yRot = angleY;
 		rightArm.zRot = angleZ;
 	}
 
-	private static void setLeftArm(AbstractClientPlayerEntity player, ModelRenderer leftArm, float angleX, float angleY, float angleZ) {
-		leftArm.x = MathHelper.cos((float) Math.toRadians(player.yBodyRot)) * 4.2F;
+	private void setLeftArm(AbstractClientPlayerEntity player, ModelRenderer leftArm, float angleX, float angleY, float angleZ) {
+		float rot = MathHelper.lerp(partial, player.yBodyRotO, player.yBodyRot);
+		leftArm.x = MathHelper.cos((float) Math.toRadians(rot)) * 4.2F;
 		leftArm.y = 20.5f;
-		leftArm.z = MathHelper.sin((float) Math.toRadians(player.yBodyRot)) * 5.0F;
+		leftArm.z = MathHelper.sin((float) Math.toRadians(rot)) * 5.0F;
 		leftArm.xRot = angleX;
 		leftArm.yRot = angleY;
 		leftArm.zRot = angleZ;
 	}
 
-	private static void setRightLeg(AbstractClientPlayerEntity player, ModelRenderer rightLeg, float angleX, float angleY, float angleZ) {
-		rightLeg.x = -MathHelper.cos((float) Math.toRadians(player.yBodyRot)) * 2.1F;
-		rightLeg.z = -MathHelper.sin((float) Math.toRadians(player.yBodyRot)) * 2.5F;
+	private void setRightLeg(AbstractClientPlayerEntity player, ModelRenderer rightLeg, float angleX, float angleY, float angleZ) {
+		float rot = MathHelper.lerp(partial, player.yBodyRotO, player.yBodyRot);
+		rightLeg.x = -MathHelper.cos((float) Math.toRadians(rot)) * 1.95F;
+		rightLeg.z = -MathHelper.sin((float) Math.toRadians(rot)) * 1.95F;
 		rightLeg.xRot = angleX;
 		rightLeg.yRot = angleY;
 		rightLeg.zRot = angleZ;
 	}
 
-	private static void setLeftLeg(AbstractClientPlayerEntity player, ModelRenderer leftLeg, float angleX, float angleY, float angleZ) {
-		leftLeg.x = MathHelper.cos((float) Math.toRadians(player.yBodyRot)) * 2.1F;
-		leftLeg.z = MathHelper.sin((float) Math.toRadians(player.yBodyRot)) * 2.5F;
+	private void setLeftLeg(AbstractClientPlayerEntity player, ModelRenderer leftLeg, float angleX, float angleY, float angleZ) {
+		float rot = MathHelper.lerp(partial, player.yBodyRotO, player.yBodyRot);
+		leftLeg.x = MathHelper.cos((float) Math.toRadians(rot)) * 1.95F;
+		leftLeg.z = MathHelper.sin((float) Math.toRadians(rot)) * 1.95F;
 		leftLeg.xRot = angleX;
 		leftLeg.yRot = angleY;
 		leftLeg.zRot = angleZ;
