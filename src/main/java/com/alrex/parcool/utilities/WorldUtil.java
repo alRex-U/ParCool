@@ -49,7 +49,7 @@ public class WorldUtil {
 	}
 
 	@Nullable
-	public static Vector3d getStep(LivingEntity entity) {
+	public static Vector3d getVaultableStep(LivingEntity entity) {
 		final double d = 0.3;
 		World world = entity.level;
 		double distance = entity.getBbWidth() / 2;
@@ -74,16 +74,16 @@ public class WorldUtil {
 				pos.y() + entity.getBbHeight(),
 				pos.z() + d
 		);
-		if (!world.noCollision(baseBoxSide.expandTowards(distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards(distance, 0, 0))) {
+		if (!world.noCollision(baseBoxSide.expandTowards(distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards((distance + 1.8), 0, 0))) {
 			stepX++;
 		}
-		if (!world.noCollision(baseBoxSide.expandTowards(-distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards(-distance, 0, 0))) {
+		if (!world.noCollision(baseBoxSide.expandTowards(-distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards(-(distance + 1.8), 0, 0))) {
 			stepX--;
 		}
-		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, distance))) {
+		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, (distance + 1.8)))) {
 			stepZ++;
 		}
-		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, -distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, -distance))) {
+		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, -distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, -(distance + 1.8)))) {
 			stepZ--;
 		}
 		if (stepX == 0 && stepZ == 0) return null;
