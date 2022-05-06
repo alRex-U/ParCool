@@ -14,11 +14,11 @@ import org.lwjgl.glfw.GLFW;
 @OnlyIn(Dist.CLIENT)
 public class KeyBindings {
 	private static final GameSettings settings = Minecraft.getInstance().options;
-	private static final KeyBinding keyBindCrawl = new KeyBinding("key.crawl.description", GLFW.GLFW_KEY_C, "key.categories.movement");
-	private static final KeyBinding keyBindGrabWall = new KeyBinding("key.grab.description", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.movement");
-	private static final KeyBinding keyBindRoll = new KeyBinding("key.roll.description", GLFW.GLFW_KEY_C, "key.categories.movement");
-	private static final KeyBinding keyBindFastRunning = new KeyBinding("key.fastrunning.description", GLFW.GLFW_KEY_LEFT_CONTROL, "key.categories.movement");
-	private static final KeyBinding keyBindDodge = new KeyBinding("key.dodge.description", GLFW.GLFW_KEY_R, "key.categories.movement");
+	private static final KeyBinding keyBindCrawl = new KeyBinding("key.crawl.description", GLFW.GLFW_KEY_C, "key.categories.parcool");
+	private static final KeyBinding keyBindGrabWall = new KeyBinding("key.grab.description", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
+	private static final KeyBinding keyBindRoll = new KeyBinding("key.roll.description", GLFW.GLFW_KEY_C, "key.categories.parcool");
+	private static final KeyBinding keyBindFastRunning = new KeyBinding("key.fastrunning.description", GLFW.GLFW_KEY_LEFT_CONTROL, "key.categories.parcool");
+	private static final KeyBinding keyBindDodge = new KeyBinding("key.dodge.description", GLFW.GLFW_KEY_R, "key.categories.parcool");
 	private static final KeyBinding keyBindOpenSettings = new KeyBinding("key.parcool.setting.open", GLFW.GLFW_KEY_P, "key.categories.parcool");
 
 	public static KeyBinding getKeySprint() {

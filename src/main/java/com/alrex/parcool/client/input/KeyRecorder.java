@@ -19,6 +19,7 @@ public class KeyRecorder {
 	public static final KeyState keyOpenSettingsState = new KeyState();
 	public static final KeyState keyFastRunning = new KeyState();
 	public static final KeyState keyDodge = new KeyState();
+	public static final KeyState keyRoll = new KeyState();
 
 	@SubscribeEvent
 	public static void onClientTick(TickEvent.ClientTickEvent event) {
@@ -34,6 +35,7 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyActivateParCool(), keyOpenSettingsState);
 		record(KeyBindings.getKeyFastRunning(), keyFastRunning);
 		record(KeyBindings.getKeyDodge(), keyDodge);
+		record(KeyBindings.getKeyRoll(), keyRoll);
 	}
 
 	private static void record(KeyBinding keyBinding, KeyState state) {
