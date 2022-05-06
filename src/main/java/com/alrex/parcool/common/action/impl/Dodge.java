@@ -34,6 +34,7 @@ public class Dodge extends Action {
 	private int damageCoolTime = 0;
 	private boolean avoided = false;
 	private boolean dodging = false;
+	private boolean flipping = false;
 
 	public boolean isAvoided() {
 		return avoided;
@@ -41,6 +42,10 @@ public class Dodge extends Action {
 
 	public boolean isDodging() {
 		return dodging;
+	}
+
+	public boolean isFlipping() {
+		return flipping;
 	}
 
 	@Override
@@ -57,18 +62,21 @@ public class Dodge extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	private boolean canDodge(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+		boolean enabledDoubleTap = !ParCoolConfig.CONFIG_CLIENT.disableDoubleTappingForDodge.get();
 		return parkourability.getPermission().canDodge() && coolTime <= 0 && player.isOnGround() && !player.isShiftKeyDown() && !stamina.isExhausted() && (
-				KeyRecorder.keyBack.isDoubleTapped() ||
-						KeyRecorder.keyLeft.isDoubleTapped() ||
-						KeyRecorder.keyRight.isDoubleTapped() ||
-						(ParCoolConfig.CONFIG_CLIENT.canFrontFlip.get() && KeyRecorder.keyForward.isDoubleTapped()) ||
-						(KeyBindings.getKeyDodge().isDown() && (
+				enabledDoubleTap && (
+						KeyRecorder.keyBack.isDoubleTapped() ||
+								KeyRecorder.keyLeft.isDoubleTapped() ||
+								KeyRecorder.keyRight.isDoubleTapped() ||
+								(ParCoolConfig.CONFIG_CLIENT.canFrontFlip.get() && KeyRecorder.keyForward.isDoubleTapped())
+				) || (
+						KeyBindings.getKeyDodge().isDown() && (
 								KeyBindings.getKeyForward().isDown() ||
 										KeyBindings.getKeyBack().isDown() ||
 										KeyBindings.getKeyLeft().isDown() ||
 										KeyBindings.getKeyRight().isDown()
 						)
-						)
+				)
 		);
 	}
 
@@ -106,7 +114,7 @@ public class Dodge extends Action {
 			if (canContinue(player, parkourability, stamina)) {
 				dodging = true;
 			} else {
-				if (dodging && (dodgeDirection == DodgeDirections.Front || dodgeDirection == DodgeDirections.Back)) {
+				if (dodging && flipping && (dodgeDirection == DodgeDirections.Front || dodgeDirection == DodgeDirections.Back)) {
 					if (!ParCoolConfig.CONFIG_CLIENT.disableCameraDodge.get()) {
 						needPitchReset = true;
 					}
@@ -114,11 +122,12 @@ public class Dodge extends Action {
 				dodgingTick = 0;
 				dodging = false;
 				avoided = false;
+				flipping = false;
 			}
 			if (!dodging && canDodge(player, parkourability, stamina)) {
 				dodging = true;
 				avoided = false;
-
+				flipping = false;
 				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionDodge(), parkourability.getActionInfo());
 				dodgeDirection = getDirectionFromInput();
 
@@ -126,14 +135,17 @@ public class Dodge extends Action {
 				lookVec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
 				double jump = 0;
 				Vector3d dodgeVec = Vector3d.ZERO;
+				boolean enabledFlipping = !ParCoolConfig.CONFIG_CLIENT.disableFlipping.get();
 				switch (dodgeDirection) {
 					case Front:
 						dodgeVec = lookVec;
-						jump = 0.5;
+						jump = enabledFlipping ? 0.5 : 0.3;
+						flipping = enabledFlipping;
 						break;
 					case Back:
 						dodgeVec = lookVec.reverse();
-						jump = 0.5;
+						jump = enabledFlipping ? 0.5 : 0.3;
+						flipping = enabledFlipping;
 						break;
 					case Right:
 						dodgeVec = lookVec.yRot((float) Math.PI / -2);
@@ -149,7 +161,7 @@ public class Dodge extends Action {
 				EntityUtil.addVelocity(player, new Vector3d(dodgeVec.x(), jump, dodgeVec.z()));
 			}
 		}
-		if (dodging) {
+		if (flipping) {
 			Animation animation = Animation.get(player);
 			if (animation != null) animation.setAnimator(new DodgeAnimator());
 		}
@@ -157,8 +169,11 @@ public class Dodge extends Action {
 
 	@Override
 	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
-		if (!player.isLocalPlayer() || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || ParCoolConfig.CONFIG_CLIENT.disableCameraDodge.get())
-			return;
+		if (!player.isLocalPlayer() ||
+				!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
+				ParCoolConfig.CONFIG_CLIENT.disableFlipping.get() ||
+				ParCoolConfig.CONFIG_CLIENT.disableCameraDodge.get()
+		) return;
 		if (needPitchReset) {
 			player.xRot = 0;
 			needPitchReset = false;
@@ -188,6 +203,7 @@ public class Dodge extends Action {
 			this.dodging = ((SyncDodgeMessage) message).isDodging();
 			this.avoided = ((SyncDodgeMessage) message).isAvoided();
 			this.dodgeDirection = ((SyncDodgeMessage) message).getDodgeDirection();
+			this.flipping = ((SyncDodgeMessage) message).isFlipping();
 		}
 	}
 

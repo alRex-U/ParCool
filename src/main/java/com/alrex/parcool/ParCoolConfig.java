@@ -25,6 +25,8 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue disableWallJumpTowardWall;
 		public final ForgeConfigSpec.BooleanValue disableCameraRolling;
 		public final ForgeConfigSpec.BooleanValue disableCameraDodge;
+		public final ForgeConfigSpec.BooleanValue disableDoubleTappingForDodge;
+		public final ForgeConfigSpec.BooleanValue disableFlipping;
 		public final ForgeConfigSpec.BooleanValue substituteSprintForFastRun;
 		public final ForgeConfigSpec.BooleanValue replaceSprintWithFastRun;
 		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
@@ -73,6 +75,8 @@ public class ParCoolConfig {
 				disableWallJumpTowardWall = builder.comment("Disable WallJump toward a wall").define("disableWallJumpTowardWall", false);
 				disableCameraRolling = builder.comment("Disable Roll rotation of camera").define("disableCameraRotationRolling", false);
 				disableCameraDodge = builder.comment("Disable Dodge rotation of camera").define("disableCameraRotationDodge", false);
+				disableDoubleTappingForDodge = builder.comment("Disable Double-Tapping For Dodge. Please Use Dodge Key instead").define("disableDoubleTapping", false);
+				disableFlipping = builder.comment("Disable Flipping of Dodge").define("disableFlipping", false);
 				replaceSprintWithFastRun = builder.comment("Replace vanilla sprint with Fast-Running").define("replaceSprintWithFastRun", true);
 				substituteSprintForFastRun = builder.comment("Substitute a sprint of vanilla for the FastRunning").define("substituteSprint", false);
 				infiniteStamina = builder

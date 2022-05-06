@@ -22,6 +22,7 @@ public class SyncDodgeMessage {
 	private UUID playerID = null;
 	private boolean dodging = false;
 	private boolean avoided = false;
+	private boolean flipping = false;
 	@Nullable
 	private String dodgeDirection = null;
 
@@ -31,6 +32,10 @@ public class SyncDodgeMessage {
 
 	public boolean isAvoided() {
 		return avoided;
+	}
+
+	public boolean isFlipping() {
+		return flipping;
 	}
 
 	@Nullable
@@ -43,6 +48,7 @@ public class SyncDodgeMessage {
 		packet.writeLong(this.playerID.getMostSignificantBits());
 		packet.writeLong(this.playerID.getLeastSignificantBits());
 		packet.writeBoolean(this.avoided);
+		packet.writeBoolean(flipping);
 		packet.writeBoolean(dodgeDirection != null);
 		if (dodgeDirection != null) {
 			packet.writeInt(dodgeDirection.length());
@@ -55,6 +61,7 @@ public class SyncDodgeMessage {
 		message.dodging = packet.readBoolean();
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
 		message.avoided = packet.readBoolean();
+		message.flipping = packet.readBoolean();
 		if (packet.readBoolean()) {
 			message.dodgeDirection = packet.readCharSequence(packet.readInt(), StandardCharsets.UTF_8).toString();
 		}
@@ -103,6 +110,7 @@ public class SyncDodgeMessage {
 		SyncDodgeMessage message = new SyncDodgeMessage();
 		message.dodging = dodge.isDodging();
 		message.avoided = dodge.isAvoided();
+		message.flipping = dodge.isFlipping();
 		message.playerID = player.getUUID();
 		Dodge.DodgeDirections direction = dodge.getDodgeDirection();
 		if (direction != null) {
