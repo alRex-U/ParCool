@@ -4,57 +4,61 @@ import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.CatLeap;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraftforge.client.event.RenderPlayerEvent;
+import com.alrex.parcool.utilities.EasingFunctions;
+import net.minecraft.entity.player.PlayerEntity;
 
 import static com.alrex.parcool.utilities.MathUtil.lerp;
 
 public class CatLeapAnimator extends Animator {
+
 	@Override
-	public void animate(RenderPlayerEvent.Pre event, AbstractClientPlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+		return !parkourability.getCatLeap().isLeaping();
+	}
+
+	@Override
+	public boolean animatePre(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+		return false;
+	}
+
+	@Override
+	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		CatLeap catLeap = parkourability.getCatLeap();
-		if (!catLeap.isLeaping()) {
-			removal = true;
-			return;
+
+		float phase = (catLeap.getLeapingTick() + transformer.getPartialTick()) / 30f;
+		if (phase > 1) phase = 1f;
+		float factor = movingFactorFunc(phase);
+		transformer
+				.rotateLeftArm(
+						(float) -Math.toRadians(lerp(20f, 170f, factor)),
+						0,
+						(float) -Math.toRadians(lerp(10, 0, factor))
+				)
+				.rotateRightArm(
+						(float) -Math.toRadians(lerp(20f, 170f, factor)),
+						0,
+						(float) Math.toRadians(lerp(10, 0, factor))
+				)
+				.makeArmsNatural()
+				.rotateLeftLeg(
+						(float) Math.toRadians(lerp(15f, 45f, factor)),
+						0,
+						0
+				)
+				.rotateRightLeg(
+						(float) -Math.toRadians(lerp(15f, 45f, factor)),
+						0,
+						0
+				)
+				.makeLegsLittleMoving()
+				.End();
+	}
+
+	private float movingFactorFunc(float phase) {
+		if (phase < 0.2) {
+			return EasingFunctions.CubicInOut(phase * 5);
+		} else {
+			return (float) (1 - (phase - 0.2) * 1.25);
 		}
-		float partial = event.getPartialRenderTick();
-		MatrixStack stack = event.getMatrixStack();
-		PlayerRenderer renderer = event.getRenderer();
-		PlayerModel<AbstractClientPlayerEntity> model = renderer.getModel();
-		stack.pushPose();
-		{
-			float factor = (catLeap.getLeapingTick() + event.getPartialRenderTick()) / 30f;
-			if (factor > 1) factor = 1f;
-			PlayerModelTransformer.wrap(player, model, getTick(), event.getPartialRenderTick())
-					.rotateLeftArm(
-							(float) Math.toRadians(lerp(20f, 180f, factor)),
-							(float) -Math.toRadians(player.yBodyRot),
-							(float) Math.toRadians(0)
-					)
-					.rotateRightArm(
-							(float) Math.toRadians(lerp(20f, 180f, factor)),
-							(float) -Math.toRadians(player.yBodyRot),
-							(float) Math.toRadians(0)
-					)
-					.rotateLeftLeg(
-							(float) Math.toRadians(lerp(120f, 170f, factor)),
-							(float) -Math.toRadians(player.yBodyRot),
-							(float) Math.toRadians(0F)
-					)
-					.rotateRightLeg(
-							(float) Math.toRadians(lerp(240f, 190f, factor)),
-							(float) -Math.toRadians(player.yBodyRot),
-							(float) Math.toRadians(0F)
-					)
-					.render(
-							event.getMatrixStack(),
-							event.getBuffers(),
-							event.getRenderer()
-					);
-		}
-		stack.popPose();
 	}
 }

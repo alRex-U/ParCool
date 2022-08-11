@@ -1,12 +1,13 @@
 package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.client.animation.Animator;
+import com.alrex.parcool.client.animation.PlayerModelRotator;
+import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.util.LazyOptional;
 
 @OnlyIn(Dist.CLIENT)
@@ -23,12 +24,26 @@ public class Animation {
 		this.animator = animator;
 	}
 
-	public void animate(RenderPlayerEvent.Pre event) {
-		if (animator == null) return;
-		AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) event.getPlayer();
+	public boolean animatePre(PlayerEntity player, PlayerModelTransformer modelTransformer) {
+		if (animator == null) return false;
 		Parkourability parkourability = Parkourability.get(player);
-		animator.animate(event, player, parkourability);
-		if (animator.isRemoved()) animator = null;
+		boolean shouldCancel = animator.animatePre(player, parkourability, modelTransformer);
+		if (animator.shouldRemoved(player, parkourability)) animator = null;
+		return shouldCancel;
+	}
+
+	public void animatePost(PlayerEntity player, PlayerModelTransformer modelTransformer) {
+		if (animator == null) return;
+		Parkourability parkourability = Parkourability.get(player);
+		animator.animatePost(player, parkourability, modelTransformer);
+		if (animator.shouldRemoved(player, parkourability)) animator = null;
+	}
+
+	public void applyRotate(AbstractClientPlayerEntity player, PlayerModelRotator rotator) {
+		if (animator == null) return;
+		Parkourability parkourability = Parkourability.get(player);
+
+		animator.rotate(player, parkourability, rotator);
 	}
 
 	public void tick() {
