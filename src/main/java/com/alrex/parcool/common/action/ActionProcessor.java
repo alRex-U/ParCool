@@ -3,6 +3,7 @@ package com.alrex.parcool.common.action;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
+import com.alrex.parcool.common.network.SyncActionStateMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,7 +16,8 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 public class ActionProcessor {
-	public final ByteBuffer buffer = ByteBuffer.allocate(128);
+	public final ByteBuffer bufferOfPostState = ByteBuffer.allocate(128);
+	public final ByteBuffer bufferOfPreState = ByteBuffer.allocate(128);
 
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
@@ -36,23 +38,31 @@ public class ActionProcessor {
 		if (parkourability == null || stamina == null) return;
 		List<Action> actions = parkourability.getList();
 		stamina.onTick();
-		if (stamina.getRecoveryCoolTime() == 0) stamina.recover(stamina.getMaxStamina() / 60);
 		boolean needSync = event.side == LogicalSide.CLIENT && player.isLocalPlayer();
 
 		for (Action action : actions) {
 			if (needSync) {
-				buffer.clear();
-				action.saveState(buffer);
-				buffer.flip();
+				bufferOfPreState.clear();
+				action.saveState(bufferOfPreState);
+				bufferOfPreState.flip();
 			}
-			action.onTick(player, parkourability, stamina);
 
+			action.onTick(player, parkourability, stamina);
 			if (event.side == LogicalSide.CLIENT) {
 				action.onClientTick(player, parkourability, stamina);
 			}
+
 			if (needSync) {
-				if (action.needSynchronization(buffer)) {
-					action.sendSynchronization(player);
+				bufferOfPostState.clear();
+				action.saveState(bufferOfPostState);
+				bufferOfPostState.flip();
+
+				while (bufferOfPreState.hasRemaining()) {
+					if (bufferOfPostState.get() != bufferOfPreState.get()) {
+						bufferOfPostState.rewind();
+						SyncActionStateMessage.sync(player, action, bufferOfPostState);
+						break;
+					}
 				}
 			}
 		}

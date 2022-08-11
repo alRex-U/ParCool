@@ -45,7 +45,7 @@ public class StartRollMessage {
 				Parkourability parkourability = Parkourability.get(startPlayer);
 				if (parkourability == null) return;
 
-				parkourability.getRoll().synchronize(this);
+				parkourability.getRoll().receiveStartRoll(this);
 			}
 		});
 		contextSupplier.get().setPacketHandled(true);

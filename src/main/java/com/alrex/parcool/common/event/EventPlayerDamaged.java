@@ -3,7 +3,6 @@ package com.alrex.parcool.common.event;
 import com.alrex.parcool.common.action.impl.Dodge;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
-import com.alrex.parcool.common.network.AvoidDamageMessage;
 import com.alrex.parcool.common.network.StartRollMessage;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.DamageSource;
@@ -38,17 +37,6 @@ public class EventPlayerDamaged {
 		Dodge dodge = parkourability.getDodge();
 		if (dodge.isAvoided() && dodge.getDamageCoolTime() > 0) {
 			event.setCanceled(true);
-			return;
-		}
-		if (dodge.isDodging() &&
-				(dodge.getDodgeDirection() == Dodge.DodgeDirections.Front ||
-						dodge.getDodgeDirection() == Dodge.DodgeDirections.Back)
-		) {
-			if (!(damageSource.isFire() || damageSource.isMagic() || damageSource.getMsgId().equals(DamageSource.FALL.msgId)) && event.getAmount() < 15f) {
-				AvoidDamageMessage.send(player, event.getAmount());
-				dodge.avoidDamage(player);
-				event.setCanceled(true);
-			}
 		}
 	}
 }

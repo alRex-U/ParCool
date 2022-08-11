@@ -40,17 +40,8 @@ public class AdditionalProperties extends Action {
 	}
 
 	@Override
-	public boolean needSynchronization(ByteBuffer savedInstanceState) {
-		return false;
-	}
+	public void restoreState(ByteBuffer buffer) {
 
-	@Override
-	public void sendSynchronization(PlayerEntity player) {
-
-	}
-
-	@Override
-	public void synchronize(Object message) {
 	}
 
 	@Override

@@ -8,26 +8,54 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
-import com.alrex.parcool.common.network.SyncDodgeMessage;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.EntityUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
 
 public class Dodge extends Action {
-	public enum DodgeDirections {
-		Front, Back, Left, Right
+	public enum DodgeDirection {
+		Front, Back, Left, Right;
+
+		int getCode() {
+			switch (this) {
+				case Front:
+					return 0;
+				case Back:
+					return 1;
+				case Left:
+					return 2;
+				case Right:
+					return 3;
+			}
+			return -1;
+		}
+
+		@Nullable
+		public static DodgeDirection getFromCode(int code) {
+			switch (code) {
+				case 0:
+					return Front;
+				case 1:
+					return Back;
+				case 2:
+					return Left;
+				case 3:
+					return Right;
+			}
+			return null;
+		}
 	}
 
-	private DodgeDirections dodgeDirection = null;
+	private DodgeDirection dodgeDirection = null;
 	private int coolTime = 0;
 	private int dodgingTick = 0;
 	private boolean needPitchReset = false;
@@ -93,17 +121,17 @@ public class Dodge extends Action {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private DodgeDirections getDirectionFromInput() {
+	private DodgeDirection getDirectionFromInput() {
 		if (KeyBindings.getKeyBack().isDown()) {
-			return DodgeDirections.Back;
+			return DodgeDirection.Back;
 		}
 		if (KeyBindings.getKeyForward().isDown()) {
-			return DodgeDirections.Front;
+			return DodgeDirection.Front;
 		}
 		if (KeyBindings.getKeyLeft().isDown()) {
-			return DodgeDirections.Left;
+			return DodgeDirection.Left;
 		} else {
-			return DodgeDirections.Right;
+			return DodgeDirection.Right;
 		}
 	}
 
@@ -114,7 +142,7 @@ public class Dodge extends Action {
 			if (canContinue(player, parkourability, stamina)) {
 				dodging = true;
 			} else {
-				if (dodging && flipping && (dodgeDirection == DodgeDirections.Front || dodgeDirection == DodgeDirections.Back)) {
+				if (dodging && flipping && (dodgeDirection == DodgeDirection.Front || dodgeDirection == DodgeDirection.Back)) {
 					if (!ParCoolConfig.CONFIG_CLIENT.disableCameraDodge.get()) {
 						needPitchReset = true;
 					}
@@ -179,52 +207,35 @@ public class Dodge extends Action {
 			needPitchReset = false;
 		}
 		if (!dodging) return;
-		if (dodgeDirection == DodgeDirections.Front) {
+		if (dodgeDirection == DodgeDirection.Front) {
 			player.xRot = (getDodgingTick() + event.renderTickTime) * 30;
-		} else if (dodgeDirection == DodgeDirections.Back) {
+		} else if (dodgeDirection == DodgeDirection.Back) {
 			player.xRot = (getDodgingTick() + event.renderTickTime) * -24;
 		}
 	}
 
 	@Override
-	public boolean needSynchronization(ByteBuffer savedInstanceState) {
-		return dodging != BufferUtil.getBoolean(savedInstanceState)
-				|| avoided != BufferUtil.getBoolean(savedInstanceState);
-	}
-
-	@Override
-	public void sendSynchronization(PlayerEntity player) {
-		SyncDodgeMessage.sync(player, this);
-	}
-
-	@Override
-	public void synchronize(Object message) {
-		if (message instanceof SyncDodgeMessage) {
-			this.dodging = ((SyncDodgeMessage) message).isDodging();
-			this.avoided = ((SyncDodgeMessage) message).isAvoided();
-			this.dodgeDirection = ((SyncDodgeMessage) message).getDodgeDirection();
-			this.flipping = ((SyncDodgeMessage) message).isFlipping();
-		}
+	public void restoreState(ByteBuffer buffer) {
+		dodging = BufferUtil.getBoolean(buffer);
+		avoided = BufferUtil.getBoolean(buffer);
+		flipping = BufferUtil.getBoolean(buffer);
+		dodgeDirection = DodgeDirection.getFromCode(buffer.getInt());
 	}
 
 	@Override
 	public void saveState(ByteBuffer buffer) {
 		BufferUtil.wrap(buffer)
 				.putBoolean(dodging)
-				.putBoolean(avoided);
-	}
-
-	public void avoidDamage(ServerPlayerEntity player) {
-		avoided = true;
-		damageCoolTime = 10;
-		SyncDodgeMessage.broadcast(player, this);
+				.putBoolean(avoided)
+				.putBoolean(flipping);
+		buffer.putInt(dodgeDirection == null ? -1 : dodgeDirection.getCode());
 	}
 
 	public int getStaminaConsumptionOfAvoiding(float damage) {
 		return Math.round(150 + damage * 30);
 	}
 
-	public DodgeDirections getDodgeDirection() {
+	public DodgeDirection getDodgeDirection() {
 		return dodgeDirection;
 	}
 

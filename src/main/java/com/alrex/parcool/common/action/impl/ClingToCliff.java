@@ -7,7 +7,6 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
-import com.alrex.parcool.common.network.SyncClingToCliffMessage;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.EntityUtil;
 import com.alrex.parcool.utilities.VectorUtil;
@@ -94,21 +93,8 @@ public class ClingToCliff extends Action {
 	}
 
 	@Override
-	public boolean needSynchronization(ByteBuffer savedInstanceState) {
-		return cling != BufferUtil.getBoolean(savedInstanceState);
-	}
-
-	@Override
-	public void sendSynchronization(PlayerEntity player) {
-		SyncClingToCliffMessage.sync(player, this);
-	}
-
-
-	@Override
-	public void synchronize(Object message) {
-		if (message instanceof SyncClingToCliffMessage) {
-			this.cling = ((SyncClingToCliffMessage) message).isCling();
-		}
+	public void restoreState(ByteBuffer buffer) {
+		cling = BufferUtil.getBoolean(buffer);
 	}
 
 	@Override

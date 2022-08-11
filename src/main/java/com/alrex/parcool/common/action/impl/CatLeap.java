@@ -6,7 +6,6 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
-import com.alrex.parcool.common.network.SyncCatLeapMessage;
 import com.alrex.parcool.utilities.BufferUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
@@ -76,35 +75,20 @@ public class CatLeap extends Action {
 	}
 
 	@Override
-	public boolean needSynchronization(ByteBuffer savedInstanceState) {
-		return this.ready != BufferUtil.getBoolean(savedInstanceState)
-				|| this.leaping != BufferUtil.getBoolean(savedInstanceState);
-	}
-
-	@Override
-	public void sendSynchronization(PlayerEntity player) {
-		SyncCatLeapMessage.sync(player, this);
-	}
-
-	@Override
-	public void synchronize(Object message) {
-		if (message instanceof SyncCatLeapMessage) {
-			SyncCatLeapMessage correctMessage = (SyncCatLeapMessage) message;
-			leaping = correctMessage.isLeaping();
-			ready = correctMessage.isReady();
-			if (leaping) {
-				start = true;
-			}
-		}
-	}
-
-	@Override
 	public void saveState(ByteBuffer buffer) {
 		BufferUtil.wrap(buffer)
 				.putBoolean(this.ready)
 				.putBoolean(this.leaping);
 	}
 
+	@Override
+	public void restoreState(ByteBuffer buffer) {
+		this.ready = BufferUtil.getBoolean(buffer);
+		this.leaping = BufferUtil.getBoolean(buffer);
+		if (leaping) {
+			start = true;
+		}
+	}
 
 	public boolean isReady() {
 		return ready;

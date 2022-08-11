@@ -52,7 +52,7 @@ public class StartVaultMessage {
 
 				Parkourability parkourability = Parkourability.get(player);
 				if (parkourability == null) return;
-				parkourability.getVault().synchronize(this);
+				parkourability.getVault().receiveStartVault(this);
 			}
 		});
 		contextSupplier.get().setPacketHandled(true);

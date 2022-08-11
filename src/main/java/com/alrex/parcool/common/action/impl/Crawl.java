@@ -5,7 +5,6 @@ import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
-import com.alrex.parcool.common.network.SyncCrawlMessage;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.EntityUtil;
 import com.alrex.parcool.utilities.VectorUtil;
@@ -89,23 +88,9 @@ public class Crawl extends Action {
 	}
 
 	@Override
-	public boolean needSynchronization(ByteBuffer savedInstanceState) {
-		return this.crawling != BufferUtil.getBoolean(savedInstanceState)
-				|| this.sliding != BufferUtil.getBoolean(savedInstanceState);
-	}
-
-
-	@Override
-	public void sendSynchronization(PlayerEntity player) {
-		SyncCrawlMessage.sync(player, this);
-	}
-
-	@Override
-	public void synchronize(Object message) {
-		if (message instanceof SyncCrawlMessage) {
-			this.sliding = ((SyncCrawlMessage) message).isSliding();
-			this.crawling = ((SyncCrawlMessage) message).isCrawling();
-		}
+	public void restoreState(ByteBuffer buffer) {
+		crawling = BufferUtil.getBoolean(buffer);
+		sliding = BufferUtil.getBoolean(buffer);
 	}
 
 	@Override

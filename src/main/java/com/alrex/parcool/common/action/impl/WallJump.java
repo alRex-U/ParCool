@@ -90,22 +90,12 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public boolean needSynchronization(ByteBuffer savedInstanceState) {
-		return false;
-	}
-
-	@Override
-	public void sendSynchronization(PlayerEntity player) {
-
-	}
-
-	@Override
-	public void synchronize(Object message) {
-
-	}
-
-	@Override
 	public void saveState(ByteBuffer buffer) {
+
+	}
+
+	@Override
+	public void restoreState(ByteBuffer buffer) {
 
 	}
 }

@@ -18,13 +18,13 @@ public class DodgeAnimator extends Animator {
 
 		float rotValue = (dodge.getDodgingTick() + rotator.getPartial()) * 30;
 
-		if (dodge.isDodging() && dodge.getDodgeDirection() == Dodge.DodgeDirections.Back) {
+		if (dodge.isDodging() && dodge.getDodgeDirection() == Dodge.DodgeDirection.Back) {
 			rotValue *= -1;
 			rotator
 					.startBasedCenter()
 					.rotateFrontward(rotValue)
 					.End();
-		} else if (dodge.isDodging() && dodge.getDodgeDirection() == Dodge.DodgeDirections.Front) {
+		} else if (dodge.isDodging() && dodge.getDodgeDirection() == Dodge.DodgeDirection.Front) {
 			rotator
 					.startBasedCenter()
 					.rotateFrontward(rotValue)

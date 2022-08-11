@@ -5,7 +5,6 @@ import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
-import com.alrex.parcool.common.network.SyncFastRunningMessage;
 import com.alrex.parcool.utilities.BufferUtil;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -19,7 +18,7 @@ import java.nio.ByteBuffer;
 import java.util.UUID;
 
 public class FastRun extends Action {
-	private static final String FAST_RUNNING_MODIFIER_NAME = "parCool.modifier.fastrunnning";
+	private static final String FAST_RUNNING_MODIFIER_NAME = "parcool.modifier.fastrunnning";
 	private static final UUID FAST_RUNNING_MODIFIER_UUID = UUID.randomUUID();
 	private static final AttributeModifier FAST_RUNNING_MODIFIER
 			= new AttributeModifier(
@@ -69,23 +68,10 @@ public class FastRun extends Action {
 
 	}
 
-	@Override
-	public boolean needSynchronization(ByteBuffer savedInstanceState) {
-		return fastRunning != BufferUtil.getBoolean(savedInstanceState);
-	}
 
 	@Override
-	public void sendSynchronization(PlayerEntity player) {
-		SyncFastRunningMessage.sync(player, this);
-	}
-
-
-	@Override
-	public void synchronize(Object message) {
-		if (message instanceof SyncFastRunningMessage) {
-			SyncFastRunningMessage correctMessage = (SyncFastRunningMessage) message;
-			this.fastRunning = correctMessage.isFastRunning();
-		}
+	public void restoreState(ByteBuffer buffer) {
+		fastRunning = BufferUtil.getBoolean(buffer);
 	}
 
 	@Override

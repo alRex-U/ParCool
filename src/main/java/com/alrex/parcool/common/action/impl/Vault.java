@@ -112,21 +112,12 @@ public class Vault extends Action {
 	}
 
 	@Override
-	public boolean needSynchronization(ByteBuffer savedInstanceState) {
-		return false;
-	}
-
-	@Override
-	public void sendSynchronization(PlayerEntity player) {
+	public void restoreState(ByteBuffer buffer) {
 
 	}
 
-
-	@Override
-	public void synchronize(Object message) {
-		if (message instanceof StartVaultMessage) {
-			start = true;
-		}
+	public void receiveStartVault(StartVaultMessage message) {
+		start = true;
 	}
 
 	@Override

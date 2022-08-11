@@ -8,7 +8,6 @@ import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.common.network.StartRollMessage;
-import com.alrex.parcool.common.network.SyncRollMessage;
 import com.alrex.parcool.utilities.BufferUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -77,7 +76,6 @@ public class Roll extends Action {
 				Vector3d vec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize().scale(1.4);
 				player.setDeltaMovement(vec.x(), 0, vec.z());
 				this.cameraPitch = 20;
-				sendSynchronization(player);
 			}
 			Animation animation = Animation.get(player);
 			if (animation != null) animation.setAnimator(new RollAnimator());
@@ -94,31 +92,11 @@ public class Roll extends Action {
 		}
 	}
 
-	@Override
-	public boolean needSynchronization(ByteBuffer savedInstanceState) {
-		return this.ready != BufferUtil.getBoolean(savedInstanceState)
-				|| this.rolling != BufferUtil.getBoolean(savedInstanceState);
-	}
 
-	@Override
-	public void sendSynchronization(PlayerEntity player) {
-		SyncRollMessage.sync(player, this);
-	}
-
-
-	@Override
-	public void synchronize(Object message) {
-		if (message instanceof SyncRollMessage) {
-			this.rolling = ((SyncRollMessage) message).isRolling();
-			this.ready = ((SyncRollMessage) message).isRollReady();
-			this.readyTick = ((SyncRollMessage) message).getReadyTick();
-			return;
-		}
-		if (message instanceof StartRollMessage) {
-			this.rolling = true;
-			this.ready = false;
-			this.start = true;
-		}
+	public void receiveStartRoll(StartRollMessage message) {
+		this.rolling = true;
+		this.ready = false;
+		this.start = true;
 	}
 
 	@Override
@@ -126,6 +104,16 @@ public class Roll extends Action {
 		BufferUtil.wrap(buffer)
 				.putBoolean(ready)
 				.putBoolean(rolling);
+	}
+
+	@Override
+	public void restoreState(ByteBuffer buffer) {
+		boolean oldReady = ready;
+		ready = BufferUtil.getBoolean(buffer);
+		if (!oldReady && ready) {
+			readyTick = ROLL_DEFERMENT_TICK;
+		}
+		rolling = BufferUtil.getBoolean(buffer);
 	}
 
 	public int getRollingTick() {

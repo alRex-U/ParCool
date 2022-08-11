@@ -58,6 +58,7 @@ public class Stamina {
 
 	public void onTick() {
 		if (coolTime > 0) coolTime--;
+		if (coolTime == 0) recover(getMaxStamina() / 60);
 	}
 
 	public void synchronize(SyncStaminaMessage message) {

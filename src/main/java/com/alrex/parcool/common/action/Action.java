@@ -18,11 +18,10 @@ public abstract class Action {
 	@OnlyIn(Dist.CLIENT)
 	public abstract void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability);
 
-	public abstract boolean needSynchronization(ByteBuffer savedInstanceState);
+	public abstract void restoreState(ByteBuffer buffer);
 
-	public abstract void sendSynchronization(PlayerEntity player);
-
-	public abstract void synchronize(Object message);
-
+	/**
+	 * save state needed to be synchronized
+	 */
 	public abstract void saveState(ByteBuffer buffer);
 }

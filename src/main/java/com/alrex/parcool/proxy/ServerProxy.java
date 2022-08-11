@@ -38,48 +38,6 @@ public class ServerProxy extends CommonProxy {
 				StartRollMessage::handleServer
 		);
 		instance.registerMessage(
-				4,
-				SyncCatLeapMessage.class,
-				SyncCatLeapMessage::encode,
-				SyncCatLeapMessage::decode,
-				SyncCatLeapMessage::handleServer
-		);
-		instance.registerMessage(
-				5,
-				SyncCrawlMessage.class,
-				SyncCrawlMessage::encode,
-				SyncCrawlMessage::decode,
-				SyncCrawlMessage::handleServer
-		);
-		instance.registerMessage(
-				6,
-				SyncDodgeMessage.class,
-				SyncDodgeMessage::encode,
-				SyncDodgeMessage::decode,
-				SyncDodgeMessage::handleServer
-		);
-		instance.registerMessage(
-				7,
-				SyncFastRunningMessage.class,
-				SyncFastRunningMessage::encode,
-				SyncFastRunningMessage::decode,
-				SyncFastRunningMessage::handleServer
-		);
-		instance.registerMessage(
-				8,
-				SyncClingToCliffMessage.class,
-				SyncClingToCliffMessage::encode,
-				SyncClingToCliffMessage::decode,
-				SyncClingToCliffMessage::handleServer
-		);
-		instance.registerMessage(
-				9,
-				SyncRollMessage.class,
-				SyncRollMessage::encode,
-				SyncRollMessage::decode,
-				SyncRollMessage::handleServer
-		);
-		instance.registerMessage(
 				10,
 				SyncStaminaMessage.class,
 				SyncStaminaMessage::encode,
@@ -101,18 +59,18 @@ public class ServerProxy extends CommonProxy {
 				null
 		);
 		instance.registerMessage(
-				13,
-				AvoidDamageMessage.class,
-				AvoidDamageMessage::encode,
-				AvoidDamageMessage::decode,
-				null
-		);
-		instance.registerMessage(
 				14,
 				StartVaultMessage.class,
 				StartVaultMessage::encode,
 				StartVaultMessage::decode,
 				StartVaultMessage::handleServer
+		);
+		instance.registerMessage(
+				15,
+				SyncActionStateMessage.class,
+				SyncActionStateMessage::encode,
+				SyncActionStateMessage::decode,
+				SyncActionStateMessage::handleServer
 		);
 	}
 }

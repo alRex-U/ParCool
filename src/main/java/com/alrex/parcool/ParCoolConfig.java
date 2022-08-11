@@ -55,7 +55,7 @@ public class ParCoolConfig {
 			builder.pop();
 			builder.comment("Values").push("Modifier Values");
 			{
-				fastRunningModifier = builder.comment("FastRun Speed Modifier").defineInRange("fastRunModifier", 5, 0.001, 5);
+				fastRunningModifier = builder.comment("FastRun Speed Modifier").defineInRange("fastRunModifier", 3, 0.001, 3);
 			}
 			builder.pop();
 			builder.comment("HUD").push("Stamina HUD configuration");
