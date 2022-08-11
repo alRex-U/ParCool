@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "com.alrex.parcool.mixin",
+  "plugin": "com.alrex.parcool.mixin.ParCoolMixinPlugin",
+  "refmap": "parcool.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
