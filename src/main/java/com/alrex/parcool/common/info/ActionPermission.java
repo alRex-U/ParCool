@@ -14,6 +14,8 @@ public class ActionPermission {
 	private boolean allowedRoll = true;
 	private boolean allowedVault = true;
 	private boolean allowedWallJump = true;
+	private boolean allowedFlipping = true;
+	private boolean allowedBreakfall = true;
 
 	public boolean canCatLeap() {
 		return ParCool.isActive() && haveReceived && ParCoolConfig.CONFIG_CLIENT.canCatLeap.get() && allowedCatLeap;
@@ -47,6 +49,14 @@ public class ActionPermission {
 		return ParCool.isActive() && haveReceived && ParCoolConfig.CONFIG_CLIENT.canWallJump.get() && allowedWallJump;
 	}
 
+	public boolean canFlipping() {
+		return ParCool.isActive() && haveReceived && ParCoolConfig.CONFIG_CLIENT.canFlipping.get() && allowedFlipping;
+	}
+
+	public boolean canBreakfall() {
+		return ParCool.isActive() && haveReceived && ParCoolConfig.CONFIG_CLIENT.canBreakfall.get() && allowedBreakfall;
+	}
+
 	public void receiveServerPermissions(ActionPermissionsMessage message) {
 		allowedCatLeap = message.isAllowedCatLeap();
 		allowedCrawl = message.isAllowedCrawl();
@@ -56,6 +66,8 @@ public class ActionPermission {
 		allowedRoll = message.isAllowedRoll();
 		allowedVault = message.isAllowedVault();
 		allowedWallJump = message.isAllowedWallJump();
+		allowedBreakfall = message.isAllowedBreakfall();
+		allowedFlipping = message.isAllowedFlipping();
 		haveReceived = true;
 	}
 }

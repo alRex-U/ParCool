@@ -32,10 +32,10 @@ public class ServerProxy extends CommonProxy {
 		);
 		instance.registerMessage(
 				3,
-				StartRollMessage.class,
-				StartRollMessage::encode,
-				StartRollMessage::decode,
-				StartRollMessage::handleServer
+				StartBreakfallMessage.class,
+				StartBreakfallMessage::encode,
+				StartBreakfallMessage::decode,
+				StartBreakfallMessage::handleServer
 		);
 		instance.registerMessage(
 				10,

@@ -8,6 +8,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 
 public class WorldUtil {
+
 	@Nullable
 	public static Vector3d getWall(LivingEntity entity) {
 		final double d = 0.3;

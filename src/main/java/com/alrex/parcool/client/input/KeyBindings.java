@@ -16,7 +16,7 @@ public class KeyBindings {
 	private static final GameSettings settings = Minecraft.getInstance().options;
 	private static final KeyBinding keyBindCrawl = new KeyBinding("key.crawl.description", GLFW.GLFW_KEY_C, "key.categories.parcool");
 	private static final KeyBinding keyBindGrabWall = new KeyBinding("key.grab.description", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
-	private static final KeyBinding keyBindRoll = new KeyBinding("key.roll.description", GLFW.GLFW_KEY_C, "key.categories.parcool");
+	private static final KeyBinding keyBindBreakfall = new KeyBinding("key.breakfall.description", GLFW.GLFW_KEY_C, "key.categories.parcool");
 	private static final KeyBinding keyBindFastRunning = new KeyBinding("key.fastrunning.description", GLFW.GLFW_KEY_LEFT_CONTROL, "key.categories.parcool");
 	private static final KeyBinding keyBindDodge = new KeyBinding("key.dodge.description", GLFW.GLFW_KEY_R, "key.categories.parcool");
 	private static final KeyBinding keyBindOpenSettings = new KeyBinding("key.parcool.setting.open", GLFW.GLFW_KEY_P, "key.categories.parcool");
@@ -61,8 +61,8 @@ public class KeyBindings {
 		return keyBindOpenSettings;
 	}
 
-	public static KeyBinding getKeyRoll() {
-		return keyBindRoll;
+	public static KeyBinding getKeyBreakfall() {
+		return keyBindBreakfall;
 	}
 
 	public static KeyBinding getKeyFastRunning() {
@@ -77,7 +77,7 @@ public class KeyBindings {
 	public static void register(FMLClientSetupEvent event) {
 		ClientRegistry.registerKeyBinding(keyBindCrawl);
 		ClientRegistry.registerKeyBinding(keyBindGrabWall);
-		ClientRegistry.registerKeyBinding(keyBindRoll);
+		ClientRegistry.registerKeyBinding(keyBindBreakfall);
 		ClientRegistry.registerKeyBinding(keyBindFastRunning);
 		ClientRegistry.registerKeyBinding(keyBindDodge);
 		ClientRegistry.registerKeyBinding(keyBindOpenSettings);

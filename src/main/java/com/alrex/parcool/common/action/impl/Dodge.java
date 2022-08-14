@@ -10,7 +10,6 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.EntityUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
@@ -58,22 +57,11 @@ public class Dodge extends Action {
 	private DodgeDirection dodgeDirection = null;
 	private int coolTime = 0;
 	private int dodgingTick = 0;
-	private boolean needPitchReset = false;
 	private int damageCoolTime = 0;
-	private boolean avoided = false;
 	private boolean dodging = false;
-	private boolean flipping = false;
-
-	public boolean isAvoided() {
-		return avoided;
-	}
 
 	public boolean isDodging() {
 		return dodging;
-	}
-
-	public boolean isFlipping() {
-		return flipping;
 	}
 
 	@Override
@@ -142,20 +130,11 @@ public class Dodge extends Action {
 			if (canContinue(player, parkourability, stamina)) {
 				dodging = true;
 			} else {
-				if (dodging && flipping && (dodgeDirection == DodgeDirection.Front || dodgeDirection == DodgeDirection.Back)) {
-					if (!ParCoolConfig.CONFIG_CLIENT.disableCameraDodge.get()) {
-						needPitchReset = true;
-					}
-				}
 				dodgingTick = 0;
 				dodging = false;
-				avoided = false;
-				flipping = false;
 			}
 			if (!dodging && canDodge(player, parkourability, stamina)) {
 				dodging = true;
-				avoided = false;
-				flipping = false;
 				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionDodge(), parkourability.getActionInfo());
 				dodgeDirection = getDirectionFromInput();
 
@@ -163,76 +142,45 @@ public class Dodge extends Action {
 				lookVec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
 				double jump = 0;
 				Vector3d dodgeVec = Vector3d.ZERO;
-				boolean enabledFlipping = !ParCoolConfig.CONFIG_CLIENT.disableFlipping.get();
 				switch (dodgeDirection) {
 					case Front:
 						dodgeVec = lookVec;
-						jump = enabledFlipping ? 0.5 : 0.3;
-						flipping = enabledFlipping;
 						break;
 					case Back:
 						dodgeVec = lookVec.reverse();
-						jump = enabledFlipping ? 0.5 : 0.3;
-						flipping = enabledFlipping;
 						break;
 					case Right:
 						dodgeVec = lookVec.yRot((float) Math.PI / -2);
-						jump = 0.3;
 						break;
 					case Left:
 						dodgeVec = lookVec.yRot((float) Math.PI / 2);
-						jump = 0.3;
 						break;
 				}
+				jump = 0.3;
 				coolTime = 10;
 				dodgeVec = dodgeVec.scale(0.4);
 				EntityUtil.addVelocity(player, new Vector3d(dodgeVec.x(), jump, dodgeVec.z()));
+				Animation animation = Animation.get(player);
+				if (animation != null) animation.setAnimator(new DodgeAnimator());
 			}
-		}
-		if (flipping) {
-			Animation animation = Animation.get(player);
-			if (animation != null) animation.setAnimator(new DodgeAnimator());
 		}
 	}
 
 	@Override
 	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
-		if (!player.isLocalPlayer() ||
-				!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
-				ParCoolConfig.CONFIG_CLIENT.disableFlipping.get() ||
-				ParCoolConfig.CONFIG_CLIENT.disableCameraDodge.get()
-		) return;
-		if (needPitchReset) {
-			player.xRot = 0;
-			needPitchReset = false;
-		}
-		if (!dodging) return;
-		if (dodgeDirection == DodgeDirection.Front) {
-			player.xRot = (getDodgingTick() + event.renderTickTime) * 30;
-		} else if (dodgeDirection == DodgeDirection.Back) {
-			player.xRot = (getDodgingTick() + event.renderTickTime) * -24;
-		}
 	}
 
 	@Override
 	public void restoreState(ByteBuffer buffer) {
 		dodging = BufferUtil.getBoolean(buffer);
-		avoided = BufferUtil.getBoolean(buffer);
-		flipping = BufferUtil.getBoolean(buffer);
 		dodgeDirection = DodgeDirection.getFromCode(buffer.getInt());
 	}
 
 	@Override
 	public void saveState(ByteBuffer buffer) {
 		BufferUtil.wrap(buffer)
-				.putBoolean(dodging)
-				.putBoolean(avoided)
-				.putBoolean(flipping);
+				.putBoolean(dodging);
 		buffer.putInt(dodgeDirection == null ? -1 : dodgeDirection.getCode());
-	}
-
-	public int getStaminaConsumptionOfAvoiding(float damage) {
-		return Math.round(150 + damage * 30);
 	}
 
 	public DodgeDirection getDodgeDirection() {

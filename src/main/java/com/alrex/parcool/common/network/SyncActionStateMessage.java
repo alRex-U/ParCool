@@ -98,6 +98,7 @@ public class SyncActionStateMessage {
 		if (action instanceof Roll) return 6;
 		if (action instanceof Vault) return 7;
 		if (action instanceof WallJump) return 8;
+		if (action instanceof Breakfall) return 9;
 
 		return -1;
 	}
@@ -123,6 +124,8 @@ public class SyncActionStateMessage {
 				return parkourability.getVault();
 			case 8:
 				return parkourability.getWallJump();
+			case 9:
+				return parkourability.getBreakfall();
 		}
 		return null;
 	}

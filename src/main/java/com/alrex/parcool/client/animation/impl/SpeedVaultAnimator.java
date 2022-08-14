@@ -19,8 +19,8 @@ public class SpeedVaultAnimator extends Animator {
 
 	@Override
 	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
-		float phase = (getTick() + rotator.getPartial()) / MAX_TIME;
-		float factor = -squaring(((getTick() + rotator.getPartial()) - MAX_TIME / 2f) / (MAX_TIME / 2f)) + 1;
+		float phase = (getTick() + rotator.getPartialTick()) / MAX_TIME;
+		float factor = -squaring(((getTick() + rotator.getPartialTick()) - MAX_TIME / 2f) / (MAX_TIME / 2f)) + 1;
 
 		rotator
 				.startBasedCenter()

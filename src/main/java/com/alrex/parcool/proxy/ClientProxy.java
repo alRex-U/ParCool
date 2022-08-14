@@ -35,10 +35,10 @@ public class ClientProxy extends CommonProxy {
 		);
 		instance.registerMessage(
 				3,
-				StartRollMessage.class,
-				StartRollMessage::encode,
-				StartRollMessage::decode,
-				StartRollMessage::handleClient
+				StartBreakfallMessage.class,
+				StartBreakfallMessage::encode,
+				StartBreakfallMessage::decode,
+				StartBreakfallMessage::handleClient
 		);
 		instance.registerMessage(
 				10,

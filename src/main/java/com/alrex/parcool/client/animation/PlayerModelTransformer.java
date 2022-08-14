@@ -36,10 +36,6 @@ public class PlayerModelTransformer {
 		return limbSwing;
 	}
 
-	public float getPartial() {
-		return partial;
-	}
-
 	public float getLimbSwingAmount() {
 		return limbSwingAmount;
 	}
@@ -131,11 +127,8 @@ public class PlayerModelTransformer {
 		return this;
 	}
 
-	/**
-	 * Rotate the body frontward or backward
-	 */
-	public PlayerModelTransformer rotateBodyX(float angleX) {
-		model.body.xRot = angleX;
+	public PlayerModelTransformer rotateAdditionallyHeadPitch(float pitchDegree) {
+		model.head.xRot = (float) Math.toRadians(pitchDegree + headPitch);
 
 		return this;
 	}
@@ -143,13 +136,8 @@ public class PlayerModelTransformer {
 	public void End() {
 	}
 
-	;
-
-	/**
-	 * Rotate the body rightward or leftward
-	 */
-	public PlayerModelTransformer rotateBodyZ(float angleZ) {
-		model.body.zRot = angleZ;
+	public PlayerModelTransformer rotateAdditionallyHeadYaw(float yawDegree) {
+		model.head.yRot = (float) Math.toRadians(yawDegree + netHeadYaw);
 		return this;
 	}
 

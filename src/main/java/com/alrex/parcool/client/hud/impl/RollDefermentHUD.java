@@ -2,16 +2,7 @@ package com.alrex.parcool.client.hud.impl;
 
 import com.alrex.parcool.client.hud.AbstractHUD;
 import com.alrex.parcool.client.hud.Position;
-import com.alrex.parcool.common.action.impl.Roll;
-import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.utilities.ColorUtil;
-import com.alrex.parcool.utilities.FontUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.MainWindow;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -24,6 +15,7 @@ public class RollDefermentHUD extends AbstractHUD {
 
 	@Override
 	public void render(RenderGameOverlayEvent.Pre event, MatrixStack stack) {
+		/*
 		PlayerEntity player = Minecraft.getInstance().player;
 		if (player == null) return;
 		Parkourability parkourability = Parkourability.get(player);
@@ -43,5 +35,6 @@ public class RollDefermentHUD extends AbstractHUD {
 		fill(stack, halfWidth, 0, halfWidth + boxWidth, fontRenderer.lineHeight, color);
 		fill(stack, halfWidth - boxWidth, 0, halfWidth, fontRenderer.lineHeight, color);
 		FontUtil.drawCenteredText(stack, new StringTextComponent("<Roll Ready>"), halfWidth, Minecraft.getInstance().font.lineHeight / 2 + 1, ColorUtil.getColorCodeFromARGB(0, 240, 240, 240));
+		*/
 	}
 }

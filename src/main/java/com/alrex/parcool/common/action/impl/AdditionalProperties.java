@@ -13,6 +13,7 @@ import java.nio.ByteBuffer;
 public class AdditionalProperties extends Action {
 	private int sprintingTick = 0;
 	private int notLandingTick = 0;
+	private int landingTick = 0;
 
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
@@ -23,8 +24,10 @@ public class AdditionalProperties extends Action {
 		}
 		if (player.isOnGround()) {
 			notLandingTick = 0;
+			landingTick++;
 		} else {
 			notLandingTick++;
+			landingTick = 0;
 		}
 	}
 
@@ -55,5 +58,9 @@ public class AdditionalProperties extends Action {
 
 	public int getNotLandingTick() {
 		return notLandingTick;
+	}
+
+	public int getLandingTick() {
+		return landingTick;
 	}
 }

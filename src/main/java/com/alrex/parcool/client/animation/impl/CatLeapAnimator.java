@@ -55,10 +55,10 @@ public class CatLeapAnimator extends Animator {
 	}
 
 	private float movingFactorFunc(float phase) {
-		if (phase < 0.2) {
-			return EasingFunctions.CubicInOut(phase * 5);
+		if (phase > 0.2) {
+			return 1 - EasingFunctions.CubicInOut((phase - 0.2f) * 1.25f);
 		} else {
-			return (float) (1 - (phase - 0.2) * 1.25);
+			return (float) (1 - 25 * (phase - 0.2) * (phase - 0.2));
 		}
 	}
 }

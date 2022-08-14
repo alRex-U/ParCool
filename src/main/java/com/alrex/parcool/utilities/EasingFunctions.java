@@ -12,4 +12,12 @@ public class EasingFunctions {
 			return 1 - 4 * phase * phase * phase;
 		}
 	}
+
+	public static float SinInOutBySquare(float phase) {
+		if (phase < 0.5) {
+			return 2 * phase * phase;
+		} else {
+			return 1 - 2 * (phase - 1) * (phase - 1);
+		}
+	}
 }

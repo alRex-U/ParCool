@@ -27,6 +27,8 @@ public class ActionPermissionsMessage {
 	private boolean allowedRoll;
 	private boolean allowedVault;
 	private boolean allowedWallJump;
+	private boolean allowedFlipping;
+	private boolean allowedBreakfall;
 	private boolean allowedInfiniteStamina;
 
 	public boolean isAllowedCatLeap() {
@@ -61,6 +63,14 @@ public class ActionPermissionsMessage {
 		return allowedWallJump;
 	}
 
+	public boolean isAllowedFlipping() {
+		return allowedFlipping;
+	}
+
+	public boolean isAllowedBreakfall() {
+		return allowedBreakfall;
+	}
+
 	public boolean isAllowedInfiniteStamina() {
 		return allowedInfiniteStamina;
 	}
@@ -75,6 +85,8 @@ public class ActionPermissionsMessage {
 		packet.writeBoolean(allowedVault);
 		packet.writeBoolean(allowedWallJump);
 		packet.writeBoolean(allowedInfiniteStamina);
+		packet.writeBoolean(allowedBreakfall);
+		packet.writeBoolean(allowedFlipping);
 	}
 
 	public static ActionPermissionsMessage decode(PacketBuffer packet) {
@@ -88,6 +100,8 @@ public class ActionPermissionsMessage {
 		message.allowedVault = packet.readBoolean();
 		message.allowedWallJump = packet.readBoolean();
 		message.allowedInfiniteStamina = packet.readBoolean();
+		message.allowedBreakfall = packet.readBoolean();
+		message.allowedFlipping = packet.readBoolean();
 		return message;
 	}
 
@@ -130,6 +144,8 @@ public class ActionPermissionsMessage {
 		message.allowedVault = config.allowVault.get();
 		message.allowedWallJump = config.allowWallJump.get();
 		message.allowedInfiniteStamina = config.allowInfiniteStamina.get();
+		message.allowedFlipping = config.allowFlipping.get();
+		message.allowedBreakfall = config.allowBreakfall.get();
 		return message;
 	}
 
@@ -140,5 +156,4 @@ public class ActionPermissionsMessage {
 	public static void broadcast() {
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), newInstance());
 	}
-
 }

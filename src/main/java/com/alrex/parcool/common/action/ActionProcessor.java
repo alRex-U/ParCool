@@ -26,7 +26,9 @@ public class ActionProcessor {
 		PlayerEntity player = event.player;
 		Animation animation = Animation.get(player);
 		if (animation == null) return;
-		animation.tick();
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) return;
+		animation.tick(player, parkourability);
 	}
 
 	@SubscribeEvent
@@ -79,5 +81,8 @@ public class ActionProcessor {
 		for (Action action : actions) {
 			action.onRender(event, player, parkourability);
 		}
+		Animation animation = Animation.get(player);
+		if (animation == null) return;
+		animation.onRenderTick(event);
 	}
 }

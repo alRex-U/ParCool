@@ -1,7 +1,7 @@
 {
   "key.crawl.description": "匍匐移動",
   "key.grab.description": "崖つかまり",
-  "key.roll.description": "ロール",
+  "key.breakfall.description": "ブレイクフォール",
   "key.fastrunning.description": "ファストラン",
   "key.dodge.description": "ドッジロール",
   "key.parcool.setting.open": "設定を開く",

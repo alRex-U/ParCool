@@ -15,7 +15,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public class StartRollMessage {
+public class StartBreakfallMessage {
 	UUID playerID = null;
 
 	public UUID getPlayerID() {
@@ -27,8 +27,8 @@ public class StartRollMessage {
 		packet.writeLong(playerID.getLeastSignificantBits());
 	}
 
-	public static StartRollMessage decode(PacketBuffer packet) {
-		StartRollMessage message = new StartRollMessage();
+	public static StartBreakfallMessage decode(PacketBuffer packet) {
+		StartBreakfallMessage message = new StartBreakfallMessage();
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
 		return message;
 	}
@@ -45,7 +45,7 @@ public class StartRollMessage {
 				Parkourability parkourability = Parkourability.get(startPlayer);
 				if (parkourability == null) return;
 
-				parkourability.getRoll().receiveStartRoll(this);
+				parkourability.getBreakfall().startBreakfall(player, parkourability);
 			}
 		});
 		contextSupplier.get().setPacketHandled(true);
@@ -56,7 +56,7 @@ public class StartRollMessage {
 	}
 
 	public static void send(ServerPlayerEntity player) {
-		StartRollMessage message = new StartRollMessage();
+		StartBreakfallMessage message = new StartBreakfallMessage();
 		message.playerID = player.getUUID();
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), message);
 	}

@@ -20,13 +20,15 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue canRoll;
 		public final ForgeConfigSpec.BooleanValue canVault;
 		public final ForgeConfigSpec.BooleanValue canWallJump;
+		public final ForgeConfigSpec.BooleanValue canDive;
+		public final ForgeConfigSpec.BooleanValue canFlipping;
+		public final ForgeConfigSpec.BooleanValue canBreakfall;
 		public final ForgeConfigSpec.BooleanValue infiniteStamina;
 		public final ForgeConfigSpec.BooleanValue autoTurningWallJump;
 		public final ForgeConfigSpec.BooleanValue disableWallJumpTowardWall;
 		public final ForgeConfigSpec.BooleanValue disableCameraRolling;
-		public final ForgeConfigSpec.BooleanValue disableCameraDodge;
+		public final ForgeConfigSpec.BooleanValue disableCameraFlipping;
 		public final ForgeConfigSpec.BooleanValue disableDoubleTappingForDodge;
-		public final ForgeConfigSpec.BooleanValue disableFlipping;
 		public final ForgeConfigSpec.BooleanValue substituteSprintForFastRun;
 		public final ForgeConfigSpec.BooleanValue replaceSprintWithFastRun;
 		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
@@ -51,6 +53,9 @@ public class ParCoolConfig {
 				canRoll = builder.comment("Possibility to Roll").define("canRoll", true);
 				canVault = builder.comment("Possibility to Vault").define("canVault", true);
 				canWallJump = builder.comment("Possibility to WallJump").define("canWallJump", true);
+				canDive = builder.comment("Possibility to Dive").define("canDive", true);
+				canFlipping = builder.comment("Possibility to Flip").define("canFlipping", true);
+				canBreakfall = builder.comment("Possibilty to BreakFall").define("canBreakFall", true);
 			}
 			builder.pop();
 			builder.comment("Values").push("Modifier Values");
@@ -74,9 +79,8 @@ public class ParCoolConfig {
 				autoTurningWallJump = builder.comment("Auto turning forward when WallJump").define("autoTurningWallJump", false);
 				disableWallJumpTowardWall = builder.comment("Disable WallJump toward a wall").define("disableWallJumpTowardWall", false);
 				disableCameraRolling = builder.comment("Disable Roll rotation of camera").define("disableCameraRotationRolling", false);
-				disableCameraDodge = builder.comment("Disable Dodge rotation of camera").define("disableCameraRotationDodge", false);
+				disableCameraFlipping = builder.comment("Disable Flipping rotation of camera").define("disableCameraRotationFlipping", false);
 				disableDoubleTappingForDodge = builder.comment("Disable Double-Tapping For Dodge. Please Use Dodge Key instead").define("disableDoubleTapping", false);
-				disableFlipping = builder.comment("Disable Flipping of Dodge").define("disableFlipping", false);
 				replaceSprintWithFastRun = builder.comment("Replace vanilla sprint with Fast-Running").define("replaceSprintWithFastRun", true);
 				substituteSprintForFastRun = builder.comment("Substitute a sprint of vanilla for the FastRunning").define("substituteSprint", false);
 				infiniteStamina = builder
@@ -102,6 +106,8 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue allowRoll;
 		public final ForgeConfigSpec.BooleanValue allowVault;
 		public final ForgeConfigSpec.BooleanValue allowWallJump;
+		public final ForgeConfigSpec.BooleanValue allowBreakfall;
+		public final ForgeConfigSpec.BooleanValue allowFlipping;
 
 		Server(ForgeConfigSpec.Builder builder) {
 			builder.comment("Action Permissions").push("Permissions");
@@ -113,7 +119,9 @@ public class ParCoolConfig {
 				allowClingToCliff = builder.comment("allow ClingToCliff").define("allowClingToCliff", true);
 				allowRoll = builder.comment("allow Roll").define("allowRoll", true);
 				allowVault = builder.comment("allow Vault").define("allowVault", true);
-				allowWallJump = builder.comment("allow WallJump").define("allow WallJump", true);
+				allowWallJump = builder.comment("allow WallJump").define("allowWallJump", true);
+				allowBreakfall = builder.comment("allow Breakfall").define("allowBreakfall", true);
+				allowFlipping = builder.comment("allow Flipping").define("allowFlipping", true);
 			}
 			builder.pop();
 			builder.comment("Others").push("Other Configuration");

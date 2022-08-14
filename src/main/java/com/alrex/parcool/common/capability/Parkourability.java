@@ -27,12 +27,14 @@ public class Parkourability {
 	private final Roll roll = new Roll();
 	private final Vault vault = new Vault();
 	private final WallJump wallJump = new WallJump();
+	private final Flipping flipping = new Flipping();
+	private final Breakfall breakfall = new Breakfall();
 	private final AdditionalProperties additionalProperties = new AdditionalProperties();
 	private final ActionPermission permission = new ActionPermission();
 	private final ActionInfo actionInfo = new ActionInfo();
 
 	private final List<Action> actions = Arrays.<Action>asList(
-			catLeap, crawl, dodge, fastRun, clingToCliff, roll, vault, wallJump, additionalProperties
+			catLeap, crawl, dodge, fastRun, clingToCliff, roll, vault, wallJump, breakfall, flipping, additionalProperties
 	);
 
 	public CatLeap getCatLeap() {
@@ -77,6 +79,14 @@ public class Parkourability {
 
 	public ActionPermission getPermission() {
 		return permission;
+	}
+
+	public Flipping getFlipping() {
+		return flipping;
+	}
+
+	public Breakfall getBreakfall() {
+		return breakfall;
 	}
 
 	public List<Action> getList() {
