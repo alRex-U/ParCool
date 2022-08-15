@@ -9,11 +9,13 @@ import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.player.PlayerEntity;
 
 public class PassiveCustomAnimation {
+	private int fallingAnimationTick = 0;
+	private static int FallingStartLine = 15;
 	private int flyingAnimationLevelOld = 0;
 	private int flyingAnimationLevel = 0;
 	private static final int flyingMaxLevel = 20;
 
-	public void tick(PlayerEntity player) {
+	public void tick(PlayerEntity player, Parkourability parkourability) {
 		flyingAnimationLevelOld = flyingAnimationLevel;
 		if (KeyBindings.getKeyForward().isDown() && player.abilities.flying) {
 			flyingAnimationLevel++;
@@ -26,14 +28,15 @@ public class PassiveCustomAnimation {
 				flyingAnimationLevel = 0;
 			}
 		}
+		if (!player.isOnGround() && !player.abilities.flying && !player.isFallFlying() && !parkourability.getClingToCliff().isCling()) {
+			fallingAnimationTick++;
+		} else {
+			fallingAnimationTick = 0;
+		}
 	}
 
 	public void animate(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
-		if (
-				parkourability.getAdditionalProperties().getNotLandingTick() >= 15 &&
-						!player.isFallFlying() &&
-						!player.abilities.flying
-		) {
+		if (fallingAnimationTick >= FallingStartLine) {
 			animateFalling(parkourability, transformer);
 			return;
 		}
@@ -59,7 +62,7 @@ public class PassiveCustomAnimation {
 	}
 
 	private void animateFalling(Parkourability parkourability, PlayerModelTransformer transformer) {
-		float phase = (parkourability.getAdditionalProperties().getNotLandingTick() + transformer.getPartialTick() - 15f) / 14;
+		float phase = (fallingAnimationTick + transformer.getPartialTick() - 15f) / 14;
 		float factor = phase > 1 ? 1 : EasingFunctions.SinInOutBySquare(phase);
 		transformer
 				.addRotateRightArm(0, 0, (float) Math.toRadians(80 * factor))

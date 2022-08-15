@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.client.animation.impl.ClimbUpAnimator;
 import com.alrex.parcool.client.animation.impl.ClingToCliffAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
@@ -59,6 +60,8 @@ public class ClingToCliff extends Action {
 				clingTick = 0;
 				EntityUtil.addVelocity(player, new Vector3d(0, 0.6, 0));
 				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionClimbUp(), parkourability.getActionInfo());
+				Animation animation = Animation.get(player);
+				if (animation != null) animation.setAnimator(new ClimbUpAnimator());
 			}
 			if (cling) {
 				if (KeyBindings.getKeyLeft().isDown() && KeyBindings.getKeyRight().isDown()) {

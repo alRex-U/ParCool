@@ -65,7 +65,7 @@ public class Animation {
 	}
 
 	public void tick(PlayerEntity player, Parkourability parkourability) {
-		passiveAnimation.tick(player);
+		passiveAnimation.tick(player, parkourability);
 		if (animator != null) {
 			animator.tick();
 			if (animator.shouldRemoved(player, parkourability)) animator = null;
