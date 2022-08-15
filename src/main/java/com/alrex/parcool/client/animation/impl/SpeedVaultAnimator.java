@@ -21,10 +21,12 @@ public class SpeedVaultAnimator extends Animator {
 	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / MAX_TIME;
 		float factor = -squaring(((getTick() + rotator.getPartialTick()) - MAX_TIME / 2f) / (MAX_TIME / 2f)) + 1;
+		float forwardFactor = (float) Math.sin(phase * 2 * Math.PI) + 0.5f;
 
 		rotator
 				.startBasedCenter()
 				.rotateRightward(factor * 70 * (type == Type.Right ? -1 : 1))
+				.rotateFrontward(30 * forwardFactor)
 				.end();
 	}
 
