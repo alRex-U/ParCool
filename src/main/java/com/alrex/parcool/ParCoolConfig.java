@@ -41,30 +41,40 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.IntValue marginHorizontalStaminaHUD;
 		public final ForgeConfigSpec.IntValue marginVerticalStaminaHUD;
 		public final ForgeConfigSpec.IntValue offsetVerticalLightStaminaHUD;
+		public final ForgeConfigSpec.IntValue staminaMax;
+		public final ForgeConfigSpec.IntValue staminaConsumptionBreakfall;
+		public final ForgeConfigSpec.IntValue staminaConsumptionCatLeap;
+		public final ForgeConfigSpec.IntValue staminaConsumptionClingToCliff;
+		public final ForgeConfigSpec.IntValue staminaConsumptionClimbUp;
+		public final ForgeConfigSpec.IntValue staminaConsumptionDodge;
+		public final ForgeConfigSpec.IntValue staminaConsumptionFastRun;
+		public final ForgeConfigSpec.IntValue staminaConsumptionFlipping;
+		public final ForgeConfigSpec.IntValue staminaConsumptionVault;
+		public final ForgeConfigSpec.IntValue staminaConsumptionWallJump;
 
 		Client(ForgeConfigSpec.Builder builder) {
-			builder.comment("Enable ParCool Actions").push("Possibility of Actions");
+			builder.push("Possibility of Actions");
 			{
-				canCatLeap = builder.comment("Possibility to CatLeap").define("canCatLeap", true);
-				canCrawl = builder.comment("Possibility to Crawl").define("canCrawl", true);
-				canFrontFlip = builder.comment("Possibility to FrontFlip").define("canFrontFlip", true);
-				canDodge = builder.comment("Possibility to Dodge").define("canDodge", true);
-				canFastRunning = builder.comment("Possibility to FastRunning").define("canFastRunning", true);
-				canClingToCliff = builder.comment("Possibility to ClingToCliff").define("canClingToCliff", true);
-				canRoll = builder.comment("Possibility to Roll").define("canRoll", true);
-				canVault = builder.comment("Possibility to Vault").define("canVault", true);
-				canWallJump = builder.comment("Possibility to WallJump").define("canWallJump", true);
-				canDive = builder.comment("Possibility to Dive").define("canDive", true);
-				canFlipping = builder.comment("Possibility to Flip").define("canFlipping", true);
-				canBreakfall = builder.comment("Possibilty to BreakFall").define("canBreakFall", true);
+				canCatLeap = builder.define("canCatLeap", true);
+				canCrawl = builder.define("canCrawl", true);
+				canFrontFlip = builder.define("canFrontFlip", true);
+				canDodge = builder.define("canDodge", true);
+				canFastRunning = builder.define("canFastRunning", true);
+				canClingToCliff = builder.define("canClingToCliff", true);
+				canRoll = builder.define("canRoll", true);
+				canVault = builder.define("canVault", true);
+				canWallJump = builder.define("canWallJump", true);
+				canDive = builder.define("canDive", true);
+				canFlipping = builder.define("canFlipping", true);
+				canBreakfall = builder.define("canBreakFall", true);
 			}
 			builder.pop();
-			builder.comment("Values").push("Modifier Values");
+			builder.push("Modifier Values");
 			{
 				fastRunningModifier = builder.comment("FastRun Speed Modifier").defineInRange("fastRunModifier", 3, 0.001, 3);
 			}
 			builder.pop();
-			builder.comment("HUD").push("Stamina HUD configuration");
+			builder.push("Stamina HUD Configuration");
 			{
 				hideStaminaHUD = builder.comment("hide stamina HUD when Stamina is infinite").define("hideS_HUD", false);
 				useLightHUD = builder.comment("use Light Stamina HUD").define("useLightHUD", false);
@@ -75,7 +85,7 @@ public class ParCoolConfig {
 				offsetVerticalLightStaminaHUD = builder.comment("vertical offset of light stamina HUD").defineInRange("offset_V_LS_HUD", 0, -50, 50);
 			}
 			builder.pop();
-			builder.comment("Others").push("Other configuration");
+			builder.push("Other Configuration");
 			{
 				autoTurningWallJump = builder.comment("Auto turning forward when WallJump").define("autoTurningWallJump", false);
 				disableWallJumpTowardWall = builder.comment("Disable WallJump toward a wall").define("disableWallJumpTowardWall", false);
@@ -88,6 +98,23 @@ public class ParCoolConfig {
 				infiniteStamina = builder
 						.comment("Infinite Stamina(this needs a permission from server, even if it is on single player's game)\nPlease check 'parcool-server.toml' in 'serverconfig' directory")
 						.define("infiniteStamina", false);
+			}
+			builder.pop();
+			builder.comment("Stamina Section is affected by Server config").push("Stamina");
+			{
+				staminaMax = builder.defineInRange("Max Value of Stamina", 2000, 300, 10000);
+				builder.push("Consumption");
+				{
+					staminaConsumptionBreakfall = builder.defineInRange("Breakfall", 100, 0, 10000);
+					staminaConsumptionCatLeap = builder.defineInRange("CatLeap", 150, 0, 10000);
+					staminaConsumptionClingToCliff = builder.defineInRange("ClingToCliff", 2, 0, 10000);
+					staminaConsumptionClimbUp = builder.defineInRange("ClimbUp", 150, 0, 10000);
+					staminaConsumptionDodge = builder.defineInRange("Dodge", 80, 0, 10000);
+					staminaConsumptionFastRun = builder.defineInRange("FastRunning", 2, 0, 10000);
+					staminaConsumptionFlipping = builder.defineInRange("Flipping", 80, 0, 10000);
+					staminaConsumptionVault = builder.defineInRange("Vault", 50, 0, 10000);
+					staminaConsumptionWallJump = builder.defineInRange("WallJump", 120, 0, 10000);
+				}
 			}
 			builder.pop();
 			builder.comment("About ParCool").push("ParCool");
@@ -110,9 +137,19 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue allowWallJump;
 		public final ForgeConfigSpec.BooleanValue allowBreakfall;
 		public final ForgeConfigSpec.BooleanValue allowFlipping;
+		public final ForgeConfigSpec.IntValue staminaMax;
+		public final ForgeConfigSpec.IntValue staminaConsumptionBreakfall;
+		public final ForgeConfigSpec.IntValue staminaConsumptionCatLeap;
+		public final ForgeConfigSpec.IntValue staminaConsumptionClingToCliff;
+		public final ForgeConfigSpec.IntValue staminaConsumptionClimbUp;
+		public final ForgeConfigSpec.IntValue staminaConsumptionDodge;
+		public final ForgeConfigSpec.IntValue staminaConsumptionFastRun;
+		public final ForgeConfigSpec.IntValue staminaConsumptionFlipping;
+		public final ForgeConfigSpec.IntValue staminaConsumptionVault;
+		public final ForgeConfigSpec.IntValue staminaConsumptionWallJump;
 
 		Server(ForgeConfigSpec.Builder builder) {
-			builder.comment("Action Permissions").push("Permissions");
+			builder.push("Action Permissions");
 			{
 				allowCatLeap = builder.comment("allow CatLeap").define("allowCatLeap", true);
 				allowCrawl = builder.comment("allow Crawl").define("allowCrawl", true);
@@ -126,9 +163,22 @@ public class ParCoolConfig {
 				allowFlipping = builder.comment("allow Flipping").define("allowFlipping", true);
 			}
 			builder.pop();
-			builder.comment("Others").push("Other Configuration");
+			builder.push("Stamina");
 			{
-				allowInfiniteStamina = builder.comment("allow Infinite Stamina").define("infiniteStamina", false);
+				staminaMax = builder.defineInRange("Max Value of Stamina", 2000, 300, 10000);
+				allowInfiniteStamina = builder.comment("allow Infinite Stamina").define("infiniteStamina", true);
+				builder.push("Consumption");
+				{
+					staminaConsumptionBreakfall = builder.defineInRange("Breakfall", 100, 0, 10000);
+					staminaConsumptionCatLeap = builder.defineInRange("CatLeap", 150, 0, 10000);
+					staminaConsumptionClingToCliff = builder.defineInRange("ClingToCliff", 2, 0, 10000);
+					staminaConsumptionClimbUp = builder.defineInRange("ClimbUp", 150, 0, 10000);
+					staminaConsumptionDodge = builder.defineInRange("Dodge", 80, 0, 10000);
+					staminaConsumptionFastRun = builder.defineInRange("FastRunning", 2, 0, 10000);
+					staminaConsumptionFlipping = builder.defineInRange("Flipping", 80, 0, 10000);
+					staminaConsumptionVault = builder.defineInRange("Vault", 50, 0, 10000);
+					staminaConsumptionWallJump = builder.defineInRange("WallJump", 120, 0, 10000);
+				}
 			}
 			builder.pop();
 		}

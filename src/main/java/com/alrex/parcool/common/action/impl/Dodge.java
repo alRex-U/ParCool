@@ -135,7 +135,7 @@ public class Dodge extends Action {
 			}
 			if (!dodging && canDodge(player, parkourability, stamina)) {
 				dodging = true;
-				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionDodge(), parkourability.getActionInfo());
+				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionDodge());
 				dodgeDirection = getDirectionFromInput();
 
 				Vector3d lookVec = player.getLookAngle();

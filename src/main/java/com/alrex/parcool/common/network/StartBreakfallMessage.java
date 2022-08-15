@@ -2,6 +2,7 @@ package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.capability.Stamina;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -43,8 +44,10 @@ public class StartBreakfallMessage {
 
 				Parkourability parkourability = Parkourability.get(player);
 				if (parkourability == null) return;
+				Stamina stamina = Stamina.get(player);
+				if (stamina == null) return;
 
-				parkourability.getBreakfall().startBreakfall(player, parkourability);
+				parkourability.getBreakfall().startBreakfall(player, parkourability, stamina);
 			}
 		});
 		contextSupplier.get().setPacketHandled(true);

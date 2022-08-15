@@ -32,10 +32,11 @@ public class Breakfall extends Action {
 		}
 	}
 
-	public void startBreakfall(PlayerEntity player, Parkourability parkourability) {
+	public void startBreakfall(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		ready = false;
 		readyTick = 0;
 		synchronizeExplicitly(player);
+		stamina.consume(parkourability.getActionInfo().getStaminaConsumptionBreakfall());
 		if (KeyBindings.getKeyForward().isDown()) {
 			parkourability.getRoll().startRoll(player);
 		} else {

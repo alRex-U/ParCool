@@ -59,11 +59,12 @@ public class ClingToCliff extends Action {
 				cling = false;
 				clingTick = 0;
 				EntityUtil.addVelocity(player, new Vector3d(0, 0.6, 0));
-				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionClimbUp(), parkourability.getActionInfo());
+				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionClimbUp());
 				Animation animation = Animation.get(player);
 				if (animation != null) animation.setAnimator(new ClimbUpAnimator());
 			}
 			if (cling) {
+				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionClingToCliff());
 				if (KeyBindings.getKeyLeft().isDown() && KeyBindings.getKeyRight().isDown()) {
 					player.setDeltaMovement(0, 0, 0);
 				} else {

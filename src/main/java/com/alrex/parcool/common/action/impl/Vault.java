@@ -80,6 +80,7 @@ public class Vault extends Action {
 								vec.x() * s.x() + vec.z() * s.z(), 0,
 								-vec.x() * s.z() + vec.z() * s.x()
 						);
+				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionVault());
 				Animation animation = Animation.get(player);
 				SpeedVaultAnimator.Type type = dividedVec.z() > 0 ? SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
 				if (animation != null)

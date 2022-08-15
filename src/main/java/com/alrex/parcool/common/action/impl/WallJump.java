@@ -74,7 +74,7 @@ public class WallJump extends Action {
 			Vector3d direction = new Vector3d(jumpDirection.x(), 1.4, jumpDirection.z()).scale(0.3);
 			Vector3d motion = player.getDeltaMovement();
 
-			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionWallJump(), parkourability.getActionInfo());
+			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionWallJump());
 			player.setDeltaMovement(
 					motion.x() + direction.x(),
 					motion.y() > direction.y() ? motion.y + direction.y() : direction.y(),

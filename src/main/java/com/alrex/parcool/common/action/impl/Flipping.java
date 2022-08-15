@@ -66,6 +66,7 @@ public class Flipping extends Action {
 		} else {
 			direction = FlippingDirection.Front;
 		}
+		stamina.consume(parkourability.getActionInfo().getStaminaConsumptionFlipping());
 		Animation animation = Animation.get(player);
 		if (animation == null) return;
 		animation.setAnimator(new FlippingAnimator(player.xRot));
