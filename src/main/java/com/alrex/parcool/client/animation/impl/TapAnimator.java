@@ -48,7 +48,7 @@ public class TapAnimator extends Animator {
 						(float) Math.toRadians(-factor * 20)
 				)
 				.makeArmsNatural()
-				.End();
+				.end();
 	}
 
 	@Override
@@ -58,6 +58,6 @@ public class TapAnimator extends Animator {
 		rotator
 				.startBasedCenter()
 				.rotateFrontward(angle)
-				.EndEnabledLegGrounding();
+				.endEnabledLegGrounding();
 	}
 }

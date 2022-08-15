@@ -39,7 +39,7 @@ public class RollAnimator extends Animator {
 		rotator
 				.startBasedCenter()
 				.rotateFrontward(MathUtil.lerp(0, 360, factor))
-				.End();
+				.end();
 	}
 
 	@Override

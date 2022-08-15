@@ -107,7 +107,7 @@ public class FlippingAnimator extends Animator {
 							0, 0
 					)
 					.makeLegsLittleMoving()
-					.End();
+					.end();
 		} else {
 			float armAngleX = MathUtil.lerp(20, -190, armAngleXFactorBack(phase));
 			float armAngleZ = MathUtil.lerp(phase > 0.75 ? 0 : 14, 28, armAngleZFactor(phase));
@@ -137,7 +137,7 @@ public class FlippingAnimator extends Animator {
 							0, 0
 					)
 					.makeLegsLittleMoving()
-					.End();
+					.end();
 		}
 	}
 
@@ -151,13 +151,13 @@ public class FlippingAnimator extends Animator {
 			rotator
 					.startBasedCenter()
 					.rotateFrontward(angle)
-					.End();
+					.end();
 		} else {
 			float angle = factor * -360;
 			rotator
 					.startBasedCenter()
 					.rotateFrontward(angle)
-					.End();
+					.end();
 		}
 	}
 

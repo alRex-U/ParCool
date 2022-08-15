@@ -1,8 +1,10 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.client.animation.impl.CrawlAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.utilities.BufferUtil;
@@ -45,6 +47,7 @@ public class Crawl extends Action {
 							&& !parkourability.getTap().isTapping()
 							&& !player.isInWaterOrBubble()
 							&& player.isOnGround()
+							&& !player.abilities.flying
 			) {
 				//sliding
 				if (parkourability.getFastRun().getDashTick(parkourability.getAdditionalProperties()) > 5) {
@@ -78,6 +81,12 @@ public class Crawl extends Action {
 				crawling = false;
 				sliding = false;
 				slidingVec = null;
+			}
+		}
+		if (sliding || crawling) {
+			Animation animation = Animation.get(player);
+			if (animation != null && !animation.hasAnimator()) {
+				animation.setAnimator(new CrawlAnimator());
 			}
 		}
 	}

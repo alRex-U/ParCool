@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.client.animation.Animator;
+import com.alrex.parcool.client.animation.PassiveCustomAnimation;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
@@ -21,6 +22,7 @@ public class Animation {
 	}
 
 	private Animator animator = null;
+	private final PassiveCustomAnimation passiveAnimation = new PassiveCustomAnimation();
 
 	public void setAnimator(Animator animator) {
 		this.animator = animator;
@@ -33,15 +35,22 @@ public class Animation {
 	}
 
 	public void animatePost(PlayerEntity player, PlayerModelTransformer modelTransformer) {
-		if (animator == null) return;
 		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) return;
+		if (animator == null) {
+			passiveAnimation.animate(player, parkourability, modelTransformer);
+			return;
+		}
 		animator.animatePost(player, parkourability, modelTransformer);
 	}
 
 	public void applyRotate(AbstractClientPlayerEntity player, PlayerModelRotator rotator) {
-		if (animator == null) return;
 		Parkourability parkourability = Parkourability.get(player);
-
+		if (parkourability == null) return;
+		if (animator == null) {
+			passiveAnimation.rotate(player, parkourability, rotator);
+			return;
+		}
 		animator.rotate(player, parkourability, rotator);
 	}
 
@@ -56,10 +65,15 @@ public class Animation {
 	}
 
 	public void tick(PlayerEntity player, Parkourability parkourability) {
+		passiveAnimation.tick(player);
 		if (animator != null) {
 			animator.tick();
 			if (animator.shouldRemoved(player, parkourability)) animator = null;
 		}
+	}
+
+	public boolean hasAnimator() {
+		return animator != null;
 	}
 
 	public void removeAnimator() {

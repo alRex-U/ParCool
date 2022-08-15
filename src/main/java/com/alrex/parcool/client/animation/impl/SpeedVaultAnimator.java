@@ -25,7 +25,7 @@ public class SpeedVaultAnimator extends Animator {
 		rotator
 				.startBasedCenter()
 				.rotateRightward(factor * 70 * (type == Type.Right ? -1 : 1))
-				.End();
+				.end();
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class SpeedVaultAnimator extends Animator {
 								0,
 								(float) -Math.toRadians(factor * 70)
 						)
-						.End();
+						.end();
 				break;
 
 			case Left:
@@ -50,7 +50,7 @@ public class SpeedVaultAnimator extends Animator {
 								0,
 								(float) Math.toRadians(factor * 70)
 						)
-						.End();
+						.end();
 				break;
 		}
 	}

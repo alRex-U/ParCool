@@ -51,7 +51,7 @@ public class CatLeapAnimator extends Animator {
 						0
 				)
 				.makeLegsLittleMoving()
-				.End();
+				.end();
 	}
 
 	private float movingFactorFunc(float phase) {

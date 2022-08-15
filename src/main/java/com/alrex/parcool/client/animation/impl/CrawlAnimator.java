@@ -3,31 +3,20 @@ package com.alrex.parcool.client.animation.impl;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 
-public class ClingToCliffAnimator extends Animator {
+public class CrawlAnimator extends Animator {
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getClingToCliff().isCling();
+		return !parkourability.getCrawl().isCrawling();
 	}
 
 	@Override
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
-		MatrixStack stack = new MatrixStack();
+		float angle = 140 + 35 * (float) Math.sin(transformer.getLimbSwing() / 10 * Math.PI);
 		transformer
-				.rotateLeftArm(
-						(float) Math.toRadians(-160f),
-						0,
-						(float) Math.toRadians(13)
-				)
-				.rotateRightArm(
-						(float) Math.toRadians(-160),
-						0,
-						(float) Math.toRadians(-13)
-				)
-				.makeArmsNatural()
-				.makeLegsLittleMoving()
+				.rotateLeftArm(0, 0, (float) Math.toRadians(-angle))
+				.rotateRightArm(0, 0, (float) Math.toRadians(angle))
 				.end();
 	}
 }

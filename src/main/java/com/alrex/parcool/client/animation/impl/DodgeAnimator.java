@@ -43,7 +43,7 @@ public class DodgeAnimator extends Animator {
 									(float) Math.toRadians(lerp(30, 60, factor) + revision),
 									0, 0
 							)
-							.End();
+							.end();
 				} else {
 					transformer
 							.rotateRightLeg(
@@ -54,7 +54,7 @@ public class DodgeAnimator extends Animator {
 									(float) Math.toRadians(-lerp(10, 35, factor) + revision),
 									0, 0
 							)
-							.End();
+							.end();
 				}
 				break;
 			case Right:
@@ -68,7 +68,7 @@ public class DodgeAnimator extends Animator {
 								(float) Math.toRadians(lerp(30, 60, factor) + revision),
 								0, 0
 						)
-						.End();
+						.end();
 				break;
 			case Left:
 				transformer
@@ -81,7 +81,7 @@ public class DodgeAnimator extends Animator {
 								(float) Math.toRadians(-lerp(10, 35, factor) + revision),
 								0, 0
 						)
-						.End();
+						.end();
 				break;
 			case Back:
 				transformer.rotateAdditionallyHeadPitch(-revision);
@@ -99,7 +99,7 @@ public class DodgeAnimator extends Animator {
 									(float) Math.toRadians(-lerp(10, 35, factor)),
 									0, 0
 							)
-							.End();
+							.end();
 				} else {
 					transformer
 							.rotateRightLeg(
@@ -110,7 +110,7 @@ public class DodgeAnimator extends Animator {
 									(float) Math.toRadians(lerp(10, 45, factor)),
 									0, 0
 							)
-							.End();
+							.end();
 				}
 				break;
 		}
@@ -129,7 +129,7 @@ public class DodgeAnimator extends Animator {
 						(parkourability.getDodge().getDodgeDirection() == Dodge.DodgeDirection.Back ? -1 : 1)
 								* lerp(0, 30, factor)
 				)
-				.End();
+				.end();
 	}
 
 	private float factorFunc(float phase) {

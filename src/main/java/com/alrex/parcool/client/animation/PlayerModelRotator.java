@@ -51,13 +51,13 @@ public class PlayerModelRotator {
 		return this;
 	}
 
-	public void End() {
+	public void end() {
 		if (basedCenter) {
 			stack.translate(0, -player.getBbHeight() / 2, 0);
 		}
 	}
 
-	public void EndEnabledLegGrounding() {
+	public void endEnabledLegGrounding() {
 		if (basedCenter) {
 			stack.translate(0, (-player.getBbHeight() / 2), 0);
 		}
