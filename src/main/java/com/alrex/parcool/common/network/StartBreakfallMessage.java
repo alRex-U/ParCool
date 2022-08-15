@@ -39,10 +39,9 @@ public class StartBreakfallMessage {
 			if (contextSupplier.get().getNetworkManager().getDirection() == PacketDirection.CLIENTBOUND) {
 				PlayerEntity player = Minecraft.getInstance().player;
 				if (player == null) return;
-				PlayerEntity startPlayer = player.level.getPlayerByUUID(playerID);
+				if (!playerID.equals(player.getUUID())) return;
 
-				if (startPlayer == null) return;
-				Parkourability parkourability = Parkourability.get(startPlayer);
+				Parkourability parkourability = Parkourability.get(player);
 				if (parkourability == null) return;
 
 				parkourability.getBreakfall().startBreakfall(player, parkourability);
@@ -58,6 +57,6 @@ public class StartBreakfallMessage {
 	public static void send(ServerPlayerEntity player) {
 		StartBreakfallMessage message = new StartBreakfallMessage();
 		message.playerID = player.getUUID();
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), message);
+		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
 	}
 }

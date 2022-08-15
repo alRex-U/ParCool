@@ -16,6 +16,9 @@ public class PlayerModelRotator {
 	}
 
 	private boolean basedCenter = false;
+	private boolean legGrounding = false;
+
+	private float angleFront = 0;
 
 	public PlayerModelRotator(MatrixStack stack, PlayerEntity player, float partial) {
 		this.stack = stack;
@@ -36,9 +39,7 @@ public class PlayerModelRotator {
 	public PlayerModelRotator rotateFrontward(float angleDegree) {
 		Vector3d lookVec = VectorUtil.fromYawDegree(player.yBodyRot).yRot((float) Math.PI / 2);
 		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
-		if (!vec.normalize()) {
-
-		}
+		angleFront += angleDegree;
 		stack.mulPose(vec.rotationDegrees(angleDegree));
 		return this;
 	}
@@ -46,9 +47,6 @@ public class PlayerModelRotator {
 	public PlayerModelRotator rotateRightward(float angleDegree) {
 		Vector3d lookVec = VectorUtil.fromYawDegree(player.yBodyRot);
 		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
-		if (!vec.normalize()) {
-
-		}
 		stack.mulPose(vec.rotationDegrees(angleDegree));
 		return this;
 	}
@@ -56,6 +54,12 @@ public class PlayerModelRotator {
 	public void End() {
 		if (basedCenter) {
 			stack.translate(0, -player.getBbHeight() / 2, 0);
+		}
+	}
+
+	public void EndEnabledLegGrounding() {
+		if (basedCenter) {
+			stack.translate(0, (-player.getBbHeight() / 2), 0);
 		}
 	}
 }

@@ -43,7 +43,6 @@ public class DodgeAnimator extends Animator {
 									(float) Math.toRadians(lerp(30, 60, factor) + revision),
 									0, 0
 							)
-							.makeLegsLittleMoving()
 							.End();
 				} else {
 					transformer
@@ -55,7 +54,6 @@ public class DodgeAnimator extends Animator {
 									(float) Math.toRadians(-lerp(10, 35, factor) + revision),
 									0, 0
 							)
-							.makeLegsLittleMoving()
 							.End();
 				}
 				break;
@@ -70,7 +68,6 @@ public class DodgeAnimator extends Animator {
 								(float) Math.toRadians(lerp(30, 60, factor) + revision),
 								0, 0
 						)
-						.makeLegsLittleMoving()
 						.End();
 				break;
 			case Left:
@@ -84,7 +81,6 @@ public class DodgeAnimator extends Animator {
 								(float) Math.toRadians(-lerp(10, 35, factor) + revision),
 								0, 0
 						)
-						.makeLegsLittleMoving()
 						.End();
 				break;
 			case Back:
@@ -103,7 +99,6 @@ public class DodgeAnimator extends Animator {
 									(float) Math.toRadians(-lerp(10, 35, factor)),
 									0, 0
 							)
-							.makeLegsLittleMoving()
 							.End();
 				} else {
 					transformer
@@ -115,7 +110,6 @@ public class DodgeAnimator extends Animator {
 									(float) Math.toRadians(lerp(10, 45, factor)),
 									0, 0
 							)
-							.makeLegsLittleMoving()
 							.End();
 				}
 				break;

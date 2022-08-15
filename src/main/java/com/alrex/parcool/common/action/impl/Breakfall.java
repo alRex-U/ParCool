@@ -37,9 +37,9 @@ public class Breakfall extends Action {
 		readyTick = 0;
 		synchronizeExplicitly(player);
 		if (KeyBindings.getKeyForward().isDown()) {
-			parkourability.getRoll().startRoll();
+			parkourability.getRoll().startRoll(player);
 		} else {
-			//TODO parkourability.getTap().startTap();
+			parkourability.getTap().startTap(player);
 		}
 	}
 

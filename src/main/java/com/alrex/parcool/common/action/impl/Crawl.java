@@ -42,6 +42,7 @@ public class Crawl extends Action {
 							&& !crawling
 							&& KeyRecorder.keyCrawlState.isPressed()
 							&& !parkourability.getRoll().isRolling()
+							&& !parkourability.getTap().isTapping()
 							&& !player.isInWaterOrBubble()
 							&& player.isOnGround()
 			) {

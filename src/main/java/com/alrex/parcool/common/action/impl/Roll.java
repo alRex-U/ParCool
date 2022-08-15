@@ -34,6 +34,7 @@ public class Roll extends Action {
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (start) {
+			start = false;
 			rolling = true;
 			if (player.isLocalPlayer()) {
 				Vector3d vec = VectorUtil.fromYawDegree(player.yBodyRot);
@@ -41,7 +42,6 @@ public class Roll extends Action {
 			}
 			Animation animation = Animation.get(player);
 			if (animation != null) animation.setAnimator(new RollAnimator());
-			start = false;
 		}
 	}
 
@@ -51,18 +51,18 @@ public class Roll extends Action {
 	}
 
 
-	public void startRoll() {
-		this.rolling = true;
+	public void startRoll(PlayerEntity player) {
 		this.start = true;
 	}
 
 	@Override
 	public void saveState(ByteBuffer buffer) {
-		BufferUtil.wrap(buffer).putBoolean(rolling);
+		BufferUtil.wrap(buffer).putBoolean(start).putBoolean(rolling);
 	}
 
 	@Override
 	public void restoreState(ByteBuffer buffer) {
+		start = BufferUtil.getBoolean(buffer);
 		rolling = BufferUtil.getBoolean(buffer);
 	}
 
