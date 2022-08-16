@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.client.animation.impl.CrawlAnimator;
+import com.alrex.parcool.client.animation.impl.SlidingAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
@@ -86,7 +87,11 @@ public class Crawl extends Action {
 		if (sliding || crawling) {
 			Animation animation = Animation.get(player);
 			if (animation != null && !animation.hasAnimator()) {
-				animation.setAnimator(new CrawlAnimator());
+				if (sliding) {
+					animation.setAnimator(new SlidingAnimator());
+				} else {
+					animation.setAnimator(new CrawlAnimator());
+				}
 			}
 		}
 	}

@@ -178,7 +178,11 @@ public class PlayerModelTransformer {
 
 	public PlayerModelTransformer rotateAdditionallyHeadPitch(float pitchDegree) {
 		model.head.xRot = (float) Math.toRadians(pitchDegree + headPitch);
+		return this;
+	}
 
+	public PlayerModelTransformer rotateHeadPitch(float pitchDegree) {
+		model.head.xRot = (float) Math.toRadians(pitchDegree);
 		return this;
 	}
 
