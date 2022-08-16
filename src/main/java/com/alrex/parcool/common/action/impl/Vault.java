@@ -1,6 +1,8 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.SpeedVaultAnimator;
+import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
@@ -43,6 +45,7 @@ public class Vault extends Action {
 		if (wall == null) return false;
 		return !this.vauting &&
 				parkourability.getPermission().canVault() &&
+				!(ParCoolConfig.CONFIG_CLIENT.vaultNeedKeyPressed.get() && !KeyBindings.getKeyVault().isDown()) &&
 				parkourability.getFastRun().canActWithRunning(player) &&
 				player.isOnGround() &&
 				(wall.dot(lookVec) / wall.length() / lookVec.length()) > 0.707106 /*check facing wall*/ &&

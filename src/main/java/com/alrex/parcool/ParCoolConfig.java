@@ -37,6 +37,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue parCoolActivation;
 		public final ForgeConfigSpec.BooleanValue hideStaminaHUD;
 		public final ForgeConfigSpec.BooleanValue useLightHUD;
+		public final ForgeConfigSpec.BooleanValue vaultNeedKeyPressed;
 		public final ForgeConfigSpec.EnumValue<Position.Horizontal> alignHorizontalStaminaHUD;
 		public final ForgeConfigSpec.EnumValue<Position.Vertical> alignVerticalStaminaHUD;
 		public final ForgeConfigSpec.IntValue marginHorizontalStaminaHUD;
@@ -95,6 +96,7 @@ public class ParCoolConfig {
 				disableCameraRolling = builder.comment("Disable Roll rotation of camera").define("disableCameraRotationRolling", false);
 				disableCameraFlipping = builder.comment("Disable Flipping rotation of camera").define("disableCameraRotationFlipping", false);
 				disableDoubleTappingForDodge = builder.comment("Disable Double-Tapping For Dodge. Please Use Dodge Key instead").define("disableDoubleTapping", false);
+				vaultNeedKeyPressed = builder.comment("Make Vault Need Vault Key Pressed").define("vaultNeedKeyPressed", false);
 				replaceSprintWithFastRun = builder.comment("Replace vanilla sprint with Fast-Running").define("replaceSprintWithFastRun", true);
 				substituteSprintForFastRun = builder.comment("Substitute a sprint of vanilla for the FastRunning").define("substituteSprint", false);
 				creativeFlyingLikeSuperMan = builder.comment("Can creative-fly like super-man(experimental)").define("creativeFlyLikeSuperMan", false);

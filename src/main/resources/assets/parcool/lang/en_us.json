@@ -4,6 +4,8 @@
   "key.breakfall.description": "Breakfall",
   "key.fastrunning.description": "Fast Running",
   "key.dodge.description": "Dodge",
+  "key.vault.description": "Vault",
+  "key.wallslide.description": "Wall Slide",
   "key.parcool.setting.open": "Open Settings",
   "key.categories.parcool": "ParCool",
   "action.name.catleap": "CatLeap",
