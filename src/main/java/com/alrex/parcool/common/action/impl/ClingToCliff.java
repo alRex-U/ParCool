@@ -51,8 +51,6 @@ public class ClingToCliff extends Action {
 					ySpeed < 0.2 &&
 					parkourability.getPermission().canClingToCliff() &&
 					KeyBindings.getKeyGrabWall().isDown() &&
-					player.getMainHandItem().isEmpty() &&
-					player.getOffhandItem().isEmpty() &&
 					WorldUtil.existsGrabbableWall(player);
 
 			if (canClimbUp(player, parkourability, stamina)) {
