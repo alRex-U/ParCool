@@ -51,6 +51,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.IntValue staminaConsumptionFlipping;
 		public final ForgeConfigSpec.IntValue staminaConsumptionVault;
 		public final ForgeConfigSpec.IntValue staminaConsumptionWallJump;
+		public final ForgeConfigSpec.BooleanValue useHungerBarInsteadOfStamina;
 
 		Client(ForgeConfigSpec.Builder builder) {
 			builder.push("Possibility of Actions");
@@ -100,9 +101,10 @@ public class ParCoolConfig {
 						.define("infiniteStamina", false);
 			}
 			builder.pop();
-			builder.comment("Stamina Section is affected by Server config").push("Stamina");
+			builder.comment("Stamina Section may be affected by Server config").push("Stamina");
 			{
-				staminaMax = builder.defineInRange("Max Value of Stamina", 2000, 300, 10000);
+				useHungerBarInsteadOfStamina = builder.comment("ParCool consume hanger value instead of stamina").define("useHangerInstead", false);
+				staminaMax = builder.defineInRange("MaxValueOfStamina", 2000, 300, 10000);
 				builder.push("Consumption");
 				{
 					staminaConsumptionBreakfall = builder.defineInRange("Breakfall", 100, 0, 10000);

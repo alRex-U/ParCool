@@ -55,7 +55,7 @@ public class CatLeap extends Action {
 				Vector3d motionVec = player.getDeltaMovement();
 				Vector3d vec = new Vector3d(motionVec.x(), 0, motionVec.z()).normalize();
 				player.setDeltaMovement(vec.x(), parkourability.getActionInfo().getCatLeapPower(), vec.z());
-				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionCatLeap());
+				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionCatLeap(), player);
 			}
 
 			ready = !leaping && ((parkourability.getFastRun().getNotRunningTick() < 10 && KeyBindings.getKeySneak().isDown()) || (ready && KeyBindings.getKeySneak().isDown() && readyTick < 10));

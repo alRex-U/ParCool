@@ -22,7 +22,8 @@ public class StaminaHUDController extends AbstractHUD {
 	@Override
 	public void render(RenderGameOverlayEvent.Pre event, MatrixStack stack) {
 		ParCoolConfig.Client config = ParCoolConfig.CONFIG_CLIENT;
-		if (config.hideStaminaHUD.get() || !config.parCoolActivation.get()) return;
+		if (config.hideStaminaHUD.get() || !config.parCoolActivation.get() || config.useHungerBarInsteadOfStamina.get())
+			return;
 		if (event.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE) return;
 
 		if (config.useLightHUD.get()) {

@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.capability;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.network.SyncStaminaMessage;
@@ -33,9 +34,13 @@ public class Stamina {
 		this.stamina = stamina;
 	}
 
-	public void consume(int amount) {
+	public void consume(int amount, PlayerEntity player) {
 		if (exhausted || infinite) return;
-		stamina -= amount;
+		if (ParCoolConfig.CONFIG_CLIENT.useHungerBarInsteadOfStamina.get()) {
+			player.causeFoodExhaustion(amount / 1000f);
+		} else {
+			stamina -= amount;
+		}
 		coolTime = COOL_TIME;
 		if (stamina <= 0) {
 			stamina = 0;

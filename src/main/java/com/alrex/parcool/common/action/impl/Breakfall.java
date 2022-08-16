@@ -36,7 +36,7 @@ public class Breakfall extends Action {
 		ready = false;
 		readyTick = 0;
 		synchronizeExplicitly(player);
-		stamina.consume(parkourability.getActionInfo().getStaminaConsumptionBreakfall());
+		stamina.consume(parkourability.getActionInfo().getStaminaConsumptionBreakfall(), player);
 		if (KeyBindings.getKeyForward().isDown()) {
 			parkourability.getRoll().startRoll(player);
 		} else {

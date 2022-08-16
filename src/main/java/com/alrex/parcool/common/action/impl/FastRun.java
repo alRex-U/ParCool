@@ -59,7 +59,7 @@ public class FastRun extends Action {
 
 		if (isRunning()) {
 			if (!attr.hasModifier(FAST_RUNNING_MODIFIER)) attr.addTransientModifier(FAST_RUNNING_MODIFIER);
-			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionFastRun());
+			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionFastRun(), player);
 
 			Animation animation = Animation.get(player);
 			if (animation != null && !animation.hasAnimator()) {
