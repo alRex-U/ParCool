@@ -19,6 +19,7 @@ public class KeyBindings {
 	private static final KeyBinding keyBindBreakfall = new KeyBinding("key.breakfall.description", GLFW.GLFW_KEY_C, "key.categories.parcool");
 	private static final KeyBinding keyBindFastRunning = new KeyBinding("key.fastrunning.description", GLFW.GLFW_KEY_LEFT_CONTROL, "key.categories.parcool");
 	private static final KeyBinding keyBindDodge = new KeyBinding("key.dodge.description", GLFW.GLFW_KEY_R, "key.categories.parcool");
+	private static final KeyBinding keyBindWallSlide = new KeyBinding("key.wallslide.description", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
 	private static final KeyBinding keyBindOpenSettings = new KeyBinding("key.parcool.setting.open", GLFW.GLFW_KEY_P, "key.categories.parcool");
 
 	public static KeyBinding getKeySprint() {
@@ -73,6 +74,10 @@ public class KeyBindings {
 		return keyBindDodge;
 	}
 
+	public static KeyBinding getKeyWallSlide() {
+		return keyBindWallSlide;
+	}
+
 	@SubscribeEvent
 	public static void register(FMLClientSetupEvent event) {
 		ClientRegistry.registerKeyBinding(keyBindCrawl);
@@ -80,6 +85,7 @@ public class KeyBindings {
 		ClientRegistry.registerKeyBinding(keyBindBreakfall);
 		ClientRegistry.registerKeyBinding(keyBindFastRunning);
 		ClientRegistry.registerKeyBinding(keyBindDodge);
+		ClientRegistry.registerKeyBinding(keyBindWallSlide);
 		ClientRegistry.registerKeyBinding(keyBindOpenSettings);
 	}
 }

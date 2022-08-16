@@ -23,6 +23,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue canDive;
 		public final ForgeConfigSpec.BooleanValue canFlipping;
 		public final ForgeConfigSpec.BooleanValue canBreakfall;
+		public final ForgeConfigSpec.BooleanValue canWallSlide;
 		public final ForgeConfigSpec.BooleanValue infiniteStamina;
 		public final ForgeConfigSpec.BooleanValue autoTurningWallJump;
 		public final ForgeConfigSpec.BooleanValue disableWallJumpTowardWall;
@@ -68,6 +69,7 @@ public class ParCoolConfig {
 				canDive = builder.define("canDive", true);
 				canFlipping = builder.define("canFlipping", true);
 				canBreakfall = builder.define("canBreakFall", true);
+				canWallSlide = builder.define("canWallSlide", true);
 			}
 			builder.pop();
 			builder.push("Modifier Values");
@@ -139,6 +141,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue allowWallJump;
 		public final ForgeConfigSpec.BooleanValue allowBreakfall;
 		public final ForgeConfigSpec.BooleanValue allowFlipping;
+		public final ForgeConfigSpec.BooleanValue allowWallSlide;
 		public final ForgeConfigSpec.IntValue staminaMax;
 		public final ForgeConfigSpec.IntValue staminaConsumptionBreakfall;
 		public final ForgeConfigSpec.IntValue staminaConsumptionCatLeap;
@@ -163,6 +166,7 @@ public class ParCoolConfig {
 				allowWallJump = builder.comment("allow WallJump").define("allowWallJump", true);
 				allowBreakfall = builder.comment("allow Breakfall").define("allowBreakfall", true);
 				allowFlipping = builder.comment("allow Flipping").define("allowFlipping", true);
+				allowWallSlide = builder.comment("allow WallSlide").define("allowWallSlide", true);
 			}
 			builder.pop();
 			builder.push("Stamina");

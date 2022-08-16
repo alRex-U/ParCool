@@ -27,6 +27,7 @@ public class ActionPermissionsMessage {
 	private boolean allowedWallJump;
 	private boolean allowedFlipping;
 	private boolean allowedBreakfall;
+	private boolean allowedWallSlide;
 	private boolean allowedInfiniteStamina;
 	private byte[] infoData = null;
 
@@ -70,6 +71,10 @@ public class ActionPermissionsMessage {
 		return allowedBreakfall;
 	}
 
+	public boolean isAllowedWallSlide() {
+		return allowedWallSlide;
+	}
+
 	public void encode(PacketBuffer packet) {
 		packet.writeBoolean(allowedCatLeap);
 		packet.writeBoolean(allowedCrawl);
@@ -82,6 +87,7 @@ public class ActionPermissionsMessage {
 		packet.writeBoolean(allowedInfiniteStamina);
 		packet.writeBoolean(allowedBreakfall);
 		packet.writeBoolean(allowedFlipping);
+		packet.writeBoolean(allowedWallSlide);
 		packet.writeByteArray(infoData);
 	}
 
@@ -98,6 +104,7 @@ public class ActionPermissionsMessage {
 		message.allowedInfiniteStamina = packet.readBoolean();
 		message.allowedBreakfall = packet.readBoolean();
 		message.allowedFlipping = packet.readBoolean();
+		message.allowedWallSlide = packet.readBoolean();
 		message.infoData = packet.readByteArray();
 		return message;
 	}
@@ -129,6 +136,7 @@ public class ActionPermissionsMessage {
 		message.allowedInfiniteStamina = config.allowInfiniteStamina.get();
 		message.allowedFlipping = config.allowFlipping.get();
 		message.allowedBreakfall = config.allowBreakfall.get();
+		message.allowedWallSlide = config.allowWallSlide.get();
 
 		ByteBuffer buffer = ByteBuffer.allocate(128);
 		ActionInfo.encode(buffer);
