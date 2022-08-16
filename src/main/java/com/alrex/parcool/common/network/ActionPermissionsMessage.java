@@ -28,7 +28,7 @@ public class ActionPermissionsMessage {
 	private boolean allowedFlipping;
 	private boolean allowedBreakfall;
 	private boolean allowedInfiniteStamina;
-	private byte[] infoData = new byte[0];
+	private byte[] infoData = null;
 
 	public boolean isAllowedCatLeap() {
 		return allowedCatLeap;
@@ -133,6 +133,7 @@ public class ActionPermissionsMessage {
 		ByteBuffer buffer = ByteBuffer.allocate(128);
 		ActionInfo.encode(buffer);
 		buffer.flip();
+		message.infoData = new byte[buffer.limit()];
 		buffer.get(message.infoData);
 		return message;
 	}
