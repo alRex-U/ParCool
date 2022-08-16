@@ -48,13 +48,6 @@ public class ClientProxy extends CommonProxy {
 				SyncStaminaMessage::handleClient
 		);
 		instance.registerMessage(
-				11,
-				DisableInfiniteStaminaMessage.class,
-				DisableInfiniteStaminaMessage::encode,
-				DisableInfiniteStaminaMessage::decode,
-				DisableInfiniteStaminaMessage::handle
-		);
-		instance.registerMessage(
 				12,
 				ActionPermissionsMessage.class,
 				ActionPermissionsMessage::encode,

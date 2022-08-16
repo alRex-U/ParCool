@@ -45,13 +45,6 @@ public class ServerProxy extends CommonProxy {
 				SyncStaminaMessage::handleServer
 		);
 		instance.registerMessage(
-				11,
-				DisableInfiniteStaminaMessage.class,
-				DisableInfiniteStaminaMessage::encode,
-				DisableInfiniteStaminaMessage::decode,
-				null
-		);
-		instance.registerMessage(
 				12,
 				ActionPermissionsMessage.class,
 				ActionPermissionsMessage::encode,
