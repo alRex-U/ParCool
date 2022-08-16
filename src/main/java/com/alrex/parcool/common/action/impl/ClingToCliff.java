@@ -24,6 +24,12 @@ public class ClingToCliff extends Action {
 	private boolean cling = false;
 	private int clingTick = 0;
 	private int notClingTick = 0;
+	private float armSwingAmountOld = 0;
+	private float armSwingAmount = 0;
+
+	public float getArmSwingAmount() {
+		return armSwingAmount;
+	}
 
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
@@ -34,7 +40,6 @@ public class ClingToCliff extends Action {
 			clingTick = 0;
 			notClingTick++;
 		}
-
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -76,9 +81,13 @@ public class ClingToCliff extends Action {
 				}
 			}
 		}
+		armSwingAmountOld = armSwingAmount;
 		if (cling) {
+			armSwingAmount += player.getDeltaMovement().lengthSqr();
 			Animation animation = Animation.get(player);
 			if (animation != null) animation.setAnimator(new ClingToCliffAnimator());
+		} else {
+			armSwingAmount = 0;
 		}
 	}
 
@@ -88,8 +97,20 @@ public class ClingToCliff extends Action {
 			Vector3d wall = WorldUtil.getWall(player);
 			if (wall != null) {
 				float yRot = (float) VectorUtil.toYawDegree(wall.normalize());
-				player.yRot = yRot;
 				player.setYBodyRot(yRot);
+				Vector3d vec = VectorUtil.fromYawDegree(player.yHeadRot);
+				Vector3d dividedVec =
+						new Vector3d(
+								vec.x() * wall.x() + vec.z() * wall.z(), 0,
+								-vec.x() * wall.z() + vec.z() * wall.x()
+						).normalize();
+				if (dividedVec.x() < 0.34202/*cos(70)*/) {
+					if (dividedVec.z() < 0) {
+						player.yRot = (float) VectorUtil.toYawDegree(wall.yRot((float) (Math.PI * 0.38888888889/* PI*7/18 */)));
+					} else {
+						player.yRot = (float) VectorUtil.toYawDegree(wall.yRot((float) (-Math.PI * 0.38888888889)));
+					}
+				}
 			}
 		}
 	}
