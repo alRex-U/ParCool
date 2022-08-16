@@ -59,6 +59,8 @@ public class Dodge extends Action {
 	private int dodgingTick = 0;
 	private int damageCoolTime = 0;
 	private boolean dodging = false;
+	private int successivelyCount = 0;
+	private int successivelyCoolTick = 0;
 
 	public boolean isDodging() {
 		return dodging;
@@ -67,6 +69,11 @@ public class Dodge extends Action {
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (coolTime > 0) coolTime--;
+		if (successivelyCoolTick > 0) {
+			successivelyCoolTick--;
+		} else {
+			successivelyCount = 0;
+		}
 		if (damageCoolTime > 0) damageCoolTime--;
 
 		if (dodging) {
@@ -79,7 +86,7 @@ public class Dodge extends Action {
 	@OnlyIn(Dist.CLIENT)
 	private boolean canDodge(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		boolean enabledDoubleTap = !ParCoolConfig.CONFIG_CLIENT.disableDoubleTappingForDodge.get();
-		return parkourability.getPermission().canDodge() && coolTime <= 0 && player.isOnGround() && !player.isShiftKeyDown() && !stamina.isExhausted() && (
+		return parkourability.getPermission().canDodge() && successivelyCount < 2 && coolTime <= 0 && player.isOnGround() && !player.isShiftKeyDown() && !stamina.isExhausted() && (
 				enabledDoubleTap && (
 						KeyRecorder.keyBack.isDoubleTapped() ||
 								KeyRecorder.keyLeft.isDoubleTapped() ||
@@ -158,6 +165,10 @@ public class Dodge extends Action {
 				}
 				jump = 0.3;
 				coolTime = 10;
+				if (successivelyCoolTick != 0) {
+					successivelyCount++;
+				}
+				successivelyCoolTick = 30;
 				dodgeVec = dodgeVec.scale(0.4);
 				EntityUtil.addVelocity(player, new Vector3d(dodgeVec.x(), jump, dodgeVec.z()));
 				Animation animation = Animation.get(player);
