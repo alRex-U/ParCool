@@ -13,7 +13,7 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "common.ForgeHooksMixin",
+    "common.LivingEntityMixin",
     "common.PlayerEntityMixin"
   ]
 }
