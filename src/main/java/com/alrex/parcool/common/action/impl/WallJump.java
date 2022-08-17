@@ -19,8 +19,15 @@ import java.nio.ByteBuffer;
 
 public class WallJump extends Action {
 
+	private boolean jump = false;
+
+	public boolean justJumped() {
+		return jump;
+	}
+
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+		jump = false;
 	}
 
 
@@ -57,6 +64,7 @@ public class WallJump extends Action {
 				&& !parkourability.getClingToCliff().isCling()
 				&& parkourability.getClingToCliff().getNotClingTick() > 3
 				&& KeyRecorder.keyJumpState.isPressed()
+				&& !parkourability.getCrawl().isCrawling()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
 				&& WorldUtil.getWall(player) != null;
 	}
@@ -80,6 +88,7 @@ public class WallJump extends Action {
 					motion.y() > direction.y() ? motion.y + direction.y() : direction.y(),
 					motion.z() + direction.z()
 			);
+			jump = true;
 			ResetFallDistanceMessage.sync(player);
 		}
 	}

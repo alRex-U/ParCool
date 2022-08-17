@@ -31,12 +31,13 @@ public class Parkourability {
 	private final Breakfall breakfall = new Breakfall();
 	private final Tap tap = new Tap();
 	private final WallSlide wallSlide = new WallSlide();
+	private final HorizontalWallRun horizontalWallRun = new HorizontalWallRun();
 	private final AdditionalProperties additionalProperties = new AdditionalProperties();
 	private final ActionPermission permission = new ActionPermission();
 	private final ActionInfo actionInfo = new ActionInfo();
 
 	private final List<Action> actions = Arrays.<Action>asList(
-			catLeap, crawl, dodge, fastRun, clingToCliff, roll, vault, wallJump, breakfall, flipping, tap, wallSlide, additionalProperties
+			catLeap, crawl, dodge, fastRun, clingToCliff, roll, vault, breakfall, flipping, tap, wallSlide, horizontalWallRun, wallJump, additionalProperties
 	);
 
 	public CatLeap getCatLeap() {
@@ -97,6 +98,10 @@ public class Parkourability {
 
 	public Tap getTap() {
 		return tap;
+	}
+
+	public HorizontalWallRun getHorizontalWallRun() {
+		return horizontalWallRun;
 	}
 
 	public List<Action> getList() {

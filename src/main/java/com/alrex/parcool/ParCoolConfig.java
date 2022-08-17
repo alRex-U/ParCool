@@ -24,6 +24,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue canFlipping;
 		public final ForgeConfigSpec.BooleanValue canBreakfall;
 		public final ForgeConfigSpec.BooleanValue canWallSlide;
+		public final ForgeConfigSpec.BooleanValue canHorizontalWallRun;
 		public final ForgeConfigSpec.BooleanValue infiniteStamina;
 		public final ForgeConfigSpec.BooleanValue autoTurningWallJump;
 		public final ForgeConfigSpec.BooleanValue disableWallJumpTowardWall;
@@ -35,6 +36,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue creativeFlyingLikeSuperMan;
 		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
 		public final ForgeConfigSpec.BooleanValue parCoolActivation;
+		public final ForgeConfigSpec.BooleanValue continueSprintWhenColliding;
 		public final ForgeConfigSpec.BooleanValue hideStaminaHUD;
 		public final ForgeConfigSpec.BooleanValue useLightHUD;
 		public final ForgeConfigSpec.BooleanValue vaultNeedKeyPressed;
@@ -71,6 +73,7 @@ public class ParCoolConfig {
 				canFlipping = builder.define("canFlipping", true);
 				canBreakfall = builder.define("canBreakFall", true);
 				canWallSlide = builder.define("canWallSlide", true);
+				canHorizontalWallRun = builder.define("canHorizontalWallRun", true);
 			}
 			builder.pop();
 			builder.push("Modifier Values");
@@ -99,6 +102,7 @@ public class ParCoolConfig {
 				vaultNeedKeyPressed = builder.comment("Make Vault Need Vault Key Pressed").define("vaultNeedKeyPressed", false);
 				replaceSprintWithFastRun = builder.comment("Replace vanilla sprint with Fast-Running").define("replaceSprintWithFastRun", true);
 				substituteSprintForFastRun = builder.comment("Substitute a sprint of vanilla for the FastRunning").define("substituteSprint", false);
+				continueSprintWhenColliding = builder.comment("Continue sprint when even player collides blocks").define("continueSprintWhenColliding", true);
 				creativeFlyingLikeSuperMan = builder.comment("Can creative-fly like super-man(experimental)").define("creativeFlyLikeSuperMan", false);
 				infiniteStamina = builder
 						.comment("Infinite Stamina(this needs a permission from server, even if it is on single player's game)\nPlease check 'parcool-server.toml' in 'serverconfig' directory")
@@ -144,6 +148,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue allowBreakfall;
 		public final ForgeConfigSpec.BooleanValue allowFlipping;
 		public final ForgeConfigSpec.BooleanValue allowWallSlide;
+		public final ForgeConfigSpec.BooleanValue allowHorizontalWallRun;
 		public final ForgeConfigSpec.IntValue staminaMax;
 		public final ForgeConfigSpec.IntValue staminaConsumptionBreakfall;
 		public final ForgeConfigSpec.IntValue staminaConsumptionCatLeap;
@@ -158,17 +163,18 @@ public class ParCoolConfig {
 		Server(ForgeConfigSpec.Builder builder) {
 			builder.push("Action Permissions");
 			{
-				allowCatLeap = builder.comment("allow CatLeap").define("allowCatLeap", true);
-				allowCrawl = builder.comment("allow Crawl").define("allowCrawl", true);
-				allowDodge = builder.comment("allow Dodge").define("allowDodge", true);
-				allowFastRunning = builder.comment("allow FastRunning").define("allowFastRunning", true);
-				allowClingToCliff = builder.comment("allow ClingToCliff").define("allowClingToCliff", true);
-				allowRoll = builder.comment("allow Roll").define("allowRoll", true);
-				allowVault = builder.comment("allow Vault").define("allowVault", true);
-				allowWallJump = builder.comment("allow WallJump").define("allowWallJump", true);
-				allowBreakfall = builder.comment("allow Breakfall").define("allowBreakfall", true);
-				allowFlipping = builder.comment("allow Flipping").define("allowFlipping", true);
-				allowWallSlide = builder.comment("allow WallSlide").define("allowWallSlide", true);
+				allowCatLeap = builder.define("allowCatLeap", true);
+				allowCrawl = builder.define("allowCrawl", true);
+				allowDodge = builder.define("allowDodge", true);
+				allowFastRunning = builder.define("allowFastRunning", true);
+				allowClingToCliff = builder.define("allowClingToCliff", true);
+				allowRoll = builder.define("allowRoll", true);
+				allowVault = builder.define("allowVault", true);
+				allowWallJump = builder.define("allowWallJump", true);
+				allowBreakfall = builder.define("allowBreakfall", true);
+				allowFlipping = builder.define("allowFlipping", true);
+				allowWallSlide = builder.define("allowWallSlide", true);
+				allowHorizontalWallRun = builder.define("allowHorizontalWallRun", true);
 			}
 			builder.pop();
 			builder.push("Stamina");

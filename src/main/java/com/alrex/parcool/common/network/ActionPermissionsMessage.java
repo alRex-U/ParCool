@@ -28,6 +28,7 @@ public class ActionPermissionsMessage {
 	private boolean allowedFlipping;
 	private boolean allowedBreakfall;
 	private boolean allowedWallSlide;
+	private boolean allowedHorizontalWallRun;
 	private boolean allowedInfiniteStamina;
 	private byte[] infoData = null;
 
@@ -75,6 +76,10 @@ public class ActionPermissionsMessage {
 		return allowedWallSlide;
 	}
 
+	public boolean isAllowedHorizontalWallRun() {
+		return allowedHorizontalWallRun;
+	}
+
 	public void encode(PacketBuffer packet) {
 		packet.writeBoolean(allowedCatLeap);
 		packet.writeBoolean(allowedCrawl);
@@ -88,6 +93,7 @@ public class ActionPermissionsMessage {
 		packet.writeBoolean(allowedBreakfall);
 		packet.writeBoolean(allowedFlipping);
 		packet.writeBoolean(allowedWallSlide);
+		packet.writeBoolean(allowedHorizontalWallRun);
 		packet.writeByteArray(infoData);
 	}
 
@@ -105,6 +111,7 @@ public class ActionPermissionsMessage {
 		message.allowedBreakfall = packet.readBoolean();
 		message.allowedFlipping = packet.readBoolean();
 		message.allowedWallSlide = packet.readBoolean();
+		message.allowedHorizontalWallRun = packet.readBoolean();
 		message.infoData = packet.readByteArray();
 		return message;
 	}
@@ -137,6 +144,7 @@ public class ActionPermissionsMessage {
 		message.allowedFlipping = config.allowFlipping.get();
 		message.allowedBreakfall = config.allowBreakfall.get();
 		message.allowedWallSlide = config.allowWallSlide.get();
+		message.allowedHorizontalWallRun = config.allowHorizontalWallRun.get();
 
 		ByteBuffer buffer = ByteBuffer.allocate(128);
 		ActionInfo.encode(buffer);

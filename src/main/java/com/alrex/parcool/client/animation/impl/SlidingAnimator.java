@@ -23,10 +23,10 @@ public class SlidingAnimator extends Animator {
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		transformer
 				.rotateHeadPitch(50)
-				.rotateRightArm((float) Math.toRadians(145), 0, (float) Math.toRadians(-30))
-				.rotateLeftArm((float) Math.toRadians(150), 0, (float) Math.toRadians(35))
-				.rotateRightLeg((float) Math.toRadians(-7), 0, (float) Math.toRadians(-5))
-				.rotateLeftLeg((float) Math.toRadians(10), 0, (float) Math.toRadians(15))
+				.rotateRightArm((float) Math.toRadians(45), 0, (float) Math.toRadians(110))
+				.rotateLeftArm((float) Math.toRadians(50), 0, (float) Math.toRadians(-100))
+				.rotateRightLeg((float) Math.toRadians(-17), 0, (float) Math.toRadians(-5))
+				.rotateLeftLeg((float) Math.toRadians(-5), 0, (float) Math.toRadians(15))
 				.end();
 	}
 
@@ -35,7 +35,7 @@ public class SlidingAnimator extends Animator {
 		float swimAmount = player.getSwimAmount(rotator.getPartialTick());
 		rotator
 				.startBasedCenter()
-				.rotateFrontward(-80 * bodyAngleFactor(swimAmount) - 90 * swimAmount)
+				.rotateFrontward(-70 * bodyAngleFactor(swimAmount) - 90 * swimAmount)
 				.end();
 	}
 }

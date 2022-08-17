@@ -47,6 +47,7 @@ public class Vault extends Action {
 				parkourability.getPermission().canVault() &&
 				!(ParCoolConfig.CONFIG_CLIENT.vaultNeedKeyPressed.get() && !KeyBindings.getKeyVault().isDown()) &&
 				parkourability.getFastRun().canActWithRunning(player) &&
+				!stamina.isExhausted() &&
 				player.isOnGround() &&
 				(wall.dot(lookVec) / wall.length() / lookVec.length()) > 0.707106 /*check facing wall*/ &&
 				WorldUtil.getVaultableStep(player) != null &&

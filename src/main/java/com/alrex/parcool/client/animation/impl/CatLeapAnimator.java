@@ -13,7 +13,7 @@ public class CatLeapAnimator extends Animator {
 
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getCatLeap().isLeaping();
+		return !parkourability.getCatLeap().isLeaping() || getTick() > 30;
 	}
 
 	@Override

@@ -46,7 +46,7 @@ public class WallSlide extends Action {
 				float slipperiness = player.level.getBlockState(leanedBlock).getSlipperiness(player.level, leanedBlock, player);
 				slipperiness = (float) Math.sqrt(slipperiness);
 				player.fallDistance *= slipperiness;
-				player.setDeltaMovement(player.getDeltaMovement().multiply(1, slipperiness, 1));
+				player.setDeltaMovement(player.getDeltaMovement().multiply(0.8, slipperiness, 0.8));
 			}
 		} else {
 			slidingTick = 0;
@@ -59,6 +59,7 @@ public class WallSlide extends Action {
 			Vector3d wall = WorldUtil.getWall(player);
 			sliding = !player.isOnGround() &&
 					parkourability.getPermission().canWallSlide() &&
+					!parkourability.getFastRun().isRunning() &&
 					!parkourability.getDodge().isDodging() &&
 					!player.abilities.flying &&
 					wall != null &&

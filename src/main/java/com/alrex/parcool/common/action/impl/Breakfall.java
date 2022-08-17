@@ -50,6 +50,7 @@ public class Breakfall extends Action {
 			ready = parkourability.getPermission().canBreakfall() &&
 					KeyBindings.getKeyBreakfall().isDown() &&
 					!stamina.isExhausted() &&
+					!parkourability.getCrawl().isCrawling() &&
 					(!player.isOnGround() || parkourability.getAdditionalProperties().getLandingTick() < 3);
 		}
 	}

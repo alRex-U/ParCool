@@ -21,6 +21,7 @@ public class KeyBindings {
 	private static final KeyBinding keyBindVault = new KeyBinding("key.vaultdescription", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
 	private static final KeyBinding keyBindDodge = new KeyBinding("key.dodge.description", GLFW.GLFW_KEY_R, "key.categories.parcool");
 	private static final KeyBinding keyBindWallSlide = new KeyBinding("key.wallslide.description", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
+	private static final KeyBinding keyBindHorizontalWallRun = new KeyBinding("key.horizontalwallrun.description", GLFW.GLFW_KEY_C, "key.categories.parcool");
 	private static final KeyBinding keyBindOpenSettings = new KeyBinding("key.parcool.setting.open", GLFW.GLFW_KEY_P, "key.categories.parcool");
 
 	public static KeyBinding getKeySprint() {
@@ -83,6 +84,10 @@ public class KeyBindings {
 		return keyBindWallSlide;
 	}
 
+	public static KeyBinding getKeyHorizontalWallRun() {
+		return keyBindHorizontalWallRun;
+	}
+
 	@SubscribeEvent
 	public static void register(FMLClientSetupEvent event) {
 		ClientRegistry.registerKeyBinding(keyBindCrawl);
@@ -92,6 +97,7 @@ public class KeyBindings {
 		ClientRegistry.registerKeyBinding(keyBindDodge);
 		ClientRegistry.registerKeyBinding(keyBindWallSlide);
 		ClientRegistry.registerKeyBinding(keyBindVault);
+		ClientRegistry.registerKeyBinding(keyBindHorizontalWallRun);
 		ClientRegistry.registerKeyBinding(keyBindOpenSettings);
 	}
 }
