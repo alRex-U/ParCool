@@ -3,7 +3,7 @@
 {B}ParCool MOD{reset} is a mod of Minecraft,
 for more {I}Cool{reset} Actions like {I}Parkour{reset}.
 Some actions added are inspired by parkour techniques.
-This author is {B}NOT{reset} familiar with what called "Parkour" {-},Modding and English{reset}.
+This author is {B}NOT{reset} familiar with what called "Parkour" {-}and English{reset}.
 so I love your advice to improve this!
 ======
 {B}[Parkour]{reset}
@@ -35,7 +35,7 @@ Let's use also 'Cling to Cliff'!
 ======
 {B}[Crawl]{reset}
 
-Crawl is... crawl.
+You can crawl everywhere.
 It’s easier to do something than worry about it.
 
 
@@ -45,9 +45,10 @@ It’s easier to do something than worry about it.
 ======
 {B}[Dodge]{reset}
 
-Side Step and Back Flip are named Dodge herein.
+You can move a short distance quickly.
 (This is not a skill of the parkour)
 You will be very Cool if you should avoid bullets with this!
+Cool time exists if players do it three times in short time.
 
 {blue}<How to use>{reset}
 1.quickly press Movement Key twice
@@ -68,24 +69,25 @@ This is same as a speed of marathon runners.
 {B}[Cling to Cliff]{reset}
 
 You can cling to cliffs.
-only when you don’t have any items in your hands,
-
+This action is enabled even while you have any items in your hands by a update.
+You can also climb up onto the cliffs by pressing jump key.
 
 
 {blue}<How to use>{reset}
 1.press GrabCliff Key(Normally it’s mapped to Right Click)
 ======
-{B}[Roll]{reset}
+{B}[Breakfall]{reset}
 
-Roll is one of BreakFalls(skill for protect our from impact of landing)
-This technique change an impact of landing into energy of rolling.
+Breakfalls are skills for protect our from impact of landing.
+One of these is Roll, which change an impact of landing into energy of rolling.
+Another is Safety Tap, which absorb an impact by bending your legs.
 There are other breakfalls in parkour techniques.
+Defaultly player use Safety Tap, but also use Roll by pressing frontward movement key.
 
 
 
 {blue}<How to use>{reset}
-1.fall
-2.land just when you press Roll Key(Normally it’s mapped to C)
+1.land while you press Breakfall Key(Normally it’s mapped to C)
 ======
 {B}[Vault]{reset}
 
@@ -98,14 +100,15 @@ The one this mod add is called 'Speed Vault'.
 {blue}<How to use>{reset}
 1.do FastRunning
 2.collide with obstacles
+(You can set config to disable this unless you are pressing Vault Key(Normally it's mapped to Right Click)
 ======
 {B}[WallJump]{reset}
 
 with WallJump. you can kick walls to jump.
 {-}looks like Mari○!{reset}
-By the way, 'Wall Jump' do not exist in parkour techniques.
-Parkour has techniques called 'Wall Run' and 'Tic Tac'.
-However, in fact the 'Wall Run' may be not what you imaged like ninja. Let's google it!
+'Wall Jump' do not exist in parkour techniques.
+By the way, Parkour has techniques called 'Wall Run' and 'Tic Tac'.
+However, in fact the 'Wall Run' may be not what you imaged.
 
 
 
@@ -114,8 +117,7 @@ However, in fact the 'Wall Run' may be not what you imaged like ninja. Let's goo
 ======
 {B}[Sliding]{reset}
 
-You can do a slide (This is not a skill of parkour)
-I don't think it's possible to slide infinitely on ice.
+You can do a slide.
 
 
 
@@ -123,10 +125,45 @@ I don't think it's possible to slide infinitely on ice.
 1.do FastRunning
 2.do Crawl
 ======
-{B}[Credit]{reset}
+{B}[Flipping]{reset}
 
-I saw following websites while developing of this mod.
-I appreciate them.
+You can do Front or Back Flip.
+Defaultly you use Front-Flip but also can use Back-Flip if you are pressing backward movement key.
+
+
+
+{blue}<How to use>{reset}
+1.Press right and left movement key simultaneously
+======
+{B}[Wall Slide]{reset}
+
+You can fall slowly by cling to wall.
+This action is affected by the slipperiness of blocks.
+So players cannot make fall slow with wall of ice block.
+
+
+
+{blue}<How to use>{reset}
+1.Press Wall Slide Key in air by wall(Normally it's mapped to Right Click)
+======
+{B}[Horizontal Wall Run]{reset}
+
+You can do wall-running horizontally.
+Players cannot continue this over given time.
+
+
+
+{B}<How to use>{reset}
+1.do Fast-Run in air along the wall
+2.Continue to press Wall-Run Key(Normally it's mapped to C)
+======
+{B}[Other Features]{reset}
+
+・Players can climb fences, glass panels and iron bars which are not connecting to other block, and pillar-like block(end rod or chain).
+・Players do not stop sprint when they collide with blocks.
+・Animation while players are falling long distance.
+======
+{B}[Credit]{reset}
 
 {B}・Japan Parkour Federation{reset}
 {I}https://jpf-parkourfederation.jp/{reset}

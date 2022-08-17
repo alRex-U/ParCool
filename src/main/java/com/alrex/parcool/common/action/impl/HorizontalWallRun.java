@@ -57,6 +57,8 @@ public class HorizontalWallRun extends Action {
 							&& !parkourability.getWallJump().justJumped()
 							&& KeyBindings.getKeyHorizontalWallRun().isDown()
 							&& coolTime == 0
+							&& !player.isOnGround()
+							&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
 							&& !stamina.isExhausted()
 			) {
 				Vector3d wallDirection = WorldUtil.getWall(player);

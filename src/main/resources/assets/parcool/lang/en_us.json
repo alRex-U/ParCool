@@ -6,6 +6,7 @@
   "key.dodge.description": "Dodge",
   "key.vault.description": "Vault",
   "key.wallslide.description": "Wall Slide",
+  "key.horizontalwallrun.description": "Horizontal Wall-Run",
   "key.parcool.setting.open": "Open Settings",
   "key.categories.parcool": "ParCool",
   "action.name.catleap": "CatLeap",
