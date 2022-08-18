@@ -37,7 +37,7 @@ public class Parkourability {
 	private final ActionInfo actionInfo = new ActionInfo();
 
 	private final List<Action> actions = Arrays.<Action>asList(
-			catLeap, crawl, dodge, fastRun, clingToCliff, roll, vault, breakfall, flipping, tap, wallSlide, horizontalWallRun, wallJump, additionalProperties
+			catLeap, breakfall, crawl, dodge, fastRun, clingToCliff, roll, vault, flipping, tap, wallSlide, horizontalWallRun, wallJump, additionalProperties
 	);
 
 	public CatLeap getCatLeap() {

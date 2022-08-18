@@ -87,7 +87,7 @@ public class Dodge extends Action {
 	private boolean canDodge(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		boolean enabledDoubleTap = !ParCoolConfig.CONFIG_CLIENT.disableDoubleTappingForDodge.get();
 		return parkourability.getPermission().canDodge() && successivelyCount < 2 && coolTime <= 0 && player.isOnGround() && !player.isShiftKeyDown() && !stamina.isExhausted() && (
-				enabledDoubleTap && (
+				enabledDoubleTap && !parkourability.getRoll().isRolling() && !parkourability.getTap().isTapping() && (
 						KeyRecorder.keyBack.isDoubleTapped() ||
 								KeyRecorder.keyLeft.isDoubleTapped() ||
 								KeyRecorder.keyRight.isDoubleTapped() ||

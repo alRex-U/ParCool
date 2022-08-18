@@ -55,6 +55,7 @@ public class HorizontalWallRun extends Action {
 					parkourability.getPermission().canHorizontalWallRun()
 							&& parkourability.getFastRun().canActWithRunning(player)
 							&& !parkourability.getWallJump().justJumped()
+							&& !parkourability.getCrawl().isCrawling()
 							&& KeyBindings.getKeyHorizontalWallRun().isDown()
 							&& coolTime == 0
 							&& !player.isOnGround()

@@ -62,7 +62,8 @@ public class Tap extends Action {
 	}
 
 	public void startTap(PlayerEntity player) {
-		this.start = true;
+		tapping = true;
+		start = true;
 	}
 
 	public int getMaxTappingTick() {

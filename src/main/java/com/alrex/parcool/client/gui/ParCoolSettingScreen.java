@@ -39,6 +39,8 @@ public class ParCoolSettingScreen extends Screen {
 			new ButtonSet("action.name.roll", CONFIG_CLIENT.canRoll::set, CONFIG_CLIENT.canRoll::get),
 			new ButtonSet("action.name.vault", CONFIG_CLIENT.canVault::set, CONFIG_CLIENT.canVault::get),
 			new ButtonSet("action.name.walljump", CONFIG_CLIENT.canWallJump::set, CONFIG_CLIENT.canWallJump::get),
+			new ButtonSet("action.name.horizontalwallrun", CONFIG_CLIENT.canHorizontalWallRun::set, CONFIG_CLIENT.canHorizontalWallRun::get),
+			new ButtonSet("action.name.flipping", CONFIG_CLIENT.canFlipping::set, CONFIG_CLIENT.canFlipping::get),
 			new ButtonSet("hide stamina HUD", CONFIG_CLIENT.hideStaminaHUD::set, CONFIG_CLIENT.hideStaminaHUD::get),
 			new ButtonSet("use light Stamina HUD", CONFIG_CLIENT.useLightHUD::set, CONFIG_CLIENT.useLightHUD::get),
 			new ButtonSet("auto-turning when WallJump", CONFIG_CLIENT.autoTurningWallJump::set, CONFIG_CLIENT.autoTurningWallJump::get),
@@ -46,6 +48,8 @@ public class ParCoolSettingScreen extends Screen {
 			new ButtonSet("disable a camera rotation of Rolling", CONFIG_CLIENT.disableCameraRolling::set, CONFIG_CLIENT.disableCameraRolling::get),
 			new ButtonSet("disable a camera rotation of Flipping", CONFIG_CLIENT.disableCameraFlipping::set, CONFIG_CLIENT.disableCameraFlipping::get),
 			new ButtonSet("disable double-tapping for dodge", CONFIG_CLIENT.disableDoubleTappingForDodge::set, CONFIG_CLIENT.disableDoubleTappingForDodge::get),
+			new ButtonSet("disable crawl in air", CONFIG_CLIENT.disableCrawlInAir::set, CONFIG_CLIENT.disableCrawlInAir::get),
+			new ButtonSet("enable roll when player is creative", CONFIG_CLIENT.enableRollWhenCreative::set, CONFIG_CLIENT.enableRollWhenCreative::get),
 			new ButtonSet("ParCool is active", CONFIG_CLIENT.parCoolActivation::set, CONFIG_CLIENT.parCoolActivation::get)
 	};
 	private final WidgetListView<CheckboxButton> buttons = new WidgetListView<CheckboxButton>(

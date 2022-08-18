@@ -1,6 +1,8 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.RollAnimator;
+import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
@@ -30,9 +32,26 @@ public class Roll extends Action {
 		}
 	}
 
+	private int creativeCoolTime = 0;
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+		if (player.isLocalPlayer()) {
+			if (
+					KeyBindings.getKeyBreakfall().isDown()
+							&& KeyBindings.getKeyForward().isDown()
+							&& ParCoolConfig.CONFIG_CLIENT.enableRollWhenCreative.get()
+							&& player.isCreative()
+							&& parkourability.getAdditionalProperties().getLandingTick() <= 1
+							&& player.isOnGround()
+							&& !rolling
+							&& creativeCoolTime == 0
+			) {
+				start = true;
+				creativeCoolTime = 20;
+			}
+			if (creativeCoolTime > 0) creativeCoolTime--;
+		}
 		if (start) {
 			start = false;
 			rolling = true;
@@ -52,7 +71,8 @@ public class Roll extends Action {
 
 
 	public void startRoll(PlayerEntity player) {
-		this.start = true;
+		rolling = true;
+		start = true;
 	}
 
 	@Override

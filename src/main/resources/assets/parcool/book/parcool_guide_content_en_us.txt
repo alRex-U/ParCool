@@ -155,7 +155,7 @@ Players cannot continue this over given time.
 
 {B}<How to use>{reset}
 1.do Fast-Run in air along the wall
-2.Continue to press Wall-Run Key(Normally it's mapped to C)
+2.Continue to press Wall-Run Key(Normally it's mapped to R)
 ======
 {B}[Other Features]{reset}
 

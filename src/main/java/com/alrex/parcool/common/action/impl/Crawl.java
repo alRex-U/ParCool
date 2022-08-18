@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.CrawlAnimator;
 import com.alrex.parcool.client.animation.impl.SlidingAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
@@ -47,8 +48,7 @@ public class Crawl extends Action {
 							&& !parkourability.getRoll().isRolling()
 							&& !parkourability.getTap().isTapping()
 							&& !player.isInWaterOrBubble()
-							&& player.isOnGround()
-							&& !player.abilities.flying
+							&& (player.isOnGround() || !ParCoolConfig.CONFIG_CLIENT.disableCrawlInAir.get())
 			) {
 				//sliding
 				if (parkourability.getFastRun().getDashTick(parkourability.getAdditionalProperties()) > 5) {
