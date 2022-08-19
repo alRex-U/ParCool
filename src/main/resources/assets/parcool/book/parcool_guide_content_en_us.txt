@@ -87,7 +87,7 @@ Defaultly player use Safety Tap, but also use Roll by pressing frontward movemen
 
 
 {blue}<How to use>{reset}
-1.land while you press Breakfall Key(Normally it’s mapped to C)
+1.land while you press Breakfall Key(Normally it’s mapped to R)
 ======
 {B}[Vault]{reset}
 

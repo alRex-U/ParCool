@@ -11,7 +11,7 @@ import net.minecraftforge.event.TickEvent;
 import java.nio.ByteBuffer;
 
 public abstract class Action {
-	private static ByteBuffer explicitlySyncBuffer = ByteBuffer.allocate(128);
+	private static final ByteBuffer explicitlySyncBuffer = ByteBuffer.allocate(128);
 	public abstract void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina);
 
 	@OnlyIn(Dist.CLIENT)
@@ -31,6 +31,10 @@ public abstract class Action {
 		explicitlySyncBuffer.clear();
 		saveState(explicitlySyncBuffer);
 		explicitlySyncBuffer.flip();
-		SyncActionStateMessage.sync(player, this, explicitlySyncBuffer);
+
+		SyncActionStateMessage.Builder builder =
+				SyncActionStateMessage.Builder.sub()
+						.append(this, explicitlySyncBuffer);
+		SyncActionStateMessage.sync(player, builder);
 	}
 }

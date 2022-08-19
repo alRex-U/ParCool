@@ -16,7 +16,7 @@ public class KeyBindings {
 	private static final GameSettings settings = Minecraft.getInstance().options;
 	private static final KeyBinding keyBindCrawl = new KeyBinding("key.crawl.description", GLFW.GLFW_KEY_C, "key.categories.parcool");
 	private static final KeyBinding keyBindGrabWall = new KeyBinding("key.grab.description", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
-	private static final KeyBinding keyBindBreakfall = new KeyBinding("key.breakfall.description", GLFW.GLFW_KEY_C, "key.categories.parcool");
+	private static final KeyBinding keyBindBreakfall = new KeyBinding("key.breakfall.description", GLFW.GLFW_KEY_R, "key.categories.parcool");
 	private static final KeyBinding keyBindFastRunning = new KeyBinding("key.fastrunning.description", GLFW.GLFW_KEY_LEFT_CONTROL, "key.categories.parcool");
 	private static final KeyBinding keyBindVault = new KeyBinding("key.vault.description", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
 	private static final KeyBinding keyBindDodge = new KeyBinding("key.dodge.description", GLFW.GLFW_KEY_R, "key.categories.parcool");

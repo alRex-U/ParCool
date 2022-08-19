@@ -4,6 +4,7 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.impl.*;
 import com.alrex.parcool.common.capability.Parkourability;
+import javafx.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -58,8 +59,11 @@ public class SyncActionStateMessage {
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
 
-			Action action = getActionCorrespondingClassNumber(parkourability);
-			if (action != null) action.saveState(ByteBuffer.wrap(buffer));
+			Decoder decoder = new Decoder(this.buffer, parkourability);
+			while (decoder.hasNext()) {
+				Pair<Action, ByteBuffer> item = decoder.getItem();
+				item.getKey().restoreState(item.getValue());
+			}
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
@@ -82,8 +86,11 @@ public class SyncActionStateMessage {
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
 
-			Action action = getActionCorrespondingClassNumber(parkourability);
-			if (action != null) action.restoreState(ByteBuffer.wrap(buffer));
+			Decoder decoder = new Decoder(this.buffer, parkourability);
+			while (decoder.hasNext()) {
+				Pair<Action, ByteBuffer> item = decoder.getItem();
+				if (item.getKey() != null) item.getKey().restoreState(item.getValue());
+			}
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
@@ -102,12 +109,13 @@ public class SyncActionStateMessage {
 		if (action instanceof Tap) return 10;
 		if (action instanceof Flipping) return 11;
 		if (action instanceof WallSlide) return 12;
+		if (action instanceof HorizontalWallRun) return 13;
 
 		return -1;
 	}
 
 	@Nullable
-	private Action getActionCorrespondingClassNumber(Parkourability parkourability) {
+	private static Action getActionCorrespondingClassNumber(Parkourability parkourability, byte classNumber) {
 		switch (classNumber) {
 			case 0:
 				return parkourability.getAdditionalProperties();
@@ -135,18 +143,76 @@ public class SyncActionStateMessage {
 				return parkourability.getFlipping();
 			case 12:
 				return parkourability.getWallSlide();
+			case 13:
+				return parkourability.getHorizontalWallRun();
 		}
 		return null;
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void sync(PlayerEntity player, Action instance, ByteBuffer buffer) {
+	public static void sync(PlayerEntity player, Builder builder) {
+		ByteBuffer buffer1 = builder.build();
+		if (buffer1.limit() == 0) return;
 		SyncActionStateMessage message = new SyncActionStateMessage();
 		message.senderUUID = player.getUUID();
-		message.classNumber = getClassNumber(instance);
-		message.buffer = new byte[buffer.limit()];
-		buffer.get(message.buffer);
+		message.buffer = new byte[buffer1.limit()];
+		buffer1.get(message.buffer);
 
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);
+	}
+
+	public static class Builder {
+		private static final Builder instance = new Builder();
+		private static final Builder sub = new Builder();
+
+		private Builder() {
+		}
+
+		;
+		private final ByteBuffer buffer = ByteBuffer.allocate(1024);
+
+		public static Builder main() {
+			instance.buffer.clear();
+			return instance;
+		}
+
+		public static Builder sub() {
+			sub.buffer.clear();
+			return sub;
+		}
+
+		public Builder append(Action action, ByteBuffer actionBuffer) {
+			buffer.put(getClassNumber(action))
+					.putInt(actionBuffer.limit())
+					.put(actionBuffer);
+			return this;
+		}
+
+		public ByteBuffer build() {
+			buffer.flip();
+			return buffer;
+		}
+	}
+
+	private static class Decoder {
+		ByteBuffer buffer;
+		Parkourability parkourability;
+
+		Decoder(byte[] buf, Parkourability parkourability) {
+			buffer = ByteBuffer.wrap(buf);
+			this.parkourability = parkourability;
+		}
+
+		public boolean hasNext() {
+			return buffer.position() < buffer.limit();
+		}
+
+		public Pair<Action, ByteBuffer> getItem() {
+			Action action = getActionCorrespondingClassNumber(parkourability, buffer.get());
+			byte[] array = new byte[buffer.getInt()];
+			buffer.get(array);
+			ByteBuffer buf = ByteBuffer.wrap(array);
+			return new Pair<>(action, buf);
+		}
 	}
 }

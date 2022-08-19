@@ -52,6 +52,9 @@ public class FastRun extends Action {
 			fastRunning = parkourability.getPermission().canFastRunning()
 					&& !stamina.isExhausted()
 					&& player.isSprinting()
+					&& !player.isVisuallyCrawling()
+					&& !player.isSwimming()
+					&& !parkourability.getCrawl().isCrawling()
 					&& (KeyBindings.getKeyFastRunning().isDown() || ParCoolConfig.CONFIG_CLIENT.replaceSprintWithFastRun.get());
 		}
 		ModifiableAttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);

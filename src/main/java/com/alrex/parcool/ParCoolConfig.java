@@ -15,7 +15,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue canCrawl;
 		public final ForgeConfigSpec.BooleanValue canDodge;
 		public final ForgeConfigSpec.BooleanValue canFastRunning;
-		public final ForgeConfigSpec.BooleanValue canFrontFlip;
+		public final ForgeConfigSpec.BooleanValue canFrontDodge;
 		public final ForgeConfigSpec.BooleanValue canClingToCliff;
 		public final ForgeConfigSpec.BooleanValue canRoll;
 		public final ForgeConfigSpec.BooleanValue canVault;
@@ -35,7 +35,6 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue disableDoubleTappingForDodge;
 		public final ForgeConfigSpec.BooleanValue substituteSprintForFastRun;
 		public final ForgeConfigSpec.BooleanValue replaceSprintWithFastRun;
-		public final ForgeConfigSpec.BooleanValue creativeFlyingLikeSuperMan;
 		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
 		public final ForgeConfigSpec.BooleanValue parCoolActivation;
 		public final ForgeConfigSpec.BooleanValue continueSprintWhenColliding;
@@ -64,7 +63,7 @@ public class ParCoolConfig {
 			{
 				canCatLeap = builder.define("canCatLeap", true);
 				canCrawl = builder.define("canCrawl", true);
-				canFrontFlip = builder.define("canFrontFlip", true);
+				canFrontDodge = builder.define("canFrontDodge", true);
 				canDodge = builder.define("canDodge", true);
 				canFastRunning = builder.define("canFastRunning", true);
 				canClingToCliff = builder.define("canClingToCliff", true);
@@ -80,7 +79,7 @@ public class ParCoolConfig {
 			builder.pop();
 			builder.push("Modifier Values");
 			{
-				fastRunningModifier = builder.comment("FastRun Speed Modifier").defineInRange("fastRunModifier", 3, 0.001, 3);
+				fastRunningModifier = builder.comment("FastRun Speed Modifier").defineInRange("fastRunModifier", 3, 0.001, 4.5);
 			}
 			builder.pop();
 			builder.push("Stamina HUD Configuration");
@@ -104,10 +103,9 @@ public class ParCoolConfig {
 				disableCrawlInAir = builder.comment("Disable Crawl in air (experimental)").define("disableCrawlInAir", true);
 				enableRollWhenCreative = builder.comment("Enable Roll While player is in creative mode (experimental)").define("enableRollCreative", false);
 				vaultNeedKeyPressed = builder.comment("Make Vault Need Vault Key Pressed").define("vaultNeedKeyPressed", false);
-				replaceSprintWithFastRun = builder.comment("Replace vanilla sprint with Fast-Running").define("replaceSprintWithFastRun", true);
+				replaceSprintWithFastRun = builder.comment("enable players to do actions needing Fast-Running by sprint").define("replaceSprintWithFastRun", true);
 				substituteSprintForFastRun = builder.comment("Substitute a sprint of vanilla for the FastRunning").define("substituteSprint", false);
 				continueSprintWhenColliding = builder.comment("Continue sprint when even player collides blocks").define("continueSprintWhenColliding", true);
-				creativeFlyingLikeSuperMan = builder.comment("Can creative-fly like super-man(experimental)").define("creativeFlyLikeSuperMan", false);
 				infiniteStamina = builder
 						.comment("Infinite Stamina(this needs a permission from server, even if it is on single player's game)\nPlease check 'parcool-server.toml' in 'serverconfig' directory")
 						.define("infiniteStamina", false);

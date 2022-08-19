@@ -44,7 +44,7 @@ def config = [ //https://mcforge.readthedocs.io/en/latest/conventions/versioning
                versionStatus: VersionStatus.release
 ]
 
-def shouldLogDetailDebugInfo = false
+def shouldLogDetailDebugInfo = true
 
 //Version Format (McVersion-MajorMOD.MajorAPI.Minor.Patch-VersionStatus)
 version = "${config.mc_version}-${config.major_mod}.${config.major_api}.${config.minor}.${config.patch}-${config.versionStatus.toString()}"

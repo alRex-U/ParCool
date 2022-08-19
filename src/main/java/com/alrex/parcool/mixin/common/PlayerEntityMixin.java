@@ -1,9 +1,6 @@
 package com.alrex.parcool.mixin.common;
 
-import com.alrex.parcool.ParCoolConfig;
-import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.Parkourability;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerAbilities;
@@ -41,27 +38,5 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
 	@Inject(method = "travel", at = @At("TAIL"))
 	public void onTravel(Vector3d p_213352_1_, CallbackInfo ci) {
-		if (abilities.flying && ParCoolConfig.CONFIG_CLIENT.creativeFlyingLikeSuperMan.get()) {
-			if (KeyBindings.getKeyForward().isDown()) {
-				setDeltaMovement(getLookAngle().normalize().scale(getDeltaMovement().multiply(1, 1.65, 1).length()));
-			}
-		}
-	}
-
-	private boolean oldSprinting = false;
-
-	@Inject(method = "aiStep", at = @At("HEAD"))
-	public void onAiStep(CallbackInfo ci) {
-		PlayerEntity player = (PlayerEntity) (Object) this;
-		if (player.isLocalPlayer() && ParCoolConfig.CONFIG_CLIENT.continueSprintWhenColliding.get()) {
-			ClientPlayerEntity clientPlayer = (ClientPlayerEntity) player;
-			boolean flag = !clientPlayer.input.hasForwardImpulse() || !((float) player.getFoodData().getFoodLevel() > 6.0F || this.abilities.mayfly);
-			boolean flag1 = flag || this.isInWater() && !this.isUnderWater();
-			if (oldSprinting && !flag1) {
-				clientPlayer.setSprinting(true);
-			}
-
-			oldSprinting = player.isSprinting();
-		}
 	}
 }

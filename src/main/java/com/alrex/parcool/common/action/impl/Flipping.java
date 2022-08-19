@@ -7,7 +7,10 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
+import com.alrex.parcool.utilities.BufferUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
@@ -15,7 +18,27 @@ import java.nio.ByteBuffer;
 public class Flipping extends Action {
 
 	public enum FlippingDirection {
-		Front, Back
+		Front, Back;
+
+		public int getCode() {
+			switch (this) {
+				case Front:
+					return 0;
+				case Back:
+					return 1;
+			}
+			return -1;
+		}
+
+		public static FlippingDirection getFromCode(int code) {
+			switch (code) {
+				case 0:
+					return Front;
+				case 1:
+					return Back;
+			}
+			return null;
+		}
 	}
 
 	public boolean isFlipping() {
@@ -40,6 +63,7 @@ public class Flipping extends Action {
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (player.isLocalPlayer()) {
 			if (
@@ -53,11 +77,18 @@ public class Flipping extends Action {
 				startFlipping(player, parkourability, stamina);
 			}
 			if (player.isOnGround() && flippingTick > 2) {
-				stopFlipping();
+				stopFlipping(player);
+			}
+		}
+		if (flipping && flippingTick <= 1) {
+			Animation animation = Animation.get(player);
+			if (animation != null) {
+				animation.setAnimator(new FlippingAnimator(player.xRot));
 			}
 		}
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	private void startFlipping(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		flipping = true;
 		flippingTick = 0;
@@ -66,29 +97,33 @@ public class Flipping extends Action {
 		} else {
 			direction = FlippingDirection.Front;
 		}
+		synchronizeExplicitly(player);
 		stamina.consume(parkourability.getActionInfo().getStaminaConsumptionFlipping(), player);
-		Animation animation = Animation.get(player);
-		if (animation == null) return;
-		animation.setAnimator(new FlippingAnimator(player.xRot));
 	}
 
-	private void stopFlipping() {
+	private void stopFlipping(PlayerEntity player) {
+		synchronizeExplicitly(player);
 		flipping = false;
 		flippingTick = 0;
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
 
 	}
 
 	@Override
 	public void restoreState(ByteBuffer buffer) {
-
+		flipping = BufferUtil.getBoolean(buffer);
+		direction = FlippingDirection.getFromCode(buffer.getInt());
 	}
 
 	@Override
 	public void saveState(ByteBuffer buffer) {
-
+		BufferUtil.wrap(buffer)
+				.putBoolean(flipping)
+				.unwrap()
+				.putInt(direction == null ? -1 : direction.getCode());
 	}
 }

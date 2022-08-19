@@ -31,7 +31,7 @@ public class Crawl extends Action {
 	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (sliding) slidingTick++;
 		else slidingTick = 0;
-		if (crawling || sliding) {
+		if (sliding || crawling) {
 			player.setSprinting(false);
 			player.setPose(Pose.SWIMMING);
 		}
@@ -82,6 +82,9 @@ public class Crawl extends Action {
 				crawling = false;
 				sliding = false;
 				slidingVec = null;
+			}
+			if (!crawling) {
+				sliding = false;
 			}
 		}
 		if (sliding || crawling) {

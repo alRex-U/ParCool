@@ -91,7 +91,7 @@ public class Dodge extends Action {
 						KeyRecorder.keyBack.isDoubleTapped() ||
 								KeyRecorder.keyLeft.isDoubleTapped() ||
 								KeyRecorder.keyRight.isDoubleTapped() ||
-								(ParCoolConfig.CONFIG_CLIENT.canFrontFlip.get() && KeyRecorder.keyForward.isDoubleTapped())
+								(ParCoolConfig.CONFIG_CLIENT.canFrontDodge.get() && KeyRecorder.keyForward.isDoubleTapped())
 				) || (
 						KeyBindings.getKeyDodge().isDown() && (
 								KeyBindings.getKeyForward().isDown() ||
@@ -171,9 +171,11 @@ public class Dodge extends Action {
 				successivelyCoolTick = 30;
 				dodgeVec = dodgeVec.scale(0.4);
 				EntityUtil.addVelocity(player, new Vector3d(dodgeVec.x(), jump, dodgeVec.z()));
-				Animation animation = Animation.get(player);
-				if (animation != null) animation.setAnimator(new DodgeAnimator());
 			}
+		}
+		if (dodging && dodgingTick <= 1) {
+			Animation animation = Animation.get(player);
+			if (animation != null) animation.setAnimator(new DodgeAnimator());
 		}
 	}
 

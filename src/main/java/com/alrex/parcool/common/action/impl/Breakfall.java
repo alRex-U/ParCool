@@ -6,6 +6,8 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.utilities.BufferUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
@@ -45,6 +47,7 @@ public class Breakfall extends Action {
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (player.isLocalPlayer()) {
 			ready = parkourability.getPermission().canBreakfall() &&
@@ -56,6 +59,7 @@ public class Breakfall extends Action {
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
 	}
 

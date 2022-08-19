@@ -31,7 +31,7 @@ public class ParCoolSettingScreen extends Screen {
 			new ButtonSet("action.name.breakfall", CONFIG_CLIENT.canBreakfall::set, CONFIG_CLIENT.canBreakfall::get),
 			new ButtonSet("action.name.catleap", CONFIG_CLIENT.canCatLeap::set, CONFIG_CLIENT.canCatLeap::get),
 			new ButtonSet("action.name.crawl", CONFIG_CLIENT.canCrawl::set, CONFIG_CLIENT.canCrawl::get),
-			new ButtonSet("action.name.frontflip", CONFIG_CLIENT.canFrontFlip::set, CONFIG_CLIENT.canFrontFlip::get),
+			new ButtonSet("action.name.frontdodge", CONFIG_CLIENT.canFrontDodge::set, CONFIG_CLIENT.canFrontDodge::get),
 			new ButtonSet("action.name.dodge", CONFIG_CLIENT.canDodge::set, CONFIG_CLIENT.canDodge::get),
 			new ButtonSet("action.name.fastrun", CONFIG_CLIENT.canFastRunning::set, CONFIG_CLIENT.canFastRunning::get),
 			new ButtonSet("action.name.flipping", CONFIG_CLIENT.canFlipping::set, CONFIG_CLIENT.canFlipping::get),
@@ -41,6 +41,10 @@ public class ParCoolSettingScreen extends Screen {
 			new ButtonSet("action.name.walljump", CONFIG_CLIENT.canWallJump::set, CONFIG_CLIENT.canWallJump::get),
 			new ButtonSet("action.name.horizontalwallrun", CONFIG_CLIENT.canHorizontalWallRun::set, CONFIG_CLIENT.canHorizontalWallRun::get),
 			new ButtonSet("action.name.flipping", CONFIG_CLIENT.canFlipping::set, CONFIG_CLIENT.canFlipping::get),
+			new ButtonSet("infinite stamina", CONFIG_CLIENT.infiniteStamina::set, CONFIG_CLIENT.infiniteStamina::get),
+			new ButtonSet("substitute Sprint for Fast-Run", CONFIG_CLIENT.substituteSprintForFastRun::set, CONFIG_CLIENT.substituteSprintForFastRun::get),
+			new ButtonSet("replace Fast-Run with Sprint", CONFIG_CLIENT.replaceSprintWithFastRun::set, CONFIG_CLIENT.replaceSprintWithFastRun::get),
+			new ButtonSet("continue sprint when players collide blocks", CONFIG_CLIENT.continueSprintWhenColliding::set, CONFIG_CLIENT.continueSprintWhenColliding::get),
 			new ButtonSet("hide stamina HUD", CONFIG_CLIENT.hideStaminaHUD::set, CONFIG_CLIENT.hideStaminaHUD::get),
 			new ButtonSet("use light Stamina HUD", CONFIG_CLIENT.useLightHUD::set, CONFIG_CLIENT.useLightHUD::get),
 			new ButtonSet("auto-turning when WallJump", CONFIG_CLIENT.autoTurningWallJump::set, CONFIG_CLIENT.autoTurningWallJump::get),
@@ -84,6 +88,7 @@ public class ParCoolSettingScreen extends Screen {
 		renderBackground(p_230430_1_, ColorUtil.getColorCodeFromARGB(0x77, 0x66, 0x66, 0xCC));
 		buttons.render(p_230430_1_, Minecraft.getInstance().font, p_230430_2_, p_230430_3_, p_230430_4_);
 		FontUtil.drawCenteredText(p_230430_1_, new StringTextComponent("ParCool Settings"), window.getGuiScaledWidth() / 2, yOffset, 0x8888FF);
+		FontUtil.drawCenteredText(p_230430_1_, new StringTextComponent("↓"), window.getGuiScaledWidth() / 2, window.getGuiScaledHeight() - yOffset, 0x8888FF);
 	}
 
 	//renderBackground?

@@ -113,6 +113,7 @@ public class Vault extends Action {
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
 	}
 

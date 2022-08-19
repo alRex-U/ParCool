@@ -41,6 +41,7 @@ public class ActionProcessor {
 		List<Action> actions = parkourability.getList();
 		stamina.onTick(parkourability.getActionInfo());
 		boolean needSync = event.side == LogicalSide.CLIENT && player.isLocalPlayer();
+		SyncActionStateMessage.Builder builder = SyncActionStateMessage.Builder.main();
 
 		for (Action action : actions) {
 			if (needSync) {
@@ -62,11 +63,14 @@ public class ActionProcessor {
 				while (bufferOfPreState.hasRemaining()) {
 					if (bufferOfPostState.get() != bufferOfPreState.get()) {
 						bufferOfPostState.rewind();
-						SyncActionStateMessage.sync(player, action, bufferOfPostState);
+						builder.append(action, bufferOfPostState);
 						break;
 					}
 				}
 			}
+		}
+		if (needSync) {
+			SyncActionStateMessage.sync(player, builder);
 		}
 	}
 

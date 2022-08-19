@@ -26,7 +26,6 @@ public class Roll extends Action {
 	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (rolling) {
 			rollingTick++;
-			if (rollingTick >= getRollMaxTick()) rolling = false;
 		} else {
 			rollingTick = 0;
 		}
@@ -51,6 +50,11 @@ public class Roll extends Action {
 				creativeCoolTime = 20;
 			}
 			if (creativeCoolTime > 0) creativeCoolTime--;
+			if (rollingTick >= getRollMaxTick()) rolling = false;
+		}
+		if ((rolling && rollingTick <= 1) || start) {
+			Animation animation = Animation.get(player);
+			if (animation != null) animation.setAnimator(new RollAnimator());
 		}
 		if (start) {
 			start = false;
@@ -59,8 +63,6 @@ public class Roll extends Action {
 				Vector3d vec = VectorUtil.fromYawDegree(player.yBodyRot);
 				player.setDeltaMovement(vec.x(), 0, vec.z());
 			}
-			Animation animation = Animation.get(player);
-			if (animation != null) animation.setAnimator(new RollAnimator());
 		}
 	}
 
@@ -71,7 +73,6 @@ public class Roll extends Action {
 
 
 	public void startRoll(PlayerEntity player) {
-		rolling = true;
 		start = true;
 	}
 

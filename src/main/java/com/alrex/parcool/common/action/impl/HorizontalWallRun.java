@@ -11,6 +11,8 @@ import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
@@ -32,10 +34,6 @@ public class HorizontalWallRun extends Action {
 
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (wallRunningTick > Max_Running_Tick) {
-			wallRunning = false;
-			coolTime = 10;
-		}
 		if (wallRunning) {
 			wallRunningTick++;
 			Vector3d movement = player.getDeltaMovement();
@@ -46,21 +44,31 @@ public class HorizontalWallRun extends Action {
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (player.isLocalPlayer()) {
 			if (coolTime > 0) coolTime--;
 			boolean oldRunning = wallRunning;
 			wallRunning = false;
 			if (
-					parkourability.getPermission().canHorizontalWallRun()
+					(!oldRunning
+							&& parkourability.getPermission().canHorizontalWallRun()
 							&& parkourability.getFastRun().canActWithRunning(player)
 							&& !parkourability.getWallJump().justJumped()
 							&& !parkourability.getCrawl().isCrawling()
 							&& KeyBindings.getKeyHorizontalWallRun().isDown()
+							&& Math.abs(player.getDeltaMovement().y()) < 0.3
 							&& coolTime == 0
 							&& !player.isOnGround()
 							&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
 							&& !stamina.isExhausted()
+					) || (oldRunning
+							&& parkourability.getPermission().canHorizontalWallRun()
+							&& !parkourability.getWallJump().justJumped()
+							&& !parkourability.getCrawl().isCrawling()
+							&& KeyBindings.getKeyHorizontalWallRun().isDown()
+							&& !player.isOnGround()
+					)
 			) {
 				Vector3d wallDirection = WorldUtil.getWall(player);
 				Vector3d direction = VectorUtil.fromYawDegree(player.yBodyRot);
@@ -73,7 +81,7 @@ public class HorizontalWallRun extends Action {
 									wallDirection.x() * direction.x() + wallDirection.z() * direction.z(), 0,
 									-wallDirection.x() * direction.z() + wallDirection.z() * direction.x()
 							).normalize();
-					if (Math.abs(dividedVec.z()) > 0.966) {
+					if (Math.abs(dividedVec.z()) > 0.9) {
 						wallIsRightward = dividedVec.z() > 0;
 						wallRunning = true;
 					}
@@ -82,8 +90,12 @@ public class HorizontalWallRun extends Action {
 			if (oldRunning != wallRunning && !wallRunning) {
 				coolTime = 10;
 			}
+			if (wallRunningTick > Max_Running_Tick) {
+				wallRunning = false;
+				coolTime = 10;
+			}
 		}
-		if (wallRunning && wallRunningTick == 0) {
+		if (wallRunning && wallRunningTick <= 3) {
 			Animation animation = Animation.get(player);
 			if (animation != null) {
 				animation.setAnimator(new HorizontalWallRunAnimator());
@@ -92,6 +104,7 @@ public class HorizontalWallRun extends Action {
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
 
 	}
