@@ -80,10 +80,11 @@ public class ClingToCliff extends Action {
 					}
 				}
 			}
+
+			if (cling) armSwingAmount += player.getDeltaMovement().lengthSqr();
 		}
 		armSwingAmountOld = armSwingAmount;
 		if (cling) {
-			armSwingAmount += player.getDeltaMovement().lengthSqr();
 			Animation animation = Animation.get(player);
 			if (animation != null) animation.setAnimator(new ClingToCliffAnimator());
 		} else {
