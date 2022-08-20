@@ -65,6 +65,7 @@ public class WallSlide extends Action {
 					!parkourability.getFastRun().isRunning() &&
 					!parkourability.getDodge().isDodging() &&
 					!player.abilities.flying &&
+					player.getDeltaMovement().y() <= 0 &&
 					wall != null &&
 					KeyBindings.getKeyWallSlide().isDown() &&
 					!stamina.isExhausted() &&
