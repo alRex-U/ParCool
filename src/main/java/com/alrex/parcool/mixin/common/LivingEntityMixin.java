@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -77,6 +78,12 @@ public abstract class LivingEntityMixin extends Entity {
 			return count <= 0;
 		} else if (block instanceof RotatedPillarBlock) {
 			return state.getValue(RotatedPillarBlock.AXIS).isVertical();
+		} else if (block instanceof EndRodBlock) {
+			Direction direction = state.getValue(DirectionalBlock.FACING);
+			if (direction == Direction.UP || direction == Direction.DOWN) {
+				return true;
+			}
+			return false;
 		} else {
 			return block.isLadder(state.getBlockState(), world, pos, entity);
 		}
