@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://repo.spongepowered.org/maven' }
         mavenCentral()
     }
@@ -35,12 +35,12 @@ mixin {
     config 'parcool.mixins.json'
 }
 def config = [ //https://mcforge.readthedocs.io/en/latest/conventions/versioning/
-               mc_version   : '1.17.1',//supported minimum Minecraft version
+               mc_version   : '1.18.1',//supported minimum Minecraft version
                major_mod    : '2',//Removing items, blocks, tile entities, etc.
                major_api    : '0',//Changing the order or variables of enums. etc
                minor        : '0',//Adding items, blocks, tile entities, etc.
                patch        : '0',//bugfix
-               forge_version: '1.17.1-37.1.1',
+               forge_version: '1.18.1-39.1.0',
                versionStatus: VersionStatus.release
 ]
 
@@ -51,11 +51,11 @@ version = "${config.mc_version}-${config.major_mod}.${config.major_api}.${config
 group = 'com.alrex'
 archivesBaseName = 'ParCool'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'official', version: '1.17.1'
+    mappings channel: 'official', version: '1.18.1'
 
 
     runs {
@@ -125,7 +125,7 @@ jar {
                 "Specification-Vendor"    : "alRex",
                 "Specification-Version"   : "1",
                 "Implementation-Title"    : project.name,
-                "Implementation-Version"  : "${version}",
+                "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "alRex",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
                 "TweakClass"              : "org.spongepowered.asm.launch.MixinTweaker",
