@@ -29,13 +29,30 @@ public class RollAnimator extends Animator {
 
 	@Override
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
-
+		Roll roll = parkourability.getRoll();
+		float phase = (roll.getRollingTick() + transformer.getPartialTick()) / (float) roll.getRollMaxTick();
+		float factor = 1 - 4 * (0.5f - phase) * (0.5f - phase);
+		transformer
+				.addRotateLeftLeg(
+						(float) Math.toRadians(-70 * factor), 0, 0
+				)
+				.addRotateRightLeg(
+						(float) Math.toRadians(-70 * factor), 0, 0
+				)
+				.addRotateRightArm(
+						(float) Math.toRadians(-80 * factor), 0, 0
+				)
+				.addRotateLeftArm(
+						(float) Math.toRadians(-80 * factor), 0, 0
+				)
+				.end();
 	}
 
 	@Override
 	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		Roll roll = parkourability.getRoll();
-		float factor = calculateMovementFactor((roll.getRollingTick() + rotator.getPartialTick()) / (float) roll.getRollMaxTick());
+		float phase = (roll.getRollingTick() + rotator.getPartialTick()) / (float) roll.getRollMaxTick();
+		float factor = calculateMovementFactor(phase);
 		rotator
 				.startBasedCenter()
 				.rotateFrontward(MathUtil.lerp(0, 360, factor))
