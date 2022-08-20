@@ -1,9 +1,9 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
-import net.minecraft.entity.player.PlayerEntity;
+import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.impl.Stamina;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -16,7 +16,7 @@ public class AdditionalProperties extends Action {
 	private int landingTick = 0;
 
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (player.isSprinting()) {
 			sprintingTick++;
 		} else {
@@ -33,12 +33,12 @@ public class AdditionalProperties extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onClientTick(Player player, Parkourability parkourability, Stamina stamina) {
 
 	}
 
 	@Override
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRender(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
 
 	}
 

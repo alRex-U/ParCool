@@ -3,11 +3,11 @@ package com.alrex.parcool.common.network;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.constants.ActionsEnum;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.PacketDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
@@ -16,13 +16,13 @@ public class SetActionPossibilityMessage {
 	private ActionsEnum actionsEnum = null;
 	private boolean possibility = false;
 
-	public void encode(PacketBuffer packet) {
+	public void encode(FriendlyByteBuf packet) {
 		packet.writeBoolean(possibility);
 		packet.writeInt(actionsEnum.name().length());
 		packet.writeCharSequence(actionsEnum.name(), StandardCharsets.UTF_8);
 	}
 
-	public static SetActionPossibilityMessage decode(PacketBuffer packet) {
+	public static SetActionPossibilityMessage decode(FriendlyByteBuf packet) {
 		SetActionPossibilityMessage message = new SetActionPossibilityMessage();
 		message.possibility = packet.readBoolean();
 		message.actionsEnum = ActionsEnum.valueOf(packet.readCharSequence(packet.readInt(), StandardCharsets.UTF_8).toString());
@@ -31,7 +31,7 @@ public class SetActionPossibilityMessage {
 
 	public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
-			if (contextSupplier.get().getNetworkManager().getDirection() == PacketDirection.CLIENTBOUND) {
+			if (contextSupplier.get().getNetworkManager().getDirection() == PacketFlow.CLIENTBOUND) {
 				ParCoolConfig.Client c = ParCoolConfig.CONFIG_CLIENT;
 				switch (actionsEnum) {
 					case Crawl:
@@ -67,7 +67,7 @@ public class SetActionPossibilityMessage {
 		contextSupplier.get().setPacketHandled(true);
 	}
 
-	public static void send(ServerPlayerEntity player, ActionsEnum actionsEnum, boolean possibility) {
+	public static void send(ServerPlayer player, ActionsEnum actionsEnum, boolean possibility) {
 		SetActionPossibilityMessage message = new SetActionPossibilityMessage();
 		message.actionsEnum = actionsEnum;
 		message.possibility = possibility;

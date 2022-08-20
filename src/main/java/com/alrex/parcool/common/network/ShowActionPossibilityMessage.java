@@ -4,26 +4,26 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.constants.ActionsEnum;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import java.util.function.Supplier;
 
 public class ShowActionPossibilityMessage {
 	ActionsEnum action = null;
 
-	public void encode(PacketBuffer packet) {
+	public void encode(FriendlyByteBuf packet) {
 		packet.writeBoolean(action != null);
 		if (action != null) {
 			packet.writeUtf(action.name());
 		}
 	}
 
-	public static ShowActionPossibilityMessage decode(PacketBuffer packet) {
+	public static ShowActionPossibilityMessage decode(FriendlyByteBuf packet) {
 		ShowActionPossibilityMessage message = new ShowActionPossibilityMessage();
 		try {
 			if (packet.readBoolean()) message.action = ActionsEnum.valueOf(packet.readUtf());
@@ -36,9 +36,9 @@ public class ShowActionPossibilityMessage {
 
 	public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
-			ClientPlayerEntity player = Minecraft.getInstance().player;
+			LocalPlayer player = Minecraft.getInstance().player;
 			if (player == null) return;
-			player.displayClientMessage(new StringTextComponent(getText(action)), false);
+			player.displayClientMessage(new TextComponent(getText(action)), false);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
@@ -77,7 +77,7 @@ public class ShowActionPossibilityMessage {
 		return builder.toString();
 	}
 
-	public static void send(ServerPlayerEntity player, ActionsEnum action) {
+	public static void send(ServerPlayer player, ActionsEnum action) {
 		ShowActionPossibilityMessage message = new ShowActionPossibilityMessage();
 		message.action = action;
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);

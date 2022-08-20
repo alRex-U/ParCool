@@ -1,11 +1,11 @@
-package com.alrex.parcool.common.capability;
+package com.alrex.parcool.common.capability.impl;
 
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.impl.*;
-import com.alrex.parcool.common.capability.capabilities.Capabilities;
+import com.alrex.parcool.common.capability.provider.ParkourabilityProvider;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ActionPermission;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
@@ -14,8 +14,8 @@ import java.util.List;
 
 public class Parkourability {
 	@Nullable
-	public static Parkourability get(PlayerEntity player) {
-		LazyOptional<Parkourability> optional = player.getCapability(Capabilities.PARKOURABILITY_CAPABILITY);
+	public static Parkourability get(Player player) {
+		LazyOptional<Parkourability> optional = player.getCapability(ParkourabilityProvider.PARKOURABILITY_CAPABILITY);
 		return optional.orElse(null);
 	}
 

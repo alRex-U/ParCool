@@ -3,17 +3,17 @@ package com.alrex.parcool.common.network;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.impl.*;
-import com.alrex.parcool.common.capability.Parkourability;
-import javafx.util.Pair;
+import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
@@ -29,7 +29,7 @@ public class SyncActionStateMessage {
 	private UUID senderUUID = null;
 	private byte[] buffer = null;
 
-	public void encode(PacketBuffer packetBuffer) {
+	public void encode(FriendlyByteBuf packetBuffer) {
 		packetBuffer.writeByte(classNumber)
 				.writeLong(senderUUID.getMostSignificantBits())
 				.writeLong(senderUUID.getLeastSignificantBits())
@@ -37,7 +37,7 @@ public class SyncActionStateMessage {
 				.writeBytes(buffer);
 	}
 
-	public static SyncActionStateMessage decode(PacketBuffer packetBuffer) {
+	public static SyncActionStateMessage decode(FriendlyByteBuf packetBuffer) {
 		SyncActionStateMessage message = new SyncActionStateMessage();
 		message.classNumber = packetBuffer.readByte();
 		message.senderUUID = new UUID(packetBuffer.readLong(), packetBuffer.readLong());
@@ -50,7 +50,7 @@ public class SyncActionStateMessage {
 	@OnlyIn(Dist.DEDICATED_SERVER)
 	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
-			PlayerEntity player;
+			Player player;
 
 			player = contextSupplier.get().getSender();
 			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
@@ -62,7 +62,7 @@ public class SyncActionStateMessage {
 			Decoder decoder = new Decoder(this.buffer, parkourability);
 			while (decoder.hasNext()) {
 				Pair<Action, ByteBuffer> item = decoder.getItem();
-				item.getKey().restoreState(item.getValue());
+				item.getFirst().restoreState(item.getSecond());
 			}
 		});
 		contextSupplier.get().setPacketHandled(true);
@@ -71,9 +71,9 @@ public class SyncActionStateMessage {
 	@OnlyIn(Dist.CLIENT)
 	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
-			PlayerEntity player;
+			Player player;
 			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-				World world = Minecraft.getInstance().level;
+				Level world = Minecraft.getInstance().level;
 				if (world == null) return;
 				player = world.getPlayerByUUID(senderUUID);
 				if (player == null || player.isLocalPlayer()) return;
@@ -89,7 +89,7 @@ public class SyncActionStateMessage {
 			Decoder decoder = new Decoder(this.buffer, parkourability);
 			while (decoder.hasNext()) {
 				Pair<Action, ByteBuffer> item = decoder.getItem();
-				if (item.getKey() != null) item.getKey().restoreState(item.getValue());
+				if (item.getFirst() != null) item.getFirst().restoreState(item.getSecond());
 			}
 		});
 		contextSupplier.get().setPacketHandled(true);
@@ -150,7 +150,7 @@ public class SyncActionStateMessage {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void sync(PlayerEntity player, Builder builder) {
+	public static void sync(Player player, Builder builder) {
 		ByteBuffer buffer1 = builder.build();
 		if (buffer1.limit() == 0) return;
 		SyncActionStateMessage message = new SyncActionStateMessage();

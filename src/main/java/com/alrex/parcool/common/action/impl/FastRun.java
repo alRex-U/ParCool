@@ -4,14 +4,14 @@ import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.FastRunningAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
+import com.alrex.parcool.common.capability.impl.Animation;
+import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.impl.Stamina;
 import com.alrex.parcool.utilities.BufferUtil;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -35,7 +35,7 @@ public class FastRun extends Action {
 	private boolean fastRunning = false;
 
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (fastRunning) {
 			runningTick++;
 			notRunningTick = 0;
@@ -47,7 +47,7 @@ public class FastRun extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onClientTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (player.isLocalPlayer()) {
 			fastRunning = parkourability.getPermission().canFastRunning()
 					&& !stamina.isExhausted()
@@ -57,7 +57,7 @@ public class FastRun extends Action {
 					&& !parkourability.getCrawl().isCrawling()
 					&& (KeyBindings.getKeyFastRunning().isDown() || ParCoolConfig.CONFIG_CLIENT.replaceSprintWithFastRun.get());
 		}
-		ModifiableAttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
+		AttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (attr == null) return;
 
 		if (isRunning()) {
@@ -74,7 +74,7 @@ public class FastRun extends Action {
 	}
 
 	@Override
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRender(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
 
 	}
 
@@ -102,7 +102,7 @@ public class FastRun extends Action {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public boolean canActWithRunning(PlayerEntity player) {
+	public boolean canActWithRunning(Player player) {
 		return ParCoolConfig.CONFIG_CLIENT.substituteSprintForFastRun.get() ? player.isSprinting() : this.isRunning();
 	}
 

@@ -2,18 +2,18 @@ package com.alrex.parcool.client.animation.impl;
 
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
-import com.alrex.parcool.common.capability.Parkourability;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.entity.player.PlayerEntity;
+import com.alrex.parcool.common.capability.impl.Parkourability;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.world.entity.player.Player;
 
 public class ClingToCliffAnimator extends Animator {
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(Player player, Parkourability parkourability) {
 		return !parkourability.getClingToCliff().isCling();
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		double zAngle = 10 + 20 * Math.sin(24 * parkourability.getClingToCliff().getArmSwingAmount());
 		transformer
 				.rotateLeftArm(

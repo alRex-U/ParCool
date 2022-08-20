@@ -1,14 +1,14 @@
 package com.alrex.parcool.client.animation;
 
 import com.alrex.parcool.utilities.VectorUtil;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 public class PlayerModelRotator {
-	private final MatrixStack stack;
-	private final PlayerEntity player;
+	private final PoseStack stack;
+	private final Player player;
 	private final float partial;
 
 	public float getPartialTick() {
@@ -20,7 +20,7 @@ public class PlayerModelRotator {
 
 	private float angleFront = 0;
 
-	public PlayerModelRotator(MatrixStack stack, PlayerEntity player, float partial) {
+	public PlayerModelRotator(PoseStack stack, Player player, float partial) {
 		this.stack = stack;
 		this.player = player;
 		this.partial = partial;
@@ -37,7 +37,7 @@ public class PlayerModelRotator {
 	}
 
 	public PlayerModelRotator rotateFrontward(float angleDegree) {
-		Vector3d lookVec = VectorUtil.fromYawDegree(player.yBodyRot).yRot((float) Math.PI / 2);
+		Vec3 lookVec = VectorUtil.fromYawDegree(player.yBodyRot).yRot((float) Math.PI / 2);
 		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
 		angleFront += angleDegree;
 		stack.mulPose(vec.rotationDegrees(angleDegree));
@@ -45,7 +45,7 @@ public class PlayerModelRotator {
 	}
 
 	public PlayerModelRotator rotateRightward(float angleDegree) {
-		Vector3d lookVec = VectorUtil.fromYawDegree(player.yBodyRot);
+		Vec3 lookVec = VectorUtil.fromYawDegree(player.yBodyRot);
 		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
 		stack.mulPose(vec.rotationDegrees(angleDegree));
 		return this;

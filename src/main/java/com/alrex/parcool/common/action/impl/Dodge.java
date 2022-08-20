@@ -5,13 +5,13 @@ import com.alrex.parcool.client.animation.impl.DodgeAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
+import com.alrex.parcool.common.capability.impl.Animation;
+import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.impl.Stamina;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.EntityUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -67,7 +67,7 @@ public class Dodge extends Action {
 	}
 
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (coolTime > 0) coolTime--;
 		if (successivelyCoolTick > 0) {
 			successivelyCoolTick--;
@@ -84,7 +84,7 @@ public class Dodge extends Action {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private boolean canDodge(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	private boolean canDodge(Player player, Parkourability parkourability, Stamina stamina) {
 		boolean enabledDoubleTap = !ParCoolConfig.CONFIG_CLIENT.disableDoubleTappingForDodge.get();
 		return parkourability.getPermission().canDodge() && successivelyCount < 2 && coolTime <= 0 && player.isOnGround() && !player.isShiftKeyDown() && !stamina.isExhausted() && (
 				enabledDoubleTap && !parkourability.getRoll().isRolling() && !parkourability.getTap().isTapping() && (
@@ -104,14 +104,14 @@ public class Dodge extends Action {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private boolean canContinue(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	private boolean canContinue(Player player, Parkourability parkourability, Stamina stamina) {
 		return dodging &&
 				!parkourability.getRoll().isRolling() &&
 				!parkourability.getClingToCliff().isCling() &&
 				!player.isOnGround() &&
 				!player.isInWaterOrBubble() &&
 				!player.isFallFlying() &&
-				!player.abilities.flying &&
+				!player.getAbilities().flying &&
 				parkourability.getPermission().canClingToCliff();
 	}
 
@@ -132,7 +132,7 @@ public class Dodge extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onClientTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (player.isLocalPlayer()) {
 			if (canContinue(player, parkourability, stamina)) {
 				dodging = true;
@@ -145,10 +145,10 @@ public class Dodge extends Action {
 				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionDodge(), player);
 				dodgeDirection = getDirectionFromInput();
 
-				Vector3d lookVec = player.getLookAngle();
-				lookVec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
+				Vec3 lookVec = player.getLookAngle();
+				lookVec = new Vec3(lookVec.x(), 0, lookVec.z()).normalize();
 				double jump = 0;
-				Vector3d dodgeVec = Vector3d.ZERO;
+				Vec3 dodgeVec = Vec3.ZERO;
 				switch (dodgeDirection) {
 					case Front:
 						dodgeVec = lookVec;
@@ -170,7 +170,7 @@ public class Dodge extends Action {
 				}
 				successivelyCoolTick = 30;
 				dodgeVec = dodgeVec.scale(0.4);
-				EntityUtil.addVelocity(player, new Vector3d(dodgeVec.x(), jump, dodgeVec.z()));
+				EntityUtil.addVelocity(player, new Vec3(dodgeVec.x(), jump, dodgeVec.z()));
 			}
 		}
 		if (dodging && dodgingTick <= 1) {
@@ -180,7 +180,7 @@ public class Dodge extends Action {
 	}
 
 	@Override
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRender(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
 	}
 
 	@Override

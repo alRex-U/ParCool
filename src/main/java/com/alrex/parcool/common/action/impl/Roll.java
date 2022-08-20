@@ -4,13 +4,13 @@ import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.RollAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
+import com.alrex.parcool.common.capability.impl.Animation;
+import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.impl.Stamina;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -23,7 +23,7 @@ public class Roll extends Action {
 	private int rollingTick = 0;
 
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (rolling) {
 			rollingTick++;
 		} else {
@@ -32,9 +32,10 @@ public class Roll extends Action {
 	}
 
 	private int creativeCoolTime = 0;
+
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onClientTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (player.isLocalPlayer()) {
 			if (
 					KeyBindings.getKeyBreakfall().isDown()
@@ -60,7 +61,7 @@ public class Roll extends Action {
 			start = false;
 			rolling = true;
 			if (player.isLocalPlayer()) {
-				Vector3d vec = VectorUtil.fromYawDegree(player.yBodyRot);
+				Vec3 vec = VectorUtil.fromYawDegree(player.yBodyRot);
 				player.setDeltaMovement(vec.x(), 0, vec.z());
 			}
 		}
@@ -68,11 +69,11 @@ public class Roll extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRender(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
 	}
 
 
-	public void startRoll(PlayerEntity player) {
+	public void startRoll(Player player) {
 		start = true;
 	}
 

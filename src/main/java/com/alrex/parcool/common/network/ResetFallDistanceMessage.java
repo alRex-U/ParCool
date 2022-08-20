@@ -1,10 +1,10 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.PacketDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -12,12 +12,12 @@ import java.util.function.Supplier;
 public class ResetFallDistanceMessage {
 	private UUID playerID = null;
 
-	public void encode(PacketBuffer packet) {
+	public void encode(FriendlyByteBuf packet) {
 		packet.writeLong(this.playerID.getMostSignificantBits());
 		packet.writeLong(this.playerID.getLeastSignificantBits());
 	}
 
-	public static ResetFallDistanceMessage decode(PacketBuffer packet) {
+	public static ResetFallDistanceMessage decode(FriendlyByteBuf packet) {
 		ResetFallDistanceMessage message = new ResetFallDistanceMessage();
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
 		return message;
@@ -25,8 +25,8 @@ public class ResetFallDistanceMessage {
 
 	public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
-			PlayerEntity player;
-			if (contextSupplier.get().getNetworkManager().getDirection() != PacketDirection.CLIENTBOUND) {
+			Player player;
+			if (contextSupplier.get().getNetworkManager().getDirection() != PacketFlow.CLIENTBOUND) {
 				player = contextSupplier.get().getSender();
 				if (player == null) return;
 			} else return;
@@ -36,7 +36,7 @@ public class ResetFallDistanceMessage {
 	}
 
 	//only in Client
-	public static void sync(PlayerEntity player) {
+	public static void sync(Player player) {
 		player.fallDistance = 0;
 		ResetFallDistanceMessage message = new ResetFallDistanceMessage();
 		message.playerID = player.getUUID();

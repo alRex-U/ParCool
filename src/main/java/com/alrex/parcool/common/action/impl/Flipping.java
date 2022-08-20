@@ -4,11 +4,11 @@ import com.alrex.parcool.client.animation.impl.FlippingAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
+import com.alrex.parcool.common.capability.impl.Animation;
+import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.impl.Stamina;
 import com.alrex.parcool.utilities.BufferUtil;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -54,7 +54,7 @@ public class Flipping extends Action {
 	private boolean flipping = false;
 
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (flipping) {
 			flippingTick++;
 		} else {
@@ -64,7 +64,7 @@ public class Flipping extends Action {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onClientTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (player.isLocalPlayer()) {
 			if (
 					!flipping &&
@@ -83,13 +83,13 @@ public class Flipping extends Action {
 		if (flipping && flippingTick <= 1) {
 			Animation animation = Animation.get(player);
 			if (animation != null) {
-				animation.setAnimator(new FlippingAnimator(player.xRot));
+				animation.setAnimator(new FlippingAnimator(player.getXRot()));
 			}
 		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private void startFlipping(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	private void startFlipping(Player player, Parkourability parkourability, Stamina stamina) {
 		flipping = true;
 		flippingTick = 0;
 		if (KeyBindings.getKeyBack().isDown()) {
@@ -101,7 +101,7 @@ public class Flipping extends Action {
 		stamina.consume(parkourability.getActionInfo().getStaminaConsumptionFlipping(), player);
 	}
 
-	private void stopFlipping(PlayerEntity player) {
+	private void stopFlipping(Player player) {
 		synchronizeExplicitly(player);
 		flipping = false;
 		flippingTick = 0;
@@ -109,7 +109,7 @@ public class Flipping extends Action {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRender(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
 
 	}
 

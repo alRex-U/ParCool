@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.animation;
 
-import com.alrex.parcool.common.capability.Parkourability;
-import net.minecraft.entity.player.PlayerEntity;
+import com.alrex.parcool.common.capability.impl.Parkourability;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -18,13 +18,13 @@ public abstract class Animator {
 		return tick;
 	}
 
-	public abstract boolean shouldRemoved(PlayerEntity player, Parkourability parkourability);
+	public abstract boolean shouldRemoved(Player player, Parkourability parkourability);
 
 	/**
 	 * @return You should return true if you want to cancel vanilla animation to control all about rendering
 	 */
 	public boolean animatePre(
-			PlayerEntity player,
+			Player player,
 			Parkourability parkourability,
 			PlayerModelTransformer transformer
 	) {
@@ -36,14 +36,14 @@ public abstract class Animator {
 	 * You can utilize this to use partially vanilla animation
 	 */
 	public void animatePost(
-			PlayerEntity player,
+			Player player,
 			Parkourability parkourability,
 			PlayerModelTransformer transformer
 	) {
 	}
 
 	public void rotate(
-			PlayerEntity player,
+			Player player,
 			Parkourability parkourability,
 			PlayerModelRotator rotator
 	) {
@@ -51,7 +51,7 @@ public abstract class Animator {
 
 	public void onRender(
 			TickEvent.RenderTickEvent event,
-			PlayerEntity clientPlayer,
+			Player clientPlayer,
 			Parkourability parkourability
 	) {
 	}

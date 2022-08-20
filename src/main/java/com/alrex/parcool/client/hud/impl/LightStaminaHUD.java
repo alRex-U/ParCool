@@ -3,13 +3,13 @@ package com.alrex.parcool.client.hud.impl;
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.hud.AbstractHUD;
 import com.alrex.parcool.client.hud.Position;
-import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.impl.Stamina;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.tags.FluidTags;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 
 public class LightStaminaHUD extends AbstractHUD {
 	private int oldValue = 0;
@@ -20,8 +20,8 @@ public class LightStaminaHUD extends AbstractHUD {
 	}
 
 	@Override
-	public void render(RenderGameOverlayEvent.Pre event, MatrixStack stack) {
-		ClientPlayerEntity player = Minecraft.getInstance().player;
+	public void render(ForgeIngameGui gui, PoseStack mStack, float partialTicks, int width, int height) {
+		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null || player.isEyeInFluid(FluidTags.WATER)) return;
 		if (player.isCreative()) return;
 
@@ -49,7 +49,7 @@ public class LightStaminaHUD extends AbstractHUD {
 		int iconNumber = (int) Math.floor(staminaScale * 10);
 		float iconPartial = (staminaScale * 10) - iconNumber;
 
-		mc.getTextureManager().bind(StaminaHUD.STAMINA);
+		mc.getTextureManager().bindForSetup(StaminaHUD.STAMINA);
 		int baseX = scaledWidth / 2 + 92;
 		int y = scaledHeight - 49 + ParCoolConfig.CONFIG_CLIENT.offsetVerticalLightStaminaHUD.get();
 		for (int i = 1; i <= 10; i++) {
@@ -63,7 +63,7 @@ public class LightStaminaHUD extends AbstractHUD {
 			if (stamina.isExhausted()) {
 				textureX += 16;
 			}
-			AbstractHUD.blit(stack, x, y, textureX, 119f, 8, 9, 128, 128);
+			AbstractHUD.blit(mStack, x, y, textureX, 119f, 8, 9, 128, 128);
 		}
 	}
 }

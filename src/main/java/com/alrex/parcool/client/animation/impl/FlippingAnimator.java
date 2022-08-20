@@ -5,11 +5,11 @@ import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.Flipping;
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.capability.impl.Parkourability;
 import com.alrex.parcool.utilities.EasingFunctions;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
 
 public class FlippingAnimator extends Animator {
@@ -24,7 +24,7 @@ public class FlippingAnimator extends Animator {
 	}
 
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(Player player, Parkourability parkourability) {
 		return !parkourability.getFlipping().isFlipping() || getTick() >= getMaxAnimationTick();
 	}
 
@@ -75,7 +75,7 @@ public class FlippingAnimator extends Animator {
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float phase = (getTick() + transformer.getPartialTick()) / getMaxAnimationTick();
 
 		if (parkourability.getFlipping().getDirection() == Flipping.FlippingDirection.Front) {
@@ -142,7 +142,7 @@ public class FlippingAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / getMaxAnimationTick();
 		float factor = angleFactor(phase);
 
@@ -162,7 +162,7 @@ public class FlippingAnimator extends Animator {
 	}
 
 	@Override
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity clientPlayer, Parkourability parkourability) {
+	public void onRender(TickEvent.RenderTickEvent event, Player clientPlayer, Parkourability parkourability) {
 		if (!clientPlayer.isLocalPlayer() ||
 				!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
 				ParCoolConfig.CONFIG_CLIENT.disableCameraFlipping.get()
@@ -170,9 +170,9 @@ public class FlippingAnimator extends Animator {
 		float phase = (getTick() + event.renderTickTime) / getMaxAnimationTick();
 		float factor = angleFactor(phase);
 		if (parkourability.getFlipping().getDirection() == Flipping.FlippingDirection.Front) {
-			clientPlayer.xRot = this.startAngle + factor * 360 - ((phase > 0.5) ? 360 : 0);
+			clientPlayer.setXRot(this.startAngle + factor * 360 - ((phase > 0.5) ? 360 : 0));
 		} else {
-			clientPlayer.xRot = this.startAngle - factor * 360 + ((phase > 0.5) ? 360 : 0);
+			clientPlayer.setXRot(this.startAngle - factor * 360 + ((phase > 0.5) ? 360 : 0));
 		}
 	}
 }

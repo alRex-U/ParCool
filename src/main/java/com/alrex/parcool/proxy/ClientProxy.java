@@ -3,10 +3,10 @@ package com.alrex.parcool.proxy;
 import com.alrex.parcool.client.gui.ParCoolGuideScreen;
 import com.alrex.parcool.common.network.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy extends CommonProxy {
@@ -71,7 +71,7 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public void showParCoolGuideScreen(PlayerEntity playerIn) {
+	public void showParCoolGuideScreen(Player playerIn) {
 		if (playerIn.level.isClientSide) {
 			Minecraft.getInstance().setScreen(new ParCoolGuideScreen());
 		}

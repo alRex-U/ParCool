@@ -3,14 +3,14 @@ package com.alrex.parcool.common.action.impl;
 import com.alrex.parcool.client.animation.impl.HorizontalWallRunAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
+import com.alrex.parcool.common.capability.impl.Animation;
+import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.impl.Stamina;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -33,10 +33,10 @@ public class HorizontalWallRun extends Action {
 	}
 
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (wallRunning) {
 			wallRunningTick++;
-			Vector3d movement = player.getDeltaMovement();
+			Vec3 movement = player.getDeltaMovement();
 			player.setDeltaMovement(movement.x(), 0, movement.z());
 		} else {
 			wallRunningTick = 0;
@@ -45,7 +45,7 @@ public class HorizontalWallRun extends Action {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onClientTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (player.isLocalPlayer()) {
 			if (coolTime > 0) coolTime--;
 			boolean oldRunning = wallRunning;
@@ -70,14 +70,14 @@ public class HorizontalWallRun extends Action {
 							&& !player.isOnGround()
 					)
 			) {
-				Vector3d wallDirection = WorldUtil.getWall(player);
-				Vector3d direction = VectorUtil.fromYawDegree(player.yBodyRot);
-				direction = new Vector3d(direction.x(), 0, direction.z()).normalize();
+				Vec3 wallDirection = WorldUtil.getWall(player);
+				Vec3 direction = VectorUtil.fromYawDegree(player.yBodyRot);
+				direction = new Vec3(direction.x(), 0, direction.z()).normalize();
 				if (wallDirection != null) {
 					wallDirection = wallDirection.normalize();
 					//doing "wallDirection/direction" as complex number(x + z i) to calculate difference of player's direction to steps
-					Vector3d dividedVec =
-							new Vector3d(
+					Vec3 dividedVec =
+							new Vec3(
 									wallDirection.x() * direction.x() + wallDirection.z() * direction.z(), 0,
 									-wallDirection.x() * direction.z() + wallDirection.z() * direction.x()
 							).normalize();
@@ -105,7 +105,7 @@ public class HorizontalWallRun extends Action {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRender(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
 
 	}
 

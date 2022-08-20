@@ -5,10 +5,10 @@ import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.Roll;
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.capability.impl.Parkourability;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
 
 public class RollAnimator extends Animator {
@@ -23,12 +23,12 @@ public class RollAnimator extends Animator {
 	}
 
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(Player player, Parkourability parkourability) {
 		return !parkourability.getRoll().isRolling();
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		Roll roll = parkourability.getRoll();
 		float phase = (roll.getRollingTick() + transformer.getPartialTick()) / (float) roll.getRollMaxTick();
 		float factor = 1 - 4 * (0.5f - phase) * (0.5f - phase);
@@ -49,7 +49,7 @@ public class RollAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		Roll roll = parkourability.getRoll();
 		float phase = (roll.getRollingTick() + rotator.getPartialTick()) / (float) roll.getRollMaxTick();
 		float factor = calculateMovementFactor(phase);
@@ -60,11 +60,11 @@ public class RollAnimator extends Animator {
 	}
 
 	@Override
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity clientPlayer, Parkourability parkourability) {
+	public void onRender(TickEvent.RenderTickEvent event, Player clientPlayer, Parkourability parkourability) {
 		Roll roll = parkourability.getRoll();
 		if (roll.isRolling() && clientPlayer.isLocalPlayer() && Minecraft.getInstance().options.getCameraType().isFirstPerson() && !ParCoolConfig.CONFIG_CLIENT.disableCameraRolling.get()) {
 			float factor = calculateMovementFactor((roll.getRollingTick() + event.renderTickTime) / (float) roll.getRollMaxTick());
-			clientPlayer.xRot = (factor > 0.5 ? factor - 1 : factor) * 360f + cameraPitch;
+			clientPlayer.setXRot((factor > 0.5 ? factor - 1 : factor) * 360f + cameraPitch);
 		}
 	}
 }

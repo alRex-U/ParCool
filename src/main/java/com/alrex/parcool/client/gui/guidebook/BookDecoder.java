@@ -2,7 +2,6 @@ package com.alrex.parcool.client.gui.guidebook;
 
 import com.alrex.parcool.ParCool;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.ITextProperties;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
@@ -66,8 +65,8 @@ public class BookDecoder {
 
 				if (division.matcher(line).matches()) {//end page
 					pages.add(new Book.Page(
-							ITextProperties.of(decodeDecoration(title)),
-							content.stream().map(this::decodeDecoration).map(ITextProperties::of).collect(Collectors.toList())
+							decodeDecoration(title),
+							content.stream().map(this::decodeDecoration).collect(Collectors.toList())
 					));
 					break;
 				} else {

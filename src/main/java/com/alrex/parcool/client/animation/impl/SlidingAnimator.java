@@ -3,12 +3,12 @@ package com.alrex.parcool.client.animation.impl;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
-import com.alrex.parcool.common.capability.Parkourability;
-import net.minecraft.entity.player.PlayerEntity;
+import com.alrex.parcool.common.capability.impl.Parkourability;
+import net.minecraft.world.entity.player.Player;
 
 public class SlidingAnimator extends Animator {
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(Player player, Parkourability parkourability) {
 		return !parkourability.getCrawl().isSliding();
 	}
 
@@ -20,7 +20,7 @@ public class SlidingAnimator extends Animator {
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		transformer
 				.rotateHeadPitch(50)
 				.rotateRightArm((float) Math.toRadians(45), 0, (float) Math.toRadians(110))
@@ -31,7 +31,7 @@ public class SlidingAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float swimAmount = player.getSwimAmount(rotator.getPartialTick());
 		rotator
 				.startBasedCenter()

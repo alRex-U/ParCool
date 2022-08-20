@@ -4,8 +4,8 @@ import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.Dodge;
-import com.alrex.parcool.common.capability.Parkourability;
-import net.minecraft.entity.player.PlayerEntity;
+import com.alrex.parcool.common.capability.impl.Parkourability;
+import net.minecraft.world.entity.player.Player;
 
 import static com.alrex.parcool.utilities.MathUtil.lerp;
 
@@ -14,12 +14,12 @@ public class DodgeAnimator extends Animator {
 	private boolean frontLeg = false;
 
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(Player player, Parkourability parkourability) {
 		return !parkourability.getDodge().isDodging();
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float phase = (getTick() + transformer.getPartialTick()) / 6f;
 		if (phase > 1) {
 			return;
@@ -117,7 +117,7 @@ public class DodgeAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / 6f;
 		if (phase > 1) {
 			return;

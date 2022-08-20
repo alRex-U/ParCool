@@ -2,10 +2,10 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
+import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.impl.Stamina;
 import com.alrex.parcool.utilities.BufferUtil;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -26,7 +26,7 @@ public class Breakfall extends Action {
 	}
 
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (ready) {
 			readyTick++;
 		} else {
@@ -34,7 +34,7 @@ public class Breakfall extends Action {
 		}
 	}
 
-	public void startBreakfall(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void startBreakfall(Player player, Parkourability parkourability, Stamina stamina) {
 		ready = false;
 		readyTick = 0;
 		synchronizeExplicitly(player);
@@ -48,7 +48,7 @@ public class Breakfall extends Action {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onClientTick(Player player, Parkourability parkourability, Stamina stamina) {
 		if (player.isLocalPlayer()) {
 			ready = parkourability.getPermission().canBreakfall() &&
 					KeyBindings.getKeyBreakfall().isDown() &&
@@ -60,7 +60,7 @@ public class Breakfall extends Action {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRender(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
 	}
 
 	@Override

@@ -3,10 +3,10 @@ package com.alrex.parcool.client.hud.impl;
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.hud.AbstractHUD;
 import com.alrex.parcool.client.hud.Position;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 
 @OnlyIn(Dist.CLIENT)
 public class StaminaHUDController extends AbstractHUD {
@@ -20,16 +20,15 @@ public class StaminaHUDController extends AbstractHUD {
 	}
 
 	@Override
-	public void render(RenderGameOverlayEvent.Pre event, MatrixStack stack) {
+	public void render(ForgeIngameGui gui, PoseStack mStack, float partialTicks, int width, int height) {
 		ParCoolConfig.Client config = ParCoolConfig.CONFIG_CLIENT;
 		if (config.hideStaminaHUD.get() || !config.parCoolActivation.get() || config.useHungerBarInsteadOfStamina.get())
 			return;
-		if (event.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE) return;
 
 		if (config.useLightHUD.get()) {
-			lightStaminaHUD.render(event, stack);
+			lightStaminaHUD.render(gui, mStack, partialTicks, width, height);
 		} else {
-			staminaHUD.render(event, stack);
+			staminaHUD.render(gui, mStack, partialTicks, width, height);
 		}
 	}
 }
