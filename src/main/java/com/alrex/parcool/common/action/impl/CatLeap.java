@@ -6,10 +6,11 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
-import com.alrex.parcool.common.network.SyncCatLeapMessage;
 import com.alrex.parcool.utilities.BufferUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
@@ -19,6 +20,8 @@ public class CatLeap extends Action {
 	private int leapingTick = 0;
 	private int readyTick = 0;
 	private boolean ready = false;
+	//flag to apply animation for not local player
+	private boolean start = false;
 
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
@@ -27,33 +30,40 @@ public class CatLeap extends Action {
 		} else {
 			leapingTick = 0;
 		}
-		if (leapingTick > 1 && player.collidedVertically) {
+		if (
+				(leapingTick > 1 && player.isOnGround()) ||
+						player.isFallFlying() ||
+						player.isInWaterOrBubble() ||
+						player.isInLava()
+		) {
 			leaping = false;
 			leapingTick = 0;
 		}
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (player.isUser()) {
+		if (player.isLocalPlayer()) {
 			if (!leaping) leaping = parkourability.getPermission().canCatLeap() &&
-					player.collidedVertically &&
+					player.isOnGround() &&
 					!stamina.isExhausted() &&
 					ready && readyTick < 10 &&
-					!KeyBindings.getKeySneak().isKeyDown();
+					!KeyBindings.getKeySneak().isDown();
 
 			if (ready && leaping) {
-				Vector3d motionVec = player.getMotion();
-				Vector3d vec = new Vector3d(motionVec.getX(), 0, motionVec.getZ()).normalize();
-				player.setMotion(vec.getX(), parkourability.getActionInfo().getCatLeapPower(), vec.getZ());
-				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionCatLeap(), parkourability.getActionInfo());
+				Vector3d motionVec = player.getDeltaMovement();
+				Vector3d vec = new Vector3d(motionVec.x(), 0, motionVec.z()).normalize();
+				player.setDeltaMovement(vec.x(), parkourability.getActionInfo().getCatLeapPower(), vec.z());
+				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionCatLeap(), player);
 			}
 
-			ready = !leaping && ((parkourability.getFastRun().getNotRunningTick() < 10 && KeyBindings.getKeySneak().isKeyDown()) || (ready && KeyBindings.getKeySneak().isKeyDown() && readyTick < 10));
+			ready = !leaping && ((parkourability.getFastRun().getNotRunningTick() < 10 && KeyBindings.getKeySneak().isDown()) || (ready && KeyBindings.getKeySneak().isDown() && readyTick < 10));
 			if (ready) readyTick++;
 			else readyTick = 0;
 		}
-		if (leaping && leapingTick <= 1) {
+		if (leaping && leapingTick <= 1 || start) {
+			start = false;
 			Animation animation = Animation.get(player);
 			if (animation != null) animation.setAnimator(new CatLeapAnimator());
 		}
@@ -65,32 +75,20 @@ public class CatLeap extends Action {
 	}
 
 	@Override
-	public boolean needSynchronization(ByteBuffer savedInstanceState) {
-		return this.ready != BufferUtil.getBoolean(savedInstanceState)
-				|| this.leaping != BufferUtil.getBoolean(savedInstanceState);
-	}
-
-	@Override
-	public void sendSynchronization(PlayerEntity player) {
-		SyncCatLeapMessage.sync(player, this);
-	}
-
-	@Override
-	public void synchronize(Object message) {
-		if (message instanceof SyncCatLeapMessage) {
-			SyncCatLeapMessage correctMessage = (SyncCatLeapMessage) message;
-			leaping = correctMessage.isLeaping();
-			ready = correctMessage.isReady();
-		}
-	}
-
-	@Override
 	public void saveState(ByteBuffer buffer) {
 		BufferUtil.wrap(buffer)
 				.putBoolean(this.ready)
 				.putBoolean(this.leaping);
 	}
 
+	@Override
+	public void restoreState(ByteBuffer buffer) {
+		this.ready = BufferUtil.getBoolean(buffer);
+		this.leaping = BufferUtil.getBoolean(buffer);
+		if (leaping) {
+			start = true;
+		}
+	}
 
 	public boolean isReady() {
 		return ready;

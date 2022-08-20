@@ -35,52 +35,10 @@ public class ClientProxy extends CommonProxy {
 		);
 		instance.registerMessage(
 				3,
-				StartRollMessage.class,
-				StartRollMessage::encode,
-				StartRollMessage::decode,
-				StartRollMessage::handleClient
-		);
-		instance.registerMessage(
-				4,
-				SyncCatLeapMessage.class,
-				SyncCatLeapMessage::encode,
-				SyncCatLeapMessage::decode,
-				SyncCatLeapMessage::handleClient
-		);
-		instance.registerMessage(
-				5,
-				SyncCrawlMessage.class,
-				SyncCrawlMessage::encode,
-				SyncCrawlMessage::decode,
-				SyncCrawlMessage::handleClient
-		);
-		instance.registerMessage(
-				6,
-				SyncDodgeMessage.class,
-				SyncDodgeMessage::encode,
-				SyncDodgeMessage::decode,
-				SyncDodgeMessage::handleClient
-		);
-		instance.registerMessage(
-				7,
-				SyncFastRunningMessage.class,
-				SyncFastRunningMessage::encode,
-				SyncFastRunningMessage::decode,
-				SyncFastRunningMessage::handleClient
-		);
-		instance.registerMessage(
-				8,
-				SyncClingToCliffMessage.class,
-				SyncClingToCliffMessage::encode,
-				SyncClingToCliffMessage::decode,
-				SyncClingToCliffMessage::handleClient
-		);
-		instance.registerMessage(
-				9,
-				SyncRollMessage.class,
-				SyncRollMessage::encode,
-				SyncRollMessage::decode,
-				SyncRollMessage::handleClient
+				StartBreakfallMessage.class,
+				StartBreakfallMessage::encode,
+				StartBreakfallMessage::decode,
+				StartBreakfallMessage::handleClient
 		);
 		instance.registerMessage(
 				10,
@@ -90,13 +48,6 @@ public class ClientProxy extends CommonProxy {
 				SyncStaminaMessage::handleClient
 		);
 		instance.registerMessage(
-				11,
-				DisableInfiniteStaminaMessage.class,
-				DisableInfiniteStaminaMessage::encode,
-				DisableInfiniteStaminaMessage::decode,
-				DisableInfiniteStaminaMessage::handle
-		);
-		instance.registerMessage(
 				12,
 				ActionPermissionsMessage.class,
 				ActionPermissionsMessage::encode,
@@ -104,18 +55,25 @@ public class ClientProxy extends CommonProxy {
 				ActionPermissionsMessage::handle
 		);
 		instance.registerMessage(
-				13,
-				AvoidDamageMessage.class,
-				AvoidDamageMessage::encode,
-				AvoidDamageMessage::decode,
-				AvoidDamageMessage::handleClient
+				14,
+				StartVaultMessage.class,
+				StartVaultMessage::encode,
+				StartVaultMessage::decode,
+				StartVaultMessage::handleClient
+		);
+		instance.registerMessage(
+				15,
+				SyncActionStateMessage.class,
+				SyncActionStateMessage::encode,
+				SyncActionStateMessage::decode,
+				SyncActionStateMessage::handleClient
 		);
 	}
 
 	@Override
 	public void showParCoolGuideScreen(PlayerEntity playerIn) {
-		if (playerIn.world.isRemote()) {
-			Minecraft.getInstance().displayGuiScreen(new ParCoolGuideScreen());
+		if (playerIn.level.isClientSide) {
+			Minecraft.getInstance().setScreen(new ParCoolGuideScreen());
 		}
 	}
 }

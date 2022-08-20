@@ -16,9 +16,10 @@ public class KeyRecorder {
 	public static final KeyState keyJumpState = new KeyState();
 	public static final KeyState keySprintState = new KeyState();
 	public static final KeyState keyCrawlState = new KeyState();
-	public static final KeyState keyActivateParCoolState = new KeyState();
+	public static final KeyState keyOpenSettingsState = new KeyState();
 	public static final KeyState keyFastRunning = new KeyState();
 	public static final KeyState keyDodge = new KeyState();
+	public static final KeyState keyBreakfall = new KeyState();
 
 	@SubscribeEvent
 	public static void onClientTick(TickEvent.ClientTickEvent event) {
@@ -31,15 +32,16 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyJump(), keyJumpState);
 		record(KeyBindings.getKeySprint(), keySprintState);
 		record(KeyBindings.getKeyCrawl(), keyCrawlState);
-		record(KeyBindings.getKeyActivateParCool(), keyActivateParCoolState);
+		record(KeyBindings.getKeyActivateParCool(), keyOpenSettingsState);
 		record(KeyBindings.getKeyFastRunning(), keyFastRunning);
 		record(KeyBindings.getKeyDodge(), keyDodge);
+		record(KeyBindings.getKeyBreakfall(), keyBreakfall);
 	}
 
 	private static void record(KeyBinding keyBinding, KeyState state) {
-		state.pressed = (keyBinding.isKeyDown() && state.tickKeyDown == 0);
-		state.doubleTapped = (keyBinding.isKeyDown() && 0 < state.tickNotKeyDown && state.tickNotKeyDown <= 2);
-		if (keyBinding.isKeyDown()) {
+		state.pressed = (keyBinding.isDown() && state.tickKeyDown == 0);
+		state.doubleTapped = (keyBinding.isDown() && 0 < state.tickNotKeyDown && state.tickNotKeyDown <= 2);
+		if (keyBinding.isDown()) {
 			state.tickKeyDown++;
 			state.tickNotKeyDown = 0;
 		} else {

@@ -12,7 +12,9 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
@@ -24,6 +26,8 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.alrex.parcool.utilities.ColorUtil.getColorCodeFromARGB;
 
 @OnlyIn(Dist.CLIENT)
 public class ParCoolGuideScreen extends Screen {
@@ -58,51 +62,44 @@ public class ParCoolGuideScreen extends Screen {
 
 	//init?
 	@Override
-	public void func_231023_e_() {
+	public void init() {
 		menu.setListener(this::changePage);
-		super.func_231023_e_();
+		super.init();
 	}
+
 
 	//render?
 	@Override
-	public void func_230430_a_(MatrixStack stack, int mouseX, int mouseY, float n) {
-		func_230446_a_(stack);
+	public void render(MatrixStack stack, int mouseX, int mouseY, float n) {
+		renderBackground(stack);
 		Minecraft mc = this.getMinecraft();
-		mc.getTextureManager().bindTexture(BACKGROUND_LOCATION);
-		func_238651_a_(stack, getColorCodeFromARGB(0x77, 0x66, 0x66, 0xCC));
-		MainWindow window = mc.getMainWindow();
-		bookOffsetX = (window.getScaledWidth() - width) / 2;
-		bookOffsetY = (window.getScaledHeight() - height) / 2;
+		mc.getTextureManager().bind(BACKGROUND_LOCATION);
+		renderBackground(stack, getColorCodeFromARGB(0x77, 0x66, 0x66, 0xCC));
+		MainWindow window = mc.getWindow();
+		bookOffsetX = (window.getGuiScaledWidth() - width) / 2;
+		bookOffsetY = (window.getGuiScaledHeight() - height) / 2;
 
-		AbstractGui.func_238466_a_(stack, bookOffsetX, bookOffsetY, width, height, 0f, 0f, 256, 194, 256, 256);
+		AbstractGui.blit(stack, bookOffsetX, bookOffsetY, width, height, 0f, 0f, 256, 194, 256, 256);
 		renderContent(stack, bookOffsetX, bookOffsetY, width / 2, height, mouseX, mouseY, n);
 		renderMenu(stack, bookOffsetX + width / 2, bookOffsetY, width / 2, height, mouseX, mouseY, n);
 	}
 
-	//renderBackground?
 	@Override
-	public void func_230446_a_(MatrixStack p_230446_1_) {
-		super.func_230446_a_(p_230446_1_);
+	public void renderBackground(MatrixStack p_238651_1_, int p_238651_2_) {
+		super.renderBackground(p_238651_1_, p_238651_2_);
 	}
 
-	//renderBackground?
 	@Override
-	public void func_238651_a_(MatrixStack p_238651_1_, int p_238651_2_) {
-		super.func_238651_a_(p_238651_1_, p_238651_2_);
-	}
-
-	//mouseScrolled?
-	@Override
-	public boolean func_231043_a_(double x, double y, double value) {
-		super.func_231043_a_(x, y, value);
+	public boolean mouseScrolled(double x, double y, double value) {
+		super.mouseScrolled(x, y, value);
 		scroll((int) -value);
 		return true;
 	}
 
 	//keyPressed?
 	@Override
-	public boolean func_231046_a_(int type, int p_231046_2_, int p_231046_3_) {
-		if (super.func_231046_a_(type, p_231046_2_, p_231046_3_)) return true;
+	public boolean keyPressed(int type, int p_231046_2_, int p_231046_3_) {
+		if (super.keyPressed(type, p_231046_2_, p_231046_3_)) return true;
 		switch (type) {
 			case GLFW.GLFW_KEY_UP:
 				scroll(-1);
@@ -116,7 +113,7 @@ public class ParCoolGuideScreen extends Screen {
 
 	//mouseClicked?
 	@Override
-	public boolean func_231044_a_(double mouseX, double mouseY, int type) {//type:1->right 0->left
+	public boolean mouseClicked(double mouseX, double mouseY, int type) {//type:1->right 0->left
 		menu.onClick(type, mouseX, mouseY);
 		return false;
 	}
@@ -139,24 +136,24 @@ public class ParCoolGuideScreen extends Screen {
 
 	private void renderHome(MatrixStack stack, int left, int top, int width, int height, int mouseX, int mouseY, float n) {
 		Minecraft mc = this.getMinecraft();
-		FontRenderer fontRenderer = this.field_230712_o_;
+		FontRenderer fontRenderer = this.font;
 		final int offsetY = 20;
 		final int center = left + width / 2;
-		ITextProperties textTitle = ITextProperties.func_240653_a_("ParCool!", Style.field_240709_b_.func_240713_a_(true));
-		ITextProperties textSubtitle = ITextProperties.func_240652_a_("Guide Book");
-		AbstractGui.func_238466_a_(stack, left + width / 4, top + offsetY + 50, width / 2, width / 2, 0f, 207f, 52, 49, 256, 256);
+		ITextProperties textTitle = ITextProperties.of("ParCool!");
+		ITextProperties textSubtitle = ITextProperties.of("Guide Book");
+		AbstractGui.blit(stack, left + width / 4, top + offsetY + 50, width / 2, width / 2, 0f, 207f, 52, 49, 256, 256);
 		FontUtil.drawCenteredText(stack, textTitle, center, top + offsetY + 10, getColorCodeFromARGB(0xFF, 0x55, 0x55, 0xFF));
-		FontUtil.drawCenteredText(stack, textSubtitle, center, top + offsetY + 15 + fontRenderer.FONT_HEIGHT, getColorCodeFromARGB(0xFF, 0x44, 0x44, 0xBB));
+		FontUtil.drawCenteredText(stack, textSubtitle, center, top + offsetY + 15 + fontRenderer.lineHeight, getColorCodeFromARGB(0xFF, 0x44, 0x44, 0xBB));
 	}
 
 	private void renderContentText(MatrixStack stack, int left, int top, int width, int height, int mouseX, int mouseY, float n) {
 		Minecraft mc = this.getMinecraft();
-		FontRenderer fontRenderer = this.field_230712_o_;
+		FontRenderer fontRenderer = this.font;
 
 		final int offsetY = 15;
 		final int offsetX = 14;
-		final int lineHeight = fontRenderer.FONT_HEIGHT + 1;
-		final int titleHeight = fontRenderer.FONT_HEIGHT + 10;
+		final int lineHeight = fontRenderer.lineHeight + 1;
+		final int titleHeight = fontRenderer.lineHeight + 10;
 		final int contentHeight = height - offsetX * 2 - titleHeight;
 		final int contentLine = contentHeight / lineHeight;
 
@@ -167,9 +164,9 @@ public class ParCoolGuideScreen extends Screen {
 			ArrayList<ITextProperties> wrappedLines = new ArrayList<>();
 			page.getContent().forEach((ITextProperties text) -> {
 				if (text.getString().isEmpty()) {
-					wrappedLines.add(StringTextComponent.field_240750_d_);
+					wrappedLines.add(StringTextComponent.EMPTY);
 				} else
-					wrappedLines.addAll(fontRenderer.func_238420_b_().func_238362_b_(text, (int) (width - offsetX * 1.6), Style.field_240709_b_));
+					wrappedLines.addAll(fontRenderer.getSplitter().splitLines(text, (int) (width - offsetX * 1.6), Style.EMPTY));
 			});
 			cachedPage = wrappedLines;
 			cachedPageNumber = currentPage;
@@ -177,44 +174,39 @@ public class ParCoolGuideScreen extends Screen {
 
 		FontUtil.drawCenteredText(stack, page.getTitle(), left + width / 2, top + offsetY + titleHeight / 2, getColorCodeFromARGB(255, 0, 0, 0));
 
-		IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+		IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i + scrollValue < Math.min(contentLine + scrollValue, cachedPage.size()); i++) {
-			fontRenderer.renderString(
-					cachedPage.get(i + scrollValue).getString(),
-					left + offsetX,
-					top + offsetY + titleHeight + i * (lineHeight),
-					getColorCodeFromARGB(0xFF, 0, 0, 0),
-					false,
-					stack.getLast().getMatrix(),
-					renderTypeBuffer,
-					true,
-					0,
-					15728880
-			);
+			builder.append(cachedPage.get(i + scrollValue).getString()).append('\n');
 		}
-		renderTypeBuffer.finish();
+		fontRenderer.drawWordWrap(
+				new StringTextComponent(builder.toString()),
+				left + offsetX,
+				top + offsetY + titleHeight,
+				width - offsetX,
+				getColorCodeFromARGB(0, 0, 0, 0)
+		);
+		renderTypeBuffer.endBatch();
 	}
 
 	private void renderMenu(MatrixStack stack, int left, int top, int width, int height, int mouseX, int mouseY, float n) {
-		FontRenderer fontRenderer = this.field_230712_o_;
+		FontRenderer fontRenderer = this.font;
 		int offsetY = 20;
-		FontUtil.drawCenteredText(stack, ITextProperties.func_240652_a_("Index"), left + width / 2, top + offsetY, getColorCodeFromARGB(0xFF, 0x66, 0x66, 0xFF));
+		FontUtil.drawCenteredText(stack, ITextProperties.of("Index"), left + width / 2, top + offsetY, getColorCodeFromARGB(0xFF, 0x66, 0x66, 0xFF));
 
 		menu.setX(left + menuOffsetX);
 		menu.setY(top + menuOffsetY);
 		menu.setWidth(width - menuOffsetX * 2);
 		menu.setHeight(height - menuOffsetY * 2);
-		menu.render(stack, fontRenderer);
-	}
-
-	private static int getColorCodeFromARGB(int a, int r, int g, int b) {
-		return a * 0x1000000 + r * 0x10000 + g * 0x100 + b;
+		menu.render(stack, fontRenderer, mouseX, mouseY, n);
 	}
 
 	private void changePage(int i) {
 		if (i != PAGE_HOME && (i < 0 || book.getPages().size() <= i)) return;
 		scrollValue = 0;
 		currentPage = i;
+		PlayerEntity player = Minecraft.getInstance().player;
+		if (player != null) player.playSound(SoundEvents.BOOK_PAGE_TURN, 1.0f, 1.0f);
 	}
 
 }

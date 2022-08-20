@@ -12,7 +12,7 @@ public class ParCoolItemGroup extends ItemGroup {
 	}
 
 	@Override
-	public ItemStack createIcon() {
+	public ItemStack makeIcon() {
 		return new ItemStack(ParCoolGuideItem.INSTANCE);
 	}
 }

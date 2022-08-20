@@ -39,7 +39,7 @@ public class ResetFallDistanceMessage {
 	public static void sync(PlayerEntity player) {
 		player.fallDistance = 0;
 		ResetFallDistanceMessage message = new ResetFallDistanceMessage();
-		message.playerID = player.getUniqueID();
+		message.playerID = player.getUUID();
 
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);
 	}

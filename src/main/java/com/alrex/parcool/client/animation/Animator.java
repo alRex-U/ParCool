@@ -1,12 +1,14 @@
 package com.alrex.parcool.client.animation;
 
 import com.alrex.parcool.common.capability.Parkourability;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.TickEvent;
 
+@OnlyIn(Dist.CLIENT)
 public abstract class Animator {
 	private int tick = 0;
-	protected boolean removal = false;
 
 	public final void tick() {
 		tick++;
@@ -16,9 +18,41 @@ public abstract class Animator {
 		return tick;
 	}
 
-	public boolean isRemoved() {
-		return removal;
+	public abstract boolean shouldRemoved(PlayerEntity player, Parkourability parkourability);
+
+	/**
+	 * @return You should return true if you want to cancel vanilla animation to control all about rendering
+	 */
+	public boolean animatePre(
+			PlayerEntity player,
+			Parkourability parkourability,
+			PlayerModelTransformer transformer
+	) {
+		return false;
 	}
 
-	public abstract void animate(RenderPlayerEvent.Pre event, AbstractClientPlayerEntity player, Parkourability parkourability);
+	/**
+	 * Called after vanilla animation is done
+	 * You can utilize this to use partially vanilla animation
+	 */
+	public void animatePost(
+			PlayerEntity player,
+			Parkourability parkourability,
+			PlayerModelTransformer transformer
+	) {
+	}
+
+	public void rotate(
+			PlayerEntity player,
+			Parkourability parkourability,
+			PlayerModelRotator rotator
+	) {
+	}
+
+	public void onRender(
+			TickEvent.RenderTickEvent event,
+			PlayerEntity clientPlayer,
+			Parkourability parkourability
+	) {
+	}
 }

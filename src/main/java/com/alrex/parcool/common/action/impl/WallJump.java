@@ -19,8 +19,15 @@ import java.nio.ByteBuffer;
 
 public class WallJump extends Action {
 
+	private boolean jump = false;
+
+	public boolean justJumped() {
+		return jump;
+	}
+
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+		jump = false;
 	}
 
 
@@ -30,14 +37,14 @@ public class WallJump extends Action {
 		Vector3d wall = WorldUtil.getWall(player);
 		if (wall == null) return null;
 
-		Vector3d lookVec = player.getLookVec();
-		Vector3d vec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize();
+		Vector3d lookVec = player.getLookAngle();
+		Vector3d vec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
 
 		Vector3d value;
 
-		if (wall.dotProduct(vec) > 0) {//To Wall
+		if (wall.dot(vec) > 0) {//To Wall
 			if (ParCoolConfig.CONFIG_CLIENT.disableWallJumpTowardWall.get()) return null;
-			double dot = vec.inverse().dotProduct(wall);
+			double dot = vec.reverse().dot(wall);
 			value = vec.add(wall.scale(2 * dot / wall.length())); // Perfect.
 		} else {//back on Wall
 			value = vec;
@@ -50,35 +57,38 @@ public class WallJump extends Action {
 	private boolean canWallJump(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		return !stamina.isExhausted()
 				&& parkourability.getPermission().canWallJump()
-				&& !player.collidedVertically
-				&& !player.isInWaterOrBubbleColumn()
-				&& !player.isElytraFlying()
-				&& !player.abilities.isFlying
+				&& !player.isOnGround()
+				&& !player.isInWaterOrBubble()
+				&& !player.isFallFlying()
+				&& !player.abilities.flying
 				&& !parkourability.getClingToCliff().isCling()
 				&& parkourability.getClingToCliff().getNotClingTick() > 3
 				&& KeyRecorder.keyJumpState.isPressed()
+				&& !parkourability.getCrawl().isCrawling()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
 				&& WorldUtil.getWall(player) != null;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (player.isUser() && canWallJump(player, parkourability, stamina)) {
+		if (player.isLocalPlayer() && canWallJump(player, parkourability, stamina)) {
 			Vector3d jumpDirection = getJumpDirection(player);
 			if (jumpDirection == null) return;
 			if (ParCoolConfig.CONFIG_CLIENT.autoTurningWallJump.get()) {
-				player.rotationYaw = (float) VectorUtil.toYawDegree(jumpDirection);
+				player.yRot = (float) VectorUtil.toYawDegree(jumpDirection);
 			}
 
-			Vector3d direction = new Vector3d(jumpDirection.getX(), 1.4, jumpDirection.getZ()).scale(0.3);
-			Vector3d motion = player.getMotion();
+			Vector3d direction = new Vector3d(jumpDirection.x(), 1.4, jumpDirection.z()).scale(0.3);
+			Vector3d motion = player.getDeltaMovement();
 
-			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionWallJump(), parkourability.getActionInfo());
-			player.setMotion(
-					motion.getX() + direction.getX(),
-					motion.getY() > direction.getY() ? motion.y + direction.getY() : direction.getY(),
-					motion.getZ() + direction.getZ()
+			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionWallJump(), player);
+			player.setDeltaMovement(
+					motion.x() + direction.x(),
+					motion.y() > direction.y() ? motion.y + direction.y() : direction.y(),
+					motion.z() + direction.z()
 			);
+			jump = true;
 			ResetFallDistanceMessage.sync(player);
 		}
 	}
@@ -89,22 +99,12 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public boolean needSynchronization(ByteBuffer savedInstanceState) {
-		return false;
-	}
-
-	@Override
-	public void sendSynchronization(PlayerEntity player) {
-
-	}
-
-	@Override
-	public void synchronize(Object message) {
-
-	}
-
-	@Override
 	public void saveState(ByteBuffer buffer) {
+
+	}
+
+	@Override
+	public void restoreState(ByteBuffer buffer) {
 
 	}
 }

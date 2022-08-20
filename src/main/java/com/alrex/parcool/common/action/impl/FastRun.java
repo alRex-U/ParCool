@@ -1,11 +1,12 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.client.animation.impl.FastRunningAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
-import com.alrex.parcool.common.network.SyncFastRunningMessage;
 import com.alrex.parcool.utilities.BufferUtil;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -19,7 +20,7 @@ import java.nio.ByteBuffer;
 import java.util.UUID;
 
 public class FastRun extends Action {
-	private static final String FAST_RUNNING_MODIFIER_NAME = "parCool.modifier.fastrunnning";
+	private static final String FAST_RUNNING_MODIFIER_NAME = "parcool.modifier.fastrunnning";
 	private static final UUID FAST_RUNNING_MODIFIER_UUID = UUID.randomUUID();
 	private static final AttributeModifier FAST_RUNNING_MODIFIER
 			= new AttributeModifier(
@@ -44,20 +45,29 @@ public class FastRun extends Action {
 		}
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (player.isUser()) {
+		if (player.isLocalPlayer()) {
 			fastRunning = parkourability.getPermission().canFastRunning()
+					&& !stamina.isExhausted()
 					&& player.isSprinting()
-					&& KeyBindings.getKeyFastRunning().isKeyDown()
-					&& !stamina.isExhausted();
+					&& !player.isVisuallyCrawling()
+					&& !player.isSwimming()
+					&& !parkourability.getCrawl().isCrawling()
+					&& (KeyBindings.getKeyFastRunning().isDown() || ParCoolConfig.CONFIG_CLIENT.replaceSprintWithFastRun.get());
 		}
-		ModifiableAttributeInstance attr = player.getAttribute(Attributes.field_233821_d_);
+		ModifiableAttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (attr == null) return;
 
 		if (isRunning()) {
-			if (!attr.hasModifier(FAST_RUNNING_MODIFIER)) attr.func_233769_c_(FAST_RUNNING_MODIFIER);
-			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionFastRun(), parkourability.getActionInfo());
+			if (!attr.hasModifier(FAST_RUNNING_MODIFIER)) attr.addTransientModifier(FAST_RUNNING_MODIFIER);
+			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionFastRun(), player);
+
+			Animation animation = Animation.get(player);
+			if (animation != null && !animation.hasAnimator()) {
+				animation.setAnimator(new FastRunningAnimator());
+			}
 		} else {
 			if (attr.hasModifier(FAST_RUNNING_MODIFIER)) attr.removeModifier(FAST_RUNNING_MODIFIER);
 		}
@@ -68,23 +78,10 @@ public class FastRun extends Action {
 
 	}
 
-	@Override
-	public boolean needSynchronization(ByteBuffer savedInstanceState) {
-		return fastRunning != BufferUtil.getBoolean(savedInstanceState);
-	}
 
 	@Override
-	public void sendSynchronization(PlayerEntity player) {
-		SyncFastRunningMessage.sync(player, this);
-	}
-
-
-	@Override
-	public void synchronize(Object message) {
-		if (message instanceof SyncFastRunningMessage) {
-			SyncFastRunningMessage correctMessage = (SyncFastRunningMessage) message;
-			this.fastRunning = correctMessage.isFastRunning();
-		}
+	public void restoreState(ByteBuffer buffer) {
+		fastRunning = BufferUtil.getBoolean(buffer);
 	}
 
 	@Override

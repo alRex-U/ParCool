@@ -9,10 +9,16 @@ import net.minecraft.util.text.ITextProperties;
 
 public class FontUtil {
 	public static void drawCenteredText(MatrixStack stack, ITextProperties text, int x, int y, int color) {
-		FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
-		int width = fontRenderer.getStringWidth(text.getString());
-		IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-		fontRenderer.renderString(text.getString(), x - (width >> 1), y - (fontRenderer.FONT_HEIGHT >> 1), color, false, stack.getLast().getMatrix(), renderTypeBuffer, true, 0, 15728880);
-		renderTypeBuffer.finish();
+		FontRenderer fontRenderer = Minecraft.getInstance().font;
+		int width = fontRenderer.width(text.getString());
+		IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+		fontRenderer.draw(
+				stack,
+				text.getString(),
+				x - (width >> 1),
+				y - (fontRenderer.lineHeight >> 1),
+				color
+		);
+		renderTypeBuffer.endBatch();
 	}
 }

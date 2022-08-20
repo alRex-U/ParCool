@@ -6,6 +6,8 @@ import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.common.capability.storage.AnimationStorage;
 import com.alrex.parcool.common.capability.storage.ParkourabilityStorage;
 import com.alrex.parcool.common.capability.storage.StaminaStorage;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -18,9 +20,13 @@ public class Capabilities {
 	@CapabilityInject(Animation.class)
 	public static final Capability<Animation> ANIMATION_CAPABILITY = null;
 
-	public static void registerAll(CapabilityManager manager) {
+	public static void register(CapabilityManager manager) {
 		manager.register(Parkourability.class, new ParkourabilityStorage(), Parkourability::new);
 		manager.register(Stamina.class, new StaminaStorage(), Stamina::new);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public static void registerClient(CapabilityManager manager) {
 		manager.register(Animation.class, new AnimationStorage(), Animation::new);
 	}
 }

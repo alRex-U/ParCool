@@ -18,13 +18,15 @@ public class ShowActionPossibilityMessage {
 
 	public void encode(PacketBuffer packet) {
 		packet.writeBoolean(action != null);
-		if (action != null) packet.writeString(action.name());
+		if (action != null) {
+			packet.writeUtf(action.name());
+		}
 	}
 
 	public static ShowActionPossibilityMessage decode(PacketBuffer packet) {
 		ShowActionPossibilityMessage message = new ShowActionPossibilityMessage();
 		try {
-			if (packet.readBoolean()) message.action = ActionsEnum.valueOf(packet.readString());
+			if (packet.readBoolean()) message.action = ActionsEnum.valueOf(packet.readUtf());
 		} catch (IllegalArgumentException e) {
 			message.action = null;
 		}
@@ -36,7 +38,7 @@ public class ShowActionPossibilityMessage {
 		contextSupplier.get().enqueueWork(() -> {
 			ClientPlayerEntity player = Minecraft.getInstance().player;
 			if (player == null) return;
-			player.sendStatusMessage(new StringTextComponent(getText(action)), false);
+			player.displayClientMessage(new StringTextComponent(getText(action)), false);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}

@@ -2,7 +2,6 @@ package com.alrex.parcool;
 
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
-import com.alrex.parcool.common.command.ParCoolCommands;
 import com.alrex.parcool.common.item.ItemRegistry;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
 import com.alrex.parcool.common.registries.EventBusModRegistry;
@@ -44,13 +43,13 @@ public class ParCool {
 
 	//only in Client
 	public static boolean isActive() {
-		return ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.get();
+		return ParCoolConfig.CONFIG_CLIENT.parCoolActivation.get();
 	}
 
 	//only in Client
 	public static void setActivation(boolean activation) {
 		ParCoolConfig.CONFIG_CLIENT.canWallJump.get();
-		ParCoolConfig.CONFIG_CLIENT.ParCoolActivation.set(activation);
+		ParCoolConfig.CONFIG_CLIENT.parCoolActivation.set(activation);
 	}
 
 	public ParCool() {
@@ -76,12 +75,13 @@ public class ParCool {
 	private void setup(final FMLCommonSetupEvent event) {
 		EventBusForgeRegistry.register(MinecraftForge.EVENT_BUS);
 		EventBusModRegistry.register(FMLJavaModLoadingContext.get().getModEventBus());
-		Capabilities.registerAll(CapabilityManager.INSTANCE);
+		Capabilities.register(CapabilityManager.INSTANCE);
 		PROXY.registerMessages(CHANNEL_INSTANCE);
 	}
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
 		KeyBindings.register(event);
+		Capabilities.registerClient(CapabilityManager.INSTANCE);
 		EventBusForgeRegistry.registerClient(MinecraftForge.EVENT_BUS);
 		EventBusModRegistry.registerClient(FMLJavaModLoadingContext.get().getModEventBus());
 	}
@@ -97,6 +97,5 @@ public class ParCool {
 	}
 
 	private void registerCommand(final RegisterCommandsEvent event) {
-		ParCoolCommands.register(event.getDispatcher());
 	}
 }

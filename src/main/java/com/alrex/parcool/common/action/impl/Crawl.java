@@ -1,16 +1,22 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.client.animation.impl.CrawlAnimator;
+import com.alrex.parcool.client.animation.impl.SlidingAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
-import com.alrex.parcool.common.network.SyncCrawlMessage;
 import com.alrex.parcool.utilities.BufferUtil;
+import com.alrex.parcool.utilities.EntityUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
@@ -25,28 +31,30 @@ public class Crawl extends Action {
 	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (sliding) slidingTick++;
 		else slidingTick = 0;
-		if (crawling || sliding) {
+		if (sliding || crawling) {
 			player.setSprinting(false);
 			player.setPose(Pose.SWIMMING);
 		}
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (player.isUser()) {
+		if (player.isLocalPlayer()) {
 			if (
 					parkourability.getPermission().canCrawl()
 							&& !crawling
 							&& KeyRecorder.keyCrawlState.isPressed()
 							&& !parkourability.getRoll().isRolling()
-							&& !player.isInWaterOrBubbleColumn()
-							&& player.collidedVertically
+							&& !parkourability.getTap().isTapping()
+							&& !player.isInWaterOrBubble()
+							&& (player.isOnGround() || !ParCoolConfig.CONFIG_CLIENT.disableCrawlInAir.get())
 			) {
 				//sliding
 				if (parkourability.getFastRun().getDashTick(parkourability.getAdditionalProperties()) > 5) {
 					sliding = true;
-					Vector3d lookVec = player.getLookVec();
-					slidingVec = new Vector3d(lookVec.getX(), 0, lookVec.getZ()).normalize();
+					Vector3d lookVec = player.getLookAngle();
+					slidingVec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
 				}
 				//crawl
 				else {
@@ -59,9 +67,9 @@ public class Crawl extends Action {
 				sliding = false;
 			}
 			if (sliding) {
-				if (player.collidedVertically) {
+				if (player.isOnGround()) {
 					Vector3d vec = slidingVec.scale(0.2);
-					player.addVelocity(vec.getX(), vec.getY(), vec.getZ());
+					EntityUtil.addVelocity(player, vec);
 				}
 			}
 			if (slidingTick >= parkourability.getActionInfo().getMaxSlidingTick()) {
@@ -70,10 +78,23 @@ public class Crawl extends Action {
 				crawling = true;
 				slidingVec = null;
 			}
-			if (crawling && !KeyBindings.getKeyCrawl().isKeyDown()) {
+			if (crawling && !KeyBindings.getKeyCrawl().isDown()) {
 				crawling = false;
 				sliding = false;
 				slidingVec = null;
+			}
+			if (!crawling) {
+				sliding = false;
+			}
+		}
+		if (sliding || crawling) {
+			Animation animation = Animation.get(player);
+			if (animation != null && !animation.hasAnimator()) {
+				if (sliding) {
+					animation.setAnimator(new SlidingAnimator());
+				} else {
+					animation.setAnimator(new CrawlAnimator());
+				}
 			}
 		}
 	}
@@ -81,27 +102,13 @@ public class Crawl extends Action {
 	@Override
 	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
 		if (slidingVec == null || !sliding) return;
-		player.rotationYaw = (float) VectorUtil.toYawDegree(slidingVec);
+		player.yRot = (float) VectorUtil.toYawDegree(slidingVec);
 	}
 
 	@Override
-	public boolean needSynchronization(ByteBuffer savedInstanceState) {
-		return this.crawling != BufferUtil.getBoolean(savedInstanceState)
-				|| this.sliding != BufferUtil.getBoolean(savedInstanceState);
-	}
-
-
-	@Override
-	public void sendSynchronization(PlayerEntity player) {
-		SyncCrawlMessage.sync(player, this);
-	}
-
-	@Override
-	public void synchronize(Object message) {
-		if (message instanceof SyncCrawlMessage) {
-			this.sliding = ((SyncCrawlMessage) message).isSliding();
-			this.crawling = ((SyncCrawlMessage) message).isCrawling();
-		}
+	public void restoreState(ByteBuffer buffer) {
+		crawling = BufferUtil.getBoolean(buffer);
+		sliding = BufferUtil.getBoolean(buffer);
 	}
 
 	@Override

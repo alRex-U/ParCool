@@ -3,19 +3,17 @@ package com.alrex.parcool.common.network;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.constants.ActionsEnum;
-import com.alrex.parcool.constants.TranslateKeys;
+import com.alrex.parcool.common.info.ActionInfo;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
+import java.nio.ByteBuffer;
 import java.util.function.Supplier;
 
 public class ActionPermissionsMessage {
@@ -27,7 +25,12 @@ public class ActionPermissionsMessage {
 	private boolean allowedRoll;
 	private boolean allowedVault;
 	private boolean allowedWallJump;
+	private boolean allowedFlipping;
+	private boolean allowedBreakfall;
+	private boolean allowedWallSlide;
+	private boolean allowedHorizontalWallRun;
 	private boolean allowedInfiniteStamina;
+	private byte[] infoData = null;
 
 	public boolean isAllowedCatLeap() {
 		return allowedCatLeap;
@@ -61,8 +64,20 @@ public class ActionPermissionsMessage {
 		return allowedWallJump;
 	}
 
-	public boolean isAllowedInfiniteStamina() {
-		return allowedInfiniteStamina;
+	public boolean isAllowedFlipping() {
+		return allowedFlipping;
+	}
+
+	public boolean isAllowedBreakfall() {
+		return allowedBreakfall;
+	}
+
+	public boolean isAllowedWallSlide() {
+		return allowedWallSlide;
+	}
+
+	public boolean isAllowedHorizontalWallRun() {
+		return allowedHorizontalWallRun;
 	}
 
 	public void encode(PacketBuffer packet) {
@@ -75,6 +90,11 @@ public class ActionPermissionsMessage {
 		packet.writeBoolean(allowedVault);
 		packet.writeBoolean(allowedWallJump);
 		packet.writeBoolean(allowedInfiniteStamina);
+		packet.writeBoolean(allowedBreakfall);
+		packet.writeBoolean(allowedFlipping);
+		packet.writeBoolean(allowedWallSlide);
+		packet.writeBoolean(allowedHorizontalWallRun);
+		packet.writeByteArray(infoData);
 	}
 
 	public static ActionPermissionsMessage decode(PacketBuffer packet) {
@@ -88,6 +108,11 @@ public class ActionPermissionsMessage {
 		message.allowedVault = packet.readBoolean();
 		message.allowedWallJump = packet.readBoolean();
 		message.allowedInfiniteStamina = packet.readBoolean();
+		message.allowedBreakfall = packet.readBoolean();
+		message.allowedFlipping = packet.readBoolean();
+		message.allowedWallSlide = packet.readBoolean();
+		message.allowedHorizontalWallRun = packet.readBoolean();
+		message.infoData = packet.readByteArray();
 		return message;
 	}
 
@@ -99,21 +124,7 @@ public class ActionPermissionsMessage {
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
 			parkourability.getPermission().receiveServerPermissions(this);
-			parkourability.getActionInfo().receiveServerPermissions(this);
-			StringBuilder text = new StringBuilder();
-			if (allowedCatLeap && allowedCrawl && allowedDodge && allowedFastRunning && allowedFastRunning
-					&& allowedClingToCliff && allowedRoll && allowedVault && allowedWallJump)
-				return;
-			text.append("ParCool : ").append(I18n.format(TranslateKeys.MESSAGE_PROHIBITED_ACTION));
-			if (!allowedCatLeap) text.append("\n+- ").append(ActionsEnum.CatLeap);
-			if (!allowedCrawl) text.append("\n+- ").append(ActionsEnum.Crawl);
-			if (!allowedDodge) text.append("\n+- ").append(ActionsEnum.Dodge);
-			if (!allowedFastRunning) text.append("\n+- ").append(ActionsEnum.FastRunning);
-			if (!allowedClingToCliff) text.append("\n+- ").append(ActionsEnum.GrabCliff);
-			if (!allowedRoll) text.append("\n+- ").append(ActionsEnum.Roll);
-			if (!allowedVault) text.append("\n+- ").append(ActionsEnum.Vault);
-			if (!allowedWallJump) text.append("\n+- ").append(ActionsEnum.WallJump);
-			player.sendStatusMessage(new StringTextComponent(text.toString()), false);
+			parkourability.getActionInfo().receiveServerPermissions(ByteBuffer.wrap(infoData));
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
@@ -125,11 +136,21 @@ public class ActionPermissionsMessage {
 		message.allowedCrawl = config.allowCrawl.get();
 		message.allowedDodge = config.allowDodge.get();
 		message.allowedFastRunning = config.allowFastRunning.get();
-		message.allowedClingToCliff = config.allowGrabCliff.get();
+		message.allowedClingToCliff = config.allowClingToCliff.get();
 		message.allowedRoll = config.allowRoll.get();
 		message.allowedVault = config.allowVault.get();
 		message.allowedWallJump = config.allowWallJump.get();
 		message.allowedInfiniteStamina = config.allowInfiniteStamina.get();
+		message.allowedFlipping = config.allowFlipping.get();
+		message.allowedBreakfall = config.allowBreakfall.get();
+		message.allowedWallSlide = config.allowWallSlide.get();
+		message.allowedHorizontalWallRun = config.allowHorizontalWallRun.get();
+
+		ByteBuffer buffer = ByteBuffer.allocate(128);
+		ActionInfo.encode(buffer);
+		buffer.flip();
+		message.infoData = new byte[buffer.limit()];
+		buffer.get(message.infoData);
 		return message;
 	}
 
@@ -140,5 +161,4 @@ public class ActionPermissionsMessage {
 	public static void broadcast() {
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), newInstance());
 	}
-
 }
