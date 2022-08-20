@@ -5,11 +5,14 @@ import com.alrex.parcool.client.hud.AbstractHUD;
 import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.common.capability.impl.Parkourability;
 import com.alrex.parcool.common.capability.impl.Stamina;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.tags.FluidTags;
 import net.minecraftforge.client.gui.ForgeIngameGui;
+
+import static com.alrex.parcool.client.hud.impl.StaminaHUD.STAMINA;
 
 public class LightStaminaHUD extends AbstractHUD {
 	private int oldValue = 0;
@@ -49,7 +52,7 @@ public class LightStaminaHUD extends AbstractHUD {
 		int iconNumber = (int) Math.floor(staminaScale * 10);
 		float iconPartial = (staminaScale * 10) - iconNumber;
 
-		mc.getTextureManager().bindForSetup(StaminaHUD.STAMINA);
+		RenderSystem.setShaderTexture(0, STAMINA);
 		int baseX = scaledWidth / 2 + 92;
 		int y = scaledHeight - 49 + ParCoolConfig.CONFIG_CLIENT.offsetVerticalLightStaminaHUD.get();
 		for (int i = 1; i <= 10; i++) {

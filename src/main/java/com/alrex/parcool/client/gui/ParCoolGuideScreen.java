@@ -5,6 +5,7 @@ import com.alrex.parcool.client.gui.guidebook.BookDecoder;
 import com.alrex.parcool.client.gui.widget.ListView;
 import com.alrex.parcool.utilities.FontUtil;
 import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -70,7 +71,7 @@ public class ParCoolGuideScreen extends Screen {
 	public void render(PoseStack stack, int mouseX, int mouseY, float n) {
 		renderBackground(stack);
 		Minecraft mc = this.getMinecraft();
-		mc.getTextureManager().bindForSetup(BACKGROUND_LOCATION);
+		RenderSystem.setShaderTexture(0, BACKGROUND_LOCATION);
 		renderBackground(stack, getColorCodeFromARGB(0x77, 0x66, 0x66, 0xCC));
 		Window window = mc.getWindow();
 		bookOffsetX = (window.getGuiScaledWidth() - width) / 2;
