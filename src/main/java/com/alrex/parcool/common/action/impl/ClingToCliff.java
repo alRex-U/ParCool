@@ -36,6 +36,7 @@ public class ClingToCliff extends Action {
 		if (cling) {
 			clingTick++;
 			notClingTick = 0;
+			player.fallDistance = 0;
 		} else {
 			clingTick = 0;
 			notClingTick++;
