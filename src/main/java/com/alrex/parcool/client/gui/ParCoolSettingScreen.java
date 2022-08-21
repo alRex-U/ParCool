@@ -43,7 +43,6 @@ public class ParCoolSettingScreen extends Screen {
 			new ButtonSet("infinite stamina", CONFIG_CLIENT.infiniteStamina::set, CONFIG_CLIENT.infiniteStamina::get),
 			new ButtonSet("substitute Sprint for Fast-Run", CONFIG_CLIENT.substituteSprintForFastRun::set, CONFIG_CLIENT.substituteSprintForFastRun::get),
 			new ButtonSet("replace Fast-Run with Sprint", CONFIG_CLIENT.replaceSprintWithFastRun::set, CONFIG_CLIENT.replaceSprintWithFastRun::get),
-			new ButtonSet("continue sprint when players collide blocks", CONFIG_CLIENT.continueSprintWhenColliding::set, CONFIG_CLIENT.continueSprintWhenColliding::get),
 			new ButtonSet("hide stamina HUD", CONFIG_CLIENT.hideStaminaHUD::set, CONFIG_CLIENT.hideStaminaHUD::get),
 			new ButtonSet("use light Stamina HUD", CONFIG_CLIENT.useLightHUD::set, CONFIG_CLIENT.useLightHUD::get),
 			new ButtonSet("auto-turning when WallJump", CONFIG_CLIENT.autoTurningWallJump::set, CONFIG_CLIENT.autoTurningWallJump::get),
