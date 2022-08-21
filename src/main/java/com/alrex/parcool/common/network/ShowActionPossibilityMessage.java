@@ -6,7 +6,7 @@ import com.alrex.parcool.constants.ActionsEnum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
@@ -38,7 +38,7 @@ public class ShowActionPossibilityMessage {
 		contextSupplier.get().enqueueWork(() -> {
 			LocalPlayer player = Minecraft.getInstance().player;
 			if (player == null) return;
-			player.displayClientMessage(new TextComponent(getText(action)), false);
+			player.displayClientMessage(Component.literal(getText(action)), false);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}

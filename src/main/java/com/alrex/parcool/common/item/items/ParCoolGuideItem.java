@@ -20,12 +20,6 @@ public class ParCoolGuideItem extends Item {
 
 	private ParCoolGuideItem(Properties properties) {
 		super(properties);
-		setRegistryName(RESOURCE_LOCATION);
-	}
-
-	@Override
-	public int getItemStackLimit(ItemStack stack) {
-		return 1;
 	}
 
 	@Override
@@ -33,5 +27,4 @@ public class ParCoolGuideItem extends Item {
 		ParCool.PROXY.showParCoolGuideScreen(playerIn);
 		return InteractionResultHolder.consume(playerIn.getMainHandItem());
 	}
-
 }

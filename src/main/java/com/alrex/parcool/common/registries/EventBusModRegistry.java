@@ -7,6 +7,5 @@ public class EventBusModRegistry {
 	}
 
 	public static void registerClient(IEventBus bus) {
-
 	}
 }

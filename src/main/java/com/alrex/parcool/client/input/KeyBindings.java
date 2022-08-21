@@ -6,9 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.ClientRegistry;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
@@ -88,16 +85,4 @@ public class KeyBindings {
 		return keyBindHorizontalWallRun;
 	}
 
-	@SubscribeEvent
-	public static void register(FMLClientSetupEvent event) {
-		ClientRegistry.registerKeyBinding(keyBindCrawl);
-		ClientRegistry.registerKeyBinding(keyBindGrabWall);
-		ClientRegistry.registerKeyBinding(keyBindBreakfall);
-		ClientRegistry.registerKeyBinding(keyBindFastRunning);
-		ClientRegistry.registerKeyBinding(keyBindDodge);
-		ClientRegistry.registerKeyBinding(keyBindWallSlide);
-		ClientRegistry.registerKeyBinding(keyBindVault);
-		ClientRegistry.registerKeyBinding(keyBindHorizontalWallRun);
-		ClientRegistry.registerKeyBinding(keyBindOpenSettings);
-	}
 }

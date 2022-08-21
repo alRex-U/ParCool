@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.player.Player;
@@ -62,7 +61,7 @@ public class ParCoolSettingScreen extends Screen {
 							new Checkbox
 									(
 											0, 0, 0, 0,
-											new TranslatableComponent(item.name),
+											Component.translatable(item.name),
 											item.getter.getAsBoolean()
 									))
 					.collect(Collectors.toList()),

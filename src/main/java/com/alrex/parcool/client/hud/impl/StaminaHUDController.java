@@ -6,7 +6,7 @@ import com.alrex.parcool.client.hud.Position;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
 
 @OnlyIn(Dist.CLIENT)
 public class StaminaHUDController extends AbstractHUD {
@@ -20,7 +20,7 @@ public class StaminaHUDController extends AbstractHUD {
 	}
 
 	@Override
-	public void render(ForgeIngameGui gui, PoseStack mStack, float partialTicks, int width, int height) {
+	public void render(ForgeGui gui, PoseStack mStack, float partialTicks, int width, int height) {
 		ParCoolConfig.Client config = ParCoolConfig.CONFIG_CLIENT;
 		if (config.hideStaminaHUD.get() || !config.parCoolActivation.get() || config.useHungerBarInsteadOfStamina.get())
 			return;

@@ -14,7 +14,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
@@ -55,7 +54,7 @@ public class ParCoolGuideScreen extends Screen {
 	}
 
 	public ParCoolGuideScreen() {
-		super(new TextComponent("ParCool"));
+		super(Component.literal("ParCool"));
 	}
 
 	//init?
@@ -177,7 +176,7 @@ public class ParCoolGuideScreen extends Screen {
 			builder.append(cachedPage.get(i + scrollValue)).append('\n');
 		}
 		fontRenderer.drawWordWrap(
-				new TextComponent(builder.toString()),
+				Component.literal(builder.toString()),
 				left + offsetX,
 				top + offsetY + titleHeight,
 				width - offsetX,

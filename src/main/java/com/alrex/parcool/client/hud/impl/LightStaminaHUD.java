@@ -10,7 +10,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.tags.FluidTags;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
 
 import static com.alrex.parcool.client.hud.impl.StaminaHUD.STAMINA;
 
@@ -23,7 +23,7 @@ public class LightStaminaHUD extends AbstractHUD {
 	}
 
 	@Override
-	public void render(ForgeIngameGui gui, PoseStack mStack, float partialTicks, int width, int height) {
+	public void render(ForgeGui gui, PoseStack mStack, float partialTicks, int width, int height) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null || player.isEyeInFluid(FluidTags.WATER)) return;
 		if (player.isCreative()) return;

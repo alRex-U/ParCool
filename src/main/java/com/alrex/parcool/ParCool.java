@@ -1,6 +1,5 @@
 package com.alrex.parcool;
 
-import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.CapabilitiesRegistry;
 import com.alrex.parcool.common.item.ItemRegistry;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
@@ -58,6 +57,7 @@ public class ParCool {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doServerStuff);
 		FMLJavaModLoadingContext.get().getModEventBus().register(ItemRegistry.class);
 		FMLJavaModLoadingContext.get().getModEventBus().register(CapabilitiesRegistry.class);
+		PROXY.registerModBus(FMLJavaModLoadingContext.get().getModEventBus());
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
 
 		MinecraftForge.EVENT_BUS.register(this);
@@ -73,11 +73,11 @@ public class ParCool {
 	private void setup(final FMLCommonSetupEvent event) {
 		EventBusForgeRegistry.register(MinecraftForge.EVENT_BUS);
 		EventBusModRegistry.register(FMLJavaModLoadingContext.get().getModEventBus());
+		PROXY.setup();
 		PROXY.registerMessages(CHANNEL_INSTANCE);
 	}
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
-		KeyBindings.register(event);
 		EventBusForgeRegistry.registerClient(MinecraftForge.EVENT_BUS);
 		EventBusModRegistry.registerClient(FMLJavaModLoadingContext.get().getModEventBus());
 	}

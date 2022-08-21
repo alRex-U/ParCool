@@ -1,11 +1,16 @@
 package com.alrex.parcool.proxy;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.gui.ParCoolGuideScreen;
+import com.alrex.parcool.client.hud.HUDHost;
+import com.alrex.parcool.client.hud.Position;
+import com.alrex.parcool.client.hud.impl.StaminaHUDController;
 import com.alrex.parcool.common.network.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 @OnlyIn(Dist.CLIENT)
@@ -75,5 +80,25 @@ public class ClientProxy extends CommonProxy {
 		if (playerIn.level.isClientSide) {
 			Minecraft.getInstance().setScreen(new ParCoolGuideScreen());
 		}
+	}
+
+	@Override
+	public void registerModBus(IEventBus bus) {
+		super.registerModBus(bus);
+		bus.register(HUDHost.getInstance());
+	}
+
+	@Override
+	public void setup() {
+		super.setup();
+		HUDHost.getInstance().getHuds().add(
+				new StaminaHUDController(
+						new Position(
+								ParCoolConfig.CONFIG_CLIENT.alignHorizontalStaminaHUD.get(),
+								ParCoolConfig.CONFIG_CLIENT.alignVerticalStaminaHUD.get(),
+								ParCoolConfig.CONFIG_CLIENT.marginHorizontalStaminaHUD.get(),
+								ParCoolConfig.CONFIG_CLIENT.marginVerticalStaminaHUD.get()
+						)
+				));
 	}
 }
