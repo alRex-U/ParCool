@@ -15,7 +15,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue canCrawl;
 		public final ForgeConfigSpec.BooleanValue canDodge;
 		public final ForgeConfigSpec.BooleanValue canFastRunning;
-		public final ForgeConfigSpec.BooleanValue canFrontDodge;
+		public final ForgeConfigSpec.BooleanValue canFrontDodgeByDoubleTap;
 		public final ForgeConfigSpec.BooleanValue canClingToCliff;
 		public final ForgeConfigSpec.BooleanValue canRoll;
 		public final ForgeConfigSpec.BooleanValue canVault;
@@ -63,7 +63,7 @@ public class ParCoolConfig {
 			{
 				canCatLeap = builder.define("canCatLeap", true);
 				canCrawl = builder.define("canCrawl", true);
-				canFrontDodge = builder.define("canFrontDodge", true);
+				canFrontDodgeByDoubleTap = builder.comment("Possibility to Frontward-Dodge By double tapping a button").define("canFrontDodgeByDoubleTapping", true);
 				canDodge = builder.define("canDodge", true);
 				canFastRunning = builder.define("canFastRunning", true);
 				canClingToCliff = builder.define("canClingToCliff", true);
