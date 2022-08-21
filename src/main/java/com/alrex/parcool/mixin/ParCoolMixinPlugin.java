@@ -1,7 +1,5 @@
 package com.alrex.parcool.mixin;
 
-import com.alrex.parcool.ParCool;
-import org.apache.logging.log4j.Level;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -12,7 +10,6 @@ import java.util.Set;
 public class ParCoolMixinPlugin implements IMixinConfigPlugin {
 	@Override
 	public void onLoad(String mixinPackage) {
-		ParCool.LOGGER.log(Level.INFO, "ParCool mixins loaded");
 	}
 
 	@Override

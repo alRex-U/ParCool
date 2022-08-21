@@ -91,7 +91,7 @@ public class Dodge extends Action {
 						KeyRecorder.keyBack.isDoubleTapped() ||
 								KeyRecorder.keyLeft.isDoubleTapped() ||
 								KeyRecorder.keyRight.isDoubleTapped() ||
-								(ParCoolConfig.CONFIG_CLIENT.canFrontDodge.get() && KeyRecorder.keyForward.isDoubleTapped())
+								(ParCoolConfig.CONFIG_CLIENT.canFrontDodgeByDoubleTap.get() && KeyRecorder.keyForward.isDoubleTapped())
 				) || (
 						KeyBindings.getKeyDodge().isDown() && (
 								KeyBindings.getKeyForward().isDown() ||
