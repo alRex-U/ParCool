@@ -1,6 +1,5 @@
 package com.alrex.parcool.mixin.client;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -22,7 +21,7 @@ public abstract class ClientPlayerMixin extends AbstractClientPlayer {
 	public void onAiStep(CallbackInfo ci) {
 
 		LocalPlayer player = (LocalPlayer) (Object) this;
-		if (player.isLocalPlayer() && ParCoolConfig.CONFIG_CLIENT.continueSprintWhenColliding.get()) {
+		if (player.isLocalPlayer()) {
 			boolean flag = !player.input.hasForwardImpulse() || !((float) player.getFoodData().getFoodLevel() > 6.0F || this.getAbilities().mayfly);
 			boolean flag1 = flag || this.isInWater() && !this.isUnderWater();
 			if (oldSprinting && !flag1) {
