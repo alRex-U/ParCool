@@ -174,7 +174,7 @@ public class ParCoolGuideScreen extends Screen {
 
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i + scrollValue < Math.min(contentLine + scrollValue, cachedPage.size()); i++) {
-			builder.append(cachedPage.get(i + scrollValue)).append('\n');
+			builder.append(cachedPage.get(i + scrollValue).getString()).append('\n');
 		}
 		fontRenderer.drawWordWrap(
 				new TextComponent(builder.toString()),
