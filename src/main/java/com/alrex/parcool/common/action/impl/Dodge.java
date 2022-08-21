@@ -94,8 +94,7 @@ public class Dodge extends Action {
 				&& !stamina.isExhausted()
 				&& !parkourability.getRoll().isRolling()
 				&& !parkourability.getTap().isTapping()
-				&& (enabledDoubleTap
-				&& (
+				&& ((enabledDoubleTap && (
 				KeyRecorder.keyBack.isDoubleTapped() ||
 						KeyRecorder.keyLeft.isDoubleTapped() ||
 						KeyRecorder.keyRight.isDoubleTapped() ||
@@ -107,8 +106,7 @@ public class Dodge extends Action {
 						KeyBindings.getKeyBack().isDown() ||
 						KeyBindings.getKeyLeft().isDown() ||
 						KeyBindings.getKeyRight().isDown()
-		)
-		);
+		)));
 	}
 
 	@OnlyIn(Dist.CLIENT)
