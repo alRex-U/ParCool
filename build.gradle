@@ -39,7 +39,7 @@ def config = [ //https://mcforge.readthedocs.io/en/latest/conventions/versioning
                major_mod    : '1',//Removing items, blocks, tile entities, etc.
                major_api    : '0',//Changing the order or variables of enums. etc
                minor        : '0',//Adding items, blocks, tile entities, etc.
-               patch        : '0',//bugfix
+               patch        : '1',//bugfix
                forge_version: '1.19.2-43.1.1',
                versionStatus: VersionStatus.release
 ]

@@ -6,6 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
@@ -85,4 +87,16 @@ public class KeyBindings {
 		return keyBindHorizontalWallRun;
 	}
 
+	@SubscribeEvent
+	public static void register(RegisterKeyMappingsEvent event) {
+		event.register(keyBindHorizontalWallRun);
+		event.register(keyBindVault);
+		event.register(keyBindWallSlide);
+		event.register(keyBindBreakfall);
+		event.register(keyBindDodge);
+		event.register(keyBindCrawl);
+		event.register(keyBindFastRunning);
+		event.register(keyBindGrabWall);
+		event.register(keyBindOpenSettings);
+	}
 }
