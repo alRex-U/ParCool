@@ -39,7 +39,9 @@ public class ActionProcessor {
 		Stamina stamina = Stamina.get(player);
 		if (parkourability == null || stamina == null) return;
 		List<Action> actions = parkourability.getList();
-		stamina.onTick(parkourability.getActionInfo());
+		if (event.side == LogicalSide.CLIENT) {
+			stamina.onTick(parkourability.getActionInfo());
+		}
 		boolean needSync = event.side == LogicalSide.CLIENT && player.isLocalPlayer();
 		SyncActionStateMessage.Builder builder = SyncActionStateMessage.Builder.main();
 

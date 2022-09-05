@@ -5,6 +5,7 @@ import com.alrex.parcool.client.gui.ParCoolGuideScreen;
 import com.alrex.parcool.client.hud.HUDHost;
 import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.client.hud.impl.StaminaHUDController;
+import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.network.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -85,6 +86,7 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void registerModBus(IEventBus bus) {
 		super.registerModBus(bus);
+		bus.register(KeyBindings.class);
 		bus.register(HUDHost.getInstance());
 	}
 
