@@ -4,7 +4,7 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.impl.*;
 import com.alrex.parcool.common.capability.Parkourability;
-import javafx.util.Pair;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -23,8 +23,6 @@ import java.util.function.Supplier;
 public class SyncActionStateMessage {
 	private SyncActionStateMessage() {
 	}
-
-	;
 	private byte classNumber = -1;
 	private UUID senderUUID = null;
 	private byte[] buffer = null;
@@ -62,7 +60,7 @@ public class SyncActionStateMessage {
 			Decoder decoder = new Decoder(this.buffer, parkourability);
 			while (decoder.hasNext()) {
 				Pair<Action, ByteBuffer> item = decoder.getItem();
-				item.getKey().restoreState(item.getValue());
+				item.getFirst().restoreState(item.getSecond());
 			}
 		});
 		contextSupplier.get().setPacketHandled(true);
@@ -89,7 +87,7 @@ public class SyncActionStateMessage {
 			Decoder decoder = new Decoder(this.buffer, parkourability);
 			while (decoder.hasNext()) {
 				Pair<Action, ByteBuffer> item = decoder.getItem();
-				if (item.getKey() != null) item.getKey().restoreState(item.getValue());
+				if (item.getFirst() != null) item.getFirst().restoreState(item.getSecond());
 			}
 		});
 		contextSupplier.get().setPacketHandled(true);
