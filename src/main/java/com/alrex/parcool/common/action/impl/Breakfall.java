@@ -54,6 +54,7 @@ public class Breakfall extends Action {
 					KeyBindings.getKeyBreakfall().isDown() &&
 					!stamina.isExhausted() &&
 					!parkourability.getCrawl().isCrawling() &&
+					!player.isInWaterOrBubble() &&
 					(!player.isOnGround() || parkourability.getAdditionalProperties().getLandingTick() < 3);
 		}
 	}
