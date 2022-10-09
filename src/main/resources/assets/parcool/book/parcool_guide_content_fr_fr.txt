@@ -1,0 +1,172 @@
+{B}[A propos de ce Mod]{reset}
+
+{B}ParCool MOD{reset} est un mod Minecraft,
+pour faire plus de mouvements {I}Cool{reset} comme du {I}Parkour{reset}.
+Certains mouvements ajoutés sont inspirés par des techniques de parkour.
+L'auteur {B}N'EST PAS{reset} familier avec la pratique du "Parkour" {-}et l'Anglais{reset}.
+L'auteur adorerais avoir des retours pour améliorer ce mod !
+======
+{B}[Parkour]{reset}
+
+Le {I}{B}Parkour{reset} est un sport, fondée par {I}Devid Belle{reset}.
+Ce nom est inspiré du mot Français 'parcour'. Et les pratiquants sont appelées des traceurs.
+Une autre appellation est le {I}'Free Running'{reset}. Soi-disant la traduction anglaise du 'Parkour'.
+======
+{B}[Stamina]{reset}
+
+Ce mod rajoute un concept de stamina (endurance).
+La stamina est utilisée lorsque vous faites du parkour.
+Si vous utilisez votre stamina entièrement,
+1.Vous ne pouvez plus faire de parkour.
+2.Vous ne pouvez plus courir
+Faites attention.
+======
+{B}[Saut de bras]{reset}
+
+Le Saut de bras est un mouvement utilisé pour atterrir sur le sol, les murs, les barrières etc...
+C'est l'un des mouvements basiques du parkour.
+Les traceurs absorbent l'impact de l'atterrissage avec leurs jambes.
+Voir aussi 'S'accrocher au rebords'!
+
+{blue}<Comment l'utiliser>{reset}
+1.faire une Accélération
+2.S'accroupir rapidement
+3.Rapidement lâcher la touche pour s'accroupir
+======
+{B}[Ramper]{reset}
+
+Vous pouvez ramper partout.
+C'est plus simple de le faire que de s'en soucier.
+
+
+{blue}<Comment l'utiliser>{reset}
+1.cliquer sur la touche pour Ramper(Normalement la touche C)
+======
+{B}[Esquive]{reset}
+
+Vous pouvez esquivez sur une courte distance rapidement.
+(Ce n'est pas vraiment un mouvement de parkour)
+Ça serait vraiment Cool si vous arriviez à esquiver des projectiles avec l'esquive !
+Un temps de repos est nécessaire si le joueur esquive 3 fois d'affilée.
+
+{blue}<Comment l'utiliser>{reset}
+1.cliquez 2 fois rapidement sur votre touche de mouvement
+
+1.Laissez enfoncez la touche d'esquive et appuyez sur une touche de mouvement
+======
+{B}[Accélération]{reset}
+
+Tout est dans le nom.
+Au passage, le saviez-vous? Steve peut courir jusqu'à 5.6 mètres par secondes.
+Soit, la vitesse d'un coureur de marathon
+
+
+
+{blue}<Comment l'utiliser>{reset}
+1.laissez enfoncée sur la touche d'Accélération
+======
+{B}[S'accrocher aux rebords]{reset}
+
+Vous pouvez vous accrocher aux rebords.
+Ce mouvement est possible même s'il y a des items dans votre mains due a une maj.
+Vous pouvez également monter sur ces rebords avec la touche de saut.
+
+
+{blue}<Comment l'utiliser>{reset}
+1.cliquer sur la touche pour S'accrocher au rebords(Normalement le clic droit)
+======
+{B}[Amortissements]{reset}
+
+L'amortissement est une méthode pour vous protéger lors de l'impact de l'atterrissage.
+L'une de ces techniques est la Roulade, qui répartit l'impact de l'atterrissage.
+Une autre de ces techniques permet d'absorber l'impact en pliant légèrement vos jambes.
+Il existe d'autre mouvement de parkour pour amortir les chutes.
+Normalement le joueur utilise la deuxième méthode mais il peut rouler en pressant une touche de direction a l'atterrissage.
+
+
+{blue}<Comment l'utiliser>{reset}
+1.Maintenez la touche d'Amortissement lors de l'atterrissage(Normallement la touche R)
+======
+{B}[Vault]{reset}
+
+Les Vaults sont des mouvements qui permettent de passer des obstacles tel que des barrières.
+Il y a plein de Vaults différents. Pourquoi ne pas chercher sur google 'vault parkour'?
+Celui utilisée dans ce mod est appelée le 'Speed Vault'.
+
+
+
+{blue}<Comment l'utiliser>{reset}
+1.Accélérer
+2.Foncer sur un obstacle
+(Vous pouvez désactiver cette action lorsque vous ne pressez pas la touche Vault (normalement le clic droit)
+======
+{B}[WallJump]{reset}
+
+Grâce au WallJump. Vous pouvez vous propulsez des murs pour sauter.
+{-}comme dans Mario !{reset}
+Le 'Wall Jump' n'est pas une technique de parkour.
+Mais, les parkour a des mouvements appelées 'Wall Run' et 'Tic Tac'.
+Cependant, le 'Wall Run' n'est surement pas comme vous l'imaginez.
+
+
+{blue}<Comment l'utiliser>{reset}
+1.Sauter sur un mur dans les airs
+======
+{B}[Glisser]{reset}
+
+Vous pouvez Glisser.
+
+
+
+{blue}<Comment l'utiliser>{reset}
+1.Accélérer
+2.Ramper
+======
+{B}[Saltos]{reset}
+
+Vous pouvez faire des saltos avant et arrières.
+Par défaut, vous allez faire un salto avant, mais vous pouvez également en faire un arrière si vous appuyez sur la touche arrière.
+
+
+
+{blue}<Comment l'utiliser>{reset}
+1.Appuyez sur la touche droite et gauche simultanément
+======
+{B}[Wall Slide]{reset}
+
+Vous pouvez tomber lentement en vous accrochant aux murs.
+Cette action varie suivant les blocs.
+Par exemple, les joueurs ne peuvent pas wall slide sur des blocs de glaces.
+
+
+
+{blue}<Comment l'utiliser>{reset}
+1.Appuyez sur wall slide dans les airs proche d'un mur(Normalement le clic droit)
+======
+{B}[Wall Run Horizontal]{reset}
+
+Vous pouvez faire des wall run horizontalement.
+Le joueur ne peut pas faire ça a l'infini
+
+
+
+{B}<Comment l'utiliser>{reset}
+1.Accélérer dans l'air proche d'un mur
+2.Appuyez sur la touche Wall Run(Normalement la touche R)
+======
+{B}[Other Features]{reset}
+
+・Les joueurs peuvent grimpers sur les barrières, les vitres, les barres de fer et les autres blocs en formes de pilliers (end rod ou les chaines) qui ne sont pas connectées à d'autres blocs.
+・Les joueurs n'arrêtent pas de courir lorsqu'ils foncent sur des blocs.
+・Une animation spéciale quand les joueurs tombent pendant longtemps.
+======
+{B}[Crédits]{reset}
+
+{B}・Fédération du Parkour Français{reset}
+{I}http://www.fedeparkour.fr/{reset}
+
+{B}・Page Wikipédia du Parkour{reset}
+{I}https://fr.wikipedia.org/wiki/Parkour{reset}
+
+Traduction : {B}COwOkie
+======
