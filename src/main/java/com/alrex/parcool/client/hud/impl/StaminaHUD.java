@@ -4,8 +4,10 @@ package com.alrex.parcool.client.hud.impl;
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.hud.AbstractHUD;
 import com.alrex.parcool.client.hud.Position;
+import com.alrex.parcool.common.action.impl.Dodge;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
+import com.alrex.parcool.common.info.ActionInfo;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
@@ -49,7 +51,13 @@ public class StaminaHUD extends AbstractHUD {
 		final Tuple<Integer, Integer> pos = position.calculate(boxWidth, boxHeight, width, height);
 
 		float staminaScale = (float) stamina.getStamina() / stamina.getMaxStamina();
-		float dodgeCoolTimeScale = (float) (parkourability.getActionInfo().getDodgeCoolTick() - parkourability.getDodge().getCoolTime()) / parkourability.getActionInfo().getDodgeCoolTick();
+		Dodge dodge = parkourability.getDodge();
+		ActionInfo actionInfo = parkourability.getActionInfo();
+		float dodgeCoolTimeScale =
+				Math.min(
+						(float) (actionInfo.getMaxDodgeCoolTick() - dodge.getCoolTime()) / actionInfo.getMaxDodgeCoolTick(),
+						dodge.isInSuccessiveCoolDown() ? (float) (actionInfo.getMaxDodgeCoolTick() * 3 - dodge.getSuccessivelyCoolTick()) / (actionInfo.getMaxDodgeCoolTick() * 3.0f) : 1
+				);
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
 
