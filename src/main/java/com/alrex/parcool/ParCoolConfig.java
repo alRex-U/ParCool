@@ -37,6 +37,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue substituteSprintForFastRun;
 		public final ForgeConfigSpec.BooleanValue replaceSprintWithFastRun;
 		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
+		public final ForgeConfigSpec.DoubleValue dodgeSpeedModifier;
 		public final ForgeConfigSpec.BooleanValue parCoolActivation;
 		public final ForgeConfigSpec.BooleanValue hideStaminaHUD;
 		public final ForgeConfigSpec.BooleanValue useLightHUD;
@@ -80,6 +81,7 @@ public class ParCoolConfig {
 			builder.push("Modifier Values");
 			{
 				fastRunningModifier = builder.comment("FastRun Speed Modifier").defineInRange("fastRunModifier", 3, 0.001, 4.5);
+				dodgeSpeedModifier = builder.comment("Dodge Speed Modifier").defineInRange("dodgeSpeedModifier", 0.4, 0.2, 0.52);
 			}
 			builder.pop();
 			builder.push("Stamina HUD Configuration");

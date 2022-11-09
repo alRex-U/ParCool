@@ -169,7 +169,7 @@ public class Dodge extends Action {
 					successivelyCount++;
 				}
 				successivelyCoolTick = 30;
-				dodgeVec = dodgeVec.scale(0.4);
+				dodgeVec = dodgeVec.scale(ParCoolConfig.CONFIG_CLIENT.dodgeSpeedModifier.get());
 				EntityUtil.addVelocity(player, new Vector3d(dodgeVec.x(), jump, dodgeVec.z()));
 			}
 		}
