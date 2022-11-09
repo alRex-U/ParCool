@@ -14,13 +14,15 @@ public class AdditionalProperties extends Action {
 	private int sprintingTick = 0;
 	private int notLandingTick = 0;
 	private int landingTick = 0;
-
+	private int notSprintingTick = 0;
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (player.isSprinting()) {
+			notSprintingTick = 0;
 			sprintingTick++;
 		} else {
 			sprintingTick = 0;
+			notSprintingTick++;
 		}
 		if (player.isOnGround()) {
 			notLandingTick = 0;
@@ -62,5 +64,9 @@ public class AdditionalProperties extends Action {
 
 	public int getLandingTick() {
 		return landingTick;
+	}
+
+	public int getNotSprintingTick() {
+		return notSprintingTick;
 	}
 }

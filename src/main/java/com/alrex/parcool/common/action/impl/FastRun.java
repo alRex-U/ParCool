@@ -111,4 +111,9 @@ public class FastRun extends Action {
 	public int getDashTick(AdditionalProperties properties) {
 		return ParCoolConfig.CONFIG_CLIENT.substituteSprintForFastRun.get() ? properties.getSprintingTick() : this.getRunningTick();
 	}
+
+	@OnlyIn(Dist.CLIENT)
+	public int getNotDashTick(AdditionalProperties properties) {
+		return ParCoolConfig.CONFIG_CLIENT.substituteSprintForFastRun.get() ? properties.getNotSprintingTick() : this.getNotRunningTick();
+	}
 }

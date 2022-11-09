@@ -36,8 +36,6 @@ public class HorizontalWallRun extends Action {
 	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (wallRunning) {
 			wallRunningTick++;
-			Vector3d movement = player.getDeltaMovement();
-			player.setDeltaMovement(movement.x(), 0, movement.z());
 		} else {
 			wallRunningTick = 0;
 		}
@@ -53,7 +51,6 @@ public class HorizontalWallRun extends Action {
 			if (
 					(!oldRunning
 							&& parkourability.getPermission().canHorizontalWallRun()
-							&& parkourability.getFastRun().canActWithRunning(player)
 							&& !parkourability.getWallJump().justJumped()
 							&& !parkourability.getCrawl().isCrawling()
 							&& KeyBindings.getKeyHorizontalWallRun().isDown()
@@ -61,6 +58,11 @@ public class HorizontalWallRun extends Action {
 							&& coolTime == 0
 							&& !player.isOnGround()
 							&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
+							&&
+							(
+									parkourability.getFastRun().canActWithRunning(player)
+											|| parkourability.getFastRun().getNotDashTick(parkourability.getAdditionalProperties()) < 3
+							)
 							&& !stamina.isExhausted()
 					) || (oldRunning
 							&& parkourability.getPermission().canHorizontalWallRun()
@@ -95,10 +97,14 @@ public class HorizontalWallRun extends Action {
 				coolTime = 10;
 			}
 		}
-		if (wallRunning && wallRunningTick <= 3) {
-			Animation animation = Animation.get(player);
-			if (animation != null) {
-				animation.setAnimator(new HorizontalWallRunAnimator());
+		if (wallRunning) {
+			Vector3d movement = player.getDeltaMovement();
+			player.setDeltaMovement(movement.x(), 0, movement.z());
+			if (wallRunningTick <= 3) {
+				Animation animation = Animation.get(player);
+				if (animation != null) {
+					animation.setAnimator(new HorizontalWallRunAnimator());
+				}
 			}
 		}
 	}
