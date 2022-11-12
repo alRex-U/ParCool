@@ -1,4 +1,3 @@
-/*translated by CatalystGinger*/
 {
   "key.crawl.description": "爬行",
   "key.grab.description": "猫挂",
@@ -6,6 +5,7 @@
   "key.fastrunning.description": "快速奔跑",
   "key.dodge.description": "躲闪",
   "key.vault.description": "撑手跳",
+  "key.walljump.description": "墙跳",
   "key.wallslide.description": "滑墙",
   "key.horizontalwallrun.description": "跑墙",
   "key.parcool.setting.open": "打开设置选项",

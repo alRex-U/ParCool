@@ -5,6 +5,7 @@
   "key.fastrunning.description": "Fast Running",
   "key.dodge.description": "Dodge",
   "key.vault.description": "Vault",
+  "key.walljump.description": "Wall Jump",
   "key.wallslide.description": "Wall Slide",
   "key.horizontalwallrun.description": "Horizontal Wall-Run",
   "key.parcool.setting.open": "Open Settings",
