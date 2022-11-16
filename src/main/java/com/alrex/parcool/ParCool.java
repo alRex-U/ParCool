@@ -3,6 +3,9 @@ package com.alrex.parcool;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.item.ItemRegistry;
+import com.alrex.parcool.common.potion.Effects;
+import com.alrex.parcool.common.potion.PotionRecipeRegistry;
+import com.alrex.parcool.common.potion.Potions;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
 import com.alrex.parcool.common.registries.EventBusModRegistry;
 import com.alrex.parcool.proxy.ClientProxy;
@@ -12,6 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -53,12 +57,15 @@ public class ParCool {
 	}
 
 	public ParCool() {
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loaded);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doServerStuff);
-		FMLJavaModLoadingContext.get().getModEventBus().register(ItemRegistry.class);
+		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		eventBus.addListener(this::setup);
+		eventBus.addListener(this::processIMC);
+		eventBus.addListener(this::doClientStuff);
+		eventBus.addListener(this::loaded);
+		eventBus.addListener(this::doServerStuff);
+		eventBus.register(ItemRegistry.class);
+		Effects.registerAll(eventBus);
+		Potions.registerAll(eventBus);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
 
 		MinecraftForge.EVENT_BUS.register(this);
@@ -76,6 +83,7 @@ public class ParCool {
 		EventBusForgeRegistry.register(MinecraftForge.EVENT_BUS);
 		EventBusModRegistry.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Capabilities.register(CapabilityManager.INSTANCE);
+		PotionRecipeRegistry.register(event);
 		PROXY.registerMessages(CHANNEL_INSTANCE);
 	}
 
