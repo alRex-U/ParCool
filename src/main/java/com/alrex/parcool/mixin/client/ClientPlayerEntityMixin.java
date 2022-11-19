@@ -1,6 +1,5 @@
 package com.alrex.parcool.mixin.client;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -21,7 +20,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 	@Inject(method = "aiStep", at = @At("HEAD"))
 	public void onAiStep(CallbackInfo ci) {
 		ClientPlayerEntity player = (ClientPlayerEntity) (Object) this;
-		if (player.isLocalPlayer() && ParCoolConfig.CONFIG_CLIENT.continueSprintWhenColliding.get()) {
+		if (player.isLocalPlayer()) {
 			boolean flag = !player.input.hasForwardImpulse() || !((float) player.getFoodData().getFoodLevel() > 6.0F || this.abilities.mayfly);
 			boolean flag1 = flag || this.isInWater() && !this.isUnderWater();
 			if (oldSprinting && !flag1) {

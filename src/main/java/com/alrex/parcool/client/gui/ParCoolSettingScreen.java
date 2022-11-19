@@ -31,7 +31,7 @@ public class ParCoolSettingScreen extends Screen {
 			new ButtonSet("action.name.breakfall", CONFIG_CLIENT.canBreakfall::set, CONFIG_CLIENT.canBreakfall::get),
 			new ButtonSet("action.name.catleap", CONFIG_CLIENT.canCatLeap::set, CONFIG_CLIENT.canCatLeap::get),
 			new ButtonSet("action.name.crawl", CONFIG_CLIENT.canCrawl::set, CONFIG_CLIENT.canCrawl::get),
-			new ButtonSet("action.name.frontdodge", CONFIG_CLIENT.canFrontDodge::set, CONFIG_CLIENT.canFrontDodge::get),
+			new ButtonSet("action.name.frontdodge", CONFIG_CLIENT.canFrontDodgeByDoubleTap::set, CONFIG_CLIENT.canFrontDodgeByDoubleTap::get),
 			new ButtonSet("action.name.dodge", CONFIG_CLIENT.canDodge::set, CONFIG_CLIENT.canDodge::get),
 			new ButtonSet("action.name.fastrun", CONFIG_CLIENT.canFastRunning::set, CONFIG_CLIENT.canFastRunning::get),
 			new ButtonSet("action.name.flipping", CONFIG_CLIENT.canFlipping::set, CONFIG_CLIENT.canFlipping::get),
@@ -44,7 +44,6 @@ public class ParCoolSettingScreen extends Screen {
 			new ButtonSet("infinite stamina", CONFIG_CLIENT.infiniteStamina::set, CONFIG_CLIENT.infiniteStamina::get),
 			new ButtonSet("substitute Sprint for Fast-Run", CONFIG_CLIENT.substituteSprintForFastRun::set, CONFIG_CLIENT.substituteSprintForFastRun::get),
 			new ButtonSet("replace Fast-Run with Sprint", CONFIG_CLIENT.replaceSprintWithFastRun::set, CONFIG_CLIENT.replaceSprintWithFastRun::get),
-			new ButtonSet("continue sprint when players collide blocks", CONFIG_CLIENT.continueSprintWhenColliding::set, CONFIG_CLIENT.continueSprintWhenColliding::get),
 			new ButtonSet("hide stamina HUD", CONFIG_CLIENT.hideStaminaHUD::set, CONFIG_CLIENT.hideStaminaHUD::get),
 			new ButtonSet("use light Stamina HUD", CONFIG_CLIENT.useLightHUD::set, CONFIG_CLIENT.useLightHUD::get),
 			new ButtonSet("auto-turning when WallJump", CONFIG_CLIENT.autoTurningWallJump::set, CONFIG_CLIENT.autoTurningWallJump::get),
@@ -53,6 +52,8 @@ public class ParCoolSettingScreen extends Screen {
 			new ButtonSet("disable a camera rotation of Flipping", CONFIG_CLIENT.disableCameraFlipping::set, CONFIG_CLIENT.disableCameraFlipping::get),
 			new ButtonSet("disable double-tapping for dodge", CONFIG_CLIENT.disableDoubleTappingForDodge::set, CONFIG_CLIENT.disableDoubleTappingForDodge::get),
 			new ButtonSet("disable crawl in air", CONFIG_CLIENT.disableCrawlInAir::set, CONFIG_CLIENT.disableCrawlInAir::get),
+			new ButtonSet("disable vault in air", CONFIG_CLIENT.disableVaultInAir::set, CONFIG_CLIENT.disableVaultInAir::get),
+			new ButtonSet("disable falling animation", CONFIG_CLIENT.disableFallingAnimation::set, CONFIG_CLIENT.disableFallingAnimation::get),
 			new ButtonSet("enable roll when player is creative", CONFIG_CLIENT.enableRollWhenCreative::set, CONFIG_CLIENT.enableRollWhenCreative::get),
 			new ButtonSet("ParCool is active", CONFIG_CLIENT.parCoolActivation::set, CONFIG_CLIENT.parCoolActivation::get)
 	};

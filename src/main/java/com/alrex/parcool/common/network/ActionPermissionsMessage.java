@@ -22,7 +22,6 @@ public class ActionPermissionsMessage {
 	private boolean allowedDodge;
 	private boolean allowedFastRunning;
 	private boolean allowedClingToCliff;
-	private boolean allowedRoll;
 	private boolean allowedVault;
 	private boolean allowedWallJump;
 	private boolean allowedFlipping;
@@ -52,9 +51,6 @@ public class ActionPermissionsMessage {
 		return allowedFastRunning;
 	}
 
-	public boolean isAllowedRoll() {
-		return allowedRoll;
-	}
 
 	public boolean isAllowedVault() {
 		return allowedVault;
@@ -86,7 +82,6 @@ public class ActionPermissionsMessage {
 		packet.writeBoolean(allowedDodge);
 		packet.writeBoolean(allowedFastRunning);
 		packet.writeBoolean(allowedClingToCliff);
-		packet.writeBoolean(allowedRoll);
 		packet.writeBoolean(allowedVault);
 		packet.writeBoolean(allowedWallJump);
 		packet.writeBoolean(allowedInfiniteStamina);
@@ -104,7 +99,6 @@ public class ActionPermissionsMessage {
 		message.allowedDodge = packet.readBoolean();
 		message.allowedFastRunning = packet.readBoolean();
 		message.allowedClingToCliff = packet.readBoolean();
-		message.allowedRoll = packet.readBoolean();
 		message.allowedVault = packet.readBoolean();
 		message.allowedWallJump = packet.readBoolean();
 		message.allowedInfiniteStamina = packet.readBoolean();
@@ -137,7 +131,6 @@ public class ActionPermissionsMessage {
 		message.allowedDodge = config.allowDodge.get();
 		message.allowedFastRunning = config.allowFastRunning.get();
 		message.allowedClingToCliff = config.allowClingToCliff.get();
-		message.allowedRoll = config.allowRoll.get();
 		message.allowedVault = config.allowVault.get();
 		message.allowedWallJump = config.allowWallJump.get();
 		message.allowedInfiniteStamina = config.allowInfiniteStamina.get();

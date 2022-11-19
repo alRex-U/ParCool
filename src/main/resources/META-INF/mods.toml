@@ -12,8 +12,12 @@ credits = "Thanks for Java, and Developers of Minecraft and Minecraft Forge" #op
 authors = '''
 
     Owner: alRex_U
+    Developer:
+        └ alRex_U
     Tlanslators:
-        └zh_cn : CatalystGinger
+        ├ ja_jp : alRex_U
+        ├ zh_cn : CatalystGinger
+        └ fr_fr : COwOkies
 '''
 
 description = '''

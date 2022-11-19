@@ -4,6 +4,7 @@ import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.network.SyncStaminaMessage;
+import com.alrex.parcool.common.potion.Effects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -35,7 +36,7 @@ public class Stamina {
 	}
 
 	public void consume(int amount, PlayerEntity player) {
-		if (exhausted || infinite) return;
+		if (exhausted || infinite || player.hasEffect(Effects.INEXHAUSTIBLE)) return;
 		if (ParCoolConfig.CONFIG_CLIENT.useHungerBarInsteadOfStamina.get()) {
 			player.causeFoodExhaustion(amount / 1000f);
 		} else {

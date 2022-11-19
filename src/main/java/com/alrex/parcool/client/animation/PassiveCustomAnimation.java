@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.animation;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.EasingFunctions;
@@ -35,7 +36,7 @@ public class PassiveCustomAnimation {
 	}
 
 	public void animate(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
-		if (fallingAnimationTick >= FallingStartLine) {
+		if (fallingAnimationTick >= FallingStartLine && !ParCoolConfig.CONFIG_CLIENT.disableFallingAnimation.get()) {
 			animateFalling(parkourability, transformer);
 		}
 	}

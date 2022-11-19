@@ -20,6 +20,7 @@ public class KeyRecorder {
 	public static final KeyState keyFastRunning = new KeyState();
 	public static final KeyState keyDodge = new KeyState();
 	public static final KeyState keyBreakfall = new KeyState();
+	public static final KeyState keyWallJump = new KeyState();
 
 	@SubscribeEvent
 	public static void onClientTick(TickEvent.ClientTickEvent event) {
@@ -36,6 +37,7 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyFastRunning(), keyFastRunning);
 		record(KeyBindings.getKeyDodge(), keyDodge);
 		record(KeyBindings.getKeyBreakfall(), keyBreakfall);
+		record(KeyBindings.getKeyWallJump(), keyWallJump);
 	}
 
 	private static void record(KeyBinding keyBinding, KeyState state) {

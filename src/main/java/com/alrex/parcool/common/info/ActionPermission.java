@@ -11,7 +11,6 @@ public class ActionPermission {
 	private boolean allowedDodge = true;
 	private boolean allowedFastRunning = true;
 	private boolean allowedClingToCliff = true;
-	private boolean allowedRoll = true;
 	private boolean allowedVault = true;
 	private boolean allowedWallJump = true;
 	private boolean allowedFlipping = true;
@@ -40,7 +39,7 @@ public class ActionPermission {
 	}
 
 	public boolean canRoll() {
-		return ParCool.isActive() && haveReceived && ParCoolConfig.CONFIG_CLIENT.canRoll.get() && allowedRoll;
+		return ParCool.isActive() && haveReceived && ParCoolConfig.CONFIG_CLIENT.canRoll.get();
 	}
 
 	public boolean canVault() {
@@ -73,7 +72,6 @@ public class ActionPermission {
 		allowedClingToCliff = message.isAllowedClingToCliff();
 		allowedDodge = message.isAllowedDodge();
 		allowedFastRunning = message.isAllowedFastRunning();
-		allowedRoll = message.isAllowedRoll();
 		allowedVault = message.isAllowedVault();
 		allowedWallJump = message.isAllowedWallJump();
 		allowedBreakfall = message.isAllowedBreakfall();

@@ -1,21 +1,23 @@
 package com.alrex.parcool;
 
 import com.alrex.parcool.client.hud.Position;
+import com.alrex.parcool.common.action.impl.Vault;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ParCoolConfig {
 	private static final ForgeConfigSpec.Builder C_BUILDER = new ForgeConfigSpec.Builder();
 	private static final ForgeConfigSpec.Builder S_BUILDER = new ForgeConfigSpec.Builder();
+	private static final ForgeConfigSpec.Builder COM_BUILDER = new ForgeConfigSpec.Builder();
 
 	public static final Client CONFIG_CLIENT = new Client(C_BUILDER);
 	public static final Server CONFIG_SERVER = new Server(S_BUILDER);
-
+	public static final Common CONFIG_COMMON = new Common(COM_BUILDER);
 	public static class Client {
 		public final ForgeConfigSpec.BooleanValue canCatLeap;
 		public final ForgeConfigSpec.BooleanValue canCrawl;
 		public final ForgeConfigSpec.BooleanValue canDodge;
 		public final ForgeConfigSpec.BooleanValue canFastRunning;
-		public final ForgeConfigSpec.BooleanValue canFrontDodge;
+		public final ForgeConfigSpec.BooleanValue canFrontDodgeByDoubleTap;
 		public final ForgeConfigSpec.BooleanValue canClingToCliff;
 		public final ForgeConfigSpec.BooleanValue canRoll;
 		public final ForgeConfigSpec.BooleanValue canVault;
@@ -31,16 +33,18 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue disableCameraRolling;
 		public final ForgeConfigSpec.BooleanValue disableCameraFlipping;
 		public final ForgeConfigSpec.BooleanValue disableCrawlInAir;
+		public final ForgeConfigSpec.BooleanValue disableVaultInAir;
+		public final ForgeConfigSpec.BooleanValue disableFallingAnimation;
 		public final ForgeConfigSpec.BooleanValue enableRollWhenCreative;
 		public final ForgeConfigSpec.BooleanValue disableDoubleTappingForDodge;
 		public final ForgeConfigSpec.BooleanValue substituteSprintForFastRun;
 		public final ForgeConfigSpec.BooleanValue replaceSprintWithFastRun;
-		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
+		public final ForgeConfigSpec.DoubleValue dodgeSpeedModifier;
 		public final ForgeConfigSpec.BooleanValue parCoolActivation;
-		public final ForgeConfigSpec.BooleanValue continueSprintWhenColliding;
 		public final ForgeConfigSpec.BooleanValue hideStaminaHUD;
 		public final ForgeConfigSpec.BooleanValue useLightHUD;
 		public final ForgeConfigSpec.BooleanValue vaultNeedKeyPressed;
+		public final ForgeConfigSpec.EnumValue<Vault.TypeSelectionMode> vaultAnimationMode;
 		public final ForgeConfigSpec.EnumValue<Position.Horizontal> alignHorizontalStaminaHUD;
 		public final ForgeConfigSpec.EnumValue<Position.Vertical> alignVerticalStaminaHUD;
 		public final ForgeConfigSpec.IntValue marginHorizontalStaminaHUD;
@@ -63,7 +67,7 @@ public class ParCoolConfig {
 			{
 				canCatLeap = builder.define("canCatLeap", true);
 				canCrawl = builder.define("canCrawl", true);
-				canFrontDodge = builder.define("canFrontDodge", true);
+				canFrontDodgeByDoubleTap = builder.comment("Possibility to Frontward-Dodge By double tapping a button").define("canFrontDodgeByDoubleTapping", true);
 				canDodge = builder.define("canDodge", true);
 				canFastRunning = builder.define("canFastRunning", true);
 				canClingToCliff = builder.define("canClingToCliff", true);
@@ -79,7 +83,7 @@ public class ParCoolConfig {
 			builder.pop();
 			builder.push("Modifier Values");
 			{
-				fastRunningModifier = builder.comment("FastRun Speed Modifier").defineInRange("fastRunModifier", 3, 0.001, 4.5);
+				dodgeSpeedModifier = builder.comment("Dodge Speed Modifier").defineInRange("dodgeSpeedModifier", 0.4, 0.2, 0.52);
 			}
 			builder.pop();
 			builder.push("Stamina HUD Configuration");
@@ -101,11 +105,13 @@ public class ParCoolConfig {
 				disableCameraFlipping = builder.comment("Disable Flipping rotation of camera").define("disableCameraRotationFlipping", false);
 				disableDoubleTappingForDodge = builder.comment("Disable Double-Tapping For Dodge. Please Use Dodge Key instead").define("disableDoubleTapping", false);
 				disableCrawlInAir = builder.comment("Disable Crawl in air (experimental)").define("disableCrawlInAir", true);
+				disableVaultInAir = builder.comment("Disable Vault in air (experimental)").define("disableVaultInAir", true);
+				disableFallingAnimation = builder.comment("Disable custom animation of falling").define("disableFallingAnimation", false);
 				enableRollWhenCreative = builder.comment("Enable Roll While player is in creative mode (experimental)").define("enableRollCreative", false);
 				vaultNeedKeyPressed = builder.comment("Make Vault Need Vault Key Pressed").define("vaultNeedKeyPressed", false);
+				vaultAnimationMode = builder.comment("Vault Animation(Dynamic is to select animation dynamically)").defineEnum("vaultAnimationMode", Vault.TypeSelectionMode.Dynamic);
 				replaceSprintWithFastRun = builder.comment("enable players to do actions needing Fast-Running by sprint").define("replaceSprintWithFastRun", true);
 				substituteSprintForFastRun = builder.comment("Substitute a sprint of vanilla for the FastRunning").define("substituteSprint", false);
-				continueSprintWhenColliding = builder.comment("Continue sprint when even player collides blocks").define("continueSprintWhenColliding", true);
 				infiniteStamina = builder
 						.comment("Infinite Stamina(this needs a permission from server, even if it is on single player's game)\nPlease check 'parcool-server.toml' in 'serverconfig' directory")
 						.define("infiniteStamina", false);
@@ -134,6 +140,14 @@ public class ParCoolConfig {
 				parCoolActivation = builder.comment("ParCool is Active").define("ParCool_Activation", true);
 			}
 			builder.pop();
+		}
+	}
+
+	public static class Common {
+		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
+
+		Common(ForgeConfigSpec.Builder builder) {
+			fastRunningModifier = builder.comment("FastRun Speed Modifier(Recommended to be set to same value in both client and server side)").defineInRange("fastRunModifier", 3, 0.001, 4.5);
 		}
 	}
 
@@ -202,4 +216,5 @@ public class ParCoolConfig {
 
 	public static final ForgeConfigSpec CLIENT_SPEC = C_BUILDER.build();
 	public static final ForgeConfigSpec SERVER_SPEC = S_BUILDER.build();
+	public static final ForgeConfigSpec COMMON_SPEC = COM_BUILDER.build();
 }

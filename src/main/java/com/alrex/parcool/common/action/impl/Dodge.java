@@ -86,12 +86,12 @@ public class Dodge extends Action {
 	@OnlyIn(Dist.CLIENT)
 	private boolean canDodge(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		boolean enabledDoubleTap = !ParCoolConfig.CONFIG_CLIENT.disableDoubleTappingForDodge.get();
-		return parkourability.getPermission().canDodge() && successivelyCount < 2 && coolTime <= 0 && player.isOnGround() && !player.isShiftKeyDown() && !stamina.isExhausted() && (
+		return parkourability.getPermission().canDodge() && !isInSuccessiveCoolDown() && coolTime <= 0 && player.isOnGround() && !player.isShiftKeyDown() && !stamina.isExhausted() && (
 				enabledDoubleTap && !parkourability.getRoll().isRolling() && !parkourability.getTap().isTapping() && (
 						KeyRecorder.keyBack.isDoubleTapped() ||
 								KeyRecorder.keyLeft.isDoubleTapped() ||
 								KeyRecorder.keyRight.isDoubleTapped() ||
-								(ParCoolConfig.CONFIG_CLIENT.canFrontDodge.get() && KeyRecorder.keyForward.isDoubleTapped())
+								(ParCoolConfig.CONFIG_CLIENT.canFrontDodgeByDoubleTap.get() && KeyRecorder.keyForward.isDoubleTapped())
 				) || (
 						KeyBindings.getKeyDodge().isDown() && (
 								KeyBindings.getKeyForward().isDown() ||
@@ -164,12 +164,12 @@ public class Dodge extends Action {
 						break;
 				}
 				jump = 0.3;
-				coolTime = 10;
-				if (successivelyCoolTick != 0) {
+				coolTime = parkourability.getActionInfo().getMaxDodgeCoolTick();
+				if (successivelyCount < 3) {
 					successivelyCount++;
 				}
-				successivelyCoolTick = 30;
-				dodgeVec = dodgeVec.scale(0.4);
+				successivelyCoolTick = parkourability.getActionInfo().getMaxDodgeCoolTick() * 3;
+				dodgeVec = dodgeVec.scale(ParCoolConfig.CONFIG_CLIENT.dodgeSpeedModifier.get());
 				EntityUtil.addVelocity(player, new Vector3d(dodgeVec.x(), jump, dodgeVec.z()));
 			}
 		}
@@ -210,5 +210,13 @@ public class Dodge extends Action {
 
 	public int getDodgingTick() {
 		return dodgingTick;
+	}
+
+	public int getSuccessivelyCoolTick() {
+		return successivelyCoolTick;
+	}
+
+	public boolean isInSuccessiveCoolDown() {
+		return successivelyCount >= 3;
 	}
 }

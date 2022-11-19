@@ -67,7 +67,7 @@ public class ActionInfo {
 		return 0.49;
 	}
 
-	public int getDodgeCoolTick() {
+	public int getMaxDodgeCoolTick() {
 		return 10;
 	}
 

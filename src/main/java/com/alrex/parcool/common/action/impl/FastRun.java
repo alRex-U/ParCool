@@ -26,7 +26,7 @@ public class FastRun extends Action {
 			= new AttributeModifier(
 			FAST_RUNNING_MODIFIER_UUID,
 			FAST_RUNNING_MODIFIER_NAME,
-			ParCoolConfig.CONFIG_CLIENT.fastRunningModifier.get() / 100d,
+			ParCoolConfig.CONFIG_COMMON.fastRunningModifier.get() / 100d,
 			AttributeModifier.Operation.ADDITION
 	);
 
@@ -43,6 +43,14 @@ public class FastRun extends Action {
 			runningTick = 0;
 			notRunningTick++;
 		}
+
+		ModifiableAttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
+		if (attr == null) return;
+		if (attr.hasModifier(FAST_RUNNING_MODIFIER)) attr.removeModifier(FAST_RUNNING_MODIFIER);
+		if (fastRunning) {
+			attr.addTransientModifier(FAST_RUNNING_MODIFIER);
+			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionFastRun(), player);
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -57,19 +65,11 @@ public class FastRun extends Action {
 					&& !parkourability.getCrawl().isCrawling()
 					&& (KeyBindings.getKeyFastRunning().isDown() || ParCoolConfig.CONFIG_CLIENT.replaceSprintWithFastRun.get());
 		}
-		ModifiableAttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
-		if (attr == null) return;
-
 		if (isRunning()) {
-			if (!attr.hasModifier(FAST_RUNNING_MODIFIER)) attr.addTransientModifier(FAST_RUNNING_MODIFIER);
-			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionFastRun(), player);
-
 			Animation animation = Animation.get(player);
 			if (animation != null && !animation.hasAnimator()) {
 				animation.setAnimator(new FastRunningAnimator());
 			}
-		} else {
-			if (attr.hasModifier(FAST_RUNNING_MODIFIER)) attr.removeModifier(FAST_RUNNING_MODIFIER);
 		}
 	}
 
@@ -110,5 +110,10 @@ public class FastRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	public int getDashTick(AdditionalProperties properties) {
 		return ParCoolConfig.CONFIG_CLIENT.substituteSprintForFastRun.get() ? properties.getSprintingTick() : this.getRunningTick();
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public int getNotDashTick(AdditionalProperties properties) {
+		return ParCoolConfig.CONFIG_CLIENT.substituteSprintForFastRun.get() ? properties.getNotSprintingTick() : this.getNotRunningTick();
 	}
 }

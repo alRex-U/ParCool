@@ -20,20 +20,6 @@ public class ClientProxy extends CommonProxy {
 				ResetFallDistanceMessage::handle
 		);
 		instance.registerMessage(
-				1,
-				SetActionPossibilityMessage.class,
-				SetActionPossibilityMessage::encode,
-				SetActionPossibilityMessage::decode,
-				SetActionPossibilityMessage::handle
-		);
-		instance.registerMessage(
-				2,
-				ShowActionPossibilityMessage.class,
-				ShowActionPossibilityMessage::encode,
-				ShowActionPossibilityMessage::decode,
-				ShowActionPossibilityMessage::handle
-		);
-		instance.registerMessage(
 				3,
 				StartBreakfallMessage.class,
 				StartBreakfallMessage::encode,
