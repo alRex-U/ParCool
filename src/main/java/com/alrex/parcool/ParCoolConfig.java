@@ -6,10 +6,11 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public class ParCoolConfig {
 	private static final ForgeConfigSpec.Builder C_BUILDER = new ForgeConfigSpec.Builder();
 	private static final ForgeConfigSpec.Builder S_BUILDER = new ForgeConfigSpec.Builder();
+	private static final ForgeConfigSpec.Builder COM_BUILDER = new ForgeConfigSpec.Builder();
 
 	public static final Client CONFIG_CLIENT = new Client(C_BUILDER);
 	public static final Server CONFIG_SERVER = new Server(S_BUILDER);
-
+	public static final Common CONFIG_COMMON = new Common(COM_BUILDER);
 	public static class Client {
 		public final ForgeConfigSpec.BooleanValue canCatLeap;
 		public final ForgeConfigSpec.BooleanValue canCrawl;
@@ -37,7 +38,6 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue disableDoubleTappingForDodge;
 		public final ForgeConfigSpec.BooleanValue substituteSprintForFastRun;
 		public final ForgeConfigSpec.BooleanValue replaceSprintWithFastRun;
-		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
 		public final ForgeConfigSpec.DoubleValue dodgeSpeedModifier;
 		public final ForgeConfigSpec.BooleanValue parCoolActivation;
 		public final ForgeConfigSpec.BooleanValue hideStaminaHUD;
@@ -81,7 +81,6 @@ public class ParCoolConfig {
 			builder.pop();
 			builder.push("Modifier Values");
 			{
-				fastRunningModifier = builder.comment("FastRun Speed Modifier").defineInRange("fastRunModifier", 3, 0.001, 4.5);
 				dodgeSpeedModifier = builder.comment("Dodge Speed Modifier").defineInRange("dodgeSpeedModifier", 0.4, 0.2, 0.52);
 			}
 			builder.pop();
@@ -138,6 +137,14 @@ public class ParCoolConfig {
 				parCoolActivation = builder.comment("ParCool is Active").define("ParCool_Activation", true);
 			}
 			builder.pop();
+		}
+	}
+
+	public static class Common {
+		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
+
+		Common(ForgeConfigSpec.Builder builder) {
+			fastRunningModifier = builder.comment("FastRun Speed Modifier(Recommended to be set to same value in both client and server side)").defineInRange("fastRunModifier", 3, 0.001, 4.5);
 		}
 	}
 
@@ -206,4 +213,5 @@ public class ParCoolConfig {
 
 	public static final ForgeConfigSpec CLIENT_SPEC = C_BUILDER.build();
 	public static final ForgeConfigSpec SERVER_SPEC = S_BUILDER.build();
+	public static final ForgeConfigSpec COMMON_SPEC = COM_BUILDER.build();
 }
