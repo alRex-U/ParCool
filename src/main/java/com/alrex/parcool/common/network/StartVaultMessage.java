@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.common.action.impl.Vault;
 import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,19 +19,26 @@ import java.util.function.Supplier;
 
 public class StartVaultMessage {
 	UUID playerID = null;
+	Vault.AnimationType type = null;
 
 	public UUID getPlayerID() {
 		return playerID;
 	}
 
+	public Vault.AnimationType getType() {
+		return type;
+	}
+
 	public void encode(PacketBuffer packet) {
 		packet.writeLong(playerID.getMostSignificantBits());
 		packet.writeLong(playerID.getLeastSignificantBits());
+		packet.writeInt(type.getCode());
 	}
 
 	public static StartVaultMessage decode(PacketBuffer packet) {
 		StartVaultMessage message = new StartVaultMessage();
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
+		message.type = Vault.AnimationType.fromCode(packet.readInt());
 		return message;
 	}
 
@@ -65,9 +73,10 @@ public class StartVaultMessage {
 		});
 	}
 
-	public static void send(PlayerEntity player) {
+	public static void send(PlayerEntity player, Vault.AnimationType type) {
 		StartVaultMessage message = new StartVaultMessage();
 		message.playerID = player.getUUID();
+		message.type = type;
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);
 	}
 }

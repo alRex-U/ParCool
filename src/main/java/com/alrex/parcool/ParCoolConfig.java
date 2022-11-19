@@ -1,6 +1,7 @@
 package com.alrex.parcool;
 
 import com.alrex.parcool.client.hud.Position;
+import com.alrex.parcool.common.action.impl.Vault;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ParCoolConfig {
@@ -43,6 +44,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue hideStaminaHUD;
 		public final ForgeConfigSpec.BooleanValue useLightHUD;
 		public final ForgeConfigSpec.BooleanValue vaultNeedKeyPressed;
+		public final ForgeConfigSpec.EnumValue<Vault.TypeSelectionMode> vaultAnimationMode;
 		public final ForgeConfigSpec.EnumValue<Position.Horizontal> alignHorizontalStaminaHUD;
 		public final ForgeConfigSpec.EnumValue<Position.Vertical> alignVerticalStaminaHUD;
 		public final ForgeConfigSpec.IntValue marginHorizontalStaminaHUD;
@@ -107,6 +109,7 @@ public class ParCoolConfig {
 				disableFallingAnimation = builder.comment("Disable custom animation of falling").define("disableFallingAnimation", false);
 				enableRollWhenCreative = builder.comment("Enable Roll While player is in creative mode (experimental)").define("enableRollCreative", false);
 				vaultNeedKeyPressed = builder.comment("Make Vault Need Vault Key Pressed").define("vaultNeedKeyPressed", false);
+				vaultAnimationMode = builder.comment("Vault Animation(Dynamic is to select animation dynamically)").defineEnum("vaultAnimationMode", Vault.TypeSelectionMode.Dynamic);
 				replaceSprintWithFastRun = builder.comment("enable players to do actions needing Fast-Running by sprint").define("replaceSprintWithFastRun", true);
 				substituteSprintForFastRun = builder.comment("Substitute a sprint of vanilla for the FastRunning").define("substituteSprint", false);
 				infiniteStamina = builder
