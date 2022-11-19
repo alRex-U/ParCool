@@ -1,8 +1,10 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.client.animation.impl.WallJumpAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.common.network.ResetFallDistanceMessage;
@@ -33,8 +35,7 @@ public class WallJump extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Nullable
-	private Vector3d getJumpDirection(PlayerEntity player) {
-		Vector3d wall = WorldUtil.getWall(player);
+	private Vector3d getJumpDirection(PlayerEntity player, Vector3d wall) {
 		if (wall == null) return null;
 
 		Vector3d lookVec = player.getLookAngle();
@@ -74,7 +75,8 @@ public class WallJump extends Action {
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (player.isLocalPlayer() && canWallJump(player, parkourability, stamina)) {
-			Vector3d jumpDirection = getJumpDirection(player);
+			Vector3d wallDirection = WorldUtil.getWall(player);
+			Vector3d jumpDirection = getJumpDirection(player, wallDirection);
 			if (jumpDirection == null) return;
 			if (ParCoolConfig.CONFIG_CLIENT.autoTurningWallJump.get()) {
 				player.yRot = (float) VectorUtil.toYawDegree(jumpDirection);
@@ -90,6 +92,16 @@ public class WallJump extends Action {
 					motion.z() + direction.z()
 			);
 			jump = true;
+			//doing "wallDirection/jumpDirection" as complex number(x + z i) to calculate difference of player's direction to wall
+			Vector3d dividedVec =
+					new Vector3d(
+							wallDirection.x() * jumpDirection.x() + wallDirection.z() * jumpDirection.z(), 0,
+							-wallDirection.x() * jumpDirection.z() + wallDirection.z() * jumpDirection.x()
+					).normalize();
+			Animation animation = Animation.get(player);
+			if (animation != null) {
+				animation.setAnimator(new WallJumpAnimator(dividedVec.z() > 0));
+			}
 			ResetFallDistanceMessage.sync(player);
 		}
 	}
