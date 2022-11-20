@@ -11,6 +11,7 @@ import com.alrex.parcool.common.registries.EventBusModRegistry;
 import com.alrex.parcool.proxy.ClientProxy;
 import com.alrex.parcool.proxy.CommonProxy;
 import com.alrex.parcool.proxy.ServerProxy;
+import com.alrex.parcool.server.command.CommandRegistry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -106,5 +107,6 @@ public class ParCool {
 	}
 
 	private void registerCommand(final RegisterCommandsEvent event) {
+		CommandRegistry.register(event.getDispatcher());
 	}
 }

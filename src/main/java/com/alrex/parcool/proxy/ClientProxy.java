@@ -54,6 +54,13 @@ public class ClientProxy extends CommonProxy {
 				SyncActionStateMessage::decode,
 				SyncActionStateMessage::handleClient
 		);
+		instance.registerMessage(
+				16,
+				StaminaControlMessage.class,
+				StaminaControlMessage::encode,
+				StaminaControlMessage::decode,
+				StaminaControlMessage::handleClient
+		);
 	}
 
 	@Override
