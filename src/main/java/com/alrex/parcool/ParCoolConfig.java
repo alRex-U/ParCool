@@ -35,6 +35,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue disableCrawlInAir;
 		public final ForgeConfigSpec.BooleanValue disableVaultInAir;
 		public final ForgeConfigSpec.BooleanValue disableFallingAnimation;
+		public final ForgeConfigSpec.BooleanValue disableAnimation;
 		public final ForgeConfigSpec.BooleanValue enableRollWhenCreative;
 		public final ForgeConfigSpec.BooleanValue disableDoubleTappingForDodge;
 		public final ForgeConfigSpec.BooleanValue substituteSprintForFastRun;
@@ -107,6 +108,7 @@ public class ParCoolConfig {
 				disableCrawlInAir = builder.comment("Disable Crawl in air (experimental)").define("disableCrawlInAir", true);
 				disableVaultInAir = builder.comment("Disable Vault in air (experimental)").define("disableVaultInAir", true);
 				disableFallingAnimation = builder.comment("Disable custom animation of falling").define("disableFallingAnimation", false);
+				disableAnimation = builder.comment("Disable custom animations").define("disableAnimation", false);
 				enableRollWhenCreative = builder.comment("Enable Roll While player is in creative mode (experimental)").define("enableRollCreative", false);
 				vaultNeedKeyPressed = builder.comment("Make Vault Need Vault Key Pressed").define("vaultNeedKeyPressed", false);
 				vaultAnimationMode = builder.comment("Vault Animation(Dynamic is to select animation dynamically)").defineEnum("vaultAnimationMode", Vault.TypeSelectionMode.Dynamic);

@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.capability;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PassiveCustomAnimation;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
@@ -25,7 +26,7 @@ public class Animation {
 	private final PassiveCustomAnimation passiveAnimation = new PassiveCustomAnimation();
 
 	public void setAnimator(Animator animator) {
-		this.animator = animator;
+		if (!ParCoolConfig.CONFIG_CLIENT.disableAnimation.get()) this.animator = animator;
 	}
 
 	public boolean animatePre(PlayerEntity player, PlayerModelTransformer modelTransformer) {
