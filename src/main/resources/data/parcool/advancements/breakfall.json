@@ -1,0 +1,24 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:slime_ball"
+    },
+    "title": {
+      "translate": "achievement.parcool.breakfall.title"
+    },
+    "description": {
+      "translate": "achievement.parcool.breakfall.description"
+    },
+    "background": "minecraft:textures/block/cyan_wool.png",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "parcool:start-line",
+  "criteria": {
+    "enable_roll_action": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

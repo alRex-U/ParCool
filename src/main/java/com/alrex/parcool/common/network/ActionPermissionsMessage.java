@@ -4,10 +4,17 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
+import com.alrex.parcool.constants.Advancements;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementManager;
+import net.minecraft.advancements.AdvancementProgress;
+import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -123,21 +130,26 @@ public class ActionPermissionsMessage {
 		contextSupplier.get().setPacketHandled(true);
 	}
 
-	private static ActionPermissionsMessage newInstance() {
+	private static ActionPermissionsMessage newInstance(ServerPlayerEntity player) {
 		ActionPermissionsMessage message = new ActionPermissionsMessage();
 		ParCoolConfig.Server config = ParCoolConfig.CONFIG_SERVER;
-		message.allowedCatLeap = config.allowCatLeap.get();
-		message.allowedCrawl = config.allowCrawl.get();
-		message.allowedDodge = config.allowDodge.get();
-		message.allowedFastRunning = config.allowFastRunning.get();
-		message.allowedClingToCliff = config.allowClingToCliff.get();
-		message.allowedVault = config.allowVault.get();
-		message.allowedWallJump = config.allowWallJump.get();
+		MinecraftServer server = player.server;
+		AdvancementManager manager = server.getAdvancements();
+		PlayerAdvancements adv = player.getAdvancements();
+		boolean advDisabled = !getProgress(adv, manager, Advancements.Root).isDone();
+
+		message.allowedCatLeap = config.allowCatLeap.get() && (advDisabled || getProgress(adv, manager, Advancements.Catleap).isDone());
+		message.allowedCrawl = config.allowCrawl.get() && (advDisabled || getProgress(adv, manager, Advancements.Crawl).isDone());
+		message.allowedDodge = config.allowDodge.get() && (advDisabled || getProgress(adv, manager, Advancements.Dodge).isDone());
+		message.allowedFastRunning = config.allowFastRunning.get() && (advDisabled || getProgress(adv, manager, Advancements.Fast_Run).isDone());
+		message.allowedClingToCliff = config.allowClingToCliff.get() && (advDisabled || getProgress(adv, manager, Advancements.Cling_To_Cliff).isDone());
+		message.allowedVault = config.allowVault.get() && (advDisabled || getProgress(adv, manager, Advancements.Vault).isDone());
+		message.allowedWallJump = config.allowWallJump.get() && (advDisabled || getProgress(adv, manager, Advancements.Wall_Jump).isDone());
+		message.allowedFlipping = config.allowFlipping.get() && (advDisabled || getProgress(adv, manager, Advancements.Flipping).isDone());
+		message.allowedBreakfall = config.allowBreakfall.get() && (advDisabled || getProgress(adv, manager, Advancements.Breakfall).isDone());
+		message.allowedWallSlide = config.allowWallSlide.get() && (advDisabled || getProgress(adv, manager, Advancements.Wall_Slide).isDone());
+		message.allowedHorizontalWallRun = config.allowHorizontalWallRun.get() && (advDisabled || getProgress(adv, manager, Advancements.Horizontal_Wall_Run).isDone());
 		message.allowedInfiniteStamina = config.allowInfiniteStamina.get();
-		message.allowedFlipping = config.allowFlipping.get();
-		message.allowedBreakfall = config.allowBreakfall.get();
-		message.allowedWallSlide = config.allowWallSlide.get();
-		message.allowedHorizontalWallRun = config.allowHorizontalWallRun.get();
 
 		ByteBuffer buffer = ByteBuffer.allocate(128);
 		ActionInfo.encode(buffer);
@@ -147,11 +159,14 @@ public class ActionPermissionsMessage {
 		return message;
 	}
 
-	public static void send(ServerPlayerEntity player) {
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), newInstance());
+	private static AdvancementProgress getProgress(PlayerAdvancements advancements, AdvancementManager manager, ResourceLocation name) {
+		Advancement advancement = manager.getAdvancement(name);
+		if (advancement == null) {
+		}
+		return advancements.getOrStartProgress(advancement);
 	}
 
-	public static void broadcast() {
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), newInstance());
+	public static void send(ServerPlayerEntity player) {
+		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), newInstance(player));
 	}
 }
