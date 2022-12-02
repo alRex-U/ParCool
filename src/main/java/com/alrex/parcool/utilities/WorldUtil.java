@@ -16,8 +16,6 @@ public class WorldUtil {
 		double distance = entity.getBbWidth() / 2;
 		double wallX = 0;
 		double wallZ = 0;
-		byte wallNumX = 0;
-		byte wallNumZ = 0;
 		Vector3d pos = entity.position();
 
 		AxisAlignedBB baseBox = new AxisAlignedBB(
@@ -31,21 +29,17 @@ public class WorldUtil {
 
 		if (!entity.level.noCollision(baseBox.expandTowards(distance, 0, 0))) {
 			wallX++;
-			wallNumX++;
 		}
 		if (!entity.level.noCollision(baseBox.expandTowards(-distance, 0, 0))) {
 			wallX--;
-			wallNumX++;
 		}
 		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, distance))) {
 			wallZ++;
-			wallNumZ++;
 		}
 		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, -distance))) {
 			wallZ--;
-			wallNumZ++;
 		}
-		if (wallNumX == 2 || wallNumZ == 2 || (wallNumX == 0 && wallNumZ == 0)) return null;
+		if (wallX == 0 && wallZ == 0) return null;
 
 		return new Vector3d(wallX, 0, wallZ);
 	}
@@ -55,12 +49,12 @@ public class WorldUtil {
 		final double d = 0.3;
 		World world = entity.level;
 		double distance = entity.getBbWidth() / 2;
-		double baseLine = 1.55;
+		double baseLine = Math.min(1.55, getWallHeight(entity));
 		double stepX = 0;
 		double stepZ = 0;
 		Vector3d pos = entity.position();
 
-		AxisAlignedBB baseBoxSide = new AxisAlignedBB(
+		AxisAlignedBB baseBoxBottom = new AxisAlignedBB(
 				pos.x() - d,
 				pos.y(),
 				pos.z() - d,
@@ -73,19 +67,19 @@ public class WorldUtil {
 				pos.y() + baseLine,
 				pos.z() - d,
 				pos.x() + d,
-				pos.y() + entity.getBbHeight(),
+				pos.y() + baseLine + entity.getBbHeight(),
 				pos.z() + d
 		);
-		if (!world.noCollision(baseBoxSide.expandTowards(distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards((distance + 1.8), 0, 0))) {
+		if (!world.noCollision(baseBoxBottom.expandTowards(distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards((distance + 1.8), 0, 0))) {
 			stepX++;
 		}
-		if (!world.noCollision(baseBoxSide.expandTowards(-distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards(-(distance + 1.8), 0, 0))) {
+		if (!world.noCollision(baseBoxBottom.expandTowards(-distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards(-(distance + 1.8), 0, 0))) {
 			stepX--;
 		}
-		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, (distance + 1.8)))) {
+		if (!world.noCollision(baseBoxBottom.expandTowards(0, 0, distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, (distance + 1.8)))) {
 			stepZ++;
 		}
-		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, -distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, -(distance + 1.8)))) {
+		if (!world.noCollision(baseBoxBottom.expandTowards(0, 0, -distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, -(distance + 1.8)))) {
 			stepZ--;
 		}
 		if (stepX == 0 && stepZ == 0) return null;

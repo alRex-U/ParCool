@@ -23,10 +23,12 @@ public class FastRunningAnimator extends Animator {
 		if (phase > 1) phase = 1;
 		float bodyAngleFactor = bodyAngleFactor(phase);
 		transformer
-				.addRotateRightArm(0, 0, (float) Math.toRadians(bodyAngleFactor * 10))
-				.addRotateLeftArm(0, 0, (float) Math.toRadians(bodyAngleFactor * -10))
+				.addRotateRightArm((float) Math.toRadians(-10 * bodyAngleFactor), 0, (float) Math.toRadians(bodyAngleFactor * 10))
+				.addRotateLeftArm((float) Math.toRadians(-10 * bodyAngleFactor), 0, (float) Math.toRadians(bodyAngleFactor * -10))
 				.rotateAdditionallyHeadPitch(bodyAngleFactor * -20)
 				.makeArmsNatural()
+				.addRotateRightLeg((float) Math.toRadians(-20 * bodyAngleFactor), 0, 0)
+				.addRotateLeftLeg((float) Math.toRadians(-20 * bodyAngleFactor), 0, 0)
 				.end();
 	}
 
