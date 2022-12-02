@@ -38,6 +38,11 @@ public class ActionPermission {
 		return ParCool.isActive() && haveReceived && ParCoolConfig.CONFIG_CLIENT.canClingToCliff.get() && allowedClingToCliff;
 	}
 
+	public boolean canDive() {
+		//TODO(need permission?)
+		return ParCool.isActive() && haveReceived && ParCoolConfig.CONFIG_CLIENT.canDive.get();
+	}
+
 	public boolean canRoll() {
 		return ParCool.isActive() && haveReceived && ParCoolConfig.CONFIG_CLIENT.canRoll.get();
 	}

@@ -36,7 +36,7 @@ public class PassiveCustomAnimation {
 	}
 
 	public void animate(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
-		if (fallingAnimationTick >= FallingStartLine && !ParCoolConfig.CONFIG_CLIENT.disableFallingAnimation.get()) {
+		if (fallingAnimationTick >= FallingStartLine && !ParCoolConfig.CONFIG_CLIENT.disableFallingAnimation.get() && !parkourability.getDive().isDiving()) {
 			animateFalling(parkourability, transformer);
 		}
 	}

@@ -2,6 +2,7 @@ package com.alrex.parcool.utilities;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
@@ -118,6 +119,40 @@ public class WorldUtil {
 			}
 		}
 		return entity.getBbHeight();
+	}
+
+	public static boolean existsDivableSpace(LivingEntity entity) {
+		World world = entity.level;
+		Vector3d lookAngle = entity.getLookAngle();
+		Vector3d center = entity.position().add(new Vector3d(lookAngle.x(), 0, lookAngle.z()).normalize().multiply(3, 0, 3));
+		if (!world.isLoaded(new BlockPos(center))) {
+			return false;
+		}
+		BlockPos centerPos = new BlockPos(center);
+		final int neededSpaceHeight = 12;
+		boolean hasSpace = true;
+		for (int i = 0; i < neededSpaceHeight; i++) {
+			hasSpace = !world.getBlockState(centerPos).getMaterial().blocksMotion();
+			hasSpace = hasSpace && !world.getBlockState(centerPos.west()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && !world.getBlockState(centerPos.east()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && !world.getBlockState(centerPos.north()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && !world.getBlockState(centerPos.south()).getMaterial().blocksMotion();
+			if (!hasSpace) break;
+			centerPos = centerPos.below();
+		}
+		if (!hasSpace) return false;
+		center = entity.position().add(new Vector3d(lookAngle.x(), 0, lookAngle.z()).normalize().multiply(5, 0, 5));
+		centerPos = new BlockPos(center);
+		for (int i = 0; i < neededSpaceHeight; i++) {
+			hasSpace = !world.getBlockState(centerPos).getMaterial().blocksMotion();
+			hasSpace = hasSpace && !world.getBlockState(centerPos.west()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && !world.getBlockState(centerPos.east()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && !world.getBlockState(centerPos.north()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && !world.getBlockState(centerPos.south()).getMaterial().blocksMotion();
+			if (!hasSpace) break;
+			centerPos = centerPos.below();
+		}
+		return hasSpace;
 	}
 
 	public static boolean existsGrabbableWall(LivingEntity entity) {

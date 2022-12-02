@@ -22,6 +22,7 @@ public class Parkourability {
 	private final CatLeap catLeap = new CatLeap();
 	private final Crawl crawl = new Crawl();
 	private final Dodge dodge = new Dodge();
+	private final Dive dive = new Dive();
 	private final FastRun fastRun = new FastRun();
 	private final ClingToCliff clingToCliff = new ClingToCliff();
 	private final Roll roll = new Roll();
@@ -37,7 +38,7 @@ public class Parkourability {
 	private final ActionInfo actionInfo = new ActionInfo();
 
 	private final List<Action> actions = Arrays.<Action>asList(
-			catLeap, breakfall, crawl, dodge, fastRun, clingToCliff, roll, vault, flipping, tap, wallSlide, horizontalWallRun, wallJump, additionalProperties
+			catLeap, breakfall, crawl, dodge, dive, fastRun, clingToCliff, roll, vault, flipping, tap, wallSlide, horizontalWallRun, wallJump, additionalProperties
 	);
 
 	public CatLeap getCatLeap() {
@@ -54,6 +55,10 @@ public class Parkourability {
 
 	public Dodge getDodge() {
 		return dodge;
+	}
+
+	public Dive getDive() {
+		return dive;
 	}
 
 	public FastRun getFastRun() {
