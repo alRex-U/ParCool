@@ -37,6 +37,20 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue disableFallingAnimation;
 		public final ForgeConfigSpec.BooleanValue disableAnimation;
 		public final ForgeConfigSpec.BooleanValue disableFPVAnimation;
+		public final ForgeConfigSpec.BooleanValue disableCatLeapAnimation;
+		public final ForgeConfigSpec.BooleanValue disableClimbUpAnimation;
+		public final ForgeConfigSpec.BooleanValue disableClingToCliffAnimation;
+		public final ForgeConfigSpec.BooleanValue disableCrawlAnimation;
+		public final ForgeConfigSpec.BooleanValue disableDiveAnimation;
+		public final ForgeConfigSpec.BooleanValue disableDodgeAnimation;
+		public final ForgeConfigSpec.BooleanValue disableFastRunAnimation;
+		public final ForgeConfigSpec.BooleanValue disableFlippingAnimation;
+		public final ForgeConfigSpec.BooleanValue disableHorizontalWallRunAnimation;
+		public final ForgeConfigSpec.BooleanValue disableVaultAnimation;
+		public final ForgeConfigSpec.BooleanValue disableBreakfallAnimation;
+		public final ForgeConfigSpec.BooleanValue disableSlidingAnimation;
+		public final ForgeConfigSpec.BooleanValue disableWallJumpAnimation;
+		public final ForgeConfigSpec.BooleanValue disableWallSlideAnimation;
 		public final ForgeConfigSpec.BooleanValue enableRollWhenCreative;
 		public final ForgeConfigSpec.BooleanValue disableDoubleTappingForDodge;
 		public final ForgeConfigSpec.BooleanValue substituteSprintForFastRun;
@@ -99,6 +113,26 @@ public class ParCoolConfig {
 				offsetVerticalLightStaminaHUD = builder.comment("vertical offset of light stamina HUD").defineInRange("offset_V_LS_HUD", 0, -50, 50);
 			}
 			builder.pop();
+			builder.push("Animations");
+			{
+				disableFallingAnimation = builder.comment("Disable custom animation of falling").define("disableFallingAnimation", false);
+				disableAnimation = builder.comment("Disable custom animations").define("disableAnimation", false);
+				disableFPVAnimation = builder.comment("Disable first-person-view animations").define("disableFPVAnimation", false);
+				disableCatLeapAnimation = builder.define("disableCatLeapAnimation", false);
+				disableClimbUpAnimation = builder.define("disableClimbUpAnimation", false);
+				disableClingToCliffAnimation = builder.define("disableClingToCliffAnimation", false);
+				disableCrawlAnimation = builder.define("disableCrawlAnimation", false);
+				disableDiveAnimation = builder.define("disableDiveAnimation", false);
+				disableDodgeAnimation = builder.define("disableDodgeAnimation", false);
+				disableFastRunAnimation = builder.define("disableFastRunAnimation", false);
+				disableFlippingAnimation = builder.define("disableFlippingAnimation", false);
+				disableHorizontalWallRunAnimation = builder.define("disableHorizontalWallRunAnimation", false);
+				disableVaultAnimation = builder.define("disableVaultAnimation", false);
+				disableBreakfallAnimation = builder.define("disableBreakfallAnimation", false);
+				disableSlidingAnimation = builder.define("disableSlidingAnimation", false);
+				disableWallJumpAnimation = builder.define("disableWallJumpAnimation", false);
+				disableWallSlideAnimation = builder.define("disableWallSlideAnimation", false);
+			}
 			builder.push("Other Configuration");
 			{
 				autoTurningWallJump = builder.comment("Auto turning forward when WallJump").define("autoTurningWallJump", false);
@@ -108,9 +142,6 @@ public class ParCoolConfig {
 				disableDoubleTappingForDodge = builder.comment("Disable Double-Tapping For Dodge. Please Use Dodge Key instead").define("disableDoubleTapping", false);
 				disableCrawlInAir = builder.comment("Disable Crawl in air (experimental)").define("disableCrawlInAir", true);
 				disableVaultInAir = builder.comment("Disable Vault in air (experimental)").define("disableVaultInAir", true);
-				disableFallingAnimation = builder.comment("Disable custom animation of falling").define("disableFallingAnimation", false);
-				disableAnimation = builder.comment("Disable custom animations").define("disableAnimation", false);
-				disableFPVAnimation = builder.comment("Disable first-person-view animations").define("disableFPVAnimation", false);
 				enableRollWhenCreative = builder.comment("Enable Roll While player is in creative mode (experimental)").define("enableRollCreative", false);
 				vaultNeedKeyPressed = builder.comment("Make Vault Need Vault Key Pressed").define("vaultNeedKeyPressed", false);
 				vaultAnimationMode = builder.comment("Vault Animation(Dynamic is to select animation dynamically)").defineEnum("vaultAnimationMode", Vault.TypeSelectionMode.Dynamic);

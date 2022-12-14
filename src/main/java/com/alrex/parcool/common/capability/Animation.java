@@ -5,6 +5,7 @@ import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PassiveCustomAnimation;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
+import com.alrex.parcool.client.animation.impl.*;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -26,7 +27,24 @@ public class Animation {
 	private final PassiveCustomAnimation passiveAnimation = new PassiveCustomAnimation();
 
 	public void setAnimator(Animator animator) {
-		if (!ParCoolConfig.CONFIG_CLIENT.disableAnimation.get()) this.animator = animator;
+		if (ParCoolConfig.CONFIG_CLIENT.disableAnimation.get()) return;
+		ParCoolConfig.Client config = ParCoolConfig.CONFIG_CLIENT;
+		if (animator instanceof CatLeapAnimator && config.disableCatLeapAnimation.get()) return;
+		if (animator instanceof ClimbUpAnimator && config.disableClimbUpAnimation.get()) return;
+		if (animator instanceof ClingToCliffAnimator && config.disableClingToCliffAnimation.get()) return;
+		if (animator instanceof CrawlAnimator && config.disableCrawlAnimation.get()) return;
+		if (animator instanceof DodgeAnimator && config.disableDodgeAnimation.get()) return;
+		if (animator instanceof FastRunningAnimator && config.disableFastRunAnimation.get()) return;
+		if (animator instanceof FlippingAnimator && config.disableFlippingAnimation.get()) return;
+		if (animator instanceof HorizontalWallRunAnimator && config.disableHorizontalWallRunAnimation.get()) return;
+		if ((animator instanceof KongVaultAnimator || animator instanceof SpeedVaultAnimator) && config.disableVaultAnimation.get())
+			return;
+		if ((animator instanceof RollAnimator || animator instanceof TapAnimator) && config.disableBreakfallAnimation.get())
+			return;
+		if (animator instanceof SlidingAnimator && config.disableSlidingAnimation.get()) return;
+		if (animator instanceof WallJumpAnimator && config.disableWallJumpAnimation.get()) return;
+		if (animator instanceof WallSlideAnimator && config.disableWallSlideAnimation.get()) return;
+		this.animator = animator;
 	}
 
 	public boolean animatePre(PlayerEntity player, PlayerModelTransformer modelTransformer) {
