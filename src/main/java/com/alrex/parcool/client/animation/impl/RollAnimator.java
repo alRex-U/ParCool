@@ -9,7 +9,7 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 public class RollAnimator extends Animator {
 	private final float cameraPitch;
@@ -60,11 +60,11 @@ public class RollAnimator extends Animator {
 	}
 
 	@Override
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity clientPlayer, Parkourability parkourability) {
+	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
 		Roll roll = parkourability.getRoll();
 		if (roll.isRolling() && clientPlayer.isLocalPlayer() && Minecraft.getInstance().options.getCameraType().isFirstPerson() && !ParCoolConfig.CONFIG_CLIENT.disableCameraRolling.get()) {
-			float factor = calculateMovementFactor((roll.getRollingTick() + event.renderTickTime) / (float) roll.getRollMaxTick());
-			clientPlayer.xRot = (factor > 0.5 ? factor - 1 : factor) * 360f + cameraPitch;
+			float factor = calculateMovementFactor((float) ((roll.getRollingTick() + event.getRenderPartialTicks()) / (float) roll.getRollMaxTick()));
+			event.setPitch((factor > 0.5 ? factor - 1 : factor) * 360f + cameraPitch);
 		}
 	}
 }

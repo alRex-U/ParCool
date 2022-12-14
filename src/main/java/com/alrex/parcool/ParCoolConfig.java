@@ -32,6 +32,8 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue disableWallJumpTowardWall;
 		public final ForgeConfigSpec.BooleanValue disableCameraRolling;
 		public final ForgeConfigSpec.BooleanValue disableCameraFlipping;
+		public final ForgeConfigSpec.BooleanValue disableCameraVault;
+		public final ForgeConfigSpec.BooleanValue disableCameraHorizontalWallRun;
 		public final ForgeConfigSpec.BooleanValue disableCrawlInAir;
 		public final ForgeConfigSpec.BooleanValue disableVaultInAir;
 		public final ForgeConfigSpec.BooleanValue disableFallingAnimation;
@@ -132,13 +134,16 @@ public class ParCoolConfig {
 				disableSlidingAnimation = builder.define("disableSlidingAnimation", false);
 				disableWallJumpAnimation = builder.define("disableWallJumpAnimation", false);
 				disableWallSlideAnimation = builder.define("disableWallSlideAnimation", false);
+				disableCameraRolling = builder.comment("Disable Roll rotation of camera").define("disableCameraRotationRolling", false);
+				disableCameraFlipping = builder.comment("Disable Flipping rotation of camera").define("disableCameraRotationFlipping", false);
+				disableCameraVault = builder.comment("Disable Vault animation of camera").define("disableCameraAnimationVault", true);
+				disableCameraHorizontalWallRun = builder.comment("Disable Horizontal-WallRun animation of camera").define("disableCameraAnimationH_WallRun", false);
 			}
+			builder.pop();
 			builder.push("Other Configuration");
 			{
 				autoTurningWallJump = builder.comment("Auto turning forward when WallJump").define("autoTurningWallJump", false);
 				disableWallJumpTowardWall = builder.comment("Disable WallJump toward a wall").define("disableWallJumpTowardWall", false);
-				disableCameraRolling = builder.comment("Disable Roll rotation of camera").define("disableCameraRotationRolling", false);
-				disableCameraFlipping = builder.comment("Disable Flipping rotation of camera").define("disableCameraRotationFlipping", false);
 				disableDoubleTappingForDodge = builder.comment("Disable Double-Tapping For Dodge. Please Use Dodge Key instead").define("disableDoubleTapping", false);
 				disableCrawlInAir = builder.comment("Disable Crawl in air (experimental)").define("disableCrawlInAir", true);
 				disableVaultInAir = builder.comment("Disable Vault in air (experimental)").define("disableVaultInAir", true);

@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -85,8 +86,17 @@ public class ActionProcessor {
 		for (Action action : actions) {
 			action.onRender(event, player, parkourability);
 		}
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	@SubscribeEvent
+	public void onViewRender(EntityViewRenderEvent.CameraSetup event) {
+		PlayerEntity player = Minecraft.getInstance().player;
+		if (player == null) return;
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) return;
 		Animation animation = Animation.get(player);
 		if (animation == null) return;
-		animation.onRenderTick(event);
+		animation.cameraSetup(event, player, parkourability);
 	}
 }

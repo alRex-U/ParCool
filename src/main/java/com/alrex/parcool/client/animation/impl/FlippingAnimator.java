@@ -10,7 +10,7 @@ import com.alrex.parcool.utilities.EasingFunctions;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 public class FlippingAnimator extends Animator {
 	public FlippingAnimator(float startHeadAngle) {
@@ -162,17 +162,17 @@ public class FlippingAnimator extends Animator {
 	}
 
 	@Override
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity clientPlayer, Parkourability parkourability) {
+	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
 		if (!clientPlayer.isLocalPlayer() ||
 				!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
 				ParCoolConfig.CONFIG_CLIENT.disableCameraFlipping.get()
 		) return;
-		float phase = (getTick() + event.renderTickTime) / getMaxAnimationTick();
+		float phase = (float) ((getTick() + event.getRenderPartialTicks()) / getMaxAnimationTick());
 		float factor = angleFactor(phase);
 		if (parkourability.getFlipping().getDirection() == Flipping.FlippingDirection.Front) {
-			clientPlayer.xRot = this.startAngle + factor * 360 - ((phase > 0.5) ? 360 : 0);
+			event.setPitch(this.startAngle + factor * 360 - ((phase > 0.5) ? 360 : 0));
 		} else {
-			clientPlayer.xRot = this.startAngle - factor * 360 + ((phase > 0.5) ? 360 : 0);
+			event.setPitch(this.startAngle - factor * 360 + ((phase > 0.5) ? 360 : 0));
 		}
 	}
 }

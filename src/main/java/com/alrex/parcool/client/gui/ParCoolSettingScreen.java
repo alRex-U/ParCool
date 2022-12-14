@@ -50,6 +50,8 @@ public class ParCoolSettingScreen extends Screen {
 			new ButtonSet("disable WallJump toward walls", CONFIG_CLIENT.disableWallJumpTowardWall::set, CONFIG_CLIENT.disableWallJumpTowardWall::get),
 			new ButtonSet("disable a camera rotation of Rolling", CONFIG_CLIENT.disableCameraRolling::set, CONFIG_CLIENT.disableCameraRolling::get),
 			new ButtonSet("disable a camera rotation of Flipping", CONFIG_CLIENT.disableCameraFlipping::set, CONFIG_CLIENT.disableCameraFlipping::get),
+			new ButtonSet("disable a camera animation of Horizontal Wall-Run", CONFIG_CLIENT.disableCameraHorizontalWallRun::set, CONFIG_CLIENT.disableCameraHorizontalWallRun::get),
+			new ButtonSet("disable a camera animation of Vault", CONFIG_CLIENT.disableCameraVault::set, CONFIG_CLIENT.disableCameraVault::get),
 			new ButtonSet("disable double-tapping for dodge", CONFIG_CLIENT.disableDoubleTappingForDodge::set, CONFIG_CLIENT.disableDoubleTappingForDodge::get),
 			new ButtonSet("disable crawl in air", CONFIG_CLIENT.disableCrawlInAir::set, CONFIG_CLIENT.disableCrawlInAir::get),
 			new ButtonSet("disable vault in air", CONFIG_CLIENT.disableVaultInAir::set, CONFIG_CLIENT.disableVaultInAir::get),

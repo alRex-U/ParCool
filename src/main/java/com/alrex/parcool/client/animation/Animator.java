@@ -4,7 +4,7 @@ import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class Animator {
@@ -49,8 +49,8 @@ public abstract class Animator {
 	) {
 	}
 
-	public void onRender(
-			TickEvent.RenderTickEvent event,
+	public void onCameraSetUp(
+			EntityViewRenderEvent.CameraSetup event,
 			PlayerEntity clientPlayer,
 			Parkourability parkourability
 	) {

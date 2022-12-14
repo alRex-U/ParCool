@@ -105,7 +105,7 @@ public class HorizontalWallRun extends Action {
 				coolTime = 10;
 			}
 		}
-		if (wallRunning && wallRunningTick <= 3) {
+		if (wallRunning && wallRunningTick == 0) {
 			Animation animation = Animation.get(player);
 			if (animation != null) {
 				animation.setAnimator(new HorizontalWallRunAnimator());

@@ -1,11 +1,14 @@
 package com.alrex.parcool.client.animation.impl;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.EasingFunctions;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 import static java.lang.Math.toRadians;
 
@@ -13,7 +16,12 @@ public class KongVaultAnimator extends Animator {
 	private static final int MAX_TIME = 11;
 
 	float getFactor(float phase) {
-		return 1 - 4 * (phase - 0.5f) * (phase - 0.5f);
+		if (phase < 0.5) {
+			return EasingFunctions.SinInOutBySquare(phase * 2);
+		} else {
+			return EasingFunctions.SinInOutBySquare(2 - phase * 2);
+		}
+		//return 1 - 4 * MathUtil.squaring(phase - 0.5f);
 	}
 
 	float getArmFactor(float phase) {
@@ -50,5 +58,14 @@ public class KongVaultAnimator extends Animator {
 				.startBasedCenter()
 				.rotateFrontward(factor * 95)
 				.end();
+	}
+
+	@Override
+	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
+		if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
+				ParCoolConfig.CONFIG_CLIENT.disableCameraVault.get()) return;
+		float phase = (float) ((getTick() + event.getRenderPartialTicks()) / MAX_TIME);
+		float factor = getFactor(phase);
+		event.setPitch(30 * factor);
 	}
 }
