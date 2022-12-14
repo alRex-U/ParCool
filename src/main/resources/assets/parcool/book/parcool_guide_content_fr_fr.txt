@@ -1,7 +1,7 @@
 {B}[A propos de ce Mod]{reset}
 
-{B}ParCool MOD{reset} est un mod Minecraft,
-pour faire plus de mouvements {I}Cool{reset} comme du {I}Parkour{reset}.
+{B}Le mod ParCool{reset} est un mod Minecraft
+pour faire des mouvements de {I}Parkour{reset}{I}Cool{reset}.
 Certains mouvements ajoutés sont inspirés par des techniques de parkour.
 L'auteur {B}N'EST PAS{reset} familier avec la pratique du "Parkour" {-}et l'Anglais{reset}.
 L'auteur adorerais avoir des retours pour améliorer ce mod !
@@ -26,7 +26,7 @@ Faites attention.
 Le Saut de bras est un mouvement utilisé pour atterrir sur le sol, les murs, les barrières etc...
 C'est l'un des mouvements basiques du parkour.
 Les traceurs absorbent l'impact de l'atterrissage avec leurs jambes.
-Voir aussi 'S'accrocher au rebords'!
+Voir aussi "S'accrocher au rebords"!
 
 {blue}<Comment l'utiliser>{reset}
 1.faire une Accélération
@@ -154,7 +154,7 @@ Le joueur ne peut pas faire ça a l'infini
 1.Accélérer dans l'air proche d'un mur
 2.Appuyez sur la touche Wall Run(Normalement la touche R)
 ======
-{B}[Other Features]{reset}
+{B}[Autres]{reset}
 
 ・Les joueurs peuvent grimpers sur les barrières, les vitres, les barres de fer et les autres blocs en formes de pilliers (end rod ou les chaines) qui ne sont pas connectées à d'autres blocs.
 ・Les joueurs n'arrêtent pas de courir lorsqu'ils foncent sur des blocs.
@@ -168,5 +168,5 @@ Le joueur ne peut pas faire ça a l'infini
 {B}・Page Wikipédia du Parkour{reset}
 {I}https://fr.wikipedia.org/wiki/Parkour{reset}
 
-Traduction : {B}COwOkie
+Traduction : {B}COwOkie#6114
 ======
