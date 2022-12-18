@@ -150,8 +150,8 @@ public class ParCoolConfig {
 				enableRollWhenCreative = builder.comment("Enable Roll While player is in creative mode (experimental)").define("enableRollCreative", false);
 				vaultNeedKeyPressed = builder.comment("Make Vault Need Vault Key Pressed").define("vaultNeedKeyPressed", false);
 				vaultAnimationMode = builder.comment("Vault Animation(Dynamic is to select animation dynamically)").defineEnum("vaultAnimationMode", Vault.TypeSelectionMode.Dynamic);
-				replaceSprintWithFastRun = builder.comment("enable players to do actions needing Fast-Running by sprint").define("replaceSprintWithFastRun", true);
-				substituteSprintForFastRun = builder.comment("Substitute a sprint of vanilla for the FastRunning").define("substituteSprint", false);
+				replaceSprintWithFastRun = builder.comment("do Fast-Running whenever you do a sprint of vanilla").define("replaceSprintWithFastRun", true);
+				substituteSprintForFastRun = builder.comment("enable players to do actions needing Fast-Running by sprint").define("substituteSprint", false);
 				infiniteStamina = builder
 						.comment("Infinite Stamina(this needs a permission from server, even if it is on single player's game)\nPlease check 'parcool-server.toml' in 'serverconfig' directory")
 						.define("infiniteStamina", false);
