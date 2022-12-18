@@ -10,13 +10,42 @@ import javax.annotation.Nullable;
 
 public class WorldUtil {
 
-	public static Vector3d getWall(LivingEntity entity) {
-		return getWall(entity, 0.3);
+	public static Vector3d getRunnableWall(LivingEntity entity, double range) {
+		double width = entity.getBbWidth() / 2;
+		double wallX = 0;
+		double wallZ = 0;
+		Vector3d pos = entity.position();
+
+		AxisAlignedBB baseBox = new AxisAlignedBB(
+				pos.x() - width,
+				pos.y(),
+				pos.z() - width,
+				pos.x() + width,
+				pos.y() + entity.getBbHeight(),
+				pos.z() + width
+		);
+
+		if (!entity.level.noCollision(baseBox.expandTowards(range, 0, 0))) {
+			wallX++;
+		}
+		if (!entity.level.noCollision(baseBox.expandTowards(-range, 0, 0))) {
+			wallX--;
+		}
+		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, range))) {
+			wallZ++;
+		}
+		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, -range))) {
+			wallZ--;
+		}
+		if (wallX == 0 && wallZ == 0) return null;
+
+		return new Vector3d(wallX, 0, wallZ);
 	}
 
 	@Nullable
-	public static Vector3d getWall(LivingEntity entity, double range) {
-		double width = entity.getBbWidth() / 2;
+	public static Vector3d getWall(LivingEntity entity) {
+		double range = entity.getBbWidth() / 2;
+		final double width = 0.3;
 		double wallX = 0;
 		double wallZ = 0;
 		Vector3d pos = entity.position();

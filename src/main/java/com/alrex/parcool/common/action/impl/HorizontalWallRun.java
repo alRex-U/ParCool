@@ -76,7 +76,7 @@ public class HorizontalWallRun extends Action {
 							&& !player.isOnGround()
 					)
 			) {
-				Vector3d wallDirection = WorldUtil.getWall(player, 0.68);
+				Vector3d wallDirection = WorldUtil.getRunnableWall(player, 0.68);
 				Vector3d direction = VectorUtil.fromYawDegree(player.yBodyRot);
 				direction = new Vector3d(direction.x(), 0, direction.z()).normalize();
 				if (wallDirection != null) {

@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.client.animation.impl.BackwardWallJumpAnimator;
 import com.alrex.parcool.client.animation.impl.WallJumpAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
@@ -98,9 +99,20 @@ public class WallJump extends Action {
 							wallDirection.x() * jumpDirection.x() + wallDirection.z() * jumpDirection.z(), 0,
 							-wallDirection.x() * jumpDirection.z() + wallDirection.z() * jumpDirection.x()
 					).normalize();
+			Vector3d lookVec = player.getLookAngle();
+			lookVec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
+			Vector3d lookDividedVec =
+					new Vector3d(
+							lookVec.x() * wallDirection.x() + lookVec.z() * wallDirection.z(), 0,
+							-lookVec.x() * wallDirection.z() + lookVec.z() * wallDirection.x()
+					).normalize();
 			Animation animation = Animation.get(player);
 			if (animation != null) {
-				animation.setAnimator(new WallJumpAnimator(dividedVec.z() > 0));
+				if (lookDividedVec.x() > 0.50) {
+					animation.setAnimator(new BackwardWallJumpAnimator());
+				} else {
+					animation.setAnimator(new WallJumpAnimator(dividedVec.z() > 0));
+				}
 			}
 			ResetFallDistanceMessage.sync(player);
 		}
