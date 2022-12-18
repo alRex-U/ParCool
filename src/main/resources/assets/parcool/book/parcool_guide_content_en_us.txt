@@ -157,6 +157,19 @@ Players cannot continue this over given time.
 1.do Fast-Run in air along the wall
 2.Continue to press Wall-Run Key(Normally it's mapped to R)
 ======
+{B}[Energy Drink]{reset}
+
+The stamina is not enough? Let's {-}modify configs{reset} use Energy Drink!
+
+Brewing Recipes
+{B}[Poor Quality Energy Drink]{reset}
+{I}[Awkward Potion] + [Poisonous Potato]{reset}
+{I}[Awkward Potion] + [Chicken]{reset}
+
+{B}[Energy Drink]{reset}
+{I}[Awkward Potion] + [Nether Quarts]{reset}
+{I}[Poor Quality Energy Drink] + [Nether Quarts]{reset}
+======
 {B}[Other Features]{reset}
 
 ・Players can climb fences, glass panels and iron bars which are not connecting to other block, and pillar-like block(end rod or chain).
