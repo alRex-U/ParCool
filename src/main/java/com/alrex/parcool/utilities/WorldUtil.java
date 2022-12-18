@@ -10,33 +10,36 @@ import javax.annotation.Nullable;
 
 public class WorldUtil {
 
-	@Nullable
 	public static Vector3d getWall(LivingEntity entity) {
-		final double d = 0.3;
-		double distance = entity.getBbWidth() / 2;
+		return getWall(entity, 0.3);
+	}
+
+	@Nullable
+	public static Vector3d getWall(LivingEntity entity, double range) {
+		double width = entity.getBbWidth() / 2;
 		double wallX = 0;
 		double wallZ = 0;
 		Vector3d pos = entity.position();
 
 		AxisAlignedBB baseBox = new AxisAlignedBB(
-				pos.x() - d,
+				pos.x() - width,
 				pos.y(),
-				pos.z() - d,
-				pos.x() + d,
+				pos.z() - width,
+				pos.x() + width,
 				pos.y() + entity.getBbHeight(),
-				pos.z() + d
+				pos.z() + width
 		);
 
-		if (!entity.level.noCollision(baseBox.expandTowards(distance, 0, 0))) {
+		if (!entity.level.noCollision(baseBox.expandTowards(range, 0, 0))) {
 			wallX++;
 		}
-		if (!entity.level.noCollision(baseBox.expandTowards(-distance, 0, 0))) {
+		if (!entity.level.noCollision(baseBox.expandTowards(-range, 0, 0))) {
 			wallX--;
 		}
-		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, distance))) {
+		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, range))) {
 			wallZ++;
 		}
-		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, -distance))) {
+		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, -range))) {
 			wallZ--;
 		}
 		if (wallX == 0 && wallZ == 0) return null;
