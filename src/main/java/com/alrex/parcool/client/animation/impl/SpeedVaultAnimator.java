@@ -54,6 +54,8 @@ public class SpeedVaultAnimator extends Animator {
 								0,
 								(float) -Math.toRadians(factor * 70)
 						)
+						.addRotateRightLeg(0, 0, (float) Math.toRadians(factor * 25))
+						.addRotateLeftLeg(0, 0, (float) Math.toRadians(factor * 15))
 						.end();
 				break;
 
@@ -64,6 +66,8 @@ public class SpeedVaultAnimator extends Animator {
 								0,
 								(float) Math.toRadians(factor * 70)
 						)
+						.addRotateRightLeg(0, 0, (float) Math.toRadians(factor * -15))
+						.addRotateLeftLeg(0, 0, (float) Math.toRadians(factor * -25))
 						.end();
 				break;
 		}
