@@ -75,7 +75,6 @@ public class ParCool {
 		ModLoadingContext context = ModLoadingContext.get();
 		context.registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.CLIENT_SPEC);
 		context.registerConfig(ModConfig.Type.SERVER, ParCoolConfig.SERVER_SPEC);
-		context.registerConfig(ModConfig.Type.COMMON, ParCoolConfig.COMMON_SPEC);
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {

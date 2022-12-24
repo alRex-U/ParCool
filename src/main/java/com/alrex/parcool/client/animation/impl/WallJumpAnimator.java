@@ -38,8 +38,8 @@ public class WallJumpAnimator extends Animator {
 		transformer
 				.addRotateRightLeg((float) toRadians(sign * factor * (-12)), 0, 0)
 				.addRotateLeftLeg((float) toRadians(sign * factor * 35), 0, 0)
-				.rotateRightArm((float) toRadians(swingRightArm ? factor * (-120) : factor * 55), 0, 0)
-				.rotateLeftArm((float) toRadians(swingRightArm ? factor * 55 : factor * (-120)), 0, 0)
+				.rotateRightArm((float) toRadians(swingRightArm ? factor * (-120) : factor * 55), 0, (float) toRadians(-20 * factor))
+				.rotateLeftArm((float) toRadians(swingRightArm ? factor * 55 : factor * (-120)), 0, (float) toRadians(20 * factor))
 				.makeArmsNatural()
 				.end();
 	}

@@ -19,6 +19,7 @@ public class CatLeap extends Action {
 	private boolean leaping = false;
 	private int leapingTick = 0;
 	private int readyTick = 0;
+	private int coolTimeTick = 0;
 	private boolean ready = false;
 	//flag to apply animation for not local player
 	private boolean start = false;
@@ -39,6 +40,9 @@ public class CatLeap extends Action {
 			leaping = false;
 			leapingTick = 0;
 		}
+		if (coolTimeTick > 0) {
+			coolTimeTick--;
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -48,12 +52,13 @@ public class CatLeap extends Action {
 			if (!leaping) leaping = parkourability.getPermission().canCatLeap() &&
 					player.isOnGround() &&
 					!stamina.isExhausted() &&
-					ready && readyTick < 10 &&
+					ready && readyTick < 10 && coolTimeTick <= 0 &&
 					!KeyBindings.getKeySneak().isDown();
 
 			if (ready && leaping) {
 				Vector3d motionVec = player.getDeltaMovement();
 				Vector3d vec = new Vector3d(motionVec.x(), 0, motionVec.z()).normalize();
+				coolTimeTick = 30;
 				player.setDeltaMovement(vec.x(), parkourability.getActionInfo().getCatLeapPower(), vec.z());
 				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionCatLeap(), player);
 			}

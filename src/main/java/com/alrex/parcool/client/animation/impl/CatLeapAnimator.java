@@ -30,14 +30,14 @@ public class CatLeapAnimator extends Animator {
 		float factor = movingFactorFunc(phase);
 		transformer
 				.rotateLeftArm(
-						(float) -Math.toRadians(lerp(20f, 170f, factor)),
+						(float) -Math.toRadians(lerp(-25f, 170f, factor)),
 						0,
-						(float) -Math.toRadians(lerp(10, 0, factor))
+						(float) -Math.toRadians(lerp(24, 5, factor))
 				)
 				.rotateRightArm(
-						(float) -Math.toRadians(lerp(20f, 170f, factor)),
+						(float) -Math.toRadians(lerp(-25f, 170f, factor)),
 						0,
-						(float) Math.toRadians(lerp(10, 0, factor))
+						(float) Math.toRadians(lerp(24, 5, factor))
 				)
 				.makeArmsNatural()
 				.rotateLeftLeg(

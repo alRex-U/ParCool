@@ -22,14 +22,6 @@ import java.util.UUID;
 public class FastRun extends Action {
 	private static final String FAST_RUNNING_MODIFIER_NAME = "parcool.modifier.fastrunnning";
 	private static final UUID FAST_RUNNING_MODIFIER_UUID = UUID.randomUUID();
-	private static final AttributeModifier FAST_RUNNING_MODIFIER
-			= new AttributeModifier(
-			FAST_RUNNING_MODIFIER_UUID,
-			FAST_RUNNING_MODIFIER_NAME,
-			ParCoolConfig.CONFIG_COMMON.fastRunningModifier.get() / 100d,
-			AttributeModifier.Operation.ADDITION
-	);
-
 	private int runningTick = 0;
 	private int notRunningTick = 0;
 	private boolean fastRunning = false;
@@ -44,11 +36,18 @@ public class FastRun extends Action {
 			notRunningTick++;
 		}
 
+		if (player.level.isClientSide()) return;
+
 		ModifiableAttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (attr == null) return;
-		if (attr.hasModifier(FAST_RUNNING_MODIFIER)) attr.removeModifier(FAST_RUNNING_MODIFIER);
+		if (attr.getModifier(FAST_RUNNING_MODIFIER_UUID) != null) attr.removeModifier(FAST_RUNNING_MODIFIER_UUID);
 		if (fastRunning) {
-			attr.addTransientModifier(FAST_RUNNING_MODIFIER);
+			attr.addTransientModifier(new AttributeModifier(
+					FAST_RUNNING_MODIFIER_UUID,
+					FAST_RUNNING_MODIFIER_NAME,
+					ParCoolConfig.CONFIG_SERVER.fastRunningModifier.get() / 100d,
+					AttributeModifier.Operation.ADDITION
+			));
 			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionFastRun(), player);
 		}
 	}

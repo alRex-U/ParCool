@@ -67,9 +67,9 @@ public class PlayerModelTransformer {
 	}
 
 	/**
-	 * @param angleX swing arm upward or downward
+	 * @param angleX swing arm frontward or backward
 	 * @param angleY rotate arm around
-	 * @param angleZ swing arm frontward or backward
+	 * @param angleZ swing arm upward or downward
 	 */
 	public PlayerModelTransformer rotateRightArm(float angleX, float angleY, float angleZ) {
 		ModelRenderer rightArm = model.rightArm;

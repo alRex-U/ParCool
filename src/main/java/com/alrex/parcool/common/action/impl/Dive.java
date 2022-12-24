@@ -9,6 +9,8 @@ import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
@@ -64,6 +66,7 @@ public class Dive extends Action {
 		}
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (needAnimation) {

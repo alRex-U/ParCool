@@ -7,11 +7,9 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public class ParCoolConfig {
 	private static final ForgeConfigSpec.Builder C_BUILDER = new ForgeConfigSpec.Builder();
 	private static final ForgeConfigSpec.Builder S_BUILDER = new ForgeConfigSpec.Builder();
-	private static final ForgeConfigSpec.Builder COM_BUILDER = new ForgeConfigSpec.Builder();
 
 	public static final Client CONFIG_CLIENT = new Client(C_BUILDER);
 	public static final Server CONFIG_SERVER = new Server(S_BUILDER);
-	public static final Common CONFIG_COMMON = new Common(COM_BUILDER);
 	public static class Client {
 		public final ForgeConfigSpec.BooleanValue canCatLeap;
 		public final ForgeConfigSpec.BooleanValue canCrawl;
@@ -183,14 +181,6 @@ public class ParCoolConfig {
 		}
 	}
 
-	public static class Common {
-		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
-
-		Common(ForgeConfigSpec.Builder builder) {
-			fastRunningModifier = builder.comment("FastRun Speed Modifier(Recommended to be set to same value in both client and server side)").defineInRange("fastRunModifier", 3, 0.001, 4.5);
-		}
-	}
-
 	public static class Server {
 		public final ForgeConfigSpec.BooleanValue allowInfiniteStamina;
 		public final ForgeConfigSpec.BooleanValue allowCatLeap;
@@ -215,6 +205,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.IntValue staminaConsumptionFlipping;
 		public final ForgeConfigSpec.IntValue staminaConsumptionVault;
 		public final ForgeConfigSpec.IntValue staminaConsumptionWallJump;
+		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
 
 		Server(ForgeConfigSpec.Builder builder) {
 			builder.push("Action Permissions");
@@ -231,6 +222,11 @@ public class ParCoolConfig {
 				allowFlipping = builder.define("allowFlipping", true);
 				allowWallSlide = builder.define("allowWallSlide", true);
 				allowHorizontalWallRun = builder.define("allowHorizontalWallRun", true);
+			}
+			builder.pop();
+			builder.push("modifiers");
+			{
+				fastRunningModifier = builder.comment("FastRun Speed Modifier(Planned to be made to be changeable by each client player?)").defineInRange("fastRunModifier", 3, 0.001, 4.5);
 			}
 			builder.pop();
 			builder.push("Stamina");
@@ -256,5 +252,4 @@ public class ParCoolConfig {
 
 	public static final ForgeConfigSpec CLIENT_SPEC = C_BUILDER.build();
 	public static final ForgeConfigSpec SERVER_SPEC = S_BUILDER.build();
-	public static final ForgeConfigSpec COMMON_SPEC = COM_BUILDER.build();
 }

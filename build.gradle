@@ -37,9 +37,9 @@ mixin {
 def config = [ //https://mcforge.readthedocs.io/en/latest/conventions/versioning/
                mc_version   : '1.16.5',//supported minimum Minecraft version
                major_mod    : '2',//Removing items, blocks, tile entities, etc.
-               major_api    : '0',//Changing the order or variables of enums. etc
+               major_api    : '1',//Changing the order or variables of enums. etc
                minor        : '0',//Adding items, blocks, tile entities, etc.
-               patch        : '2',//bugfix
+               patch        : '0',//bugfix
                forge_version: '1.16.5-36.2.20',
                versionStatus: VersionStatus.release
 ]
