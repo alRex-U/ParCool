@@ -1,0 +1,173 @@
+{B}[Acerca de esta modificación]{reset}
+
+{B}ParCool MOD{reset} es un mod de Minecraft,
+para obtener más acciones {I}Cool{reset} como {I}Parkour{reset}.
+Algunas acciones añadidas están inspiradas en técnicas de parkour.
+Este autor {B}NO{reset} está familiarizado con lo que se llama "Parkour" {-}y el inglés{reset}.
+así que me encantan tus consejos para mejorar esto!
+======
+{B}[Parkour]{reset}
+
+Un {I}{B}Parkour{reset} es un tipo de deporte, organizado por {I}Devid Belle{reset}.
+El nombre proviene de 'parcours' del francés. Y los jugadores llamaron 'Traceur'.
+Hay otra palabra similar, {I}'Free Running'{reset}. Se dice que esta es una palabra de 'Parkour' traducida al inglés.
+======
+{B}[Resistencia]{reset}
+
+Este mod agrega un concepto de Stamina.
+La energía se consume cuando usas acciones ParCool.
+Si consumiste toda la energía,
+1. No puedes usar Acciones ParCool.
+2. No puedes correr.
+Ten cuidado.
+======
+{B}[Salto de gato]{reset}
+
+CatLeap es una habilidad utilizada para aterrizar en paredes, cercas, etc.
+Se dice que esta es una de las habilidades básicas del parkour.
+Traceurs absorben un impacto de aterrizaje con movimiento de piernas.
+¡Usemos también 'Cling to Cliff'!
+
+{blue}<Cómo usar>{reset}
+1. Haz carrera rápida
+2. Agáchate rápidamente
+3. Cancelar rápidamente el Salto
+======
+{B}[Deslizar / Agachar]{reset}
+
+Puedes gatear por todas partes.
+Es más fácil hacer algo que preocuparse por ello.
+
+
+
+{blue}<Cómo usar>{reset}
+1.Presione la tecla de Deslizar / Agachar (normalmente está asignada a C)
+======
+{B}[Esquivar]{reset}
+
+Puede moverse una distancia corta rápidamente.
+(Esta no es una habilidad del parkour)
+¡Serás genial si evitas las balas con esto!
+Existe un buen momento si los jugadores lo hacen tres veces en poco tiempo.
+
+{blue}<Cómo usar>{reset}
+1. Presione rápidamente la tecla de movimiento dos veces
+
+1. Mantenga presionada la tecla Esquivar y presione la tecla de movimiento
+======
+{B}[Correr rápido]{reset}
+
+No hace falta decir nada.
+Por cierto, ¿sabes? Steve puede correr tan rápido como 5,6 metros por segundo.
+Esto es lo mismo que la velocidad de los corredores de maratón.
+
+
+
+{blue}<Cómo usar>{reset}
+1. Continúe presionando la tecla de Carrera Rápida
+======
+{B}[Aferrarse al Borde]{reset}
+
+Puedes aferrarte a los Bordes.
+Esta acción está habilitada incluso cuando tiene algún elemento en sus manos mediante una actualización.
+También puedes subir a los acantilados presionando la tecla de salto.
+
+
+{blue}<Cómo usar>{reset}
+1. Presione la tecla GrabCliff (Agarrarse de Bordes) (normalmente está asignada al clic derecho)
+======
+{B}[Amortiguar la Caída o Roll]{reset}
+
+Las caídas son habilidades para protegernos del impacto del aterrizaje.
+Uno de ellos es Roll, que cambia un impacto de aterrizaje en energía de balanceo.
+Otro es Safety Tap, que absorbe un impacto al doblar las piernas.
+Hay otras fallas en las técnicas de parkour.
+Por defecto, el jugador usa Safety Tap, pero también usa Roll presionando la tecla de movimiento hacia adelante.
+
+
+
+{blue}<Cómo usar>{reset}
+1. Aterriza mientras presionas la tecla Amortiguar la Caída - BreakFall (normalmente está asignada a R)
+======
+{B}[Saltar Objetos]{reset}
+
+Habilidad utilizada para superar obstáculos como vallas.
+Hay numerosas variaciones. ¿Por qué no buscas en Google 'Cómo esquivar con parkour'?
+El que agrega este mod se llama 'Speed Vault'.
+
+
+
+{blue}<Cómo usar>{reset}
+1. Haz carrera rápida
+2. Colisionar con obstáculos
+ (Puede configurar la configuración para deshabilitar esto a menos que esté presionando la tecla Vault (normalmente está asignada al clic derecho)
+======
+{B}[Salto de pared o WallJump]{reset}
+
+con Wall Jump. puedes patear paredes para saltar.
+{-}¡Se parece a Mari○!{reset}
+'Wall Jump' no existe en las técnicas de parkour.
+Por cierto, Parkour tiene técnicas llamadas 'Wall Run' y 'Tic Tac'.
+Sin embargo, de hecho, el 'Wall Run' puede no ser lo que imaginó.
+
+
+
+{blue}<Cómo usar>{reset}
+1. Salta por las paredes en el aire
+======
+{B}[Deslizarte]{reset}
+
+Puedes hacer un barrido.
+
+
+
+{blue}<Cómo usar>{reset}
+1. Haz carrera rápida
+2. Apreta eñ Botón de Deslizar / Agachar
+======
+{B}[Volteando]{reset}
+
+Puedes hacer la voltereta hacia adelante o hacia atrás.
+De manera predeterminada, usa Front-Flip pero también puede usar Back-Flip si está presionando la tecla de movimiento hacia atrás.
+
+
+
+{blue}<Cómo usar>{reset}
+1. Presione la tecla de movimiento derecha e izquierda simultáneamente
+======
+{B}[Caer por la pared]{reset}
+
+Puedes caer lentamente aferrándote a la pared.
+Esta acción se ve afectada por la resbaladiza de los bloques.
+Por lo tanto, los jugadores no pueden hacer que la caída sea lenta con una pared de bloques de hielo.
+
+
+
+{blue}<Cómo usar>{reset}
+1. Presione la tecla deslizante de pared en el aire por la pared (normalmente se asigna al clic derecho)
+======
+{B}[Correr por la Pared]{reset}
+
+Puedes hacer wall-running horizontalmente.
+No dura mucho pero es bastabte útil.
+
+
+
+{B}<Cómo usar>{reset}
+1. Haz una carrera rápida en el aire a lo largo de la pared
+2. Continúe presionando la tecla Wall-Run (normalmente está asignada a R)
+======
+{B}[Otras funciones]{reset}
+
+・Los jugadores pueden trepar cercas, paneles de vidrio y barras de hierro que no estén conectadas a otros bloques y bloques con forma de pilar (varilla o cadena).
+・Los jugadores no dejan de correr cuando chocan con bloques.
+・Animación mientras los jugadores caen a larga distancia.
+======
+{B}[Crédito]{reset}
+
+{B}・Federación de Parkour de Japón{reset}
+{I}https://jpf-parkourfederation.jp/{reset}
+
+{B}・Wiki Fandom Parkour{reset}
+{I}https://parkour.fandom.com/wiki/Parkour{reset}
+======
