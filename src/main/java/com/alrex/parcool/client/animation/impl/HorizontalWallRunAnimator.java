@@ -56,7 +56,7 @@ public class HorizontalWallRunAnimator extends Animator {
 		if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() || ParCoolConfig.CONFIG_CLIENT.disableCameraHorizontalWallRun.get())
 			return;
 		float factor = getFactor((float) (getTick() + event.getRenderPartialTicks()));
-		float angle = factor * 30 * (parkourability.getHorizontalWallRun().isWallRightSide() ? -1 : 1);
+		float angle = factor * 20 * (parkourability.getHorizontalWallRun().isWallRightSide() ? -1 : 1);
 		event.setRoll(angle);
 	}
 }
