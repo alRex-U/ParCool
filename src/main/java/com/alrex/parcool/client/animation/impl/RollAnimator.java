@@ -12,10 +12,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 public class RollAnimator extends Animator {
-	private final float cameraPitch;
-
 	public RollAnimator() {
-		this.cameraPitch = 20;
 	}
 
 	public static float calculateMovementFactor(float progress) {
@@ -24,13 +21,13 @@ public class RollAnimator extends Animator {
 
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getRoll().isRolling();
+		return !parkourability.getRoll().isDoing();
 	}
 
 	@Override
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		Roll roll = parkourability.getRoll();
-		float phase = (roll.getRollingTick() + transformer.getPartialTick()) / (float) roll.getRollMaxTick();
+		float phase = (roll.getDoingTick() + transformer.getPartialTick()) / (float) roll.getRollMaxTick();
 		float factor = 1 - 4 * (0.5f - phase) * (0.5f - phase);
 		transformer
 				.addRotateLeftLeg(
@@ -51,7 +48,7 @@ public class RollAnimator extends Animator {
 	@Override
 	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		Roll roll = parkourability.getRoll();
-		float phase = (roll.getRollingTick() + rotator.getPartialTick()) / (float) roll.getRollMaxTick();
+		float phase = (roll.getDoingTick() + rotator.getPartialTick()) / (float) roll.getRollMaxTick();
 		float factor = calculateMovementFactor(phase);
 		rotator
 				.startBasedCenter()
@@ -62,9 +59,9 @@ public class RollAnimator extends Animator {
 	@Override
 	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
 		Roll roll = parkourability.getRoll();
-		if (roll.isRolling() && clientPlayer.isLocalPlayer() && Minecraft.getInstance().options.getCameraType().isFirstPerson() && !ParCoolConfig.CONFIG_CLIENT.disableCameraRolling.get()) {
-			float factor = calculateMovementFactor((float) ((roll.getRollingTick() + event.getRenderPartialTicks()) / (float) roll.getRollMaxTick()));
-			event.setPitch((factor > 0.5 ? factor - 1 : factor) * 360f + cameraPitch);
+		if (roll.isDoing() && clientPlayer.isLocalPlayer() && Minecraft.getInstance().options.getCameraType().isFirstPerson() && !ParCoolConfig.CONFIG_CLIENT.disableCameraRolling.get()) {
+			float factor = calculateMovementFactor((float) ((roll.getDoingTick() + event.getRenderPartialTicks()) / (float) roll.getRollMaxTick()));
+			event.setPitch((factor > 0.5 ? factor - 1 : factor) * 360f + clientPlayer.getViewXRot((float) event.getRenderPartialTicks()));
 		}
 	}
 }

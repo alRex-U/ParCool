@@ -11,14 +11,20 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 public class HorizontalWallRunAnimator extends Animator {
+	final boolean wallIsRightSide;
+
+	public HorizontalWallRunAnimator(boolean wallIsRightSide) {
+		this.wallIsRightSide = wallIsRightSide;
+	}
+
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getHorizontalWallRun().isWallRunning();
+		return !parkourability.getHorizontalWallRun().isDoing();
 	}
 
 	@Override
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
-		if (parkourability.getHorizontalWallRun().isWallRightSide()) {
+		if (wallIsRightSide) {
 			transformer
 					.addRotateLeftArm(0, 0, (float) Math.toRadians(-30))
 					.makeArmsNatural()
@@ -44,7 +50,7 @@ public class HorizontalWallRunAnimator extends Animator {
 	@Override
 	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float factor = getFactor(getTick() + rotator.getPartialTick());
-		float angle = factor * 30 * (parkourability.getHorizontalWallRun().isWallRightSide() ? -1 : 1);
+		float angle = factor * 30 * (wallIsRightSide ? -1 : 1);
 		rotator
 				.startBasedCenter()
 				.rotateRightward(angle)
@@ -56,7 +62,7 @@ public class HorizontalWallRunAnimator extends Animator {
 		if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() || ParCoolConfig.CONFIG_CLIENT.disableCameraHorizontalWallRun.get())
 			return;
 		float factor = getFactor((float) (getTick() + event.getRenderPartialTicks()));
-		float angle = factor * 20 * (parkourability.getHorizontalWallRun().isWallRightSide() ? -1 : 1);
+		float angle = factor * 20 * (wallIsRightSide ? -1 : 1);
 		event.setRoll(angle);
 	}
 }

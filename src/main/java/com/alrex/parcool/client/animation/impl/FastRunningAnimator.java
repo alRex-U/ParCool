@@ -10,7 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public class FastRunningAnimator extends Animator {
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getFastRun().isRunning();
+		return !parkourability.getFastRun().isDoing();
 	}
 
 	private float bodyAngleFactor(float phase) {
@@ -19,7 +19,7 @@ public class FastRunningAnimator extends Animator {
 
 	@Override
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
-		float phase = (parkourability.getFastRun().getRunningTick() + transformer.getPartialTick()) / 10;
+		float phase = (parkourability.getFastRun().getDoingTick() + transformer.getPartialTick()) / 10;
 		if (phase > 1) phase = 1;
 		float bodyAngleFactor = bodyAngleFactor(phase);
 		transformer
@@ -34,7 +34,7 @@ public class FastRunningAnimator extends Animator {
 
 	@Override
 	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
-		float phase = (parkourability.getFastRun().getRunningTick() + rotator.getPartialTick()) / 10;
+		float phase = (parkourability.getFastRun().getDoingTick() + rotator.getPartialTick()) / 10;
 		if (phase > 1) phase = 1;
 		float bodyAngle = bodyAngleFactor(phase) * 20;
 		rotator

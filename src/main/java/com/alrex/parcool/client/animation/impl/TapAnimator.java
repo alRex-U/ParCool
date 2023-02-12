@@ -10,7 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public class TapAnimator extends Animator {
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getTap().isTapping();
+		return !parkourability.getTap().isDoing();
 	}
 
 	public float angleFactor(float phase) {

@@ -41,13 +41,6 @@ public class ClientProxy extends CommonProxy {
 				ActionPermissionsMessage::handle
 		);
 		instance.registerMessage(
-				14,
-				StartVaultMessage.class,
-				StartVaultMessage::encode,
-				StartVaultMessage::decode,
-				StartVaultMessage::handleClient
-		);
-		instance.registerMessage(
 				15,
 				SyncActionStateMessage.class,
 				SyncActionStateMessage::encode,

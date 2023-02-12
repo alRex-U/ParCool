@@ -4,9 +4,6 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
 
@@ -16,6 +13,17 @@ public class AdditionalProperties extends Action {
 	private int landingTick = 0;
 	private int notSprintingTick = 0;
 	private int notCreativeFlyingTick = 0;
+
+	@Override
+	public boolean canStart(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startInfo) {
+		return false;
+	}
+
+	@Override
+	public boolean canContinue(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+		return false;
+	}
+
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (player.isSprinting()) {
@@ -39,25 +47,12 @@ public class AdditionalProperties extends Action {
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-
+	public void restoreSynchronizedState(ByteBuffer buffer) {
 	}
 
 	@Override
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
-
-	}
-
-	@Override
-	public void restoreState(ByteBuffer buffer) {
-
-	}
-
-	@Override
-	public void saveState(ByteBuffer buffer) {
-
+	public void saveSynchronizedState(ByteBuffer buffer) {
 	}
 
 	public int getSprintingTick() {

@@ -13,7 +13,7 @@ public class CatLeapAnimator extends Animator {
 
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getCatLeap().isLeaping() || getTick() > 30;
+		return !parkourability.getCatLeap().isDoing() || getTick() > 30;
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class CatLeapAnimator extends Animator {
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		CatLeap catLeap = parkourability.getCatLeap();
 
-		float phase = (catLeap.getLeapingTick() + transformer.getPartialTick()) / 30f;
+		float phase = (catLeap.getDoingTick() + transformer.getPartialTick()) / 30f;
 		if (phase > 1) phase = 1f;
 		float factor = movingFactorFunc(phase);
 		transformer

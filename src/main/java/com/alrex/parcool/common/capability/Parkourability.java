@@ -11,6 +11,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Parkourability {
 	@Nullable
@@ -23,13 +24,15 @@ public class Parkourability {
 	private final Crawl crawl = new Crawl();
 	private final Dodge dodge = new Dodge();
 	private final Dive dive = new Dive();
+	private final ClimbUp climbUp = new ClimbUp();
+	private final Slide slide = new Slide();
 	private final FastRun fastRun = new FastRun();
 	private final ClingToCliff clingToCliff = new ClingToCliff();
 	private final Roll roll = new Roll();
 	private final Vault vault = new Vault();
 	private final WallJump wallJump = new WallJump();
 	private final Flipping flipping = new Flipping();
-	private final Breakfall breakfall = new Breakfall();
+	private final BreakfallReady breakfall = new BreakfallReady();
 	private final Tap tap = new Tap();
 	private final WallSlide wallSlide = new WallSlide();
 	private final HorizontalWallRun horizontalWallRun = new HorizontalWallRun();
@@ -38,8 +41,44 @@ public class Parkourability {
 	private final ActionInfo actionInfo = new ActionInfo();
 
 	private final List<Action> actions = Arrays.<Action>asList(
-			catLeap, breakfall, crawl, dodge, dive, fastRun, clingToCliff, roll, vault, flipping, tap, wallSlide, horizontalWallRun, wallJump, additionalProperties
+			catLeap,
+			breakfall,
+			crawl,
+			slide,
+			dodge,
+			dive,
+			climbUp,
+			fastRun,
+			clingToCliff,
+			roll,
+			vault,
+			flipping,
+			tap,
+			wallSlide,
+			horizontalWallRun,
+			wallJump,
+			additionalProperties
+
 	);
+	private final List<Class<? extends Action>> actionClasses
+			= actions.stream().map(Action::getClass).collect(Collectors.toList());
+
+	public short getActionID(Action instance) {
+		for (short i = 0; i < actionClasses.size(); i++) {
+			if (actionClasses.get(i).isInstance(instance)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	@Nullable
+	public Action getActionFromID(short id) {
+		if (0 <= id && id < actions.size()) {
+			return actions.get(id);
+		}
+		return null;
+	}
 
 	public CatLeap getCatLeap() {
 		return catLeap;
@@ -59,6 +98,10 @@ public class Parkourability {
 
 	public Dive getDive() {
 		return dive;
+	}
+
+	public Slide getSlide() {
+		return slide;
 	}
 
 	public FastRun getFastRun() {
@@ -81,6 +124,10 @@ public class Parkourability {
 		return wallSlide;
 	}
 
+	public ClimbUp getClimbUp() {
+		return climbUp;
+	}
+
 	public AdditionalProperties getAdditionalProperties() {
 		return additionalProperties;
 	}
@@ -97,7 +144,7 @@ public class Parkourability {
 		return flipping;
 	}
 
-	public Breakfall getBreakfall() {
+	public BreakfallReady getBreakfallReady() {
 		return breakfall;
 	}
 

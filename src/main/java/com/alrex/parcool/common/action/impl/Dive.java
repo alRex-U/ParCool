@@ -6,95 +6,75 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.Stamina;
-import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
 
 public class Dive extends Action {
-	private boolean diving = false;
-	private int divingTick = 0;
-	private boolean falling = false;
-	private boolean needAnimation = false;
+	private boolean justJumped = false;
 
-	public boolean isDiving() {
-		return diving;
-	}
-
-	public int getDivingTick() {
-		return divingTick;
-	}
-
+	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (diving) {
-			divingTick++;
-		} else {
-			divingTick = 0;
-		}
-	}
-
-	private boolean canDive(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		return !stamina.isExhausted()
-				&& !parkourability.getCrawl().isCrawling()
+	public boolean canStart(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startInfo) {
+		boolean can = (justJumped
+				&& !stamina.isExhausted()
+				&& !parkourability.getCrawl().isDoing()
 				&& !player.isVisuallyCrawling()
 				&& parkourability.getFastRun().canActWithRunning(player)
 				&& ParCoolConfig.CONFIG_CLIENT.canDive.get()
-				&& WorldUtil.existsDivableSpace(player);
-	}
-
-	private boolean canContinueDive(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		return !player.isFallFlying()
-				&& !player.abilities.flying
-				&& !player.isInWaterOrBubble()
-				&& !player.isInLava()
-				&& !player.isSwimming()
-				&& !player.isOnGround()
-				&& !stamina.isExhausted();
-	}
-
-	public void onJump(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (!player.isLocalPlayer()) return;
-		if (canDive(player, parkourability, stamina)) {
-			diving = true;
-			needAnimation = true;
-			synchronizeExplicitly(player);
-		}
+				&& WorldUtil.existsDivableSpace(player)
+		);
+		startInfo.putDouble(player.getDeltaMovement().y());
+		justJumped = false;
+		return can;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (needAnimation) {
-			Animation animation = Animation.get(player);
-			if (animation != null) {
-				animation.setAnimator(new DiveAnimator(player.getDeltaMovement().y()));
-			}
-			needAnimation = false;
+	public boolean canContinue(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+		return !(player.isFallFlying()
+				|| player.abilities.flying
+				|| player.isInWaterOrBubble()
+				|| player.isInLava()
+				|| player.isSwimming()
+				|| player.isOnGround()
+				|| stamina.isExhausted()
+		);
+	}
+
+	public void onJump(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+		if (!player.isLocalPlayer()) return;
+		justJumped = true;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startData) {
+		double ySpeed = startData.getDouble();
+		Animation animation = Animation.get(player);
+		if (animation != null) {
+			animation.setAnimator(new DiveAnimator(ySpeed));
 		}
-		if (player.isLocalPlayer()) {
-			if (!canContinueDive(player, parkourability, stamina)) {
-				diving = false;
-			}
+	}
+
+	@Override
+	public void restoreSynchronizedState(ByteBuffer buffer) {
+	}
+
+	@Override
+	public void saveSynchronizedState(ByteBuffer buffer) {
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+		double ySpeed = startData.getDouble();
+		Animation animation = Animation.get(player);
+		if (animation != null) {
+			animation.setAnimator(new DiveAnimator(ySpeed));
 		}
-	}
-
-	@Override
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
-	}
-
-	@Override
-	public void restoreState(ByteBuffer buffer) {
-		diving = BufferUtil.getBoolean(buffer);
-		needAnimation = BufferUtil.getBoolean(buffer);
-	}
-
-	@Override
-	public void saveState(ByteBuffer buffer) {
-		BufferUtil.wrap(buffer).putBoolean(diving).putBoolean(needAnimation);
 	}
 }

@@ -13,11 +13,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 public class FlippingAnimator extends Animator {
-	public FlippingAnimator(float startHeadAngle) {
-		this.startAngle = startHeadAngle;
+	public FlippingAnimator(Flipping.FlippingDirection direction) {
+		this.direction = direction;
 	}
 
-	private float startAngle;
+
+	private final Flipping.FlippingDirection direction;
 
 	private int getMaxAnimationTick() {
 		return 12;
@@ -25,7 +26,7 @@ public class FlippingAnimator extends Animator {
 
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getFlipping().isFlipping() || getTick() >= getMaxAnimationTick();
+		return !parkourability.getFlipping().isDoing() || getTick() >= getMaxAnimationTick();
 	}
 
 	private float angleFactor(float phase) {
@@ -78,7 +79,7 @@ public class FlippingAnimator extends Animator {
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float phase = (getTick() + transformer.getPartialTick()) / getMaxAnimationTick();
 
-		if (parkourability.getFlipping().getDirection() == Flipping.FlippingDirection.Front) {
+		if (direction == Flipping.FlippingDirection.Front) {
 			float armAngleX = -180 * armAngleXFactorFront(phase) + 25;
 			float armAngleZ = MathUtil.lerp(phase > 0.75 ? 0 : 14, 28, armAngleZFactor(phase));
 			float legAngleX = MathUtil.lerp(0, -50, legAngleFactorFront(phase));
@@ -146,19 +147,16 @@ public class FlippingAnimator extends Animator {
 		float phase = (getTick() + rotator.getPartialTick()) / getMaxAnimationTick();
 		float factor = angleFactor(phase);
 
-		if (parkourability.getFlipping().getDirection() == Flipping.FlippingDirection.Front) {
-			float angle = factor * 360;
-			rotator
-					.startBasedCenter()
-					.rotateFrontward(angle)
-					.end();
+		float angle;
+		if (direction == Flipping.FlippingDirection.Front) {
+			angle = factor * 360;
 		} else {
-			float angle = factor * -360;
-			rotator
-					.startBasedCenter()
-					.rotateFrontward(angle)
-					.end();
+			angle = factor * -360;
 		}
+		rotator
+				.startBasedCenter()
+				.rotateFrontward(angle)
+				.end();
 	}
 
 	@Override
@@ -169,10 +167,10 @@ public class FlippingAnimator extends Animator {
 		) return;
 		float phase = (float) ((getTick() + event.getRenderPartialTicks()) / getMaxAnimationTick());
 		float factor = angleFactor(phase);
-		if (parkourability.getFlipping().getDirection() == Flipping.FlippingDirection.Front) {
-			event.setPitch(this.startAngle + factor * 360 - ((phase > 0.5) ? 360 : 0));
+		if (direction == Flipping.FlippingDirection.Front) {
+			event.setPitch(clientPlayer.getViewXRot((float) event.getRenderPartialTicks()) + factor * 360 - ((phase > 0.5) ? 360 : 0));
 		} else {
-			event.setPitch(this.startAngle - factor * 360 + ((phase > 0.5) ? 360 : 0));
+			event.setPitch(clientPlayer.getViewXRot((float) event.getRenderPartialTicks()) - factor * 360 + ((phase > 0.5) ? 360 : 0));
 		}
 	}
 }

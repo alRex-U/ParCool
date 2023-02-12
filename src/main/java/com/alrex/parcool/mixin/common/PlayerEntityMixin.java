@@ -26,7 +26,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 	public void onTryToStartFallFlying(CallbackInfoReturnable<Boolean> cir) {
 		PlayerEntity player = (PlayerEntity) (Object) this;
 		Parkourability parkourability = Parkourability.get(player);
-		if (parkourability != null && parkourability.getClingToCliff().isCling()) {
+		if (parkourability != null && parkourability.getClingToCliff().isDoing()) {
 			cir.setReturnValue(false);
 			cir.cancel();
 		}

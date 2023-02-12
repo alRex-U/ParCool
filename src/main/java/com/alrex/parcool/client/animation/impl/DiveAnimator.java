@@ -20,7 +20,7 @@ public class DiveAnimator extends Animator {
 
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getDive().isDiving();
+		return !parkourability.getDive().isDoing();
 	}
 
 	@Override

@@ -13,6 +13,7 @@ public class KeyRecorder {
 	public static final KeyState keyBack = new KeyState();
 	public static final KeyState keyRight = new KeyState();
 	public static final KeyState keyLeft = new KeyState();
+	public static final KeyState keySneak = new KeyState();
 	public static final KeyState keyJumpState = new KeyState();
 	public static final KeyState keySprintState = new KeyState();
 	public static final KeyState keyCrawlState = new KeyState();
@@ -30,6 +31,7 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyBack(), keyBack);
 		record(KeyBindings.getKeyRight(), keyRight);
 		record(KeyBindings.getKeyLeft(), keyLeft);
+		record(KeyBindings.getKeySneak(), keySneak);
 		record(KeyBindings.getKeyJump(), keyJumpState);
 		record(KeyBindings.getKeySprint(), keySprintState);
 		record(KeyBindings.getKeyCrawl(), keyCrawlState);

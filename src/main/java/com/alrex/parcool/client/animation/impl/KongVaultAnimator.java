@@ -66,6 +66,6 @@ public class KongVaultAnimator extends Animator {
 				ParCoolConfig.CONFIG_CLIENT.disableCameraVault.get()) return;
 		float phase = (float) ((getTick() + event.getRenderPartialTicks()) / MAX_TIME);
 		float factor = getFactor(phase);
-		event.setPitch(30 * factor);
+		event.setPitch(30 * factor + clientPlayer.getViewXRot((float) event.getRenderPartialTicks()));
 	}
 }

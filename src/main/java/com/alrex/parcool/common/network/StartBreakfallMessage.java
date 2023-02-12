@@ -47,7 +47,7 @@ public class StartBreakfallMessage {
 				Stamina stamina = Stamina.get(player);
 				if (stamina == null) return;
 
-				parkourability.getBreakfall().startBreakfall(player, parkourability, stamina);
+				parkourability.getBreakfallReady().startBreakfall(player, parkourability, stamina);
 			}
 		});
 		contextSupplier.get().setPacketHandled(true);

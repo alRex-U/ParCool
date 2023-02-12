@@ -28,7 +28,12 @@ public class PassiveCustomAnimation {
 				flyingAnimationLevel = 0;
 			}
 		}
-		if (!player.isOnGround() && player.fallDistance > 1 && !player.abilities.flying && !player.isFallFlying() && !parkourability.getClingToCliff().isCling()) {
+		if (!player.isOnGround()
+				&& player.fallDistance > 1
+				&& !player.abilities.flying
+				&& !player.isFallFlying()
+				&& !parkourability.getClingToCliff().isDoing()
+		) {
 			fallingAnimationTick++;
 		} else {
 			fallingAnimationTick = 0;
@@ -36,7 +41,10 @@ public class PassiveCustomAnimation {
 	}
 
 	public void animate(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
-		if (fallingAnimationTick >= FallingStartLine && !ParCoolConfig.CONFIG_CLIENT.disableFallingAnimation.get() && !parkourability.getDive().isDiving()) {
+		if (fallingAnimationTick >= FallingStartLine
+				&& !ParCoolConfig.CONFIG_CLIENT.disableFallingAnimation.get()
+				&& !parkourability.getDive().isDoing()
+		) {
 			animateFalling(parkourability, transformer);
 		}
 	}

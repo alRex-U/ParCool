@@ -9,7 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public class ClingToCliffAnimator extends Animator {
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getClingToCliff().isCling();
+		return !parkourability.getClingToCliff().isDoing();
 	}
 
 	@Override

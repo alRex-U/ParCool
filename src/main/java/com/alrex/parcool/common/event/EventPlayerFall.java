@@ -16,7 +16,7 @@ public class EventPlayerFall {
 		if (parkourability == null) return;
 
 		if (
-				parkourability.getBreakfall().isReady()
+				parkourability.getBreakfallReady().isDoing()
 		) {
 			float distance = event.getDistance();
 			if (distance > 2) StartBreakfallMessage.send(player);

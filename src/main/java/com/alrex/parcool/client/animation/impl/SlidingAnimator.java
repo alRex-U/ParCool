@@ -9,7 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public class SlidingAnimator extends Animator {
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getCrawl().isSliding();
+		return !parkourability.getSlide().isDoing();
 	}
 
 	private float bodyAngleFactor(float phase) {

@@ -15,7 +15,7 @@ public class DodgeAnimator extends Animator {
 
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getDodge().isDodging();
+		return !parkourability.getDodge().isDoing();
 	}
 
 	@Override

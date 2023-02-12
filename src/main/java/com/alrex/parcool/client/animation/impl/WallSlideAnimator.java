@@ -10,7 +10,7 @@ import net.minecraft.util.math.vector.Vector3d;
 public class WallSlideAnimator extends Animator {
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getWallSlide().isSliding();
+		return !parkourability.getWallSlide().isDoing();
 	}
 
 	@Override

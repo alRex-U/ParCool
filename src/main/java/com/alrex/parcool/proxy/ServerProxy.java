@@ -38,13 +38,6 @@ public class ServerProxy extends CommonProxy {
 				null
 		);
 		instance.registerMessage(
-				14,
-				StartVaultMessage.class,
-				StartVaultMessage::encode,
-				StartVaultMessage::decode,
-				StartVaultMessage::handleServer
-		);
-		instance.registerMessage(
 				15,
 				SyncActionStateMessage.class,
 				SyncActionStateMessage::encode,

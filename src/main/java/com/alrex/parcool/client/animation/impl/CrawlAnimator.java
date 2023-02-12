@@ -8,7 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public class CrawlAnimator extends Animator {
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getCrawl().isCrawling();
+		return !parkourability.getCrawl().isDoing();
 	}
 
 	@Override
