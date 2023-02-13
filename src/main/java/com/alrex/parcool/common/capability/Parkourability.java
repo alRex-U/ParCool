@@ -34,6 +34,7 @@ public class Parkourability {
 	private final Flipping flipping = new Flipping();
 	private final BreakfallReady breakfall = new BreakfallReady();
 	private final Tap tap = new Tap();
+	private final QuickTurn quickTurn = new QuickTurn();
 	private final WallSlide wallSlide = new WallSlide();
 	private final HorizontalWallRun horizontalWallRun = new HorizontalWallRun();
 	private final AdditionalProperties additionalProperties = new AdditionalProperties();
@@ -54,11 +55,11 @@ public class Parkourability {
 			vault,
 			flipping,
 			tap,
+			quickTurn,
 			wallSlide,
 			horizontalWallRun,
 			wallJump,
 			additionalProperties
-
 	);
 	private final List<Class<? extends Action>> actionClasses
 			= actions.stream().map(Action::getClass).collect(Collectors.toList());
@@ -126,6 +127,10 @@ public class Parkourability {
 
 	public ClimbUp getClimbUp() {
 		return climbUp;
+	}
+
+	public QuickTurn getQuickTurn() {
+		return quickTurn;
 	}
 
 	public AdditionalProperties getAdditionalProperties() {
