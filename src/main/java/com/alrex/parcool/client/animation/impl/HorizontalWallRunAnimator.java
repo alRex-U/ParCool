@@ -4,6 +4,7 @@ import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
+import com.alrex.parcool.common.action.impl.HorizontalWallRun;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
@@ -19,7 +20,7 @@ public class HorizontalWallRunAnimator extends Animator {
 
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getHorizontalWallRun().isDoing();
+		return !parkourability.get(HorizontalWallRun.class).isDoing();
 	}
 
 	@Override

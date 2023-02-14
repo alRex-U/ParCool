@@ -26,7 +26,7 @@ public class FlippingAnimator extends Animator {
 
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getFlipping().isDoing() || getTick() >= getMaxAnimationTick();
+		return !parkourability.get(Flipping.class).isDoing() || getTick() >= getMaxAnimationTick();
 	}
 
 	private float angleFactor(float phase) {

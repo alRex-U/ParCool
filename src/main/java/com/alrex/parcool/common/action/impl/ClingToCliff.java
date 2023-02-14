@@ -45,7 +45,7 @@ public class ClingToCliff extends Action {
 		return (!stamina.isExhausted()
 				&& parkourability.getPermission().canClingToCliff()
 				&& KeyBindings.getKeyGrabWall().isDown()
-				&& !parkourability.getClimbUp().isDoing()
+				&& !parkourability.get(ClimbUp.class).isDoing()
 				&& WorldUtil.existsGrabbableWall(player)
 		);
 	}

@@ -21,8 +21,8 @@ public class Crawl extends Action {
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startInfo) {
 		return (parkourability.getPermission().canCrawl()
 				&& KeyRecorder.keyCrawlState.isPressed()
-				&& !parkourability.getRoll().isDoing()
-				&& !parkourability.getTap().isDoing()
+				&& !parkourability.get(Roll.class).isDoing()
+				&& !parkourability.get(Tap.class).isDoing()
 				&& !player.isInWaterOrBubble()
 				&& (player.isOnGround() || !ParCoolConfig.CONFIG_CLIENT.disableCrawlInAir.get())
 		);

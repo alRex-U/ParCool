@@ -23,18 +23,18 @@ public class Slide extends Action {
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startInfo) {
 		return (parkourability.getPermission().canCrawl()
 				&& KeyRecorder.keyCrawlState.isPressed()
-				&& !parkourability.getRoll().isDoing()
-				&& !parkourability.getTap().isDoing()
+				&& !parkourability.get(Roll.class).isDoing()
+				&& !parkourability.get(Tap.class).isDoing()
 				&& !player.isInWaterOrBubble()
 				&& (player.isOnGround() || !ParCoolConfig.CONFIG_CLIENT.disableCrawlInAir.get())
-				&& parkourability.getFastRun().getDashTick(parkourability.getAdditionalProperties()) > 5
+				&& parkourability.get(FastRun.class).getDashTick(parkourability.get(AdditionalProperties.class)) > 5
 		);
 	}
 
 	@Override
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		return getDoingTick() < parkourability.getActionInfo().getMaxSlidingTick()
-				&& parkourability.getCrawl().isDoing();
+				&& parkourability.get(Crawl.class).isDoing();
 	}
 
 	@Override

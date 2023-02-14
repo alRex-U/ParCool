@@ -36,14 +36,14 @@ public class WallSlide extends Action {
 		return (wall != null
 				&& !player.isOnGround()
 				&& parkourability.getPermission().canWallSlide()
-				&& !parkourability.getFastRun().isDoing()
-				&& !parkourability.getDodge().isDoing()
+				&& !parkourability.get(FastRun.class).isDoing()
+				&& !parkourability.get(Dodge.class).isDoing()
 				&& !player.abilities.flying
 				&& player.getDeltaMovement().y() <= 0
 				&& KeyBindings.getKeyWallSlide().isDown()
 				&& !stamina.isExhausted()
-				&& !parkourability.getClingToCliff().isDoing()
-				&& parkourability.getClingToCliff().getNotDoingTick() > 12
+				&& !parkourability.get(ClingToCliff.class).isDoing()
+				&& parkourability.get(ClingToCliff.class).getNotDoingTick() > 12
 		);
 	}
 

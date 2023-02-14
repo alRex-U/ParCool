@@ -63,7 +63,7 @@ public class FastRun extends Action {
 				&& player.isSprinting()
 				&& !player.isVisuallyCrawling()
 				&& !player.isSwimming()
-				&& !parkourability.getCrawl().isDoing()
+				&& !parkourability.get(Crawl.class).isDoing()
 				&& (KeyBindings.getKeyFastRunning().isDown() || ParCoolConfig.CONFIG_CLIENT.replaceSprintWithFastRun.get())
 		);
 	}

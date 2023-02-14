@@ -70,15 +70,15 @@ public class HorizontalWallRun extends Action {
 		BufferUtil.wrap(startInfo).putBoolean(dividedVec.z() > 0/*if true, wall is in right side*/);
 
 		return (parkourability.getPermission().canHorizontalWallRun()
-				&& !parkourability.getWallJump().justJumped()
-				&& !parkourability.getCrawl().isDoing()
+				&& !parkourability.get(WallJump.class).justJumped()
+				&& !parkourability.get(Crawl.class).isDoing()
 				&& KeyBindings.getKeyHorizontalWallRun().isDown()
 				&& Math.abs(player.getDeltaMovement().y()) < 0.3
 				&& coolTime == 0
 				&& !player.isOnGround()
-				&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
-				&& (parkourability.getFastRun().canActWithRunning(player)
-				|| parkourability.getFastRun().getNotDashTick(parkourability.getAdditionalProperties()) < 3
+				&& parkourability.get(AdditionalProperties.class).getNotLandingTick() > 5
+				&& (parkourability.get(FastRun.class).canActWithRunning(player)
+				|| parkourability.get(FastRun.class).getNotDashTick(parkourability.get(AdditionalProperties.class)) < 3
 		)
 				&& !stamina.isExhausted()
 		);
@@ -91,8 +91,8 @@ public class HorizontalWallRun extends Action {
 		if (wallDirection == null) return false;
 		return (getDoingTick() < Max_Running_Tick &&
 				parkourability.getPermission().canHorizontalWallRun() &&
-				!parkourability.getWallJump().justJumped() &&
-				!parkourability.getCrawl().isDoing() &&
+				!parkourability.get(WallJump.class).justJumped() &&
+				!parkourability.get(Crawl.class).isDoing() &&
 				KeyBindings.getKeyHorizontalWallRun().isDown() &&
 				!player.isOnGround()
 		);

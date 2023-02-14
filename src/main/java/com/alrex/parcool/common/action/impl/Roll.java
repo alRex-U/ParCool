@@ -24,10 +24,10 @@ public class Roll extends Action {
 		if (player.isLocalPlayer()) {
 			if (KeyBindings.getKeyBreakfall().isDown()
 					&& KeyBindings.getKeyForward().isDown()
-					&& !parkourability.getDodge().isDoing()
+					&& !parkourability.get(Dodge.class).isDoing()
 					&& ParCoolConfig.CONFIG_CLIENT.enableRollWhenCreative.get()
 					&& player.isCreative()
-					&& parkourability.getAdditionalProperties().getLandingTick() <= 1
+					&& parkourability.get(AdditionalProperties.class).getLandingTick() <= 1
 					&& player.isOnGround()
 					&& !isDoing()
 					&& creativeCoolTime == 0

@@ -23,10 +23,10 @@ public class QuickTurn extends Action {
 				.putDouble(angle.x())
 				.putDouble(angle.z());
 		return KeyRecorder.keyQuickTurn.isPressed()
-				&& !parkourability.getVault().isDoing()
-				&& !parkourability.getRoll().isDoing()
-				&& !parkourability.getFlipping().isDoing()
-				&& !parkourability.getClingToCliff().isDoing();
+				&& !parkourability.get(Vault.class).isDoing()
+				&& !parkourability.get(Roll.class).isDoing()
+				&& !parkourability.get(Flipping.class).isDoing()
+				&& !parkourability.get(ClingToCliff.class).isDoing();
 	}
 
 	@Override

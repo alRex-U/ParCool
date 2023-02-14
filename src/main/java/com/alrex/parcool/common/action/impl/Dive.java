@@ -21,9 +21,9 @@ public class Dive extends Action {
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startInfo) {
 		boolean can = (justJumped
 				&& !stamina.isExhausted()
-				&& !parkourability.getCrawl().isDoing()
+				&& !parkourability.get(Crawl.class).isDoing()
 				&& !player.isVisuallyCrawling()
-				&& parkourability.getFastRun().canActWithRunning(player)
+				&& parkourability.get(FastRun.class).canActWithRunning(player)
 				&& ParCoolConfig.CONFIG_CLIENT.canDive.get()
 				&& WorldUtil.existsDivableSpace(player)
 		);

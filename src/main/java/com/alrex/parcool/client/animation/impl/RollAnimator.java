@@ -21,12 +21,12 @@ public class RollAnimator extends Animator {
 
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getRoll().isDoing();
+		return !parkourability.get(Roll.class).isDoing();
 	}
 
 	@Override
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
-		Roll roll = parkourability.getRoll();
+		Roll roll = parkourability.get(Roll.class);
 		float phase = (roll.getDoingTick() + transformer.getPartialTick()) / (float) roll.getRollMaxTick();
 		float factor = 1 - 4 * (0.5f - phase) * (0.5f - phase);
 		transformer
@@ -47,7 +47,7 @@ public class RollAnimator extends Animator {
 
 	@Override
 	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
-		Roll roll = parkourability.getRoll();
+		Roll roll = parkourability.get(Roll.class);
 		float phase = (roll.getDoingTick() + rotator.getPartialTick()) / (float) roll.getRollMaxTick();
 		float factor = calculateMovementFactor(phase);
 		rotator
@@ -58,7 +58,7 @@ public class RollAnimator extends Animator {
 
 	@Override
 	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
-		Roll roll = parkourability.getRoll();
+		Roll roll = parkourability.get(Roll.class);
 		if (roll.isDoing() && clientPlayer.isLocalPlayer() && Minecraft.getInstance().options.getCameraType().isFirstPerson() && !ParCoolConfig.CONFIG_CLIENT.disableCameraRolling.get()) {
 			float factor = calculateMovementFactor((float) ((roll.getDoingTick() + event.getRenderPartialTicks()) / (float) roll.getRollMaxTick()));
 			event.setPitch((factor > 0.5 ? factor - 1 : factor) * 360f + clientPlayer.getViewXRot((float) event.getRenderPartialTicks()));

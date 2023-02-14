@@ -98,7 +98,7 @@ public class Vault extends Action {
 
 		return (parkourability.getPermission().canVault()
 				&& !(ParCoolConfig.CONFIG_CLIENT.vaultNeedKeyPressed.get() && !KeyBindings.getKeyVault().isDown())
-				&& parkourability.getFastRun().canActWithRunning(player)
+				&& parkourability.get(FastRun.class).canActWithRunning(player)
 				&& !stamina.isExhausted()
 				&& (player.isOnGround() || !ParCoolConfig.CONFIG_CLIENT.disableVaultInAir.get())
 				&& wallHeight > player.getBbHeight() * 0.44 /*about 0.8*/

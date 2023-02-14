@@ -73,12 +73,12 @@ public class WallJump extends Action {
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
 				&& !player.abilities.flying
-				&& parkourability.getAdditionalProperties().getNotCreativeFlyingTick() > 10
-				&& !parkourability.getClingToCliff().isDoing()
-				&& parkourability.getClingToCliff().getNotDoingTick() > 3
+				&& parkourability.get(AdditionalProperties.class).getNotCreativeFlyingTick() > 10
+				&& !parkourability.get(ClingToCliff.class).isDoing()
+				&& parkourability.get(ClingToCliff.class).getNotDoingTick() > 3
 				&& KeyRecorder.keyWallJump.isPressed()
-				&& !parkourability.getCrawl().isDoing()
-				&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
+				&& !parkourability.get(Crawl.class).isDoing()
+				&& parkourability.get(AdditionalProperties.class).getNotLandingTick() > 5
 				&& WorldUtil.getWall(player) != null
 		);
 		if (!value) return false;

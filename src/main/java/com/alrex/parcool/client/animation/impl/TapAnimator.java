@@ -3,6 +3,7 @@ package com.alrex.parcool.client.animation.impl;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
+import com.alrex.parcool.common.action.impl.Tap;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.EasingFunctions;
 import net.minecraft.entity.player.PlayerEntity;
@@ -10,7 +11,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public class TapAnimator extends Animator {
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getTap().isDoing();
+		return !parkourability.get(Tap.class).isDoing();
 	}
 
 	public float angleFactor(float phase) {
@@ -25,7 +26,7 @@ public class TapAnimator extends Animator {
 
 	@Override
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
-		float phase = (getTick() + transformer.getPartialTick()) / parkourability.getTap().getMaxTappingTick();
+		float phase = (getTick() + transformer.getPartialTick()) / parkourability.get(Tap.class).getMaxTappingTick();
 		float factor = angleFactor(phase);
 		float angle = 80 * factor;
 		transformer
@@ -53,7 +54,7 @@ public class TapAnimator extends Animator {
 
 	@Override
 	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
-		float phase = (getTick() + rotator.getPartialTick()) / parkourability.getTap().getMaxTappingTick();
+		float phase = (getTick() + rotator.getPartialTick()) / parkourability.get(Tap.class).getMaxTappingTick();
 		float angle = 80 * angleFactor(phase);
 		rotator
 				.startBasedCenter()

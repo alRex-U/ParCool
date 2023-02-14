@@ -105,8 +105,8 @@ public class Dodge extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		return !(parkourability.getRoll().isDoing()
-				|| parkourability.getClingToCliff().isDoing()
+		return !(parkourability.get(Roll.class).isDoing()
+				|| parkourability.get(ClingToCliff.class).isDoing()
 				|| player.isOnGround()
 				|| player.isInWaterOrBubble()
 				|| player.isFallFlying()

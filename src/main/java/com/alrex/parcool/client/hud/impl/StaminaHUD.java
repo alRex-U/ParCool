@@ -51,7 +51,7 @@ public class StaminaHUD extends AbstractHUD {
 		final Tuple<Integer, Integer> pos = position.calculate(boxWidth, boxHeight, width, height);
 
 		float staminaScale = (float) stamina.getStamina() / stamina.getMaxStamina();
-		Dodge dodge = parkourability.getDodge();
+		Dodge dodge = parkourability.get(Dodge.class);
 		ActionInfo actionInfo = parkourability.getActionInfo();
 		float dodgeCoolTimeScale =
 				Math.min(

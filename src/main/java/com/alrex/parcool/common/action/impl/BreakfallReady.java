@@ -13,9 +13,9 @@ public class BreakfallReady extends Action {
 		setDoing(false);
 		stamina.consume(parkourability.getActionInfo().getStaminaConsumptionBreakfall(), player);
 		if (KeyBindings.getKeyForward().isDown() && parkourability.getPermission().canRoll()) {
-			parkourability.getRoll().startRoll(player);
+			parkourability.get(Roll.class).startRoll(player);
 		} else {
-			parkourability.getTap().startTap(player);
+			parkourability.get(Tap.class).startTap(player);
 		}
 	}
 
@@ -29,9 +29,9 @@ public class BreakfallReady extends Action {
 		return (parkourability.getPermission().canBreakfall()
 				&& KeyBindings.getKeyBreakfall().isDown()
 				&& !stamina.isExhausted()
-				&& !parkourability.getCrawl().isDoing()
+				&& !parkourability.get(Crawl.class).isDoing()
 				&& !player.isInWaterOrBubble()
-				&& (!player.isOnGround() || parkourability.getAdditionalProperties().getLandingTick() < 3)
+				&& (!player.isOnGround() || parkourability.get(AdditionalProperties.class).getLandingTick() < 3)
 		);
 	}
 

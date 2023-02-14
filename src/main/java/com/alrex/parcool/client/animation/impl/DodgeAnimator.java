@@ -15,7 +15,7 @@ public class DodgeAnimator extends Animator {
 
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getDodge().isDoing();
+		return !parkourability.get(Dodge.class).isDoing();
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class DodgeAnimator extends Animator {
 		}
 		float factor = factorFunc(phase);
 		float revision = -lerp(0, 30, factor);
-		switch (parkourability.getDodge().getDodgeDirection()) {
+		switch (parkourability.get(Dodge.class).getDodgeDirection()) {
 			case Front:
 				transformer.rotateAdditionallyHeadPitch(revision);
 				if (notInitialized) {
@@ -126,7 +126,7 @@ public class DodgeAnimator extends Animator {
 		rotator
 				.startBasedCenter()
 				.rotateFrontward(
-						(parkourability.getDodge().getDodgeDirection() == Dodge.DodgeDirection.Back ? -1 : 1)
+						(parkourability.get(Dodge.class).getDodgeDirection() == Dodge.DodgeDirection.Back ? -1 : 1)
 								* lerp(0, 30, factor)
 				)
 				.end();

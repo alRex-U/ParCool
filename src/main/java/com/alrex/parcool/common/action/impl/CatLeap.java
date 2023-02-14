@@ -29,7 +29,7 @@ public class CatLeap extends Action {
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
 		if (player.isLocalPlayer()) {
-			if (KeyRecorder.keySneak.isPressed() && parkourability.getFastRun().getNotDashTick(parkourability.getAdditionalProperties()) < 10) {
+			if (KeyRecorder.keySneak.isPressed() && parkourability.get(FastRun.class).getNotDashTick(parkourability.get(AdditionalProperties.class)) < 10) {
 				ready = true;
 			}
 			if (ready) {

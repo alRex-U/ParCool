@@ -18,7 +18,7 @@ public class ClimbUp extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startInfo) {
-		ClingToCliff cling = parkourability.getClingToCliff();
+		ClingToCliff cling = parkourability.get(ClingToCliff.class);
 		return cling.isDoing()
 				&& cling.getDoingTick() > 2
 				&& parkourability.getPermission().canClingToCliff()
