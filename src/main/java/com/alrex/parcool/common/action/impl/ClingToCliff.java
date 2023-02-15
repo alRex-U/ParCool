@@ -32,12 +32,17 @@ public class ClingToCliff extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		return (!stamina.isExhausted()
+		boolean value = (!stamina.isExhausted()
 				&& player.getDeltaMovement().y() < 0.2
 				&& parkourability.getActionInfo().can(ClingToCliff.class)
 				&& KeyBindings.getKeyGrabWall().isDown()
 				&& WorldUtil.existsGrabbableWall(player)
 		);
+		if (!value) return false;
+		Vector3d wallVec = WorldUtil.getWall(player);
+		if (wallVec == null) return false;
+		//Check whether player is facing to wall
+		return 0.5 < wallVec.normalize().dot(player.getLookAngle().multiply(1, 0, 1).normalize());
 	}
 
 	@OnlyIn(Dist.CLIENT)
