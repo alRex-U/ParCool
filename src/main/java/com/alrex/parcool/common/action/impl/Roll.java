@@ -4,9 +4,10 @@ import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.RollAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
@@ -18,9 +19,10 @@ import java.nio.ByteBuffer;
 public class Roll extends Action {
 	private int creativeCoolTime = 0;
 	private boolean startRequired = false;
+
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		if (player.isLocalPlayer()) {
 			if (KeyBindings.getKeyBreakfall().isDown()
 					&& KeyBindings.getKeyForward().isDown()
@@ -48,12 +50,17 @@ public class Roll extends Action {
 	}
 
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startInfo) {
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.OnStart;
+	}
+
+	@Override
+	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		return startRequired;
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		return getDoingTick() < getRollMaxTick();
 	}
 
@@ -65,7 +72,7 @@ public class Roll extends Action {
 	}
 
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		startRequired = false;
 		double modifier = Math.sqrt(player.getBbWidth());
 		Vector3d vec = VectorUtil.fromYawDegree(player.yBodyRot).scale(modifier);

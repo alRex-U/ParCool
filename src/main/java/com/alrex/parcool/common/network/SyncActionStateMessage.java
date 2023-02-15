@@ -3,7 +3,6 @@ package com.alrex.parcool.common.network;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -98,8 +97,7 @@ public class SyncActionStateMessage {
 			}
 
 			Parkourability parkourability = Parkourability.get(player);
-			Stamina stamina = Stamina.get(player);
-			if (parkourability == null || stamina == null) return;
+			if (parkourability == null) return;
 
 			Decoder decoder = new Decoder(this.buffer, parkourability);
 			while (decoder.hasNext()) {

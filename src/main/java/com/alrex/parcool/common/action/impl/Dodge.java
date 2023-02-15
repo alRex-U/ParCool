@@ -5,9 +5,10 @@ import com.alrex.parcool.client.animation.impl.DodgeAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.utilities.EntityUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
@@ -18,6 +19,7 @@ import java.nio.ByteBuffer;
 
 
 public class Dodge extends Action {
+	public static final int MAX_COOL_DOWN_TICK = 10;
 	public enum DodgeDirection {
 		Front, Back, Left, Right;
 
@@ -56,7 +58,7 @@ public class Dodge extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		if (coolTime > 0) coolTime--;
 		if (successivelyCoolTick > 0) {
 			successivelyCoolTick--;
@@ -73,17 +75,20 @@ public class Dodge extends Action {
 	public void saveSynchronizedState(ByteBuffer buffer) {
 	}
 
+	@Override
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.OnStart;
+	}
+
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		boolean enabledDoubleTap = !ParCoolConfig.CONFIG_CLIENT.disableDoubleTappingForDodge.get();
 		DodgeDirection direction = null;
 		if (enabledDoubleTap) {
 			if (KeyRecorder.keyBack.isDoubleTapped()) direction = DodgeDirection.Back;
 			if (KeyRecorder.keyLeft.isDoubleTapped()) direction = DodgeDirection.Left;
 			if (KeyRecorder.keyRight.isDoubleTapped()) direction = DodgeDirection.Right;
-			if (ParCoolConfig.CONFIG_CLIENT.canFrontDodgeByDoubleTap.get() && KeyRecorder.keyForward.isDoubleTapped())
-				direction = DodgeDirection.Front;
 		}
 		if (direction == null && KeyRecorder.keyDodge.isPressed()) {
 			if (KeyBindings.getKeyBack().isDown()) direction = DodgeDirection.Back;
@@ -93,7 +98,7 @@ public class Dodge extends Action {
 		}
 		if (direction == null) return false;
 		startInfo.putInt(direction.getCode());
-		return (parkourability.getPermission().canDodge()
+		return (parkourability.getActionInfo().can(Dodge.class)
 				&& !isInSuccessiveCoolDown()
 				&& coolTime <= 0
 				&& player.isOnGround()
@@ -104,22 +109,21 @@ public class Dodge extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		return !(parkourability.get(Roll.class).isDoing()
 				|| parkourability.get(ClingToCliff.class).isDoing()
 				|| player.isOnGround()
 				|| player.isInWaterOrBubble()
 				|| player.isFallFlying()
 				|| player.abilities.flying
-				|| !parkourability.getPermission().canDodge()
+				|| !parkourability.getActionInfo().can(Dodge.class)
 		);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		dodgeDirection = DodgeDirection.getFromCode(startData.getInt());
-		stamina.consume(parkourability.getActionInfo().getStaminaConsumptionDodge(), player);
 		Vector3d lookVec = player.getLookAngle();
 		lookVec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
 		final double jump = 0.3;
@@ -138,11 +142,11 @@ public class Dodge extends Action {
 				dodgeVec = lookVec.yRot((float) Math.PI / 2);
 				break;
 		}
-		coolTime = parkourability.getActionInfo().getMaxDodgeCoolTick();
+		coolTime = MAX_COOL_DOWN_TICK;
 		if (successivelyCount < 3) {
 			successivelyCount++;
 		}
-		successivelyCoolTick = parkourability.getActionInfo().getMaxDodgeCoolTick() * 3;
+		successivelyCoolTick = MAX_COOL_DOWN_TICK * 3;
 		dodgeVec = dodgeVec.scale(ParCoolConfig.CONFIG_CLIENT.dodgeSpeedModifier.get());
 		EntityUtil.addVelocity(player, new Vector3d(dodgeVec.x(), jump, dodgeVec.z()));
 		Animation animation = Animation.get(player);

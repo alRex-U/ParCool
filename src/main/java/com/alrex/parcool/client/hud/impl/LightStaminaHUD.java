@@ -3,8 +3,8 @@ package com.alrex.parcool.client.hud.impl;
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.hud.AbstractHUD;
 import com.alrex.parcool.client.hud.Position;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -25,21 +25,21 @@ public class LightStaminaHUD extends AbstractHUD {
 		if (player == null || player.isEyeInFluid(FluidTags.WATER)) return;
 		if (player.isCreative()) return;
 
-		Stamina stamina = Stamina.get(player);
+		IStamina stamina = IStamina.get(player);
 		Parkourability parkourability = Parkourability.get(player);
 		if (stamina == null || parkourability == null) return;
 
-		if (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && parkourability.getActionInfo().isStaminaInfinite())
+		if (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && parkourability.getActionInfo().isInfiniteStaminaPermitted())
 			return;
 
-		if (stamina.getStamina() == 0) return;
+		if (stamina.get() == 0) return;
 		long gameTime = player.level.getGameTime();
-		if (stamina.getStamina() != oldValue) {
+		if (stamina.get() != oldValue) {
 			lastChangedTick = gameTime;
 		} else if (gameTime - lastChangedTick > 40) return;
 
-		oldValue = stamina.getStamina();
-		float staminaScale = (float) stamina.getStamina() / stamina.getMaxStamina();
+		oldValue = stamina.get();
+		float staminaScale = (float) stamina.get() / stamina.getActualMaxStamina();
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
 		Minecraft mc = Minecraft.getInstance();

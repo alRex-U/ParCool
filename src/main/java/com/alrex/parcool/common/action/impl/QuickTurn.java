@@ -2,8 +2,9 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
@@ -17,7 +18,7 @@ public class QuickTurn extends Action {
 	private Vector3d startAngle = null;
 
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		Vector3d angle = player.getLookAngle();
 		startInfo
 				.putDouble(angle.x())
@@ -30,12 +31,12 @@ public class QuickTurn extends Action {
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		return getDoingTick() < AnimationTickLength;
 	}
 
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		turnRightward = !turnRightward;
 		startAngle = new Vector3d(
 				startData.getDouble(),
@@ -60,5 +61,10 @@ public class QuickTurn extends Action {
 
 	@Override
 	public void saveSynchronizedState(ByteBuffer buffer) {
+	}
+
+	@Override
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.None;
 	}
 }

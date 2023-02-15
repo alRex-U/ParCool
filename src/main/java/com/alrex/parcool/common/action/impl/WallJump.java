@@ -5,9 +5,10 @@ import com.alrex.parcool.client.animation.impl.BackwardWallJumpAnimator;
 import com.alrex.parcool.client.animation.impl.WallJumpAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,7 +28,7 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		jump = false;
 	}
 
@@ -37,6 +38,11 @@ public class WallJump extends Action {
 
 	@Override
 	public void saveSynchronizedState(ByteBuffer buffer) {
+	}
+
+	@Override
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.OnStart;
 	}
 
 
@@ -62,13 +68,13 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		Vector3d wallDirection = WorldUtil.getWall(player);
 		Vector3d jumpDirection = getJumpDirection(player, wallDirection);
 		if (jumpDirection == null) return false;
 
 		boolean value = (!stamina.isExhausted()
-				&& parkourability.getPermission().canWallJump()
+				&& parkourability.getActionInfo().can(WallJump.class)
 				&& !player.isOnGround()
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
@@ -117,7 +123,7 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		return false;
 	}
 
@@ -127,9 +133,7 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startData) {
-		stamina.consume(parkourability.getActionInfo().getStaminaConsumptionWallJump(), player);
-
+	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		Vector3d jumpDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		Vector3d direction = new Vector3d(jumpDirection.x(), 1.4, jumpDirection.z()).scale(0.3);
 		Vector3d motion = player.getDeltaMovement();

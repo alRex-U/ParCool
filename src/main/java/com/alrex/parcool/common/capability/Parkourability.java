@@ -4,7 +4,6 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.info.ActionInfo;
-import com.alrex.parcool.common.info.ActionPermission;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -18,21 +17,16 @@ public class Parkourability {
 		LazyOptional<Parkourability> optional = player.getCapability(Capabilities.PARKOURABILITY_CAPABILITY);
 		return optional.orElse(null);
 	}
-
-	private final ActionPermission permission = new ActionPermission();
-	private final ActionInfo actionInfo = new ActionInfo();
+	private final ActionInfo info = new ActionInfo();
 
 	private final List<Action> actions = ActionList.constructActionsList();
 	private final HashMap<Class<? extends Action>, Action> actionsMap;
-	private final HashMap<Action, Short> idMap;
 
 	public Parkourability() {
 		actionsMap = new HashMap<>((int) (actions.size() * 1.5));
-		idMap = new HashMap<>((int) (actions.size() * 1.5));
 		for (short i = 0; i < actions.size(); i++) {
 			Action action = actions.get(i);
 			actionsMap.put(action.getClass(), action);
-			idMap.put(action, i);
 		}
 	}
 
@@ -45,7 +39,7 @@ public class Parkourability {
 	}
 
 	public short getActionID(Action instance) {
-		return idMap.getOrDefault(instance, (short) -1);
+		return ActionList.getIndexOf(instance.getClass());
 	}
 
 	@Nullable
@@ -57,11 +51,7 @@ public class Parkourability {
 	}
 
 	public ActionInfo getActionInfo() {
-		return actionInfo;
-	}
-
-	public ActionPermission getPermission() {
-		return permission;
+		return info;
 	}
 
 	public List<Action> getList() {

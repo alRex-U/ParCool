@@ -4,9 +4,10 @@ import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.FastRunningAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
@@ -20,9 +21,10 @@ import java.util.UUID;
 public class FastRun extends Action {
 	private static final String FAST_RUNNING_MODIFIER_NAME = "parcool.modifier.fastrunnning";
 	private static final UUID FAST_RUNNING_MODIFIER_UUID = UUID.randomUUID();
+	private double speedModifier = 0;
 
 	@Override
-	public void onServerTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onServerTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		ModifiableAttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (attr == null) return;
 		if (attr.getModifier(FAST_RUNNING_MODIFIER_UUID) != null) attr.removeModifier(FAST_RUNNING_MODIFIER_UUID);
@@ -30,20 +32,14 @@ public class FastRun extends Action {
 			attr.addTransientModifier(new AttributeModifier(
 					FAST_RUNNING_MODIFIER_UUID,
 					FAST_RUNNING_MODIFIER_NAME,
-					ParCoolConfig.CONFIG_SERVER.fastRunningModifier.get() / 100d,
+					speedModifier / 100d,
 					AttributeModifier.Operation.ADDITION
 			));
 		}
 	}
 
 	@Override
-	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		stamina.consume(parkourability.getActionInfo().getStaminaConsumptionFastRun(), player);
-	}
-
-	@Override
 	public void restoreSynchronizedState(ByteBuffer buffer) {
-
 	}
 
 	@Override
@@ -52,13 +48,19 @@ public class FastRun extends Action {
 	}
 
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startInfo) {
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.OnWorking;
+	}
+
+	@Override
+	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		startInfo.putDouble(ParCoolConfig.CONFIG_CLIENT.fastRunningModifier.get());
 		return canContinue(player, parkourability, stamina);
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		return (parkourability.getPermission().canFastRunning()
+	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		return (parkourability.getActionInfo().can(FastRun.class)
 				&& !stamina.isExhausted()
 				&& player.isSprinting()
 				&& !player.isVisuallyCrawling()
@@ -69,7 +71,7 @@ public class FastRun extends Action {
 	}
 
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		Animation animation = Animation.get(player);
 		if (animation != null && !animation.hasAnimator()) {
 			animation.setAnimator(new FastRunningAnimator());
@@ -82,6 +84,11 @@ public class FastRun extends Action {
 		if (animation != null && !animation.hasAnimator()) {
 			animation.setAnimator(new FastRunningAnimator());
 		}
+	}
+
+	@Override
+	public void onStartInServer(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+		speedModifier = startData.getDouble();
 	}
 
 	@OnlyIn(Dist.CLIENT)

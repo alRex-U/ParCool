@@ -1,7 +1,8 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.common.capability.Stamina;
+import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.common.capability.IStamina;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -19,19 +20,13 @@ public class SyncStaminaMessage {
 
 	private int stamina = 0;
 	private boolean exhausted = false;
+	private int clientDemandedMaxValue = 0;
 	private UUID playerID = null;
-
-	public int getStamina() {
-		return stamina;
-	}
-
-	public boolean isExhausted() {
-		return exhausted;
-	}
 
 	public void encode(PacketBuffer packet) {
 		packet.writeInt(this.stamina);
 		packet.writeBoolean(this.exhausted);
+		packet.writeInt(this.clientDemandedMaxValue);
 		packet.writeLong(this.playerID.getMostSignificantBits());
 		packet.writeLong(this.playerID.getLeastSignificantBits());
 	}
@@ -40,6 +35,7 @@ public class SyncStaminaMessage {
 		SyncStaminaMessage message = new SyncStaminaMessage();
 		message.stamina = packet.readInt();
 		message.exhausted = packet.readBoolean();
+		message.clientDemandedMaxValue = packet.readInt();
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
 		return message;
 	}
@@ -51,10 +47,11 @@ public class SyncStaminaMessage {
 			player = contextSupplier.get().getSender();
 			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 			if (player == null) return;
-			Stamina stamina = Stamina.get(player);
+			IStamina stamina = IStamina.get(player);
 			if (stamina == null) return;
-
-			stamina.synchronize(this);
+			stamina.set(this.stamina);
+			stamina.setExhaustion(exhausted);
+			stamina.setMaxStamina(clientDemandedMaxValue);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
@@ -73,22 +70,25 @@ public class SyncStaminaMessage {
 				ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 				if (player == null) return;
 			}
-			Stamina stamina = Stamina.get(player);
+			IStamina stamina = IStamina.get(player);
 			if (stamina == null) return;
-			stamina.synchronize(this);
+			stamina.set(this.stamina);
+			stamina.setExhaustion(exhausted);
+			stamina.setMaxStamina(clientDemandedMaxValue);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public static void sync(PlayerEntity player) {
-		Stamina stamina = Stamina.get(player);
-		if (stamina == null) return;
+		IStamina stamina = IStamina.get(player);
+		if (stamina == null || !player.isLocalPlayer()) return;
 
 		SyncStaminaMessage message = new SyncStaminaMessage();
-		message.stamina = stamina.getStamina();
+		message.stamina = stamina.get();
 		message.exhausted = stamina.isExhausted();
 		message.playerID = player.getUUID();
+		message.clientDemandedMaxValue = ParCoolConfig.CONFIG_CLIENT.staminaMax.get();
 
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);
 	}

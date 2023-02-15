@@ -1,8 +1,8 @@
 package com.alrex.parcool.common.event;
 
 import com.alrex.parcool.common.action.impl.Dive;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -15,7 +15,7 @@ public class EventPlayerJump {
 		if (!player.isLocalPlayer()) return;
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
-		Stamina stamina = Stamina.get(player);
+		IStamina stamina = IStamina.get(player);
 		if (stamina == null) return;
 		parkourability.get(Dive.class).onJump(player, parkourability, stamina);
 	}

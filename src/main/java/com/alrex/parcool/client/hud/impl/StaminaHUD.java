@@ -5,9 +5,8 @@ import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.hud.AbstractHUD;
 import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.common.action.impl.Dodge;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
-import com.alrex.parcool.common.info.ActionInfo;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
@@ -35,11 +34,11 @@ public class StaminaHUD extends AbstractHUD {
 		if (player == null) return;
 		if (player.isCreative()) return;
 
-		Stamina stamina = Stamina.get(player);
+		IStamina stamina = IStamina.get(player);
 		Parkourability parkourability = Parkourability.get(player);
 		if (stamina == null || parkourability == null) return;
 
-		if (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && parkourability.getActionInfo().isStaminaInfinite())
+		if (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && parkourability.getActionInfo().isInfiniteStaminaPermitted())
 			return;
 		int renderGage = (int) ((new Date().getTime() / 500) % 3);
 
@@ -50,13 +49,12 @@ public class StaminaHUD extends AbstractHUD {
 		final int boxHeight = 17;
 		final Tuple<Integer, Integer> pos = position.calculate(boxWidth, boxHeight, width, height);
 
-		float staminaScale = (float) stamina.getStamina() / stamina.getMaxStamina();
+		float staminaScale = (float) stamina.get() / stamina.getActualMaxStamina();
 		Dodge dodge = parkourability.get(Dodge.class);
-		ActionInfo actionInfo = parkourability.getActionInfo();
 		float dodgeCoolTimeScale =
 				Math.min(
-						(float) (actionInfo.getMaxDodgeCoolTick() - dodge.getCoolTime()) / actionInfo.getMaxDodgeCoolTick(),
-						dodge.isInSuccessiveCoolDown() ? (float) (actionInfo.getMaxDodgeCoolTick() * 3 - dodge.getSuccessivelyCoolTick()) / (actionInfo.getMaxDodgeCoolTick() * 3.0f) : 1
+						(float) (Dodge.MAX_COOL_DOWN_TICK - dodge.getCoolTime()) / Dodge.MAX_COOL_DOWN_TICK,
+						dodge.isInSuccessiveCoolDown() ? (float) (Dodge.MAX_COOL_DOWN_TICK * 3 - dodge.getSuccessivelyCoolTick()) / (Dodge.MAX_COOL_DOWN_TICK * 3.0f) : 1
 				);
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;

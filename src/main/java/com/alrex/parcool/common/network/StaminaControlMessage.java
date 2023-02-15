@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.common.capability.Stamina;
+import com.alrex.parcool.common.capability.IStamina;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -40,12 +40,12 @@ public class StaminaControlMessage {
 				player = contextSupplier.get().getSender();
 			}
 			if (player == null) return;
-			Stamina stamina = Stamina.get(player);
+			IStamina stamina = IStamina.get(player);
 			if (stamina == null) return;
 			if (add) {
 				stamina.recover(value);
 			} else {
-				stamina.setStamina(value);
+				stamina.set(value);
 			}
 		});
 		contextSupplier.get().setPacketHandled(true);

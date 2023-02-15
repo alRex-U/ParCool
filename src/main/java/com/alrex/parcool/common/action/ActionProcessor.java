@@ -1,9 +1,10 @@
 package com.alrex.parcool.common.action;
 
 import com.alrex.parcool.common.capability.Animation;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.common.network.SyncActionStateMessage;
+import com.alrex.parcool.common.network.SyncStaminaMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,9 +18,10 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 public class ActionProcessor {
-	public final ByteBuffer bufferOfPostState = ByteBuffer.allocate(128);
-	public final ByteBuffer bufferOfPreState = ByteBuffer.allocate(128);
-	public final ByteBuffer bufferOfStarting = ByteBuffer.allocate(128);
+	private final ByteBuffer bufferOfPostState = ByteBuffer.allocate(128);
+	private final ByteBuffer bufferOfPreState = ByteBuffer.allocate(128);
+	private final ByteBuffer bufferOfStarting = ByteBuffer.allocate(128);
+	private int staminaSyncCoolTimeTick = 0;
 
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
@@ -39,14 +41,22 @@ public class ActionProcessor {
 		if (event.phase == TickEvent.Phase.START) return;
 		PlayerEntity player = event.player;
 		Parkourability parkourability = Parkourability.get(player);
-		Stamina stamina = Stamina.get(player);
+		IStamina stamina = IStamina.get(player);
 		if (parkourability == null || stamina == null) return;
 		List<Action> actions = parkourability.getList();
-		stamina.onTick(parkourability.getActionInfo());
 		boolean needSync = event.side == LogicalSide.CLIENT && player.isLocalPlayer();
 		SyncActionStateMessage.Encoder builder = SyncActionStateMessage.Encoder.reset();
 
+		if (needSync) {
+			stamina.tick();
+			staminaSyncCoolTimeTick++;
+			if (staminaSyncCoolTimeTick > 5) {
+				staminaSyncCoolTimeTick = 0;
+				SyncStaminaMessage.sync(player);
+			}
+		}
 		for (Action action : actions) {
+			StaminaConsumeTiming timing = action.getStaminaConsumeTiming();
 			if (needSync) {
 				bufferOfPreState.clear();
 				action.saveSynchronizedState(bufferOfPreState);
@@ -86,6 +96,8 @@ public class ActionProcessor {
 						bufferOfStarting.rewind();
 						action.onStart(player, parkourability);
 						builder.appendStartData(parkourability, action, bufferOfStarting);
+						if (timing == StaminaConsumeTiming.OnStart)
+							stamina.consume(parkourability.getActionInfo().getStaminaConsumptionOf(action.getClass()));
 					}
 				}
 			}
@@ -96,6 +108,8 @@ public class ActionProcessor {
 					action.onWorkingTickInClient(player, parkourability, stamina);
 					if (player.isLocalPlayer()) {
 						action.onWorkingTickInLocalClient(player, parkourability, stamina);
+						if (timing == StaminaConsumeTiming.OnWorking)
+							stamina.consume(parkourability.getActionInfo().getStaminaConsumptionOf(action.getClass()));
 					}
 				} else {
 					action.onWorkingTickInServer(player, parkourability, stamina);

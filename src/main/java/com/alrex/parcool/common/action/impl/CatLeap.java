@@ -4,9 +4,10 @@ import com.alrex.parcool.client.animation.impl.CatLeapAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
@@ -20,14 +21,14 @@ public class CatLeap extends Action {
 	private int readyTick = 0;
 
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		if (coolTimeTick > 0) {
 			coolTimeTick--;
 		}
 	}
 
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		if (player.isLocalPlayer()) {
 			if (KeyRecorder.keySneak.isPressed() && parkourability.get(FastRun.class).getNotDashTick(parkourability.get(AdditionalProperties.class)) < 10) {
 				ready = true;
@@ -44,8 +45,8 @@ public class CatLeap extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startInfo) {
-		return (parkourability.getPermission().canCatLeap()
+	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		return (parkourability.getActionInfo().can(CatLeap.class)
 				&& player.isOnGround()
 				&& !stamina.isExhausted()
 				&& coolTimeTick <= 0
@@ -56,7 +57,7 @@ public class CatLeap extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		return !((getDoingTick() > 1 && player.isOnGround())
 				|| player.isFallFlying()
 				|| player.isInWaterOrBubble()
@@ -65,12 +66,12 @@ public class CatLeap extends Action {
 	}
 
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+		final double catLeapYSpeed = 0.49;
 		Vector3d motionVec = player.getDeltaMovement();
 		Vector3d vec = new Vector3d(motionVec.x(), 0, motionVec.z()).normalize();
 		coolTimeTick = 40;
-		player.setDeltaMovement(vec.x(), parkourability.getActionInfo().getCatLeapPower(), vec.z());
-		stamina.consume(parkourability.getActionInfo().getStaminaConsumptionCatLeap(), player);
+		player.setDeltaMovement(vec.x(), catLeapYSpeed, vec.z());
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new CatLeapAnimator());
 	}
@@ -87,5 +88,10 @@ public class CatLeap extends Action {
 
 	@Override
 	public void saveSynchronizedState(ByteBuffer buffer) {
+	}
+
+	@Override
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.OnStart;
 	}
 }

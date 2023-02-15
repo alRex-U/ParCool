@@ -53,7 +53,6 @@ public class ParCool {
 
 	//only in Client
 	public static void setActivation(boolean activation) {
-		ParCoolConfig.CONFIG_CLIENT.canWallJump.get();
 		ParCoolConfig.CONFIG_CLIENT.parCoolActivation.set(activation);
 	}
 
@@ -81,6 +80,7 @@ public class ParCool {
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
+		CommandRegistry.registerArgumentTypes(event);
 		EventBusForgeRegistry.register(MinecraftForge.EVENT_BUS);
 		EventBusModRegistry.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Capabilities.register(CapabilityManager.INSTANCE);

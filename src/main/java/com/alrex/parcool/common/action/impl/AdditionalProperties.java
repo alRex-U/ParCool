@@ -1,8 +1,9 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.nio.ByteBuffer;
@@ -15,17 +16,17 @@ public class AdditionalProperties extends Action {
 	private int notCreativeFlyingTick = 0;
 
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		return false;
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		return false;
 	}
 
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		if (player.isSprinting()) {
 			notSprintingTick = 0;
 			sprintingTick++;
@@ -53,6 +54,11 @@ public class AdditionalProperties extends Action {
 
 	@Override
 	public void saveSynchronizedState(ByteBuffer buffer) {
+	}
+
+	@Override
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.None;
 	}
 
 	public int getSprintingTick() {

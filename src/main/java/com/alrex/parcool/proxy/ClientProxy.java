@@ -13,13 +13,6 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void registerMessages(SimpleChannel instance) {
 		instance.registerMessage(
-				0,
-				ResetFallDistanceMessage.class,
-				ResetFallDistanceMessage::encode,
-				ResetFallDistanceMessage::decode,
-				ResetFallDistanceMessage::handle
-		);
-		instance.registerMessage(
 				3,
 				StartBreakfallMessage.class,
 				StartBreakfallMessage::encode,
@@ -35,10 +28,10 @@ public class ClientProxy extends CommonProxy {
 		);
 		instance.registerMessage(
 				12,
-				ActionPermissionsMessage.class,
-				ActionPermissionsMessage::encode,
-				ActionPermissionsMessage::decode,
-				ActionPermissionsMessage::handle
+				LimitationByServerMessage.class,
+				LimitationByServerMessage::encode,
+				LimitationByServerMessage::decode,
+				LimitationByServerMessage::handle
 		);
 		instance.registerMessage(
 				15,

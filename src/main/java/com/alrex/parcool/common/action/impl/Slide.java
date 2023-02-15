@@ -5,9 +5,10 @@ import com.alrex.parcool.client.animation.impl.CrawlAnimator;
 import com.alrex.parcool.client.animation.impl.SlidingAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.utilities.EntityUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,8 +21,8 @@ public class Slide extends Action {
 	private Vector3d slidingVec = null;
 
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startInfo) {
-		return (parkourability.getPermission().canCrawl()
+	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		return (parkourability.getActionInfo().can(Crawl.class)
 				&& KeyRecorder.keyCrawlState.isPressed()
 				&& !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()
@@ -32,13 +33,14 @@ public class Slide extends Action {
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		return getDoingTick() < parkourability.getActionInfo().getMaxSlidingTick()
+	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		final int maxSlidingTick = 15;
+		return getDoingTick() < maxSlidingTick
 				&& parkourability.get(Crawl.class).isDoing();
 	}
 
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		slidingVec = player.getLookAngle().multiply(1, 0, 1).normalize();
 		Animation animation = Animation.get(player);
 		if (animation != null) {
@@ -55,7 +57,7 @@ public class Slide extends Action {
 	}
 
 	@Override
-	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		if (player.isOnGround()) {
 			Vector3d vec = slidingVec.scale(0.2);
 			EntityUtil.addVelocity(player, vec);
@@ -90,5 +92,10 @@ public class Slide extends Action {
 
 	@Override
 	public void saveSynchronizedState(ByteBuffer buffer) {
+	}
+
+	@Override
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.None;
 	}
 }

@@ -3,9 +3,10 @@ package com.alrex.parcool.common.action.impl;
 import com.alrex.parcool.client.animation.impl.HorizontalWallRunAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
@@ -24,13 +25,13 @@ public class HorizontalWallRun extends Action {
 	private boolean wallIsRightward = false;
 
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		if (coolTime > 0) coolTime--;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth());
 		if (wallDirection == null) return;
 		Vector3d targetVec = wallDirection.yRot((wallIsRightward ? 1 : -1) * (float) Math.PI / 2);
@@ -52,7 +53,7 @@ public class HorizontalWallRun extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth());
 		if (wallDirection == null) return false;
 		Vector3d wallVec = wallDirection.normalize();
@@ -69,7 +70,7 @@ public class HorizontalWallRun extends Action {
 		}
 		BufferUtil.wrap(startInfo).putBoolean(dividedVec.z() > 0/*if true, wall is in right side*/);
 
-		return (parkourability.getPermission().canHorizontalWallRun()
+		return (parkourability.getActionInfo().can(HorizontalWallRun.class)
 				&& !parkourability.get(WallJump.class).justJumped()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& KeyBindings.getKeyHorizontalWallRun().isDown()
@@ -86,11 +87,11 @@ public class HorizontalWallRun extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth());
 		if (wallDirection == null) return false;
 		return (getDoingTick() < Max_Running_Tick &&
-				parkourability.getPermission().canHorizontalWallRun() &&
+				parkourability.getActionInfo().can(HorizontalWallRun.class) &&
 				!parkourability.get(WallJump.class).justJumped() &&
 				!parkourability.get(Crawl.class).isDoing() &&
 				KeyBindings.getKeyHorizontalWallRun().isDown() &&
@@ -104,7 +105,7 @@ public class HorizontalWallRun extends Action {
 	}
 
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		wallIsRightward = BufferUtil.getBoolean(startData);
 		Animation animation = Animation.get(player);
 		if (animation != null) {
@@ -135,5 +136,10 @@ public class HorizontalWallRun extends Action {
 
 	@Override
 	public void saveSynchronizedState(ByteBuffer buffer) {
+	}
+
+	@Override
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.OnWorking;
 	}
 }

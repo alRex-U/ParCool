@@ -1,11 +1,11 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.DiveAnimator;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,13 +18,13 @@ public class Dive extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		boolean can = (justJumped
 				&& !stamina.isExhausted()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !player.isVisuallyCrawling()
 				&& parkourability.get(FastRun.class).canActWithRunning(player)
-				&& ParCoolConfig.CONFIG_CLIENT.canDive.get()
+				&& parkourability.getActionInfo().can(Dive.class)
 				&& WorldUtil.existsDivableSpace(player)
 		);
 		startInfo.putDouble(player.getDeltaMovement().y());
@@ -34,7 +34,7 @@ public class Dive extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		return !(player.isFallFlying()
 				|| player.abilities.flying
 				|| player.isInWaterOrBubble()
@@ -45,14 +45,14 @@ public class Dive extends Action {
 		);
 	}
 
-	public void onJump(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onJump(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		if (!player.isLocalPlayer()) return;
 		justJumped = true;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		double ySpeed = startData.getDouble();
 		Animation animation = Animation.get(player);
 		if (animation != null) {
@@ -66,6 +66,11 @@ public class Dive extends Action {
 
 	@Override
 	public void saveSynchronizedState(ByteBuffer buffer) {
+	}
+
+	@Override
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.None;
 	}
 
 	@OnlyIn(Dist.CLIENT)

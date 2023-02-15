@@ -4,9 +4,10 @@ import com.alrex.parcool.client.animation.impl.FlippingAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.nio.ByteBuffer;
@@ -38,7 +39,7 @@ public class Flipping extends Action {
 	}
 
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		FlippingDirection fDirection;
 		if (KeyBindings.getKeyBack().isDown()) {
 			fDirection = FlippingDirection.Back;
@@ -46,7 +47,7 @@ public class Flipping extends Action {
 			fDirection = FlippingDirection.Front;
 		}
 		startInfo.putInt(fDirection.getCode());
-		return (parkourability.getPermission().canFlipping()
+		return (parkourability.getActionInfo().can(Flipping.class)
 				&& !stamina.isExhausted()
 				&& parkourability.get(AdditionalProperties.class).getNotLandingTick() <= 1
 				&& KeyBindings.getKeyRight().isDown()
@@ -57,14 +58,14 @@ public class Flipping extends Action {
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		return !player.isOnGround() || getDoingTick() <= 2;
 	}
 
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, Stamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		player.jumpFromGround();
-		stamina.consume(parkourability.getActionInfo().getStaminaConsumptionFlipping(), player);
+		stamina.consume(parkourability.getActionInfo().getStaminaConsumptionOf(Flipping.class));
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new FlippingAnimator(
@@ -89,5 +90,10 @@ public class Flipping extends Action {
 
 	@Override
 	public void saveSynchronizedState(ByteBuffer buffer) {
+	}
+
+	@Override
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.OnStart;
 	}
 }
