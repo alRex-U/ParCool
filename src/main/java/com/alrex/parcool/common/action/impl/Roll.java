@@ -29,7 +29,7 @@ public class Roll extends Action {
 					&& !parkourability.get(Dodge.class).isDoing()
 					&& ParCoolConfig.CONFIG_CLIENT.enableRollWhenCreative.get()
 					&& player.isCreative()
-					&& parkourability.get(AdditionalProperties.class).getLandingTick() <= 1
+					&& parkourability.getAdditionalProperties().getLandingTick() <= 1
 					&& player.isOnGround()
 					&& !isDoing()
 					&& creativeCoolTime == 0

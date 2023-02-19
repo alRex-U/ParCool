@@ -1,0 +1,16 @@
+{
+  "name": "ドッジロール",
+  "icon": "minecraft:arrow",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)ドッジロール$()は弾丸や矢を避ける為のアクションです。短距離を素早くジャンプします。$(br)クールタイムにも注意しましょう。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(list)移動キーを二回素早く押す(前移動キーではできません)$(list)移動キーとドッジロールキー($(k:parcool.Dodge))を同時押しする"
+    }
+  ]
+}

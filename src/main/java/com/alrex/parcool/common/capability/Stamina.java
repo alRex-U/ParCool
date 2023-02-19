@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.common.potion.Effects;
 import net.minecraft.entity.player.PlayerEntity;
 
 import javax.annotation.Nullable;
@@ -50,6 +51,13 @@ public class Stamina implements IStamina {
 
 	@Override
 	public void consume(int value) {
+		if (player == null) return;
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) return;
+		if (exhausted
+				|| (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && parkourability.getActionInfo().isInfiniteStaminaPermitted())
+				|| player.hasEffect(Effects.INEXHAUSTIBLE)
+		) return;
 		recoverCoolTime = 30;
 		set(stamina - value);
 	}

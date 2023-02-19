@@ -32,8 +32,6 @@ public class ParCoolConfig {
 		private final ForgeConfigSpec.BooleanValue[] animatorPossibilities = new ForgeConfigSpec.BooleanValue[AnimatorList.ANIMATORS.size()];
 		private final ForgeConfigSpec.IntValue[] staminaConsumptions = new ForgeConfigSpec.IntValue[ActionList.ACTIONS.size()];
 		public final ForgeConfigSpec.BooleanValue infiniteStamina;
-		public final ForgeConfigSpec.BooleanValue autoTurningWallJump;
-		public final ForgeConfigSpec.BooleanValue disableWallJumpTowardWall;
 		public final ForgeConfigSpec.BooleanValue disableCameraRolling;
 		public final ForgeConfigSpec.BooleanValue disableCameraFlipping;
 		public final ForgeConfigSpec.BooleanValue disableCameraVault;
@@ -108,8 +106,6 @@ public class ParCoolConfig {
 			builder.pop();
 			builder.push("Other Configuration");
 			{
-				autoTurningWallJump = builder.comment("Auto turning forward when WallJump").define("autoTurningWallJump", false);
-				disableWallJumpTowardWall = builder.comment("Disable WallJump toward a wall").define("disableWallJumpTowardWall", false);
 				disableDoubleTappingForDodge = builder.comment("Disable Double-Tapping For Dodge. Please Use Dodge Key instead").define("disableDoubleTapping", false);
 				disableCrawlInAir = builder.comment("Disable Crawl in air (experimental)").define("disableCrawlInAir", true);
 				disableVaultInAir = builder.comment("Disable Vault in air (experimental)").define("disableVaultInAir", true);

@@ -1,0 +1,16 @@
+{
+  "name": "Dodge",
+  "icon": "minecraft:arrow",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)Dodge$() is action for avoiding bullets or arrows. You can quick short-jump.$(br)However be careful with cool time!"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(list)Press movement keys twice(impossible with forward key)$(list)Press movement key and Dodge key($(k:parcool.Dodge))"
+    }
+  ]
+}

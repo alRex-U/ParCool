@@ -1,6 +1,5 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.BackwardWallJumpAnimator;
 import com.alrex.parcool.client.animation.impl.WallJumpAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
@@ -9,9 +8,9 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -54,17 +53,11 @@ public class WallJump extends Action {
 		Vector3d lookVec = player.getLookAngle();
 		Vector3d vec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
 
-		Vector3d value;
-
 		if (wall.dot(vec) > 0) {//To Wall
-			if (ParCoolConfig.CONFIG_CLIENT.disableWallJumpTowardWall.get()) return null;
-			double dot = vec.reverse().dot(wall);
-			value = vec.add(wall.scale(2 * dot / wall.length())); // Perfect.
-		} else {//back on Wall
-			value = vec;
-		}
+			return null;
+		} else {/*back on Wall*/}
 
-		return value.normalize().add(wall.scale(-0.7));
+		return vec.normalize().add(wall.scale(-0.7));
 	}
 
 	@Override
@@ -79,19 +72,15 @@ public class WallJump extends Action {
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
 				&& !player.abilities.flying
-				&& parkourability.get(AdditionalProperties.class).getNotCreativeFlyingTick() > 10
+				&& parkourability.getAdditionalProperties().getNotCreativeFlyingTick() > 10
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& parkourability.get(ClingToCliff.class).getNotDoingTick() > 3
 				&& KeyRecorder.keyWallJump.isPressed()
 				&& !parkourability.get(Crawl.class).isDoing()
-				&& parkourability.get(AdditionalProperties.class).getNotLandingTick() > 5
+				&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
 				&& WorldUtil.getWall(player) != null
 		);
 		if (!value) return false;
-
-		if (ParCoolConfig.CONFIG_CLIENT.autoTurningWallJump.get()) {
-			player.yRot = (float) VectorUtil.toYawDegree(jumpDirection);
-		}
 
 		//doing "wallDirection/jumpDirection" as complex number(x + z i) to calculate difference of player's direction to wall
 		Vector3d dividedVec =
@@ -118,6 +107,8 @@ public class WallJump extends Action {
 				.putDouble(jumpDirection.x())
 				.putDouble(jumpDirection.y())
 				.putDouble(jumpDirection.z())
+				.putDouble(wallDirection.x())
+				.putDouble(wallDirection.z())
 				.put(type.getCode());
 		return true;
 	}
@@ -136,11 +127,25 @@ public class WallJump extends Action {
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		Vector3d jumpDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		Vector3d direction = new Vector3d(jumpDirection.x(), 1.4, jumpDirection.z()).scale(0.3);
+		Vector3d wallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		Vector3d motion = player.getDeltaMovement();
 
+		BlockPos leanedBlock = new BlockPos(
+				player.getX() + wallDirection.x(),
+				player.getBoundingBox().minY + player.getBbHeight() * 0.25,
+				player.getZ() + wallDirection.z()
+		);
+		float slipperiness = player.level.getBlockState(leanedBlock).getSlipperiness(player.level, leanedBlock, player);
+
+		double ySpeed;
+		if (slipperiness > 0.9) {// icy blocks
+			ySpeed = motion.y();
+		} else {
+			ySpeed = motion.y() > direction.y() ? motion.y + direction.y() : direction.y();
+		}
 		player.setDeltaMovement(
 				motion.x() + direction.x(),
-				motion.y() > direction.y() ? motion.y + direction.y() : direction.y(),
+				ySpeed,
 				motion.z() + direction.z()
 		);
 

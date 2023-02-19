@@ -11,6 +11,7 @@ import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -23,6 +24,7 @@ public class HorizontalWallRun extends Action {
 	private float bodyYaw = 0;
 	private static final int Max_Running_Tick = 25;
 	private boolean wallIsRightward = false;
+	private Vector3d runningWallDirection = null;
 
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
@@ -42,13 +44,21 @@ public class HorizontalWallRun extends Action {
 						-lookVec.x() * targetVec.z() + lookVec.z() * targetVec.x()
 				).normalize().z()
 		);
-		bodyYaw = (float) VectorUtil.toYawDegree(targetVec.yRot((float) (differenceAngle / 4)));
+		bodyYaw = (float) VectorUtil.toYawDegree(targetVec.yRot((float) (differenceAngle / 10)));
 		Vector3d movement = player.getDeltaMovement();
-		player.setDeltaMovement(
-				movement.x(),
-				movement.y() * ((double) getDoingTick()) / Max_Running_Tick,
-				movement.z()
+		BlockPos leanedBlock = new BlockPos(
+				player.getX() + runningWallDirection.x(),
+				player.getBoundingBox().minY + player.getBbHeight() * 0.5,
+				player.getZ() + runningWallDirection.z()
 		);
+		float slipperiness = player.level.getBlockState(leanedBlock).getSlipperiness(player.level, leanedBlock, player);
+		if (slipperiness <= 0.8) {
+			player.setDeltaMovement(
+					movement.x(),
+					movement.y() * (slipperiness - 0.1) * ((double) getDoingTick()) / Max_Running_Tick,
+					movement.z()
+			);
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -69,6 +79,8 @@ public class HorizontalWallRun extends Action {
 			return false;
 		}
 		BufferUtil.wrap(startInfo).putBoolean(dividedVec.z() > 0/*if true, wall is in right side*/);
+		startInfo.putDouble(wallDirection.x())
+				.putDouble(wallDirection.z());
 
 		return (parkourability.getActionInfo().can(HorizontalWallRun.class)
 				&& !parkourability.get(WallJump.class).justJumped()
@@ -77,9 +89,9 @@ public class HorizontalWallRun extends Action {
 				&& Math.abs(player.getDeltaMovement().y()) < 0.3
 				&& coolTime == 0
 				&& !player.isOnGround()
-				&& parkourability.get(AdditionalProperties.class).getNotLandingTick() > 5
+				&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
 				&& (parkourability.get(FastRun.class).canActWithRunning(player)
-				|| parkourability.get(FastRun.class).getNotDashTick(parkourability.get(AdditionalProperties.class)) < 3
+				|| parkourability.get(FastRun.class).getNotDashTick(parkourability.getAdditionalProperties()) < 10
 		)
 				&& !stamina.isExhausted()
 		);
@@ -107,6 +119,7 @@ public class HorizontalWallRun extends Action {
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		wallIsRightward = BufferUtil.getBoolean(startData);
+		runningWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new HorizontalWallRunAnimator(wallIsRightward));

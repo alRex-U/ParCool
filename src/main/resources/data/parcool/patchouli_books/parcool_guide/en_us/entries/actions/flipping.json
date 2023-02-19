@@ -1,0 +1,16 @@
+{
+  "name": "Flipping",
+  "icon": "minecraft:blaze_powder",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "ParCool adds a special animation of jump: Flipping. You can do front-flip and back-flip."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使い方",
+      "text": "$(list)Press left and right movement key simultaneously$(list)Press Flipping key($(k:parcool.Flipping))"
+    }
+  ]
+}

@@ -49,11 +49,14 @@ public class Flipping extends Action {
 		startInfo.putInt(fDirection.getCode());
 		return (parkourability.getActionInfo().can(Flipping.class)
 				&& !stamina.isExhausted()
-				&& parkourability.get(AdditionalProperties.class).getNotLandingTick() <= 1
-				&& KeyBindings.getKeyRight().isDown()
-				&& KeyRecorder.keyRight.getTickKeyDown() < 3
-				&& KeyBindings.getKeyLeft().isDown()
-				&& KeyRecorder.keyLeft.getTickKeyDown() < 3
+				&& parkourability.getAdditionalProperties().getNotLandingTick() <= 1
+				&& (
+				(KeyBindings.getKeyRight().isDown()
+						&& KeyRecorder.keyRight.getTickKeyDown() < 3
+						&& KeyBindings.getKeyLeft().isDown()
+						&& KeyRecorder.keyLeft.getTickKeyDown() < 3
+				) || KeyRecorder.keyFlipping.isPressed()
+		)
 		);
 	}
 

@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 public class ActionList {
 	public static final List<ActionRegistry<? extends Action>> ACTION_REGISTRIES = Arrays.asList(
-			new ActionRegistry<>(AdditionalProperties.class, AdditionalProperties::new, 0),
 			new ActionRegistry<>(BreakfallReady.class, BreakfallReady::new, 0),
 			new ActionRegistry<>(CatLeap.class, CatLeap::new, 150),
 			new ActionRegistry<>(ClimbUp.class, ClimbUp::new, 150),

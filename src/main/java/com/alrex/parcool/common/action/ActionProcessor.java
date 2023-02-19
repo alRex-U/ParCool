@@ -54,7 +54,11 @@ public class ActionProcessor {
 				staminaSyncCoolTimeTick = 0;
 				SyncStaminaMessage.sync(player);
 			}
+			if (stamina.isExhausted()) {
+				player.setSprinting(false);
+			}
 		}
+		parkourability.getAdditionalProperties().onTick(player, parkourability);
 		for (Action action : actions) {
 			StaminaConsumeTiming timing = action.getStaminaConsumeTiming();
 			if (needSync) {

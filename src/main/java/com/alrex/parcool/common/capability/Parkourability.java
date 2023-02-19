@@ -2,6 +2,7 @@ package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
+import com.alrex.parcool.common.action.AdditionalProperties;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.info.ActionInfo;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,7 +18,9 @@ public class Parkourability {
 		LazyOptional<Parkourability> optional = player.getCapability(Capabilities.PARKOURABILITY_CAPABILITY);
 		return optional.orElse(null);
 	}
+
 	private final ActionInfo info = new ActionInfo();
+	private final AdditionalProperties properties = new AdditionalProperties();
 
 	private final List<Action> actions = ActionList.constructActionsList();
 	private final HashMap<Class<? extends Action>, Action> actionsMap;
@@ -48,6 +51,10 @@ public class Parkourability {
 			return actions.get(id);
 		}
 		return null;
+	}
+
+	public AdditionalProperties getAdditionalProperties() {
+		return properties;
 	}
 
 	public ActionInfo getActionInfo() {

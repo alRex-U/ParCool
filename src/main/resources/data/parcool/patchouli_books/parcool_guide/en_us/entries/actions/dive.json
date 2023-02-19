@@ -1,0 +1,23 @@
+{
+  "name": "Dive",
+  "icon": "minecraft:cod",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "ParCool has special jumping animation: $(bold)Diving$(). Let's see it by third-person view."
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/image_dive.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(bold)1.$() Do $(l:parcool:actions/fast_run)Fast Run$()$(br)$(bold)2.$() Jump into enough space from a high place"
+    }
+  ]
+}

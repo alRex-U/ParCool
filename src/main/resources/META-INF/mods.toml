@@ -9,16 +9,7 @@ displayName = "ParCool!" #mandatory
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/parcool" #optional
 logoFile = "parcool_logo.png" #optional
 credits = "Thanks for Java, and Developers of Minecraft and Minecraft Forge" #optional
-authors = '''
-
-    Owner: alRex_U
-    Developer:
-        └ alRex_U
-    Tlanslators:
-        ├ ja_jp : alRex_U
-        ├ zh_cn : CatalystGinger
-        └ fr_fr : COwOkies
-'''
+authors = 'alRex_U'
 
 description = '''
     This enable us act like parkour players.

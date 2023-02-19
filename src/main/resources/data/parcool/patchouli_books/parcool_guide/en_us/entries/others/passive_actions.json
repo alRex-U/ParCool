@@ -1,0 +1,21 @@
+{
+  "name": "Passive Actions",
+  "icon": "minecraft:brick",
+  "category": "parcool:category_support_features",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "ParCool adds some passive abilities and animations."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Climb Poles",
+      "text": "Players can climb pole-like blocks, such as Iron bars, stacked fences, end rod and etc."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Falling Animation",
+      "text": "New animation for long-time falling is added. If you think this is annoying, you can turn it off by config."
+    }
+  ]
+}

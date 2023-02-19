@@ -1,0 +1,16 @@
+{
+  "name": "キャットリープ",
+  "icon": "minecraft:cat_spawn_egg",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)キャットリープ$()はジャンプして壁やフェンスにしがみつく時に使うテクニックです$(br)パルクールの基本テクニックと言われています。$(br)壁に跳びついて着地の衝撃を足を曲げて軽減します。$(br2)このモッドでは単なるロングジャンプとして追加されます。クールタイムに注意しましょう。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使い方",
+      "text": "$(bold)1.$()$(l:parcool:actions/fast_run)ファストラン$()をする$(br)$(bold)2.$()素早くスニークする$(br)$(bold)3.$()素早くスニークを止める$(br2)$(l:parcool:actions/cling_to_cliff)崖つかまり$()の併用もおすすめです。"
+    }
+  ]
+}

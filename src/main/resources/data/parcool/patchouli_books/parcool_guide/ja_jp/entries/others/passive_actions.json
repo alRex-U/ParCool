@@ -1,0 +1,21 @@
+{
+  "name": "パッシブアクション",
+  "icon": "minecraft:brick",
+  "category": "parcool:category_support_features",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "ParCoolは常時使用可能ないくつかのアクションを追加します。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "柱登り",
+      "text": "プレイヤーは柱のような形のブロック、例えば積み重ねた柵や鉄格子、鎖やエンドロッドなどを梯子と同じようによじ登ることができます。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "落下アニメーション",
+      "text": "長時間落下すると専用のアニメーションがあります。もし不要ならコンフィグでオフにする事もできます。"
+    }
+  ]
+}

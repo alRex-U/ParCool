@@ -1,0 +1,16 @@
+{
+  "name": "Quick Turn",
+  "icon": "minecraft:iron_helmet",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Sometimes you may want to turn quickly backward. Press only one key to do it."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(list)Press Quick Turn key($(k:parcool.QuickTurn))"
+    }
+  ]
+}

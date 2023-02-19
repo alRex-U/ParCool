@@ -1,0 +1,16 @@
+{
+  "name": "Wall Jump",
+  "icon": "minecraft:leather_boots",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "You can kick walls to more jump. You need to have your back to the wall. But be careful, you cannot gain height if want to kick icy blocks!"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(list)Press Wall Jump key($(k:parcool.WallJump)) by walls in air"
+    }
+  ]
+}

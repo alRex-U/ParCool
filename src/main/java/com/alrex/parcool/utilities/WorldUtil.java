@@ -155,7 +155,7 @@ public class WorldUtil {
 			return false;
 		}
 		BlockPos centerPos = new BlockPos(center);
-		final int neededSpaceHeight = 12;
+		final int neededSpaceHeight = 9;
 		boolean hasSpace = true;
 		for (int i = 0; i < neededSpaceHeight; i++) {
 			hasSpace = !world.getBlockState(centerPos).getMaterial().blocksMotion();
@@ -210,16 +210,47 @@ public class WorldUtil {
 				pos.y() + entity.getBbHeight(),
 				pos.z() + d
 		);
+		int xDirection = 0;
+		int zDirection = 0;
 
 		if (!world.noCollision(baseBoxSide.expandTowards(distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards(distance, 0, 0)))
-			return true;
+			xDirection++;
 		if (!world.noCollision(baseBoxSide.expandTowards(-distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards(-distance, 0, 0)))
-			return true;
+			xDirection--;
 		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, distance)))
-			return true;
+			zDirection++;
 		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, -distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, -distance)))
-			return true;
-
-		return false;
+			zDirection--;
+		if (xDirection == 0 && zDirection == 0) {
+			return false;
+		}
+		float slipperiness;
+		if (xDirection != 0 && zDirection != 0) {
+			BlockPos blockPos1 = new BlockPos(
+					entity.getX() + xDirection,
+					entity.getBoundingBox().minY + baseLine - 0.3,
+					entity.getZ()
+			);
+			BlockPos blockPos2 = new BlockPos(
+					entity.getX(),
+					entity.getBoundingBox().minY + baseLine - 0.3,
+					entity.getZ() + zDirection
+			);
+			if (!entity.level.isLoaded(blockPos1)) return false;
+			if (!entity.level.isLoaded(blockPos2)) return false;
+			slipperiness = Math.min(
+					entity.level.getBlockState(blockPos1).getSlipperiness(entity.level, blockPos1, entity),
+					entity.level.getBlockState(blockPos2).getSlipperiness(entity.level, blockPos2, entity)
+			);
+		} else {
+			BlockPos blockPos = new BlockPos(
+					entity.getX() + xDirection,
+					entity.getBoundingBox().minY + baseLine - 0.3,
+					entity.getZ() + zDirection
+			);
+			if (!entity.level.isLoaded(blockPos)) return false;
+			slipperiness = entity.level.getBlockState(blockPos).getSlipperiness(entity.level, blockPos, entity);
+		}
+		return slipperiness <= 0.8;
 	}
 }

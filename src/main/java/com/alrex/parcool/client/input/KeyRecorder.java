@@ -23,6 +23,7 @@ public class KeyRecorder {
 	public static final KeyState keyBreakfall = new KeyState();
 	public static final KeyState keyWallJump = new KeyState();
 	public static final KeyState keyQuickTurn = new KeyState();
+	public static final KeyState keyFlipping = new KeyState();
 
 	@SubscribeEvent
 	public static void onClientTick(TickEvent.ClientTickEvent event) {
@@ -42,6 +43,7 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyBreakfall(), keyBreakfall);
 		record(KeyBindings.getKeyWallJump(), keyWallJump);
 		record(KeyBindings.getKeyQuickTurn(), keyQuickTurn);
+		record(KeyBindings.getKeyFlipping(), keyFlipping);
 	}
 
 	private static void record(KeyBinding keyBinding, KeyState state) {

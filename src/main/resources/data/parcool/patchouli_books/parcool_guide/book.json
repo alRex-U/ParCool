@@ -1,0 +1,10 @@
+{
+  "name": "parcool.patchouli.guide.name",
+  "version": "1",
+  "landing_text": "parcool.patchouli.guide.landingText",
+  "show_progress": "false",
+  "pause_game": "true",
+  "book_texture": "patchouli:textures/gui/book_blue.png",
+  "model": "parcool:parcool_guide",
+  "header_color": "0b2d52"
+}

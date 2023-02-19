@@ -31,7 +31,7 @@ public class BreakfallReady extends Action {
 				&& !stamina.isExhausted()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !player.isInWaterOrBubble()
-				&& (!player.isOnGround() || parkourability.get(AdditionalProperties.class).getLandingTick() < 3)
+				&& (!player.isOnGround() || parkourability.getAdditionalProperties().getLandingTick() < 3)
 		);
 	}
 
