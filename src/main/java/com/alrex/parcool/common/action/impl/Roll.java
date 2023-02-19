@@ -4,96 +4,85 @@ import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.RollAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
-import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
 
 public class Roll extends Action {
-	private boolean start = false;
-	private boolean rolling = false;
-	private int rollingTick = 0;
-
-	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (rolling) {
-			rollingTick++;
-		} else {
-			rollingTick = 0;
-		}
-	}
-
 	private int creativeCoolTime = 0;
+	private boolean startRequired = false;
+
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		if (player.isLocalPlayer()) {
-			if (
-					KeyBindings.getKeyBreakfall().isDown()
-							&& KeyBindings.getKeyForward().isDown()
-							&& !parkourability.getDodge().isDodging()
-							&& ParCoolConfig.CONFIG_CLIENT.enableRollWhenCreative.get()
-							&& player.isCreative()
-							&& parkourability.getAdditionalProperties().getLandingTick() <= 1
-							&& player.isOnGround()
-							&& !rolling
-							&& creativeCoolTime == 0
+			if (KeyBindings.getKeyBreakfall().isDown()
+					&& KeyBindings.getKeyForward().isDown()
+					&& !parkourability.get(Dodge.class).isDoing()
+					&& ParCoolConfig.CONFIG_CLIENT.enableRollWhenCreative.get()
+					&& player.isCreative()
+					&& parkourability.getAdditionalProperties().getLandingTick() <= 1
+					&& player.isOnGround()
+					&& !isDoing()
+					&& creativeCoolTime == 0
 			) {
-				start = true;
+				startRequired = true;
 				creativeCoolTime = 20;
 			}
 			if (creativeCoolTime > 0) creativeCoolTime--;
-			if (rollingTick >= getRollMaxTick()) rolling = false;
-		}
-		if ((rolling && rollingTick <= 1) || start) {
-			Animation animation = Animation.get(player);
-			if (animation != null) animation.setAnimator(new RollAnimator());
-		}
-		if (start) {
-			start = false;
-			rolling = true;
-			if (player.isLocalPlayer()) {
-				Vector3d vec = VectorUtil.fromYawDegree(player.yBodyRot);
-				player.setDeltaMovement(vec.x(), 0, vec.z());
-			}
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void restoreSynchronizedState(ByteBuffer buffer) {
 	}
 
+	@Override
+	public void saveSynchronizedState(ByteBuffer buffer) {
+	}
+
+	@Override
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.OnStart;
+	}
+
+	@Override
+	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		return startRequired;
+	}
+
+	@Override
+	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		return getDoingTick() < getRollMaxTick();
+	}
+
+	@Override
+	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+		startRequired = false;
+		Animation animation = Animation.get(player);
+		if (animation != null) animation.setAnimator(new RollAnimator());
+	}
+
+	@Override
+	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+		startRequired = false;
+		double modifier = Math.sqrt(player.getBbWidth());
+		Vector3d vec = VectorUtil.fromYawDegree(player.yBodyRot).scale(modifier);
+		player.setDeltaMovement(vec.x(), 0, vec.z());
+		Animation animation = Animation.get(player);
+		if (animation != null) animation.setAnimator(new RollAnimator());
+	}
 
 	public void startRoll(PlayerEntity player) {
-		start = true;
-	}
-
-	@Override
-	public void saveState(ByteBuffer buffer) {
-		BufferUtil.wrap(buffer).putBoolean(start).putBoolean(rolling);
-	}
-
-	@Override
-	public void restoreState(ByteBuffer buffer) {
-		start = BufferUtil.getBoolean(buffer);
-		rolling = BufferUtil.getBoolean(buffer);
-	}
-
-	public int getRollingTick() {
-		return rollingTick;
-	}
-
-	public boolean isRolling() {
-		return rolling;
+		startRequired = true;
 	}
 
 	public int getRollMaxTick() {

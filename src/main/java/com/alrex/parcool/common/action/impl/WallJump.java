@@ -1,20 +1,19 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.client.animation.impl.BackwardWallJumpAnimator;
 import com.alrex.parcool.client.animation.impl.WallJumpAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
-import com.alrex.parcool.common.network.ResetFallDistanceMessage;
-import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
@@ -28,8 +27,21 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
+	public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		jump = false;
+	}
+
+	@Override
+	public void restoreSynchronizedState(ByteBuffer buffer) {
+	}
+
+	@Override
+	public void saveSynchronizedState(ByteBuffer buffer) {
+	}
+
+	@Override
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.OnStart;
 	}
 
 
@@ -41,83 +53,139 @@ public class WallJump extends Action {
 		Vector3d lookVec = player.getLookAngle();
 		Vector3d vec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
 
-		Vector3d value;
-
 		if (wall.dot(vec) > 0) {//To Wall
-			if (ParCoolConfig.CONFIG_CLIENT.disableWallJumpTowardWall.get()) return null;
-			double dot = vec.reverse().dot(wall);
-			value = vec.add(wall.scale(2 * dot / wall.length())); // Perfect.
-		} else {//back on Wall
-			value = vec;
-		}
+			return null;
+		} else {/*back on Wall*/}
 
-		return value.normalize().add(wall.scale(-0.7));
+		return vec.normalize().add(wall.scale(-0.7));
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	private boolean canWallJump(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		return !stamina.isExhausted()
-				&& parkourability.getPermission().canWallJump()
+	@Override
+	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		Vector3d wallDirection = WorldUtil.getWall(player);
+		Vector3d jumpDirection = getJumpDirection(player, wallDirection);
+		if (jumpDirection == null) return false;
+
+		boolean value = (!stamina.isExhausted()
+				&& parkourability.getActionInfo().can(WallJump.class)
 				&& !player.isOnGround()
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
 				&& !player.abilities.flying
 				&& parkourability.getAdditionalProperties().getNotCreativeFlyingTick() > 10
-				&& !parkourability.getClingToCliff().isCling()
-				&& parkourability.getClingToCliff().getNotClingTick() > 3
+				&& !parkourability.get(ClingToCliff.class).isDoing()
+				&& parkourability.get(ClingToCliff.class).getNotDoingTick() > 3
 				&& KeyRecorder.keyWallJump.isPressed()
-				&& !parkourability.getCrawl().isCrawling()
+				&& !parkourability.get(Crawl.class).isDoing()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
-				&& WorldUtil.getWall(player) != null;
+				&& WorldUtil.getWall(player) != null
+		);
+		if (!value) return false;
+
+		//doing "wallDirection/jumpDirection" as complex number(x + z i) to calculate difference of player's direction to wall
+		Vector3d dividedVec =
+				new Vector3d(
+						wallDirection.x() * jumpDirection.x() + wallDirection.z() * jumpDirection.z(), 0,
+						-wallDirection.x() * jumpDirection.z() + wallDirection.z() * jumpDirection.x()
+				).normalize();
+		Vector3d lookVec = player.getLookAngle().multiply(1, 0, 1).normalize();
+		Vector3d lookDividedVec =
+				new Vector3d(
+						lookVec.x() * wallDirection.x() + lookVec.z() * wallDirection.z(), 0,
+						-lookVec.x() * wallDirection.z() + lookVec.z() * wallDirection.x()
+				).normalize();
+
+		WallJumpAnimationType type;
+		if (lookDividedVec.x() > 0.5) {
+			type = WallJumpAnimationType.Back;
+		} else if (dividedVec.z() > 0) {
+			type = WallJumpAnimationType.SwingRightArm;
+		} else {
+			type = WallJumpAnimationType.SwingLeftArm;
+		}
+		startInfo
+				.putDouble(jumpDirection.x())
+				.putDouble(jumpDirection.y())
+				.putDouble(jumpDirection.z())
+				.putDouble(wallDirection.x())
+				.putDouble(wallDirection.z())
+				.put(type.getCode());
+		return true;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, Stamina stamina) {
-		if (player.isLocalPlayer() && canWallJump(player, parkourability, stamina)) {
-			Vector3d wallDirection = WorldUtil.getWall(player);
-			Vector3d jumpDirection = getJumpDirection(player, wallDirection);
-			if (jumpDirection == null) return;
-			if (ParCoolConfig.CONFIG_CLIENT.autoTurningWallJump.get()) {
-				player.yRot = (float) VectorUtil.toYawDegree(jumpDirection);
-			}
+	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		return false;
+	}
 
-			Vector3d direction = new Vector3d(jumpDirection.x(), 1.4, jumpDirection.z()).scale(0.3);
-			Vector3d motion = player.getDeltaMovement();
+	@Override
+	public void onStart(PlayerEntity player, Parkourability parkourability) {
+		jump = true;
+	}
 
-			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionWallJump(), player);
-			player.setDeltaMovement(
-					motion.x() + direction.x(),
-					motion.y() > direction.y() ? motion.y + direction.y() : direction.y(),
-					motion.z() + direction.z()
-			);
-			jump = true;
-			//doing "wallDirection/jumpDirection" as complex number(x + z i) to calculate difference of player's direction to wall
-			Vector3d dividedVec =
-					new Vector3d(
-							wallDirection.x() * jumpDirection.x() + wallDirection.z() * jumpDirection.z(), 0,
-							-wallDirection.x() * jumpDirection.z() + wallDirection.z() * jumpDirection.x()
-					).normalize();
-			Animation animation = Animation.get(player);
-			if (animation != null) {
-				animation.setAnimator(new WallJumpAnimator(dividedVec.z() > 0));
+	@Override
+	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+		Vector3d jumpDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
+		Vector3d direction = new Vector3d(jumpDirection.x(), 1.4, jumpDirection.z()).scale(0.3);
+		Vector3d wallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		Vector3d motion = player.getDeltaMovement();
+
+		BlockPos leanedBlock = new BlockPos(
+				player.getX() + wallDirection.x(),
+				player.getBoundingBox().minY + player.getBbHeight() * 0.25,
+				player.getZ() + wallDirection.z()
+		);
+		float slipperiness = player.level.getBlockState(leanedBlock).getSlipperiness(player.level, leanedBlock, player);
+
+		double ySpeed;
+		if (slipperiness > 0.9) {// icy blocks
+			ySpeed = motion.y();
+		} else {
+			ySpeed = motion.y() > direction.y() ? motion.y + direction.y() : direction.y();
+		}
+		player.setDeltaMovement(
+				motion.x() + direction.x(),
+				ySpeed,
+				motion.z() + direction.z()
+		);
+
+		WallJumpAnimationType type = WallJumpAnimationType.fromCode(startData.get());
+		Animation animation = Animation.get(player);
+		if (animation != null) {
+			switch (type) {
+				case Back:
+					animation.setAnimator(new BackwardWallJumpAnimator());
+					break;
+				case SwingLeftArm:
+					animation.setAnimator(new WallJumpAnimator(false));
+					break;
+				case SwingRightArm:
+					animation.setAnimator(new WallJumpAnimator(true));
 			}
-			ResetFallDistanceMessage.sync(player);
 		}
 	}
 
-	@Override
-	public void onRender(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	private enum WallJumpAnimationType {
+		Back((byte) 0), SwingRightArm((byte) 1), SwingLeftArm((byte) 2);
+		private byte code;
 
-	}
+		WallJumpAnimationType(byte code) {
+			this.code = code;
+		}
 
-	@Override
-	public void saveState(ByteBuffer buffer) {
+		public byte getCode() {
+			return code;
+		}
 
-	}
-
-	@Override
-	public void restoreState(ByteBuffer buffer) {
-
+		public static WallJumpAnimationType fromCode(byte code) {
+			switch (code) {
+				case 1:
+					return SwingRightArm;
+				case 2:
+					return SwingLeftArm;
+				default:
+					return Back;
+			}
+		}
 	}
 }

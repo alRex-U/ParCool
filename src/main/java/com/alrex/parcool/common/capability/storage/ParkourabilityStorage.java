@@ -11,11 +11,11 @@ public class ParkourabilityStorage implements Capability.IStorage<Parkourability
 	@Nullable
 	@Override
 	public INBT writeNBT(Capability<Parkourability> capability, Parkourability instance, Direction side) {
-		return null;
+		return instance.getActionInfo().writeNBT();
 	}
 
 	@Override
 	public void readNBT(Capability<Parkourability> capability, Parkourability instance, Direction side, INBT nbt) {
-
+		instance.getActionInfo().readNBT(nbt);
 	}
 }

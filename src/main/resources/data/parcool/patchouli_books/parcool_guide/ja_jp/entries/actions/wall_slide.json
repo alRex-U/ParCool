@@ -1,0 +1,16 @@
+{
+  "name": "壁滑り",
+  "icon": "minecraft:sand",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "壁にしがみついてゆっくりと落下できます。このアクションは壁の滑りやすさに影響を受けます。そのため氷ブロックなどには使用できません。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使い方",
+      "text": "$(list)空中で壁のそばで壁滑りキー($(k:parcool.WallSlide))を押し続ける"
+    }
+  ]
+}

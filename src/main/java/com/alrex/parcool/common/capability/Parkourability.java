@@ -1,15 +1,15 @@
 package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.impl.*;
+import com.alrex.parcool.common.action.ActionList;
+import com.alrex.parcool.common.action.AdditionalProperties;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.info.ActionInfo;
-import com.alrex.parcool.common.info.ActionPermission;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class Parkourability {
@@ -19,89 +19,46 @@ public class Parkourability {
 		return optional.orElse(null);
 	}
 
-	private final CatLeap catLeap = new CatLeap();
-	private final Crawl crawl = new Crawl();
-	private final Dodge dodge = new Dodge();
-	private final FastRun fastRun = new FastRun();
-	private final ClingToCliff clingToCliff = new ClingToCliff();
-	private final Roll roll = new Roll();
-	private final Vault vault = new Vault();
-	private final WallJump wallJump = new WallJump();
-	private final Flipping flipping = new Flipping();
-	private final Breakfall breakfall = new Breakfall();
-	private final Tap tap = new Tap();
-	private final WallSlide wallSlide = new WallSlide();
-	private final HorizontalWallRun horizontalWallRun = new HorizontalWallRun();
-	private final AdditionalProperties additionalProperties = new AdditionalProperties();
-	private final ActionPermission permission = new ActionPermission();
-	private final ActionInfo actionInfo = new ActionInfo();
+	private final ActionInfo info = new ActionInfo();
+	private final AdditionalProperties properties = new AdditionalProperties();
 
-	private final List<Action> actions = Arrays.<Action>asList(
-			catLeap, breakfall, crawl, dodge, fastRun, clingToCliff, roll, vault, flipping, tap, wallSlide, horizontalWallRun, wallJump, additionalProperties
-	);
+	private final List<Action> actions = ActionList.constructActionsList();
+	private final HashMap<Class<? extends Action>, Action> actionsMap;
 
-	public CatLeap getCatLeap() {
-		return catLeap;
+	public Parkourability() {
+		actionsMap = new HashMap<>((int) (actions.size() * 1.5));
+		for (short i = 0; i < actions.size(); i++) {
+			Action action = actions.get(i);
+			actionsMap.put(action.getClass(), action);
+		}
 	}
 
-	public Crawl getCrawl() {
-		return crawl;
+	public <T extends Action> T get(Class<T> action) {
+		T value = (T) actionsMap.getOrDefault(action, null);
+		if (value == null) {
+			throw new IllegalArgumentException("The Action instance is not registered:" + action.getSimpleName());
+		}
+		return value;
 	}
 
-	public ClingToCliff getClingToCliff() {
-		return clingToCliff;
+	public short getActionID(Action instance) {
+		return ActionList.getIndexOf(instance.getClass());
 	}
 
-	public Dodge getDodge() {
-		return dodge;
-	}
-
-	public FastRun getFastRun() {
-		return fastRun;
-	}
-
-	public Roll getRoll() {
-		return roll;
-	}
-
-	public Vault getVault() {
-		return vault;
-	}
-
-	public WallJump getWallJump() {
-		return wallJump;
-	}
-
-	public WallSlide getWallSlide() {
-		return wallSlide;
+	@Nullable
+	public Action getActionFromID(short id) {
+		if (0 <= id && id < actions.size()) {
+			return actions.get(id);
+		}
+		return null;
 	}
 
 	public AdditionalProperties getAdditionalProperties() {
-		return additionalProperties;
+		return properties;
 	}
 
 	public ActionInfo getActionInfo() {
-		return actionInfo;
-	}
-
-	public ActionPermission getPermission() {
-		return permission;
-	}
-
-	public Flipping getFlipping() {
-		return flipping;
-	}
-
-	public Breakfall getBreakfall() {
-		return breakfall;
-	}
-
-	public Tap getTap() {
-		return tap;
-	}
-
-	public HorizontalWallRun getHorizontalWallRun() {
-		return horizontalWallRun;
+		return info;
 	}
 
 	public List<Action> getList() {

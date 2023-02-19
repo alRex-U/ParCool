@@ -1,0 +1,24 @@
+{
+  "name": "ヴォールト",
+  "icon": "minecraft:oak_fence",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)ヴォールト$()は柵のような障害物を素早く乗り越えるテクニックです$(br)様々な種類がありますが、このモッドでは$(italic)スピードヴォールト$()と$(italic)コングヴォールト$()が使用できます。"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/image_vault.png"
+      ],
+      "text": "$(italic)スピードヴォールト$()のスクリーンショット"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使い方",
+      "text": "$(bold)1.$()$(l:parcool:actions/fast_run)ファストラン$()をする$(br)$(bold)2.$()ブロックに衝突する。"
+    }
+  ]
+}

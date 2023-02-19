@@ -1,7 +1,9 @@
 package com.alrex.parcool.mixin.client;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.capability.Animation;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -49,6 +51,10 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends BipedMode
 		if (!(entity instanceof PlayerEntity)) return;
 		PlayerModel model = (PlayerModel) (Object) this;
 		PlayerEntity player = (PlayerEntity) entity;
+		if (player.isLocalPlayer()
+				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()
+				&& ParCoolConfig.CONFIG_CLIENT.disableFPVAnimation.get()
+		) return;
 
 		transformer = new PlayerModelTransformer(
 				player,
@@ -77,6 +83,10 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends BipedMode
 	protected void onSetupAnimTail(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo info) {
 		if (!(entity instanceof PlayerEntity)) return;
 		PlayerEntity player = (PlayerEntity) entity;
+		if (player.isLocalPlayer()
+				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()
+				&& ParCoolConfig.CONFIG_CLIENT.disableFPVAnimation.get()
+		) return;
 
 		Animation animation = Animation.get(player);
 		if (animation == null) {
@@ -84,9 +94,11 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends BipedMode
 			return;
 		}
 
-		animation.animatePost(player, transformer);
-		transformer.copyFromBodyToWear();
-		transformer = null;
+		if (transformer != null) {
+			animation.animatePost(player, transformer);
+			transformer.copyFromBodyToWear();
+			transformer = null;
+		}
 	}
 
 }

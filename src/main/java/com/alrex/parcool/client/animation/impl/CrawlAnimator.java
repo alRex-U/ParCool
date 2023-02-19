@@ -2,13 +2,14 @@ package com.alrex.parcool.client.animation.impl;
 
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
+import com.alrex.parcool.common.action.impl.Crawl;
 import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.entity.player.PlayerEntity;
 
 public class CrawlAnimator extends Animator {
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.getCrawl().isCrawling();
+		return !parkourability.get(Crawl.class).isDoing();
 	}
 
 	@Override

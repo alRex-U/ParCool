@@ -1,0 +1,37 @@
+{
+  "name": "クレジット",
+  "icon": "minecraft:written_book",
+  "category": "parcool:category_about",
+  "sortnum": "4",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "開発者と翻訳者のリストです。ここに書かれていない皆様の貢献にも感謝しています。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "モッド開発者",
+      "text": "$(italic)$(list)alRex-U"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "翻訳者 (en_us)",
+      "text": "$(bold)英語翻訳$()$(italic)$(list)alRex-U"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "翻訳者 (ja_jp)",
+      "text": "$(bold)日本語翻訳$()$(italic)$(list)alRex-U"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "翻訳者 (ch_zn)",
+      "text": "$(bold)中国語翻訳$()$(italic)$(list)CatalystGinger"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "翻訳者 (fr-fr)",
+      "text": "$(bold)フランス語翻訳$()$(italic)$(list)COwOkie"
+    }
+  ]
+}

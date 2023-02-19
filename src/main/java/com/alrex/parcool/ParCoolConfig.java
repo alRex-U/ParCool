@@ -1,40 +1,46 @@
 package com.alrex.parcool;
 
+import com.alrex.parcool.client.animation.Animator;
+import com.alrex.parcool.client.animation.AnimatorList;
 import com.alrex.parcool.client.hud.Position;
+import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.action.impl.Vault;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ParCoolConfig {
 	private static final ForgeConfigSpec.Builder C_BUILDER = new ForgeConfigSpec.Builder();
 	private static final ForgeConfigSpec.Builder S_BUILDER = new ForgeConfigSpec.Builder();
-	private static final ForgeConfigSpec.Builder COM_BUILDER = new ForgeConfigSpec.Builder();
 
 	public static final Client CONFIG_CLIENT = new Client(C_BUILDER);
 	public static final Server CONFIG_SERVER = new Server(S_BUILDER);
-	public static final Common CONFIG_COMMON = new Common(COM_BUILDER);
+
 	public static class Client {
-		public final ForgeConfigSpec.BooleanValue canCatLeap;
-		public final ForgeConfigSpec.BooleanValue canCrawl;
-		public final ForgeConfigSpec.BooleanValue canDodge;
-		public final ForgeConfigSpec.BooleanValue canFastRunning;
-		public final ForgeConfigSpec.BooleanValue canFrontDodgeByDoubleTap;
-		public final ForgeConfigSpec.BooleanValue canClingToCliff;
-		public final ForgeConfigSpec.BooleanValue canRoll;
-		public final ForgeConfigSpec.BooleanValue canVault;
-		public final ForgeConfigSpec.BooleanValue canWallJump;
-		public final ForgeConfigSpec.BooleanValue canDive;
-		public final ForgeConfigSpec.BooleanValue canFlipping;
-		public final ForgeConfigSpec.BooleanValue canBreakfall;
-		public final ForgeConfigSpec.BooleanValue canWallSlide;
-		public final ForgeConfigSpec.BooleanValue canHorizontalWallRun;
+		public ForgeConfigSpec.BooleanValue getPossibilityOf(Class<? extends Action> action) {
+			return actionPossibilities[ActionList.getIndexOf(action)];
+		}
+
+		public ForgeConfigSpec.BooleanValue canAnimate(Class<? extends Animator> animator) {
+			return animatorPossibilities[AnimatorList.getIndex(animator)];
+		}
+
+		public ForgeConfigSpec.IntValue getStaminaConsumptionOf(Class<? extends Action> action) {
+			return staminaConsumptions[ActionList.getIndexOf(action)];
+		}
+
+		private final ForgeConfigSpec.BooleanValue[] actionPossibilities = new ForgeConfigSpec.BooleanValue[ActionList.ACTIONS.size()];
+		private final ForgeConfigSpec.BooleanValue[] animatorPossibilities = new ForgeConfigSpec.BooleanValue[AnimatorList.ANIMATORS.size()];
+		private final ForgeConfigSpec.IntValue[] staminaConsumptions = new ForgeConfigSpec.IntValue[ActionList.ACTIONS.size()];
 		public final ForgeConfigSpec.BooleanValue infiniteStamina;
-		public final ForgeConfigSpec.BooleanValue autoTurningWallJump;
-		public final ForgeConfigSpec.BooleanValue disableWallJumpTowardWall;
 		public final ForgeConfigSpec.BooleanValue disableCameraRolling;
 		public final ForgeConfigSpec.BooleanValue disableCameraFlipping;
+		public final ForgeConfigSpec.BooleanValue disableCameraVault;
+		public final ForgeConfigSpec.BooleanValue disableCameraHorizontalWallRun;
 		public final ForgeConfigSpec.BooleanValue disableCrawlInAir;
 		public final ForgeConfigSpec.BooleanValue disableVaultInAir;
 		public final ForgeConfigSpec.BooleanValue disableFallingAnimation;
+		public final ForgeConfigSpec.BooleanValue disableAnimation;
+		public final ForgeConfigSpec.BooleanValue disableFPVAnimation;
 		public final ForgeConfigSpec.BooleanValue enableRollWhenCreative;
 		public final ForgeConfigSpec.BooleanValue disableDoubleTappingForDodge;
 		public final ForgeConfigSpec.BooleanValue substituteSprintForFastRun;
@@ -51,39 +57,19 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.IntValue marginVerticalStaminaHUD;
 		public final ForgeConfigSpec.IntValue offsetVerticalLightStaminaHUD;
 		public final ForgeConfigSpec.IntValue staminaMax;
-		public final ForgeConfigSpec.IntValue staminaConsumptionBreakfall;
-		public final ForgeConfigSpec.IntValue staminaConsumptionCatLeap;
-		public final ForgeConfigSpec.IntValue staminaConsumptionClingToCliff;
-		public final ForgeConfigSpec.IntValue staminaConsumptionClimbUp;
-		public final ForgeConfigSpec.IntValue staminaConsumptionDodge;
-		public final ForgeConfigSpec.IntValue staminaConsumptionFastRun;
-		public final ForgeConfigSpec.IntValue staminaConsumptionFlipping;
-		public final ForgeConfigSpec.IntValue staminaConsumptionVault;
-		public final ForgeConfigSpec.IntValue staminaConsumptionWallJump;
 		public final ForgeConfigSpec.BooleanValue useHungerBarInsteadOfStamina;
+		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
 
 		Client(ForgeConfigSpec.Builder builder) {
-			builder.push("Possibility of Actions");
+			builder.push("Possibility of Actions(Some do not have to work)");
 			{
-				canCatLeap = builder.define("canCatLeap", true);
-				canCrawl = builder.define("canCrawl", true);
-				canFrontDodgeByDoubleTap = builder.comment("Possibility to Frontward-Dodge By double tapping a button").define("canFrontDodgeByDoubleTapping", true);
-				canDodge = builder.define("canDodge", true);
-				canFastRunning = builder.define("canFastRunning", true);
-				canClingToCliff = builder.define("canClingToCliff", true);
-				canRoll = builder.define("canRoll", true);
-				canVault = builder.define("canVault", true);
-				canWallJump = builder.define("canWallJump", true);
-				canDive = builder.define("canDive", true);
-				canFlipping = builder.define("canFlipping", true);
-				canBreakfall = builder.define("canBreakFall", true);
-				canWallSlide = builder.define("canWallSlide", true);
-				canHorizontalWallRun = builder.define("canHorizontalWallRun", true);
+				for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
+					actionPossibilities[i] = builder.define("can" + ActionList.ACTIONS.get(i).getSimpleName(), true);
+				}
 			}
 			builder.pop();
 			builder.push("Modifier Values");
 			{
-				dodgeSpeedModifier = builder.comment("Dodge Speed Modifier").defineInRange("dodgeSpeedModifier", 0.4, 0.2, 0.52);
 			}
 			builder.pop();
 			builder.push("Stamina HUD Configuration");
@@ -97,21 +83,37 @@ public class ParCoolConfig {
 				offsetVerticalLightStaminaHUD = builder.comment("vertical offset of light stamina HUD").defineInRange("offset_V_LS_HUD", 0, -50, 50);
 			}
 			builder.pop();
-			builder.push("Other Configuration");
+			builder.push("Animations");
 			{
-				autoTurningWallJump = builder.comment("Auto turning forward when WallJump").define("autoTurningWallJump", false);
-				disableWallJumpTowardWall = builder.comment("Disable WallJump toward a wall").define("disableWallJumpTowardWall", false);
+				disableFallingAnimation = builder.comment("Disable custom animation of falling").define("disableFallingAnimation", false);
+				disableAnimation = builder.comment("Disable custom animations").define("disableAnimation", false);
+				disableFPVAnimation = builder.comment("Disable first-person-view animations").define("disableFPVAnimation", false);
+				for (int i = 0; i < AnimatorList.ANIMATORS.size(); i++) {
+					animatorPossibilities[i] = builder.define("enable" + AnimatorList.ANIMATORS.get(i).getSimpleName(), true);
+
+				}
 				disableCameraRolling = builder.comment("Disable Roll rotation of camera").define("disableCameraRotationRolling", false);
 				disableCameraFlipping = builder.comment("Disable Flipping rotation of camera").define("disableCameraRotationFlipping", false);
+				disableCameraVault = builder.comment("Disable Vault animation of camera").define("disableCameraAnimationVault", true);
+				disableCameraHorizontalWallRun = builder.comment("Disable Horizontal-WallRun animation of camera").define("disableCameraAnimationH_WallRun", false);
+			}
+			builder.pop();
+			builder.push("modifiers");
+			{
+				fastRunningModifier = builder.comment("FastRun Speed Modifier").defineInRange("fastRunModifier", 3, 0.001, 4.5);
+				dodgeSpeedModifier = builder.comment("Dodge Speed Modifier").defineInRange("dodgeSpeedModifier", 0.4, 0.2, 0.52);
+			}
+			builder.pop();
+			builder.push("Other Configuration");
+			{
 				disableDoubleTappingForDodge = builder.comment("Disable Double-Tapping For Dodge. Please Use Dodge Key instead").define("disableDoubleTapping", false);
 				disableCrawlInAir = builder.comment("Disable Crawl in air (experimental)").define("disableCrawlInAir", true);
 				disableVaultInAir = builder.comment("Disable Vault in air (experimental)").define("disableVaultInAir", true);
-				disableFallingAnimation = builder.comment("Disable custom animation of falling").define("disableFallingAnimation", false);
 				enableRollWhenCreative = builder.comment("Enable Roll While player is in creative mode (experimental)").define("enableRollCreative", false);
 				vaultNeedKeyPressed = builder.comment("Make Vault Need Vault Key Pressed").define("vaultNeedKeyPressed", false);
 				vaultAnimationMode = builder.comment("Vault Animation(Dynamic is to select animation dynamically)").defineEnum("vaultAnimationMode", Vault.TypeSelectionMode.Dynamic);
-				replaceSprintWithFastRun = builder.comment("enable players to do actions needing Fast-Running by sprint").define("replaceSprintWithFastRun", true);
-				substituteSprintForFastRun = builder.comment("Substitute a sprint of vanilla for the FastRunning").define("substituteSprint", false);
+				replaceSprintWithFastRun = builder.comment("do Fast-Running whenever you do a sprint of vanilla").define("replaceSprintWithFastRun", true);
+				substituteSprintForFastRun = builder.comment("enable players to do actions needing Fast-Running by sprint").define("substituteSprint", false);
 				infiniteStamina = builder
 						.comment("Infinite Stamina(this needs a permission from server, even if it is on single player's game)\nPlease check 'parcool-server.toml' in 'serverconfig' directory")
 						.define("infiniteStamina", false);
@@ -123,15 +125,14 @@ public class ParCoolConfig {
 				staminaMax = builder.defineInRange("MaxValueOfStamina", 2000, 300, 10000);
 				builder.push("Consumption");
 				{
-					staminaConsumptionBreakfall = builder.defineInRange("Breakfall", 100, 0, 10000);
-					staminaConsumptionCatLeap = builder.defineInRange("CatLeap", 150, 0, 10000);
-					staminaConsumptionClingToCliff = builder.defineInRange("ClingToCliff", 2, 0, 10000);
-					staminaConsumptionClimbUp = builder.defineInRange("ClimbUp", 150, 0, 10000);
-					staminaConsumptionDodge = builder.defineInRange("Dodge", 80, 0, 10000);
-					staminaConsumptionFastRun = builder.defineInRange("FastRunning", 2, 0, 10000);
-					staminaConsumptionFlipping = builder.defineInRange("Flipping", 80, 0, 10000);
-					staminaConsumptionVault = builder.defineInRange("Vault", 50, 0, 10000);
-					staminaConsumptionWallJump = builder.defineInRange("WallJump", 120, 0, 10000);
+					for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
+						staminaConsumptions[i]
+								= builder.defineInRange(
+								"staminaConsumptionOf" + ActionList.ACTIONS.get(i).getSimpleName(),
+								ActionList.ACTION_REGISTRIES.get(i).getDefaultStaminaConsumption(),
+								0, 10000
+						);
+					}
 				}
 			}
 			builder.pop();
@@ -143,71 +144,45 @@ public class ParCoolConfig {
 		}
 	}
 
-	public static class Common {
-		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
-
-		Common(ForgeConfigSpec.Builder builder) {
-			fastRunningModifier = builder.comment("FastRun Speed Modifier(Recommended to be set to same value in both client and server side)").defineInRange("fastRunModifier", 3, 0.001, 4.5);
-		}
-	}
-
 	public static class Server {
+		private final ForgeConfigSpec.BooleanValue[] actionPermissions = new ForgeConfigSpec.BooleanValue[ActionList.ACTIONS.size()];
+
+		public boolean getPermissionOf(Class<? extends Action> action) {
+			return actionPermissions[ActionList.getIndexOf(action)].get();
+		}
+
+		private final ForgeConfigSpec.IntValue[] leastStaminaConsumptions = new ForgeConfigSpec.IntValue[ActionList.ACTIONS.size()];
+
+		public int getLeastStaminaConsumptionOf(Class<? extends Action> action) {
+			return leastStaminaConsumptions[ActionList.getIndexOf(action)].get();
+		}
+
 		public final ForgeConfigSpec.BooleanValue allowInfiniteStamina;
-		public final ForgeConfigSpec.BooleanValue allowCatLeap;
-		public final ForgeConfigSpec.BooleanValue allowCrawl;
-		public final ForgeConfigSpec.BooleanValue allowDodge;
-		public final ForgeConfigSpec.BooleanValue allowFastRunning;
-		public final ForgeConfigSpec.BooleanValue allowClingToCliff;
-		public final ForgeConfigSpec.BooleanValue allowRoll;
-		public final ForgeConfigSpec.BooleanValue allowVault;
-		public final ForgeConfigSpec.BooleanValue allowWallJump;
-		public final ForgeConfigSpec.BooleanValue allowBreakfall;
-		public final ForgeConfigSpec.BooleanValue allowFlipping;
-		public final ForgeConfigSpec.BooleanValue allowWallSlide;
-		public final ForgeConfigSpec.BooleanValue allowHorizontalWallRun;
 		public final ForgeConfigSpec.IntValue staminaMax;
-		public final ForgeConfigSpec.IntValue staminaConsumptionBreakfall;
-		public final ForgeConfigSpec.IntValue staminaConsumptionCatLeap;
-		public final ForgeConfigSpec.IntValue staminaConsumptionClingToCliff;
-		public final ForgeConfigSpec.IntValue staminaConsumptionClimbUp;
-		public final ForgeConfigSpec.IntValue staminaConsumptionDodge;
-		public final ForgeConfigSpec.IntValue staminaConsumptionFastRun;
-		public final ForgeConfigSpec.IntValue staminaConsumptionFlipping;
-		public final ForgeConfigSpec.IntValue staminaConsumptionVault;
-		public final ForgeConfigSpec.IntValue staminaConsumptionWallJump;
 
 		Server(ForgeConfigSpec.Builder builder) {
 			builder.push("Action Permissions");
 			{
-				allowCatLeap = builder.define("allowCatLeap", true);
-				allowCrawl = builder.define("allowCrawl", true);
-				allowDodge = builder.define("allowDodge", true);
-				allowFastRunning = builder.define("allowFastRunning", true);
-				allowClingToCliff = builder.define("allowClingToCliff", true);
-				allowRoll = builder.define("allowRoll", true);
-				allowVault = builder.define("allowVault", true);
-				allowWallJump = builder.define("allowWallJump", true);
-				allowBreakfall = builder.define("allowBreakfall", true);
-				allowFlipping = builder.define("allowFlipping", true);
-				allowWallSlide = builder.define("allowWallSlide", true);
-				allowHorizontalWallRun = builder.define("allowHorizontalWallRun", true);
+				for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
+					actionPermissions[i]
+							= builder.define("permit" + ActionList.ACTIONS.get(i).getSimpleName(), true);
+				}
 			}
 			builder.pop();
 			builder.push("Stamina");
 			{
 				staminaMax = builder.defineInRange("Max Value of Stamina", 2000, 300, 10000);
 				allowInfiniteStamina = builder.comment("allow Infinite Stamina").define("infiniteStamina", true);
-				builder.push("Consumption");
+				builder.push("Least Consumption");
 				{
-					staminaConsumptionBreakfall = builder.defineInRange("Breakfall", 100, 0, 10000);
-					staminaConsumptionCatLeap = builder.defineInRange("CatLeap", 150, 0, 10000);
-					staminaConsumptionClingToCliff = builder.defineInRange("ClingToCliff", 2, 0, 10000);
-					staminaConsumptionClimbUp = builder.defineInRange("ClimbUp", 150, 0, 10000);
-					staminaConsumptionDodge = builder.defineInRange("Dodge", 80, 0, 10000);
-					staminaConsumptionFastRun = builder.defineInRange("FastRunning", 2, 0, 10000);
-					staminaConsumptionFlipping = builder.defineInRange("Flipping", 80, 0, 10000);
-					staminaConsumptionVault = builder.defineInRange("Vault", 50, 0, 10000);
-					staminaConsumptionWallJump = builder.defineInRange("WallJump", 120, 0, 10000);
+					for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
+						leastStaminaConsumptions[i]
+								= builder.defineInRange(
+								"staminaConsumptionOf" + ActionList.ACTIONS.get(i).getSimpleName(),
+								ActionList.ACTION_REGISTRIES.get(i).getDefaultStaminaConsumption(),
+								0, 10000
+						);
+					}
 				}
 			}
 			builder.pop();
@@ -216,5 +191,4 @@ public class ParCoolConfig {
 
 	public static final ForgeConfigSpec CLIENT_SPEC = C_BUILDER.build();
 	public static final ForgeConfigSpec SERVER_SPEC = S_BUILDER.build();
-	public static final ForgeConfigSpec COMMON_SPEC = COM_BUILDER.build();
 }

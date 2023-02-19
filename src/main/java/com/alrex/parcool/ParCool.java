@@ -2,7 +2,6 @@ package com.alrex.parcool;
 
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
-import com.alrex.parcool.common.item.ItemRegistry;
 import com.alrex.parcool.common.potion.Effects;
 import com.alrex.parcool.common.potion.PotionRecipeRegistry;
 import com.alrex.parcool.common.potion.Potions;
@@ -11,6 +10,7 @@ import com.alrex.parcool.common.registries.EventBusModRegistry;
 import com.alrex.parcool.proxy.ClientProxy;
 import com.alrex.parcool.proxy.CommonProxy;
 import com.alrex.parcool.proxy.ServerProxy;
+import com.alrex.parcool.server.command.CommandRegistry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -52,7 +52,6 @@ public class ParCool {
 
 	//only in Client
 	public static void setActivation(boolean activation) {
-		ParCoolConfig.CONFIG_CLIENT.canWallJump.get();
 		ParCoolConfig.CONFIG_CLIENT.parCoolActivation.set(activation);
 	}
 
@@ -63,7 +62,6 @@ public class ParCool {
 		eventBus.addListener(this::doClientStuff);
 		eventBus.addListener(this::loaded);
 		eventBus.addListener(this::doServerStuff);
-		eventBus.register(ItemRegistry.class);
 		Effects.registerAll(eventBus);
 		Potions.registerAll(eventBus);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
@@ -74,13 +72,13 @@ public class ParCool {
 		ModLoadingContext context = ModLoadingContext.get();
 		context.registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.CLIENT_SPEC);
 		context.registerConfig(ModConfig.Type.SERVER, ParCoolConfig.SERVER_SPEC);
-		context.registerConfig(ModConfig.Type.COMMON, ParCoolConfig.COMMON_SPEC);
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
+		CommandRegistry.registerArgumentTypes(event);
 		EventBusForgeRegistry.register(MinecraftForge.EVENT_BUS);
 		EventBusModRegistry.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Capabilities.register(CapabilityManager.INSTANCE);
@@ -106,5 +104,6 @@ public class ParCool {
 	}
 
 	private void registerCommand(final RegisterCommandsEvent event) {
+		CommandRegistry.register(event.getDispatcher());
 	}
 }

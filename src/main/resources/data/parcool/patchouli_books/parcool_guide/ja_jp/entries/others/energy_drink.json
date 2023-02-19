@@ -1,0 +1,23 @@
+{
+  "name": "エナジードリンク",
+  "icon": "minecraft:potion{\"Potion\":\"parcool:energy_drink\"}",
+  "category": "parcool:category_support_features",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "頻繁にスタミナが切れる？それなら$(strike)コンフィグをいじr$()$(bold)エナジードリンク$()を作りましょう。ParCoolのアクションをスタミナ消費無しで使えますよ！"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:potion{\"Potion\":\"parcool:energy_drink\"}",
+      "title": "エナジードリンクの作成",
+      "text": "エナジードリンクは醸造台で作成できます。$(br2)レシピは$(list)[奇妙なポーション] + [ネザークオーツ]$(list)[低品質なエナジードリンク] + [ネザークオーツ]"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:potion{\"Potion\":\"parcool:poor_energy_drink\"}",
+      "title": "低品質なエナジードリンク",
+      "text": "低品質なエナジードリンクはエナジードリンクの低性能バージョンです。簡単に作れますがデバフがつきます。$(br2)レシピは$(list)[奇妙なポーション] + [毒ジャガイモ]$(list)[奇妙なポーション] + [生の鶏肉]"
+    }
+  ]
+}

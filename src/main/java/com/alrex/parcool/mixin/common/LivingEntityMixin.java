@@ -70,12 +70,13 @@ public abstract class LivingEntityMixin extends Entity {
 	private boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity) {
 		Block block = state.getBlockState().getBlock();
 		if (block instanceof FenceBlock || block instanceof PaneBlock) {
-			int count = 0;
-			if (state.getValue(FourWayBlock.NORTH)) count++;
-			if (state.getValue(FourWayBlock.SOUTH)) count++;
-			if (state.getValue(FourWayBlock.EAST)) count++;
-			if (state.getValue(FourWayBlock.WEST)) count++;
-			return count <= 0;
+			int zCount = 0;
+			int xCount = 0;
+			if (state.getValue(FourWayBlock.NORTH)) zCount++;
+			if (state.getValue(FourWayBlock.SOUTH)) zCount++;
+			if (state.getValue(FourWayBlock.EAST)) xCount++;
+			if (state.getValue(FourWayBlock.WEST)) xCount++;
+			return (zCount + xCount <= 1) || (zCount == 1 && xCount == 1);
 		} else if (block instanceof RotatedPillarBlock) {
 			return state.getValue(RotatedPillarBlock.AXIS).isVertical();
 		} else if (block instanceof EndRodBlock) {

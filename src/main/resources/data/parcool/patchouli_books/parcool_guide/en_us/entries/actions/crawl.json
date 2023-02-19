@@ -1,0 +1,16 @@
+{
+  "name": "Crawl",
+  "icon": "minecraft:nautilus_shell",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "You can crawl everywhere and go through narrow course.$(br)You should check also $(l:parcool:actions/slide)Slide$()."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(list) Press Crawl Key($(k:parcool.Crawl))"
+    }
+  ]
+}

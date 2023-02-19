@@ -13,6 +13,7 @@ public class KeyRecorder {
 	public static final KeyState keyBack = new KeyState();
 	public static final KeyState keyRight = new KeyState();
 	public static final KeyState keyLeft = new KeyState();
+	public static final KeyState keySneak = new KeyState();
 	public static final KeyState keyJumpState = new KeyState();
 	public static final KeyState keySprintState = new KeyState();
 	public static final KeyState keyCrawlState = new KeyState();
@@ -21,6 +22,8 @@ public class KeyRecorder {
 	public static final KeyState keyDodge = new KeyState();
 	public static final KeyState keyBreakfall = new KeyState();
 	public static final KeyState keyWallJump = new KeyState();
+	public static final KeyState keyQuickTurn = new KeyState();
+	public static final KeyState keyFlipping = new KeyState();
 
 	@SubscribeEvent
 	public static void onClientTick(TickEvent.ClientTickEvent event) {
@@ -30,6 +33,7 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyBack(), keyBack);
 		record(KeyBindings.getKeyRight(), keyRight);
 		record(KeyBindings.getKeyLeft(), keyLeft);
+		record(KeyBindings.getKeySneak(), keySneak);
 		record(KeyBindings.getKeyJump(), keyJumpState);
 		record(KeyBindings.getKeySprint(), keySprintState);
 		record(KeyBindings.getKeyCrawl(), keyCrawlState);
@@ -38,6 +42,8 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyDodge(), keyDodge);
 		record(KeyBindings.getKeyBreakfall(), keyBreakfall);
 		record(KeyBindings.getKeyWallJump(), keyWallJump);
+		record(KeyBindings.getKeyQuickTurn(), keyQuickTurn);
+		record(KeyBindings.getKeyFlipping(), keyFlipping);
 	}
 
 	private static void record(KeyBinding keyBinding, KeyState state) {

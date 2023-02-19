@@ -1,0 +1,16 @@
+{
+  "name": "フリッピング",
+  "icon": "minecraft:blaze_powder",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "ParCoolには$(bold)フリッピング$()という特殊なジャンプアニメーションがあります。フロントフリップとバックフリップが可能です。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使い方",
+      "text": "$(list)右移動キーと左移動キーを同時押しする$(list)フリッピングキー($(parcool.Flipping))を押す"
+    }
+  ]
+}

@@ -2,6 +2,7 @@ package com.alrex.parcool.utilities;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
@@ -9,42 +10,68 @@ import javax.annotation.Nullable;
 
 public class WorldUtil {
 
-	@Nullable
-	public static Vector3d getWall(LivingEntity entity) {
-		final double d = 0.3;
-		double distance = entity.getBbWidth() / 2;
+	public static Vector3d getRunnableWall(LivingEntity entity, double range) {
+		double width = entity.getBbWidth() / 2;
 		double wallX = 0;
 		double wallZ = 0;
-		byte wallNumX = 0;
-		byte wallNumZ = 0;
 		Vector3d pos = entity.position();
 
 		AxisAlignedBB baseBox = new AxisAlignedBB(
-				pos.x() - d,
+				pos.x() - width,
 				pos.y(),
-				pos.z() - d,
-				pos.x() + d,
+				pos.z() - width,
+				pos.x() + width,
 				pos.y() + entity.getBbHeight(),
-				pos.z() + d
+				pos.z() + width
 		);
 
-		if (!entity.level.noCollision(baseBox.expandTowards(distance, 0, 0))) {
+		if (!entity.level.noCollision(baseBox.expandTowards(range, 0, 0))) {
 			wallX++;
-			wallNumX++;
 		}
-		if (!entity.level.noCollision(baseBox.expandTowards(-distance, 0, 0))) {
+		if (!entity.level.noCollision(baseBox.expandTowards(-range, 0, 0))) {
 			wallX--;
-			wallNumX++;
 		}
-		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, distance))) {
+		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, range))) {
 			wallZ++;
-			wallNumZ++;
 		}
-		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, -distance))) {
+		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, -range))) {
 			wallZ--;
-			wallNumZ++;
 		}
-		if (wallNumX == 2 || wallNumZ == 2 || (wallNumX == 0 && wallNumZ == 0)) return null;
+		if (wallX == 0 && wallZ == 0) return null;
+
+		return new Vector3d(wallX, 0, wallZ);
+	}
+
+	@Nullable
+	public static Vector3d getWall(LivingEntity entity) {
+		double range = entity.getBbWidth() / 2;
+		final double width = 0.3;
+		double wallX = 0;
+		double wallZ = 0;
+		Vector3d pos = entity.position();
+
+		AxisAlignedBB baseBox = new AxisAlignedBB(
+				pos.x() - width,
+				pos.y(),
+				pos.z() - width,
+				pos.x() + width,
+				pos.y() + entity.getBbHeight(),
+				pos.z() + width
+		);
+
+		if (!entity.level.noCollision(baseBox.expandTowards(range, 0, 0))) {
+			wallX++;
+		}
+		if (!entity.level.noCollision(baseBox.expandTowards(-range, 0, 0))) {
+			wallX--;
+		}
+		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, range))) {
+			wallZ++;
+		}
+		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, -range))) {
+			wallZ--;
+		}
+		if (wallX == 0 && wallZ == 0) return null;
 
 		return new Vector3d(wallX, 0, wallZ);
 	}
@@ -54,12 +81,12 @@ public class WorldUtil {
 		final double d = 0.3;
 		World world = entity.level;
 		double distance = entity.getBbWidth() / 2;
-		double baseLine = 1.55;
+		double baseLine = Math.min(1.55, getWallHeight(entity));
 		double stepX = 0;
 		double stepZ = 0;
 		Vector3d pos = entity.position();
 
-		AxisAlignedBB baseBoxSide = new AxisAlignedBB(
+		AxisAlignedBB baseBoxBottom = new AxisAlignedBB(
 				pos.x() - d,
 				pos.y(),
 				pos.z() - d,
@@ -72,19 +99,19 @@ public class WorldUtil {
 				pos.y() + baseLine,
 				pos.z() - d,
 				pos.x() + d,
-				pos.y() + entity.getBbHeight(),
+				pos.y() + baseLine + entity.getBbHeight(),
 				pos.z() + d
 		);
-		if (!world.noCollision(baseBoxSide.expandTowards(distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards((distance + 1.8), 0, 0))) {
+		if (!world.noCollision(baseBoxBottom.expandTowards(distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards((distance + 1.8), 0, 0))) {
 			stepX++;
 		}
-		if (!world.noCollision(baseBoxSide.expandTowards(-distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards(-(distance + 1.8), 0, 0))) {
+		if (!world.noCollision(baseBoxBottom.expandTowards(-distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards(-(distance + 1.8), 0, 0))) {
 			stepX--;
 		}
-		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, (distance + 1.8)))) {
+		if (!world.noCollision(baseBoxBottom.expandTowards(0, 0, distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, (distance + 1.8)))) {
 			stepZ++;
 		}
-		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, -distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, -(distance + 1.8)))) {
+		if (!world.noCollision(baseBoxBottom.expandTowards(0, 0, -distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, -(distance + 1.8)))) {
 			stepZ--;
 		}
 		if (stepX == 0 && stepZ == 0) return null;
@@ -120,6 +147,40 @@ public class WorldUtil {
 		return entity.getBbHeight();
 	}
 
+	public static boolean existsDivableSpace(LivingEntity entity) {
+		World world = entity.level;
+		Vector3d lookAngle = entity.getLookAngle();
+		Vector3d center = entity.position().add(new Vector3d(lookAngle.x(), 0, lookAngle.z()).normalize().multiply(3, 0, 3));
+		if (!world.isLoaded(new BlockPos(center))) {
+			return false;
+		}
+		BlockPos centerPos = new BlockPos(center);
+		final int neededSpaceHeight = 9;
+		boolean hasSpace = true;
+		for (int i = 0; i < neededSpaceHeight; i++) {
+			hasSpace = !world.getBlockState(centerPos).getMaterial().blocksMotion();
+			hasSpace = hasSpace && !world.getBlockState(centerPos.west()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && !world.getBlockState(centerPos.east()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && !world.getBlockState(centerPos.north()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && !world.getBlockState(centerPos.south()).getMaterial().blocksMotion();
+			if (!hasSpace) break;
+			centerPos = centerPos.below();
+		}
+		if (!hasSpace) return false;
+		center = entity.position().add(new Vector3d(lookAngle.x(), 0, lookAngle.z()).normalize().multiply(5, 0, 5));
+		centerPos = new BlockPos(center);
+		for (int i = 0; i < neededSpaceHeight; i++) {
+			hasSpace = !world.getBlockState(centerPos).getMaterial().blocksMotion();
+			hasSpace = hasSpace && !world.getBlockState(centerPos.west()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && !world.getBlockState(centerPos.east()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && !world.getBlockState(centerPos.north()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && !world.getBlockState(centerPos.south()).getMaterial().blocksMotion();
+			if (!hasSpace) break;
+			centerPos = centerPos.below();
+		}
+		return hasSpace;
+	}
+
 	public static boolean existsGrabbableWall(LivingEntity entity) {
 		final double d = 0.3;
 		World world = entity.level;
@@ -149,16 +210,47 @@ public class WorldUtil {
 				pos.y() + entity.getBbHeight(),
 				pos.z() + d
 		);
+		int xDirection = 0;
+		int zDirection = 0;
 
 		if (!world.noCollision(baseBoxSide.expandTowards(distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards(distance, 0, 0)))
-			return true;
+			xDirection++;
 		if (!world.noCollision(baseBoxSide.expandTowards(-distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards(-distance, 0, 0)))
-			return true;
+			xDirection--;
 		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, distance)))
-			return true;
+			zDirection++;
 		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, -distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, -distance)))
-			return true;
-
-		return false;
+			zDirection--;
+		if (xDirection == 0 && zDirection == 0) {
+			return false;
+		}
+		float slipperiness;
+		if (xDirection != 0 && zDirection != 0) {
+			BlockPos blockPos1 = new BlockPos(
+					entity.getX() + xDirection,
+					entity.getBoundingBox().minY + baseLine - 0.3,
+					entity.getZ()
+			);
+			BlockPos blockPos2 = new BlockPos(
+					entity.getX(),
+					entity.getBoundingBox().minY + baseLine - 0.3,
+					entity.getZ() + zDirection
+			);
+			if (!entity.level.isLoaded(blockPos1)) return false;
+			if (!entity.level.isLoaded(blockPos2)) return false;
+			slipperiness = Math.min(
+					entity.level.getBlockState(blockPos1).getSlipperiness(entity.level, blockPos1, entity),
+					entity.level.getBlockState(blockPos2).getSlipperiness(entity.level, blockPos2, entity)
+			);
+		} else {
+			BlockPos blockPos = new BlockPos(
+					entity.getX() + xDirection,
+					entity.getBoundingBox().minY + baseLine - 0.3,
+					entity.getZ() + zDirection
+			);
+			if (!entity.level.isLoaded(blockPos)) return false;
+			slipperiness = entity.level.getBlockState(blockPos).getSlipperiness(entity.level, blockPos, entity);
+		}
+		return slipperiness <= 0.8;
 	}
 }

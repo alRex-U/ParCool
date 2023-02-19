@@ -36,10 +36,10 @@ public class WallJumpAnimator extends Animator {
 		float factor = getFactor(phase);
 		int sign = swingRightArm ? 1 : -1;
 		transformer
-				.addRotateRightLeg((float) toRadians(sign * factor * (-12)), 0, 0)
-				.addRotateLeftLeg((float) toRadians(sign * factor * 35), 0, 0)
-				.rotateRightArm((float) toRadians(swingRightArm ? factor * (-120) : factor * 55), 0, 0)
-				.rotateLeftArm((float) toRadians(swingRightArm ? factor * 55 : factor * (-120)), 0, 0)
+				.rotateRightLeg((float) toRadians(sign * factor * 60), 0, 0)
+				.rotateLeftLeg((float) toRadians(sign * factor * -60), 0, 0)
+				.rotateRightArm((float) toRadians(swingRightArm ? factor * (-120) : factor * 55), 0, (float) toRadians(-35 * factor))
+				.rotateLeftArm((float) toRadians(swingRightArm ? factor * 55 : factor * (-120)), 0, (float) toRadians(35 * factor))
 				.makeArmsNatural()
 				.end();
 	}
@@ -50,7 +50,7 @@ public class WallJumpAnimator extends Animator {
 		float factor = getFactor(phase);
 		rotator
 				.startBasedCenter()
-				.rotateFrontward(factor * 30)
+				.rotateFrontward(factor * 20)
 				.rotateRightward((swingRightArm ? -1 : 1) * 15 * factor)
 				.end();
 	}
