@@ -2,6 +2,7 @@ package com.alrex.parcool;
 
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
+import com.alrex.parcool.common.item.ItemRegistry;
 import com.alrex.parcool.common.potion.Effects;
 import com.alrex.parcool.common.potion.PotionRecipeRegistry;
 import com.alrex.parcool.common.potion.Potions;
@@ -65,9 +66,9 @@ public class ParCool {
 		Effects.registerAll(eventBus);
 		Potions.registerAll(eventBus);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
-
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
+		ItemRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
 
 		ModLoadingContext context = ModLoadingContext.get();
 		context.registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.CLIENT_SPEC);

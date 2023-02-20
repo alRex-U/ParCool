@@ -1,6 +1,9 @@
 package com.alrex.parcool.utilities;
 
+import com.alrex.parcool.common.action.impl.HangDown;
+import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
@@ -145,6 +148,74 @@ public class WorldUtil {
 			}
 		}
 		return entity.getBbHeight();
+	}
+
+	@Nullable
+	public static HangDown.BarAxis getHangableBars(LivingEntity entity) {
+		final double bbWidth = entity.getBbWidth() / 4;
+		final double bbHeight = 0.35;
+		AxisAlignedBB bb = new AxisAlignedBB(
+				entity.getX() - bbWidth,
+				entity.getY() + entity.getBbHeight(),
+				entity.getZ() - bbWidth,
+				entity.getX() + bbWidth,
+				entity.getY() + entity.getBbHeight() + bbHeight,
+				entity.getZ() + bbWidth
+		);
+		if (entity.level.noCollision(bb)) return null;
+		BlockPos pos = new BlockPos(
+				entity.getX(),
+				entity.getY() + entity.getBbHeight() + 0.4,
+				entity.getZ()
+		);
+		BlockState state = entity.level.getBlockState(pos);
+		Block block = state.getBlock();
+		HangDown.BarAxis axis = null;
+		if (block instanceof RotatedPillarBlock) {
+			Direction.Axis pillarAxis = state.getValue(RotatedPillarBlock.AXIS);
+			if (state.isCollisionShapeFullBlock(entity.level, pos)) {
+				return null;
+			}
+			switch (pillarAxis) {
+				case X:
+					axis = HangDown.BarAxis.X;
+					break;
+				case Z:
+					axis = HangDown.BarAxis.Z;
+					break;
+			}
+		} else if (block instanceof EndRodBlock) {
+			Direction direction = state.getValue(DirectionalBlock.FACING);
+			switch (direction) {
+				case EAST:
+				case WEST:
+					axis = HangDown.BarAxis.X;
+					break;
+				case NORTH:
+				case SOUTH:
+					axis = HangDown.BarAxis.Z;
+			}
+		} else if (block instanceof FenceBlock || block instanceof PaneBlock) {
+			int zCount = 0;
+			int xCount = 0;
+			if (state.getValue(FourWayBlock.NORTH)) zCount++;
+			if (state.getValue(FourWayBlock.SOUTH)) zCount++;
+			if (state.getValue(FourWayBlock.EAST)) xCount++;
+			if (state.getValue(FourWayBlock.WEST)) xCount++;
+			if (zCount > 0 && xCount == 0) axis = HangDown.BarAxis.Z;
+			if (xCount > 0 && zCount == 0) axis = HangDown.BarAxis.X;
+		} else if (block instanceof WallBlock) {
+			int zCount = 0;
+			int xCount = 0;
+			if (state.getValue(WallBlock.NORTH_WALL) != WallHeight.NONE) zCount++;
+			if (state.getValue(WallBlock.SOUTH_WALL) != WallHeight.NONE) zCount++;
+			if (state.getValue(WallBlock.EAST_WALL) != WallHeight.NONE) xCount++;
+			if (state.getValue(WallBlock.WEST_WALL) != WallHeight.NONE) xCount++;
+			if (zCount > 0 && xCount == 0) axis = HangDown.BarAxis.Z;
+			if (xCount > 0 && zCount == 0) axis = HangDown.BarAxis.X;
+		}
+
+		return axis;
 	}
 
 	public static boolean existsDivableSpace(LivingEntity entity) {

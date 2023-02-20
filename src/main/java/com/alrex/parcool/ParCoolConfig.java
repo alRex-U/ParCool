@@ -34,6 +34,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue infiniteStamina;
 		public final ForgeConfigSpec.BooleanValue disableCameraRolling;
 		public final ForgeConfigSpec.BooleanValue disableCameraFlipping;
+		public final ForgeConfigSpec.BooleanValue disableCameraHang;
 		public final ForgeConfigSpec.BooleanValue disableCameraVault;
 		public final ForgeConfigSpec.BooleanValue disableCameraHorizontalWallRun;
 		public final ForgeConfigSpec.BooleanValue disableCrawlInAir;
@@ -96,6 +97,7 @@ public class ParCoolConfig {
 				disableCameraFlipping = builder.comment("Disable Flipping rotation of camera").define("disableCameraRotationFlipping", false);
 				disableCameraVault = builder.comment("Disable Vault animation of camera").define("disableCameraAnimationVault", true);
 				disableCameraHorizontalWallRun = builder.comment("Disable Horizontal-WallRun animation of camera").define("disableCameraAnimationH_WallRun", false);
+				disableCameraHang = builder.comment("Disable Hang animation of camera").define("disableCameraAnimationHang", false);
 			}
 			builder.pop();
 			builder.push("modifiers");

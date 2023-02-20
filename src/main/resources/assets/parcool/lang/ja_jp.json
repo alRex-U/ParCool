@@ -15,6 +15,7 @@
   "key.parcool.Flipping": "フリッピング",
   "key.parcool.HorizontalWallRun": "水平ウォールラン",
   "key.parcool.QuickTurn": "クイックターン",
+  "key.parcool.HangDown": "ぶら下がり",
   "key.parcool.Vault": "ヴォールト",
   "key.parcool.WallJump": "壁キック",
   "key.parcool.WallSlide": "ウォールスライド",
@@ -28,6 +29,7 @@
   "parcool.action.Dodge": "ドッジロール",
   "parcool.action.FastRun": "ファストランニング",
   "parcool.action.Flipping": "フリッピング",
+  "parcool.action.HangDown": "ぶら下がり",
   "parcool.action.HorizontalWallRun": "水平ウォールラン",
   "parcool.action.QuickTurn": "クイックターン",
   "parcool.action.Roll": "ロール",
@@ -43,5 +45,8 @@
   "parcool.command.message.success.setPermissionOfAction": "%d人のプレイヤーの %s の許可を %d に設定しました",
   "parcool.command.message.success.setLimitationToDefault": "%d人のプレイヤーの個人アクション制限をデフォルトに設定しました",
   "parcool.command.message.success.enableLimitation": "%d人のプレイヤーの個人アクション制限を有効化しました",
-  "parcool.command.message.success.disableLimitation": "%d人のプレイヤーの個人アクション制限を無効化しました"
+  "parcool.command.message.success.disableLimitation": "%d人のプレイヤーの個人アクション制限を無効化しました",
+  "parcool.patchouli.guide.category.about": "About",
+  "parcool.patchouli.guide.entry.aboutParCool": "About",
+  "parcool.patchouli.guide.entry.credit": "Credit"
 }

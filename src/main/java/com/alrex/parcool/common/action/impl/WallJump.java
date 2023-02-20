@@ -126,7 +126,7 @@ public class WallJump extends Action {
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		Vector3d jumpDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
-		Vector3d direction = new Vector3d(jumpDirection.x(), 1.4, jumpDirection.z()).scale(0.3);
+		Vector3d direction = new Vector3d(jumpDirection.x(), 1.4, jumpDirection.z()).scale(player.getBbWidth() / 2);
 		Vector3d wallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		Vector3d motion = player.getDeltaMovement();
 

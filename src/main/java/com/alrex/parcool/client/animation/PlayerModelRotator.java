@@ -16,6 +16,7 @@ public class PlayerModelRotator {
 	}
 
 	private boolean basedCenter = false;
+	private boolean basedTop = false;
 	private boolean legGrounding = false;
 
 	private float angleFront = 0;
@@ -33,6 +34,12 @@ public class PlayerModelRotator {
 	public PlayerModelRotator startBasedCenter() {
 		basedCenter = true;
 		stack.translate(0, player.getBbHeight() / 2, 0);
+		return this;
+	}
+
+	public PlayerModelRotator startBasedTop() {
+		basedTop = true;
+		stack.translate(0, player.getBbHeight(), 0);
 		return this;
 	}
 
@@ -55,11 +62,12 @@ public class PlayerModelRotator {
 		if (basedCenter) {
 			stack.translate(0, -player.getBbHeight() / 2, 0);
 		}
+		if (basedTop) {
+			stack.translate(0, -player.getBbHeight(), 0);
+		}
 	}
 
 	public void endEnabledLegGrounding() {
-		if (basedCenter) {
-			stack.translate(0, (-player.getBbHeight() / 2), 0);
-		}
+		end();
 	}
 }

@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "patchouli:shapeless_book_recipe",
   "ingredients": [
     {
       "item": "minecraft:feather"
@@ -14,8 +14,5 @@
       "item": "minecraft:book"
     }
   ],
-  "result": {
-    "item": "parcool:parcool_guide",
-    "count": 1
-  }
+  "book": "parcool:parcool_guide"
 }
