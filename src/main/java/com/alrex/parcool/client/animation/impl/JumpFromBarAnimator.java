@@ -35,19 +35,20 @@ public class JumpFromBarAnimator extends Animator {
 		float armFactor = MathUtil.squaring(phase - 1);
 		float armYAngleFactor = 1 - 4 * MathUtil.squaring(phase - 0.5f);
 		float bodyFactor = getBodyAngleFactor(phase);
+		float animationFactor = 1 - phase * phase * phase;
 		transformer
 				.rotateHeadPitch(bodyFactor * 40)
 				.rotateRightArm(
-						(float) Math.toRadians(180 * armFactor), (float) Math.toRadians(-45 * armYAngleFactor), 0, 1 - phase
+						(float) Math.toRadians(180 * armFactor), (float) Math.toRadians(-45 * armYAngleFactor), 0, animationFactor
 				)
 				.rotateLeftArm(
-						(float) Math.toRadians(180 * armFactor), (float) Math.toRadians(45 * armYAngleFactor), 0, 1 - phase
+						(float) Math.toRadians(180 * armFactor), (float) Math.toRadians(45 * armYAngleFactor), 0, animationFactor
 				)
 				.rotateRightLeg(
-						(float) Math.toRadians(30 - 60 * factor), 0, 0, 1 - phase
+						(float) Math.toRadians(30 - 60 * factor), 0, 0, animationFactor
 				)
 				.rotateLeftLeg(
-						(float) Math.toRadians(30 - 60 * factor), 0, 0, 1 - phase
+						(float) Math.toRadians(30 - 60 * factor), 0, 0, animationFactor
 				)
 				.makeLegsLittleMoving()
 				.end();

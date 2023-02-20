@@ -8,6 +8,7 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
@@ -19,6 +20,8 @@ import java.nio.ByteBuffer;
 public class Roll extends Action {
 	private int creativeCoolTime = 0;
 	private boolean startRequired = false;
+
+	public enum Direction {Front, Back}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
@@ -56,6 +59,7 @@ public class Roll extends Action {
 
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		BufferUtil.wrap(startInfo).putBoolean(KeyBindings.getKeyBack().isDown());
 		return startRequired;
 	}
 
@@ -67,18 +71,23 @@ public class Roll extends Action {
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
 		startRequired = false;
+		Direction direction = BufferUtil.getBoolean(startData) ? Direction.Back : Direction.Front;
 		Animation animation = Animation.get(player);
-		if (animation != null) animation.setAnimator(new RollAnimator());
+		if (animation != null) animation.setAnimator(new RollAnimator(direction));
 	}
 
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		startRequired = false;
+		Direction direction = BufferUtil.getBoolean(startData) ? Direction.Back : Direction.Front;
 		double modifier = Math.sqrt(player.getBbWidth());
 		Vector3d vec = VectorUtil.fromYawDegree(player.yBodyRot).scale(modifier);
+		if (direction == Direction.Back) {
+			vec = vec.reverse();
+		}
 		player.setDeltaMovement(vec.x(), 0, vec.z());
 		Animation animation = Animation.get(player);
-		if (animation != null) animation.setAnimator(new RollAnimator());
+		if (animation != null) animation.setAnimator(new RollAnimator(direction));
 	}
 
 	public void startRoll(PlayerEntity player) {

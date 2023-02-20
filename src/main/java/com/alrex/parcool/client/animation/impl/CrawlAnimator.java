@@ -14,10 +14,12 @@ public class CrawlAnimator extends Animator {
 
 	@Override
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
-		float angle = 140 + 35 * (float) Math.sin(transformer.getLimbSwing() / 10 * Math.PI);
+		float factor = (float) Math.sin(transformer.getLimbSwing() / 10 * Math.PI);
 		transformer
-				.rotateLeftArm(0, 0, (float) Math.toRadians(-angle))
-				.rotateRightArm(0, 0, (float) Math.toRadians(angle))
+				.rotateLeftArm(0, 0, (float) Math.toRadians(-120 - 25 * factor))
+				.rotateRightArm(0, 0, (float) Math.toRadians(120 - 25 * factor))
+				.rotateLeftLeg(0, 0, (float) Math.toRadians(-5 + 5 * factor))
+				.rotateRightLeg(0, 0, (float) Math.toRadians(5 + 5 * factor))
 				.end();
 	}
 }

@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
 public class BreakfallReady extends Action {
 	public void startBreakfall(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		setDoing(false);
-		if (KeyBindings.getKeyForward().isDown() && parkourability.getActionInfo().can(Roll.class)) {
+		if ((KeyBindings.getKeyForward().isDown() || KeyBindings.getKeyBack().isDown()) && parkourability.getActionInfo().can(Roll.class)) {
 			parkourability.get(Roll.class).startRoll(player);
 		} else {
 			parkourability.get(Tap.class).startTap(player);

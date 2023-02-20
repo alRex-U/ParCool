@@ -52,6 +52,6 @@ public class JumpFromBar extends Action {
 
 	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
-		return null;
+		return StaminaConsumeTiming.OnStart;
 	}
 }

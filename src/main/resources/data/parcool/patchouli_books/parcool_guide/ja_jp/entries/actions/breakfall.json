@@ -18,7 +18,7 @@
     {
       "type": "patchouli:text",
       "title": "使い方",
-      "text": "$(list)ブレイクフォールキー($(k:parcool.Breakfall))と前進キーを押しながら着地する$(br)"
+      "text": "$(list)ブレイクフォールキー($(k:parcool.Breakfall))と前進または後退キーを押しながら着地する$(br)"
     },
     {
       "type": "patchouli:text",

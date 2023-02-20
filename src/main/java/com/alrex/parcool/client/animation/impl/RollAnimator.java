@@ -12,7 +12,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 public class RollAnimator extends Animator {
-	public RollAnimator() {
+	private final Roll.Direction direction;
+
+	public RollAnimator(Roll.Direction direction) {
+		this.direction = direction;
 	}
 
 	public static float calculateMovementFactor(float progress) {
@@ -50,18 +53,20 @@ public class RollAnimator extends Animator {
 		Roll roll = parkourability.get(Roll.class);
 		float phase = (roll.getDoingTick() + rotator.getPartialTick()) / (float) roll.getRollMaxTick();
 		float factor = calculateMovementFactor(phase);
+		float sign = direction == Roll.Direction.Front ? 1 : -1;
 		rotator
 				.startBasedCenter()
-				.rotateFrontward(MathUtil.lerp(0, 360, factor))
+				.rotateFrontward(sign * MathUtil.lerp(0, 360, factor))
 				.end();
 	}
 
 	@Override
 	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
 		Roll roll = parkourability.get(Roll.class);
+		float sign = direction == Roll.Direction.Front ? 1 : -1;
 		if (roll.isDoing() && clientPlayer.isLocalPlayer() && Minecraft.getInstance().options.getCameraType().isFirstPerson() && !ParCoolConfig.CONFIG_CLIENT.disableCameraRolling.get()) {
 			float factor = calculateMovementFactor((float) ((roll.getDoingTick() + event.getRenderPartialTicks()) / (float) roll.getRollMaxTick()));
-			event.setPitch((factor > 0.5 ? factor - 1 : factor) * 360f + clientPlayer.getViewXRot((float) event.getRenderPartialTicks()));
+			event.setPitch(sign * (factor > 0.5 ? factor - 1 : factor) * 360f + clientPlayer.getViewXRot((float) event.getRenderPartialTicks()));
 		}
 	}
 }
