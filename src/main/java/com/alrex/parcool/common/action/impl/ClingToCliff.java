@@ -64,6 +64,13 @@ public class ClingToCliff extends Action {
 		if (animation != null) animation.setAnimator(new ClingToCliffAnimator());
 	}
 
+	@Override
+	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+		armSwingAmount = 0;
+		Animation animation = Animation.get(player);
+		if (animation != null) animation.setAnimator(new ClingToCliffAnimator());
+	}
+
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
@@ -78,13 +85,17 @@ public class ClingToCliff extends Action {
 				else player.setDeltaMovement(0, 0, 0);
 			}
 		}
-		armSwingAmount += player.getDeltaMovement().lengthSqr();
+	}
+
+	@Override
+	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		armSwingAmount += player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
-		if (isDoing()) {
+		if (isDoing() && player.isLocalPlayer()) {
 			Vector3d wall = WorldUtil.getWall(player);
 			if (wall != null) {
 				float yRot = (float) VectorUtil.toYawDegree(wall.normalize());

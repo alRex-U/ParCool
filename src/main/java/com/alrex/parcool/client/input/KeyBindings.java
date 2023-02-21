@@ -22,6 +22,7 @@ public class KeyBindings {
 	private static final KeyBinding keyBindVault = new KeyBinding("key.parcool.Vault", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
 	private static final KeyBinding keyBindDodge = new KeyBinding("key.parcool.Dodge", GLFW.GLFW_KEY_R, "key.categories.parcool");
 	private static final KeyBinding keyBindWallJump = new KeyBinding("key.parcool.WallJump", GLFW.GLFW_KEY_SPACE, "key.categories.parcool");
+	private static final KeyBinding keyBindHangDown = new KeyBinding("key.parcool.HangDown", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.category.parcool");
 	private static final KeyBinding keyBindWallSlide = new KeyBinding("key.parcool.WallSlide", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
 	private static final KeyBinding keyBindHorizontalWallRun = new KeyBinding("key.parcool.HorizontalWallRun", GLFW.GLFW_KEY_R, "key.categories.parcool");
 	private static final KeyBinding keyBindQuickTurn = new KeyBinding("key.parcool.QuickTurn", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
@@ -91,6 +92,10 @@ public class KeyBindings {
 		return keyBindWallSlide;
 	}
 
+	public static KeyBinding getKeyHangDown() {
+		return keyBindHangDown;
+	}
+
 	public static KeyBinding getKeyHorizontalWallRun() {
 		return keyBindHorizontalWallRun;
 	}
@@ -117,5 +122,6 @@ public class KeyBindings {
 		ClientRegistry.registerKeyBinding(keyBindOpenSettings);
 		ClientRegistry.registerKeyBinding(keyBindQuickTurn);
 		ClientRegistry.registerKeyBinding(keyBindFlipping);
+		ClientRegistry.registerKeyBinding(keyBindHangDown);
 	}
 }

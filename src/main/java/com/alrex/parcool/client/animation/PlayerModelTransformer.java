@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.animation;
 
+import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelHelper;
@@ -79,6 +80,18 @@ public class PlayerModelTransformer {
 		return this;
 	}
 
+	public PlayerModelTransformer rotateRightArm(float angleX, float angleY, float angleZ, float factor) {
+		ModelRenderer rightArm = model.rightArm;
+		if (rightArm.visible) {
+			setRotations(rightArm,
+					MathUtil.lerp(rightArm.xRot, angleX, factor),
+					MathUtil.lerp(rightArm.yRot, angleY, factor),
+					MathUtil.lerp(rightArm.zRot, angleZ, factor)
+			);
+		}
+		return this;
+	}
+
 	/**
 	 * @param angleX swing arm frontward or backward
 	 * @param angleY rotate arm around
@@ -88,6 +101,18 @@ public class PlayerModelTransformer {
 		ModelRenderer leftArm = model.leftArm;
 		if (leftArm.visible) {
 			setRotations(leftArm, angleX, angleY, angleZ);
+		}
+		return this;
+	}
+
+	public PlayerModelTransformer rotateLeftArm(float angleX, float angleY, float angleZ, float factor) {
+		ModelRenderer leftArm = model.leftArm;
+		if (leftArm.visible) {
+			setRotations(leftArm,
+					MathUtil.lerp(leftArm.xRot, angleX, factor),
+					MathUtil.lerp(leftArm.yRot, angleY, factor),
+					MathUtil.lerp(leftArm.zRot, angleZ, factor)
+			);
 		}
 		return this;
 	}
@@ -105,6 +130,18 @@ public class PlayerModelTransformer {
 		return this;
 	}
 
+	public PlayerModelTransformer rotateRightLeg(float angleX, float angleY, float angleZ, float factor) {
+		ModelRenderer rightLeg = model.rightLeg;
+		if (rightLeg.visible) {
+			setRotations(rightLeg,
+					MathUtil.lerp(rightLeg.xRot, angleX, factor),
+					MathUtil.lerp(rightLeg.yRot, angleY, factor),
+					MathUtil.lerp(rightLeg.zRot, angleZ, factor)
+			);
+		}
+		return this;
+	}
+
 	/**
 	 * @param angleX swing leg frontward or backward
 	 * @param angleY rotate leg around
@@ -114,6 +151,18 @@ public class PlayerModelTransformer {
 		ModelRenderer leftLeg = model.leftLeg;
 		if (leftLeg.visible) {
 			setRotations(leftLeg, angleX, angleY, angleZ);
+		}
+		return this;
+	}
+
+	public PlayerModelTransformer rotateLeftLeg(float angleX, float angleY, float angleZ, float factor) {
+		ModelRenderer leftLeg = model.leftLeg;
+		if (leftLeg.visible) {
+			setRotations(leftLeg,
+					MathUtil.lerp(leftLeg.xRot, angleX, factor),
+					MathUtil.lerp(leftLeg.yRot, angleY, factor),
+					MathUtil.lerp(leftLeg.zRot, angleZ, factor)
+			);
 		}
 		return this;
 	}

@@ -18,7 +18,7 @@
     {
       "type": "patchouli:text",
       "title": "How to Use",
-      "text": "$(list)Land while you press forward-movement key and Breakfall Key$(br)(Normally it’s mapped to R)"
+      "text": "$(list)Land while you press forward or backward movement key and Breakfall Key$(br)(Normally it’s mapped to R)"
     },
     {
       "type": "patchouli:text",

@@ -21,6 +21,8 @@ public class AnimatorList {
 			FastRunningAnimator.class,
 			FlippingAnimator.class,
 			HorizontalWallRunAnimator.class,
+			JumpFromBarAnimator.class,
+			HangAnimator.class,
 			KongVaultAnimator.class,
 			RollAnimator.class,
 			SlidingAnimator.class,

@@ -13,7 +13,7 @@ public class CatLeapAnimator extends Animator {
 
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return !parkourability.get(CatLeap.class).isDoing() || getTick() > 30;
+		return !parkourability.get(CatLeap.class).isDoing() || getTick() > 20;
 	}
 
 	@Override
@@ -25,30 +25,35 @@ public class CatLeapAnimator extends Animator {
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		CatLeap catLeap = parkourability.get(CatLeap.class);
 
-		float phase = (catLeap.getDoingTick() + transformer.getPartialTick()) / 30f;
+		float phase = (catLeap.getDoingTick() + transformer.getPartialTick()) / 20f;
 		if (phase > 1) phase = 1f;
 		float factor = movingFactorFunc(phase);
+		float animationFactor = 1 - phase * phase * phase * phase;
 		transformer
 				.rotateLeftArm(
 						(float) -Math.toRadians(lerp(-25f, 170f, factor)),
 						0,
-						(float) -Math.toRadians(lerp(24, 5, factor))
+						(float) -Math.toRadians(lerp(24, 5, factor)),
+						animationFactor
 				)
 				.rotateRightArm(
 						(float) -Math.toRadians(lerp(-25f, 170f, factor)),
 						0,
-						(float) Math.toRadians(lerp(24, 5, factor))
+						(float) Math.toRadians(lerp(24, 5, factor)),
+						animationFactor
 				)
 				.makeArmsNatural()
 				.rotateLeftLeg(
 						(float) Math.toRadians(lerp(15f, 45f, factor)),
 						0,
-						0
+						0,
+						animationFactor
 				)
 				.rotateRightLeg(
 						(float) -Math.toRadians(lerp(15f, 45f, factor)),
 						0,
-						0
+						0,
+						animationFactor
 				)
 				.makeLegsLittleMoving()
 				.end();
