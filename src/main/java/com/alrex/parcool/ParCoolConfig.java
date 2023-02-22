@@ -2,6 +2,7 @@ package com.alrex.parcool;
 
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.AnimatorList;
+import com.alrex.parcool.client.gui.ColorTheme;
 import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
@@ -54,6 +55,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.EnumValue<Vault.TypeSelectionMode> vaultAnimationMode;
 		public final ForgeConfigSpec.EnumValue<Position.Horizontal> alignHorizontalStaminaHUD;
 		public final ForgeConfigSpec.EnumValue<Position.Vertical> alignVerticalStaminaHUD;
+		public final ForgeConfigSpec.EnumValue<ColorTheme> guiColorTheme;
 		public final ForgeConfigSpec.IntValue marginHorizontalStaminaHUD;
 		public final ForgeConfigSpec.IntValue marginVerticalStaminaHUD;
 		public final ForgeConfigSpec.IntValue offsetVerticalLightStaminaHUD;
@@ -116,6 +118,7 @@ public class ParCoolConfig {
 				vaultAnimationMode = builder.comment("Vault Animation(Dynamic is to select animation dynamically)").defineEnum("vaultAnimationMode", Vault.TypeSelectionMode.Dynamic);
 				replaceSprintWithFastRun = builder.comment("do Fast-Running whenever you do a sprint of vanilla").define("replaceSprintWithFastRun", true);
 				substituteSprintForFastRun = builder.comment("enable players to do actions needing Fast-Running by sprint").define("substituteSprint", false);
+				guiColorTheme = builder.comment("Color theme of Setting GUI").defineEnum("guiColorTheme", ColorTheme.Blue);
 				infiniteStamina = builder
 						.comment("Infinite Stamina(this needs a permission from server, even if it is on single player's game)\nPlease check 'parcool-server.toml' in 'serverconfig' directory")
 						.define("infiniteStamina", false);
