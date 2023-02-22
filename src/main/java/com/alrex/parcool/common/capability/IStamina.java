@@ -21,6 +21,8 @@ public interface IStamina {
 
 	public int get();
 
+	public int getOldValue();
+
 	public void consume(int value);
 
 	public void recover(int value);

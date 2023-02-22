@@ -58,7 +58,6 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.EnumValue<ColorTheme> guiColorTheme;
 		public final ForgeConfigSpec.IntValue marginHorizontalStaminaHUD;
 		public final ForgeConfigSpec.IntValue marginVerticalStaminaHUD;
-		public final ForgeConfigSpec.IntValue offsetVerticalLightStaminaHUD;
 		public final ForgeConfigSpec.IntValue staminaMax;
 		public final ForgeConfigSpec.BooleanValue useHungerBarInsteadOfStamina;
 		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
@@ -78,12 +77,11 @@ public class ParCoolConfig {
 			builder.push("Stamina HUD Configuration");
 			{
 				hideStaminaHUD = builder.comment("hide stamina HUD when Stamina is infinite").define("hideS_HUD", false);
-				useLightHUD = builder.comment("use Light Stamina HUD").define("useLightHUD", false);
+				useLightHUD = builder.comment("use Light Stamina HUD").define("useLightHUD", true);
 				alignHorizontalStaminaHUD = builder.comment("horizontal alignment").defineEnum("align_H_S_HUD", Position.Horizontal.Right);
 				alignVerticalStaminaHUD = builder.comment("vertical alignment").defineEnum("align_V_S_HUD", Position.Vertical.Bottom);
 				marginHorizontalStaminaHUD = builder.comment("horizontal margin").defineInRange("margin_H_S_HUD", 3, 0, 100);
 				marginVerticalStaminaHUD = builder.comment("vertical margin").defineInRange("margin_V_S_HUD", 3, 0, 100);
-				offsetVerticalLightStaminaHUD = builder.comment("vertical offset of light stamina HUD").defineInRange("offset_V_LS_HUD", 0, -50, 50);
 			}
 			builder.pop();
 			builder.push("Animations");

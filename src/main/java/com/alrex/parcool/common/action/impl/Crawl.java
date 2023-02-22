@@ -24,6 +24,7 @@ public class Crawl extends Action {
 				&& KeyRecorder.keyCrawlState.isPressed()
 				&& !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()
+				&& parkourability.get(Vault.class).getNotDoingTick() >= 8
 				&& !player.isInWaterOrBubble()
 				&& (player.isOnGround() || !ParCoolConfig.CONFIG_CLIENT.disableCrawlInAir.get())
 		);

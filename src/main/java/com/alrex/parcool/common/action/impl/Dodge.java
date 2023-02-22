@@ -176,4 +176,11 @@ public class Dodge extends Action {
 	public boolean isInSuccessiveCoolDown() {
 		return successivelyCount >= 3;
 	}
+
+	public float getCoolDownPhase() {
+		return Math.min(
+				(float) (Dodge.MAX_COOL_DOWN_TICK - getCoolTime()) / Dodge.MAX_COOL_DOWN_TICK,
+				isInSuccessiveCoolDown() ? (float) (Dodge.MAX_COOL_DOWN_TICK * 3 - getSuccessivelyCoolTick()) / (Dodge.MAX_COOL_DOWN_TICK * 3.0f) : 1
+		);
+	}
 }

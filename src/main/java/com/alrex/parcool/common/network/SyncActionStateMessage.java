@@ -207,7 +207,29 @@ public class SyncActionStateMessage {
 		public ActionSyncData getItem() {
 			Action action = parkourability.getActionFromID(buffer.getShort());
 			DataType type = DataType.getFromCode(buffer.get());
-			byte[] array = new byte[buffer.getInt()];
+			int bufferSize = buffer.getInt();
+			if (bufferSize > 1024) {
+				StringBuilder msgBuilder = new StringBuilder();
+				msgBuilder.append("Synchronization failed. demanded buffer size is too large\n")
+						.append(action)
+						.append(":Sync_Type")
+						.append(type)
+						.append('\n')
+						.append(buffer);
+				if (buffer.limit() < 128) {
+					buffer.rewind();
+					msgBuilder.append("->{");
+					while (buffer.hasRemaining()) {
+						msgBuilder.append(Integer.toHexString(buffer.get()))
+								.append(',');
+					}
+					msgBuilder.append('}');
+				}
+				ParCool.LOGGER.warn(msgBuilder.toString());
+				buffer.position(buffer.limit());
+				return null;
+			}
+			byte[] array = new byte[bufferSize];
 			buffer.get(array);
 			if (action == null) {
 				return null;
