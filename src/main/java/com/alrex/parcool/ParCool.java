@@ -70,7 +70,8 @@ public class ParCool {
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		ItemRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
 
-		ModLoadingContext context = ModLoadingContext.get();
+		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ParCoolConfig.SERVER_SPEC);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.CLIENT_SPEC);
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {
@@ -86,7 +87,6 @@ public class ParCool {
 	}
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
-		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.CLIENT_SPEC);
 		KeyBindings.register(event);
 		Capabilities.registerClient(CapabilityManager.INSTANCE);
 		EventBusForgeRegistry.registerClient(MinecraftForge.EVENT_BUS);
@@ -94,7 +94,6 @@ public class ParCool {
 	}
 
 	private void doServerStuff(final FMLDedicatedServerSetupEvent event) {
-		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ParCoolConfig.SERVER_SPEC);
 	}
 
 	private void serverStarting(final FMLServerAboutToStartEvent event) {
