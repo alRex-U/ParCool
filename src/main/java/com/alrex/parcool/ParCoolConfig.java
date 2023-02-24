@@ -109,7 +109,7 @@ public class ParCoolConfig {
 			builder.push("Modifiers");
 			{
 				fastRunningModifier = builder.comment("FastRun Speed Modifier").defineInRange("fastRunModifier", 3, 0.001, 4.5);
-				dodgeSpeedModifier = builder.comment("Dodge Speed Modifier").defineInRange("dodgeSpeedModifier", 0.4, 0.2, 0.52);
+				dodgeSpeedModifier = builder.comment("Dodge Speed Modifier").defineInRange("dodgeSpeedModifier", 1, 0.5, 1.5);
 				wallRunContinuableTick = builder.comment("How long you can do Horizontal Wall Run").defineInRange("wallRunContinuableTick", 25, 15, 40);
 				slidingContinuableTick = builder.comment("How long you can do Slide").defineInRange("slidingContinuableTick", 15, 10, 30);
 			}
