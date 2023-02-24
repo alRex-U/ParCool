@@ -101,7 +101,7 @@ public class LimitationByServerMessage {
 		ParCoolConfig.Server config = ParCoolConfig.CONFIG_SERVER;
 
 		message.maxStaminaLimitation = config.staminaMax.get();
-		message.enforced = true;
+		message.enforced = ParCoolConfig.CONFIG_SERVER.enforced.get();
 		message.permissionOfInfiniteStamina = config.allowInfiniteStamina.get();
 		message.forIndividuals = false;
 		for (int i = 0; i < ActionList.ACTIONS.size(); i++) {

@@ -64,6 +64,10 @@ public class Stamina implements IStamina {
 				|| (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && parkourability.getActionInfo().isInfiniteStaminaPermitted())
 				|| player.hasEffect(Effects.INEXHAUSTIBLE)
 		) return;
+		if (ParCoolConfig.CONFIG_CLIENT.useHungerBarInsteadOfStamina.get()) {
+			player.causeFoodExhaustion(value / 1000f);
+			return;
+		}
 		recoverCoolTime = 30;
 		set(stamina - value);
 		if (stamina == 0) {

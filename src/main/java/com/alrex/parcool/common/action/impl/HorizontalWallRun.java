@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.HorizontalWallRunAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
@@ -22,7 +23,7 @@ import java.nio.ByteBuffer;
 public class HorizontalWallRun extends Action {
 	private int coolTime = 0;
 	private float bodyYaw = 0;
-	private static final int Max_Running_Tick = 25;
+	private static final int Max_Running_Tick = ParCoolConfig.CONFIG_CLIENT.wallRunContinuableTick.get();
 	private boolean wallIsRightward = false;
 	private Vector3d runningWallDirection = null;
 

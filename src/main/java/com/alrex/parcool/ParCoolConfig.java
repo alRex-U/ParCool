@@ -61,6 +61,8 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.IntValue staminaMax;
 		public final ForgeConfigSpec.BooleanValue useHungerBarInsteadOfStamina;
 		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
+		public final ForgeConfigSpec.IntValue wallRunContinuableTick;
+		public final ForgeConfigSpec.IntValue slidingContinuableTick;
 
 		Client(ForgeConfigSpec.Builder builder) {
 			builder.push("Possibility of Actions(Some do not have to work)");
@@ -68,10 +70,6 @@ public class ParCoolConfig {
 				for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
 					actionPossibilities[i] = builder.define("can" + ActionList.ACTIONS.get(i).getSimpleName(), true);
 				}
-			}
-			builder.pop();
-			builder.push("Modifier Values");
-			{
 			}
 			builder.pop();
 			builder.push("Stamina HUD Configuration");
@@ -89,21 +87,30 @@ public class ParCoolConfig {
 				disableFallingAnimation = builder.comment("Disable custom animation of falling").define("disableFallingAnimation", false);
 				disableAnimation = builder.comment("Disable custom animations").define("disableAnimation", false);
 				disableFPVAnimation = builder.comment("Disable first-person-view animations").define("disableFPVAnimation", false);
-				for (int i = 0; i < AnimatorList.ANIMATORS.size(); i++) {
-					animatorPossibilities[i] = builder.define("enable" + AnimatorList.ANIMATORS.get(i).getSimpleName(), true);
-
+				builder.push("Animators");
+				{
+					for (int i = 0; i < AnimatorList.ANIMATORS.size(); i++) {
+						animatorPossibilities[i] = builder.define("enable" + AnimatorList.ANIMATORS.get(i).getSimpleName(), true);
+					}
 				}
-				disableCameraRolling = builder.comment("Disable Roll rotation of camera").define("disableCameraRotationRolling", false);
-				disableCameraFlipping = builder.comment("Disable Flipping rotation of camera").define("disableCameraRotationFlipping", false);
-				disableCameraVault = builder.comment("Disable Vault animation of camera").define("disableCameraAnimationVault", true);
-				disableCameraHorizontalWallRun = builder.comment("Disable Horizontal-WallRun animation of camera").define("disableCameraAnimationH_WallRun", false);
-				disableCameraHang = builder.comment("Disable Hang animation of camera").define("disableCameraAnimationHang", false);
+				builder.pop();
+				builder.push("Camera");
+				{
+					disableCameraRolling = builder.comment("Disable Roll rotation of camera").define("disableCameraRotationRolling", false);
+					disableCameraFlipping = builder.comment("Disable Flipping rotation of camera").define("disableCameraRotationFlipping", false);
+					disableCameraVault = builder.comment("Disable Vault animation of camera").define("disableCameraAnimationVault", true);
+					disableCameraHorizontalWallRun = builder.comment("Disable Horizontal-WallRun animation of camera").define("disableCameraAnimationH_WallRun", false);
+					disableCameraHang = builder.comment("Disable Hang animation of camera").define("disableCameraAnimationHang", false);
+				}
+				builder.pop();
 			}
 			builder.pop();
-			builder.push("modifiers");
+			builder.push("Modifiers");
 			{
 				fastRunningModifier = builder.comment("FastRun Speed Modifier").defineInRange("fastRunModifier", 3, 0.001, 4.5);
 				dodgeSpeedModifier = builder.comment("Dodge Speed Modifier").defineInRange("dodgeSpeedModifier", 0.4, 0.2, 0.52);
+				wallRunContinuableTick = builder.comment("How long you can do Horizontal Wall Run").defineInRange("wallRunContinuableTick", 25, 15, 40);
+				slidingContinuableTick = builder.comment("How long you can do Slide").defineInRange("slidingContinuableTick", 15, 10, 30);
 			}
 			builder.pop();
 			builder.push("Other Configuration");
@@ -162,8 +169,10 @@ public class ParCoolConfig {
 
 		public final ForgeConfigSpec.BooleanValue allowInfiniteStamina;
 		public final ForgeConfigSpec.IntValue staminaMax;
+		public final ForgeConfigSpec.BooleanValue enforced;
 
 		Server(ForgeConfigSpec.Builder builder) {
+			enforced = builder.comment("Whether these limitations will be imposed to players").define("limitationsImposed", false);
 			builder.push("Action Permissions");
 			{
 				for (int i = 0; i < ActionList.ACTIONS.size(); i++) {

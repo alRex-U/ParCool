@@ -36,7 +36,7 @@ public class Slide extends Action {
 
 	@Override
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		final int maxSlidingTick = 15;
+		final int maxSlidingTick = ParCoolConfig.CONFIG_CLIENT.slidingContinuableTick.get();
 		return getDoingTick() < maxSlidingTick
 				&& parkourability.get(Crawl.class).isDoing();
 	}
