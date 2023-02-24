@@ -8,8 +8,6 @@ But if someone is willing to do that, I will accept the contribution.
 
 ---
 ### Q. Is 1.12.2 version development now worked on?
-#### A. Partially Yes
+#### A. No
 
-However it will be supported as for only bugfixes.  
-New features won't be added.  
-And the author is now working on the latest minecraft version so I cannot do that soon.
+I have no plan to port this mod to former version than 1.16.

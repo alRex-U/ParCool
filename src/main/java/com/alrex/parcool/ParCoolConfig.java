@@ -14,6 +14,7 @@ public class ParCoolConfig {
 	private static final ForgeConfigSpec.Builder S_BUILDER = new ForgeConfigSpec.Builder();
 
 	public static final Client CONFIG_CLIENT = new Client(C_BUILDER);
+
 	public static final Server CONFIG_SERVER = new Server(S_BUILDER);
 
 	public static class Client {
