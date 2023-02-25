@@ -25,6 +25,10 @@ public class WallJumpAnimator extends Animator {
 		}
 	}
 
+	float getFadeFactor(float phase) {
+		return (float) (1.0 - Math.pow(2 * phase - 1, 4));
+	}
+
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
 		return getTick() >= maxTick;
@@ -34,7 +38,7 @@ public class WallJumpAnimator extends Animator {
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float phase = (getTick() + transformer.getPartialTick()) / maxTick;
 		float factor = getFactor(phase);
-		float fadeFactor = 1 - phase * phase * phase * phase;
+		float fadeFactor = getFadeFactor(phase);
 		int sign = swingRightArm ? 1 : -1;
 		transformer
 				.rotateRightLeg((float) toRadians(sign * factor * 60), 0, 0, fadeFactor)

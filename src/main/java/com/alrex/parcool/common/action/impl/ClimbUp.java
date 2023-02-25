@@ -22,6 +22,7 @@ public class ClimbUp extends Action {
 		ClingToCliff cling = parkourability.get(ClingToCliff.class);
 		return cling.isDoing()
 				&& cling.getDoingTick() > 2
+				&& cling.getFacingDirection() == ClingToCliff.FacingDirection.ToWall
 				&& parkourability.getActionInfo().can(ClimbUp.class)
 				&& KeyRecorder.keyJumpState.isPressed();
 	}
@@ -38,14 +39,6 @@ public class ClimbUp extends Action {
 		EntityUtil.addVelocity(player, new Vector3d(0, 0.6, 0));
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new ClimbUpAnimator());
-	}
-
-	@Override
-	public void restoreSynchronizedState(ByteBuffer buffer) {
-	}
-
-	@Override
-	public void saveSynchronizedState(ByteBuffer buffer) {
 	}
 
 	@Override

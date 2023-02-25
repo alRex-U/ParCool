@@ -32,14 +32,6 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public void restoreSynchronizedState(ByteBuffer buffer) {
-	}
-
-	@Override
-	public void saveSynchronizedState(ByteBuffer buffer) {
-	}
-
-	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
 		return StaminaConsumeTiming.OnStart;
 	}
@@ -65,6 +57,7 @@ public class WallJump extends Action {
 		Vector3d wallDirection = WorldUtil.getWall(player);
 		Vector3d jumpDirection = getJumpDirection(player, wallDirection);
 		if (jumpDirection == null) return false;
+		ClingToCliff cling = parkourability.get(ClingToCliff.class);
 
 		boolean value = (!stamina.isExhausted()
 				&& parkourability.getActionInfo().can(WallJump.class)
@@ -73,8 +66,8 @@ public class WallJump extends Action {
 				&& !player.isFallFlying()
 				&& !player.abilities.flying
 				&& parkourability.getAdditionalProperties().getNotCreativeFlyingTick() > 10
-				&& !parkourability.get(ClingToCliff.class).isDoing()
-				&& parkourability.get(ClingToCliff.class).getNotDoingTick() > 3
+				&& ((!cling.isDoing() && cling.getNotDoingTick() > 3)
+				|| (cling.isDoing() && cling.getFacingDirection() != ClingToCliff.FacingDirection.ToWall))
 				&& KeyRecorder.keyWallJump.isPressed()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 5

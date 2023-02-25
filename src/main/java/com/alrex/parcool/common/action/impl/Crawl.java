@@ -44,14 +44,6 @@ public class Crawl extends Action {
 	}
 
 	@Override
-	public void restoreSynchronizedState(ByteBuffer buffer) {
-	}
-
-	@Override
-	public void saveSynchronizedState(ByteBuffer buffer) {
-	}
-
-	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
 		return StaminaConsumeTiming.None;
 	}
