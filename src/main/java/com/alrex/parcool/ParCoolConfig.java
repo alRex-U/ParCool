@@ -60,6 +60,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.IntValue marginHorizontalStaminaHUD;
 		public final ForgeConfigSpec.IntValue marginVerticalStaminaHUD;
 		public final ForgeConfigSpec.IntValue staminaMax;
+		public final ForgeConfigSpec.IntValue staminaRecovery;
 		public final ForgeConfigSpec.BooleanValue useHungerBarInsteadOfStamina;
 		public final ForgeConfigSpec.DoubleValue fastRunningModifier;
 		public final ForgeConfigSpec.IntValue wallRunContinuableTick;
@@ -69,77 +70,78 @@ public class ParCoolConfig {
 			builder.push("Possibility of Actions(Some do not have to work)");
 			{
 				for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
-					actionPossibilities[i] = builder.define("can" + ActionList.ACTIONS.get(i).getSimpleName(), true);
+					actionPossibilities[i] = builder.define("can_" + ActionList.ACTIONS.get(i).getSimpleName(), true);
 				}
 			}
 			builder.pop();
 			builder.push("Stamina HUD Configuration");
 			{
-				hideStaminaHUD = builder.comment("hide stamina HUD when Stamina is infinite").define("hideS_HUD", false);
-				useLightHUD = builder.comment("use Light Stamina HUD").define("useLightHUD", true);
-				alignHorizontalStaminaHUD = builder.comment("horizontal alignment").defineEnum("align_H_S_HUD", Position.Horizontal.Right);
-				alignVerticalStaminaHUD = builder.comment("vertical alignment").defineEnum("align_V_S_HUD", Position.Vertical.Bottom);
-				marginHorizontalStaminaHUD = builder.comment("horizontal margin").defineInRange("margin_H_S_HUD", 3, 0, 100);
-				marginVerticalStaminaHUD = builder.comment("vertical margin").defineInRange("margin_V_S_HUD", 3, 0, 100);
+				hideStaminaHUD = builder.comment("hide stamina HUD when Stamina is infinite").define("hide_s_hud", false);
+				useLightHUD = builder.comment("use Light Stamina HUD").define("use_light_hud", true);
+				alignHorizontalStaminaHUD = builder.comment("horizontal alignment").defineEnum("align_h_s_hud", Position.Horizontal.Right);
+				alignVerticalStaminaHUD = builder.comment("vertical alignment").defineEnum("align_v_s_hud", Position.Vertical.Bottom);
+				marginHorizontalStaminaHUD = builder.comment("horizontal margin").defineInRange("margin_h_s_hud", 3, 0, 100);
+				marginVerticalStaminaHUD = builder.comment("vertical margin").defineInRange("margin_v_s_hud", 3, 0, 100);
 			}
 			builder.pop();
 			builder.push("Animations");
 			{
-				disableFallingAnimation = builder.comment("Disable custom animation of falling").define("disableFallingAnimation", false);
-				disableAnimation = builder.comment("Disable custom animations").define("disableAnimation", false);
-				disableFPVAnimation = builder.comment("Disable first-person-view animations").define("disableFPVAnimation", false);
+				disableFallingAnimation = builder.comment("Disable custom animation of falling").define("disable_falling_animation", false);
+				disableAnimation = builder.comment("Disable custom animations").define("disable_animation", false);
+				disableFPVAnimation = builder.comment("Disable first-person-view animations").define("disable_FPV_animation", false);
 				builder.push("Animators");
 				{
 					for (int i = 0; i < AnimatorList.ANIMATORS.size(); i++) {
-						animatorPossibilities[i] = builder.define("enable" + AnimatorList.ANIMATORS.get(i).getSimpleName(), true);
+						animatorPossibilities[i] = builder.define("enable_" + AnimatorList.ANIMATORS.get(i).getSimpleName(), true);
 					}
 				}
 				builder.pop();
 				builder.push("Camera");
 				{
-					disableCameraRolling = builder.comment("Disable Roll rotation of camera").define("disableCameraRotationRolling", false);
-					disableCameraFlipping = builder.comment("Disable Flipping rotation of camera").define("disableCameraRotationFlipping", false);
-					disableCameraVault = builder.comment("Disable Vault animation of camera").define("disableCameraAnimationVault", true);
-					disableCameraHorizontalWallRun = builder.comment("Disable Horizontal-WallRun animation of camera").define("disableCameraAnimationH_WallRun", false);
-					disableCameraHang = builder.comment("Disable Hang animation of camera").define("disableCameraAnimationHang", false);
+					disableCameraRolling = builder.comment("Disable Roll rotation of camera").define("disable_camera_rotation_rolling", false);
+					disableCameraFlipping = builder.comment("Disable Flipping rotation of camera").define("disable_camera_rotation_flipping", false);
+					disableCameraVault = builder.comment("Disable Vault animation of camera").define("disable_camera_animation_vault", true);
+					disableCameraHorizontalWallRun = builder.comment("Disable Horizontal-WallRun animation of camera").define("disable_camera_animation_h-wall-run", false);
+					disableCameraHang = builder.comment("Disable Hang animation of camera").define("disable_camera_animation_hang-down", false);
 				}
 				builder.pop();
 			}
 			builder.pop();
 			builder.push("Modifiers");
 			{
-				fastRunningModifier = builder.comment("FastRun Speed Modifier").defineInRange("fastRunModifier", 3, 0.001, 4.5);
-				dodgeSpeedModifier = builder.comment("Dodge Speed Modifier").defineInRange("dodgeSpeedModifier", 1, 0.5, 1.5);
-				wallRunContinuableTick = builder.comment("How long you can do Horizontal Wall Run").defineInRange("wallRunContinuableTick", 25, 15, 40);
-				slidingContinuableTick = builder.comment("How long you can do Slide").defineInRange("slidingContinuableTick", 15, 10, 30);
+				fastRunningModifier = builder.comment("FastRun Speed Modifier").defineInRange("fast-run_modifier", 3, 0.001, 4.5);
+				dodgeSpeedModifier = builder.comment("Dodge Speed Modifier").defineInRange("dodge-speed_modifier", 1, 0.5, 1.5);
+				wallRunContinuableTick = builder.comment("How long you can do Horizontal Wall Run").defineInRange("wall-run_continuable_tick", 25, 15, 40);
+				slidingContinuableTick = builder.comment("How long you can do Slide").defineInRange("sliding_continuable_tick", 15, 10, 30);
 			}
 			builder.pop();
 			builder.push("Other Configuration");
 			{
-				disableDoubleTappingForDodge = builder.comment("Disable Double-Tapping For Dodge. Please Use Dodge Key instead").define("disableDoubleTapping", false);
-				disableCrawlInAir = builder.comment("Disable Crawl in air (experimental)").define("disableCrawlInAir", true);
-				disableVaultInAir = builder.comment("Disable Vault in air (experimental)").define("disableVaultInAir", true);
-				enableRollWhenCreative = builder.comment("Enable Roll While player is in creative mode (experimental)").define("enableRollCreative", false);
+				disableDoubleTappingForDodge = builder.comment("Disable Double-Tapping For Dodge. Please Use Dodge Key instead").define("disable_double_tapping", false);
+				disableCrawlInAir = builder.comment("Disable Crawl in air (experimental)").define("disable_crawl_in_air", true);
+				disableVaultInAir = builder.comment("Disable Vault in air (experimental)").define("disable_vault_in_air", true);
+				enableRollWhenCreative = builder.comment("Enable Roll While player is in creative mode (experimental)").define("enable_roll_creative", false);
 				vaultNeedKeyPressed = builder.comment("Make Vault Need Vault Key Pressed").define("vaultNeedKeyPressed", false);
-				vaultAnimationMode = builder.comment("Vault Animation(Dynamic is to select animation dynamically)").defineEnum("vaultAnimationMode", Vault.TypeSelectionMode.Dynamic);
-				replaceSprintWithFastRun = builder.comment("do Fast-Running whenever you do a sprint of vanilla").define("replaceSprintWithFastRun", true);
-				substituteSprintForFastRun = builder.comment("enable players to do actions needing Fast-Running by sprint").define("substituteSprint", false);
-				guiColorTheme = builder.comment("Color theme of Setting GUI").defineEnum("guiColorTheme", ColorTheme.Blue);
+				vaultAnimationMode = builder.comment("Vault Animation(Dynamic is to select animation dynamically)").defineEnum("vault_animation_mode", Vault.TypeSelectionMode.Dynamic);
+				replaceSprintWithFastRun = builder.comment("do Fast-Running whenever you do a sprint of vanilla").define("replace_sprint_with_fast-run", true);
+				substituteSprintForFastRun = builder.comment("enable players to do actions needing Fast-Running by sprint").define("substitute_sprint", false);
+				guiColorTheme = builder.comment("Color theme of Setting GUI").defineEnum("gui_color_theme", ColorTheme.Blue);
 				infiniteStamina = builder
-						.comment("Infinite Stamina(this needs a permission from server, even if it is on single player's game)\nPlease check 'parcool-server.toml' in 'serverconfig' directory")
-						.define("infiniteStamina", false);
+						.comment("Infinite Stamina(this needs a permission from server, even if it is on single player's game. normally permitted)\nPlease check 'parcool-server.toml' in 'serverconfig' directory")
+						.define("infinite_stamina", false);
 			}
 			builder.pop();
-			builder.comment("Stamina Section may be affected by Server config").push("Stamina");
+			builder.comment("Stamina Section (may be affected by Server config)").push("Stamina");
 			{
-				useHungerBarInsteadOfStamina = builder.comment("ParCool consume hanger value instead of stamina").define("useHangerInstead", false);
-				staminaMax = builder.defineInRange("MaxValueOfStamina", 2000, 300, 10000);
+				useHungerBarInsteadOfStamina = builder.comment("ParCool consume hanger value instead of stamina").define("use_hanger_instead", false);
+				staminaMax = builder.defineInRange("max_value_of_stamina", 2000, 300, 100000);
+				staminaRecovery = builder.defineInRange("value_of_stamina_recovery", 20, 1, 10000);
 				builder.push("Consumption");
 				{
 					for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
 						staminaConsumptions[i]
 								= builder.defineInRange(
-								"staminaConsumptionOf" + ActionList.ACTIONS.get(i).getSimpleName(),
+								"stamina_consumption_of_" + ActionList.ACTIONS.get(i).getSimpleName(),
 								ActionList.ACTION_REGISTRIES.get(i).getDefaultStaminaConsumption(),
 								0, 10000
 						);
@@ -149,7 +151,7 @@ public class ParCoolConfig {
 			builder.pop();
 			builder.comment("About ParCool").push("ParCool");
 			{
-				parCoolActivation = builder.comment("ParCool is Active").define("ParCool_Activation", true);
+				parCoolActivation = builder.comment("ParCool is Active").define("parcool_activation", true);
 			}
 			builder.pop();
 		}
@@ -170,28 +172,30 @@ public class ParCoolConfig {
 
 		public final ForgeConfigSpec.BooleanValue allowInfiniteStamina;
 		public final ForgeConfigSpec.IntValue staminaMax;
+		public final ForgeConfigSpec.IntValue staminaRecoveryMax;
 		public final ForgeConfigSpec.BooleanValue enforced;
 
 		Server(ForgeConfigSpec.Builder builder) {
-			enforced = builder.comment("Whether these limitations will be imposed to players").define("limitationsImposed", false);
+			enforced = builder.comment("Whether these limitations will be imposed to players").define("limitations_imposed", false);
 			builder.push("Action Permissions");
 			{
 				for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
 					actionPermissions[i]
-							= builder.define("permit" + ActionList.ACTIONS.get(i).getSimpleName(), true);
+							= builder.define("permit_" + ActionList.ACTIONS.get(i).getSimpleName(), true);
 				}
 			}
 			builder.pop();
 			builder.push("Stamina");
 			{
-				staminaMax = builder.defineInRange("Max Value of Stamina", 2000, 300, 10000);
-				allowInfiniteStamina = builder.comment("allow Infinite Stamina").define("infiniteStamina", true);
+				staminaMax = builder.comment("Limitation of max stamina").defineInRange("max_value_of_stamina", 10000, 300, 100000);
+				staminaRecoveryMax = builder.comment("Limitation of max stamina recovery").defineInRange("max_value_of_stamina_recovery", 1000, 1, 10000);
+				allowInfiniteStamina = builder.comment("Allow Infinite Stamina").define("infinite_stamina", true);
 				builder.push("Least Consumption");
 				{
 					for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
 						leastStaminaConsumptions[i]
 								= builder.defineInRange(
-								"staminaConsumptionOf" + ActionList.ACTIONS.get(i).getSimpleName(),
+								"stamina_consumption_of_" + ActionList.ACTIONS.get(i).getSimpleName(),
 								ActionList.ACTION_REGISTRIES.get(i).getDefaultStaminaConsumption(),
 								0, 10000
 						);

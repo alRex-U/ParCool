@@ -21,6 +21,7 @@ public class LimitationByServer {
 	//Whether this limitation is applied
 	private boolean enforced = false;
 	private int maxStaminaLimitation = Integer.MAX_VALUE;
+	private int maxStaminaRecovery = Integer.MAX_VALUE;
 	private boolean infiniteStaminaPermitted = true;
 	private final ActionLimitation[] list = new ActionLimitation[ActionList.ACTIONS.size()];
 
@@ -51,6 +52,11 @@ public class LimitationByServer {
 		return maxStaminaLimitation;
 	}
 
+	public int getMaxStaminaRecovery() {
+		if (!enforced) return Integer.MAX_VALUE;
+		return maxStaminaRecovery;
+	}
+
 	public boolean isInfiniteStaminaPermitted() {
 		return (!enforced || infiniteStaminaPermitted);
 	}
@@ -59,6 +65,7 @@ public class LimitationByServer {
 		msg.setEnforced(enforced);
 		msg.setMaxStaminaLimitation(maxStaminaLimitation);
 		msg.setPermissionOfInfiniteStamina(infiniteStaminaPermitted);
+		msg.setMaxStaminaRecovery(maxStaminaRecovery);
 		ActionLimitation[] limitations = msg.getLimitations();
 		for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
 			limitations[i] = new ActionLimitation(
@@ -123,6 +130,7 @@ public class LimitationByServer {
 		haveReceived = true;
 		enforced = msg.isEnforced();
 		maxStaminaLimitation = msg.getMaxStaminaLimitation();
+		maxStaminaRecovery = msg.getMaxStaminaRecovery();
 		infiniteStaminaPermitted = msg.getPermissionOfInfiniteStamina();
 		for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
 			list[i] = msg.getLimitations()[i];

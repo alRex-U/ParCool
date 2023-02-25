@@ -100,7 +100,13 @@ public class Stamina implements IStamina {
 		staminaOld = stamina;
 		if (recoverCoolTime > 0) recoverCoolTime--;
 		if (recoverCoolTime <= 0) {
-			recover(getActualMaxStamina() / 100);
+			if (player == null) return;
+			Parkourability parkourability = Parkourability.get(player);
+			if (parkourability == null) return;
+			recover(Math.min(
+					ParCoolConfig.CONFIG_CLIENT.staminaRecovery.get(),
+					parkourability.getActionInfo().getMaxStaminaRecoveryLimitation()
+			));
 		}
 	}
 
