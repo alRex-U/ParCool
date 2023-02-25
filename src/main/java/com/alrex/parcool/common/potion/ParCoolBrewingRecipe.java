@@ -9,6 +9,7 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
@@ -64,12 +65,13 @@ public class ParCoolBrewingRecipe implements IBrewingRecipe {
 		return isPotionIngredient(item);
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getOutput(ItemStack input, ItemStack ingredient) {
+	public ItemStack getOutput(ItemStack input, @Nonnull ItemStack ingredient) {
 
 		if (!input.isEmpty() && !ingredient.isEmpty() && isIngredient(ingredient)) {
 			Potion result = mix(input, ingredient);
-			if (result != null) return PotionUtils.setPotion(input, result);
+			if (result != null) return PotionUtils.setPotion(new ItemStack(input.getItem()), result);
 		}
 		return ItemStack.EMPTY;
 	}

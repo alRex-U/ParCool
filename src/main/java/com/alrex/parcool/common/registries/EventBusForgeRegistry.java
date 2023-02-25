@@ -12,6 +12,7 @@ public class EventBusForgeRegistry {
 		bus.register(EventAttachCapability.class);
 		bus.register(EventSendPermissions.class);
 		bus.register(EventPlayerFall.class);
+		bus.register(EventPlayerClone.class);
 		bus.register(new ActionProcessor());
 	}
 

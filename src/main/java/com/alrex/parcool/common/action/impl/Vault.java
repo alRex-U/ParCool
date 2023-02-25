@@ -158,7 +158,8 @@ public class Vault extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		if (stepDirection == null) return;
 		player.setDeltaMovement(
 				stepDirection.x() / 10,
 				(stepHeight + 0.02) / this.getVaultAnimateTime(),

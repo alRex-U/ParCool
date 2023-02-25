@@ -158,6 +158,25 @@ public class WallJump extends Action {
 		}
 	}
 
+	@Override
+	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+		startData.position(32);
+		WallJumpAnimationType type = WallJumpAnimationType.fromCode(startData.get());
+		Animation animation = Animation.get(player);
+		if (animation != null) {
+			switch (type) {
+				case Back:
+					animation.setAnimator(new BackwardWallJumpAnimator());
+					break;
+				case SwingLeftArm:
+					animation.setAnimator(new WallJumpAnimator(false));
+					break;
+				case SwingRightArm:
+					animation.setAnimator(new WallJumpAnimator(true));
+			}
+		}
+	}
+
 	private enum WallJumpAnimationType {
 		Back((byte) 0), SwingRightArm((byte) 1), SwingLeftArm((byte) 2);
 		private byte code;

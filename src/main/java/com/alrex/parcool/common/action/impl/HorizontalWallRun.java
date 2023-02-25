@@ -46,6 +46,7 @@ public class HorizontalWallRun extends Action {
 				).normalize().z()
 		);
 		bodyYaw = (float) VectorUtil.toYawDegree(targetVec.yRot((float) (differenceAngle / 10)));
+		if (runningWallDirection == null) return;
 		Vector3d movement = player.getDeltaMovement();
 		BlockPos leanedBlock = new BlockPos(
 				player.getX() + runningWallDirection.x(),
@@ -131,6 +132,7 @@ public class HorizontalWallRun extends Action {
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
 		wallIsRightward = BufferUtil.getBoolean(startData);
+		runningWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new HorizontalWallRunAnimator(wallIsRightward));
@@ -143,6 +145,16 @@ public class HorizontalWallRun extends Action {
 		if (isDoing()) {
 			player.yRot = bodyYaw;
 		}
+	}
+
+	@Override
+	public void saveSynchronizedState(ByteBuffer buffer) {
+		buffer.putFloat(bodyYaw);
+	}
+
+	@Override
+	public void restoreSynchronizedState(ByteBuffer buffer) {
+		bodyYaw = buffer.getFloat();
 	}
 
 	@Override

@@ -51,6 +51,7 @@ public class HangDown extends Action {
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		startInfo.putDouble(Math.max(-1, Math.min(1, 3 * player.getLookAngle().multiply(1, 0, 1).normalize().dot(player.getDeltaMovement()))));
 		return (!stamina.isExhausted()
+				&& !player.isShiftKeyDown()
 				&& Math.abs(player.getDeltaMovement().y()) < 0.2
 				&& KeyBindings.getKeyHangDown().isDown()
 				&& parkourability.getActionInfo().can(HangDown.class)
@@ -120,6 +121,7 @@ public class HangDown extends Action {
 			else if (KeyBindings.getKeyBack().isDown()) player.setDeltaMovement(-xSpeed, 0, -zSpeed);
 			else player.setDeltaMovement(0, 0, 0);
 		}
+		armSwingAmount += player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
 	}
 
 	@Override
@@ -134,13 +136,22 @@ public class HangDown extends Action {
 		} else {
 			bodySwingAngleFactor /= 1.5;
 		}
-		armSwingAmount += player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
+	}
+
+	@Override
+	public void saveSynchronizedState(ByteBuffer buffer) {
+		buffer.putFloat(armSwingAmount);
+	}
+
+	@Override
+	public void restoreSynchronizedState(ByteBuffer buffer) {
+		armSwingAmount = buffer.getFloat();
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
-		if (isDoing() && player.isLocalPlayer()) {
+		if (isDoing()) {
 			if (hangingBarAxis == null) return;
 			Vector3d bodyVec = VectorUtil.fromYawDegree(player.yBodyRot).normalize();
 			Vector3d lookVec = player.getLookAngle();

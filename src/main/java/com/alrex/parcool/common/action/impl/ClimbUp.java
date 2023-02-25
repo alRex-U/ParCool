@@ -42,6 +42,12 @@ public class ClimbUp extends Action {
 	}
 
 	@Override
+	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+		Animation animation = Animation.get(player);
+		if (animation != null) animation.setAnimator(new ClimbUpAnimator());
+	}
+
+	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
 		return StaminaConsumeTiming.OnStart;
 	}

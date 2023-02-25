@@ -60,8 +60,8 @@ public class Slide extends Action {
 	}
 
 	@Override
-	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		if (player.isOnGround()) {
+	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		if (player.isOnGround() && slidingVec != null) {
 			Vector3d vec = slidingVec.scale(0.2);
 			EntityUtil.addVelocity(player, vec);
 		}

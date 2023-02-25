@@ -18,8 +18,8 @@ public class CrawlAnimator extends Animator {
 		transformer
 				.rotateLeftArm((float) Math.toRadians(-15), 0, (float) Math.toRadians(-120 - 25 * factor))
 				.rotateRightArm((float) Math.toRadians(-15), 0, (float) Math.toRadians(120 - 25 * factor))
-				.rotateLeftLeg((float) Math.toRadians(-15), 0, (float) Math.toRadians(-5 + 5 * factor))
-				.rotateRightLeg((float) Math.toRadians(-15), 0, (float) Math.toRadians(5 + 5 * factor))
+				.rotateLeftLeg((float) Math.toRadians(-8 + 8 * factor), 0, (float) Math.toRadians(-5 + 5 * factor))
+				.rotateRightLeg((float) Math.toRadians(-8 - 8 * factor), 0, (float) Math.toRadians(5 + 5 * factor))
 				.end();
 	}
 }

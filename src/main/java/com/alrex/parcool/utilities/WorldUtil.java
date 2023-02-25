@@ -322,6 +322,6 @@ public class WorldUtil {
 			if (!entity.level.isLoaded(blockPos)) return false;
 			slipperiness = entity.level.getBlockState(blockPos).getSlipperiness(entity.level, blockPos, entity);
 		}
-		return slipperiness <= 0.8;
+		return slipperiness <= 0.9;
 	}
 }

@@ -88,6 +88,7 @@ public class ClingToCliff extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		armSwingAmount += player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
 		if (KeyBindings.getKeyLeft().isDown() && KeyBindings.getKeyRight().isDown()) {
 			player.setDeltaMovement(0, 0, 0);
 		} else {
@@ -104,7 +105,6 @@ public class ClingToCliff extends Action {
 
 	@Override
 	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		armSwingAmount += player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
 		clingWallDirection = WorldUtil.getWall(player);
 		if (clingWallDirection == null) return;
 		clingWallDirection = clingWallDirection.normalize();
@@ -123,10 +123,20 @@ public class ClingToCliff extends Action {
 		}
 	}
 
+	@Override
+	public void saveSynchronizedState(ByteBuffer buffer) {
+		buffer.putFloat(armSwingAmount);
+	}
+
+	@Override
+	public void restoreSynchronizedState(ByteBuffer buffer) {
+		armSwingAmount = buffer.getFloat();
+	}
+
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
-		if (isDoing() && player.isLocalPlayer() && clingWallDirection != null) {
+		if (isDoing() && clingWallDirection != null) {
 			switch (facingDirection) {
 				case ToWall:
 					player.setYBodyRot((float) VectorUtil.toYawDegree(clingWallDirection));

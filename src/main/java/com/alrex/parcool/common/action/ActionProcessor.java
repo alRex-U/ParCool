@@ -125,12 +125,17 @@ public class ActionProcessor {
 				action.saveSynchronizedState(bufferOfPostState);
 				bufferOfPostState.flip();
 
-				while (bufferOfPreState.hasRemaining()) {
-					if (bufferOfPostState.get() != bufferOfPreState.get()) {
-						bufferOfPostState.rewind();
-						builder.appendSyncData(parkourability, action, bufferOfPostState);
-						break;
+				if (bufferOfPostState.limit() == bufferOfPreState.limit()) {
+					while (bufferOfPreState.hasRemaining()) {
+						if (bufferOfPostState.get() != bufferOfPreState.get()) {
+							bufferOfPostState.rewind();
+							builder.appendSyncData(parkourability, action, bufferOfPostState);
+							break;
+						}
 					}
+				} else {
+					bufferOfPostState.rewind();
+					builder.appendSyncData(parkourability, action, bufferOfPostState);
 				}
 			}
 		}
@@ -142,13 +147,15 @@ public class ActionProcessor {
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public void onRenderTick(TickEvent.RenderTickEvent event) {
-		PlayerEntity player = Minecraft.getInstance().player;
-		if (player == null) return;
-		Parkourability parkourability = Parkourability.get(player);
-		if (parkourability == null) return;
-		List<Action> actions = parkourability.getList();
-		for (Action action : actions) {
-			action.onRenderTick(event, player, parkourability);
+		PlayerEntity clientPlayer = Minecraft.getInstance().player;
+		if (clientPlayer == null) return;
+		for (PlayerEntity player : clientPlayer.level.players()) {
+			Parkourability parkourability = Parkourability.get(player);
+			if (parkourability == null) return;
+			List<Action> actions = parkourability.getList();
+			for (Action action : actions) {
+				action.onRenderTick(event, player, parkourability);
+			}
 		}
 	}
 

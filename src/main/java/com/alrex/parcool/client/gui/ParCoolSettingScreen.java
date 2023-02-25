@@ -183,7 +183,7 @@ public class ParCoolSettingScreen extends Screen {
 			button.render(matrixStack, mouseX, mouseY, p_230430_4_);
 			fill(matrixStack, offsetX, button.y + button.getHeight(), width - offsetX, button.y + button.getHeight() + 1, color.getSubSeparator());
 			int rowY = contentOffsetY + Checkbox_Item_Height * i + Checkbox_Item_Height / 2;
-			boolean permitted = actionList[i].serverWideLimitation.getAsBoolean();
+			boolean permitted = actionList[topIndex + i].serverWideLimitation.getAsBoolean();
 			drawCenteredString(
 					matrixStack, font,
 					permitted ? Permission_Permitted : Permission_Denied,
@@ -191,7 +191,7 @@ public class ParCoolSettingScreen extends Screen {
 					rowY - font.lineHeight / 2,
 					permitted ? 0x00AA00 : 0xAA0000
 			);
-			permitted = actionList[i].individualLimitation.getAsBoolean();
+			permitted = actionList[topIndex + i].individualLimitation.getAsBoolean();
 			drawCenteredString(
 					matrixStack, font,
 					permitted ? Permission_Permitted : Permission_Denied,
