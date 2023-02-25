@@ -103,12 +103,13 @@ public class HorizontalWallRun extends Action {
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth());
 		if (wallDirection == null) return false;
-		return (getDoingTick() < Max_Running_Tick &&
-				parkourability.getActionInfo().can(HorizontalWallRun.class) &&
-				!parkourability.get(WallJump.class).justJumped() &&
-				!parkourability.get(Crawl.class).isDoing() &&
-				KeyBindings.getKeyHorizontalWallRun().isDown() &&
-				!player.isOnGround()
+		return (getDoingTick() < Max_Running_Tick
+				&& !stamina.isExhausted()
+				&& parkourability.getActionInfo().can(HorizontalWallRun.class)
+				&& !parkourability.get(WallJump.class).justJumped()
+				&& !parkourability.get(Crawl.class).isDoing()
+				&& KeyBindings.getKeyHorizontalWallRun().isDown()
+				&& !player.isOnGround()
 		);
 	}
 

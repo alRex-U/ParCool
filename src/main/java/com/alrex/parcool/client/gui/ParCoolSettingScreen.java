@@ -77,6 +77,8 @@ public class ParCoolSettingScreen extends Screen {
 						Boolean.toString(info.isInfiniteStaminaPermitted())
 				)
 		};
+		serverPermissionReceived = info.getServerLimitation()::isReceived;
+		individualPermissionReceived = info.getIndividualLimitation()::isReceived;
 		color = theme;
 	}
 
@@ -84,6 +86,8 @@ public class ParCoolSettingScreen extends Screen {
 	private int viewableItemCount = 0;
 	private static final int Checkbox_Item_Height = 21;
 	private final ColorTheme color;
+	private final BooleanSupplier serverPermissionReceived;
+	private final BooleanSupplier individualPermissionReceived;
 
 	@Override
 	public void onClose() {
@@ -153,6 +157,7 @@ public class ParCoolSettingScreen extends Screen {
 	private static final ITextComponent Header_IndividualPermissionText = new TranslationTextComponent("parcool.gui.text.individualPermission");
 	private static final ITextComponent Permission_Permitted = new StringTextComponent("✓");
 	private static final ITextComponent Permission_Denied = new StringTextComponent("×");
+	private static final ITextComponent Permission_Not_Received = new StringTextComponent("§4Error:Permissions are not sent from a server.\nPlease check whether ParCool is installed or re-login to the server.§r");
 
 	private void renderActions(MatrixStack matrixStack, int mouseX, int mouseY, float p_230430_4_, int offsetY) {
 		int offsetX = 40, headerHeight = (int) (font.lineHeight * 1.5f);
@@ -211,14 +216,26 @@ public class ParCoolSettingScreen extends Screen {
 			if ((headerOffsetY < mouseY && mouseY < headerOffsetY + headerHeight)
 					&& (columnCenter - permissionColumnWidth / 2 < mouseX && mouseX < columnCenter + permissionColumnWidth / 2)
 			) {
-				renderComponentTooltip(matrixStack, Collections.singletonList(Header_ServerPermissionText), mouseX, mouseY);
+				if (serverPermissionReceived.getAsBoolean())
+					renderComponentTooltip(matrixStack, Collections.singletonList(Header_ServerPermissionText), mouseX, mouseY);
+				else
+					renderComponentTooltip(
+							matrixStack,
+							Arrays.asList(Header_ServerPermissionText, Permission_Not_Received),
+							mouseX, mouseY);
 			}
 
 			columnCenter = offsetX + nameColumnWidth + permissionColumnWidth + permissionColumnWidth / 2;
 			if ((headerOffsetY < mouseY && mouseY < headerOffsetY + headerHeight)
 					&& (columnCenter - permissionColumnWidth / 2 < mouseX && mouseX < columnCenter + permissionColumnWidth / 2)
 			) {
-				renderComponentTooltip(matrixStack, Collections.singletonList(Header_IndividualPermissionText), mouseX, mouseY);
+				if (individualPermissionReceived.getAsBoolean())
+					renderComponentTooltip(matrixStack, Collections.singletonList(Header_IndividualPermissionText), mouseX, mouseY);
+				else
+					renderComponentTooltip(
+							matrixStack,
+							Arrays.asList(Header_IndividualPermissionText, Permission_Not_Received),
+							mouseX, mouseY);
 			}
 		}
 	}

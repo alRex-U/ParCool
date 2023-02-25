@@ -31,6 +31,10 @@ public class LimitationByServer {
 		}
 	}
 
+	public boolean isReceived() {
+		return haveReceived;
+	}
+
 	public boolean isPermitted(Class<? extends Action> action) {
 		if (!haveReceived) return false;
 		if (!enforced) return true;

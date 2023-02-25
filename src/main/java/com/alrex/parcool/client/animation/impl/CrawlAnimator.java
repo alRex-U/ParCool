@@ -16,10 +16,10 @@ public class CrawlAnimator extends Animator {
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float factor = (float) Math.sin(transformer.getLimbSwing() / 10 * Math.PI);
 		transformer
-				.rotateLeftArm(0, 0, (float) Math.toRadians(-120 - 25 * factor))
-				.rotateRightArm(0, 0, (float) Math.toRadians(120 - 25 * factor))
-				.rotateLeftLeg(0, 0, (float) Math.toRadians(-5 + 5 * factor))
-				.rotateRightLeg(0, 0, (float) Math.toRadians(5 + 5 * factor))
+				.rotateLeftArm((float) Math.toRadians(-15), 0, (float) Math.toRadians(-120 - 25 * factor))
+				.rotateRightArm((float) Math.toRadians(-15), 0, (float) Math.toRadians(120 - 25 * factor))
+				.rotateLeftLeg((float) Math.toRadians(-15), 0, (float) Math.toRadians(-5 + 5 * factor))
+				.rotateRightLeg((float) Math.toRadians(-15), 0, (float) Math.toRadians(5 + 5 * factor))
 				.end();
 	}
 }

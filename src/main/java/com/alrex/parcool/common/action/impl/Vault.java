@@ -98,6 +98,7 @@ public class Vault extends Action {
 				.putDouble(wallHeight);
 
 		return (parkourability.getActionInfo().can(Vault.class)
+				&& !stamina.isExhausted()
 				&& !(ParCoolConfig.CONFIG_CLIENT.vaultNeedKeyPressed.get() && !KeyBindings.getKeyVault().isDown())
 				&& parkourability.get(FastRun.class).canActWithRunning(player)
 				&& !stamina.isExhausted()

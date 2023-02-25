@@ -118,8 +118,8 @@ public class ParCoolConfig {
 			builder.push("Other Configuration");
 			{
 				disableDoubleTappingForDodge = builder.comment("Disable Double-Tapping For Dodge. Please Use Dodge Key instead").define("disable_double_tapping", false);
-				disableCrawlInAir = builder.comment("Disable Crawl in air (experimental)").define("disable_crawl_in_air", true);
-				disableVaultInAir = builder.comment("Disable Vault in air (experimental)").define("disable_vault_in_air", true);
+				disableCrawlInAir = builder.comment("Disable Crawl in air (experimental)").define("disable_crawl_in_air", false);
+				disableVaultInAir = builder.comment("Disable Vault in air (experimental)").define("disable_vault_in_air", false);
 				enableRollWhenCreative = builder.comment("Enable Roll While player is in creative mode (experimental)").define("enable_roll_creative", false);
 				vaultNeedKeyPressed = builder.comment("Make Vault Need Vault Key Pressed").define("vaultNeedKeyPressed", false);
 				vaultAnimationMode = builder.comment("Vault Animation(Dynamic is to select animation dynamically)").defineEnum("vault_animation_mode", Vault.TypeSelectionMode.Dynamic);
