@@ -11,7 +11,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Collection;
@@ -94,7 +94,7 @@ public class ChangeIndividualLimitationCommand {
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.setLimitationToDefault", num), true);
+		context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.setLimitationToDefault", num), true);
 		return 0;
 	}
 
@@ -107,7 +107,7 @@ public class ChangeIndividualLimitationCommand {
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.enableLimitation", num), true);
+		context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.enableLimitation", num), true);
 		return 0;
 	}
 
@@ -120,7 +120,7 @@ public class ChangeIndividualLimitationCommand {
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.disableLimitation", num), true);
+		context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.disableLimitation", num), true);
 		return 0;
 	}
 
@@ -134,7 +134,7 @@ public class ChangeIndividualLimitationCommand {
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.setMaxStamina", num, newValue), true);
+		context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.setMaxStamina", num, newValue), true);
 		return 0;
 	}
 
@@ -149,7 +149,7 @@ public class ChangeIndividualLimitationCommand {
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.setStaminaConsumption", num, action.getSimpleName(), newValue), true);
+		context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.setStaminaConsumption", num, action.getSimpleName(), newValue), true);
 		return 0;
 	}
 
@@ -163,7 +163,7 @@ public class ChangeIndividualLimitationCommand {
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.setPermissionInfiniteStamina", num, newValue), true);
+		context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.setPermissionInfiniteStamina", num, newValue), true);
 		return 0;
 	}
 
@@ -178,7 +178,7 @@ public class ChangeIndividualLimitationCommand {
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.setPermissionOfAction", num, action.getSimpleName(), newValue), true);
+		context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.setPermissionOfAction", num, action.getSimpleName(), newValue), true);
 		return 0;
 	}
 }

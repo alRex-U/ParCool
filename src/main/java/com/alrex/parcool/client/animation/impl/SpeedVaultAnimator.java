@@ -8,11 +8,9 @@ import com.alrex.parcool.common.capability.impl.Parkourability;
 import com.alrex.parcool.utilities.EasingFunctions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 
 import static com.alrex.parcool.utilities.MathUtil.lerp;
-
-;
 
 public class SpeedVaultAnimator extends Animator {
 	private static final int MAX_TIME = 11;
@@ -76,11 +74,11 @@ public class SpeedVaultAnimator extends Animator {
 	}
 
 	@Override
-	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, Player clientPlayer, Parkourability parkourability) {
+	public void onCameraSetUp(ViewportEvent.ComputeCameraAngles event, Player clientPlayer, Parkourability parkourability) {
 		if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
 				ParCoolConfig.CONFIG_CLIENT.disableCameraVault.get()) return;
-		float factor = getFactor((float) (getTick() + event.getPartialTicks()));
-		float phase = (float) ((getTick() + event.getPartialTicks()) / MAX_TIME);
+		float factor = getFactor((float) (getTick() + event.getPartialTick()));
+		float phase = (float) ((getTick() + event.getPartialTick()) / MAX_TIME);
 		float forwardFactor = (float) Math.sin(phase * 2 * Math.PI) + 0.5f;
 		event.setPitch(15 * forwardFactor);
 		switch (type) {

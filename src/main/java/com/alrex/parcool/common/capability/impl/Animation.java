@@ -11,7 +11,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.common.util.LazyOptional;
 
 @OnlyIn(Dist.CLIENT)
@@ -58,7 +58,7 @@ public class Animation {
 		animator.rotate(player, parkourability, rotator);
 	}
 
-	public void cameraSetup(EntityViewRenderEvent.CameraSetup event, Player player, Parkourability parkourability) {
+	public void cameraSetup(ViewportEvent.ComputeCameraAngles event, Player player, Parkourability parkourability) {
 		if (animator == null) return;
 		if (player.isLocalPlayer()
 				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()

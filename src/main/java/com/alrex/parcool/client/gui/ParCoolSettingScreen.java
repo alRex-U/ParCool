@@ -8,9 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.network.chat.BaseComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.lwjgl.glfw.GLFW;
@@ -52,20 +50,20 @@ public class ParCoolSettingScreen extends Screen {
 	private final InfoSet[] infoList;
 	private final Checkbox[] actionButtons = new Checkbox[actionList.length];
 	private final ModeSet[] modeMenuList = new ModeSet[]{
-			new ModeSet(new TranslatableComponent("parcool.gui.text.action"), SettingMode.Actions, 0, this),
-			new ModeSet(new TranslatableComponent("parcool.gui.text.config"), SettingMode.Configs, 1, this),
-			new ModeSet(new TranslatableComponent("parcool.gui.text.limitation"), SettingMode.Limitations, 2, this)
+			new ModeSet(Component.translatable("parcool.gui.text.action"), SettingMode.Actions, 0, this),
+			new ModeSet(Component.translatable("parcool.gui.text.config"), SettingMode.Configs, 1, this),
+			new ModeSet(Component.translatable("parcool.gui.text.limitation"), SettingMode.Limitations, 2, this)
 	};
 	private int modeIndex;
 
-	public ParCoolSettingScreen(BaseComponent titleIn, ActionInfo info, ColorTheme theme) {
+	public ParCoolSettingScreen(Component titleIn, ActionInfo info, ColorTheme theme) {
 		super(titleIn);
 		for (int i = 0; i < actionList.length; i++) {
 			actionList[i] = new ActionConfigSet(ActionList.getByIndex(i), info);
-			actionButtons[i] = new Checkbox(0, 0, 0, Checkbox_Item_Height, new TextComponent(actionList[i].name), actionList[i].getter.getAsBoolean());
+			actionButtons[i] = new Checkbox(0, 0, 0, Checkbox_Item_Height, Component.literal(actionList[i].name), actionList[i].getter.getAsBoolean());
 		}
 		for (int i = 0; i < configItemList.length; i++) {
-			configButtons[i] = new Checkbox(0, 0, 0, Checkbox_Item_Height, new TranslatableComponent(configItemList[i].name), configItemList[i].getter.getAsBoolean());
+			configButtons[i] = new Checkbox(0, 0, 0, Checkbox_Item_Height, Component.literal(configItemList[i].name), configItemList[i].getter.getAsBoolean());
 		}
 		infoList = new InfoSet[]{
 				new InfoSet(
@@ -106,7 +104,7 @@ public class ParCoolSettingScreen extends Screen {
 		mouseScrolled(0, 0, 0);
 	}
 
-	private static final BaseComponent MenuTitle = new TranslatableComponent("parcool.gui.title.setting");
+	private static final Component MenuTitle = Component.translatable("parcool.gui.title.setting");
 
 	@Override
 	public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float p_230430_4_) {
@@ -150,14 +148,14 @@ public class ParCoolSettingScreen extends Screen {
 		}
 	}
 
-	private static final BaseComponent Header_ActionName = new TranslatableComponent("parcool.gui.text.actionName");
-	private static final BaseComponent Header_ServerPermission = new TextComponent("G");
-	private static final BaseComponent Header_ServerPermissionText = new TranslatableComponent("parcool.gui.text.globalPermission");
-	private static final BaseComponent Header_IndividualPermission = new TextComponent("I");
-	private static final BaseComponent Header_IndividualPermissionText = new TranslatableComponent("parcool.gui.text.individualPermission");
-	private static final BaseComponent Permission_Permitted = new TextComponent("✓");
-	private static final BaseComponent Permission_Denied = new TextComponent("×");
-	private static final BaseComponent Permission_Not_Received = new TextComponent("§4Error:Permissions are not sent from a server.\nPlease check whether ParCool is installed or re-login to the server.§r");
+	private static final Component Header_ActionName = Component.translatable("parcool.gui.text.actionName");
+	private static final Component Header_ServerPermission = Component.literal("G");
+	private static final Component Header_ServerPermissionText = Component.translatable("parcool.gui.text.globalPermission");
+	private static final Component Header_IndividualPermission = Component.literal("I");
+	private static final Component Header_IndividualPermissionText = Component.translatable("parcool.gui.text.individualPermission");
+	private static final Component Permission_Permitted = Component.literal("✓");
+	private static final Component Permission_Denied = Component.literal("×");
+	private static final Component Permission_Not_Received = Component.literal("§4Error:Permissions are not sent from a server.\nPlease check whether ParCool is installed or re-login to the server.§r");
 
 	private void renderActions(PoseStack matrixStack, int mouseX, int mouseY, float p_230430_4_, int offsetY) {
 		int offsetX = 40, headerHeight = (int) (font.lineHeight * 1.5f);
@@ -204,7 +202,7 @@ public class ParCoolSettingScreen extends Screen {
 		fillGradient(matrixStack, 0, contentOffsetY + contentHeight, width, height, color.getHeader1(), color.getHeader2());
 		drawCenteredString(matrixStack, font, modeMenuList[0].title, width / 2, offsetY + font.lineHeight / 2 + 2, color.getStrongText());
 		if (topIndex + viewableItemCount < actionButtons.length)
-			drawCenteredString(matrixStack, font, new TextComponent("↓"), width / 2, height - font.lineHeight - font.lineHeight / 2, color.getStrongText());
+			drawCenteredString(matrixStack, font, Component.literal("↓"), width / 2, height - font.lineHeight - font.lineHeight / 2, color.getStrongText());
 		//draw separators
 		fill(matrixStack, offsetX, contentOffsetY, width - offsetX, contentOffsetY - 1, color.getSeparator());
 		fill(matrixStack, offsetX, headerOffsetY, offsetX + 1, contentOffsetY + contentHeight, color.getSeparator());
@@ -264,7 +262,7 @@ public class ParCoolSettingScreen extends Screen {
 		fillGradient(matrixStack, 0, offsetY + contentHeight + font.lineHeight * 2, width, height, color.getHeader1(), color.getHeader2());
 		drawCenteredString(matrixStack, font, modeMenuList[1].title, width / 2, offsetY + font.lineHeight / 2 + 2, color.getStrongText());
 		if (topIndex + viewableItemCount < configButtons.length)
-			drawCenteredString(matrixStack, font, new TextComponent("↓"), width / 2, height - font.lineHeight - font.lineHeight / 2, color.getSubText());
+			drawCenteredString(matrixStack, font, Component.literal("↓"), width / 2, height - font.lineHeight - font.lineHeight / 2, color.getSubText());
 	}
 
 	private void renderLimitations(PoseStack matrixStack, int mouseX, int mouseY, float p_230430_4_, int offsetY) {
@@ -301,7 +299,6 @@ public class ParCoolSettingScreen extends Screen {
 	@Override
 	public void renderBackground(@Nonnull PoseStack p_238651_1_, int p_238651_2_) {
 		fill(p_238651_1_, 0, 0, this.width, this.height, color.getBackground());
-		net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.ScreenEvent.BackgroundDrawnEvent(this, p_238651_1_));
 	}
 
 	@Override
@@ -346,7 +343,7 @@ public class ParCoolSettingScreen extends Screen {
 	}
 
 	private static class ModeSet {
-		final BaseComponent title;
+		final Component title;
 		final SettingMode mode;
 		final ParCoolSettingScreen parent;
 		final int index;
@@ -355,7 +352,7 @@ public class ParCoolSettingScreen extends Screen {
 		int width = 0;
 		int height = 0;
 
-		ModeSet(BaseComponent title, SettingMode mode, int index, ParCoolSettingScreen parent) {
+		ModeSet(Component title, SettingMode mode, int index, ParCoolSettingScreen parent) {
 			this.title = title;
 			this.index = index;
 			this.mode = mode;
@@ -404,7 +401,7 @@ public class ParCoolSettingScreen extends Screen {
 		final BooleanSupplier individualLimitation;
 
 		ActionConfigSet(Class<? extends Action> action, ActionInfo info) {
-			name = new TranslatableComponent("parcool.action." + action.getSimpleName()).getString();
+			name = Component.translatable("parcool.action." + action.getSimpleName()).getString();
 			ForgeConfigSpec.BooleanValue config = CONFIG_CLIENT.getPossibilityOf(action);
 			setter = config::set;
 			getter = config::get;

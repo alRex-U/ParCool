@@ -12,7 +12,7 @@ public class EventPlayerClone {
 	public static void onClone(PlayerEvent.Clone event) {
 		if (event.isWasDeath()) {
 			Player from = event.getOriginal();
-			Player to = event.getPlayer();
+			Player to = event.getEntity();
 			Parkourability pFrom = Parkourability.get(from);
 			Parkourability pTo = Parkourability.get(to);
 			if (pFrom != null && pTo != null) {

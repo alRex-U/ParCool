@@ -127,7 +127,7 @@ public class WallJump extends Action {
 
 		BlockPos leanedBlock = new BlockPos(
 				player.getX() + wallDirection.x,
-				player.getBoundingBox().minY + player.getBbHeight() * 0.25,
+				player.getY() + player.getBbHeight() * 0.25,
 				player.getZ() + wallDirection.z
 		);
 		float slipperiness = player.level.getBlockState(leanedBlock).getFriction(player.level, leanedBlock, player);

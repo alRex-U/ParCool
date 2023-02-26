@@ -2,7 +2,7 @@
   "name": "What is Parkour?",
   "icon": "minecraft:golden_boots",
   "category": "parcool:category_about",
-  "sortnum": "1",
+  "sortnum": 2,
   "pages": [
     {
       "type": "patchouli:text",

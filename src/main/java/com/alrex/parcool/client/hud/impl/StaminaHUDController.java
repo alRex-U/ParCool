@@ -7,12 +7,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.client.gui.IIngameOverlay;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 
 @OnlyIn(Dist.CLIENT)
-public class StaminaHUDController implements IIngameOverlay {
+public class StaminaHUDController implements IGuiOverlay {
 	private static StaminaHUDController instance = null;
 
 	public static StaminaHUDController getInstance() {
@@ -45,7 +45,7 @@ public class StaminaHUDController implements IIngameOverlay {
 	}
 
 	@Override
-	public void render(ForgeIngameGui gui, PoseStack poseStack, float partialTick, int width, int height) {
+	public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int width, int height) {
 		ParCoolConfig.Client config = ParCoolConfig.CONFIG_CLIENT;
 		if (config.hideStaminaHUD.get() || !config.parCoolActivation.get() || config.useHungerBarInsteadOfStamina.get())
 			return;

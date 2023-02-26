@@ -9,15 +9,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 
 import java.nio.ByteBuffer;
 import java.util.List;
-
-;
 
 public class ActionProcessor {
 	private final ByteBuffer bufferOfPostState = ByteBuffer.allocate(128);
@@ -163,7 +161,7 @@ public class ActionProcessor {
 
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
-	public void onViewRender(EntityViewRenderEvent.CameraSetup event) {
+	public void onViewRender(ViewportEvent.ComputeCameraAngles event) {
 		Player player = Minecraft.getInstance().player;
 		if (player == null) return;
 		Parkourability parkourability = Parkourability.get(player);

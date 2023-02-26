@@ -10,7 +10,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
@@ -21,7 +21,7 @@ public class ActionArgumentType implements ArgumentType<Class<? extends Action>>
 		String name = reader.readUnquotedString();
 		Class<? extends Action> result = ActionList.getByName(name);
 		if (result == null) {
-			Message message = new TranslatableComponent("parcool.command.message.invalidActionName", name);
+			Message message = Component.translatable("parcool.command.message.invalidActionName", name);
 			throw new CommandSyntaxException(new SimpleCommandExceptionType(message), message);
 		}
 		return result;
@@ -29,7 +29,8 @@ public class ActionArgumentType implements ArgumentType<Class<? extends Action>>
 
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		for (String name : ActionList.NAMES) {
+		String remain = builder.getRemaining();
+		for (String name : ActionList.NAMES.stream().filter(it -> it.startsWith(remain)).toList()) {
 			builder.suggest(name);
 		}
 		return builder.buildFuture();

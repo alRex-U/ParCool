@@ -10,9 +10,7 @@ import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
-
-;
+import net.minecraftforge.client.event.ViewportEvent;
 
 public class HangAnimator extends Animator {
 	@Override
@@ -78,12 +76,12 @@ public class HangAnimator extends Animator {
 	}
 
 	@Override
-	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, Player clientPlayer, Parkourability parkourability) {
+	public void onCameraSetUp(ViewportEvent.ComputeCameraAngles event, Player clientPlayer, Parkourability parkourability) {
 		if (!clientPlayer.isLocalPlayer() ||
 				!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
 				ParCoolConfig.CONFIG_CLIENT.disableCameraHang.get()
 		) return;
 		HangDown hangDown = parkourability.get(HangDown.class);
-		event.setPitch(clientPlayer.getViewXRot((float) event.getPartialTicks()) + getRotateAngle(hangDown, event.getPartialTicks()));
+		event.setPitch(clientPlayer.getViewXRot((float) event.getPartialTick()) + getRotateAngle(hangDown, event.getPartialTick()));
 	}
 }

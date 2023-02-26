@@ -70,7 +70,7 @@ public class WallSlide extends Action {
 		if (leanedWallDirection != null) {
 			BlockPos leanedBlock = new BlockPos(
 					player.getX() + leanedWallDirection.x,
-					player.getBoundingBox().minY + player.getBbHeight() * 0.75,
+					player.getY() + player.getBbHeight() * 0.75,
 					player.getZ() + leanedWallDirection.z
 			);
 			float slipperiness = player.level.getBlockState(leanedBlock).getFriction(player.level, leanedBlock, player);

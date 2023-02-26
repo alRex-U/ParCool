@@ -6,11 +6,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.ClientRegistry;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
@@ -111,19 +110,19 @@ public class KeyBindings {
 	}
 
 	@SubscribeEvent
-	public static void register(FMLClientSetupEvent event) {
-		ClientRegistry.registerKeyBinding(keyBindCrawl);
-		ClientRegistry.registerKeyBinding(keyBindGrabWall);
-		ClientRegistry.registerKeyBinding(keyBindBreakfall);
-		ClientRegistry.registerKeyBinding(keyBindFastRunning);
-		ClientRegistry.registerKeyBinding(keyBindDodge);
-		ClientRegistry.registerKeyBinding(keyBindWallSlide);
-		ClientRegistry.registerKeyBinding(keyBindWallJump);
-		ClientRegistry.registerKeyBinding(keyBindVault);
-		ClientRegistry.registerKeyBinding(keyBindHorizontalWallRun);
-		ClientRegistry.registerKeyBinding(keyBindOpenSettings);
-		ClientRegistry.registerKeyBinding(keyBindQuickTurn);
-		ClientRegistry.registerKeyBinding(keyBindFlipping);
-		ClientRegistry.registerKeyBinding(keyBindHangDown);
+	public static void register(RegisterKeyMappingsEvent event) {
+		event.register(keyBindCrawl);
+		event.register(keyBindGrabWall);
+		event.register(keyBindBreakfall);
+		event.register(keyBindFastRunning);
+		event.register(keyBindDodge);
+		event.register(keyBindWallSlide);
+		event.register(keyBindWallJump);
+		event.register(keyBindVault);
+		event.register(keyBindHorizontalWallRun);
+		event.register(keyBindOpenSettings);
+		event.register(keyBindQuickTurn);
+		event.register(keyBindFlipping);
+		event.register(keyBindHangDown);
 	}
 }

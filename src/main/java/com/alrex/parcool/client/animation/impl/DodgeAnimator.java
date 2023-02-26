@@ -9,11 +9,14 @@ import com.alrex.parcool.utilities.EasingFunctions;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.Random;
+
 import static com.alrex.parcool.utilities.MathUtil.lerp;
 
 ;
 
 public class DodgeAnimator extends Animator {
+	private final static Random rand = new Random();
 	private boolean notInitialized = true;
 	private boolean frontLeg = false;
 
@@ -35,7 +38,7 @@ public class DodgeAnimator extends Animator {
 			case Front:
 				transformer.rotateAdditionallyHeadPitch(revision);
 				if (notInitialized) {
-					frontLeg = player.getRandom().nextBoolean();
+					frontLeg = rand.nextBoolean();
 					notInitialized = false;
 				}
 				if (frontLeg) {
@@ -91,7 +94,7 @@ public class DodgeAnimator extends Animator {
 			case Back:
 				transformer.rotateAdditionallyHeadPitch(-revision);
 				if (notInitialized) {
-					frontLeg = player.getRandom().nextBoolean();
+					frontLeg = rand.nextBoolean();
 					notInitialized = false;
 				}
 				if (frontLeg) {

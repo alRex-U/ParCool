@@ -16,7 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.event.TickEvent;
 
 import java.util.function.Supplier;
@@ -47,7 +47,7 @@ public class StaminaHUD extends GuiComponent {
 		}
 	}
 
-	public void render(ForgeIngameGui gui, PoseStack stack, float partialTick, int width, int height) {
+	public void render(ForgeGui gui, PoseStack stack, float partialTick, int width, int height) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null) return;
 		if (player.isCreative()) return;

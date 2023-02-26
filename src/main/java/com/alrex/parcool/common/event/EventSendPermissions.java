@@ -10,8 +10,7 @@ public class EventSendPermissions {
 	@SubscribeEvent
 	public static void JoinEvent(EntityJoinLevelEvent event) {
 		Entity entity = event.getEntity();
-		if (entity instanceof ServerPlayer) {
-			ServerPlayer player = (ServerPlayer) entity;
+		if (entity instanceof ServerPlayer player) {
 			LimitationByServerMessage.send(player);
 			LimitationByServerMessage.sendIndividualLimitation(player);
 		}

@@ -2,7 +2,7 @@
   "name": "スタミナ",
   "icon": "minecraft:golden_apple",
   "category": "parcool:category_about",
-  "sortnum": "2",
+  "sortnum": 5,
   "pages": [
     {
       "type": "patchouli:text",

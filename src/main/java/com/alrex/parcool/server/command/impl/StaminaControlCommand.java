@@ -6,7 +6,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 public class StaminaControlCommand {
@@ -25,7 +25,7 @@ public class StaminaControlCommand {
 									IntegerArgumentType.getInteger(context, ARGS_NAME_VALUE),
 									false
 							);
-							context.getSource().sendSuccess(new TextComponent("Set-Stamina operation is requested to " + player.getDisplayName().getString()), false);
+							context.getSource().sendSuccess(Component.literal("Set-Stamina operation is requested to " + player.getDisplayName().getString()), false);
 							return 0;
 						})))
 				)
@@ -37,7 +37,7 @@ public class StaminaControlCommand {
 									IntegerArgumentType.getInteger(context, ARGS_NAME_VALUE),
 									true
 							);
-							context.getSource().sendSuccess(new TextComponent("Add-Stamina operation is requested to " + player.getDisplayName().getString()), false);
+							context.getSource().sendSuccess(Component.literal("Add-Stamina operation is requested to " + player.getDisplayName().getString()), false);
 							return 0;
 						})))
 				)

@@ -2,7 +2,7 @@
   "name": "FAQ",
   "icon": "minecraft:paper",
   "category": "parcool:category_about",
-  "sortnum": "3",
+  "sortnum": 4,
   "pages": [
     {
       "type": "patchouli:text",
