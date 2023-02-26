@@ -23,7 +23,7 @@
     {
       "type": "patchouli:text",
       "title": "セーフティタップ",
-      "text": "$(bold)Safety Tap$() is one of the Breakfalls. It absorb an impact by bending your legs.$(br2)By the way how can Steve bend his legs?"
+      "text": "$(bold)セーフティタップ$()はブレイクフォールの一種です。足を曲げることで着地の衝撃を吸収します。$(br2)ところでスティーブは足を曲げられるんですかね？"
     },
     {
       "type": "patchouli:text",

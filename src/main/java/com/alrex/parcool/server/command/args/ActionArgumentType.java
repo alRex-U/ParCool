@@ -21,7 +21,7 @@ public class ActionArgumentType implements ArgumentType<Class<? extends Action>>
 		String name = reader.readUnquotedString();
 		Class<? extends Action> result = ActionList.getByName(name);
 		if (result == null) {
-			Message message = new TranslationTextComponent("parcool.message.invalidActionName", name);
+			Message message = new TranslationTextComponent("parcool.command.message.invalidActionName", name);
 			throw new CommandSyntaxException(new SimpleCommandExceptionType(message), message);
 		}
 		return result;
