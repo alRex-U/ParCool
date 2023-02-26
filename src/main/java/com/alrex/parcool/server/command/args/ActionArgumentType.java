@@ -29,7 +29,8 @@ public class ActionArgumentType implements ArgumentType<Class<? extends Action>>
 
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		for (String name : ActionList.NAMES) {
+		String remain = builder.getRemaining();
+		for (String name : ActionList.NAMES.stream().filter(it -> it.startsWith(remain)).toList()) {
 			builder.suggest(name);
 		}
 		return builder.buildFuture();
