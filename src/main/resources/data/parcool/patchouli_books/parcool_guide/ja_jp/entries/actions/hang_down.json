@@ -1,0 +1,23 @@
+{
+  "name": "ぶら下がり",
+  "icon": "minecraft:stone",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "横向きの鎖やエンドロッドブロック等の下にぶら下がることができます。$(br)その状態で移動もでき、ジャンプキーで前に跳ぶこともできます。"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/image_hang_down.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使い方",
+      "text": "$(list)横向きの細いブロックぶら下がりキー($(k:parcool.HangDown))を押す$(br)"
+    }
+  ]
+}

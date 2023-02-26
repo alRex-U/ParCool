@@ -10,27 +10,6 @@ public class ServerProxy extends CommonProxy {
 	@Override
 	public void registerMessages(SimpleChannel instance) {
 		instance.registerMessage(
-				0,
-				ResetFallDistanceMessage.class,
-				ResetFallDistanceMessage::encode,
-				ResetFallDistanceMessage::decode,
-				ResetFallDistanceMessage::handle
-		);
-		instance.registerMessage(
-				1,
-				SetActionPossibilityMessage.class,
-				SetActionPossibilityMessage::encode,
-				SetActionPossibilityMessage::decode,
-				SetActionPossibilityMessage::handle
-		);
-		instance.registerMessage(
-				2,
-				ShowActionPossibilityMessage.class,
-				ShowActionPossibilityMessage::encode,
-				ShowActionPossibilityMessage::decode,
-				ShowActionPossibilityMessage::handle
-		);
-		instance.registerMessage(
 				3,
 				StartBreakfallMessage.class,
 				StartBreakfallMessage::encode,
@@ -46,17 +25,10 @@ public class ServerProxy extends CommonProxy {
 		);
 		instance.registerMessage(
 				12,
-				ActionPermissionsMessage.class,
-				ActionPermissionsMessage::encode,
-				ActionPermissionsMessage::decode,
+				LimitationByServerMessage.class,
+				LimitationByServerMessage::encode,
+				LimitationByServerMessage::decode,
 				null
-		);
-		instance.registerMessage(
-				14,
-				StartVaultMessage.class,
-				StartVaultMessage::encode,
-				StartVaultMessage::decode,
-				StartVaultMessage::handleServer
 		);
 		instance.registerMessage(
 				15,
@@ -64,6 +36,13 @@ public class ServerProxy extends CommonProxy {
 				SyncActionStateMessage::encode,
 				SyncActionStateMessage::decode,
 				SyncActionStateMessage::handleServer
+		);
+		instance.registerMessage(
+				16,
+				StaminaControlMessage.class,
+				StaminaControlMessage::encode,
+				StaminaControlMessage::decode,
+				null
 		);
 	}
 }

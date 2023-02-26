@@ -8,7 +8,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -20,28 +20,29 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nonnull;
 
+
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
 
-	public LivingEntityMixin(EntityType<?> p_i48580_1_, Level p_i48580_2_) {
-		super(p_i48580_1_, p_i48580_2_);
+	public LivingEntityMixin(EntityType<?> p_19870_, Level p_19871_) {
+		super(p_19870_, p_19871_);
 	}
 
-	@Inject(method = "Lnet/minecraft/world/entity/LivingEntity;onClimbable()Z", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "net.minecraft.world.entity.LivingEntity.onClimbable", at = @At("HEAD"), cancellable = true)
 	public void onClimbable(CallbackInfoReturnable<Boolean> cir) {
 		cir.cancel();
-		if (this.isSpectator()) {
+		LivingEntity entity = (LivingEntity) (Object) this;
+		if (entity.isSpectator()) {
 			cir.setReturnValue(false);
 		} else {
-			LivingEntity entity = (LivingEntity) (Object) this;
-			BlockPos blockpos = this.blockPosition();
+			BlockPos blockpos = entity.blockPosition();
 			BlockState blockstate = this.getFeetBlockState();
 			cir.setReturnValue(isLivingOnLadder(blockstate, entity.level, blockpos, entity));
 		}
 	}
 
 	public boolean isLivingOnLadder(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull LivingEntity entity) {
-		boolean isSpectator = (entity instanceof Player && ((Player) entity).isSpectator());
+		boolean isSpectator = (entity instanceof Player && entity.isSpectator());
 		if (isSpectator) return false;
 		if (!ForgeConfig.SERVER.fullBoundingBoxLadders.get()) {
 			return isLadder(state, world, pos, entity);
@@ -65,20 +66,24 @@ public abstract class LivingEntityMixin extends Entity {
 		}
 	}
 
-	private boolean isLadder(BlockState state, LevelReader world, BlockPos pos, LivingEntity entity) {
+	private boolean isLadder(BlockState state, LevelAccessor world, BlockPos pos, LivingEntity entity) {
 		Block block = state.getBlock();
-		if (block instanceof FenceBlock) {
-			int count = 0;
-			if (state.getValue(CrossCollisionBlock.NORTH)) count++;
-			if (state.getValue(CrossCollisionBlock.SOUTH)) count++;
-			if (state.getValue(CrossCollisionBlock.EAST)) count++;
-			if (state.getValue(CrossCollisionBlock.WEST)) count++;
-			return count <= 0;
+		if (block instanceof CrossCollisionBlock) {
+			int zCount = 0;
+			int xCount = 0;
+			if (state.getValue(CrossCollisionBlock.NORTH)) zCount++;
+			if (state.getValue(CrossCollisionBlock.SOUTH)) zCount++;
+			if (state.getValue(CrossCollisionBlock.EAST)) xCount++;
+			if (state.getValue(CrossCollisionBlock.WEST)) xCount++;
+			return (zCount + xCount <= 1) || (zCount == 1 && xCount == 1);
 		} else if (block instanceof RotatedPillarBlock) {
 			return state.getValue(RotatedPillarBlock.AXIS).isVertical();
 		} else if (block instanceof EndRodBlock) {
 			Direction direction = state.getValue(DirectionalBlock.FACING);
-			return direction == Direction.UP || direction == Direction.DOWN;
+			if (direction == Direction.UP || direction == Direction.DOWN) {
+				return true;
+			}
+			return false;
 		} else {
 			return block.isLadder(state, world, pos, entity);
 		}

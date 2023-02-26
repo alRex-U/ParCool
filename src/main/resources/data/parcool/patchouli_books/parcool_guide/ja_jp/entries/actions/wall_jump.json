@@ -1,0 +1,16 @@
+{
+  "name": "壁キック",
+  "icon": "minecraft:leather_boots",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "壁を蹴ってジャンプすることができます。この時壁を背にしている必要があります。ちなみに氷のような滑りやすいブロックでは上手く跳べません、注意してくださいね。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使い方",
+      "text": "$(list)空中で壁のそばで壁キックキー($(k:parcool.WallJump))を押す"
+    }
+  ]
+}

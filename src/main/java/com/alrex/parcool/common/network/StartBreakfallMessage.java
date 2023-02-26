@@ -1,8 +1,9 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.common.action.impl.BreakfallReady;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.impl.Parkourability;
-import com.alrex.parcool.common.capability.impl.Stamina;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
@@ -15,6 +16,8 @@ import net.minecraftforge.network.PacketDistributor;
 
 import java.util.UUID;
 import java.util.function.Supplier;
+
+;
 
 public class StartBreakfallMessage {
 	UUID playerID = null;
@@ -44,10 +47,10 @@ public class StartBreakfallMessage {
 
 				Parkourability parkourability = Parkourability.get(player);
 				if (parkourability == null) return;
-				Stamina stamina = Stamina.get(player);
+				IStamina stamina = IStamina.get(player);
 				if (stamina == null) return;
 
-				parkourability.getBreakfall().startBreakfall(player, parkourability, stamina);
+				parkourability.get(BreakfallReady.class).startBreakfall(player, parkourability, stamina);
 			}
 		});
 		contextSupplier.get().setPacketHandled(true);

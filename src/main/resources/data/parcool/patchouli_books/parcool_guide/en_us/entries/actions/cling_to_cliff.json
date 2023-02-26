@@ -1,0 +1,23 @@
+{
+  "name": "Cling To Cliff",
+  "icon": "minecraft:stone",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "You can cling to cliffs.$(br)You can also climb up onto the cliffs by pressing jump key."
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/image_cling_cliff.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(list) Press Cling-To-Cliff Key($(k:parcool.ClingToCliff)) by a wall$(br)"
+    }
+  ]
+}

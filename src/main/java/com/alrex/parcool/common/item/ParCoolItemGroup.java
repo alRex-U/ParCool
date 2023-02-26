@@ -1,6 +1,5 @@
 package com.alrex.parcool.common.item;
 
-import com.alrex.parcool.common.item.items.ParCoolGuideItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
@@ -13,6 +12,6 @@ public class ParCoolItemGroup extends CreativeModeTab {
 
 	@Override
 	public ItemStack makeIcon() {
-		return new ItemStack(ParCoolGuideItem.INSTANCE);
+		return new ItemStack(ItemRegistry.PARCOOL_GUIDE);
 	}
 }

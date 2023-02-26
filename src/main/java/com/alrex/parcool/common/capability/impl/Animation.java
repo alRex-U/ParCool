@@ -1,22 +1,23 @@
 package com.alrex.parcool.common.capability.impl;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PassiveCustomAnimation;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
-import com.alrex.parcool.common.capability.provider.AnimationProvider;
+import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.TickEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class Animation {
 	public static Animation get(Player player) {
-		LazyOptional<Animation> optional = player.getCapability(AnimationProvider.ANIMATION_CAPABILITY);
+		LazyOptional<Animation> optional = player.getCapability(Capabilities.ANIMATION_CAPABILITY);
 		if (!optional.isPresent()) return null;
 		return optional.orElseThrow(IllegalStateException::new);
 	}
@@ -25,6 +26,9 @@ public class Animation {
 	private final PassiveCustomAnimation passiveAnimation = new PassiveCustomAnimation();
 
 	public void setAnimator(Animator animator) {
+		if (ParCoolConfig.CONFIG_CLIENT.disableAnimation.get()) return;
+		ParCoolConfig.Client config = ParCoolConfig.CONFIG_CLIENT;
+		if (!config.canAnimate(animator.getClass()).get()) return;
 		this.animator = animator;
 	}
 
@@ -54,14 +58,13 @@ public class Animation {
 		animator.rotate(player, parkourability, rotator);
 	}
 
-	public void onRenderTick(TickEvent.RenderTickEvent event) {
+	public void cameraSetup(EntityViewRenderEvent.CameraSetup event, Player player, Parkourability parkourability) {
 		if (animator == null) return;
-		Player player = Minecraft.getInstance().player;
-		if (player == null) return;
-		Parkourability parkourability = Parkourability.get(player);
-		if (parkourability == null) return;
-
-		animator.onRender(event, player, parkourability);
+		if (player.isLocalPlayer()
+				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()
+				&& ParCoolConfig.CONFIG_CLIENT.disableFPVAnimation.get()
+		) return;
+		animator.onCameraSetUp(event, player, parkourability);
 	}
 
 	public void tick(Player player, Parkourability parkourability) {

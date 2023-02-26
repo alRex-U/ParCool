@@ -1,10 +1,13 @@
 package com.alrex.parcool.common.event;
 
+import com.alrex.parcool.common.action.impl.BreakfallReady;
 import com.alrex.parcool.common.capability.impl.Parkourability;
 import com.alrex.parcool.common.network.StartBreakfallMessage;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+;
 
 public class EventPlayerFall {
 	@SubscribeEvent
@@ -16,7 +19,7 @@ public class EventPlayerFall {
 		if (parkourability == null) return;
 
 		if (
-				parkourability.getBreakfall().isReady()
+				parkourability.get(BreakfallReady.class).isDoing()
 		) {
 			float distance = event.getDistance();
 			if (distance > 2) StartBreakfallMessage.send(player);
