@@ -1,21 +1,24 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.client.animation.impl.BackwardWallJumpAnimator;
+import com.alrex.parcool.client.animation.impl.WallJumpAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
+import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.impl.Animation;
 import com.alrex.parcool.common.capability.impl.Parkourability;
-import com.alrex.parcool.common.capability.impl.Stamina;
-import com.alrex.parcool.common.network.ResetFallDistanceMessage;
-import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
+
+;
 
 public class WallJump extends Action {
 
@@ -26,85 +29,177 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public void onTick(Player player, Parkourability parkourability, Stamina stamina) {
+	public void onTick(Player player, Parkourability parkourability, IStamina stamina) {
 		jump = false;
+	}
+
+	@Override
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.OnStart;
 	}
 
 
 	@OnlyIn(Dist.CLIENT)
 	@Nullable
-	private Vec3 getJumpDirection(Player player) {
-		Vec3 wall = WorldUtil.getWall(player);
+	private Vec3 getJumpDirection(Player player, Vec3 wall) {
 		if (wall == null) return null;
 
 		Vec3 lookVec = player.getLookAngle();
-		Vec3 vec = new Vec3(lookVec.x(), 0, lookVec.z()).normalize();
-
-		Vec3 value;
+		Vec3 vec = new Vec3(lookVec.x, 0, lookVec.z).normalize();
 
 		if (wall.dot(vec) > 0) {//To Wall
-			if (ParCoolConfig.CONFIG_CLIENT.disableWallJumpTowardWall.get()) return null;
-			double dot = vec.reverse().dot(wall);
-			value = vec.add(wall.scale(2 * dot / wall.length())); // Perfect.
-		} else {//back on Wall
-			value = vec;
-		}
+			return null;
+		} else {/*back on Wall*/}
 
-		return value.normalize().add(wall.scale(-0.7));
+		return vec.normalize().add(wall.scale(-0.7));
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	private boolean canWallJump(Player player, Parkourability parkourability, Stamina stamina) {
-		return !stamina.isExhausted()
-				&& parkourability.getPermission().canWallJump()
+	@Override
+	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		Vec3 wallDirection = WorldUtil.getWall(player);
+		Vec3 jumpDirection = getJumpDirection(player, wallDirection);
+		if (jumpDirection == null) return false;
+		ClingToCliff cling = parkourability.get(ClingToCliff.class);
+
+		boolean value = (!stamina.isExhausted()
+				&& parkourability.getActionInfo().can(WallJump.class)
 				&& !player.isOnGround()
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
 				&& !player.getAbilities().flying
-				&& !parkourability.getClingToCliff().isCling()
-				&& parkourability.getClingToCliff().getNotClingTick() > 3
-				&& KeyRecorder.keyJumpState.isPressed()
-				&& !parkourability.getCrawl().isCrawling()
+				&& parkourability.getAdditionalProperties().getNotCreativeFlyingTick() > 10
+				&& ((!cling.isDoing() && cling.getNotDoingTick() > 3)
+				|| (cling.isDoing() && cling.getFacingDirection() != ClingToCliff.FacingDirection.ToWall))
+				&& KeyRecorder.keyWallJump.isPressed()
+				&& !parkourability.get(Crawl.class).isDoing()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
-				&& WorldUtil.getWall(player) != null;
+				&& WorldUtil.getWall(player) != null
+		);
+		if (!value) return false;
+
+		//doing "wallDirection/jumpDirection" as complex number(x + z i) to calculate difference of player's direction to wall
+		Vec3 dividedVec =
+				new Vec3(
+						wallDirection.x * jumpDirection.x + wallDirection.z * jumpDirection.z, 0,
+						-wallDirection.x * jumpDirection.z + wallDirection.z * jumpDirection.x
+				).normalize();
+		Vec3 lookVec = player.getLookAngle().multiply(1, 0, 1).normalize();
+		Vec3 lookDividedVec =
+				new Vec3(
+						lookVec.x * wallDirection.x + lookVec.z * wallDirection.z, 0,
+						-lookVec.x * wallDirection.z + lookVec.z * wallDirection.x
+				).normalize();
+
+		WallJumpAnimationType type;
+		if (lookDividedVec.x > 0.5) {
+			type = WallJumpAnimationType.Back;
+		} else if (dividedVec.z > 0) {
+			type = WallJumpAnimationType.SwingRightArm;
+		} else {
+			type = WallJumpAnimationType.SwingLeftArm;
+		}
+		startInfo
+				.putDouble(jumpDirection.x)
+				.putDouble(jumpDirection.z)
+				.putDouble(wallDirection.x)
+				.putDouble(wallDirection.z)
+				.put(type.getCode());
+		return true;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(Player player, Parkourability parkourability, Stamina stamina) {
-		if (player.isLocalPlayer() && canWallJump(player, parkourability, stamina)) {
-			Vec3 jumpDirection = getJumpDirection(player);
-			if (jumpDirection == null) return;
-			if (ParCoolConfig.CONFIG_CLIENT.autoTurningWallJump.get()) {
-				player.setYRot((float) VectorUtil.toYawDegree(jumpDirection));
+	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
+		return false;
+	}
+
+	@Override
+	public void onStart(Player player, Parkourability parkourability) {
+		jump = true;
+	}
+
+	@Override
+	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+		double speedScale = player.getBbWidth() / 0.6;
+		Vec3 jumpDirection = new Vec3(startData.getDouble(), 0, startData.getDouble()).scale(speedScale);
+		Vec3 direction = new Vec3(jumpDirection.x, player.getBbHeight() * 0.84, jumpDirection.z).scale(player.getBbWidth() / 2);
+		Vec3 wallDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
+		Vec3 motion = player.getDeltaMovement();
+
+		BlockPos leanedBlock = new BlockPos(
+				player.getX() + wallDirection.x,
+				player.getBoundingBox().minY + player.getBbHeight() * 0.25,
+				player.getZ() + wallDirection.z
+		);
+		float slipperiness = player.level.getBlockState(leanedBlock).getFriction(player.level, leanedBlock, player);
+
+		double ySpeed;
+		if (slipperiness > 0.9) {// icy blocks
+			ySpeed = motion.y;
+		} else {
+			ySpeed = motion.y > direction.y ? motion.y + direction.y : direction.y;
+		}
+		player.setDeltaMovement(
+				motion.x + direction.x,
+				ySpeed,
+				motion.z + direction.z
+		);
+
+		WallJumpAnimationType type = WallJumpAnimationType.fromCode(startData.get());
+		Animation animation = Animation.get(player);
+		if (animation != null) {
+			switch (type) {
+				case Back:
+					animation.setAnimator(new BackwardWallJumpAnimator());
+					break;
+				case SwingLeftArm:
+					animation.setAnimator(new WallJumpAnimator(false));
+					break;
+				case SwingRightArm:
+					animation.setAnimator(new WallJumpAnimator(true));
 			}
-
-			Vec3 direction = new Vec3(jumpDirection.x(), 1.4, jumpDirection.z()).scale(0.3);
-			Vec3 motion = player.getDeltaMovement();
-
-			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionWallJump(), player);
-			player.setDeltaMovement(
-					motion.x() + direction.x(),
-					motion.y() > direction.y() ? motion.y + direction.y() : direction.y(),
-					motion.z() + direction.z()
-			);
-			jump = true;
-			ResetFallDistanceMessage.sync(player);
 		}
 	}
 
 	@Override
-	public void onRender(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
-
+	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
+		startData.position(32);
+		WallJumpAnimationType type = WallJumpAnimationType.fromCode(startData.get());
+		Animation animation = Animation.get(player);
+		if (animation != null) {
+			switch (type) {
+				case Back:
+					animation.setAnimator(new BackwardWallJumpAnimator());
+					break;
+				case SwingLeftArm:
+					animation.setAnimator(new WallJumpAnimator(false));
+					break;
+				case SwingRightArm:
+					animation.setAnimator(new WallJumpAnimator(true));
+			}
+		}
 	}
 
-	@Override
-	public void saveState(ByteBuffer buffer) {
+	private enum WallJumpAnimationType {
+		Back((byte) 0), SwingRightArm((byte) 1), SwingLeftArm((byte) 2);
+		private byte code;
 
-	}
+		WallJumpAnimationType(byte code) {
+			this.code = code;
+		}
 
-	@Override
-	public void restoreState(ByteBuffer buffer) {
+		public byte getCode() {
+			return code;
+		}
 
+		public static WallJumpAnimationType fromCode(byte code) {
+			switch (code) {
+				case 1:
+					return SwingRightArm;
+				case 2:
+					return SwingLeftArm;
+				default:
+					return Back;
+			}
+		}
 	}
 }

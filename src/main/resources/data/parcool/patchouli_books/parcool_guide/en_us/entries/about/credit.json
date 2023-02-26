@@ -1,0 +1,37 @@
+{
+  "name": "Credit",
+  "icon": "minecraft:written_book",
+  "category": "parcool:category_about",
+  "sortnum": "4",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "This is a list of Mod developers and Translators.$(br2)I also appreciate contributions by people not listed."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Mod Developers",
+      "text": "$(italic)$(list)alRex-U"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Translators (en_us)",
+      "text": "$(bold)English Translators$()$(italic)$(list)alRex-U"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Translators (ja_jp)",
+      "text": "$(bold)Japanese Translators$()$(italic)$(list)alRex-U"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Translators (ch_zn)",
+      "text": "$(bold)Chinese Translators$()$(italic)$(list)CatalystGinger"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Translators (fr-fr)",
+      "text": "$(bold)French Translators$()$(italic)$(list)COwOkie"
+    }
+  ]
+}

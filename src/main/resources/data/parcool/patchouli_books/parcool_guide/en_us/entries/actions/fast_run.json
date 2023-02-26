@@ -1,0 +1,16 @@
+{
+  "name": "Fast Run",
+  "icon": "minecraft:diamond_boots",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Now you are an parkour player! so you can run faster than before. Some other actions need using this.$(br)If you think this feature is annoying, modifying configs can help you."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(list) Continue to press Fast Run key($(k:parcool.FastRun)) during sprinting"
+    }
+  ]
+}

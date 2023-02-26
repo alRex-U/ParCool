@@ -1,0 +1,23 @@
+{
+  "name": "水平ウォールラン",
+  "icon": "minecraft:bricks",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "水平方向に壁を走る事ができます。壁が滑りやすいブロックではできないので気を付けてください。$(br)時々勘違いされるのですがパルクールの$(italic)ウォールラン$()は垂直方向に壁を登るもので、水平方向ではありません。"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/image_wall_run.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使い方",
+      "text": "$(bold)1.$()空中で壁のそばでファストランをする$(br)$(bold)2.$()ウォールランキー($(k:parcool.HorizontalWallRun))を押し続ける"
+    }
+  ]
+}

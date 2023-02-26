@@ -1,57 +1,117 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.client.animation.impl.KongVaultAnimator;
 import com.alrex.parcool.client.animation.impl.SpeedVaultAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.impl.Animation;
 import com.alrex.parcool.common.capability.impl.Parkourability;
-import com.alrex.parcool.common.capability.impl.Stamina;
-import com.alrex.parcool.common.network.StartVaultMessage;
+import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
 
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
+;
+
 public class Vault extends Action {
-	private boolean vauting = false;
-	private int vaultingTick = 0;
+	public enum TypeSelectionMode {
+		SpeedVault, KongVault, Dynamic
+	}
+
+	public enum AnimationType {
+		SpeedVault((byte) 0), KongVault((byte) 1);
+		private final byte code;
+
+		AnimationType(byte code) {
+			this.code = code;
+		}
+
+		public byte getCode() {
+			return code;
+		}
+
+		@Nullable
+		public static AnimationType fromCode(byte code) {
+			switch (code) {
+				case 0:
+					return SpeedVault;
+				case 1:
+					return KongVault;
+			}
+			return null;
+		}
+	}
 
 	//only in client
 	private double stepHeight = 0;
 	private Vec3 stepDirection = null;
 
-	//for not Local Player
-	private boolean start = false;
-
+	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onTick(Player player, Parkourability parkourability, Stamina stamina) {
-		if (vauting) {
-			vaultingTick++;
-		} else {
-			vaultingTick = 0;
+	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		Vec3 lookVec = player.getLookAngle();
+		lookVec = new Vec3(lookVec.x, 0, lookVec.z).normalize();
+		Vec3 step = WorldUtil.getVaultableStep(player);
+		if (step == null) return false;
+		step = step.normalize();
+		//doing "vec/stepDirection" as complex number(x + z i) to calculate difference of player's direction to steps
+		Vec3 dividedVec =
+				new Vec3(
+						lookVec.x * step.x + lookVec.z * step.z, 0,
+						-lookVec.x * step.z + lookVec.z * step.x
+				).normalize();
+		if (dividedVec.x < 0.707106) {
+			return false;
 		}
+		AnimationType animationType = null;
+		SpeedVaultAnimator.Type type = SpeedVaultAnimator.Type.Right;
+		switch (ParCoolConfig.CONFIG_CLIENT.vaultAnimationMode.get()) {
+			case KongVault:
+				animationType = AnimationType.KongVault;
+				break;
+			case SpeedVault:
+				animationType = AnimationType.SpeedVault;
+				type = dividedVec.z > 0 ? SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
+				break;
+			default:
+				if (dividedVec.x > 0.99) {
+					animationType = AnimationType.KongVault;
+				} else {
+					animationType = AnimationType.SpeedVault;
+					type = dividedVec.z > 0 ? SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
+				}
+				break;
+		}
+		double wallHeight = WorldUtil.getWallHeight(player);
+		startInfo.put(animationType.getCode());
+		BufferUtil.wrap(startInfo).putBoolean(type == SpeedVaultAnimator.Type.Right);
+		startInfo
+				.putDouble(step.x)
+				.putDouble(step.y)
+				.putDouble(step.z)
+				.putDouble(wallHeight);
+
+		return (parkourability.getActionInfo().can(Vault.class)
+				&& !stamina.isExhausted()
+				&& !(ParCoolConfig.CONFIG_CLIENT.vaultNeedKeyPressed.get() && !KeyBindings.getKeyVault().isDown())
+				&& parkourability.get(FastRun.class).canActWithRunning(player)
+				&& !stamina.isExhausted()
+				&& (player.isOnGround() || !ParCoolConfig.CONFIG_CLIENT.disableVaultInAir.get())
+				&& wallHeight > player.getBbHeight() * 0.44 /*about 0.8*/
+		);
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	private boolean canVault(Player player, Parkourability parkourability, Stamina stamina) {
-		Vec3 lookVec = player.getLookAngle();
-		lookVec = new Vec3(lookVec.x(), 0, lookVec.z()).normalize();
-		Vec3 wall = WorldUtil.getWall(player);
-		if (wall == null) return false;
-		return !this.vauting &&
-				parkourability.getPermission().canVault() &&
-				!(ParCoolConfig.CONFIG_CLIENT.vaultNeedKeyPressed.get() && !KeyBindings.getKeyVault().isDown()) &&
-				parkourability.getFastRun().canActWithRunning(player) &&
-				!stamina.isExhausted() &&
-				player.isOnGround() &&
-				(wall.dot(lookVec) / wall.length() / lookVec.length()) > 0.707106 /*check facing wall*/ &&
-				WorldUtil.getVaultableStep(player) != null &&
-				WorldUtil.getWallHeight(player) > 0.8;
+	@Override
+	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
+		return getDoingTick() < getVaultAnimateTime();
 	}
 
 	private int getVaultAnimateTime() {
@@ -60,82 +120,68 @@ public class Vault extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(Player player, Parkourability parkourability, Stamina stamina) {
-		if (start) {
-			start = false;
-			Animation animation = Animation.get(player);
-			if (animation != null)
-				animation.setAnimator(new SpeedVaultAnimator(SpeedVaultAnimator.Type.Right));
-		}
-		if (player.isLocalPlayer()) {
-			if (!this.isVaulting() && this.canVault(player, parkourability, stamina)) {
-				vauting = true;
-				vaultingTick = 0;
-				stepDirection = WorldUtil.getVaultableStep(player);
-				stepHeight = WorldUtil.getWallHeight(player);
-
-				Vec3 lookVec = player.getLookAngle();
-				Vec3 vec = new Vec3(lookVec.x(), 0, lookVec.z()).normalize();
-				Vec3 s = stepDirection;
-
-				//doing "vec/stepDirection" as complex number(x + z i) to calculate difference of player's direction to steps
-				Vec3 dividedVec =
-						new Vec3(
-								vec.x() * s.x() + vec.z() * s.z(), 0,
-								-vec.x() * s.z() + vec.z() * s.x()
-						);
-				stamina.consume(parkourability.getActionInfo().getStaminaConsumptionVault(), player);
-				Animation animation = Animation.get(player);
-				SpeedVaultAnimator.Type type = dividedVec.z() > 0 ? SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
-				if (animation != null)
-					animation.setAnimator(new SpeedVaultAnimator(type));
-				StartVaultMessage.send(player);
-			}
-
-			if (vauting) {
-				player.setDeltaMovement(
-						stepDirection.x() / 10,
-						(stepHeight + 0.05) / this.getVaultAnimateTime(),
-						stepDirection.z() / 10
-				);
-			}
-
-			if (vaultingTick >= this.getVaultAnimateTime()) {
-				vauting = false;
-				stepDirection = stepDirection.normalize();
-				player.setDeltaMovement(
-						stepDirection.x() * 0.45,
-						0.15,
-						stepDirection.z() * 0.45
-				);
+	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+		AnimationType animationType = AnimationType.fromCode(startData.get());
+		SpeedVaultAnimator.Type speedVaultType = BufferUtil.getBoolean(startData) ?
+				SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
+		stepDirection = new Vec3(startData.getDouble(), startData.getDouble(), startData.getDouble());
+		stepHeight = startData.getDouble();
+		Animation animation = Animation.get(player);
+		if (animation != null && animationType != null) {
+			switch (animationType) {
+				case SpeedVault:
+					animation.setAnimator(new SpeedVaultAnimator(speedVaultType));
+					break;
+				case KongVault:
+					animation.setAnimator(new KongVaultAnimator());
+					break;
 			}
 		}
 	}
 
-	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void onRender(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
+	@Override
+	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
+		AnimationType animationType = AnimationType.fromCode(startData.get());
+		SpeedVaultAnimator.Type speedVaultType = BufferUtil.getBoolean(startData) ?
+				SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
+		Animation animation = Animation.get(player);
+		if (animation != null && animationType != null) {
+			switch (animationType) {
+				case SpeedVault:
+					animation.setAnimator(new SpeedVaultAnimator(speedVaultType));
+					break;
+				case KongVault:
+					animation.setAnimator(new KongVaultAnimator());
+					break;
+			}
+		}
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
+		if (stepDirection == null) return;
+		player.setDeltaMovement(
+				stepDirection.x / 10,
+				(stepHeight + 0.02) / this.getVaultAnimateTime(),
+				stepDirection.z / 10
+		);
 	}
 
 	@Override
-	public void restoreState(ByteBuffer buffer) {
-
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.OnStart;
 	}
 
-	public void receiveStartVault(StartVaultMessage message) {
-		start = true;
-	}
-
+	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void saveState(ByteBuffer buffer) {
-
-	}
-
-	public boolean isVaulting() {
-		return vauting;
-	}
-
-	public int getVaultingTick() {
-		return vaultingTick;
+	public void onStopInLocalClient(Player player) {
+		stepDirection = stepDirection.normalize();
+		player.setDeltaMovement(
+				stepDirection.x * 0.45,
+				0.075,
+				stepDirection.z * 0.45
+		);
 	}
 }

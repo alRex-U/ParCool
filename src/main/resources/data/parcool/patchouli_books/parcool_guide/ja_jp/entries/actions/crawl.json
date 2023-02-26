@@ -1,0 +1,16 @@
+{
+  "name": "匍匐(ほふく)",
+  "icon": "minecraft:nautilus_shell",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "どこでも地面を這って狭いスペースを移動できます。$(br)$(l:parcool:actions/slide)スライディング$()もご確認ください。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(list)匍匐キー($(k:parcool.ClingToCliff))を押す"
+    }
+  ]
+}

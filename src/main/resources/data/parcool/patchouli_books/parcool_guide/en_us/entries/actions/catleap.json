@@ -1,0 +1,16 @@
+{
+  "name": "CatLeap",
+  "icon": "minecraft:cat_spawn_egg",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)CatLeap$() is a skill used to jump and cling to top of walls,fence or etc.$(br)This is said to be one of basic skills of parkour.$(br)Traceurs absorb an impact of landing with movement of legs.$(br2)In this mod, this is implemented as a long jump. Please careful with the cool time."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(bold)1.$() Do $(l:parcool:actions/fast_run)Fast Run$()$(br)$(bold)2.$() Sneak quickly$(br)$(bold)3.$() Cancel sneaking quickly$(br2)I recommend also using $(l:parcool:actions/cling_to_cliff)Cling To Cliff$()."
+    }
+  ]
+}

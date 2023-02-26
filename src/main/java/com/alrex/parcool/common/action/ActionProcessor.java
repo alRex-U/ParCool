@@ -1,13 +1,15 @@
 package com.alrex.parcool.common.action;
 
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.impl.Animation;
 import com.alrex.parcool.common.capability.impl.Parkourability;
-import com.alrex.parcool.common.capability.impl.Stamina;
 import com.alrex.parcool.common.network.SyncActionStateMessage;
+import com.alrex.parcool.common.network.SyncStaminaMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -15,14 +17,19 @@ import net.minecraftforge.fml.LogicalSide;
 import java.nio.ByteBuffer;
 import java.util.List;
 
+;
+
 public class ActionProcessor {
-	public final ByteBuffer bufferOfPostState = ByteBuffer.allocate(128);
-	public final ByteBuffer bufferOfPreState = ByteBuffer.allocate(128);
+	private final ByteBuffer bufferOfPostState = ByteBuffer.allocate(128);
+	private final ByteBuffer bufferOfPreState = ByteBuffer.allocate(128);
+	private final ByteBuffer bufferOfStarting = ByteBuffer.allocate(128);
+	private int staminaSyncCoolTimeTick = 0;
 
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public void onTickInClient(TickEvent.PlayerTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) return;
+		if (event.side != LogicalSide.CLIENT) return;
 		Player player = event.player;
 		Animation animation = Animation.get(player);
 		if (animation == null) return;
@@ -36,38 +43,101 @@ public class ActionProcessor {
 		if (event.phase == TickEvent.Phase.START) return;
 		Player player = event.player;
 		Parkourability parkourability = Parkourability.get(player);
-		Stamina stamina = Stamina.get(player);
+		IStamina stamina = IStamina.get(player);
 		if (parkourability == null || stamina == null) return;
 		List<Action> actions = parkourability.getList();
-		if (event.side == LogicalSide.CLIENT) {
-			stamina.onTick(parkourability.getActionInfo());
-		}
 		boolean needSync = event.side == LogicalSide.CLIENT && player.isLocalPlayer();
-		SyncActionStateMessage.Builder builder = SyncActionStateMessage.Builder.main();
+		SyncActionStateMessage.Encoder builder = SyncActionStateMessage.Encoder.reset();
 
+		if (needSync) {
+			stamina.tick();
+			staminaSyncCoolTimeTick++;
+			if (staminaSyncCoolTimeTick > 5) {
+				staminaSyncCoolTimeTick = 0;
+				SyncStaminaMessage.sync(player);
+			}
+			if (stamina.isExhausted()) {
+				player.setSprinting(false);
+			}
+		}
+		parkourability.getAdditionalProperties().onTick(player, parkourability);
 		for (Action action : actions) {
+			StaminaConsumeTiming timing = action.getStaminaConsumeTiming();
 			if (needSync) {
 				bufferOfPreState.clear();
-				action.saveState(bufferOfPreState);
+				action.saveSynchronizedState(bufferOfPreState);
 				bufferOfPreState.flip();
+			}
+			if (action.isDoing()) {
+				action.setDoingTick(action.getDoingTick() + 1);
+				action.setNotDoingTick(0);
+			} else {
+				action.setDoingTick(0);
+				action.setNotDoingTick(action.getNotDoingTick() + 1);
 			}
 
 			action.onTick(player, parkourability, stamina);
 			if (event.side == LogicalSide.CLIENT) {
 				action.onClientTick(player, parkourability, stamina);
+			} else {
+				action.onServerTick(player, parkourability, stamina);
+			}
+
+			if (player.isLocalPlayer()) {
+				if (action.isDoing()) {
+					boolean canContinue = action.canContinue(player, parkourability, stamina);
+					if (!canContinue) {
+						action.setDoing(false);
+						action.onStopInLocalClient(player);
+						action.onStop(player);
+						builder.appendFinishMsg(parkourability, action);
+					}
+				} else {
+					bufferOfStarting.clear();
+					boolean start = action.canStart(player, parkourability, stamina, bufferOfStarting);
+					bufferOfStarting.flip();
+					if (start) {
+						action.setDoing(true);
+						action.onStartInLocalClient(player, parkourability, stamina, bufferOfStarting);
+						bufferOfStarting.rewind();
+						action.onStart(player, parkourability);
+						builder.appendStartData(parkourability, action, bufferOfStarting);
+						if (timing == StaminaConsumeTiming.OnStart)
+							stamina.consume(parkourability.getActionInfo().getStaminaConsumptionOf(action.getClass()));
+					}
+				}
+			}
+
+			if (action.isDoing()) {
+				action.onWorkingTick(player, parkourability, stamina);
+				if (event.side == LogicalSide.CLIENT) {
+					action.onWorkingTickInClient(player, parkourability, stamina);
+					if (player.isLocalPlayer()) {
+						action.onWorkingTickInLocalClient(player, parkourability, stamina);
+						if (timing == StaminaConsumeTiming.OnWorking)
+							stamina.consume(parkourability.getActionInfo().getStaminaConsumptionOf(action.getClass()));
+					}
+				} else {
+					action.onWorkingTickInServer(player, parkourability, stamina);
+				}
 			}
 
 			if (needSync) {
 				bufferOfPostState.clear();
-				action.saveState(bufferOfPostState);
+				action.saveSynchronizedState(bufferOfPostState);
 				bufferOfPostState.flip();
 
-				while (bufferOfPreState.hasRemaining()) {
-					if (bufferOfPostState.get() != bufferOfPreState.get()) {
-						bufferOfPostState.rewind();
-						builder.append(action, bufferOfPostState);
-						break;
+				if (bufferOfPostState.limit() == bufferOfPreState.limit()) {
+					while (bufferOfPreState.hasRemaining()) {
+						if (bufferOfPostState.get() != bufferOfPreState.get()) {
+							bufferOfPostState.rewind();
+							builder.appendSyncData(parkourability, action, bufferOfPostState);
+							break;
+						}
 					}
+				} else {
+					bufferOfPostState.rewind();
+					builder.appendSyncData(parkourability, action, bufferOfPostState);
 				}
 			}
 		}
@@ -79,16 +149,27 @@ public class ActionProcessor {
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public void onRenderTick(TickEvent.RenderTickEvent event) {
+		Player clientPlayer = Minecraft.getInstance().player;
+		if (clientPlayer == null) return;
+		for (Player player : clientPlayer.level.players()) {
+			Parkourability parkourability = Parkourability.get(player);
+			if (parkourability == null) return;
+			List<Action> actions = parkourability.getList();
+			for (Action action : actions) {
+				action.onRenderTick(event, player, parkourability);
+			}
+		}
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	@SubscribeEvent
+	public void onViewRender(EntityViewRenderEvent.CameraSetup event) {
 		Player player = Minecraft.getInstance().player;
 		if (player == null) return;
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
-		List<Action> actions = parkourability.getList();
-		for (Action action : actions) {
-			action.onRender(event, player, parkourability);
-		}
 		Animation animation = Animation.get(player);
 		if (animation == null) return;
-		animation.onRenderTick(event);
+		animation.cameraSetup(event, player, parkourability);
 	}
 }

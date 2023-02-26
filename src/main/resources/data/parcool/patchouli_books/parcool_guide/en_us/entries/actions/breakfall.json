@@ -1,0 +1,34 @@
+{
+  "name": "Breakfall",
+  "icon": "minecraft:slime_ball",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)Breakfalls$() are skills to protect us from impact of landing.$(br)By this mod, you can do $(bold)Roll$() and $(bold)Safety Tap$()."
+    },
+    {
+      "type": "patchouli:empty"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Roll",
+      "text": "$(bold)Roll$() is one of the Breakfalls. It change an impact of landing into energy of rolling.$(br2)This is sometimes misunderstood, but the $(italic)Roll$() of parkour is landing technique, so ParCool's roll is also used only when you land."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(list)Land while you press forward or backward movement key and Breakfall Key$(br)(Normally it’s mapped to R)"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Safety Tap",
+      "text": "$(bold)Safety Tap$() is one of the Breakfalls. It absorb an impact by bending your legs.$(br2)By the way how can Steve bend his legs?"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(list)Land while you press Breakfall($(k:parcool.Breakfall)) Key"
+    }
+  ]
+}

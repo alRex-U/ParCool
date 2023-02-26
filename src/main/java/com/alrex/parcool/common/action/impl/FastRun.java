@@ -4,119 +4,100 @@ import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.FastRunningAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.AdditionalProperties;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.impl.Animation;
 import com.alrex.parcool.common.capability.impl.Parkourability;
-import com.alrex.parcool.common.capability.impl.Stamina;
-import com.alrex.parcool.utilities.BufferUtil;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
+;
+
 public class FastRun extends Action {
 	private static final String FAST_RUNNING_MODIFIER_NAME = "parcool.modifier.fastrunnning";
 	private static final UUID FAST_RUNNING_MODIFIER_UUID = UUID.randomUUID();
-	private static AttributeModifier FAST_RUNNING_MODIFIER = null;
-
-	@OnlyIn(Dist.CLIENT)
-	private static AttributeModifier getFastRunningModifier() {
-		if (FAST_RUNNING_MODIFIER == null) {
-			FAST_RUNNING_MODIFIER = new AttributeModifier
-					(
-							FAST_RUNNING_MODIFIER_UUID,
-							FAST_RUNNING_MODIFIER_NAME,
-							ParCoolConfig.CONFIG_CLIENT.fastRunningModifier.get() / 100d,
-							AttributeModifier.Operation.ADDITION
-					);
-		}
-		return FAST_RUNNING_MODIFIER;
-	}
-
-	private int runningTick = 0;
-	private int notRunningTick = 0;
-	private boolean fastRunning = false;
+	private double speedModifier = 0;
 
 	@Override
-	public void onTick(Player player, Parkourability parkourability, Stamina stamina) {
-		if (fastRunning) {
-			runningTick++;
-			notRunningTick = 0;
-		} else {
-			runningTick = 0;
-			notRunningTick++;
-		}
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public void onClientTick(Player player, Parkourability parkourability, Stamina stamina) {
-		if (player.isLocalPlayer()) {
-			fastRunning = parkourability.getPermission().canFastRunning()
-					&& !stamina.isExhausted()
-					&& player.isSprinting()
-					&& !player.isVisuallyCrawling()
-					&& !player.isSwimming()
-					&& !parkourability.getCrawl().isCrawling()
-					&& (KeyBindings.getKeyFastRunning().isDown() || ParCoolConfig.CONFIG_CLIENT.replaceSprintWithFastRun.get());
-		}
+	public void onServerTick(Player player, Parkourability parkourability, IStamina stamina) {
 		AttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (attr == null) return;
-
-		if (isRunning()) {
-			if (!attr.hasModifier(getFastRunningModifier())) attr.addTransientModifier(getFastRunningModifier());
-			stamina.consume(parkourability.getActionInfo().getStaminaConsumptionFastRun(), player);
-
-			Animation animation = Animation.get(player);
-			if (animation != null && !animation.hasAnimator()) {
-				animation.setAnimator(new FastRunningAnimator());
-			}
-		} else {
-			if (attr.hasModifier(getFastRunningModifier())) attr.removeModifier(getFastRunningModifier());
+		if (attr.getModifier(FAST_RUNNING_MODIFIER_UUID) != null) attr.removeModifier(FAST_RUNNING_MODIFIER_UUID);
+		if (isDoing()) {
+			attr.addTransientModifier(new AttributeModifier(
+					FAST_RUNNING_MODIFIER_UUID,
+					FAST_RUNNING_MODIFIER_NAME,
+					speedModifier / 100d,
+					AttributeModifier.Operation.ADDITION
+			));
 		}
 	}
 
 	@Override
-	public void onRender(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
-
-	}
-
-
-	@Override
-	public void restoreState(ByteBuffer buffer) {
-		fastRunning = BufferUtil.getBoolean(buffer);
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.OnWorking;
 	}
 
 	@Override
-	public void saveState(ByteBuffer buffer) {
-		BufferUtil.wrap(buffer).putBoolean(fastRunning);
+	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		startInfo.putDouble(ParCoolConfig.CONFIG_CLIENT.fastRunningModifier.get());
+		return canContinue(player, parkourability, stamina);
 	}
 
-	public int getRunningTick() {
-		return runningTick;
+	@Override
+	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
+		return (parkourability.getActionInfo().can(FastRun.class)
+				&& !stamina.isExhausted()
+				&& player.isSprinting()
+				&& !player.isVisuallyCrawling()
+				&& !player.isSwimming()
+				&& !parkourability.get(Crawl.class).isDoing()
+				&& (KeyBindings.getKeyFastRunning().isDown() || ParCoolConfig.CONFIG_CLIENT.replaceSprintWithFastRun.get())
+		);
 	}
 
-	public int getNotRunningTick() {
-		return notRunningTick;
+	@Override
+	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+		Animation animation = Animation.get(player);
+		if (animation != null && !animation.hasAnimator()) {
+			animation.setAnimator(new FastRunningAnimator());
+		}
 	}
 
-	public boolean isRunning() {
-		return fastRunning;
+	@Override
+	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
+		Animation animation = Animation.get(player);
+		if (animation != null && !animation.hasAnimator()) {
+			animation.setAnimator(new FastRunningAnimator());
+		}
+	}
+
+	@Override
+	public void onStartInServer(Player player, Parkourability parkourability, ByteBuffer startData) {
+		speedModifier = startData.getDouble();
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public boolean canActWithRunning(Player player) {
-		return ParCoolConfig.CONFIG_CLIENT.substituteSprintForFastRun.get() ? player.isSprinting() : this.isRunning();
+		return ParCoolConfig.CONFIG_CLIENT.substituteSprintForFastRun.get() ? player.isSprinting() : this.isDoing();
 	}
 
 	//return sprinting tick if substitute sprint is on
 	@OnlyIn(Dist.CLIENT)
 	public int getDashTick(AdditionalProperties properties) {
-		return ParCoolConfig.CONFIG_CLIENT.substituteSprintForFastRun.get() ? properties.getSprintingTick() : this.getRunningTick();
+		return ParCoolConfig.CONFIG_CLIENT.substituteSprintForFastRun.get() ? properties.getSprintingTick() : this.getDoingTick();
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public int getNotDashTick(AdditionalProperties properties) {
+		return ParCoolConfig.CONFIG_CLIENT.substituteSprintForFastRun.get() ? properties.getNotSprintingTick() : this.getNotDoingTick();
 	}
 }

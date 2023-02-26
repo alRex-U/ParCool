@@ -1,0 +1,16 @@
+{
+  "name": "Slide",
+  "icon": "minecraft:yellow_dye",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)Slide$() is an action derived from $(l:parcool:actions/crawl)Crawl$(). You can go through narrow space quickly."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(list)do Crawl while doing Fast Running"
+    }
+  ]
+}

@@ -6,22 +6,29 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.ClientRegistry;
+import net.minecraftforge.client.settings.KeyConflictContext;
+import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public class KeyBindings {
 	private static final Options settings = Minecraft.getInstance().options;
-	private static final KeyMapping keyBindCrawl = new KeyMapping("key.crawl.description", GLFW.GLFW_KEY_C, "key.categories.parcool");
-	private static final KeyMapping keyBindGrabWall = new KeyMapping("key.grab.description", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
-	private static final KeyMapping keyBindBreakfall = new KeyMapping("key.breakfall.description", GLFW.GLFW_KEY_R, "key.categories.parcool");
-	private static final KeyMapping keyBindFastRunning = new KeyMapping("key.fastrunning.description", GLFW.GLFW_KEY_LEFT_CONTROL, "key.categories.parcool");
-	private static final KeyMapping keyBindVault = new KeyMapping("key.vault.description", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
-	private static final KeyMapping keyBindDodge = new KeyMapping("key.dodge.description", GLFW.GLFW_KEY_R, "key.categories.parcool");
-	private static final KeyMapping keyBindWallSlide = new KeyMapping("key.wallslide.description", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
-	private static final KeyMapping keyBindHorizontalWallRun = new KeyMapping("key.horizontalwallrun.description", GLFW.GLFW_KEY_R, "key.categories.parcool");
-	private static final KeyMapping keyBindOpenSettings = new KeyMapping("key.parcool.setting.open", GLFW.GLFW_KEY_P, "key.categories.parcool");
+	private static final KeyMapping keyBindCrawl = new KeyMapping("key.parcool.Crawl", GLFW.GLFW_KEY_C, "key.categories.parcool");
+	private static final KeyMapping keyBindGrabWall = new KeyMapping("key.parcool.ClingToCliff", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
+	private static final KeyMapping keyBindBreakfall = new KeyMapping("key.parcool.Breakfall", GLFW.GLFW_KEY_R, "key.categories.parcool");
+	private static final KeyMapping keyBindFastRunning = new KeyMapping("key.parcool.FastRun", GLFW.GLFW_KEY_LEFT_CONTROL, "key.categories.parcool");
+	private static final KeyMapping keyBindFlipping = new KeyMapping("key.parcool.Flipping", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
+	private static final KeyMapping keyBindVault = new KeyMapping("key.parcool.Vault", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
+	private static final KeyMapping keyBindDodge = new KeyMapping("key.parcool.Dodge", GLFW.GLFW_KEY_R, "key.categories.parcool");
+	private static final KeyMapping keyBindWallJump = new KeyMapping("key.parcool.WallJump", GLFW.GLFW_KEY_SPACE, "key.categories.parcool");
+	private static final KeyMapping keyBindHangDown = new KeyMapping("key.parcool.HangDown", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
+	private static final KeyMapping keyBindWallSlide = new KeyMapping("key.parcool.WallSlide", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
+	private static final KeyMapping keyBindHorizontalWallRun = new KeyMapping("key.parcool.HorizontalWallRun", GLFW.GLFW_KEY_R, "key.categories.parcool");
+	private static final KeyMapping keyBindQuickTurn = new KeyMapping("key.parcool.QuickTurn", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
+	private static final KeyMapping keyBindOpenSettings = new KeyMapping("key.parcool.openSetting", KeyConflictContext.UNIVERSAL, KeyModifier.ALT, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.categories.parcool");
 
 	public static KeyMapping getKeySprint() {
 		return settings.keySprint;
@@ -55,6 +62,10 @@ public class KeyBindings {
 		return keyBindCrawl;
 	}
 
+	public static KeyMapping getKeyQuickTurn() {
+		return keyBindQuickTurn;
+	}
+
 	public static KeyMapping getKeyGrabWall() {
 		return keyBindGrabWall;
 	}
@@ -83,20 +94,36 @@ public class KeyBindings {
 		return keyBindWallSlide;
 	}
 
+	public static KeyMapping getKeyHangDown() {
+		return keyBindHangDown;
+	}
+
 	public static KeyMapping getKeyHorizontalWallRun() {
 		return keyBindHorizontalWallRun;
 	}
 
+	public static KeyMapping getKeyWallJump() {
+		return keyBindWallJump;
+	}
+
+	public static KeyMapping getKeyFlipping() {
+		return keyBindFlipping;
+	}
+
 	@SubscribeEvent
-	public static void register(RegisterKeyMappingsEvent event) {
-		event.register(keyBindHorizontalWallRun);
-		event.register(keyBindVault);
-		event.register(keyBindWallSlide);
-		event.register(keyBindBreakfall);
-		event.register(keyBindDodge);
-		event.register(keyBindCrawl);
-		event.register(keyBindFastRunning);
-		event.register(keyBindGrabWall);
-		event.register(keyBindOpenSettings);
+	public static void register(FMLClientSetupEvent event) {
+		ClientRegistry.registerKeyBinding(keyBindCrawl);
+		ClientRegistry.registerKeyBinding(keyBindGrabWall);
+		ClientRegistry.registerKeyBinding(keyBindBreakfall);
+		ClientRegistry.registerKeyBinding(keyBindFastRunning);
+		ClientRegistry.registerKeyBinding(keyBindDodge);
+		ClientRegistry.registerKeyBinding(keyBindWallSlide);
+		ClientRegistry.registerKeyBinding(keyBindWallJump);
+		ClientRegistry.registerKeyBinding(keyBindVault);
+		ClientRegistry.registerKeyBinding(keyBindHorizontalWallRun);
+		ClientRegistry.registerKeyBinding(keyBindOpenSettings);
+		ClientRegistry.registerKeyBinding(keyBindQuickTurn);
+		ClientRegistry.registerKeyBinding(keyBindFlipping);
+		ClientRegistry.registerKeyBinding(keyBindHangDown);
 	}
 }

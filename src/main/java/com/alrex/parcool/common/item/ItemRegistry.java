@@ -1,18 +1,15 @@
 package com.alrex.parcool.common.item;
 
-import com.alrex.parcool.common.item.items.ParCoolGuideItem;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import com.alrex.parcool.ParCool;
+import net.minecraft.world.item.Item;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
+import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.RegistryObject;
 
 public class ItemRegistry {
-	@SubscribeEvent
-	public static void register(RegisterEvent event) {
-		event.register(
-				ForgeRegistries.Keys.ITEMS,
-				helper -> {
-					helper.register(ParCoolGuideItem.RESOURCE_LOCATION, ParCoolGuideItem.INSTANCE);
-				}
-		);
-	}
+	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ParCool.MOD_ID);
+	public static final RegistryObject<Item> PARCOOL_GUIDE_REGISTRY = ITEMS.register("parcool_guide", () -> new Item(new Item.Properties().stacksTo(1)));
+	@ObjectHolder("parcool:parcool_guide")
+	public static final Item PARCOOL_GUIDE = null;
 }

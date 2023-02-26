@@ -1,0 +1,20 @@
+{
+  "name": "FAQ",
+  "icon": "minecraft:paper",
+  "category": "parcool:category_about",
+  "sortnum": "3",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "よくある質問"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)Q. キー割り当てが被っていますが？$()$(br2)$(bold)A. 問題ありません。ParCoolはデフォルトのキー割り当てで問題なく動作します。$()$(br)これはカスタマイズの為に多くのキーバインディングを追加し、使いやすくするために少ないキーに実際の割り当てを行う必要があったためです。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)Q. Fabric はサポートされますか？$()$(br2)$(bold)A. いいえ。$()$(br)現在開発者にはFabricへの移植に十分な時間はありません。"
+    }
+  ]
+}

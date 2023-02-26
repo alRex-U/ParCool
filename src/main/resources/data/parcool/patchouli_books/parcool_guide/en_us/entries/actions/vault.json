@@ -1,0 +1,24 @@
+{
+  "name": "Vault",
+  "icon": "minecraft:oak_fence",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)Vault$() is skills used to get over obstacles like fences.$(br)There are numerous variations. In this game, you can use $(italic)Speed Vault$() and $(italic)Kong Vault$()"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/image_vault.png"
+      ],
+      "text": "A image of $(italic)Speed Vault$()"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(bold)1.$() Do $(l:parcool:actions/fast-run)Fast Run$()$(br)$(bold)2.$() Collide with blocks"
+    }
+  ]
+}

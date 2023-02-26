@@ -1,7 +1,9 @@
 package com.alrex.parcool.mixin.client;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.capability.impl.Animation;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -57,6 +59,10 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends HumanoidM
 		if (!(entity instanceof Player)) return;
 		PlayerModel model = (PlayerModel) (Object) this;
 		Player player = (Player) entity;
+		if (player.isLocalPlayer()
+				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()
+				&& ParCoolConfig.CONFIG_CLIENT.disableFPVAnimation.get()
+		) return;
 
 		transformer = new PlayerModelTransformer(
 				player,
@@ -85,6 +91,10 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends HumanoidM
 	protected void onSetupAnimTail(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo info) {
 		if (!(entity instanceof Player)) return;
 		Player player = (Player) entity;
+		if (player.isLocalPlayer()
+				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()
+				&& ParCoolConfig.CONFIG_CLIENT.disableFPVAnimation.get()
+		) return;
 
 		Animation animation = Animation.get(player);
 		if (animation == null) {
@@ -92,9 +102,11 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends HumanoidM
 			return;
 		}
 
-		animation.animatePost(player, transformer);
-		transformer.copyFromBodyToWear();
-		transformer = null;
+		if (transformer != null) {
+			animation.animatePost(player, transformer);
+			transformer.copyFromBodyToWear();
+			transformer = null;
+		}
 	}
 
 }

@@ -1,72 +1,95 @@
 package com.alrex.parcool.client.hud.impl;
 
 import com.alrex.parcool.ParCoolConfig;
-import com.alrex.parcool.client.hud.AbstractHUD;
-import com.alrex.parcool.client.hud.Position;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.impl.Parkourability;
-import com.alrex.parcool.common.capability.impl.Stamina;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.tags.FluidTags;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.event.TickEvent;
 
-import static com.alrex.parcool.client.hud.impl.StaminaHUD.STAMINA;
+;
 
-public class LightStaminaHUD extends AbstractHUD {
-	private int oldValue = 0;
-	private long lastChangedTick = 0;
+public class LightStaminaHUD extends GuiComponent {
+	private long lastStaminaChangedTick = 0;
+	//1-> recovering, -1->consuming, 0->no changing
+	private int lastChangingSign = 0;
+	private int changingSign = 0;
+	private long changingTimeTick = 0;
+	private int randomOffset = 0;
+	private boolean justBecameMax = false;
 
-	public LightStaminaHUD(Position pos) {
-		super(pos);
+	public void onTick(TickEvent.ClientTickEvent event, LocalPlayer player) {
+		IStamina stamina = IStamina.get(player);
+		if (stamina == null) return;
+		changingSign = (int) Math.signum(stamina.get() - stamina.getOldValue());
+		final long gameTime = player.level.getGameTime();
+		if (changingSign != lastChangingSign) {
+			lastChangingSign = changingSign;
+			changingTimeTick = 0;
+		} else {
+			changingTimeTick++;
+		}
+		if (player.getRandom().nextInt(5) == 0) {
+			randomOffset += player.getRandom().nextBoolean() ? 1 : -1;
+		} else {
+			randomOffset = 0;
+		}
+		if (stamina.get() != stamina.getOldValue() || stamina.isExhausted()) {
+			lastStaminaChangedTick = gameTime;
+		}
+		justBecameMax = stamina.getOldValue() < stamina.get() && stamina.get() == stamina.getActualMaxStamina();
 	}
 
-	@Override
-	public void render(ForgeGui gui, PoseStack mStack, float partialTicks, int width, int height) {
+	public void render(ForgeIngameGui gui, PoseStack stack, float partialTick, int width, int height) {
 		LocalPlayer player = Minecraft.getInstance().player;
-		if (player == null || player.isEyeInFluid(FluidTags.WATER)) return;
-		if (player.isCreative()) return;
+		if (player == null || player.isCreative()) return;
 
-		Stamina stamina = Stamina.get(player);
+		IStamina stamina = IStamina.get(player);
 		Parkourability parkourability = Parkourability.get(player);
 		if (stamina == null || parkourability == null) return;
 
-		if (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && parkourability.getActionInfo().isStaminaInfinite())
+		if (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && parkourability.getActionInfo().isInfiniteStaminaPermitted())
 			return;
 
-		if (stamina.getStamina() == 0) return;
 		long gameTime = player.level.getGameTime();
-		if (stamina.getStamina() != oldValue) {
-			lastChangedTick = gameTime;
-		} else if (gameTime - lastChangedTick > 40) return;
-
-		oldValue = stamina.getStamina();
-		float staminaScale = (float) stamina.getStamina() / stamina.getMaxStamina();
+		if (gameTime - lastStaminaChangedTick > 40) return;
+		float staminaScale = (float) stamina.get() / stamina.getActualMaxStamina();
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
+		staminaScale *= 10;
 		Minecraft mc = Minecraft.getInstance();
-		int scaledWidth = mc.getWindow().getGuiScaledWidth();
-		int scaledHeight = mc.getWindow().getGuiScaledHeight();
 
-		int iconNumber = (int) Math.floor(staminaScale * 10);
-		float iconPartial = (staminaScale * 10) - iconNumber;
-
-		RenderSystem.setShaderTexture(0, STAMINA);
-		int baseX = scaledWidth / 2 + 92;
-		int y = scaledHeight - 49 + ParCoolConfig.CONFIG_CLIENT.offsetVerticalLightStaminaHUD.get();
-		for (int i = 1; i <= 10; i++) {
-			int x = baseX - i * 8 - 1;
-			int textureX;
-			if (iconNumber >= i || (iconNumber + 1 == i && iconPartial > 0.3)) {
-				textureX = 0;
-			} else if (iconNumber + 1 == i) {
-				textureX = 8;
-			} else break;
-			if (stamina.isExhausted()) {
-				textureX += 16;
+		RenderSystem.setShaderTexture(0, StaminaHUD.STAMINA);
+		int baseX = width / 2 + 92;
+		int baseY = height - gui.right_height;
+		final boolean exhausted = stamina.isExhausted();
+		for (int i = 0; i < 10; i++) {
+			int x = baseX - i * 8 - 9;
+			int offsetY = 0;
+			int textureX = exhausted ? 27 : 0;
+			if (justBecameMax) {
+				textureX = 81;
+			} else if (staminaScale <= i) {//empty
+				textureX += 18;
+			} else if (staminaScale < i + 0.5f) {//not full
+				textureX += 9;
 			}
-			AbstractHUD.blit(mStack, x, y, textureX, 119f, 8, 9, 128, 128);
+			if (justBecameMax) {
+				offsetY = -1;
+			} else if (changingSign == 1) {
+				if ((changingTimeTick & 31) == i) {
+					offsetY = -1;
+				}
+			} else if (i + 1 > staminaScale && staminaScale > i && changingSign == -1) {
+				offsetY = randomOffset;
+			}
+
+			blit(stack, x, baseY + offsetY, textureX, 119, 9, 9, 129, 128);
 		}
+		gui.right_height += 10;
 	}
 }
