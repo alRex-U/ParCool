@@ -46,10 +46,10 @@ public class ClingToCliff extends Action {
 				&& player.getDeltaMovement().y < 0.2
 				&& parkourability.getActionInfo().can(ClingToCliff.class)
 				&& KeyBindings.getKeyGrabWall().isDown()
-				&& WorldUtil.existsGrabbableWall(player)
 		);
 		if (!value) return false;
-		Vec3 wallVec = WorldUtil.getWall(player);
+		Vec3 wallVec = WorldUtil.getGrabbableWall(player);
+
 		if (wallVec == null) return false;
 		startInfo.putDouble(wallVec.x)
 				.putDouble(wallVec.z);
@@ -64,7 +64,7 @@ public class ClingToCliff extends Action {
 				&& parkourability.getActionInfo().can(ClingToCliff.class)
 				&& KeyBindings.getKeyGrabWall().isDown()
 				&& !parkourability.get(ClimbUp.class).isDoing()
-				&& WorldUtil.existsGrabbableWall(player)
+				&& WorldUtil.getGrabbableWall(player) != null
 		);
 	}
 
@@ -107,7 +107,7 @@ public class ClingToCliff extends Action {
 
 	@Override
 	public void onWorkingTickInClient(Player player, Parkourability parkourability, IStamina stamina) {
-		clingWallDirection = WorldUtil.getWall(player);
+		clingWallDirection = WorldUtil.getGrabbableWall(player);
 		if (clingWallDirection == null) return;
 		clingWallDirection = clingWallDirection.normalize();
 		Vec3 lookingAngle = player.getLookAngle().multiply(1, 0, 1).normalize();
