@@ -2,7 +2,7 @@
   "name": "What is ParCool?",
   "icon": "minecraft:feather",
   "category": "parcool:category_about",
-  "sortnum": "0",
+  "sortnum": 0,
   "pages": [
     {
       "type": "patchouli:text",
