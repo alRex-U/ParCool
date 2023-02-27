@@ -174,12 +174,12 @@ public class ParCoolSettingScreen extends Screen {
 		}
 		for (int i = 0; i < viewableItemCount && i + topIndex < actionButtons.length; i++) {
 			Checkbox button = actionButtons[i + topIndex];
-			button.x = offsetX + 1;
-			button.y = contentOffsetY + Checkbox_Item_Height * i;
+			button.setX(offsetX + 1);
+			button.setY(contentOffsetY + Checkbox_Item_Height * i);
 			button.setWidth(nameColumnWidth - 5);
 			button.setHeight(20);
 			button.render(matrixStack, mouseX, mouseY, p_230430_4_);
-			fill(matrixStack, offsetX, button.y + button.getHeight(), width - offsetX, button.y + button.getHeight() + 1, color.getSubSeparator());
+			fill(matrixStack, offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
 			int rowY = contentOffsetY + Checkbox_Item_Height * i + Checkbox_Item_Height / 2;
 			boolean permitted = actionList[topIndex + i].serverWideLimitation.getAsBoolean();
 			drawCenteredString(
@@ -249,12 +249,12 @@ public class ParCoolSettingScreen extends Screen {
 		}
 		for (int i = 0; i < viewableItemCount && i + topIndex < configItemList.length; i++) {
 			Checkbox button = configButtons[i + topIndex];
-			button.x = offsetX + 1;
-			button.y = offsetY + font.lineHeight * 2 + Checkbox_Item_Height * i;
+			button.setX(offsetX + 1);
+			button.setY(offsetY + font.lineHeight * 2 + Checkbox_Item_Height * i);
 			button.setWidth(contentWidth);
 			button.setHeight(20);
 			button.render(matrixStack, mouseX, mouseY, p_230430_4_);
-			fill(matrixStack, offsetX, button.y + button.getHeight(), width - offsetX, button.y + button.getHeight() + 1, color.getSubSeparator());
+			fill(matrixStack, offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
 		}
 		fill(matrixStack, width - offsetX, contentOffsetY, width - offsetX - 1, contentOffsetY + contentHeight, color.getSeparator());
 		fill(matrixStack, offsetX, contentOffsetY, offsetX + 1, contentOffsetY + contentHeight, color.getSeparator());

@@ -2,7 +2,7 @@ package com.alrex.parcool.client.animation;
 
 import com.alrex.parcool.utilities.VectorUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
@@ -44,17 +44,15 @@ public class PlayerModelRotator {
 	}
 
 	public PlayerModelRotator rotateFrontward(float angleDegree) {
-		Vec3 lookVec = VectorUtil.fromYawDegree(player.yBodyRot).yRot((float) Math.PI / 2);
-		Vector3f vec = new Vector3f((float) lookVec.x, 0, (float) lookVec.z);
+		Vec3 lookSideVec = VectorUtil.fromYawDegree(player.yBodyRot).yRot((float) Math.PI / 2);
 		angleFront += angleDegree;
-		stack.mulPose(vec.rotationDegrees(angleDegree));
+		stack.mulPose(Axis.of(lookSideVec.toVector3f()).rotationDegrees(angleDegree));
 		return this;
 	}
 
 	public PlayerModelRotator rotateRightward(float angleDegree) {
 		Vec3 lookVec = VectorUtil.fromYawDegree(player.yBodyRot);
-		Vector3f vec = new Vector3f((float) lookVec.x, 0, (float) lookVec.z);
-		stack.mulPose(vec.rotationDegrees(angleDegree));
+		stack.mulPose(Axis.of(lookVec.toVector3f()).rotationDegrees(angleDegree));
 		return this;
 	}
 
