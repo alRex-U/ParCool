@@ -29,3 +29,10 @@ mandatory = true
 versionRange = "[1.19.2,1.20)"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.parcool]]
+modId = "feathers"
+mandatory = false
+versionRange = "[0.1,)"
+ordering = "BEFORE"
+side = "BOTH"

@@ -8,6 +8,7 @@ import com.alrex.parcool.common.capability.impl.Parkourability;
 import com.alrex.parcool.common.capability.impl.Stamina;
 import com.alrex.parcool.common.capability.storage.ParkourabilityStorage;
 import com.alrex.parcool.common.capability.storage.StaminaStorage;
+import com.alrex.parcool.extern.feathers.FeathersManager;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -28,8 +29,7 @@ public class EventAttachCapability {
 
 	@SubscribeEvent
 	public static void onAttachCapability(AttachCapabilitiesEvent<Entity> event) {
-		if (!(event.getObject() instanceof Player)) return;
-		Player player = (Player) event.getObject();
+		if (!(event.getObject() instanceof Player player)) return;
 		//Parkourability
 		{
 			Parkourability instance = new Parkourability();
@@ -67,8 +67,15 @@ public class EventAttachCapability {
 		}
 		//Stamina
 		{
-			IStamina instance = new Stamina(player);
-			LazyOptional<IStamina> optional = LazyOptional.of(() -> instance);
+			IStamina instance = null;
+			if (player.isLocalPlayer() && FeathersManager.isUsingFeathers()) {
+				instance = FeathersManager.newFeathersStaminaFor(player);
+			}
+			if (instance == null) {
+				instance = new Stamina(player);
+			}
+			final IStamina finalInstance = instance;
+			LazyOptional<IStamina> optional = LazyOptional.of(() -> finalInstance);
 			if (player.isLocalPlayer()) {
 				instance.setMaxStamina(ParCoolConfig.CONFIG_CLIENT.staminaMax.get());
 			}
@@ -77,7 +84,7 @@ public class EventAttachCapability {
 				public CompoundTag serializeNBT() {
 					return (CompoundTag) new StaminaStorage().writeTag(
 							Capabilities.STAMINA_CAPABILITY,
-							instance,
+							finalInstance,
 							null
 					);
 				}
@@ -86,7 +93,7 @@ public class EventAttachCapability {
 				public void deserializeNBT(CompoundTag nbt) {
 					new StaminaStorage().readTag(
 							Capabilities.STAMINA_CAPABILITY,
-							instance,
+							finalInstance,
 							null,
 							nbt
 					);
