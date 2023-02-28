@@ -25,7 +25,7 @@ public class StaminaControlCommand {
 									IntegerArgumentType.getInteger(context, ARGS_NAME_VALUE),
 									false
 							);
-							context.getSource().sendSuccess(new StringTextComponent("Set-Stamina operation is requested to " + player.getDisplayName()), false);
+							context.getSource().sendSuccess(new StringTextComponent("Set-Stamina operation is requested to " + player.getDisplayName().getString()), false);
 							return 0;
 						})))
 				)
@@ -37,7 +37,7 @@ public class StaminaControlCommand {
 									IntegerArgumentType.getInteger(context, ARGS_NAME_VALUE),
 									true
 							);
-							context.getSource().sendSuccess(new StringTextComponent("Add-Stamina operation is requested to " + player.getDisplayName()), false);
+							context.getSource().sendSuccess(new StringTextComponent("Add-Stamina operation is requested to " + player.getDisplayName().getString()), false);
 							return 0;
 						})))
 				)

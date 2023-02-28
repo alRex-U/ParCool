@@ -5,8 +5,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class PotionRecipeRegistry {
 	public static void register(FMLCommonSetupEvent event) {
-		event.enqueueWork(() -> {
-			BrewingRecipeRegistry.addRecipe(new ParCoolBrewingRecipe());
-		});
+		BrewingRecipeRegistry.addRecipe(new ParCoolBrewingRecipe());
 	}
 }

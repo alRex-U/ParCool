@@ -12,7 +12,9 @@ import java.nio.ByteBuffer;
 public class BreakfallReady extends Action {
 	public void startBreakfall(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		setDoing(false);
-		if ((KeyBindings.getKeyForward().isDown() || KeyBindings.getKeyBack().isDown()) && parkourability.getActionInfo().can(Roll.class)) {
+		if ((KeyBindings.getKeyForward().isDown() || KeyBindings.getKeyBack().isDown())
+				&& (parkourability.getActionInfo().can(Roll.class) || !parkourability.getActionInfo().can(Tap.class))
+		) {
 			parkourability.get(Roll.class).startRoll(player);
 		} else {
 			parkourability.get(Tap.class).startTap(player);
@@ -33,14 +35,6 @@ public class BreakfallReady extends Action {
 				&& !player.isInWaterOrBubble()
 				&& (!player.isOnGround() || parkourability.getAdditionalProperties().getLandingTick() < 3)
 		);
-	}
-
-	@Override
-	public void restoreSynchronizedState(ByteBuffer buffer) {
-	}
-
-	@Override
-	public void saveSynchronizedState(ByteBuffer buffer) {
 	}
 
 	@Override

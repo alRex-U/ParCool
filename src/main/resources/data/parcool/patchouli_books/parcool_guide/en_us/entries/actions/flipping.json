@@ -9,7 +9,7 @@
     },
     {
       "type": "patchouli:text",
-      "title": "使い方",
+      "title": "How to use",
       "text": "$(list)Press left and right movement key simultaneously$(list)Press Flipping key($(k:parcool.Flipping))"
     }
   ]

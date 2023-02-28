@@ -26,7 +26,8 @@ public class DiveAnimator extends Animator {
 
 	@Override
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
-		float factor = getFactor(player.getDeltaMovement().y());
+		double ySpeed = player.isLocalPlayer() ? player.getDeltaMovement().y() : parkourability.get(Dive.class).getPlayerYSpeed();
+		float factor = getFactor(ySpeed);
 		transformer
 				.rotateHeadPitch(-50 * factor)
 				.rotateRightArm(0, 0, (float) Math.toRadians(195 * factor))
@@ -39,7 +40,8 @@ public class DiveAnimator extends Animator {
 
 	@Override
 	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
-		float factor = getFactor(player.getDeltaMovement().y());
+		double ySpeed = player.isLocalPlayer() ? player.getDeltaMovement().y() : parkourability.get(Dive.class).getPlayerYSpeed();
+		float factor = getFactor(ySpeed);
 		rotator.startBasedCenter()
 				.rotateFrontward(180 * factor)
 				.end();

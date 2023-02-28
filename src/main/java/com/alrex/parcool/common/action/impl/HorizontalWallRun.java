@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.HorizontalWallRunAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
@@ -22,7 +23,7 @@ import java.nio.ByteBuffer;
 public class HorizontalWallRun extends Action {
 	private int coolTime = 0;
 	private float bodyYaw = 0;
-	private static final int Max_Running_Tick = 25;
+	private static final int Max_Running_Tick = ParCoolConfig.CONFIG_CLIENT.wallRunContinuableTick.get();
 	private boolean wallIsRightward = false;
 	private Vector3d runningWallDirection = null;
 
@@ -45,6 +46,7 @@ public class HorizontalWallRun extends Action {
 				).normalize().z()
 		);
 		bodyYaw = (float) VectorUtil.toYawDegree(targetVec.yRot((float) (differenceAngle / 10)));
+		if (runningWallDirection == null) return;
 		Vector3d movement = player.getDeltaMovement();
 		BlockPos leanedBlock = new BlockPos(
 				player.getX() + runningWallDirection.x(),
@@ -102,12 +104,13 @@ public class HorizontalWallRun extends Action {
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth());
 		if (wallDirection == null) return false;
-		return (getDoingTick() < Max_Running_Tick &&
-				parkourability.getActionInfo().can(HorizontalWallRun.class) &&
-				!parkourability.get(WallJump.class).justJumped() &&
-				!parkourability.get(Crawl.class).isDoing() &&
-				KeyBindings.getKeyHorizontalWallRun().isDown() &&
-				!player.isOnGround()
+		return (getDoingTick() < Max_Running_Tick
+				&& !stamina.isExhausted()
+				&& parkourability.getActionInfo().can(HorizontalWallRun.class)
+				&& !parkourability.get(WallJump.class).justJumped()
+				&& !parkourability.get(Crawl.class).isDoing()
+				&& KeyBindings.getKeyHorizontalWallRun().isDown()
+				&& !player.isOnGround()
 		);
 	}
 
@@ -129,6 +132,7 @@ public class HorizontalWallRun extends Action {
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
 		wallIsRightward = BufferUtil.getBoolean(startData);
+		runningWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new HorizontalWallRunAnimator(wallIsRightward));
@@ -144,11 +148,13 @@ public class HorizontalWallRun extends Action {
 	}
 
 	@Override
-	public void restoreSynchronizedState(ByteBuffer buffer) {
+	public void saveSynchronizedState(ByteBuffer buffer) {
+		buffer.putFloat(bodyYaw);
 	}
 
 	@Override
-	public void saveSynchronizedState(ByteBuffer buffer) {
+	public void restoreSynchronizedState(ByteBuffer buffer) {
+		bodyYaw = buffer.getFloat();
 	}
 
 	@Override

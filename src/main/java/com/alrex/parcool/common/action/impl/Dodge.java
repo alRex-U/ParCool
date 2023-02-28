@@ -68,14 +68,6 @@ public class Dodge extends Action {
 	}
 
 	@Override
-	public void restoreSynchronizedState(ByteBuffer buffer) {
-	}
-
-	@Override
-	public void saveSynchronizedState(ByteBuffer buffer) {
-	}
-
-	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
 		return StaminaConsumeTiming.OnStart;
 	}
@@ -147,7 +139,7 @@ public class Dodge extends Action {
 			successivelyCount++;
 		}
 		successivelyCoolTick = MAX_COOL_DOWN_TICK * 3;
-		dodgeVec = dodgeVec.scale(ParCoolConfig.CONFIG_CLIENT.dodgeSpeedModifier.get());
+		dodgeVec = dodgeVec.scale(player.getBbWidth() * ParCoolConfig.CONFIG_CLIENT.dodgeSpeedModifier.get());
 		EntityUtil.addVelocity(player, new Vector3d(dodgeVec.x(), jump, dodgeVec.z()));
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new DodgeAnimator());
@@ -175,5 +167,12 @@ public class Dodge extends Action {
 
 	public boolean isInSuccessiveCoolDown() {
 		return successivelyCount >= 3;
+	}
+
+	public float getCoolDownPhase() {
+		return Math.min(
+				(float) (Dodge.MAX_COOL_DOWN_TICK - getCoolTime()) / Dodge.MAX_COOL_DOWN_TICK,
+				isInSuccessiveCoolDown() ? (float) (Dodge.MAX_COOL_DOWN_TICK * 3 - getSuccessivelyCoolTick()) / (Dodge.MAX_COOL_DOWN_TICK * 3.0f) : 1
+		);
 	}
 }

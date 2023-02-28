@@ -15,6 +15,18 @@ import java.nio.ByteBuffer;
 
 public class Dive extends Action {
 	private boolean justJumped = false;
+	private double playerYSpeed = 0;
+
+	public double getPlayerYSpeed() {
+		return playerYSpeed;
+	}
+
+	@Override
+	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		if (isDoing() && player.isLocalPlayer()) {
+			playerYSpeed = player.getDeltaMovement().y();
+		}
+	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
@@ -61,16 +73,18 @@ public class Dive extends Action {
 	}
 
 	@Override
-	public void restoreSynchronizedState(ByteBuffer buffer) {
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.None;
 	}
 
 	@Override
 	public void saveSynchronizedState(ByteBuffer buffer) {
+		buffer.putDouble(playerYSpeed);
 	}
 
 	@Override
-	public StaminaConsumeTiming getStaminaConsumeTiming() {
-		return StaminaConsumeTiming.None;
+	public void restoreSynchronizedState(ByteBuffer buffer) {
+		playerYSpeed = buffer.getDouble();
 	}
 
 	@OnlyIn(Dist.CLIENT)

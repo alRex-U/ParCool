@@ -1,14 +1,11 @@
 package com.alrex.parcool.client.animation;
 
 import com.alrex.parcool.client.animation.impl.*;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
 public class AnimatorList {
 	public static final List<Class<? extends Animator>> ANIMATORS = Arrays.asList(
 			BackwardWallJumpAnimator.class,

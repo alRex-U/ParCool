@@ -32,14 +32,6 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public void restoreSynchronizedState(ByteBuffer buffer) {
-	}
-
-	@Override
-	public void saveSynchronizedState(ByteBuffer buffer) {
-	}
-
-	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
 		return StaminaConsumeTiming.OnStart;
 	}
@@ -65,6 +57,7 @@ public class WallJump extends Action {
 		Vector3d wallDirection = WorldUtil.getWall(player);
 		Vector3d jumpDirection = getJumpDirection(player, wallDirection);
 		if (jumpDirection == null) return false;
+		ClingToCliff cling = parkourability.get(ClingToCliff.class);
 
 		boolean value = (!stamina.isExhausted()
 				&& parkourability.getActionInfo().can(WallJump.class)
@@ -73,8 +66,8 @@ public class WallJump extends Action {
 				&& !player.isFallFlying()
 				&& !player.abilities.flying
 				&& parkourability.getAdditionalProperties().getNotCreativeFlyingTick() > 10
-				&& !parkourability.get(ClingToCliff.class).isDoing()
-				&& parkourability.get(ClingToCliff.class).getNotDoingTick() > 3
+				&& ((!cling.isDoing() && cling.getNotDoingTick() > 3)
+				|| (cling.isDoing() && cling.getFacingDirection() != ClingToCliff.FacingDirection.ToWall))
 				&& KeyRecorder.keyWallJump.isPressed()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
@@ -105,7 +98,6 @@ public class WallJump extends Action {
 		}
 		startInfo
 				.putDouble(jumpDirection.x())
-				.putDouble(jumpDirection.y())
 				.putDouble(jumpDirection.z())
 				.putDouble(wallDirection.x())
 				.putDouble(wallDirection.z())
@@ -125,8 +117,9 @@ public class WallJump extends Action {
 
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
-		Vector3d jumpDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
-		Vector3d direction = new Vector3d(jumpDirection.x(), 1.4, jumpDirection.z()).scale(player.getBbWidth() / 2);
+		double speedScale = player.getBbWidth() / 0.6;
+		Vector3d jumpDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble()).scale(speedScale);
+		Vector3d direction = new Vector3d(jumpDirection.x(), player.getBbHeight() * 0.84, jumpDirection.z()).scale(player.getBbWidth() / 2);
 		Vector3d wallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		Vector3d motion = player.getDeltaMovement();
 
@@ -149,6 +142,25 @@ public class WallJump extends Action {
 				motion.z() + direction.z()
 		);
 
+		WallJumpAnimationType type = WallJumpAnimationType.fromCode(startData.get());
+		Animation animation = Animation.get(player);
+		if (animation != null) {
+			switch (type) {
+				case Back:
+					animation.setAnimator(new BackwardWallJumpAnimator());
+					break;
+				case SwingLeftArm:
+					animation.setAnimator(new WallJumpAnimator(false));
+					break;
+				case SwingRightArm:
+					animation.setAnimator(new WallJumpAnimator(true));
+			}
+		}
+	}
+
+	@Override
+	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+		startData.position(32);
 		WallJumpAnimationType type = WallJumpAnimationType.fromCode(startData.get());
 		Animation animation = Animation.get(player);
 		if (animation != null) {

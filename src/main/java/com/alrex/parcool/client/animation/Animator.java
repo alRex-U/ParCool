@@ -2,11 +2,8 @@ package com.alrex.parcool.client.animation;
 
 import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 
-@OnlyIn(Dist.CLIENT)
 public abstract class Animator {
 	private int tick = 0;
 

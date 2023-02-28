@@ -23,6 +23,7 @@ public class Stamina implements IStamina {
 	private final PlayerEntity player;
 
 	private int stamina = 0;
+	private int staminaOld = 0;
 	private int maxStamina = 1;
 	private boolean exhausted = false;
 
@@ -50,6 +51,11 @@ public class Stamina implements IStamina {
 	}
 
 	@Override
+	public int getOldValue() {
+		return staminaOld;
+	}
+
+	@Override
 	public void consume(int value) {
 		if (player == null) return;
 		Parkourability parkourability = Parkourability.get(player);
@@ -58,13 +64,23 @@ public class Stamina implements IStamina {
 				|| (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && parkourability.getActionInfo().isInfiniteStaminaPermitted())
 				|| player.hasEffect(Effects.INEXHAUSTIBLE)
 		) return;
+		if (ParCoolConfig.CONFIG_CLIENT.useHungerBarInsteadOfStamina.get()) {
+			player.causeFoodExhaustion(value / 1000f);
+			return;
+		}
 		recoverCoolTime = 30;
 		set(stamina - value);
+		if (stamina == 0) {
+			exhausted = true;
+		}
 	}
 
 	@Override
 	public void recover(int value) {
 		set(stamina + value);
+		if (stamina == getActualMaxStamina()) {
+			exhausted = false;
+		}
 	}
 
 	@Override
@@ -81,15 +97,24 @@ public class Stamina implements IStamina {
 
 	@Override
 	public void tick() {
+		staminaOld = stamina;
 		if (recoverCoolTime > 0) recoverCoolTime--;
 		if (recoverCoolTime <= 0) {
-			recover(getActualMaxStamina() / 100);
+			if (player == null) return;
+			Parkourability parkourability = Parkourability.get(player);
+			if (parkourability == null) return;
+			recover(Math.min(
+					ParCoolConfig.CONFIG_CLIENT.staminaRecovery.get(),
+					parkourability.getActionInfo().getMaxStaminaRecoveryLimitation()
+			));
 		}
 	}
 
 	@Override
 	public void set(int value) {
 		stamina = Math.min(value, getActualMaxStamina());
-		if (stamina < 0) stamina = 0;
+		if (stamina <= 0) {
+			stamina = 0;
+		}
 	}
 }

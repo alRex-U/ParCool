@@ -98,9 +98,11 @@ public abstract class Action {
 	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
 	}
 
-	public abstract void restoreSynchronizedState(ByteBuffer buffer);
+	public void restoreSynchronizedState(ByteBuffer buffer) {
+	}
 
-	public abstract void saveSynchronizedState(ByteBuffer buffer);
+	public void saveSynchronizedState(ByteBuffer buffer) {
+	}
 
 	public abstract StaminaConsumeTiming getStaminaConsumeTiming();
 }

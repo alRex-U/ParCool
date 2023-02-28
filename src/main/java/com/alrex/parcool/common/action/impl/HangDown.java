@@ -11,6 +11,8 @@ import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
 import javax.annotation.Nullable;
@@ -44,10 +46,12 @@ public class HangDown extends Action {
 
 	private BarAxis hangingBarAxis = null;
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		startInfo.putDouble(Math.max(-1, Math.min(1, 3 * player.getLookAngle().multiply(1, 0, 1).normalize().dot(player.getDeltaMovement()))));
 		return (!stamina.isExhausted()
+				&& !player.isShiftKeyDown()
 				&& Math.abs(player.getDeltaMovement().y()) < 0.2
 				&& KeyBindings.getKeyHangDown().isDown()
 				&& parkourability.getActionInfo().can(HangDown.class)
@@ -57,6 +61,7 @@ public class HangDown extends Action {
 		);
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		return (!stamina.isExhausted()
@@ -80,6 +85,7 @@ public class HangDown extends Action {
 		if (animation != null) animation.setAnimator(new HangAnimator());
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		setup(player, startData);
@@ -90,6 +96,7 @@ public class HangDown extends Action {
 		setup(player, startData);
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		Vector3d bodyVec = VectorUtil.fromYawDegree(player.yBodyRot);
@@ -114,6 +121,7 @@ public class HangDown extends Action {
 			else if (KeyBindings.getKeyBack().isDown()) player.setDeltaMovement(-xSpeed, 0, -zSpeed);
 			else player.setDeltaMovement(0, 0, 0);
 		}
+		armSwingAmount += player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
 	}
 
 	@Override
@@ -128,12 +136,22 @@ public class HangDown extends Action {
 		} else {
 			bodySwingAngleFactor /= 1.5;
 		}
-		armSwingAmount += player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
 	}
 
 	@Override
+	public void saveSynchronizedState(ByteBuffer buffer) {
+		buffer.putFloat(armSwingAmount);
+	}
+
+	@Override
+	public void restoreSynchronizedState(ByteBuffer buffer) {
+		armSwingAmount = buffer.getFloat();
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	@Override
 	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
-		if (isDoing() && player.isLocalPlayer()) {
+		if (isDoing()) {
 			if (hangingBarAxis == null) return;
 			Vector3d bodyVec = VectorUtil.fromYawDegree(player.yBodyRot).normalize();
 			Vector3d lookVec = player.getLookAngle();
@@ -147,14 +165,6 @@ public class HangDown extends Action {
 			differenceAngle /= 4;
 			player.setYBodyRot((float) VectorUtil.toYawDegree(idealLookVec.yRot((float) differenceAngle)));
 		}
-	}
-
-	@Override
-	public void restoreSynchronizedState(ByteBuffer buffer) {
-	}
-
-	@Override
-	public void saveSynchronizedState(ByteBuffer buffer) {
 	}
 
 	@Override

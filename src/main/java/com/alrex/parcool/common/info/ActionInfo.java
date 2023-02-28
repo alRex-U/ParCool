@@ -32,6 +32,10 @@ public class ActionInfo {
 		return value;
 	}
 
+	public int getMaxStaminaRecoveryLimitation() {
+		return Math.min(serverLimitation.getMaxStaminaRecovery(), individualLimitation.getMaxStaminaRecovery());
+	}
+
 	public int getMaxStaminaLimitation() {
 		return Math.min(serverLimitation.getMaxStaminaLimitation(), individualLimitation.getMaxStaminaLimitation());
 	}

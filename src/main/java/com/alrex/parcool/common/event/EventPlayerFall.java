@@ -24,7 +24,7 @@ public class EventPlayerFall {
 			if (distance < 6) {
 				event.setCanceled(true);
 			} else {
-				event.setDamageMultiplier(event.getDamageMultiplier() / 4);
+				event.setDamageMultiplier(event.getDamageMultiplier() / 2);
 			}
 		}
 	}

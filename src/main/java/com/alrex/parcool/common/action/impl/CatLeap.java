@@ -1,7 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.client.animation.impl.CatLeapAnimator;
-import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
@@ -19,6 +18,7 @@ public class CatLeap extends Action {
 	private int coolTimeTick = 0;
 	private boolean ready = false;
 	private int readyTick = 0;
+	private int MAX_COOL_TIME_TICK = 30;
 
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
@@ -51,7 +51,7 @@ public class CatLeap extends Action {
 				&& !stamina.isExhausted()
 				&& coolTimeTick <= 0
 				&& readyTick > 0
-				&& !KeyBindings.getKeySneak().isDown()
+				&& KeyRecorder.keySneak.isReleased()
 		);
 	}
 
@@ -70,7 +70,7 @@ public class CatLeap extends Action {
 		final double catLeapYSpeed = 0.49;
 		Vector3d motionVec = player.getDeltaMovement();
 		Vector3d vec = new Vector3d(motionVec.x(), 0, motionVec.z()).normalize();
-		coolTimeTick = 40;
+		coolTimeTick = MAX_COOL_TIME_TICK;
 		player.setDeltaMovement(vec.x(), catLeapYSpeed, vec.z());
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new CatLeapAnimator());
@@ -83,15 +83,11 @@ public class CatLeap extends Action {
 	}
 
 	@Override
-	public void restoreSynchronizedState(ByteBuffer buffer) {
-	}
-
-	@Override
-	public void saveSynchronizedState(ByteBuffer buffer) {
-	}
-
-	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
 		return StaminaConsumeTiming.OnStart;
+	}
+
+	public float getCoolDownPhase() {
+		return ((float) MAX_COOL_TIME_TICK - coolTimeTick) / MAX_COOL_TIME_TICK;
 	}
 }

@@ -2,7 +2,7 @@
   "name": "Credit",
   "icon": "minecraft:written_book",
   "category": "parcool:category_about",
-  "sortnum": "4",
+  "sortnum": 4,
   "pages": [
     {
       "type": "patchouli:text",

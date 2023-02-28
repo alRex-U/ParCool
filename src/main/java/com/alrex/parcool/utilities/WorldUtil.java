@@ -252,16 +252,19 @@ public class WorldUtil {
 		return hasSpace;
 	}
 
-	public static boolean existsGrabbableWall(LivingEntity entity) {
+	@Nullable
+	public static Vector3d getGrabbableWall(LivingEntity entity) {
 		final double d = 0.3;
 		World world = entity.level;
 		double distance = entity.getBbWidth() / 2;
 		double baseLine1 = entity.getEyeHeight() + (entity.getBbHeight() - entity.getEyeHeight()) / 2;
 		double baseLine2 = entity.getBbHeight() + (entity.getBbHeight() - entity.getEyeHeight()) / 2;
-		return existsGrabbableWall(entity, distance, baseLine1) || existsGrabbableWall(entity, distance, baseLine2);
+		Vector3d wall1 = getGrabbableWall(entity, distance, baseLine1);
+		if (wall1 != null) return wall1;
+		return getGrabbableWall(entity, distance, baseLine2);
 	}
 
-	private static boolean existsGrabbableWall(LivingEntity entity, double distance, double baseLine) {
+	private static Vector3d getGrabbableWall(LivingEntity entity, double distance, double baseLine) {
 		final double d = 0.3;
 		World world = entity.level;
 		Vector3d pos = entity.position();
@@ -293,7 +296,7 @@ public class WorldUtil {
 		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, -distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, -distance)))
 			zDirection--;
 		if (xDirection == 0 && zDirection == 0) {
-			return false;
+			return null;
 		}
 		float slipperiness;
 		if (xDirection != 0 && zDirection != 0) {
@@ -307,8 +310,8 @@ public class WorldUtil {
 					entity.getBoundingBox().minY + baseLine - 0.3,
 					entity.getZ() + zDirection
 			);
-			if (!entity.level.isLoaded(blockPos1)) return false;
-			if (!entity.level.isLoaded(blockPos2)) return false;
+			if (!entity.level.isLoaded(blockPos1)) return null;
+			if (!entity.level.isLoaded(blockPos2)) return null;
 			slipperiness = Math.min(
 					entity.level.getBlockState(blockPos1).getSlipperiness(entity.level, blockPos1, entity),
 					entity.level.getBlockState(blockPos2).getSlipperiness(entity.level, blockPos2, entity)
@@ -319,9 +322,9 @@ public class WorldUtil {
 					entity.getBoundingBox().minY + baseLine - 0.3,
 					entity.getZ() + zDirection
 			);
-			if (!entity.level.isLoaded(blockPos)) return false;
+			if (!entity.level.isLoaded(blockPos)) return null;
 			slipperiness = entity.level.getBlockState(blockPos).getSlipperiness(entity.level, blockPos, entity);
 		}
-		return slipperiness <= 0.8;
+		return slipperiness <= 0.9 ? new Vector3d(xDirection, 0, zDirection) : null;
 	}
 }

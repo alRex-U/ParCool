@@ -15,10 +15,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
 public class ClingToCliff extends Action {
 	private float armSwingAmount = 0;
+	private FacingDirection facingDirection = FacingDirection.ToWall;
+	@Nullable
+	private Vector3d clingWallDirection = null;
 
 	public float getArmSwingAmount() {
 		return armSwingAmount;
@@ -29,6 +33,10 @@ public class ClingToCliff extends Action {
 		player.fallDistance = 0;
 	}
 
+	public FacingDirection getFacingDirection() {
+		return facingDirection;
+	}
+
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
@@ -36,11 +44,12 @@ public class ClingToCliff extends Action {
 				&& player.getDeltaMovement().y() < 0.2
 				&& parkourability.getActionInfo().can(ClingToCliff.class)
 				&& KeyBindings.getKeyGrabWall().isDown()
-				&& WorldUtil.existsGrabbableWall(player)
 		);
 		if (!value) return false;
-		Vector3d wallVec = WorldUtil.getWall(player);
+		Vector3d wallVec = WorldUtil.getGrabbableWall(player);
 		if (wallVec == null) return false;
+		startInfo.putDouble(wallVec.x())
+				.putDouble(wallVec.z());
 		//Check whether player is facing to wall
 		return 0.5 < wallVec.normalize().dot(player.getLookAngle().multiply(1, 0, 1).normalize());
 	}
@@ -52,13 +61,15 @@ public class ClingToCliff extends Action {
 				&& parkourability.getActionInfo().can(ClingToCliff.class)
 				&& KeyBindings.getKeyGrabWall().isDown()
 				&& !parkourability.get(ClimbUp.class).isDoing()
-				&& WorldUtil.existsGrabbableWall(player)
+				&& WorldUtil.getGrabbableWall(player) != null
 		);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+		clingWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new ClingToCliffAnimator());
@@ -66,6 +77,8 @@ public class ClingToCliff extends Action {
 
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+		clingWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new ClingToCliffAnimator());
@@ -74,59 +87,74 @@ public class ClingToCliff extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		armSwingAmount += player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
 		if (KeyBindings.getKeyLeft().isDown() && KeyBindings.getKeyRight().isDown()) {
 			player.setDeltaMovement(0, 0, 0);
 		} else {
-			Vector3d wallDirection = WorldUtil.getWall(player);
-			if (wallDirection != null) {
-				Vector3d vec = wallDirection.yRot((float) (Math.PI / 2)).normalize().scale(0.1);
+			if (clingWallDirection != null && facingDirection == FacingDirection.ToWall) {
+				Vector3d vec = clingWallDirection.yRot((float) (Math.PI / 2)).normalize().scale(0.1);
 				if (KeyBindings.getKeyLeft().isDown()) player.setDeltaMovement(vec);
 				else if (KeyBindings.getKeyRight().isDown()) player.setDeltaMovement(vec.reverse());
 				else player.setDeltaMovement(0, 0, 0);
+			} else {
+				player.setDeltaMovement(0, 0, 0);
 			}
 		}
 	}
 
 	@Override
 	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		armSwingAmount += player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
+		clingWallDirection = WorldUtil.getGrabbableWall(player);
+		if (clingWallDirection == null) return;
+		clingWallDirection = clingWallDirection.normalize();
+		Vector3d lookingAngle = player.getLookAngle().multiply(1, 0, 1).normalize();
+		Vector3d angle =
+				new Vector3d(
+						clingWallDirection.x() * lookingAngle.x() + clingWallDirection.z() * lookingAngle.z(), 0,
+						-clingWallDirection.x() * lookingAngle.z() + clingWallDirection.z() * lookingAngle.x()
+				).normalize();
+		if (angle.x() > 0.342) {
+			facingDirection = FacingDirection.ToWall;
+		} else if (angle.z() < 0) {
+			facingDirection = FacingDirection.RightAgainstWall;
+		} else {
+			facingDirection = FacingDirection.LeftAgainstWall;
+		}
+	}
+
+	@Override
+	public void saveSynchronizedState(ByteBuffer buffer) {
+		buffer.putFloat(armSwingAmount);
+	}
+
+	@Override
+	public void restoreSynchronizedState(ByteBuffer buffer) {
+		armSwingAmount = buffer.getFloat();
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
-		if (isDoing() && player.isLocalPlayer()) {
-			Vector3d wall = WorldUtil.getWall(player);
-			if (wall != null) {
-				float yRot = (float) VectorUtil.toYawDegree(wall.normalize());
-				player.setYBodyRot(yRot);
-				Vector3d vec = VectorUtil.fromYawDegree(player.yHeadRot);
-				Vector3d dividedVec =
-						new Vector3d(
-								vec.x() * wall.x() + vec.z() * wall.z(), 0,
-								-vec.x() * wall.z() + vec.z() * wall.x()
-						).normalize();
-				if (dividedVec.x() < 0.34202/*cos(70)*/) {
-					if (dividedVec.z() < 0) {
-						player.yRot = (float) VectorUtil.toYawDegree(wall.yRot((float) (Math.PI * 0.38888888889/* PI*7/18 */)));
-					} else {
-						player.yRot = (float) VectorUtil.toYawDegree(wall.yRot((float) (-Math.PI * 0.38888888889)));
-					}
-				}
+		if (isDoing() && clingWallDirection != null) {
+			switch (facingDirection) {
+				case ToWall:
+					player.setYBodyRot((float) VectorUtil.toYawDegree(clingWallDirection));
+					break;
+				case RightAgainstWall:
+					player.setYBodyRot((float) VectorUtil.toYawDegree(clingWallDirection.yRot((float) (-Math.PI / 2))));
+					break;
+				case LeftAgainstWall:
+					player.setYBodyRot((float) VectorUtil.toYawDegree(clingWallDirection.yRot((float) (Math.PI / 2))));
 			}
 		}
 	}
 
 	@Override
-	public void restoreSynchronizedState(ByteBuffer buffer) {
-	}
-
-	@Override
-	public void saveSynchronizedState(ByteBuffer buffer) {
-	}
-
-	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
 		return StaminaConsumeTiming.OnWorking;
+	}
+
+	public enum FacingDirection {
+		ToWall, RightAgainstWall, LeftAgainstWall
 	}
 }

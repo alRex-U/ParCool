@@ -24,6 +24,8 @@ public class Crawl extends Action {
 				&& KeyRecorder.keyCrawlState.isPressed()
 				&& !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()
+				&& !parkourability.get(ClingToCliff.class).isDoing()
+				&& parkourability.get(Vault.class).getNotDoingTick() >= 8
 				&& !player.isInWaterOrBubble()
 				&& (player.isOnGround() || !ParCoolConfig.CONFIG_CLIENT.disableCrawlInAir.get())
 		);
@@ -40,14 +42,6 @@ public class Crawl extends Action {
 		if (animation != null && !animation.hasAnimator()) {
 			animation.setAnimator(new CrawlAnimator());
 		}
-	}
-
-	@Override
-	public void restoreSynchronizedState(ByteBuffer buffer) {
-	}
-
-	@Override
-	public void saveSynchronizedState(ByteBuffer buffer) {
 	}
 
 	@Override

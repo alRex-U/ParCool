@@ -14,6 +14,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class ActionArgumentType implements ArgumentType<Class<? extends Action>> {
 	@Override
@@ -21,7 +22,7 @@ public class ActionArgumentType implements ArgumentType<Class<? extends Action>>
 		String name = reader.readUnquotedString();
 		Class<? extends Action> result = ActionList.getByName(name);
 		if (result == null) {
-			Message message = new TranslationTextComponent("parcool.message.invalidActionName", name);
+			Message message = new TranslationTextComponent("parcool.command.message.invalidActionName", name);
 			throw new CommandSyntaxException(new SimpleCommandExceptionType(message), message);
 		}
 		return result;
@@ -29,7 +30,8 @@ public class ActionArgumentType implements ArgumentType<Class<? extends Action>>
 
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		for (String name : ActionList.NAMES) {
+		String remain = builder.getRemaining();
+		for (String name : ActionList.NAMES.stream().filter(it -> it.startsWith(remain)).collect(Collectors.toList())) {
 			builder.suggest(name);
 		}
 		return builder.buildFuture();

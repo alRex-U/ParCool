@@ -64,4 +64,9 @@ public class Parkourability {
 	public List<Action> getList() {
 		return actions;
 	}
+
+	public void CopyFrom(Parkourability original) {
+		getActionInfo().getIndividualLimitation().readNBT(original.getActionInfo().getIndividualLimitation().writeNBT());
+		getActionInfo().getServerLimitation().readNBT(original.getActionInfo().getServerLimitation().writeNBT());
+	}
 }

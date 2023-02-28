@@ -20,6 +20,9 @@ import java.util.function.Supplier;
 public class LimitationByServerMessage {
 	private boolean forIndividuals = false;
 	private boolean enforced = false;
+	private int maxStaminaLimitation = Integer.MAX_VALUE;
+	private int maxStaminaRecovery = Integer.MAX_VALUE;
+	private boolean permissionOfInfiniteStamina = true;
 	private final ActionLimitation[] limitations = new ActionLimitation[ActionList.ACTIONS.size()];
 
 	public void setEnforced(boolean enforced) {
@@ -34,6 +37,10 @@ public class LimitationByServerMessage {
 		this.permissionOfInfiniteStamina = permissionOfInfiniteStamina;
 	}
 
+	public void setMaxStaminaRecovery(int maxStaminaRecovery) {
+		this.maxStaminaRecovery = maxStaminaRecovery;
+	}
+
 	public boolean isEnforced() {
 		return enforced;
 	}
@@ -46,17 +53,19 @@ public class LimitationByServerMessage {
 		return maxStaminaLimitation;
 	}
 
+	public int getMaxStaminaRecovery() {
+		return maxStaminaRecovery;
+	}
+
 	public boolean getPermissionOfInfiniteStamina() {
 		return permissionOfInfiniteStamina;
 	}
-
-	private int maxStaminaLimitation = Integer.MAX_VALUE;
-	private boolean permissionOfInfiniteStamina = true;
 
 	public void encode(PacketBuffer packet) {
 		packet.writeBoolean(forIndividuals);
 		packet.writeBoolean(enforced);
 		packet.writeInt(maxStaminaLimitation);
+		packet.writeInt(maxStaminaRecovery);
 		packet.writeBoolean(permissionOfInfiniteStamina);
 		for (ActionLimitation limitation : limitations) {
 			packet.writeBoolean(limitation.isPossible())
@@ -69,6 +78,7 @@ public class LimitationByServerMessage {
 		message.forIndividuals = packet.readBoolean();
 		message.enforced = packet.readBoolean();
 		message.maxStaminaLimitation = packet.readInt();
+		message.maxStaminaRecovery = packet.readInt();
 		message.permissionOfInfiniteStamina = packet.readBoolean();
 		for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
 			message.limitations[i]
@@ -101,8 +111,9 @@ public class LimitationByServerMessage {
 		ParCoolConfig.Server config = ParCoolConfig.CONFIG_SERVER;
 
 		message.maxStaminaLimitation = config.staminaMax.get();
-		message.enforced = true;
+		message.enforced = ParCoolConfig.CONFIG_SERVER.enforced.get();
 		message.permissionOfInfiniteStamina = config.allowInfiniteStamina.get();
+		message.maxStaminaRecovery = config.staminaRecoveryMax.get();
 		message.forIndividuals = false;
 		for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
 			message.limitations[i]

@@ -23,9 +23,12 @@ public class Slide extends Action {
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		return (parkourability.getActionInfo().can(Crawl.class)
+				&& !stamina.isExhausted()
+				&& parkourability.getActionInfo().can(Slide.class)
 				&& KeyRecorder.keyCrawlState.isPressed()
 				&& !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()
+				&& parkourability.get(Crawl.class).isDoing()
 				&& !player.isInWaterOrBubble()
 				&& (player.isOnGround() || !ParCoolConfig.CONFIG_CLIENT.disableCrawlInAir.get())
 				&& parkourability.get(FastRun.class).getDashTick(parkourability.getAdditionalProperties()) > 5
@@ -34,7 +37,7 @@ public class Slide extends Action {
 
 	@Override
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		final int maxSlidingTick = 15;
+		final int maxSlidingTick = ParCoolConfig.CONFIG_CLIENT.slidingContinuableTick.get();
 		return getDoingTick() < maxSlidingTick
 				&& parkourability.get(Crawl.class).isDoing();
 	}
@@ -57,8 +60,8 @@ public class Slide extends Action {
 	}
 
 	@Override
-	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		if (player.isOnGround()) {
+	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		if (player.isOnGround() && slidingVec != null) {
 			Vector3d vec = slidingVec.scale(0.2);
 			EntityUtil.addVelocity(player, vec);
 		}
@@ -84,14 +87,6 @@ public class Slide extends Action {
 	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
 		if (slidingVec == null || !isDoing()) return;
 		player.yRot = (float) VectorUtil.toYawDegree(slidingVec);
-	}
-
-	@Override
-	public void restoreSynchronizedState(ByteBuffer buffer) {
-	}
-
-	@Override
-	public void saveSynchronizedState(ByteBuffer buffer) {
 	}
 
 	@Override

@@ -1,9 +1,10 @@
 package com.alrex.parcool.client.hud;
 
+import com.alrex.parcool.ParCoolConfig;
+import com.alrex.parcool.client.hud.impl.StaminaHUDController;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-
-import java.util.LinkedList;
 
 public class HUDRegistry {
 	private static HUDRegistry instance = null;
@@ -13,15 +14,24 @@ public class HUDRegistry {
 		return instance;
 	}
 
-	private final LinkedList<AbstractHUD> huds = new LinkedList<>();
+	private final StaminaHUDController staminaHUD = new StaminaHUDController(
+			new Position(
+					ParCoolConfig.CONFIG_CLIENT.alignHorizontalStaminaHUD.get(),
+					ParCoolConfig.CONFIG_CLIENT.alignVerticalStaminaHUD.get(),
+					ParCoolConfig.CONFIG_CLIENT.marginHorizontalStaminaHUD.get(),
+					ParCoolConfig.CONFIG_CLIENT.marginVerticalStaminaHUD.get()
+			)
+	);
 
-	public LinkedList<AbstractHUD> getHuds() {
-		return huds;
+	@SubscribeEvent
+	public void onOverlay(RenderGameOverlayEvent.Post event) {
+		if (event.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE) return;
+		staminaHUD.render(event, event.getMatrixStack());
 	}
 
 	@SubscribeEvent
-	public void onOverlay(RenderGameOverlayEvent.Pre event) {
-		if (event.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE) return;
-		huds.forEach((hud) -> hud.render(event, event.getMatrixStack()));
+	public void onTick(TickEvent.ClientTickEvent event) {
+		if (event.phase == TickEvent.Phase.START) return;
+		staminaHUD.onTick(event);
 	}
 }

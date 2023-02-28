@@ -2,5 +2,5 @@
   "name": "Other Features",
   "description": "This section provide descriptions about some other features added by ParCool. $(br)I hope these make game and parkour more interesting.",
   "icon": "minecraft:iron_hoe",
-  "sortnum": "2"
+  "sortnum": 2
 }

@@ -10,11 +10,10 @@ displayURL = "https://www.curseforge.com/minecraft/mc-mods/parcool" #optional
 logoFile = "parcool_logo.png" #optional
 credits = "Thanks for Java, and Developers of Minecraft and Minecraft Forge" #optional
 authors = 'alRex_U'
-
 description = '''
     This enable us act like parkour players.
     Enjoy Minecraft with cool actions!
-    First, let's read ParCool Guide!
+    If Patchouli mod is installed, let's read ParCool Guide!
 '''
 [[dependencies.parcool]] #optional
 modId = "forge" #mandatory
