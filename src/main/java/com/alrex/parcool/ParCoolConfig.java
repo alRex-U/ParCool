@@ -52,6 +52,7 @@ public class ParCoolConfig {
 		public final ForgeConfigSpec.BooleanValue parCoolActivation;
 		public final ForgeConfigSpec.BooleanValue hideStaminaHUD;
 		public final ForgeConfigSpec.BooleanValue useLightHUD;
+		public final ForgeConfigSpec.BooleanValue useFeathers;
 		public final ForgeConfigSpec.BooleanValue vaultNeedKeyPressed;
 		public final ForgeConfigSpec.EnumValue<Vault.TypeSelectionMode> vaultAnimationMode;
 		public final ForgeConfigSpec.EnumValue<Position.Horizontal> alignHorizontalStaminaHUD;
@@ -134,6 +135,7 @@ public class ParCoolConfig {
 			builder.comment("Stamina Section (may be affected by Server config)").push("Stamina");
 			{
 				useHungerBarInsteadOfStamina = builder.comment("ParCool consume hanger value instead of stamina").define("use_hanger_instead", false);
+				useFeathers = builder.comment("ParCool use Feathers mod as stamina system, if it installed(experimental)\n(https://www.curseforge.com/minecraft/mc-mods/feathers)").define("use_Feathers", true);
 				staminaMax = builder.defineInRange("max_value_of_stamina", 2000, 300, 100000);
 				staminaRecovery = builder.defineInRange("value_of_stamina_recovery", 20, 1, 10000);
 				builder.push("Consumption");

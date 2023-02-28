@@ -10,6 +10,7 @@ import com.alrex.parcool.common.potion.PotionRecipeRegistry;
 import com.alrex.parcool.common.potion.Potions;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
 import com.alrex.parcool.common.registries.EventBusModRegistry;
+import com.alrex.parcool.extern.feathers.FeathersManager;
 import com.alrex.parcool.proxy.ClientProxy;
 import com.alrex.parcool.proxy.CommonProxy;
 import com.alrex.parcool.proxy.ServerProxy;
@@ -75,6 +76,7 @@ public class ParCool {
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
 		MinecraftForge.EVENT_BUS.register(this);
 		ItemRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+		FeathersManager.init();
 
 		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ParCoolConfig.SERVER_SPEC);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.CLIENT_SPEC);
