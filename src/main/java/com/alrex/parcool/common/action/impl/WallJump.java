@@ -115,6 +115,7 @@ public class WallJump extends Action {
 	@Override
 	public void onStart(Player player, Parkourability parkourability) {
 		jump = true;
+		player.fallDistance = 0;
 	}
 
 	@Override

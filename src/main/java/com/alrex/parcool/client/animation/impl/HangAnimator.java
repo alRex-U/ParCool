@@ -6,10 +6,8 @@ import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.HangDown;
 import com.alrex.parcool.common.capability.impl.Parkourability;
-import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 ;
@@ -25,12 +23,7 @@ public class HangAnimator extends Animator {
 		HangDown hangDown = parkourability.get(HangDown.class);
 		HangDown.BarAxis axis = hangDown.getHangingBarAxis();
 		if (axis == null) return;
-		Vec3 lookAngle = player.getLookAngle();
 		boolean orthogonal = hangDown.isOrthogonalToBar();
-		Vec3 bodyVec = VectorUtil.fromYawDegree(player.yBodyRot).multiply(1, 0, 1).normalize();
-		Vec3 orthogonalVec = axis == HangDown.BarAxis.X ?
-				new Vec3(0, 0, 1) :
-				new Vec3(1, 0, 0);
 		if (orthogonal) {
 			float zAngle = (float) Math.toRadians(10 + 20 * Math.sin(24 * hangDown.getArmSwingAmount()));
 			transformer
