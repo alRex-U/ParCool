@@ -2,6 +2,7 @@ package com.alrex.parcool.client.hud.impl;
 
 import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.hud.Position;
+import com.alrex.parcool.extern.feathers.FeathersManager;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -47,8 +48,11 @@ public class StaminaHUDController implements IGuiOverlay {
 	@Override
 	public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int width, int height) {
 		ParCoolConfig.Client config = ParCoolConfig.CONFIG_CLIENT;
-		if (config.hideStaminaHUD.get() || !config.parCoolActivation.get() || config.useHungerBarInsteadOfStamina.get())
-			return;
+		if (config.hideStaminaHUD.get()
+				|| !config.parCoolActivation.get()
+				|| config.useHungerBarInsteadOfStamina.get()
+				|| FeathersManager.isUsingFeathers()
+		) return;
 
 		if (config.useLightHUD.get()) {
 			lightStaminaHUD.render(gui, poseStack, partialTick, width, height);
