@@ -40,12 +40,13 @@ public class KongVaultAnimator extends Animator {
 		float phase = (getTick() + transformer.getPartialTick()) / MAX_TIME;
 		float armFactor = getArmFactor(phase);
 		float factor = getFactor(phase);
+		float fadeFactor = (float) (1 - Math.abs(Math.pow(2 * (phase - 0.5), 3)));
 		transformer
 				.rotateAdditionallyHeadPitch(-40 * armFactor)
-				.rotateRightArm((float) toRadians(30 - 195 * armFactor), 0, (float) toRadians(30 - 30 * armFactor))
-				.rotateLeftArm((float) toRadians(25 - 195 * armFactor), 0, (float) toRadians(-30 + 30 * armFactor))
-				.rotateRightLeg((float) toRadians(-20 + 55 * factor), 0, 0)
-				.rotateLeftLeg((float) toRadians(-10 + 20 * factor), 0, 0)
+				.rotateRightArm((float) toRadians(30 - 195 * armFactor), 0, (float) toRadians(30 - 30 * armFactor), fadeFactor)
+				.rotateLeftArm((float) toRadians(25 - 195 * armFactor), 0, (float) toRadians(-30 + 30 * armFactor), fadeFactor)
+				.rotateRightLeg((float) toRadians(-20 + 55 * factor), 0, 0, fadeFactor)
+				.rotateLeftLeg((float) toRadians(-10 + 20 * factor), 0, 0, fadeFactor)
 				.makeLegsLittleMoving()
 				.end();
 	}
