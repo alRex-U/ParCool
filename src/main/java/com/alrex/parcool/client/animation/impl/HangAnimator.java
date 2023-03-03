@@ -10,8 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 
-;
-
 public class HangAnimator extends Animator {
 	@Override
 	public boolean shouldRemoved(Player player, Parkourability parkourability) {

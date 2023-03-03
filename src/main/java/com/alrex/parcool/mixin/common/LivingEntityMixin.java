@@ -55,6 +55,9 @@ public abstract class LivingEntityMixin extends Entity {
 				for (int x2 = mX; x2 < bb.maxX; x2++) {
 					for (int z2 = mZ; z2 < bb.maxZ; z2++) {
 						BlockPos tmp = new BlockPos(x2, y2, z2);
+						if (!world.isLoaded(pos)) {
+							return false;
+						}
 						state = world.getBlockState(tmp);
 						if (isLadder(state, world, tmp, entity)) {
 							return true;
