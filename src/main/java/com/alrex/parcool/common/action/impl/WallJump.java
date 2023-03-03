@@ -129,7 +129,9 @@ public class WallJump extends Action {
 				player.getBoundingBox().minY + player.getBbHeight() * 0.25,
 				player.getZ() + wallDirection.z()
 		);
-		float slipperiness = player.level.getBlockState(leanedBlock).getSlipperiness(player.level, leanedBlock, player);
+		float slipperiness = player.level.isLoaded(leanedBlock) ?
+				player.level.getBlockState(leanedBlock).getSlipperiness(player.level, leanedBlock, player)
+				: 0.6f;
 
 		double ySpeed;
 		if (slipperiness > 0.9) {// icy blocks

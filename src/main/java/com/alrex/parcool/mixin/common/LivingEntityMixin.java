@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -24,6 +25,9 @@ import javax.annotation.Nonnull;
 public abstract class LivingEntityMixin extends Entity {
 	@Shadow
 	public abstract BlockState getFeetBlockState();
+
+	@Shadow
+	public abstract void readAdditionalSaveData(CompoundNBT p_70037_1_);
 
 	public LivingEntityMixin(EntityType<?> p_i48580_1_, World p_i48580_2_) {
 		super(p_i48580_1_, p_i48580_2_);
@@ -56,6 +60,9 @@ public abstract class LivingEntityMixin extends Entity {
 				for (int x2 = mX; x2 < bb.maxX; x2++) {
 					for (int z2 = mZ; z2 < bb.maxZ; z2++) {
 						BlockPos tmp = new BlockPos(x2, y2, z2);
+						if (!world.isLoaded(pos)) {
+							return false;
+						}
 						state = world.getBlockState(tmp);
 						if (isLadder(state, world, tmp, entity)) {
 							return true;

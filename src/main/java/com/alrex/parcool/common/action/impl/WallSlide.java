@@ -71,6 +71,7 @@ public class WallSlide extends Action {
 					player.getBoundingBox().minY + player.getBbHeight() * 0.75,
 					player.getZ() + leanedWallDirection.z()
 			);
+			if (!player.level.isLoaded(leanedBlock)) return;
 			float slipperiness = player.level.getBlockState(leanedBlock).getSlipperiness(player.level, leanedBlock, player);
 			slipperiness = (float) Math.sqrt(slipperiness);
 			player.fallDistance *= slipperiness;
