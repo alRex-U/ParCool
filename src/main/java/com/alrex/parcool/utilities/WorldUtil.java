@@ -56,12 +56,12 @@ public class WorldUtil {
 		Vec3 pos = entity.position();
 
 		AABB baseBox = new AABB(
-				pos.x - width,
-				pos.y,
-				pos.z - width,
-				pos.x + width,
-				pos.y + entity.getBbHeight(),
-				pos.z + width
+				pos.x() - width,
+				pos.y(),
+				pos.z() - width,
+				pos.x() + width,
+				pos.y() + entity.getBbHeight(),
+				pos.z() + width
 		);
 
 		if (!entity.level.noCollision(baseBox.expandTowards(range, 0, 0))) {
@@ -132,11 +132,11 @@ public class WorldUtil {
 		final double d = 0.3;
 		int loopNum = (int) Math.round(entity.getBbHeight() / v);
 		Vec3 pos = entity.position();
-		double x1 = pos.x + d + (wall.x > 0 ? 1 : 0);
-		double y1 = pos.y;
-		double z1 = pos.z + d + (wall.z > 0 ? 1 : 0);
-		double x2 = pos.x - d + (wall.x < 0 ? -1 : 0);
-		double z2 = pos.z - d + (wall.z < 0 ? -1 : 0);
+		double x1 = pos.x() + d + (wall.x() > 0 ? 1 : 0);
+		double y1 = pos.y();
+		double z1 = pos.z() + d + (wall.z() > 0 ? 1 : 0);
+		double x2 = pos.x() - d + (wall.x() < 0 ? -1 : 0);
+		double z2 = pos.z() - d + (wall.z() < 0 ? -1 : 0);
 		boolean canReturn = false;
 		for (int i = 0; i < loopNum; i++) {
 			AABB box = new AABB(
@@ -170,6 +170,7 @@ public class WorldUtil {
 				entity.getY() + entity.getBbHeight() + 0.4,
 				entity.getZ()
 		);
+		if (!entity.level.isLoaded(pos)) return null;
 		BlockState state = entity.level.getBlockState(pos);
 		Block block = state.getBlock();
 		HangDown.BarAxis axis = null;
