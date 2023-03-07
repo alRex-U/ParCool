@@ -7,27 +7,26 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.impl.Animation;
 import com.alrex.parcool.common.capability.impl.Parkourability;
 import com.alrex.parcool.utilities.WorldUtil;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 
-;
-
 public class Dive extends Action {
 	private boolean justJumped = false;
+	private double playerYSpeedOld = 0;
 	private double playerYSpeed = 0;
 
-	public double getPlayerYSpeed() {
-		return playerYSpeed;
+	public double getPlayerYSpeed(float partialTick) {
+		return Mth.lerp(partialTick, playerYSpeedOld, playerYSpeed);
 	}
 
 	@Override
-	public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
-		if (isDoing() && player.isLocalPlayer()) {
-			playerYSpeed = player.getDeltaMovement().y;
-		}
+	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
+		playerYSpeedOld = playerYSpeed;
+		playerYSpeed = player.getDeltaMovement().y();
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -68,6 +67,7 @@ public class Dive extends Action {
 	@Override
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		double ySpeed = startData.getDouble();
+		playerYSpeedOld = playerYSpeed = ySpeed;
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new DiveAnimator(ySpeed));
@@ -81,18 +81,21 @@ public class Dive extends Action {
 
 	@Override
 	public void saveSynchronizedState(ByteBuffer buffer) {
-		buffer.putDouble(playerYSpeed);
+		buffer.putDouble(playerYSpeed)
+				.putDouble(playerYSpeedOld);
 	}
 
 	@Override
 	public void restoreSynchronizedState(ByteBuffer buffer) {
 		playerYSpeed = buffer.getDouble();
+		playerYSpeedOld = buffer.getDouble();
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		double ySpeed = startData.getDouble();
+		playerYSpeedOld = playerYSpeed = ySpeed;
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new DiveAnimator(ySpeed));

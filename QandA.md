@@ -33,6 +33,16 @@ First try to install it.
 
 ---
 
+### Q. Why I can't place blocks fast anymore by consecutively pressing right click?
+#### A. Re-bind some keybindings may solve this.
+
+ParCool use Right Click as some keybindings for some acitons.
+When some keybindings are attached to same key of placing blocks, your placing pace will get slow.
+This seems a problem of vanilla Minecraft, not of ParCool.
+I recommend to use center button of your mouse.
+
+---
+
 ## Since ver-3.0.0.0
 
 ### Q. Action Limitations by configs and commands don't work
