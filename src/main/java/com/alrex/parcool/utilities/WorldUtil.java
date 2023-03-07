@@ -233,10 +233,10 @@ public class WorldUtil {
 		boolean hasSpace = true;
 		for (int i = 0; i < neededSpaceHeight; i++) {
 			hasSpace = !world.getBlockState(centerPos).getMaterial().blocksMotion();
-			hasSpace = hasSpace && !world.getBlockState(centerPos.west()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && !world.getBlockState(centerPos.east()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && !world.getBlockState(centerPos.north()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && !world.getBlockState(centerPos.south()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && world.isLoaded(centerPos.west()) && !world.getBlockState(centerPos.west()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && world.isLoaded(centerPos.east()) && !world.getBlockState(centerPos.east()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && world.isLoaded(centerPos.north()) && !world.getBlockState(centerPos.north()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && world.isLoaded(centerPos.south()) && !world.getBlockState(centerPos.south()).getMaterial().blocksMotion();
 			if (!hasSpace) break;
 			centerPos = centerPos.below();
 		}
@@ -245,10 +245,10 @@ public class WorldUtil {
 		centerPos = new BlockPos(center);
 		for (int i = 0; i < neededSpaceHeight; i++) {
 			hasSpace = !world.getBlockState(centerPos).getMaterial().blocksMotion();
-			hasSpace = hasSpace && !world.getBlockState(centerPos.west()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && !world.getBlockState(centerPos.east()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && !world.getBlockState(centerPos.north()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && !world.getBlockState(centerPos.south()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && world.isLoaded(centerPos.west()) && !world.getBlockState(centerPos.west()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && world.isLoaded(centerPos.east()) && !world.getBlockState(centerPos.east()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && world.isLoaded(centerPos.north()) && !world.getBlockState(centerPos.north()).getMaterial().blocksMotion();
+			hasSpace = hasSpace && world.isLoaded(centerPos.south()) && !world.getBlockState(centerPos.south()).getMaterial().blocksMotion();
 			if (!hasSpace) break;
 			centerPos = centerPos.below();
 		}
