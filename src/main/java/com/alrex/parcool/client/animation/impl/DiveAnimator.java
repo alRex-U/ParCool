@@ -7,8 +7,6 @@ import com.alrex.parcool.common.action.impl.Dive;
 import com.alrex.parcool.common.capability.impl.Parkourability;
 import net.minecraft.world.entity.player.Player;
 
-;
-
 public class DiveAnimator extends Animator {
 	public DiveAnimator(double startYSpeed) {
 		this.startYSpeed = startYSpeed;
@@ -28,7 +26,7 @@ public class DiveAnimator extends Animator {
 
 	@Override
 	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
-		double ySpeed = player.isLocalPlayer() ? player.getDeltaMovement().y : parkourability.get(Dive.class).getPlayerYSpeed();
+		double ySpeed = parkourability.get(Dive.class).getPlayerYSpeed(transformer.getPartialTick());
 		float factor = getFactor(ySpeed);
 		transformer
 				.rotateHeadPitch(-50 * factor)
@@ -42,7 +40,7 @@ public class DiveAnimator extends Animator {
 
 	@Override
 	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
-		double ySpeed = player.isLocalPlayer() ? player.getDeltaMovement().y : parkourability.get(Dive.class).getPlayerYSpeed();
+		double ySpeed = parkourability.get(Dive.class).getPlayerYSpeed(rotator.getPartialTick());
 		float factor = getFactor(ySpeed);
 		rotator.startBasedCenter()
 				.rotateFrontward(180 * factor)
