@@ -265,7 +265,7 @@ public class WorldUtil {
 	}
 
 	private static Vector3d getGrabbableWall(LivingEntity entity, double distance, double baseLine) {
-		final double d = entity.getBbWidth() * 0.5;
+		final double d = entity.getBbWidth() * 0.49;
 		World world = entity.level;
 		Vector3d pos = entity.position();
 		AxisAlignedBB baseBoxSide = new AxisAlignedBB(
