@@ -84,7 +84,7 @@ public class WorldUtil {
 		final double d = entity.getBbWidth() * 0.5;
 		World world = entity.level;
 		double distance = entity.getBbWidth() / 2;
-		double baseLine = Math.min(1.55, getWallHeight(entity));
+		double baseLine = Math.min(entity.getBbHeight() * 0.86, getWallHeight(entity));
 		double stepX = 0;
 		double stepZ = 0;
 		Vector3d pos = entity.position();
