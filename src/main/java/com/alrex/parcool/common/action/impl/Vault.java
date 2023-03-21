@@ -162,7 +162,7 @@ public class Vault extends Action {
 		if (stepDirection == null) return;
 		player.setDeltaMovement(
 				stepDirection.x() / 10,
-				(stepHeight + (0.002 * (1.8 / player.getBbHeight()))) / (this.getVaultAnimateTime() * (player.getBbHeight() / 1.8)),
+				((stepHeight + 0.02) / this.getVaultAnimateTime()) / (player.getBbHeight() / 1.8),
 				stepDirection.z() / 10
 		);
 	}
