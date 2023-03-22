@@ -9,7 +9,6 @@ import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.WorldUtil;
-import com.alrex.parcool.utilities.EntityUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
@@ -133,11 +132,15 @@ public class WallJump extends Action {
 
 		double ySpeed;
 		if (slipperiness > 0.9) {// icy blocks
-			ySpeed = 0;
+			ySpeed = motion.y();
 		} else {
-			ySpeed = motion.y() > direction.y() ? direction.y() : -motion.y + direction.y();
+			ySpeed = motion.y() > direction.y() ? motion.y + direction.y() : direction.y();
 		}
-		EntityUtil.addVelocity(player, new Vector3d(direction.x(), ySpeed, direction.z()));
+		player.setDeltaMovement(
+				motion.x() + direction.x(),
+				ySpeed,
+				motion.z() + direction.z()
+		);
 
 		
 		
