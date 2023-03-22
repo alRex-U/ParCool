@@ -9,6 +9,7 @@ import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.WorldUtil;
+import com.alrex.parcool.utilities.EntityUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
@@ -117,9 +118,9 @@ public class WallJump extends Action {
 
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
-		double speedScale = 0.6 / player.getBbWidth();
+		double speedScale = 1;
 		Vector3d jumpDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble()).scale(speedScale);
-		Vector3d direction = new Vector3d(jumpDirection.x(), 2.2801 / (player.getBbHeight() * 0.84), jumpDirection.z()).scale(player.getBbWidth() / 2);
+		Vector3d direction = new Vector3d(jumpDirection.x(), 1.512, jumpDirection.z()).scale(.3);
 		Vector3d wallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		Vector3d motion = player.getDeltaMovement();
 
@@ -132,16 +133,14 @@ public class WallJump extends Action {
 
 		double ySpeed;
 		if (slipperiness > 0.9) {// icy blocks
-			ySpeed = motion.y();
+			ySpeed = 0;
 		} else {
-			ySpeed = motion.y() > direction.y() ? motion.y + direction.y() : direction.y();
+			ySpeed = motion.y() > direction.y() ? direction.y() : -motion.y + direction.y();
 		}
-		player.setDeltaMovement(
-				motion.x() + direction.x(),
-				ySpeed,
-				motion.z() + direction.z()
-		);
+		EntityUtil.addVelocity(player, new Vector3d(direction.x(), ySpeed, direction.z()));
 
+		
+		
 		WallJumpAnimationType type = WallJumpAnimationType.fromCode(startData.get());
 		Animation animation = Animation.get(player);
 		if (animation != null) {
