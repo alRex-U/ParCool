@@ -126,9 +126,9 @@ public class WorldUtil {
 		Vector3d wall = getWall(entity);
 		if (wall == null) return 0;
 		World world = entity.level;
-		final double v = 0.1;
+		final double accuracy = entity.getBbHeight() / 18; // normally about 0.1
 		final double d = entity.getBbWidth() * 0.5;
-		int loopNum = (int) Math.round(entity.getBbHeight() / v);
+		int loopNum = (int) Math.round(entity.getBbHeight() / accuracy);
 		Vector3d pos = entity.position();
 		double x1 = pos.x() + d + (wall.x() > 0 ? 1 : 0);
 		double y1 = pos.y();
@@ -138,13 +138,13 @@ public class WorldUtil {
 		boolean canReturn = false;
 		for (int i = 0; i < loopNum; i++) {
 			AxisAlignedBB box = new AxisAlignedBB(
-					x1, y1 + v * i, z1, x2, y1 + v * (i + 1), z2
+					x1, y1 + accuracy * i, z1, x2, y1 + accuracy * (i + 1), z2
 			);
 
 			if (!world.noCollision(box)) {
 				canReturn = true;
 			} else {
-				if (canReturn) return v * i;
+				if (canReturn) return accuracy * i;
 			}
 		}
 		return entity.getBbHeight();

@@ -10,6 +10,7 @@ public class PlayerModelRotator {
 	private final MatrixStack stack;
 	private final PlayerEntity player;
 	private final float partial;
+	private final double playerHeight = 1.8;
 
 	public float getPartialTick() {
 		return partial;
@@ -33,13 +34,13 @@ public class PlayerModelRotator {
 
 	public PlayerModelRotator startBasedCenter() {
 		basedCenter = true;
-		stack.translate(0, player.getBbHeight() / 2, 0);
+		stack.translate(0, playerHeight / 2, 0);
 		return this;
 	}
 
 	public PlayerModelRotator startBasedTop() {
 		basedTop = true;
-		stack.translate(0, player.getBbHeight(), 0);
+		stack.translate(0, playerHeight, 0);
 		return this;
 	}
 
@@ -60,10 +61,10 @@ public class PlayerModelRotator {
 
 	public void end() {
 		if (basedCenter) {
-			stack.translate(0, -player.getBbHeight() / 2, 0);
+			stack.translate(0, -playerHeight / 2, 0);
 		}
 		if (basedTop) {
-			stack.translate(0, -player.getBbHeight(), 0);
+			stack.translate(0, -playerHeight, 0);
 		}
 	}
 
