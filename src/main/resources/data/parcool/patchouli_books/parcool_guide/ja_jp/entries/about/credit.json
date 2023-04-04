@@ -11,27 +11,37 @@
     {
       "type": "patchouli:text",
       "title": "モッド開発者",
-      "text": "$(italic)$(list)alRex-U"
+      "text": "主開発$()$(italic)$(list)alRex-U$()$(br2)バグ修正協力$()$(italic)$(list)JulyLynn"
     },
     {
       "type": "patchouli:text",
-      "title": "翻訳者 (en_us)",
-      "text": "$(bold)英語翻訳$()$(italic)$(list)alRex-U"
+      "title": "翻訳者 (英語)",
+      "text": "$(bold)en_us$()$(italic)$(list)alRex-U"
     },
     {
       "type": "patchouli:text",
-      "title": "翻訳者 (ja_jp)",
-      "text": "$(bold)日本語翻訳$()$(italic)$(list)alRex-U"
+      "title": "翻訳者 (日本語)",
+      "text": "$(bold)ja_jp$()$(italic)$(list)alRex-U"
     },
     {
       "type": "patchouli:text",
-      "title": "翻訳者 (ch_zn)",
-      "text": "$(bold)中国語翻訳$()$(italic)$(list)CatalystGinger"
+      "title": "翻訳者 (中国語)",
+      "text": "$(bold)ch_zn$()$(italic)$(list)CatalystGinger"
     },
     {
       "type": "patchouli:text",
-      "title": "翻訳者 (fr-fr)",
-      "text": "$(bold)フランス語翻訳$()$(italic)$(list)COwOkie"
+      "title": "翻訳者 (フランス語)",
+      "text": "$(bold)fr-fr$()$(italic)$(list)COwOkie"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "翻訳者 (ブラジル語)",
+      "text": "$(bold)pt-br$()$(italic)$(list)FITFC"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "翻訳者 (スペイン語翻訳)",
+      "text": "$(bold)es-es$()$(italic)$(list)GhostOfCazador"
     }
   ]
 }

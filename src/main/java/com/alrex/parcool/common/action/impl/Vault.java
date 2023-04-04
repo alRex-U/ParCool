@@ -19,8 +19,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
-;
-
 public class Vault extends Action {
 	public enum TypeSelectionMode {
 		SpeedVault, KongVault, Dynamic
@@ -163,9 +161,9 @@ public class Vault extends Action {
 	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
 		if (stepDirection == null) return;
 		player.setDeltaMovement(
-				stepDirection.x / 10,
-				(stepHeight + 0.02) / this.getVaultAnimateTime(),
-				stepDirection.z / 10
+				stepDirection.x() / 10,
+				((stepHeight + 0.02) / this.getVaultAnimateTime()) / (player.getBbHeight() / 1.8),
+				stepDirection.z() / 10
 		);
 	}
 
@@ -179,9 +177,9 @@ public class Vault extends Action {
 	public void onStopInLocalClient(Player player) {
 		stepDirection = stepDirection.normalize();
 		player.setDeltaMovement(
-				stepDirection.x * 0.45,
-				0.075,
-				stepDirection.z * 0.45
+				stepDirection.x() * 0.45,
+				0.075 * (player.getBbHeight() / 1.8),
+				stepDirection.z() * 0.45
 		);
 	}
 }
