@@ -48,7 +48,7 @@ public class WorldUtil {
 	@Nullable
 	public static Vector3d getWall(LivingEntity entity) {
 		double range = entity.getBbWidth() / 2;
-		final double width = 0.3;
+		final double width = entity.getBbWidth() * 0.5;
 		double wallX = 0;
 		double wallZ = 0;
 		Vector3d pos = entity.position();
@@ -81,10 +81,10 @@ public class WorldUtil {
 
 	@Nullable
 	public static Vector3d getVaultableStep(LivingEntity entity) {
-		final double d = 0.3;
+		final double d = entity.getBbWidth() * 0.5;
 		World world = entity.level;
 		double distance = entity.getBbWidth() / 2;
-		double baseLine = Math.min(1.55, getWallHeight(entity));
+		double baseLine = Math.min(entity.getBbHeight() * 0.86, getWallHeight(entity));
 		double stepX = 0;
 		double stepZ = 0;
 		Vector3d pos = entity.position();
@@ -127,7 +127,7 @@ public class WorldUtil {
 		if (wall == null) return 0;
 		World world = entity.level;
 		final double v = 0.1;
-		final double d = 0.3;
+		final double d = entity.getBbWidth() * 0.5;
 		int loopNum = (int) Math.round(entity.getBbHeight() / v);
 		Vector3d pos = entity.position();
 		double x1 = pos.x() + d + (wall.x() > 0 ? 1 : 0);
@@ -255,7 +255,7 @@ public class WorldUtil {
 
 	@Nullable
 	public static Vector3d getGrabbableWall(LivingEntity entity) {
-		final double d = 0.3;
+		final double d = entity.getBbWidth() * 0.5;
 		World world = entity.level;
 		double distance = entity.getBbWidth() / 2;
 		double baseLine1 = entity.getEyeHeight() + (entity.getBbHeight() - entity.getEyeHeight()) / 2;
@@ -266,7 +266,7 @@ public class WorldUtil {
 	}
 
 	private static Vector3d getGrabbableWall(LivingEntity entity, double distance, double baseLine) {
-		final double d = 0.3;
+		final double d = entity.getBbWidth() * 0.49;
 		World world = entity.level;
 		Vector3d pos = entity.position();
 		AxisAlignedBB baseBoxSide = new AxisAlignedBB(
