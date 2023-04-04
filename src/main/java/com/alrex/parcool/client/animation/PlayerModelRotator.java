@@ -10,7 +10,7 @@ public class PlayerModelRotator {
 	private final MatrixStack stack;
 	private final PlayerEntity player;
 	private final float partial;
-	private final double playerHeight = 1.8;
+	private double playerHeight = 1.8;
 
 	public float getPartialTick() {
 		return partial;
@@ -26,6 +26,12 @@ public class PlayerModelRotator {
 		this.stack = stack;
 		this.player = player;
 		this.partial = partial;
+		switch (player.getPose()) {
+			case SWIMMING:
+			case CROUCHING:
+			case SLEEPING:
+				playerHeight = 0.6;
+		}
 	}
 
 	public PlayerModelRotator start() {
