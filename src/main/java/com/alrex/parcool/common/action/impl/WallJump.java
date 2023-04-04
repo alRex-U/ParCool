@@ -18,8 +18,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
-;
-
 public class WallJump extends Action {
 
 	private boolean jump = false;
@@ -43,11 +41,12 @@ public class WallJump extends Action {
 	@Nullable
 	private Vec3 getJumpDirection(Player player, Vec3 wall) {
 		if (wall == null) return null;
+		wall = wall.normalize();
 
 		Vec3 lookVec = player.getLookAngle();
 		Vec3 vec = new Vec3(lookVec.x, 0, lookVec.z).normalize();
 
-		if (wall.dot(vec) > 0) {//To Wall
+		if (wall.dot(vec) > 0.5) {//To Wall
 			return null;
 		} else {/*back on Wall*/}
 
@@ -122,7 +121,7 @@ public class WallJump extends Action {
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		double speedScale = player.getBbWidth() / 0.6;
 		Vec3 jumpDirection = new Vec3(startData.getDouble(), 0, startData.getDouble()).scale(speedScale);
-		Vec3 direction = new Vec3(jumpDirection.x, player.getBbHeight() * 0.84, jumpDirection.z).scale(player.getBbWidth() / 2);
+		Vec3 direction = new Vec3(jumpDirection.x, 1.512, jumpDirection.z).scale(0.3);
 		Vec3 wallDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
 		Vec3 motion = player.getDeltaMovement();
 
@@ -137,7 +136,7 @@ public class WallJump extends Action {
 
 		double ySpeed;
 		if (slipperiness > 0.9) {// icy blocks
-			ySpeed = motion.y;
+			ySpeed = motion.y();
 		} else {
 			ySpeed = motion.y > direction.y ? motion.y + direction.y : direction.y;
 		}
