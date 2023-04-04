@@ -41,11 +41,12 @@ public class WallJump extends Action {
 	@Nullable
 	private Vector3d getJumpDirection(PlayerEntity player, Vector3d wall) {
 		if (wall == null) return null;
+		wall = wall.normalize();
 
 		Vector3d lookVec = player.getLookAngle();
 		Vector3d vec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
 
-		if (wall.dot(vec) > 0) {//To Wall
+		if (wall.dot(vec) > 0.5) {//To Wall
 			return null;
 		} else {/*back on Wall*/}
 
