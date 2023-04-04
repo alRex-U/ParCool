@@ -17,8 +17,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 
-;
-
 
 public class Dodge extends Action {
 	public static final int MAX_COOL_DOWN_TICK = 10;
@@ -142,7 +140,7 @@ public class Dodge extends Action {
 			successivelyCount++;
 		}
 		successivelyCoolTick = MAX_COOL_DOWN_TICK * 3;
-		dodgeVec = dodgeVec.scale(player.getBbWidth() * ParCoolConfig.CONFIG_CLIENT.dodgeSpeedModifier.get());
+		dodgeVec = dodgeVec.scale(0.6 * ParCoolConfig.CONFIG_CLIENT.dodgeSpeedModifier.get());
 		EntityUtil.addVelocity(player, new Vec3(dodgeVec.x, jump, dodgeVec.z));
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new DodgeAnimator());

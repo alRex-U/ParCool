@@ -50,7 +50,7 @@ public class WorldUtil {
 	@Nullable
 	public static Vec3 getWall(LivingEntity entity) {
 		double range = entity.getBbWidth() / 2;
-		final double width = 0.3;
+		final double width = entity.getBbWidth() * 0.5;
 		double wallX = 0;
 		double wallZ = 0;
 		Vec3 pos = entity.position();
@@ -83,10 +83,10 @@ public class WorldUtil {
 
 	@Nullable
 	public static Vec3 getVaultableStep(LivingEntity entity) {
-		final double d = 0.3;
+		final double d = entity.getBbWidth() * 0.5;
 		Level world = entity.level;
 		double distance = entity.getBbWidth() / 2;
-		double baseLine = Math.min(1.55, getWallHeight(entity));
+		double baseLine = Math.min(entity.getBbHeight() * 0.86, getWallHeight(entity));
 		double stepX = 0;
 		double stepZ = 0;
 		Vec3 pos = entity.position();
@@ -128,9 +128,9 @@ public class WorldUtil {
 		Vec3 wall = getWall(entity);
 		if (wall == null) return 0;
 		Level world = entity.level;
-		final double v = 0.1;
-		final double d = 0.3;
-		int loopNum = (int) Math.round(entity.getBbHeight() / v);
+		final double accuracy = entity.getBbHeight() / 18; // normally about 0.1
+		final double d = entity.getBbWidth() * 0.5;
+		int loopNum = (int) Math.round(entity.getBbHeight() / accuracy);
 		Vec3 pos = entity.position();
 		double x1 = pos.x() + d + (wall.x() > 0 ? 1 : 0);
 		double y1 = pos.y();
@@ -140,13 +140,13 @@ public class WorldUtil {
 		boolean canReturn = false;
 		for (int i = 0; i < loopNum; i++) {
 			AABB box = new AABB(
-					x1, y1 + v * i, z1, x2, y1 + v * (i + 1), z2
+					x1, y1 + accuracy * i, z1, x2, y1 + accuracy * (i + 1), z2
 			);
 
 			if (!world.noCollision(box)) {
 				canReturn = true;
 			} else {
-				if (canReturn) return v * i;
+				if (canReturn) return accuracy * i;
 			}
 		}
 		return entity.getBbHeight();
@@ -257,7 +257,7 @@ public class WorldUtil {
 
 	@Nullable
 	public static Vec3 getGrabbableWall(LivingEntity entity) {
-		final double d = 0.3;
+		final double d = entity.getBbWidth() * 0.5;
 		Level world = entity.level;
 		double distance = entity.getBbWidth() / 2;
 		double baseLine1 = entity.getEyeHeight() + (entity.getBbHeight() - entity.getEyeHeight()) / 2;
@@ -269,7 +269,7 @@ public class WorldUtil {
 
 	@Nullable
 	private static Vec3 getGrabbableWall(LivingEntity entity, double distance, double baseLine) {
-		final double d = 0.3;
+		final double d = entity.getBbWidth() * 0.49;
 		Level world = entity.level;
 		Vec3 pos = entity.position();
 		AABB baseBoxSide = new AABB(
