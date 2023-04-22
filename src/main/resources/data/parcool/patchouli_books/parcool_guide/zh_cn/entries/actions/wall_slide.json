@@ -1,0 +1,16 @@
+{
+  "name": "滑墙",
+  "icon": "minecraft:sand",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "紧紧抓住墙壁慢慢滑下去。这个动作受到冰块的滑动影响，所以玩家不能用冰块的壁来减缓摔倒。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list)空中靠着墙按着滑墙键[$(k:parcool.WallSlide)]"
+    }
+  ]
+}

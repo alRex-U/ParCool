@@ -1,0 +1,20 @@
+{
+  "name": "常见问题解答",
+  "icon": "minecraft:paper",
+  "category": "parcool:category_about",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "常见问题"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)问：许多按键冲突怎么办？$()$(br2)$(bold)答：不用担心，冲突了也可以用。$()$(br)原本是想用原版操作默认的按键来使用它们，但是为了让玩家可以更方便的设置自己喜欢的按键才添加的"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)问：本模组支持Fabric运行吗？$()$(br2)$(bold)答：并不支持。$()$(br)而又因为作者没有足够的时间，所以没有移植到Fabric。$(7)(好可惜)"
+    }
+  ]
+}

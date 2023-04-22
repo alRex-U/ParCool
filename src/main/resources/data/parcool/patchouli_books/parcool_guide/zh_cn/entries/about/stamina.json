@@ -1,0 +1,16 @@
+{
+  "name": "耐力",
+  "icon": "minecraft:golden_apple",
+  "category": "parcool:category_about",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "本模组为游戏添加了$(bold)耐力$()的玩法。$(br2)当你做本模组里的那些跑酷动作时，会消耗你的耐力。当你耐力耗尽后，直到恢复为止都会有以下处罚：$(list)不能疾跑。$(list)不能做本模组的各种跑酷动作$(br)请小心"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(br)$(7)(可以通过修改配置文件对耐力的状态图标进行更换，也可以自己画了替换哦~)"
+    }
+  ]
+}
