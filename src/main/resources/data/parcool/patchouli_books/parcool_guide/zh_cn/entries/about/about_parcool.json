@@ -1,0 +1,19 @@
+{
+  "name": "本模组是做什么的?",
+  "icon": "minecraft:feather",
+  "category": "parcool:category_about",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "感谢你游玩本模组！$(br2)本模组是为Minecraft追加$(bold)跑酷$()$(br)的动作的Mod！有些动作实际上是就是跑酷的技术动作。"
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "parcool:textures/gui/entries/logo_round.png"
+      ],
+      "text": "那么，让我们在Minecraft的世界里奔跑吧！"
+    }
+  ]
+}

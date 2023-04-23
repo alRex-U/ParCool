@@ -1,0 +1,34 @@
+{
+  "name": "缓冲技",
+  "icon": "minecraft:slime_ball",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)缓冲技$()是从落下的冲击中保护自身身体的技能。$(br)在本模组里，你可以通过它进行$(bold)翻滚缓冲$()或是$(bold)屈膝缓冲$()。$(br)$(7)(它们在一格高的方块上跳到地上的时候也能使用)"
+    },
+    {
+      "type": "patchouli:empty"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "翻滚缓冲",
+      "text": "$(bold)翻滚缓冲$()是缓冲技之一。通过翻滚来减缓吸收坠落到地上时的冲击从而保护自己的身体，$(br2)这可能会被误解，$(italic)翻滚缓冲$()是跑酷时的一种自保技术，所以翻滚缓冲也只在落地时才能发动。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list)按着移动键和缓冲技键[$(k:parcool.Breakfall)]直到落地"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "屈膝缓冲",
+      "text": "$(bold)屈膝缓冲$()是另一种缓冲技。通过弯曲你的双腿来减缓吸收坠落到地上时的冲击从而保护自己的身体。$(br2)也就是说，史蒂夫可以弯腿了？"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list)坠落时不按任何的移动键只按着缓冲技键[$(k:parcool.Breakfall)]直到落地"
+    }
+  ]
+}
