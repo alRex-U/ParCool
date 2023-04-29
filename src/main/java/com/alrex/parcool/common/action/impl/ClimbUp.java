@@ -7,6 +7,7 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.extern.controllable.ControllableManager;
 import com.alrex.parcool.utilities.EntityUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
@@ -24,7 +25,7 @@ public class ClimbUp extends Action {
 				&& cling.getDoingTick() > 2
 				&& cling.getFacingDirection() == ClingToCliff.FacingDirection.ToWall
 				&& parkourability.getActionInfo().can(ClimbUp.class)
-				&& KeyRecorder.keyJumpState.isPressed();
+				&& (KeyRecorder.keyJumpState.isPressed() || ControllableManager.isJumpPressed());
 	}
 
 	@OnlyIn(Dist.CLIENT)

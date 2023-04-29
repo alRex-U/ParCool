@@ -52,6 +52,7 @@ public class Crawl extends Action {
 	@Override
 	public void onWorkingTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		player.setSprinting(false);
+		player.setSwimming(true);
 		player.setPose(Pose.SWIMMING);
 	}
 }

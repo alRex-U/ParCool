@@ -35,7 +35,6 @@ println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getPro
 minecraft {
     mappings channel: 'official', version: "${mc_version}"
 
-
     runs {
         client {
             workingDirectory project.file('run')
@@ -100,6 +99,8 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
     runtimeOnly fg.deobf("curse.maven:pehkui-319596:4461971")
+    compileOnly fg.deobf("curse.maven:controllable-317269:${controllable_version}")
+    runtimeOnly fg.deobf("curse.maven:controllable-317269:${controllable_version}")
 }
 
 jar {

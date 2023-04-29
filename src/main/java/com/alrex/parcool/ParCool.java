@@ -10,6 +10,7 @@ import com.alrex.parcool.common.potion.PotionRecipeRegistry;
 import com.alrex.parcool.common.potion.Potions;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
 import com.alrex.parcool.common.registries.EventBusModRegistry;
+import com.alrex.parcool.extern.controllable.ControllableManager;
 import com.alrex.parcool.proxy.ClientProxy;
 import com.alrex.parcool.proxy.CommonProxy;
 import com.alrex.parcool.proxy.ServerProxy;
@@ -93,6 +94,7 @@ public class ParCool {
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
 		KeyBindings.register(event);
+		ControllableManager.init();
 		Capabilities.registerClient(CapabilityManager.INSTANCE);
 		EventBusForgeRegistry.registerClient(MinecraftForge.EVENT_BUS);
 		EventBusModRegistry.registerClient(FMLJavaModLoadingContext.get().getModEventBus());
