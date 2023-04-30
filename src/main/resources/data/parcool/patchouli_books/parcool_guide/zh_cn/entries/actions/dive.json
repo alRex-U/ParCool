@@ -1,0 +1,23 @@
+{
+  "name": "俯冲",
+  "icon": "minecraft:cod",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "本模组有一个跳入的特殊动画。从第三人称的角度来观看一下吧。"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/image_dive.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(bold)1.$()进行$(l:parcool:actions/fast_run)快速奔跑$()$(br)$(bold)2.$()从高处跳向足够低的空间"
+    }
+  ]
+}
