@@ -1,0 +1,23 @@
+{
+  "name": "垂挂",
+  "icon": "minecraft:stone",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "可以垂挂在横向锁链或栏杆等方块的下方$(br)而且可以在该状态下移动，或是用跳跃键向前跳。"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/image_hang_down.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list)站在横向锁链或栏杆等方块下的合适的地方时使用垂挂键[$(k:parcool.HangDown)]"
+    }
+  ]
+}

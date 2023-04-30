@@ -1,0 +1,21 @@
+{
+  "name": "被动动作",
+  "icon": "minecraft:brick",
+  "category": "parcool:category_support_features",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "本模组增加了一些始终被动使用的动作。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "爬杆",
+      "text": "玩家可以像爬梯子一样攀爬类似杆的方块，如堆叠的栅栏、铁栏杆、末地烛等。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "坠落动画",
+      "text": "添加玩家在长时间坠落时的新动作。如果你觉得不需要它，你可以通过配置将其关闭。"
+    }
+  ]
+}

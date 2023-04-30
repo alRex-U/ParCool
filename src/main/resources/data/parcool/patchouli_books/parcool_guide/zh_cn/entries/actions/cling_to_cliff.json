@@ -1,0 +1,23 @@
+{
+  "name": "猫挂",
+  "icon": "minecraft:stone",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "你可以抓住悬崖。$(br)挂在悬崖边的时候可以按前进键加跳跃键爬上悬崖。"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/image_cling_cliff.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list)在悬崖边按着猫挂键[$(k:parcool.ClingToCliff)]"
+    }
+  ]
+}

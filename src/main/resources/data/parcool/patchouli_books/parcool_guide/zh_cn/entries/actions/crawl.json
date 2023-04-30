@@ -1,0 +1,16 @@
+{
+  "name": "爬行",
+  "icon": "minecraft:nautilus_shell",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "你可以在任何地方爬行，也可以穿过狭窄的地方。$(br)你也可以阅读一下$(l:parcool:actions/slide)滑动$()。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list)按着爬行键[$(k:parcool.Crawl)]并移动"
+    }
+  ]
+}
