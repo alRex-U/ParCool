@@ -1,0 +1,23 @@
+{
+  "name": "走壁",
+  "icon": "minecraft:bricks",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "你可以踩着墙水平跑。但是如果墙很滑，就上不去了。$(br)有时可能会被误解，在现实里的跑酷里，$(italic)走壁$()是可以垂直爬墙的，而不只是水平的"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/image_wall_run.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(bold)1.$()挨着墙进行$(l:parcool:actions/fast_run)快速奔跑$()，并跳起$(br)$(bold)2.$()按下走壁键[$(k:parcool.HorizontalWallRun)]$(7)(把他设置成你的疾跑键可能会方便许多)"
+    }
+  ]
+}

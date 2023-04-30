@@ -1,0 +1,16 @@
+{
+  "name": "什么是跑酷？",
+  "icon": "minecraft:golden_boots",
+  "category": "parcool:category_about",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(italic)跑酷$()是由$(italic)Devid Belle$()所组织的一种运动。$(br)目的是尽可能快地让自己移动到别的地方。"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "跑酷$(italic)(Parkour)$()这个名字来自法语的$(italic)parcours$()，玩家们曾被称之为$(italic)快行人$()$(br)有时候跑酷被称之为$(italic)自由跑$()，据说这是跑酷的英文翻译。"
+    }
+  ]
+}

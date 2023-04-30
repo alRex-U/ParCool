@@ -1,0 +1,16 @@
+{
+  "name": "快速奔跑",
+  "icon": "minecraft:diamond_boots",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "现在你是跑酷选手了！这样你就可以比以前跑得更快。某些操作需要使用此选项。$(br)如果觉得这个动作很麻烦的话，修改配置可能会有所帮助。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list)在短跑过程中按住快速奔跑键[$(k:parcool.FastRun)]"
+    }
+  ]
+}
