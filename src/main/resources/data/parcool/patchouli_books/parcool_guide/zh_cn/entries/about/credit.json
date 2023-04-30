@@ -26,7 +26,7 @@
     {
       "type": "patchouli:text",
       "title": "翻译者 (中文)",
-      "text": "$(bold)ch_zn$()$(italic)$(list)CatalystGinger$()$(7)(这位大佬没更新了)$()$(italic)$(list)njt_233$()$(7)(像这种的灰色字都是我补充的唷~)"
+      "text": "$(bold)ch_zn$()$(italic)$(list)CatalystGinger$(list)GuoDaiYi$(list)njt-233"
     },
     {
       "type": "patchouli:text",
