@@ -51,9 +51,9 @@ public class HorizontalWallRun extends Action {
 		if (runningWallDirection == null) return;
 		Vec3 movement = player.getDeltaMovement();
 		BlockPos leanedBlock = new BlockPos(
-				player.getX() + runningWallDirection.x,
-				player.getY() + player.getBbHeight() * 0.5,
-				player.getZ() + runningWallDirection.z
+				(int) (player.getX() + runningWallDirection.x),
+				(int) (player.getY() + player.getBbHeight() * 0.5),
+				(int) (player.getZ() + runningWallDirection.z)
 		);
 		if (!player.level.isLoaded(leanedBlock)) return;
 		float slipperiness = player.level.getBlockState(leanedBlock).getFriction(player.level, leanedBlock, player);

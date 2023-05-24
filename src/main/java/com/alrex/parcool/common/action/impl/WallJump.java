@@ -126,9 +126,9 @@ public class WallJump extends Action {
 		Vec3 motion = player.getDeltaMovement();
 
 		BlockPos leanedBlock = new BlockPos(
-				player.getX() + wallDirection.x,
-				player.getY() + player.getBbHeight() * 0.25,
-				player.getZ() + wallDirection.z
+				(int) (player.getX() + wallDirection.x),
+				(int) (player.getY() + player.getBbHeight() * 0.25),
+				(int) (player.getZ() + wallDirection.z)
 		);
 		float slipperiness = player.level.isLoaded(leanedBlock) ?
 				player.level.getBlockState(leanedBlock).getFriction(player.level, leanedBlock, player)

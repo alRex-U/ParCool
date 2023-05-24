@@ -69,9 +69,9 @@ public class WallSlide extends Action {
 		leanedWallDirection = WorldUtil.getWall(player);
 		if (leanedWallDirection != null) {
 			BlockPos leanedBlock = new BlockPos(
-					player.getX() + leanedWallDirection.x,
-					player.getY() + player.getBbHeight() * 0.75,
-					player.getZ() + leanedWallDirection.z
+					(int) (player.getX() + leanedWallDirection.x),
+					(int) (player.getY() + player.getBbHeight() * 0.75),
+					(int) (player.getZ() + leanedWallDirection.z)
 			);
 			if (!player.level.isLoaded(leanedBlock)) return;
 			float slipperiness = player.level.getBlockState(leanedBlock).getFriction(player.level, leanedBlock, player);

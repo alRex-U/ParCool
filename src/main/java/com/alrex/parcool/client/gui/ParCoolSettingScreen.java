@@ -103,13 +103,12 @@ public class ParCoolSettingScreen extends Screen {
 		super.resize(p_231152_1_, p_231152_2_, p_231152_3_);
 		mouseScrolled(0, 0, 0);
 	}
-
 	private static final Component MenuTitle = Component.translatable("parcool.gui.title.setting");
 
 	@Override
 	public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float p_230430_4_) {
 		super.render(matrixStack, mouseX, mouseY, p_230430_4_);
-		renderBackground(matrixStack, 0);
+		renderBackground(matrixStack);
 		int topBarHeight = font.lineHeight * 2;
 		int topBarItemWidth = (int) (1.6 * Arrays.stream(modeMenuList).map(it -> font.width(it.title)).max(Integer::compareTo).orElse(0));
 		int topBarOffsetX = width - topBarItemWidth * modeMenuList.length;
@@ -297,7 +296,7 @@ public class ParCoolSettingScreen extends Screen {
 	}
 
 	@Override
-	public void renderBackground(@Nonnull PoseStack p_238651_1_, int p_238651_2_) {
+	public void renderBackground(@Nonnull PoseStack p_238651_1_) {
 		fill(p_238651_1_, 0, 0, this.width, this.height, color.getBackground());
 	}
 
