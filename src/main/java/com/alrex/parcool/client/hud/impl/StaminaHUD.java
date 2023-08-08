@@ -23,10 +23,7 @@ import net.minecraftforge.event.TickEvent;
 public class StaminaHUD extends AbstractGui {
 	public static final ResourceLocation STAMINA = new ResourceLocation("parcool", "textures/gui/stamina_bar.png");
 
-	private final Position pos;
-
-	public StaminaHUD(Position pos) {
-		this.pos = pos;
+	public StaminaHUD() {
 	}
 
 	private float shadowScale = 1f;
@@ -57,11 +54,17 @@ public class StaminaHUD extends AbstractGui {
 		) return;
 
 		MainWindow window = Minecraft.getInstance().getWindow();
+		Position position = new Position(
+				ParCoolConfig.Client.AlignHorizontalStaminaHUD.get(),
+				ParCoolConfig.Client.AlignVerticalStaminaHUD.get(),
+				ParCoolConfig.Client.Integers.HorizontalMarginOfStaminaHUD.get(),
+				ParCoolConfig.Client.Integers.VerticalMarginOfStaminaHUD.get()
+		);
 		final int width = window.getGuiScaledWidth();
 		final int height = window.getGuiScaledHeight();
 		final int boxWidth = 91;
 		final int boxHeight = 17;
-		final Tuple<Integer, Integer> pos = this.pos.calculate(boxWidth, boxHeight, width, height);
+		final Tuple<Integer, Integer> pos = position.calculate(boxWidth, boxHeight, width, height);
 
 		float staminaScale = (float) stamina.get() / stamina.getActualMaxStamina();
 		float coolTimeScale =

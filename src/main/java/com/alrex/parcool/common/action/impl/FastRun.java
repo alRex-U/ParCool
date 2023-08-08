@@ -2,6 +2,7 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.client.animation.impl.FastRunningAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
+import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.AdditionalProperties;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
@@ -20,9 +21,14 @@ import java.nio.ByteBuffer;
 import java.util.UUID;
 
 public class FastRun extends Action {
+	public enum ControlType {
+		PressKey, Toggle, Auto
+	}
+
 	private static final String FAST_RUNNING_MODIFIER_NAME = "parcool.modifier.fastrunnning";
 	private static final UUID FAST_RUNNING_MODIFIER_UUID = UUID.randomUUID();
 	private double speedModifier = 0;
+	private boolean toggleStatus = false;
 
 	@Override
 	public void onServerTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
@@ -37,6 +43,20 @@ public class FastRun extends Action {
 					speedModifier / 100d,
 					AttributeModifier.Operation.ADDITION
 			));
+		}
+	}
+
+	@Override
+	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		if (player.isLocalPlayer()) {
+			if (ParCoolConfig.Client.FastRunControl.get() == ControlType.Toggle
+					&& parkourability.getAdditionalProperties().getSprintingTick() > 3
+			) {
+				if (KeyRecorder.keyFastRunning.isPressed())
+					toggleStatus = !toggleStatus;
+			} else {
+				toggleStatus = false;
+			}
 		}
 	}
 
@@ -57,7 +77,9 @@ public class FastRun extends Action {
 				&& !player.isVisuallyCrawling()
 				&& !player.isSwimming()
 				&& !parkourability.get(Crawl.class).isDoing()
-				&& (KeyBindings.getKeyFastRunning().isDown() || ParCoolConfig.Client.Booleans.ReplaceSprintWithFastRun.get())
+				&& ((ParCoolConfig.Client.FastRunControl.get() == ControlType.PressKey && KeyBindings.getKeyFastRunning().isDown())
+				|| (ParCoolConfig.Client.FastRunControl.get() == ControlType.Toggle && toggleStatus)
+				|| ParCoolConfig.Client.FastRunControl.get() == ControlType.Auto)
 		);
 	}
 

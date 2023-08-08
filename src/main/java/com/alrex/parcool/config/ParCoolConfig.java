@@ -7,6 +7,7 @@ import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.client.hud.impl.HUDType;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
+import com.alrex.parcool.common.action.impl.FastRun;
 import com.alrex.parcool.common.action.impl.Vault;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -131,10 +132,6 @@ public class ParCoolConfig {
 			VaultKeyPressedNeeded(
 					ConfigGroup.Control, "Make Vault Need Vault Key Pressed",
 					"vault_needs_key_pressed", false
-			),
-			ReplaceSprintWithFastRun(
-					ConfigGroup.Control, "do Fast-Running whenever you do a sprint of vanilla",
-					"replace_sprint_with_fast-run", true
 			),
 			SubstituteSprintForFastRun(
 					ConfigGroup.Control, "enable players to do actions needing Fast-Running by sprint",
@@ -365,6 +362,7 @@ public class ParCoolConfig {
 		public static final ForgeConfigSpec.EnumValue<Position.Horizontal> AlignHorizontalStaminaHUD;
 		public static final ForgeConfigSpec.EnumValue<Position.Vertical> AlignVerticalStaminaHUD;
 		public static final ForgeConfigSpec.EnumValue<ColorTheme> GUIColorTheme;
+		public static final ForgeConfigSpec.EnumValue<FastRun.ControlType> FastRunControl;
 
 		private static void register(ForgeConfigSpec.Builder builder, ConfigGroup group) {
 			Arrays.stream(Booleans.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
@@ -403,6 +401,7 @@ public class ParCoolConfig {
 			builder.pop();
 			builder.push("Control");
 			{
+				FastRunControl = builder.comment("Control of FastRun").defineEnum("fast-run_control", FastRun.ControlType.PressKey);
 				register(builder, ConfigGroup.Control);
 			}
 			builder.pop();

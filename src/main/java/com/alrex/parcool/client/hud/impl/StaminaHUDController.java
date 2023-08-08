@@ -1,6 +1,5 @@
 package com.alrex.parcool.client.hud.impl;
 
-import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
@@ -15,9 +14,9 @@ public class StaminaHUDController {
 	LightStaminaHUD lightStaminaHUD;
 	StaminaHUD staminaHUD;
 
-	public StaminaHUDController(Position pos) {
+	public StaminaHUDController() {
 		lightStaminaHUD = new LightStaminaHUD();
-		staminaHUD = new StaminaHUD(pos);
+		staminaHUD = new StaminaHUD();
 	}
 
 	public void onTick(TickEvent.ClientTickEvent event) {
