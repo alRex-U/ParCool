@@ -108,12 +108,6 @@ public class ParCoolSettingScreen extends Screen {
 		int topBarItemWidth = (int) (1.6 * Arrays.stream(modeMenuList).map(it -> font.width(it.title)).max(Integer::compareTo).orElse(0));
 		int topBarOffsetX = width - topBarItemWidth * modeMenuList.length;
 		fillGradient(matrixStack, 0, 0, this.width, topBarHeight, color.getTopBar1(), color.getTopBar2());
-		drawString(
-				matrixStack, font, MenuTitle,
-				10,
-				topBarHeight / 4 + 1,
-				color.getText()
-		);
 		for (int i = 0; i < modeMenuList.length; i++) {
 			ModeSet item = modeMenuList[i];
 			item.y = 0;
@@ -140,6 +134,25 @@ public class ParCoolSettingScreen extends Screen {
 			case Limitations:
 				renderLimitations(matrixStack, mouseX, mouseY, p_230430_4_, topBarHeight);
 		}
+		int titleOffset = 0;
+		if (serverPermissionReceived.getAsBoolean() || individualPermissionReceived.getAsBoolean()) {
+			fill(matrixStack, 2, 2, topBarHeight - 3, topBarHeight - 3, 0xFFEEEEEE);
+			fill(matrixStack, 3, 3, topBarHeight - 4, topBarHeight - 4, 0xFFEE0000);
+			drawCenteredString(matrixStack, font, "!", topBarHeight / 2, (topBarHeight - font.lineHeight) / 2 + 1, 0xEEEEEE);
+			if (2 <= mouseX && mouseX < topBarHeight - 3 && 1 <= mouseY && mouseY < topBarHeight - 3) {
+				renderComponentTooltip(
+						matrixStack,
+						Collections.singletonList(Permission_Not_Received),
+						mouseX, mouseY);
+			}
+			titleOffset = topBarHeight;
+		}
+		drawString(
+				matrixStack, font, MenuTitle,
+				titleOffset + 5,
+				topBarHeight / 4 + 1,
+				color.getText()
+		);
 	}
 
 	private static final ITextComponent Header_ActionName = new TranslationTextComponent("parcool.gui.text.actionName");
@@ -149,7 +162,7 @@ public class ParCoolSettingScreen extends Screen {
 	private static final ITextComponent Header_IndividualPermissionText = new TranslationTextComponent("parcool.gui.text.individualPermission");
 	private static final ITextComponent Permission_Permitted = new StringTextComponent("✓");
 	private static final ITextComponent Permission_Denied = new StringTextComponent("×");
-	private static final ITextComponent Permission_Not_Received = new StringTextComponent("§4Error:Permissions are not sent from a server.\nPlease check whether ParCool is installed or re-login to the server.§r");
+	private static final ITextComponent Permission_Not_Received = new StringTextComponent("§4[Error] Permissions are not sent from a server.\n\nBy closing this setting menu, permissions will be sent again.\nIf it were not done, please report to the mod developer after checking whether ParCool is installed and re-login to the server.§r");
 
 	private void renderActions(MatrixStack matrixStack, int mouseX, int mouseY, float p_230430_4_, int offsetY) {
 		int offsetX = 40, headerHeight = (int) (font.lineHeight * 1.5f);
@@ -208,26 +221,14 @@ public class ParCoolSettingScreen extends Screen {
 			if ((headerOffsetY < mouseY && mouseY < headerOffsetY + headerHeight)
 					&& (columnCenter - permissionColumnWidth / 2 < mouseX && mouseX < columnCenter + permissionColumnWidth / 2)
 			) {
-				if (serverPermissionReceived.getAsBoolean())
-					renderComponentTooltip(matrixStack, Collections.singletonList(Header_ServerPermissionText), mouseX, mouseY);
-				else
-					renderComponentTooltip(
-							matrixStack,
-							Arrays.asList(Header_ServerPermissionText, Permission_Not_Received),
-							mouseX, mouseY);
+				renderComponentTooltip(matrixStack, Collections.singletonList(Header_ServerPermissionText), mouseX, mouseY);
 			}
 
 			columnCenter = offsetX + nameColumnWidth + permissionColumnWidth + permissionColumnWidth / 2;
 			if ((headerOffsetY < mouseY && mouseY < headerOffsetY + headerHeight)
 					&& (columnCenter - permissionColumnWidth / 2 < mouseX && mouseX < columnCenter + permissionColumnWidth / 2)
 			) {
-				if (individualPermissionReceived.getAsBoolean())
-					renderComponentTooltip(matrixStack, Collections.singletonList(Header_IndividualPermissionText), mouseX, mouseY);
-				else
-					renderComponentTooltip(
-							matrixStack,
-							Arrays.asList(Header_IndividualPermissionText, Permission_Not_Received),
-							mouseX, mouseY);
+				renderComponentTooltip(matrixStack, Collections.singletonList(Header_IndividualPermissionText), mouseX, mouseY);
 			}
 		}
 	}
@@ -249,6 +250,13 @@ public class ParCoolSettingScreen extends Screen {
 			button.setHeight(20);
 			button.render(matrixStack, mouseX, mouseY, p_230430_4_);
 			fill(matrixStack, offsetX, button.y + button.getHeight(), width - offsetX, button.y + button.getHeight() + 1, color.getSubSeparator());
+			String comment = booleans[i].Comment;
+			if (comment != null && button.x < mouseX && mouseX < button.x + contentWidth && button.y < mouseY && mouseY < button.y + 20) {
+				renderComponentTooltip(
+						matrixStack,
+						Collections.singletonList(new StringTextComponent(comment)),
+						mouseX, mouseY);
+			}
 		}
 		fill(matrixStack, width - offsetX, contentOffsetY, width - offsetX - 1, contentOffsetY + contentHeight, color.getSeparator());
 		fill(matrixStack, offsetX, contentOffsetY, offsetX + 1, contentOffsetY + contentHeight, color.getSeparator());
