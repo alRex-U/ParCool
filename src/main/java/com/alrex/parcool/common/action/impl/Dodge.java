@@ -1,6 +1,5 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.DodgeAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
@@ -9,6 +8,7 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.EntityUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
@@ -75,7 +75,7 @@ public class Dodge extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		boolean enabledDoubleTap = !ParCoolConfig.CONFIG_CLIENT.disableDoubleTappingForDodge.get();
+		boolean enabledDoubleTap = ParCoolConfig.Client.Booleans.EnableDoubleTappingForDodge.get();
 		DodgeDirection direction = null;
 		if (enabledDoubleTap) {
 			if (KeyRecorder.keyBack.isDoubleTapped()) direction = DodgeDirection.Back;
@@ -139,7 +139,7 @@ public class Dodge extends Action {
 			successivelyCount++;
 		}
 		successivelyCoolTick = MAX_COOL_DOWN_TICK * 3;
-		dodgeVec = dodgeVec.scale(.6 * ParCoolConfig.CONFIG_CLIENT.dodgeSpeedModifier.get());
+		dodgeVec = dodgeVec.scale(.6 * ParCoolConfig.Client.Doubles.DodgeSpeedModifier.get());
 		EntityUtil.addVelocity(player, new Vector3d(dodgeVec.x(), jump, dodgeVec.z()));
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new DodgeAnimator());

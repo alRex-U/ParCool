@@ -1,6 +1,5 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.KongVaultAnimator;
 import com.alrex.parcool.client.animation.impl.SpeedVaultAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
@@ -9,6 +8,7 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
@@ -71,7 +71,7 @@ public class Vault extends Action {
 		}
 		AnimationType animationType = null;
 		SpeedVaultAnimator.Type type = SpeedVaultAnimator.Type.Right;
-		switch (ParCoolConfig.CONFIG_CLIENT.vaultAnimationMode.get()) {
+		switch (ParCoolConfig.Client.VaultAnimationMode.get()) {
 			case KongVault:
 				animationType = AnimationType.KongVault;
 				break;
@@ -97,12 +97,11 @@ public class Vault extends Action {
 				.putDouble(step.z())
 				.putDouble(wallHeight);
 
-		return (parkourability.getActionInfo().can(Vault.class)
-				&& !stamina.isExhausted()
-				&& !(ParCoolConfig.CONFIG_CLIENT.vaultNeedKeyPressed.get() && !KeyBindings.getKeyVault().isDown())
+		return (!stamina.isExhausted()
+				&& !(ParCoolConfig.Client.Booleans.VaultKeyPressedNeeded.get() && !KeyBindings.getKeyVault().isDown())
 				&& parkourability.get(FastRun.class).canActWithRunning(player)
 				&& !stamina.isExhausted()
-				&& (player.isOnGround() || !ParCoolConfig.CONFIG_CLIENT.disableVaultInAir.get())
+				&& (player.isOnGround() || ParCoolConfig.Client.Booleans.EnableVaultInAir.get())
 				&& wallHeight > player.getBbHeight() * 0.44 /*about 0.8*/
 		);
 	}

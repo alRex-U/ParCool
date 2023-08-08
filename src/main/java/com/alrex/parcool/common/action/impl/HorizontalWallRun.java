@@ -1,6 +1,5 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.HorizontalWallRunAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
@@ -8,6 +7,7 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
@@ -23,7 +23,7 @@ import java.nio.ByteBuffer;
 public class HorizontalWallRun extends Action {
 	private int coolTime = 0;
 	private float bodyYaw = 0;
-	private static final int Max_Running_Tick = ParCoolConfig.CONFIG_CLIENT.wallRunContinuableTick.get();
+	private static final int Max_Running_Tick = ParCoolConfig.Client.Integers.WallRunContinuableTick.get();
 	private boolean wallIsRightward = false;
 	private Vector3d runningWallDirection = null;
 
@@ -85,8 +85,7 @@ public class HorizontalWallRun extends Action {
 		startInfo.putDouble(wallDirection.x())
 				.putDouble(wallDirection.z());
 
-		return (parkourability.getActionInfo().can(HorizontalWallRun.class)
-				&& !parkourability.get(WallJump.class).justJumped()
+		return (!parkourability.get(WallJump.class).justJumped()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& KeyBindings.getKeyHorizontalWallRun().isDown()
 				&& Math.abs(player.getDeltaMovement().y()) < 0.3

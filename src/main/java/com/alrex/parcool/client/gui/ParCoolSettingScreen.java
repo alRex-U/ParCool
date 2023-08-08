@@ -1,11 +1,15 @@
 package com.alrex.parcool.client.gui;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.info.ActionInfo;
+import com.alrex.parcool.common.network.SyncClientInformationMessage;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.CheckboxButton;
 import net.minecraft.util.SoundEvents;
@@ -21,33 +25,14 @@ import java.util.Collections;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
-import static com.alrex.parcool.ParCoolConfig.CONFIG_CLIENT;
 
 public class ParCoolSettingScreen extends Screen {
-	private final ConfigSet[] configItemList = new ConfigSet[]{
-			new ConfigSet("Activate ParCool", CONFIG_CLIENT.parCoolActivation::set, CONFIG_CLIENT.parCoolActivation::get),
-			new ConfigSet("Infinite stamina", CONFIG_CLIENT.infiniteStamina::set, CONFIG_CLIENT.infiniteStamina::get),
-			new ConfigSet("Enable actions needing Fast-Run with normal sprint", CONFIG_CLIENT.substituteSprintForFastRun::set, CONFIG_CLIENT.substituteSprintForFastRun::get),
-			new ConfigSet("Always do Fast-Run when doing sprint", CONFIG_CLIENT.replaceSprintWithFastRun::set, CONFIG_CLIENT.replaceSprintWithFastRun::get),
-			new ConfigSet("Hide stamina HUD", CONFIG_CLIENT.hideStaminaHUD::set, CONFIG_CLIENT.hideStaminaHUD::get),
-			new ConfigSet("Use light Stamina HUD", CONFIG_CLIENT.useLightHUD::set, CONFIG_CLIENT.useLightHUD::get),
-			new ConfigSet("Disable a camera rotation of Rolling", CONFIG_CLIENT.disableCameraRolling::set, CONFIG_CLIENT.disableCameraRolling::get),
-			new ConfigSet("Disable a camera rotation of Flipping", CONFIG_CLIENT.disableCameraFlipping::set, CONFIG_CLIENT.disableCameraFlipping::get),
-			new ConfigSet("Disable a camera animation of Horizontal Wall-Run", CONFIG_CLIENT.disableCameraHorizontalWallRun::set, CONFIG_CLIENT.disableCameraHorizontalWallRun::get),
-			new ConfigSet("Disable a camera animation of Vault", CONFIG_CLIENT.disableCameraVault::set, CONFIG_CLIENT.disableCameraVault::get),
-			new ConfigSet("Disable double-tapping for dodge", CONFIG_CLIENT.disableDoubleTappingForDodge::set, CONFIG_CLIENT.disableDoubleTappingForDodge::get),
-			new ConfigSet("Disable crawl in air", CONFIG_CLIENT.disableCrawlInAir::set, CONFIG_CLIENT.disableCrawlInAir::get),
-			new ConfigSet("Disable vault in air", CONFIG_CLIENT.disableVaultInAir::set, CONFIG_CLIENT.disableVaultInAir::get),
-			new ConfigSet("Disable falling animation", CONFIG_CLIENT.disableFallingAnimation::set, CONFIG_CLIENT.disableFallingAnimation::get),
-			new ConfigSet("Disable all animations", CONFIG_CLIENT.disableAnimation::set, CONFIG_CLIENT.disableAnimation::get),
-			new ConfigSet("Disable first person view animations", CONFIG_CLIENT.disableFPVAnimation::set, CONFIG_CLIENT.disableFPVAnimation::get),
-			new ConfigSet("Enable roll when player is creative", CONFIG_CLIENT.enableRollWhenCreative::set, CONFIG_CLIENT.enableRollWhenCreative::get)
-	};
 
+	private final ParCoolConfig.Client.Booleans[] booleans = ParCoolConfig.Client.Booleans.values();
 	private enum SettingMode {Actions, Configs, Limitations}
 
 	private SettingMode mode = SettingMode.Actions;
-	private final CheckboxButton[] configButtons = new CheckboxButton[configItemList.length];
+	private final CheckboxButton[] configButtons = new CheckboxButton[booleans.length];
 	private final ActionConfigSet[] actionList = new ActionConfigSet[ActionList.ACTIONS.size()];
 	private final InfoSet[] infoList;
 	private final CheckboxButton[] actionButtons = new CheckboxButton[actionList.length];
@@ -64,13 +49,13 @@ public class ParCoolSettingScreen extends Screen {
 			actionList[i] = new ActionConfigSet(ActionList.getByIndex(i), info);
 			actionButtons[i] = new CheckboxButton(0, 0, 0, Checkbox_Item_Height, new StringTextComponent(actionList[i].name), actionList[i].getter.getAsBoolean());
 		}
-		for (int i = 0; i < configItemList.length; i++) {
-			configButtons[i] = new CheckboxButton(0, 0, 0, Checkbox_Item_Height, new TranslationTextComponent(configItemList[i].name), configItemList[i].getter.getAsBoolean());
+		for (int i = 0; i < booleans.length; i++) {
+			configButtons[i] = new CheckboxButton(0, 0, 0, Checkbox_Item_Height, new TranslationTextComponent(booleans[i].Path), booleans[i].get());
 		}
 		infoList = new InfoSet[]{
 				new InfoSet(
-						"Max Stamina Limitation",
-						Integer.toString(info.getMaxStaminaLimitation())
+						"Max Stamina",
+						Integer.toString(info.getMaxStamina())
 				),
 				new InfoSet(
 						"Infinite Stamina Permission",
@@ -91,12 +76,19 @@ public class ParCoolSettingScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		for (int i = 0; i < configItemList.length; i++) {
-			configItemList[i].setter.accept(configButtons[i].selected());
+		ClientPlayerEntity player = Minecraft.getInstance().player;
+		if (player == null) {
+			ParCool.LOGGER.error("ParCool in-game setting menu could not save and sync the values. Something wrong");
+			super.onClose();
+			return;
+		}
+		for (int i = 0; i < booleans.length; i++) {
+			booleans[i].set(configButtons[i].selected());
 		}
 		for (int i = 0; i < actionList.length; i++) {
 			actionList[i].setter.accept(actionButtons[i].selected());
 		}
+		SyncClientInformationMessage.sync(player);
 		super.onClose();
 	}
 
@@ -249,7 +241,7 @@ public class ParCoolSettingScreen extends Screen {
 		for (CheckboxButton configButton : configButtons) {
 			configButton.setWidth(0);
 		}
-		for (int i = 0; i < viewableItemCount && i + topIndex < configItemList.length; i++) {
+		for (int i = 0; i < viewableItemCount && i + topIndex < booleans.length; i++) {
 			CheckboxButton button = configButtons[i + topIndex];
 			button.x = offsetX + 1;
 			button.y = offsetY + font.lineHeight * 2 + Checkbox_Item_Height * i;
@@ -374,18 +366,6 @@ public class ParCoolSettingScreen extends Screen {
 		}
 	}
 
-	private static class ConfigSet {
-		final String name;
-		final Consumer<Boolean> setter;
-		final BooleanSupplier getter;
-
-		ConfigSet(String name, Consumer<Boolean> setter, BooleanSupplier getter) {
-			this.name = name;
-			this.getter = getter;
-			this.setter = setter;
-		}
-	}
-
 	private static class InfoSet {
 		final String name;
 		final String value;
@@ -405,7 +385,7 @@ public class ParCoolSettingScreen extends Screen {
 
 		ActionConfigSet(Class<? extends Action> action, ActionInfo info) {
 			name = new TranslationTextComponent("parcool.action." + action.getSimpleName()).getString();
-			ForgeConfigSpec.BooleanValue config = CONFIG_CLIENT.getPossibilityOf(action);
+			ForgeConfigSpec.BooleanValue config = ParCoolConfig.Client.getPossibilityOf(action);
 			setter = config::set;
 			getter = config::get;
 			serverWideLimitation = () -> info.getServerLimitation().isPermitted(action);

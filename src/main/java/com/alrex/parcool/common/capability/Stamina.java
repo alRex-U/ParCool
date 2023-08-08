@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.capability;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.potion.Effects;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.entity.player.PlayerEntity;
 
 import javax.annotation.Nullable;
@@ -10,7 +10,7 @@ public class Stamina implements IStamina {
 	public Stamina(@Nullable PlayerEntity player) {
 		this.player = player;
 		if (player != null && player.isLocalPlayer()) {
-			maxStamina = ParCoolConfig.CONFIG_CLIENT.staminaMax.get();
+			maxStamina = ParCoolConfig.Client.Integers.MaxStamina.get();
 			set(maxStamina);
 		}
 	}
@@ -37,7 +37,7 @@ public class Stamina implements IStamina {
 		if (player == null) return maxStamina;
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return maxStamina;
-		return Math.min(maxStamina, parkourability.getActionInfo().getMaxStaminaLimitation());
+		return parkourability.getActionInfo().getMaxStamina();
 	}
 
 	@Override
@@ -61,10 +61,10 @@ public class Stamina implements IStamina {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 		if (exhausted
-				|| (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && parkourability.getActionInfo().isInfiniteStaminaPermitted())
+				|| (ParCoolConfig.Client.Booleans.InfiniteStamina.get() && parkourability.getActionInfo().isInfiniteStaminaPermitted())
 				|| player.hasEffect(Effects.INEXHAUSTIBLE)
 		) return;
-		if (ParCoolConfig.CONFIG_CLIENT.useHungerBarInsteadOfStamina.get()) {
+		if (ParCoolConfig.Client.Booleans.UseHungerBarInstead.get()) {
 			player.causeFoodExhaustion(value / 1000f);
 			return;
 		}
@@ -103,10 +103,7 @@ public class Stamina implements IStamina {
 			if (player == null) return;
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
-			recover(Math.min(
-					ParCoolConfig.CONFIG_CLIENT.staminaRecovery.get(),
-					parkourability.getActionInfo().getMaxStaminaRecoveryLimitation()
-			));
+			recover(parkourability.getActionInfo().getStaminaRecovery());
 		}
 	}
 

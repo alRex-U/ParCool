@@ -1,11 +1,11 @@
 package com.alrex.parcool.client.animation.impl;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.HangDown;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
@@ -72,7 +72,7 @@ public class HangAnimator extends Animator {
 	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
 		if (!clientPlayer.isLocalPlayer() ||
 				!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
-				ParCoolConfig.CONFIG_CLIENT.disableCameraHang.get()
+				!ParCoolConfig.Client.Booleans.EnableCameraAnimationOfHangDown.get()
 		) return;
 		HangDown hangDown = parkourability.get(HangDown.class);
 		event.setPitch(clientPlayer.getViewXRot((float) event.getRenderPartialTicks()) + getRotateAngle(hangDown, event.getRenderPartialTicks()));

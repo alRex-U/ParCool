@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.hud;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.hud.impl.StaminaHUDController;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -16,10 +16,10 @@ public class HUDRegistry {
 
 	private final StaminaHUDController staminaHUD = new StaminaHUDController(
 			new Position(
-					ParCoolConfig.CONFIG_CLIENT.alignHorizontalStaminaHUD.get(),
-					ParCoolConfig.CONFIG_CLIENT.alignVerticalStaminaHUD.get(),
-					ParCoolConfig.CONFIG_CLIENT.marginHorizontalStaminaHUD.get(),
-					ParCoolConfig.CONFIG_CLIENT.marginVerticalStaminaHUD.get()
+					ParCoolConfig.Client.AlignHorizontalStaminaHUD.get(),
+					ParCoolConfig.Client.AlignVerticalStaminaHUD.get(),
+					ParCoolConfig.Client.Integers.HorizontalMarginOfStaminaHUD.get(),
+					ParCoolConfig.Client.Integers.VerticalMarginOfStaminaHUD.get()
 			)
 	);
 

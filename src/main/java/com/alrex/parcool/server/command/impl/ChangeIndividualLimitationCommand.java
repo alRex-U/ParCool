@@ -1,7 +1,7 @@
 package com.alrex.parcool.server.command.impl;
 
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.info.LimitationByServer;
+import com.alrex.parcool.common.info.Limitations;
 import com.alrex.parcool.server.command.args.ActionArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -89,7 +89,7 @@ public class ChangeIndividualLimitationCommand {
 		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
 		int num = 0;
 		for (ServerPlayerEntity player : targets) {
-			new LimitationByServer.IndividualLimitationChanger(player)
+			new Limitations.IndividualLimitationChanger(player)
 					.setDefault()
 					.sync();
 			num++;
@@ -102,7 +102,7 @@ public class ChangeIndividualLimitationCommand {
 		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
 		int num = 0;
 		for (ServerPlayerEntity player : targets) {
-			new LimitationByServer.IndividualLimitationChanger(player)
+			new Limitations.IndividualLimitationChanger(player)
 					.setEnforced(true)
 					.sync();
 			num++;
@@ -115,7 +115,7 @@ public class ChangeIndividualLimitationCommand {
 		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
 		int num = 0;
 		for (ServerPlayerEntity player : targets) {
-			new LimitationByServer.IndividualLimitationChanger(player)
+			new Limitations.IndividualLimitationChanger(player)
 					.setEnforced(false)
 					.sync();
 			num++;
@@ -129,7 +129,7 @@ public class ChangeIndividualLimitationCommand {
 		int newValue = IntegerArgumentType.getInteger(context, ARGS_NAME_MAX_STAMINA_VALUE);
 		int num = 0;
 		for (ServerPlayerEntity player : targets) {
-			new LimitationByServer.IndividualLimitationChanger(player)
+			new Limitations.IndividualLimitationChanger(player)
 					.setMaxStaminaLimitation(newValue)
 					.sync();
 			num++;
@@ -144,7 +144,7 @@ public class ChangeIndividualLimitationCommand {
 		int newValue = IntegerArgumentType.getInteger(context, ARGS_NAME_STAMINA_CONSUMPTION);
 		int num = 0;
 		for (ServerPlayerEntity player : targets) {
-			new LimitationByServer.IndividualLimitationChanger(player)
+			new Limitations.IndividualLimitationChanger(player)
 					.setStaminaConsumptionOf(action, newValue)
 					.sync();
 			num++;
@@ -158,7 +158,7 @@ public class ChangeIndividualLimitationCommand {
 		boolean newValue = BoolArgumentType.getBool(context, ARGS_NAME_POSSIBILITY);
 		int num = 0;
 		for (ServerPlayerEntity player : targets) {
-			new LimitationByServer.IndividualLimitationChanger(player)
+			new Limitations.IndividualLimitationChanger(player)
 					.setInfiniteStaminaPermission(newValue)
 					.sync();
 			num++;
@@ -173,7 +173,7 @@ public class ChangeIndividualLimitationCommand {
 		boolean newValue = BoolArgumentType.getBool(context, ARGS_NAME_POSSIBILITY);
 		int num = 0;
 		for (ServerPlayerEntity player : targets) {
-			new LimitationByServer.IndividualLimitationChanger(player)
+			new Limitations.IndividualLimitationChanger(player)
 					.setPossibilityOf(action, newValue)
 					.sync();
 			num++;

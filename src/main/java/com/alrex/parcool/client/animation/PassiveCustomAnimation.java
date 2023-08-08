@@ -1,10 +1,10 @@
 package com.alrex.parcool.client.animation;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.impl.ClingToCliff;
 import com.alrex.parcool.common.action.impl.Dive;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.EasingFunctions;
 import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
@@ -44,7 +44,7 @@ public class PassiveCustomAnimation {
 
 	public void animate(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		if (fallingAnimationTick >= FallingStartLine
-				&& !ParCoolConfig.CONFIG_CLIENT.disableFallingAnimation.get()
+				&& ParCoolConfig.Client.Booleans.EnableFallingAnimation.get()
 				&& !parkourability.get(Dive.class).isDoing()
 		) {
 			animateFalling(parkourability, transformer);

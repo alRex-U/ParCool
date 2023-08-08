@@ -1,11 +1,11 @@
 package com.alrex.parcool.common.capability;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PassiveCustomAnimation;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,9 +26,8 @@ public class Animation {
 	private final PassiveCustomAnimation passiveAnimation = new PassiveCustomAnimation();
 
 	public void setAnimator(Animator animator) {
-		if (ParCoolConfig.CONFIG_CLIENT.disableAnimation.get()) return;
-		ParCoolConfig.Client config = ParCoolConfig.CONFIG_CLIENT;
-		if (!config.canAnimate(animator.getClass()).get()) return;
+		if (!ParCoolConfig.Client.Booleans.EnableAnimation.get()) return;
+		if (!ParCoolConfig.Client.canAnimate(animator.getClass()).get()) return;
 		this.animator = animator;
 	}
 
@@ -62,7 +61,7 @@ public class Animation {
 		if (animator == null) return;
 		if (player.isLocalPlayer()
 				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()
-				&& ParCoolConfig.CONFIG_CLIENT.disableFPVAnimation.get()
+				&& !ParCoolConfig.Client.Booleans.EnableFPVAnimation.get()
 		) return;
 		animator.onCameraSetUp(event, player, parkourability);
 	}

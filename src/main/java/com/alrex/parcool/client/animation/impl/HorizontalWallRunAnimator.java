@@ -1,11 +1,11 @@
 package com.alrex.parcool.client.animation.impl;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.HorizontalWallRun;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -60,7 +60,9 @@ public class HorizontalWallRunAnimator extends Animator {
 
 	@Override
 	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
-		if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() || ParCoolConfig.CONFIG_CLIENT.disableCameraHorizontalWallRun.get())
+		if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
+				!ParCoolConfig.Client.Booleans.EnableCameraAnimationOfHWallRun.get()
+		)
 			return;
 		float factor = getFactor((float) (getTick() + event.getRenderPartialTicks()));
 		float angle = factor * 20 * (wallIsRightSide ? -1 : 1);

@@ -1,11 +1,11 @@
 package com.alrex.parcool.client.animation.impl;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.Roll;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -64,7 +64,11 @@ public class RollAnimator extends Animator {
 	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
 		Roll roll = parkourability.get(Roll.class);
 		float sign = direction == Roll.Direction.Front ? 1 : -1;
-		if (roll.isDoing() && clientPlayer.isLocalPlayer() && Minecraft.getInstance().options.getCameraType().isFirstPerson() && !ParCoolConfig.CONFIG_CLIENT.disableCameraRolling.get()) {
+		if (roll.isDoing() &&
+				clientPlayer.isLocalPlayer() &&
+				Minecraft.getInstance().options.getCameraType().isFirstPerson() &&
+				ParCoolConfig.Client.Booleans.EnableCameraAnimationOfRolling.get()
+		) {
 			float factor = calculateMovementFactor((float) ((roll.getDoingTick() + event.getRenderPartialTicks()) / (float) roll.getRollMaxTick()));
 			event.setPitch(sign * (factor > 0.5 ? factor - 1 : factor) * 360f + clientPlayer.getViewXRot((float) event.getRenderPartialTicks()));
 		}

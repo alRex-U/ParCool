@@ -3,7 +3,7 @@ package com.alrex.parcool.common.info;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.network.LimitationByServerMessage;
+import com.alrex.parcool.common.network.SyncLimitationByServerMessage;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 
 //This class is mainly for client side.
 //server side instance will be used just for individual data store, not be accessed in game
-public class LimitationByServer {
+public class Limitations {
 	//for client side, whether this instance is synchronized by server
 	private boolean haveReceived = false;
 	//Whether this limitation is applied
@@ -25,7 +25,7 @@ public class LimitationByServer {
 	private boolean infiniteStaminaPermitted = true;
 	private final ActionLimitation[] list = new ActionLimitation[ActionList.ACTIONS.size()];
 
-	public LimitationByServer() {
+	public Limitations() {
 		for (int i = 0; i < list.length; i++) {
 			list[i] = new ActionLimitation(true, 0);
 		}
@@ -65,7 +65,7 @@ public class LimitationByServer {
 		return (!enforced || infiniteStaminaPermitted);
 	}
 
-	public void writeSyncData(LimitationByServerMessage msg) {
+	public void writeSyncData(SyncLimitationByServerMessage msg) {
 		msg.setEnforced(enforced);
 		msg.setMaxStaminaLimitation(maxStaminaLimitation);
 		msg.setPermissionOfInfiniteStamina(infiniteStaminaPermitted);
@@ -130,7 +130,7 @@ public class LimitationByServer {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void receive(LimitationByServerMessage msg) {
+	public void receive(SyncLimitationByServerMessage msg) {
 		haveReceived = true;
 		enforced = msg.isEnforced();
 		maxStaminaLimitation = msg.getMaxStaminaLimitation();
@@ -143,7 +143,7 @@ public class LimitationByServer {
 
 	public static class IndividualLimitationChanger {
 		@Nullable
-		LimitationByServer instance = null;
+		Limitations instance = null;
 		ServerPlayerEntity player;
 
 		public IndividualLimitationChanger(ServerPlayerEntity player) {
@@ -199,7 +199,7 @@ public class LimitationByServer {
 
 		public void sync() {
 			if (instance == null) return;
-			LimitationByServerMessage.sendIndividualLimitation(player);
+			SyncLimitationByServerMessage.sendIndividualLimitation(player);
 		}
 	}
 }

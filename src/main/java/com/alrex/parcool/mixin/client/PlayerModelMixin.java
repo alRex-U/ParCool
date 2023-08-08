@@ -1,8 +1,8 @@
 package com.alrex.parcool.mixin.client;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.capability.Animation;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -53,7 +53,7 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends BipedMode
 		PlayerEntity player = (PlayerEntity) entity;
 		if (player.isLocalPlayer()
 				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()
-				&& ParCoolConfig.CONFIG_CLIENT.disableFPVAnimation.get()
+				&& !ParCoolConfig.Client.Booleans.EnableFPVAnimation.get()
 		) return;
 
 		transformer = new PlayerModelTransformer(
@@ -85,7 +85,7 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends BipedMode
 		PlayerEntity player = (PlayerEntity) entity;
 		if (player.isLocalPlayer()
 				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()
-				&& ParCoolConfig.CONFIG_CLIENT.disableFPVAnimation.get()
+				&& !ParCoolConfig.Client.Booleans.EnableFPVAnimation.get()
 		) return;
 
 		Animation animation = Animation.get(player);

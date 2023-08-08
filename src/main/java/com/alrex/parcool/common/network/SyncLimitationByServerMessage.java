@@ -1,13 +1,13 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionLimitation;
-import com.alrex.parcool.common.info.LimitationByServer;
+import com.alrex.parcool.common.info.Limitations;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,7 +17,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.function.Supplier;
 
-public class LimitationByServerMessage {
+public class SyncLimitationByServerMessage {
 	private boolean forIndividuals = false;
 	private boolean enforced = false;
 	private int maxStaminaLimitation = Integer.MAX_VALUE;
@@ -73,8 +73,8 @@ public class LimitationByServerMessage {
 		}
 	}
 
-	public static LimitationByServerMessage decode(PacketBuffer packet) {
-		LimitationByServerMessage message = new LimitationByServerMessage();
+	public static SyncLimitationByServerMessage decode(PacketBuffer packet) {
+		SyncLimitationByServerMessage message = new SyncLimitationByServerMessage();
 		message.forIndividuals = packet.readBoolean();
 		message.enforced = packet.readBoolean();
 		message.maxStaminaLimitation = packet.readInt();
@@ -93,7 +93,7 @@ public class LimitationByServerMessage {
 	@OnlyIn(Dist.CLIENT)
 	public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
-			PlayerEntity player = Minecraft.getInstance().player;
+			ClientPlayerEntity player = Minecraft.getInstance().player;
 			if (player == null) return;
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
@@ -101,13 +101,14 @@ public class LimitationByServerMessage {
 				parkourability.getActionInfo().receiveIndividualLimitation(this);
 			} else {
 				parkourability.getActionInfo().receiveLimitation(this);
+				SyncClientInformationMessage.sync(player);
 			}
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
 
-	private static LimitationByServerMessage newInstanceForServerWide() {
-		LimitationByServerMessage message = new LimitationByServerMessage();
+	private static SyncLimitationByServerMessage newInstanceForServerWide() {
+		SyncLimitationByServerMessage message = new SyncLimitationByServerMessage();
 		ParCoolConfig.Server config = ParCoolConfig.CONFIG_SERVER;
 
 		message.maxStaminaLimitation = config.staminaMax.get();
@@ -125,8 +126,8 @@ public class LimitationByServerMessage {
 		return message;
 	}
 
-	private static LimitationByServerMessage newInstance(LimitationByServer limitation) {
-		LimitationByServerMessage message = new LimitationByServerMessage();
+	private static SyncLimitationByServerMessage newInstance(Limitations limitation) {
+		SyncLimitationByServerMessage message = new SyncLimitationByServerMessage();
 
 		message.forIndividuals = false;
 		limitation.writeSyncData(message);
@@ -134,7 +135,7 @@ public class LimitationByServerMessage {
 	}
 
 	public static void send(ServerPlayerEntity player) {
-		LimitationByServerMessage msg = newInstanceForServerWide();
+		SyncLimitationByServerMessage msg = newInstanceForServerWide();
 		msg.forIndividuals = false;
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), msg);
 	}
@@ -142,7 +143,7 @@ public class LimitationByServerMessage {
 	public static void sendIndividualLimitation(ServerPlayerEntity player) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
-		LimitationByServerMessage msg = newInstance(parkourability.getActionInfo().getIndividualLimitation());
+		SyncLimitationByServerMessage msg = newInstance(parkourability.getActionInfo().getIndividualLimitation());
 		msg.forIndividuals = true;
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), msg);
 	}

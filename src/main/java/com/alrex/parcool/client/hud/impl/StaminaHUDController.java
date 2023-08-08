@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.hud.impl;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.hud.Position;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -28,15 +28,18 @@ public class StaminaHUDController {
 	}
 
 	public void render(RenderGameOverlayEvent.Post event, MatrixStack stack) {
-		ParCoolConfig.Client config = ParCoolConfig.CONFIG_CLIENT;
-		if (config.hideStaminaHUD.get() || !config.parCoolActivation.get() || config.useHungerBarInsteadOfStamina.get())
+		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get() ||
+				ParCoolConfig.Client.Booleans.UseHungerBarInstead.get())
 			return;
 		if (event.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE) return;
 
-		if (config.useLightHUD.get()) {
-			lightStaminaHUD.render(event, stack);
-		} else {
-			staminaHUD.render(event, stack);
+		switch (ParCoolConfig.Client.StaminaHUDType.get()) {
+			case Light:
+				lightStaminaHUD.render(event, stack);
+				break;
+			case Normal:
+				staminaHUD.render(event, stack);
+				break;
 		}
 	}
 }

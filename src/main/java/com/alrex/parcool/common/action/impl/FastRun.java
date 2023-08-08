@@ -1,6 +1,5 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.FastRunningAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
@@ -9,6 +8,7 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
@@ -47,19 +47,17 @@ public class FastRun extends Action {
 
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		startInfo.putDouble(ParCoolConfig.CONFIG_CLIENT.fastRunningModifier.get());
 		return canContinue(player, parkourability, stamina);
 	}
 
 	@Override
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		return (parkourability.getActionInfo().can(FastRun.class)
-				&& !stamina.isExhausted()
+		return (!stamina.isExhausted()
 				&& player.isSprinting()
 				&& !player.isVisuallyCrawling()
 				&& !player.isSwimming()
 				&& !parkourability.get(Crawl.class).isDoing()
-				&& (KeyBindings.getKeyFastRunning().isDown() || ParCoolConfig.CONFIG_CLIENT.replaceSprintWithFastRun.get())
+				&& (KeyBindings.getKeyFastRunning().isDown() || ParCoolConfig.Client.Booleans.ReplaceSprintWithFastRun.get())
 		);
 	}
 
@@ -81,22 +79,22 @@ public class FastRun extends Action {
 
 	@Override
 	public void onStartInServer(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
-		speedModifier = startData.getDouble();
+		speedModifier = parkourability.getClientInfo().get(ParCoolConfig.Client.Doubles.FastRunSpeedModifier);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public boolean canActWithRunning(PlayerEntity player) {
-		return ParCoolConfig.CONFIG_CLIENT.substituteSprintForFastRun.get() ? player.isSprinting() : this.isDoing();
+		return ParCoolConfig.Client.Booleans.SubstituteSprintForFastRun.get() ? player.isSprinting() : this.isDoing();
 	}
 
 	//return sprinting tick if substitute sprint is on
 	@OnlyIn(Dist.CLIENT)
 	public int getDashTick(AdditionalProperties properties) {
-		return ParCoolConfig.CONFIG_CLIENT.substituteSprintForFastRun.get() ? properties.getSprintingTick() : this.getDoingTick();
+		return ParCoolConfig.Client.Booleans.SubstituteSprintForFastRun.get() ? properties.getSprintingTick() : this.getDoingTick();
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public int getNotDashTick(AdditionalProperties properties) {
-		return ParCoolConfig.CONFIG_CLIENT.substituteSprintForFastRun.get() ? properties.getNotSprintingTick() : this.getNotDoingTick();
+		return ParCoolConfig.Client.Booleans.SubstituteSprintForFastRun.get() ? properties.getNotSprintingTick() : this.getNotDoingTick();
 	}
 }

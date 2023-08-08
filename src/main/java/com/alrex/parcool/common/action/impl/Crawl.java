@@ -1,6 +1,5 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.CrawlAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
@@ -9,6 +8,7 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -20,14 +20,13 @@ public class Crawl extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		return (parkourability.getActionInfo().can(Crawl.class)
-				&& KeyRecorder.keyCrawlState.isPressed()
+		return (KeyRecorder.keyCrawlState.isPressed()
 				&& !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& parkourability.get(Vault.class).getNotDoingTick() >= 8
 				&& !player.isInWaterOrBubble()
-				&& (player.isOnGround() || !ParCoolConfig.CONFIG_CLIENT.disableCrawlInAir.get())
+				&& (player.isOnGround() || ParCoolConfig.Client.Booleans.EnableCrawlInAir.get())
 		);
 	}
 

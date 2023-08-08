@@ -1,6 +1,5 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.RollAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
@@ -8,6 +7,7 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,7 +30,7 @@ public class Roll extends Action {
 			if (KeyBindings.getKeyBreakfall().isDown()
 					&& KeyBindings.getKeyForward().isDown()
 					&& !parkourability.get(Dodge.class).isDoing()
-					&& ParCoolConfig.CONFIG_CLIENT.enableRollWhenCreative.get()
+					&& ParCoolConfig.Client.Booleans.EnableRollWhenCreative.get()
 					&& player.isCreative()
 					&& parkourability.getAdditionalProperties().getLandingTick() <= 1
 					&& player.isOnGround()

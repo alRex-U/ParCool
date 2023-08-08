@@ -1,10 +1,10 @@
 package com.alrex.parcool.client.animation.impl;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.EasingFunctions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -76,7 +76,7 @@ public class SpeedVaultAnimator extends Animator {
 	@Override
 	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
 		if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
-				ParCoolConfig.CONFIG_CLIENT.disableCameraVault.get()) return;
+				!ParCoolConfig.Client.Booleans.EnableCameraAnimationOfVault.get()) return;
 		float factor = getFactor((float) (getTick() + event.getRenderPartialTicks()));
 		float phase = (float) ((getTick() + event.getRenderPartialTicks()) / MAX_TIME);
 		float forwardFactor = (float) Math.sin(phase * 2 * Math.PI) + 0.5f;

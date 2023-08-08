@@ -25,10 +25,10 @@ public class ClientProxy extends CommonProxy {
 		);
 		instance.registerMessage(
 				12,
-				LimitationByServerMessage.class,
-				LimitationByServerMessage::encode,
-				LimitationByServerMessage::decode,
-				LimitationByServerMessage::handle
+				SyncLimitationByServerMessage.class,
+				SyncLimitationByServerMessage::encode,
+				SyncLimitationByServerMessage::decode,
+				SyncLimitationByServerMessage::handle
 		);
 		instance.registerMessage(
 				15,
@@ -43,6 +43,13 @@ public class ClientProxy extends CommonProxy {
 				StaminaControlMessage::encode,
 				StaminaControlMessage::decode,
 				StaminaControlMessage::handleClient
+		);
+		instance.registerMessage(
+				17,
+				SyncClientInformationMessage.class,
+				SyncClientInformationMessage::encode,
+				SyncClientInformationMessage::decode,
+				SyncClientInformationMessage::handleClient
 		);
 	}
 }

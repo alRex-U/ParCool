@@ -12,8 +12,9 @@ import java.nio.ByteBuffer;
 public class BreakfallReady extends Action {
 	public void startBreakfall(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		setDoing(false);
-		if ((KeyBindings.getKeyForward().isDown() || KeyBindings.getKeyBack().isDown())
-				&& (parkourability.getActionInfo().can(Roll.class) || !parkourability.getActionInfo().can(Tap.class))
+		if (((KeyBindings.getKeyForward().isDown() || KeyBindings.getKeyBack().isDown())
+				&& parkourability.getActionInfo().can(Roll.class))
+				|| !parkourability.getActionInfo().can(Tap.class)
 		) {
 			parkourability.get(Roll.class).startRoll(player);
 		} else {
@@ -28,8 +29,7 @@ public class BreakfallReady extends Action {
 
 	@Override
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		return (parkourability.getActionInfo().can(BreakfallReady.class)
-				&& KeyBindings.getKeyBreakfall().isDown()
+		return (KeyBindings.getKeyBreakfall().isDown()
 				&& !stamina.isExhausted()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !player.isInWaterOrBubble()
