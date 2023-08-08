@@ -5,7 +5,6 @@ import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionLimitation;
 import com.alrex.parcool.common.info.Limitations;
-import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -107,35 +106,16 @@ public class SyncLimitationByServerMessage {
 		contextSupplier.get().setPacketHandled(true);
 	}
 
-	private static SyncLimitationByServerMessage newInstanceForServerWide() {
-		SyncLimitationByServerMessage message = new SyncLimitationByServerMessage();
-		ParCoolConfig.Server config = ParCoolConfig.CONFIG_SERVER;
-
-		message.maxStaminaLimitation = config.staminaMax.get();
-		message.enforced = ParCoolConfig.CONFIG_SERVER.enforced.get();
-		message.permissionOfInfiniteStamina = config.allowInfiniteStamina.get();
-		message.maxStaminaRecovery = config.staminaRecoveryMax.get();
-		message.forIndividuals = false;
-		for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
-			message.limitations[i]
-					= new ActionLimitation(
-					config.getPermissionOf(ActionList.getByIndex(i)),
-					config.getLeastStaminaConsumptionOf(ActionList.getByIndex(i))
-			);
-		}
-		return message;
-	}
-
 	private static SyncLimitationByServerMessage newInstance(Limitations limitation) {
 		SyncLimitationByServerMessage message = new SyncLimitationByServerMessage();
-
-		message.forIndividuals = false;
 		limitation.writeSyncData(message);
 		return message;
 	}
 
-	public static void send(ServerPlayerEntity player) {
-		SyncLimitationByServerMessage msg = newInstanceForServerWide();
+	public static void sendServerLimitation(ServerPlayerEntity player) {
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) return;
+		SyncLimitationByServerMessage msg = newInstance(parkourability.getActionInfo().getServerLimitation());
 		msg.forIndividuals = false;
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), msg);
 	}

@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.event;
 
+import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.network.SyncLimitationByServerMessage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -12,7 +13,12 @@ public class EventSendPermissions {
 		Entity entity = event.getEntity();
 		if (entity instanceof ServerPlayerEntity) {
 			ServerPlayerEntity player = (ServerPlayerEntity) entity;
-			SyncLimitationByServerMessage.send(player);
+			Parkourability parkourability = Parkourability.get(player);
+			if (parkourability == null) return;
+			parkourability.getActionInfo().getServerLimitation().readFromServerConfig();
+			parkourability.getActionInfo().getServerLimitation().setReceived();
+			parkourability.getActionInfo().getIndividualLimitation().setReceived();
+			SyncLimitationByServerMessage.sendServerLimitation(player);
 			SyncLimitationByServerMessage.sendIndividualLimitation(player);
 		}
 	}

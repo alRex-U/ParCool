@@ -4,6 +4,7 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.network.SyncLimitationByServerMessage;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -23,11 +24,11 @@ public class Limitations {
 	private int maxStaminaLimitation = Integer.MAX_VALUE;
 	private int maxStaminaRecovery = Integer.MAX_VALUE;
 	private boolean infiniteStaminaPermitted = true;
-	private final ActionLimitation[] list = new ActionLimitation[ActionList.ACTIONS.size()];
+	private final ActionLimitation[] actionLimitations = new ActionLimitation[ActionList.ACTIONS.size()];
 
 	public Limitations() {
-		for (int i = 0; i < list.length; i++) {
-			list[i] = new ActionLimitation(true, 0);
+		for (int i = 0; i < actionLimitations.length; i++) {
+			actionLimitations[i] = new ActionLimitation(true, 0);
 		}
 	}
 
@@ -38,7 +39,7 @@ public class Limitations {
 	public boolean isPermitted(Class<? extends Action> action) {
 		if (!haveReceived) return false;
 		if (!enforced) return true;
-		ActionLimitation limitation = list[ActionList.getIndexOf(action)];
+		ActionLimitation limitation = actionLimitations[ActionList.getIndexOf(action)];
 		if (limitation == null) return false;
 		return limitation.isPossible();
 	}
@@ -46,7 +47,7 @@ public class Limitations {
 	public int getLeastStaminaConsumption(Class<? extends Action> action) {
 		if (!haveReceived) return 0;
 		if (!enforced) return 0;
-		ActionLimitation limitation = list[ActionList.getIndexOf(action)];
+		ActionLimitation limitation = actionLimitations[ActionList.getIndexOf(action)];
 		if (limitation == null) return 0;
 		return limitation.getLeastStaminaConsumption();
 	}
@@ -65,6 +66,23 @@ public class Limitations {
 		return (!enforced || infiniteStaminaPermitted);
 	}
 
+	public void readFromServerConfig() {
+		enforced = ParCoolConfig.CONFIG_SERVER.enforced.get();
+		maxStaminaLimitation = ParCoolConfig.CONFIG_SERVER.staminaMax.get();
+		infiniteStaminaPermitted = ParCoolConfig.CONFIG_SERVER.allowInfiniteStamina.get();
+		maxStaminaRecovery = ParCoolConfig.CONFIG_SERVER.staminaRecoveryMax.get();
+		for (int i = 0; i < actionLimitations.length; i++) {
+			actionLimitations[i] = new ActionLimitation(
+					ParCoolConfig.CONFIG_SERVER.getPermissionOf(ActionList.getByIndex(i)),
+					ParCoolConfig.CONFIG_SERVER.getLeastStaminaConsumptionOf(ActionList.getByIndex(i))
+			);
+		}
+	}
+
+	public void setReceived() {
+		haveReceived = true;
+	}
+
 	public void writeSyncData(SyncLimitationByServerMessage msg) {
 		msg.setEnforced(enforced);
 		msg.setMaxStaminaLimitation(maxStaminaLimitation);
@@ -73,8 +91,8 @@ public class Limitations {
 		ActionLimitation[] limitations = msg.getLimitations();
 		for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
 			limitations[i] = new ActionLimitation(
-					list[i].isPossible(),
-					list[i].getLeastStaminaConsumption()
+					actionLimitations[i].isPossible(),
+					actionLimitations[i].getLeastStaminaConsumption()
 			);
 		}
 	}
@@ -85,8 +103,8 @@ public class Limitations {
 		nbt.putInt("max_stamina", maxStaminaLimitation);
 		nbt.putBoolean("infinite_stamina_permitted", infiniteStaminaPermitted);
 		ListNBT limitationList = new ListNBT();
-		for (int i = 0; i < list.length; i++) {
-			ActionLimitation limitation = list[i];
+		for (int i = 0; i < actionLimitations.length; i++) {
+			ActionLimitation limitation = actionLimitations[i];
 			if (limitation == null) continue;
 			Class<? extends Action> action = ActionList.getByIndex(i);
 			CompoundNBT actionNbt = new CompoundNBT();
@@ -119,7 +137,7 @@ public class Limitations {
 					}
 				}
 				if (i == ActionList.ACTIONS.size()) continue;
-				list[i] = new ActionLimitation(
+				actionLimitations[i] = new ActionLimitation(
 						actionNbt.getBoolean("action_permitted"),
 						actionNbt.getInt("action_stamina_consumption")
 				);
@@ -137,7 +155,7 @@ public class Limitations {
 		maxStaminaRecovery = msg.getMaxStaminaRecovery();
 		infiniteStaminaPermitted = msg.getPermissionOfInfiniteStamina();
 		for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
-			list[i] = msg.getLimitations()[i];
+			actionLimitations[i] = msg.getLimitations()[i];
 		}
 	}
 
@@ -159,8 +177,8 @@ public class Limitations {
 			instance.maxStaminaLimitation = Integer.MAX_VALUE;
 			instance.enforced = false;
 			instance.infiniteStaminaPermitted = true;
-			for (int i = 0; i < instance.list.length; i++) {
-				instance.list[i] = new ActionLimitation(true, 0);
+			for (int i = 0; i < instance.actionLimitations.length; i++) {
+				instance.actionLimitations[i] = new ActionLimitation(true, 0);
 			}
 			return this;
 		}
@@ -185,15 +203,15 @@ public class Limitations {
 
 		public IndividualLimitationChanger setPossibilityOf(Class<? extends Action> action, boolean value) {
 			if (instance == null) return this;
-			ActionLimitation limitation = instance.list[ActionList.getIndexOf(action)];
-			instance.list[ActionList.getIndexOf(action)] = new ActionLimitation(value, limitation.getLeastStaminaConsumption());
+			ActionLimitation limitation = instance.actionLimitations[ActionList.getIndexOf(action)];
+			instance.actionLimitations[ActionList.getIndexOf(action)] = new ActionLimitation(value, limitation.getLeastStaminaConsumption());
 			return this;
 		}
 
 		public IndividualLimitationChanger setStaminaConsumptionOf(Class<? extends Action> action, int value) {
 			if (instance == null) return this;
-			ActionLimitation limitation = instance.list[ActionList.getIndexOf(action)];
-			instance.list[ActionList.getIndexOf(action)] = new ActionLimitation(limitation.isPossible(), value);
+			ActionLimitation limitation = instance.actionLimitations[ActionList.getIndexOf(action)];
+			instance.actionLimitations[ActionList.getIndexOf(action)] = new ActionLimitation(limitation.isPossible(), value);
 			return this;
 		}
 

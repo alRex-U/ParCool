@@ -135,7 +135,7 @@ public class ParCoolSettingScreen extends Screen {
 				renderLimitations(matrixStack, mouseX, mouseY, p_230430_4_, topBarHeight);
 		}
 		int titleOffset = 0;
-		if (serverPermissionReceived.getAsBoolean() || individualPermissionReceived.getAsBoolean()) {
+		if (!(serverPermissionReceived.getAsBoolean() && individualPermissionReceived.getAsBoolean())) {
 			fill(matrixStack, 2, 2, topBarHeight - 3, topBarHeight - 3, 0xFFEEEEEE);
 			fill(matrixStack, 3, 3, topBarHeight - 4, topBarHeight - 4, 0xFFEE0000);
 			drawCenteredString(matrixStack, font, "!", topBarHeight / 2, (topBarHeight - font.lineHeight) / 2 + 1, 0xEEEEEE);
@@ -250,7 +250,7 @@ public class ParCoolSettingScreen extends Screen {
 			button.setHeight(20);
 			button.render(matrixStack, mouseX, mouseY, p_230430_4_);
 			fill(matrixStack, offsetX, button.y + button.getHeight(), width - offsetX, button.y + button.getHeight() + 1, color.getSubSeparator());
-			String comment = booleans[i].Comment;
+			String comment = booleans[i + topIndex].Comment;
 			if (comment != null && button.x < mouseX && mouseX < button.x + contentWidth && button.y < mouseY && mouseY < button.y + 20) {
 				renderComponentTooltip(
 						matrixStack,

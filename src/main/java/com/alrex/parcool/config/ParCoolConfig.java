@@ -65,7 +65,7 @@ public class ParCoolConfig {
 		public enum Booleans implements Item<Boolean> {
 			InfiniteStamina(
 					ConfigGroup.Stamina,
-					"Infinite Stamina(this needs a permission from server, even if it is on single player's game. normally permitted)\\nPlease check 'parcool-server.toml' in 'serverconfig' directory",
+					"Infinite Stamina (this needs a permission from server, even if it is on single player's game. normally permitted)\nPlease check 'parcool-server.toml' in 'serverconfig' directory",
 					"infinite_stamina", false
 			),
 			InfiniteStaminaWhenCreative(

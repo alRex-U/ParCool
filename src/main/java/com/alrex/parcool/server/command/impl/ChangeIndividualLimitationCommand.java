@@ -1,6 +1,7 @@
 package com.alrex.parcool.server.command.impl;
 
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.Limitations;
 import com.alrex.parcool.server.command.args.ActionArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
@@ -12,12 +13,14 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Collection;
 
 public class ChangeIndividualLimitationCommand {
 	private static final String ARGS_NAME_PLAYERS = "targets";
+	private static final String ARGS_NAME_PLAYER = "target";
 	private static final String ARGS_NAME_ACTION = "action";
 	private static final String ARGS_NAME_MAX_STAMINA_VALUE = "max_stamina_value";
 	private static final String ARGS_NAME_STAMINA_CONSUMPTION = "stamina_consumption";
@@ -82,7 +85,64 @@ public class ChangeIndividualLimitationCommand {
 										)
 								)
 						)
+				)
+				.then(Commands
+						.literal("get")
+						.then(Commands
+								.argument(ARGS_NAME_PLAYER, EntityArgument.player())
+								.then(Commands
+										.literal("max_stamina")
+										.executes((it) -> ChangeIndividualLimitationCommand.getLimitationValue(it, 0))
+								)
+								.then(Commands
+										.literal("possibility")
+										.then(Commands
+												.literal("infinite_stamina")
+												.executes((it) -> ChangeIndividualLimitationCommand.getLimitationValue(it, 1))
+										)
+										.then(Commands
+												.argument(ARGS_NAME_ACTION, ActionArgumentType.action())
+												.executes((it) -> ChangeIndividualLimitationCommand.getLimitationValue(it, 2))
+										)
+								)
+								.then(Commands
+										.literal("least_stamina_consumption")
+										.then(Commands
+												.argument(ARGS_NAME_ACTION, ActionArgumentType.action())
+												.executes((it) -> ChangeIndividualLimitationCommand.getLimitationValue(it, 3))
+										)
+								)
+						)
 				);
+	}
+
+	private static int getLimitationValue(CommandContext<CommandSource> context, int code) throws CommandSyntaxException {
+		ServerPlayerEntity player = EntityArgument.getPlayer(context, ARGS_NAME_PLAYER);
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) {
+			context.getSource().sendFailure(new StringTextComponent("§4[Internal Error] Parkourability is null"));
+			return 1;
+		}
+		Class<? extends Action> action;
+		switch (code) {
+			case 0:
+				context.getSource().sendSuccess(new StringTextComponent(Integer.toString(parkourability.getActionInfo().getIndividualLimitation().getMaxStaminaLimitation())), false);
+				break;
+			case 1:
+				context.getSource().sendSuccess(new StringTextComponent(Boolean.toString(parkourability.getActionInfo().getIndividualLimitation().isInfiniteStaminaPermitted())), false);
+				break;
+			case 2:
+				action = ActionArgumentType.getAction(context, ARGS_NAME_ACTION);
+				context.getSource().sendSuccess(new StringTextComponent(Boolean.toString(parkourability.getActionInfo().getIndividualLimitation().isPermitted(action))), false);
+				break;
+			case 3:
+				action = ActionArgumentType.getAction(context, ARGS_NAME_ACTION);
+				context.getSource().sendSuccess(new StringTextComponent(Integer.toString(parkourability.getActionInfo().getIndividualLimitation().getLeastStaminaConsumption(action))), false);
+				break;
+			default:
+				return 1;
+		}
+		return 0;
 	}
 
 	private static int setLimitationDefault(CommandContext<CommandSource> context) throws CommandSyntaxException {
