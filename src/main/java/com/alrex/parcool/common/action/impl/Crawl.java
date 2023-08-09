@@ -17,22 +17,40 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.nio.ByteBuffer;
 
 public class Crawl extends Action {
+	public enum ControlType {
+		PressKey, Toggle
+	}
+
+	public boolean toggleStatus = false;
+
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		return (KeyRecorder.keyCrawlState.isPressed()
+		return ((ParCoolConfig.Client.CrawlControl.get() == ControlType.PressKey && KeyRecorder.keyCrawlState.isPressed())
+				|| (ParCoolConfig.Client.CrawlControl.get() == ControlType.Toggle && toggleStatus))
 				&& !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& parkourability.get(Vault.class).getNotDoingTick() >= 8
 				&& !player.isInWaterOrBubble()
-				&& (player.isOnGround() || ParCoolConfig.Client.Booleans.EnableCrawlInAir.get())
-		);
+				&& (player.isOnGround() || ParCoolConfig.Client.Booleans.EnableCrawlInAir.get());
+	}
+
+	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		if (player.isLocalPlayer()) {
+			if (ParCoolConfig.Client.CrawlControl.get() == Crawl.ControlType.Toggle) {
+				if (KeyRecorder.keyCrawlState.isPressed())
+					toggleStatus = !toggleStatus;
+			} else {
+				toggleStatus = false;
+			}
+		}
 	}
 
 	@Override
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		return KeyBindings.getKeyCrawl().isDown();
+		return (ParCoolConfig.Client.CrawlControl.get() == ControlType.PressKey && KeyBindings.getKeyCrawl().isDown())
+				|| (ParCoolConfig.Client.CrawlControl.get() == ControlType.Toggle && toggleStatus);
 	}
 
 	@Override
