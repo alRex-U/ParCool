@@ -8,6 +8,8 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -21,6 +23,7 @@ import java.nio.ByteBuffer;
 public class WallJump extends Action {
 
 	private boolean jump = false;
+	private float forceBodyAngle = 0;
 
 	public boolean justJumped() {
 		return jump;
@@ -42,15 +45,19 @@ public class WallJump extends Action {
 	private Vector3d getJumpDirection(PlayerEntity player, Vector3d wall) {
 		if (wall == null) return null;
 		wall = wall.normalize();
-
 		Vector3d lookVec = player.getLookAngle();
 		Vector3d vec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
+		Vector3d value;
 
-		if (wall.dot(vec) > 0.5) {//To Wall
-			return null;
-		} else {/*back on Wall*/}
+		if (wall.dot(vec) > 0) {//To Wall
+			if (!ParCoolConfig.Client.Booleans.EnableWallJumpBackward.get()) return null;
+			double dot = vec.reverse().dot(wall);
+			value = vec.add(wall.scale(2 * dot / wall.length()));
+		} else {//back on Wall
+			value = vec;
+		}
 
-		return vec.normalize().add(wall.scale(-0.7));
+		return value.normalize().add(wall.scale(-0.7)).scale(0.85);
 	}
 
 	@Override
@@ -90,7 +97,7 @@ public class WallJump extends Action {
 				).normalize();
 
 		WallJumpAnimationType type;
-		if (lookDividedVec.x() > 0.5) {
+		if (lookDividedVec.x() > 0.707) {
 			type = WallJumpAnimationType.Back;
 		} else if (dividedVec.z() > 0) {
 			type = WallJumpAnimationType.SwingRightArm;
@@ -153,6 +160,7 @@ public class WallJump extends Action {
 		if (animation != null) {
 			switch (type) {
 				case Back:
+					forceBodyAngle = (float) VectorUtil.toYawDegree(wallDirection);
 					animation.setAnimator(new BackwardWallJumpAnimator());
 					break;
 				case SwingLeftArm:
@@ -166,12 +174,14 @@ public class WallJump extends Action {
 
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
-		startData.position(32);
+		startData.position(16);
+		Vector3d wallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		WallJumpAnimationType type = WallJumpAnimationType.fromCode(startData.get());
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			switch (type) {
 				case Back:
+					forceBodyAngle = (float) VectorUtil.toYawDegree(wallDirection);
 					animation.setAnimator(new BackwardWallJumpAnimator());
 					break;
 				case SwingLeftArm:
@@ -183,27 +193,20 @@ public class WallJump extends Action {
 		}
 	}
 
-	private enum WallJumpAnimationType {
-		Back((byte) 0), SwingRightArm((byte) 1), SwingLeftArm((byte) 2);
-		private byte code;
+	@Override
+	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		super.onWorkingTickInClient(player, parkourability, stamina);
+	}
 
-		WallJumpAnimationType(byte code) {
-			this.code = code;
-		}
+	private enum WallJumpAnimationType {
+		Back, SwingRightArm, SwingLeftArm;
 
 		public byte getCode() {
-			return code;
+			return (byte) this.ordinal();
 		}
 
 		public static WallJumpAnimationType fromCode(byte code) {
-			switch (code) {
-				case 1:
-					return SwingRightArm;
-				case 2:
-					return SwingLeftArm;
-				default:
-					return Back;
-			}
+			return values()[code];
 		}
 	}
 }

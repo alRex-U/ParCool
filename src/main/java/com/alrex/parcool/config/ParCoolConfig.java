@@ -90,24 +90,28 @@ public class ParCoolConfig {
 					ConfigGroup.CameraAnimation, "Enable first-person-view animations",
 					"enable_fov_animation", true
 			),
+			EnableCameraAnimationOfBackWallJump(
+					ConfigGroup.CameraAnimation, "Enable rotation of camera by Backward Wall-Jump",
+					"enable_camera_rotation_back_wall_jump", true
+			),
 			EnableCameraAnimationOfRolling(
-					ConfigGroup.CameraAnimation, "Enable Roll rotation of camera",
-					"enable_camera_rotation_flipping", true
+					ConfigGroup.CameraAnimation, "Enable rotation of camera by Roll",
+					"enable_camera_rotation_roll", true
 			),
 			EnableCameraAnimationOfFlipping(
-					ConfigGroup.CameraAnimation, "Enable Flipping rotation of camera",
+					ConfigGroup.CameraAnimation, "Enable rotation of camera by Flipping",
 					"enable_camera_rotation_flipping", true
 			),
 			EnableCameraAnimationOfVault(
-					ConfigGroup.CameraAnimation, "Enable Vault animation of camera",
+					ConfigGroup.CameraAnimation, "Enable animation of camera by Vault",
 					"enable_camera_animation_vault", false
 			),
 			EnableCameraAnimationOfHWallRun(
-					ConfigGroup.CameraAnimation, "Enable Horizontal-WallRun animation of camera",
+					ConfigGroup.CameraAnimation, "Enable animation of camera by Horizontal-WallRun",
 					"enable_camera_animation_h-wall-run", true
 			),
 			EnableCameraAnimationOfHangDown(
-					ConfigGroup.CameraAnimation, "Enable Hang animation of camera",
+					ConfigGroup.CameraAnimation, "Enable animation of camera by Hang-Down",
 					"enable_camera_animation_hang-down", true
 			),
 			HideStaminaHUDWhenStaminaIsInfinite(
@@ -125,6 +129,10 @@ public class ParCoolConfig {
 			EnableVaultInAir(
 					ConfigGroup.Control, "Enable Vault in air",
 					"enable_vault_in_air", true
+			),
+			EnableWallJumpBackward(
+					ConfigGroup.Control, "Enable Wall-Jump backward when facing to wall",
+					"enable_wall_jump_backward", true
 			),
 			EnableRollWhenCreative(
 					ConfigGroup.Control, "Enable Roll when creative mode(experimental)",
