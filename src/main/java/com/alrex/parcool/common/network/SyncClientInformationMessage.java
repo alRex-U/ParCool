@@ -80,6 +80,7 @@ public class SyncClientInformationMessage {
 	public static void sync(ClientPlayerEntity player) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
+		parkourability.getClientInfo().readFromLocalConfig();
 		SyncClientInformationMessage message = new SyncClientInformationMessage();
 		parkourability.getClientInfo().setSynced(false);
 		parkourability.getClientInfo().writeTo(message.data);

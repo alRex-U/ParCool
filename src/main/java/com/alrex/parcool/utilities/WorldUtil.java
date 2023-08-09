@@ -173,10 +173,10 @@ public class WorldUtil {
 		Block block = state.getBlock();
 		HangDown.BarAxis axis = null;
 		if (block instanceof RotatedPillarBlock) {
-			Direction.Axis pillarAxis = state.getValue(RotatedPillarBlock.AXIS);
 			if (state.isCollisionShapeFullBlock(entity.level, pos)) {
 				return null;
 			}
+			Direction.Axis pillarAxis = state.getValue(RotatedPillarBlock.AXIS);
 			switch (pillarAxis) {
 				case X:
 					axis = HangDown.BarAxis.X;
@@ -185,7 +185,10 @@ public class WorldUtil {
 					axis = HangDown.BarAxis.Z;
 					break;
 			}
-		} else if (block instanceof EndRodBlock) {
+		} else if (block instanceof DirectionalBlock) {
+			if (state.isCollisionShapeFullBlock(entity.level, pos)) {
+				return null;
+			}
 			Direction direction = state.getValue(DirectionalBlock.FACING);
 			switch (direction) {
 				case EAST:
@@ -196,7 +199,7 @@ public class WorldUtil {
 				case SOUTH:
 					axis = HangDown.BarAxis.Z;
 			}
-		} else if (block instanceof FenceBlock || block instanceof PaneBlock) {
+		} else if (block instanceof FourWayBlock) {
 			int zCount = 0;
 			int xCount = 0;
 			if (state.getValue(FourWayBlock.NORTH)) zCount++;
