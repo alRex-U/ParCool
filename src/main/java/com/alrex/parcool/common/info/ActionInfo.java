@@ -2,7 +2,6 @@ package com.alrex.parcool.common.info;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.network.SyncLimitationByServerMessage;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.nbt.INBT;
 
@@ -45,7 +44,7 @@ public class ActionInfo {
 	public int getStaminaRecovery() {
 		int value = getClientInformation().get(ParCoolConfig.Client.Integers.StaminaRecoveryValue);
 		for (Limitations limitation : Limitations) {
-			value = Math.min(value, limitation.getMaxStaminaRecovery());
+			value = Math.min(value, limitation.get(ParCoolConfig.Server.Integers.MaxStaminaRecovery));
 		}
 		return value;
 	}
@@ -53,7 +52,7 @@ public class ActionInfo {
 	public int getMaxStamina() {
 		int value = getClientInformation().get(ParCoolConfig.Client.Integers.MaxStamina);
 		for (Limitations limitation : Limitations) {
-			value = Math.min(value, limitation.getMaxStaminaLimitation());
+			value = Math.min(value, limitation.get(ParCoolConfig.Server.Integers.MaxStaminaLimit));
 		}
 		return value;
 	}
@@ -77,13 +76,5 @@ public class ActionInfo {
 
 	public INBT writeNBT() {
 		return getIndividualLimitation().writeNBT();
-	}
-
-	public void receiveLimitation(SyncLimitationByServerMessage msg) {
-		getServerLimitation().receive(msg);
-	}
-
-	public void receiveIndividualLimitation(SyncLimitationByServerMessage msg) {
-		getIndividualLimitation().receive(msg);
 	}
 }

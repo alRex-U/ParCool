@@ -19,13 +19,30 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class ParCoolConfig {
-	public static final ForgeConfigSpec.Builder S_BUILDER = new ForgeConfigSpec.Builder();
+	public interface Item<T> {
+		T get();
 
-	public static final Server CONFIG_SERVER = new Server(S_BUILDER);
+		void set(T value);
+
+		String getPath();
+
+		@Nullable
+		ForgeConfigSpec.ConfigValue<T> getInternalInstance();
+
+		void register(ForgeConfigSpec.Builder builder);
+
+		void writeToBuffer(ByteBuffer buffer);
+
+		T readFromBuffer(ByteBuffer buffer);
+	}
+
+	public enum ConfigGroup {
+		Animation, CameraAnimation, HUD, Modifier, Control, Stamina, Other
+	}
 
 	public static class Client {
 		public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-		public static final ForgeConfigSpec BUILT_SPEC;
+		public static final ForgeConfigSpec BUILT_CONFIG;
 
 		public static ForgeConfigSpec.BooleanValue getPossibilityOf(Class<? extends Action> action) {
 			return actionPossibilities[ActionList.getIndexOf(action)];
@@ -37,31 +54,6 @@ public class ParCoolConfig {
 
 		public static ForgeConfigSpec.IntValue getStaminaConsumptionOf(Class<? extends Action> action) {
 			return staminaConsumptions[ActionList.getIndexOf(action)];
-		}
-
-		public enum ConfigGroup {
-			Animation, CameraAnimation, HUD, Modifier, Control, Stamina, Other
-		}
-
-		public interface Item<T> {
-			T get();
-
-			//In Client : Set the value to config
-			//In Server : Set the value to internal cache (for synchronization with client only)
-			void set(T value);
-
-			@OnlyIn(Dist.CLIENT)
-			@Nullable
-			ForgeConfigSpec.ConfigValue<T> getInternalInstance();
-
-			@OnlyIn(Dist.CLIENT)
-			void register(ForgeConfigSpec.Builder builder);
-
-			@OnlyIn(Dist.CLIENT)
-			void writeToBuffer(ByteBuffer buffer);
-
-			@OnlyIn(Dist.DEDICATED_SERVER)
-			T readFromBuffer(ByteBuffer buffer);
 		}
 
 		public enum Booleans implements Item<Boolean> {
@@ -171,6 +163,11 @@ public class ParCoolConfig {
 			}
 
 			@Override
+			public String getPath() {
+				return Path;
+			}
+
+			@Override
 			public void register(ForgeConfigSpec.Builder builder) {
 				if (Comment != null) {
 					builder.comment(Comment);
@@ -256,6 +253,11 @@ public class ParCoolConfig {
 				Max = max;
 			}
 
+			@Override
+			public String getPath() {
+				return Path;
+			}
+
 			public void register(ForgeConfigSpec.Builder builder) {
 				if (Comment != null) {
 					builder.comment(Comment);
@@ -324,6 +326,11 @@ public class ParCoolConfig {
 				DefaultValue = defaultValue;
 				Min = min;
 				Max = max;
+			}
+
+			@Override
+			public String getPath() {
+				return Path;
 			}
 
 			public void register(ForgeConfigSpec.Builder builder) {
@@ -444,56 +451,203 @@ public class ParCoolConfig {
 				register(builder, ConfigGroup.Stamina);
 			}
 			builder.pop();
-			BUILT_SPEC = BUILDER.build();
+			BUILT_CONFIG = builder.build();
 		}
 	}
 
 	public static class Server {
-		private final ForgeConfigSpec.BooleanValue[] actionPermissions = new ForgeConfigSpec.BooleanValue[ActionList.ACTIONS.size()];
+		public enum Booleans implements Item<Boolean> {
+			AllowInfiniteStamina(
+					ConfigGroup.Stamina, "Permission of infinite stamina",
+					"allow_infinite_stamina", true
+			);
+			public final ConfigGroup Group;
+			@Nullable
+			public final String Comment;
+			public final String Path;
+			public final boolean DefaultValue;
+			@Nullable
+			private ForgeConfigSpec.BooleanValue configInstance = null;
 
-		public boolean getPermissionOf(Class<? extends Action> action) {
+			Booleans(
+					ConfigGroup group,
+					@Nullable String comment,
+					String path,
+					boolean defaultValue
+			) {
+				Group = group;
+				Comment = comment;
+				Path = path;
+				DefaultValue = defaultValue;
+			}
+
+			@Override
+			public String getPath() {
+				return Path;
+			}
+
+			@Override
+			public void register(ForgeConfigSpec.Builder builder) {
+				if (Comment != null) {
+					builder.comment(Comment);
+				}
+				configInstance = builder.define(Path, DefaultValue);
+			}
+
+			public Boolean get() {
+				if (configInstance == null) return DefaultValue;
+				return configInstance.get();
+			}
+
+			@Override
+			public void set(Boolean value) {
+				if (configInstance != null) {
+					configInstance.set(value);
+				}
+			}
+
+			public ForgeConfigSpec.BooleanValue getInternalInstance() {
+				return configInstance;
+			}
+
+			@Override
+			public void writeToBuffer(ByteBuffer buffer) {
+				buffer.put((byte) (get() ? 1 : 0));
+			}
+
+			@Override
+			public Boolean readFromBuffer(ByteBuffer buffer) {
+				return buffer.get() != 0;
+			}
+		}
+
+		public enum Integers implements Item<Integer> {
+			MaxStaminaLimit(
+					ConfigGroup.Stamina, "Limitation of max stamina value",
+					"max_stamina_limit", Integer.MAX_VALUE, 300, Integer.MAX_VALUE
+			),
+			MaxStaminaRecovery(
+					ConfigGroup.Stamina, "Limitation of max stamina recovery",
+					"max_stamina_recovery_limit", Integer.MAX_VALUE, 1, Integer.MAX_VALUE
+			);
+			public final ConfigGroup Group;
+			@Nullable
+			public final String Comment;
+			public final String Path;
+			public final int DefaultValue;
+			public final int Min;
+			public final int Max;
+			@Nullable
+			private ForgeConfigSpec.IntValue configInstance = null;
+
+			Integers(
+					ConfigGroup group,
+					@Nullable String comment,
+					String path,
+					int defaultValue,
+					int min,
+					int max
+			) {
+				Group = group;
+				Comment = comment;
+				Path = path;
+				DefaultValue = defaultValue;
+				Min = min;
+				Max = max;
+			}
+
+			@Override
+			public String getPath() {
+				return Path;
+			}
+
+			public void register(ForgeConfigSpec.Builder builder) {
+				if (Comment != null) {
+					builder.comment(Comment);
+				}
+				configInstance = builder.defineInRange(Path, DefaultValue, Min, Max);
+			}
+
+			@Override
+			public Integer get() {
+				if (configInstance == null) return DefaultValue;
+				return configInstance.get();
+			}
+
+			@Override
+			public void set(Integer value) {
+				if (configInstance != null) {
+					configInstance.set(value);
+				}
+			}
+
+			public ForgeConfigSpec.IntValue getInternalInstance() {
+				return configInstance;
+			}
+
+			@Override
+			public void writeToBuffer(ByteBuffer buffer) {
+				buffer.putInt(get());
+			}
+
+			@Override
+			public Integer readFromBuffer(ByteBuffer buffer) {
+				return buffer.getInt();
+			}
+		}
+
+		public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+		public static final ForgeConfigSpec BUILT_CONFIG;
+		private static final ForgeConfigSpec.BooleanValue[] actionPermissions = new ForgeConfigSpec.BooleanValue[ActionList.ACTIONS.size()];
+
+		public static boolean getPermissionOf(Class<? extends Action> action) {
 			return actionPermissions[ActionList.getIndexOf(action)].get();
 		}
 
-		private final ForgeConfigSpec.IntValue[] leastStaminaConsumptions = new ForgeConfigSpec.IntValue[ActionList.ACTIONS.size()];
+		private static final ForgeConfigSpec.IntValue[] leastStaminaConsumptions = new ForgeConfigSpec.IntValue[ActionList.ACTIONS.size()];
+		public static final ForgeConfigSpec.BooleanValue LimitationEnabled;
 
-		public int getLeastStaminaConsumptionOf(Class<? extends Action> action) {
+		private static void register(ForgeConfigSpec.Builder builder, ConfigGroup group) {
+			Arrays.stream(Server.Booleans.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
+			Arrays.stream(Server.Integers.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
+		}
+
+		public static int getLeastStaminaConsumptionOf(Class<? extends Action> action) {
 			return leastStaminaConsumptions[ActionList.getIndexOf(action)].get();
 		}
 
-		public final ForgeConfigSpec.BooleanValue allowInfiniteStamina;
-		public final ForgeConfigSpec.IntValue staminaMax;
-		public final ForgeConfigSpec.IntValue staminaRecoveryMax;
-		public final ForgeConfigSpec.BooleanValue enforced;
-
-		Server(ForgeConfigSpec.Builder builder) {
-			enforced = builder.comment("Whether these limitations will be imposed to players").define("limitations_imposed", false);
-			builder.push("Action Permissions");
+		static {
+			ForgeConfigSpec.Builder builder = BUILDER;
+			builder.push("Limitations");
 			{
-				for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
-					actionPermissions[i]
-							= builder.define("permit_" + ActionList.ACTIONS.get(i).getSimpleName(), true);
-				}
-			}
-			builder.pop();
-			builder.push("Stamina");
-			{
-				staminaMax = builder.comment("Limitation of max stamina").defineInRange("max_value_of_stamina", 10000, 300, 100000);
-				staminaRecoveryMax = builder.comment("Limitation of max stamina recovery").defineInRange("max_value_of_stamina_recovery", 1000, 1, 10000);
-				allowInfiniteStamina = builder.comment("Allow Infinite Stamina").define("infinite_stamina", true);
-				builder.push("Least Consumption");
+				LimitationEnabled = builder.comment("Whether these limitations will be imposed to players").define("limitation_imposed", false);
+				builder.push("Action Permissions");
 				{
 					for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
-						leastStaminaConsumptions[i]
-								= builder.defineInRange(
-								"stamina_consumption_of_" + ActionList.ACTIONS.get(i).getSimpleName(),
-								ActionList.ACTION_REGISTRIES.get(i).getDefaultStaminaConsumption(),
-								0, 10000
-						);
+						actionPermissions[i]
+								= builder.define("permit_" + ActionList.ACTIONS.get(i).getSimpleName(), true);
 					}
 				}
+				builder.pop();
+				builder.push("Stamina");
+				{
+					builder.push("Least Consumption");
+					{
+						for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
+							leastStaminaConsumptions[i]
+									= builder.defineInRange(
+									"stamina_consumption_of_" + ActionList.ACTIONS.get(i).getSimpleName(),
+									ActionList.ACTION_REGISTRIES.get(i).getDefaultStaminaConsumption(),
+									0, 10000
+							);
+						}
+					}
+					register(builder, ConfigGroup.Stamina);
+				}
+				builder.pop();
 			}
 			builder.pop();
+			BUILT_CONFIG = builder.build();
 		}
 	}
 }

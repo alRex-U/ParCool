@@ -3,7 +3,7 @@ package com.alrex.parcool.common.info;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.network.SyncLimitationByServerMessage;
+import com.alrex.parcool.common.network.SyncLimitationMessage;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -12,7 +12,8 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nullable;
+import java.nio.ByteBuffer;
+import java.util.EnumMap;
 
 //This class is mainly for client side.
 //server side instance will be used just for individual data store, not be accessed in game
@@ -20,10 +21,9 @@ public class Limitations {
 	//for client side, whether this instance is synchronized by server
 	private boolean haveReceived = false;
 	//Whether this limitation is applied
-	private boolean enforced = false;
-	private int maxStaminaLimitation = Integer.MAX_VALUE;
-	private int maxStaminaRecovery = Integer.MAX_VALUE;
-	private boolean infiniteStaminaPermitted = true;
+	private boolean enabled = false;
+	private final EnumMap<ParCoolConfig.Server.Booleans, Boolean> booleans = new EnumMap<>(ParCoolConfig.Server.Booleans.class);
+	private final EnumMap<ParCoolConfig.Server.Integers, Integer> integers = new EnumMap<>(ParCoolConfig.Server.Integers.class);
 	private final ActionLimitation[] actionLimitations = new ActionLimitation[ActionList.ACTIONS.size()];
 
 	public Limitations() {
@@ -36,9 +36,13 @@ public class Limitations {
 		return haveReceived;
 	}
 
+	public boolean isEnabled() {
+		return enabled;
+	}
+
 	public boolean isPermitted(Class<? extends Action> action) {
 		if (!haveReceived) return false;
-		if (!enforced) return true;
+		if (!enabled) return true;
 		ActionLimitation limitation = actionLimitations[ActionList.getIndexOf(action)];
 		if (limitation == null) return false;
 		return limitation.isPossible();
@@ -46,35 +50,48 @@ public class Limitations {
 
 	public int getLeastStaminaConsumption(Class<? extends Action> action) {
 		if (!haveReceived) return 0;
-		if (!enforced) return 0;
+		if (!enabled) return 0;
 		ActionLimitation limitation = actionLimitations[ActionList.getIndexOf(action)];
 		if (limitation == null) return 0;
 		return limitation.getLeastStaminaConsumption();
 	}
 
-	public int getMaxStaminaLimitation() {
-		if (!enforced) return Integer.MAX_VALUE;
-		return maxStaminaLimitation;
+	public boolean get(ParCoolConfig.Server.Booleans item) {
+		if (!haveReceived) return !item.DefaultValue;
+		if (!enabled) return item.DefaultValue;
+		Boolean value = booleans.get(item);
+		if (value == null) {
+			return item.DefaultValue;
+		}
+		return value;
 	}
 
-	public int getMaxStaminaRecovery() {
-		if (!enforced) return Integer.MAX_VALUE;
-		return maxStaminaRecovery;
+	public int get(ParCoolConfig.Server.Integers item) {
+		if (!haveReceived) return 0;
+		if (!enabled) return item.DefaultValue;
+		Integer value = integers.get(item);
+		if (value == null) {
+			return item.DefaultValue;
+		}
+		return value;
 	}
 
 	public boolean isInfiniteStaminaPermitted() {
-		return (!enforced || infiniteStaminaPermitted);
+		return (!enabled ||
+				booleans.get(ParCoolConfig.Server.Booleans.AllowInfiniteStamina));
 	}
 
 	public void readFromServerConfig() {
-		enforced = ParCoolConfig.CONFIG_SERVER.enforced.get();
-		maxStaminaLimitation = ParCoolConfig.CONFIG_SERVER.staminaMax.get();
-		infiniteStaminaPermitted = ParCoolConfig.CONFIG_SERVER.allowInfiniteStamina.get();
-		maxStaminaRecovery = ParCoolConfig.CONFIG_SERVER.staminaRecoveryMax.get();
+		for (ParCoolConfig.Server.Booleans item : ParCoolConfig.Server.Booleans.values()) {
+			booleans.put(item, item.get());
+		}
+		for (ParCoolConfig.Server.Integers item : ParCoolConfig.Server.Integers.values()) {
+			integers.put(item, item.get());
+		}
 		for (int i = 0; i < actionLimitations.length; i++) {
 			actionLimitations[i] = new ActionLimitation(
-					ParCoolConfig.CONFIG_SERVER.getPermissionOf(ActionList.getByIndex(i)),
-					ParCoolConfig.CONFIG_SERVER.getLeastStaminaConsumptionOf(ActionList.getByIndex(i))
+					ParCoolConfig.Server.getPermissionOf(ActionList.getByIndex(i)),
+					ParCoolConfig.Server.getLeastStaminaConsumptionOf(ActionList.getByIndex(i))
 			);
 		}
 	}
@@ -83,25 +100,45 @@ public class Limitations {
 		haveReceived = true;
 	}
 
-	public void writeSyncData(SyncLimitationByServerMessage msg) {
-		msg.setEnforced(enforced);
-		msg.setMaxStaminaLimitation(maxStaminaLimitation);
-		msg.setPermissionOfInfiniteStamina(infiniteStaminaPermitted);
-		msg.setMaxStaminaRecovery(maxStaminaRecovery);
-		ActionLimitation[] limitations = msg.getLimitations();
-		for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
-			limitations[i] = new ActionLimitation(
-					actionLimitations[i].isPossible(),
-					actionLimitations[i].getLeastStaminaConsumption()
-			);
+	public void writeTo(ByteBuffer buffer) {
+		buffer.put((byte) (enabled ? 1 : 0));
+		for (ActionLimitation limitation : actionLimitations) {
+			buffer.put((byte) (limitation.isPossible() ? 1 : 0))
+					.putInt(limitation.getLeastStaminaConsumption());
 		}
+		for (ParCoolConfig.Server.Booleans item : ParCoolConfig.Server.Booleans.values()) {
+			buffer.put((byte) (booleans.get(item) ? 1 : 0));
+		}
+		for (ParCoolConfig.Server.Integers item : ParCoolConfig.Server.Integers.values()) {
+			buffer.putInt(integers.get(item));
+		}
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public void readFrom(ByteBuffer buffer) {
+		enabled = buffer.get() != 0;
+		for (int i = 0; i < actionLimitations.length; i++) {
+			actionLimitations[i] = new ActionLimitation(buffer.get() != 0, buffer.getInt());
+		}
+		for (ParCoolConfig.Server.Booleans item : ParCoolConfig.Server.Booleans.values()) {
+			booleans.put(item, buffer.get() != 0);
+		}
+		for (ParCoolConfig.Server.Integers item : ParCoolConfig.Server.Integers.values()) {
+			integers.put(item, buffer.getInt());
+		}
+		setReceived();
 	}
 
 	public INBT writeNBT() {
 		CompoundNBT nbt = new CompoundNBT();
-		nbt.putBoolean("enforced", enforced);
-		nbt.putInt("max_stamina", maxStaminaLimitation);
-		nbt.putBoolean("infinite_stamina_permitted", infiniteStaminaPermitted);
+		nbt.putBoolean("limitation_imposed", enabled);
+		for (ParCoolConfig.Server.Booleans item : ParCoolConfig.Server.Booleans.values()) {
+			nbt.putBoolean(item.Path, booleans.get(item));
+		}
+		for (ParCoolConfig.Server.Integers item : ParCoolConfig.Server.Integers.values()) {
+			nbt.putInt(item.Path, integers.get(item));
+		}
+
 		ListNBT limitationList = new ListNBT();
 		for (int i = 0; i < actionLimitations.length; i++) {
 			ActionLimitation limitation = actionLimitations[i];
@@ -121,9 +158,13 @@ public class Limitations {
 	public void readNBT(INBT nbt) {
 		if (nbt instanceof CompoundNBT) {
 			CompoundNBT compoundNBT = (CompoundNBT) nbt;
-			enforced = compoundNBT.getBoolean("enforced");
-			maxStaminaLimitation = compoundNBT.getInt("max_stamina");
-			infiniteStaminaPermitted = compoundNBT.getBoolean("infinite_stamina_permitted");
+			enabled = compoundNBT.getBoolean("limitation_imposed");
+			for (ParCoolConfig.Server.Booleans item : ParCoolConfig.Server.Booleans.values()) {
+				booleans.put(item, compoundNBT.getBoolean(item.Path));
+			}
+			for (ParCoolConfig.Server.Integers item : ParCoolConfig.Server.Integers.values()) {
+				integers.put(item, compoundNBT.getInt(item.Path));
+			}
 			for (INBT inbt : compoundNBT.getList("actions", compoundNBT.getByte("list_type"))) {
 				if (!(inbt instanceof CompoundNBT)) {
 					continue;
@@ -143,81 +184,76 @@ public class Limitations {
 				);
 			}
 		} else {
-			throw new IllegalArgumentException("NBT for LimitationByServer, is not CompoundNBT");
+			throw new IllegalArgumentException("NBT for Limitation, is not CompoundNBT");
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public void receive(SyncLimitationByServerMessage msg) {
-		haveReceived = true;
-		enforced = msg.isEnforced();
-		maxStaminaLimitation = msg.getMaxStaminaLimitation();
-		maxStaminaRecovery = msg.getMaxStaminaRecovery();
-		infiniteStaminaPermitted = msg.getPermissionOfInfiniteStamina();
-		for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
-			actionLimitations[i] = msg.getLimitations()[i];
+	public static class Changer {
+		public static Changer get(ServerPlayerEntity player) {
+			return new Changer(Parkourability.get(player).getActionInfo().getIndividualLimitation(), player);
 		}
-	}
 
-	public static class IndividualLimitationChanger {
-		@Nullable
-		Limitations instance = null;
-		ServerPlayerEntity player;
+		final Limitations instance;
+		final ServerPlayerEntity player;
 
-		public IndividualLimitationChanger(ServerPlayerEntity player) {
-			Parkourability parkourability = Parkourability.get(player);
+		Changer(Limitations limitations, ServerPlayerEntity player) {
+			instance = limitations;
 			this.player = player;
-			if (parkourability != null) {
-				instance = parkourability.getActionInfo().getIndividualLimitation();
-			}
 		}
 
-		public IndividualLimitationChanger setDefault() {
-			if (instance == null) return this;
-			instance.maxStaminaLimitation = Integer.MAX_VALUE;
-			instance.enforced = false;
-			instance.infiniteStaminaPermitted = true;
+		public Changer set(ParCoolConfig.Server.Booleans item, boolean value) {
+			instance.booleans.put(item, value);
+			return this;
+		}
+
+		public Changer set(ParCoolConfig.Server.Integers item, int value) {
+			instance.integers.put(item, value);
+			return this;
+		}
+
+		public Changer setEnabled(boolean value) {
+			instance.enabled = value;
+			return this;
+		}
+
+		public Changer setPossibilityOf(Class<? extends Action> action, boolean value) {
+			int index = ActionList.getIndexOf(action);
+			instance.actionLimitations[index] =
+					new ActionLimitation(
+							value,
+							instance.actionLimitations[index].getLeastStaminaConsumption()
+					);
+			return this;
+		}
+
+		public Changer setLeastStaminaConsumption(Class<? extends Action> action, int value) {
+
+			int index = ActionList.getIndexOf(action);
+			instance.actionLimitations[index] =
+					new ActionLimitation(
+							instance.actionLimitations[index].isPossible(),
+							value
+					);
+			return this;
+		}
+
+		public Changer setAllDefault() {
+			instance.enabled = false;
+			for (ParCoolConfig.Server.Booleans item : ParCoolConfig.Server.Booleans.values()) {
+				instance.booleans.put(item, item.DefaultValue);
+			}
+			for (ParCoolConfig.Server.Integers item : ParCoolConfig.Server.Integers.values()) {
+				instance.integers.put(item, item.DefaultValue);
+			}
 			for (int i = 0; i < instance.actionLimitations.length; i++) {
 				instance.actionLimitations[i] = new ActionLimitation(true, 0);
 			}
 			return this;
 		}
 
-		public IndividualLimitationChanger setMaxStaminaLimitation(int value) {
-			if (instance == null) return this;
-			instance.maxStaminaLimitation = value;
-			return this;
-		}
-
-		public IndividualLimitationChanger setEnforced(boolean value) {
-			if (instance == null) return this;
-			instance.enforced = value;
-			return this;
-		}
-
-		public IndividualLimitationChanger setInfiniteStaminaPermission(boolean value) {
-			if (instance == null) return this;
-			instance.infiniteStaminaPermitted = value;
-			return this;
-		}
-
-		public IndividualLimitationChanger setPossibilityOf(Class<? extends Action> action, boolean value) {
-			if (instance == null) return this;
-			ActionLimitation limitation = instance.actionLimitations[ActionList.getIndexOf(action)];
-			instance.actionLimitations[ActionList.getIndexOf(action)] = new ActionLimitation(value, limitation.getLeastStaminaConsumption());
-			return this;
-		}
-
-		public IndividualLimitationChanger setStaminaConsumptionOf(Class<? extends Action> action, int value) {
-			if (instance == null) return this;
-			ActionLimitation limitation = instance.actionLimitations[ActionList.getIndexOf(action)];
-			instance.actionLimitations[ActionList.getIndexOf(action)] = new ActionLimitation(limitation.isPossible(), value);
-			return this;
-		}
-
 		public void sync() {
 			if (instance == null) return;
-			SyncLimitationByServerMessage.sendIndividualLimitation(player);
+			SyncLimitationMessage.sendIndividualLimitation(player);
 		}
 	}
 }

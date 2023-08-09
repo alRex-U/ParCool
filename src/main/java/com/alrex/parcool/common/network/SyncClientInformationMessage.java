@@ -56,13 +56,13 @@ public class SyncClientInformationMessage {
 			if (parkourability == null) return;
 			if (!player.isLocalPlayer()) {
 				parkourability.getClientInfo().readFrom(data);
+				data.rewind();
 			}
 			parkourability.getClientInfo().setSynced(true);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
 			PlayerEntity player = contextSupplier.get().getSender();
@@ -72,11 +72,13 @@ public class SyncClientInformationMessage {
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
 			parkourability.getClientInfo().readFrom(data);
+			data.rewind();
 			parkourability.getClientInfo().setSynced(true);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	public static void sync(ClientPlayerEntity player) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;

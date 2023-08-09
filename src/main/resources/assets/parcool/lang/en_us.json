@@ -51,6 +51,8 @@
   "parcool.gui.text.globalPermission": "Global Permissions",
   "parcool.gui.text.individualPermission": "Individual Permissions",
   "parcool.command.message.invalidActionName": "No Such Action : %s",
+  "parcool.command.message.invalidConfigName": "No Such Limitation : %s",
+  "parcool.command.message.success.set": "Set %d player's [%s] with %s",
   "parcool.command.message.success.setMaxStamina": "Set %d player's max stamina limitation to %d",
   "parcool.command.message.success.setStaminaConsumption": "Set %d player's least stamina consumption of %s to %d",
   "parcool.command.message.success.setPermissionInfiniteStamina": "Set %d player's permission of infinite stamina to %d",

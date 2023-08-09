@@ -3,7 +3,9 @@ package com.alrex.parcool.server.command.impl;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.Limitations;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.server.command.args.ActionArgumentType;
+import com.alrex.parcool.server.command.args.LimitationItemArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -22,9 +24,10 @@ public class ChangeIndividualLimitationCommand {
 	private static final String ARGS_NAME_PLAYERS = "targets";
 	private static final String ARGS_NAME_PLAYER = "target";
 	private static final String ARGS_NAME_ACTION = "action";
-	private static final String ARGS_NAME_MAX_STAMINA_VALUE = "max_stamina_value";
 	private static final String ARGS_NAME_STAMINA_CONSUMPTION = "stamina_consumption";
 	private static final String ARGS_NAME_POSSIBILITY = "possibility";
+	private static final String ARGS_NAME_VALUE = "value";
+	private static final String ARGS_NAME_CONFIG_ITEM = "limitation_name";
 
 	public static ArgumentBuilder<CommandSource, ?> getBuilder() {
 		return Commands
@@ -51,21 +54,27 @@ public class ChangeIndividualLimitationCommand {
 										.executes(ChangeIndividualLimitationCommand::setLimitationDefault)
 								)
 								.then(Commands
-										.literal("max_stamina")
+										.literal("bool")
 										.then(Commands
-												.argument(ARGS_NAME_MAX_STAMINA_VALUE, IntegerArgumentType.integer(0, Integer.MAX_VALUE))
-												.executes(ChangeIndividualLimitationCommand::changeLimitationOfMaxStamina)
+												.argument(ARGS_NAME_CONFIG_ITEM, LimitationItemArgumentType.booleans())
+												.then(Commands
+														.argument(ARGS_NAME_VALUE, BoolArgumentType.bool())
+														.executes(ChangeIndividualLimitationCommand::setBoolLimitation)
+												)
+										)
+								)
+								.then(Commands
+										.literal("int")
+										.then(Commands
+												.argument(ARGS_NAME_CONFIG_ITEM, LimitationItemArgumentType.integers())
+												.then(Commands
+														.argument(ARGS_NAME_VALUE, IntegerArgumentType.integer())
+														.executes(ChangeIndividualLimitationCommand::setIntLimitation)
+												)
 										)
 								)
 								.then(Commands
 										.literal("possibility")
-										.then(Commands
-												.literal("infinite_stamina")
-												.then(Commands
-														.argument(ARGS_NAME_POSSIBILITY, BoolArgumentType.bool())
-														.executes(ChangeIndividualLimitationCommand::changePossibilityOfInfiniteStamina)
-												)
-										)
 										.then(Commands
 												.argument(ARGS_NAME_ACTION, ActionArgumentType.action())
 												.then(Commands
@@ -126,7 +135,7 @@ public class ChangeIndividualLimitationCommand {
 		Class<? extends Action> action;
 		switch (code) {
 			case 0:
-				context.getSource().sendSuccess(new StringTextComponent(Integer.toString(parkourability.getActionInfo().getIndividualLimitation().getMaxStaminaLimitation())), false);
+				context.getSource().sendSuccess(new StringTextComponent(Integer.toString(parkourability.getActionInfo().getIndividualLimitation().get(ParCoolConfig.Server.Integers.MaxStaminaLimit))), false);
 				break;
 			case 1:
 				context.getSource().sendSuccess(new StringTextComponent(Boolean.toString(parkourability.getActionInfo().getIndividualLimitation().isInfiniteStaminaPermitted())), false);
@@ -149,8 +158,8 @@ public class ChangeIndividualLimitationCommand {
 		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
 		int num = 0;
 		for (ServerPlayerEntity player : targets) {
-			new Limitations.IndividualLimitationChanger(player)
-					.setDefault()
+			Limitations.Changer.get(player)
+					.setAllDefault()
 					.sync();
 			num++;
 		}
@@ -158,12 +167,42 @@ public class ChangeIndividualLimitationCommand {
 		return 0;
 	}
 
+	private static int setBoolLimitation(CommandContext<CommandSource> context) throws CommandSyntaxException {
+		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
+		ParCoolConfig.Server.Booleans item = LimitationItemArgumentType.getBool(context, ARGS_NAME_CONFIG_ITEM);
+		boolean value = BoolArgumentType.getBool(context, ARGS_NAME_VALUE);
+		int num = 0;
+		for (ServerPlayerEntity player : targets) {
+			Limitations.Changer.get(player)
+					.set(item, value)
+					.sync();
+			num++;
+		}
+		context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.set", num, item.getPath(), Boolean.toString(value)), true);
+		return 0;
+	}
+
+	private static int setIntLimitation(CommandContext<CommandSource> context) throws CommandSyntaxException {
+		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
+		ParCoolConfig.Server.Integers item = LimitationItemArgumentType.getInt(context, ARGS_NAME_CONFIG_ITEM);
+		int value = IntegerArgumentType.getInteger(context, ARGS_NAME_VALUE);
+		int num = 0;
+		for (ServerPlayerEntity player : targets) {
+			Limitations.Changer.get(player)
+					.set(item, value)
+					.sync();
+			num++;
+		}
+		context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.set", num, item.getPath(), Integer.toString(value)), true);
+		return 0;
+	}
+
 	private static int enableLimitation(CommandContext<CommandSource> context) throws CommandSyntaxException {
 		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
 		int num = 0;
 		for (ServerPlayerEntity player : targets) {
-			new Limitations.IndividualLimitationChanger(player)
-					.setEnforced(true)
+			Limitations.Changer.get(player)
+					.setEnabled(true)
 					.sync();
 			num++;
 		}
@@ -175,26 +214,12 @@ public class ChangeIndividualLimitationCommand {
 		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
 		int num = 0;
 		for (ServerPlayerEntity player : targets) {
-			new Limitations.IndividualLimitationChanger(player)
-					.setEnforced(false)
+			Limitations.Changer.get(player)
+					.setEnabled(false)
 					.sync();
 			num++;
 		}
 		context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.disableLimitation", num), true);
-		return 0;
-	}
-
-	private static int changeLimitationOfMaxStamina(CommandContext<CommandSource> context) throws CommandSyntaxException {
-		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
-		int newValue = IntegerArgumentType.getInteger(context, ARGS_NAME_MAX_STAMINA_VALUE);
-		int num = 0;
-		for (ServerPlayerEntity player : targets) {
-			new Limitations.IndividualLimitationChanger(player)
-					.setMaxStaminaLimitation(newValue)
-					.sync();
-			num++;
-		}
-		context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.setMaxStamina", num, newValue), true);
 		return 0;
 	}
 
@@ -204,26 +229,12 @@ public class ChangeIndividualLimitationCommand {
 		int newValue = IntegerArgumentType.getInteger(context, ARGS_NAME_STAMINA_CONSUMPTION);
 		int num = 0;
 		for (ServerPlayerEntity player : targets) {
-			new Limitations.IndividualLimitationChanger(player)
-					.setStaminaConsumptionOf(action, newValue)
+			Limitations.Changer.get(player)
+					.setLeastStaminaConsumption(action, newValue)
 					.sync();
 			num++;
 		}
 		context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.setStaminaConsumption", num, action.getSimpleName(), newValue), true);
-		return 0;
-	}
-
-	private static int changePossibilityOfInfiniteStamina(CommandContext<CommandSource> context) throws CommandSyntaxException {
-		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
-		boolean newValue = BoolArgumentType.getBool(context, ARGS_NAME_POSSIBILITY);
-		int num = 0;
-		for (ServerPlayerEntity player : targets) {
-			new Limitations.IndividualLimitationChanger(player)
-					.setInfiniteStaminaPermission(newValue)
-					.sync();
-			num++;
-		}
-		context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.setPermissionInfiniteStamina", num, newValue), true);
 		return 0;
 	}
 
@@ -233,7 +244,7 @@ public class ChangeIndividualLimitationCommand {
 		boolean newValue = BoolArgumentType.getBool(context, ARGS_NAME_POSSIBILITY);
 		int num = 0;
 		for (ServerPlayerEntity player : targets) {
-			new Limitations.IndividualLimitationChanger(player)
+			Limitations.Changer.get(player)
 					.setPossibilityOf(action, newValue)
 					.sync();
 			num++;

@@ -25,10 +25,10 @@ public class ClientProxy extends CommonProxy {
 		);
 		instance.registerMessage(
 				12,
-				SyncLimitationByServerMessage.class,
-				SyncLimitationByServerMessage::encode,
-				SyncLimitationByServerMessage::decode,
-				SyncLimitationByServerMessage::handle
+				SyncLimitationMessage.class,
+				SyncLimitationMessage::encode,
+				SyncLimitationMessage::decode,
+				SyncLimitationMessage::handle
 		);
 		instance.registerMessage(
 				15,

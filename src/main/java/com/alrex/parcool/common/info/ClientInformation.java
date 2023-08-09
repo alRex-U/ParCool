@@ -63,6 +63,7 @@ public class ClientInformation {
 		}
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	public void writeTo(ByteBuffer buffer) {
 		for (boolean possibility : actionPossibilities) {
 			buffer.put((byte) (possibility ? 1 : 0));
