@@ -62,7 +62,7 @@ public class PassiveCustomAnimation {
 				.addRotateLeftArm(0, 0, (float) Math.toRadians(-80 * factor))
 				.addRotateRightLeg(0, 0, (float) Math.toRadians(10 * factor))
 				.addRotateLeftLeg(0, 0, (float) Math.toRadians(-10 * factor))
-				.makeArmsMovingDynamically(factor)
+				.makeArmsMoveDynamically(factor)
 				.makeLegsShakingDynamically(factor)
 				.end();
 	}
@@ -92,7 +92,7 @@ public class PassiveCustomAnimation {
 	private void rotateCreativeFlying(PlayerEntity player, PlayerModelRotator rotator) {
 		rotator
 				.startBasedCenter()
-				.rotateFrontward(getAngleCreativeFlying(player, rotator.getPartialTick()))
+				.rotatePitchFrontward(getAngleCreativeFlying(player, rotator.getPartialTick()))
 				.end();
 	}
 

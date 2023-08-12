@@ -58,7 +58,7 @@ public class TapAnimator extends Animator {
 		float angle = 80 * angleFactor(phase);
 		rotator
 				.startBasedCenter()
-				.rotateFrontward(angle)
+				.rotatePitchFrontward(angle)
 				.endEnabledLegGrounding();
 	}
 }

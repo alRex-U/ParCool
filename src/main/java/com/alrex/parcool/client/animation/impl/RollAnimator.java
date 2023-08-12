@@ -56,7 +56,7 @@ public class RollAnimator extends Animator {
 		float sign = direction == Roll.Direction.Front ? 1 : -1;
 		rotator
 				.startBasedCenter()
-				.rotateFrontward(sign * MathUtil.lerp(0, 360, factor))
+				.rotatePitchFrontward(sign * MathUtil.lerp(0, 360, factor))
 				.end();
 	}
 

@@ -226,7 +226,7 @@ public class WorldUtil {
 		World world = entity.level;
 		Vector3d lookAngle = entity.getLookAngle();
 		Vector3d center = entity.position().add(new Vector3d(lookAngle.x(), 0, lookAngle.z()).normalize().multiply(3, 0, 3));
-		if (!world.isLoaded(new BlockPos(center))) {
+		if (center.y() <= world.getMaxBuildHeight() && !world.isLoaded(new BlockPos(center))) {
 			return false;
 		}
 		BlockPos centerPos = new BlockPos(center);

@@ -64,12 +64,12 @@ public class ClingToCliffAnimator extends Animator {
 		switch (cling.getFacingDirection()) {
 			case RightAgainstWall:
 				rotator.startBasedCenter()
-						.rotateRightward(Lean_Angle)
+						.rotateRollRightward(Lean_Angle)
 						.end();
 				break;
 			case LeftAgainstWall:
 				rotator.startBasedCenter()
-						.rotateRightward(-Lean_Angle)
+						.rotateRollRightward(-Lean_Angle)
 						.end();
 		}
 	}

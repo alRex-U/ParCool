@@ -1,6 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.client.animation.impl.DiveAnimator;
+import com.alrex.parcool.client.animation.impl.DiveAnimationHostAnimator;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
@@ -70,7 +70,7 @@ public class Dive extends Action {
 		playerYSpeedOld = playerYSpeed = ySpeed;
 		Animation animation = Animation.get(player);
 		if (animation != null) {
-			animation.setAnimator(new DiveAnimator(ySpeed));
+			animation.setAnimator(new DiveAnimationHostAnimator(ySpeed));
 		}
 	}
 
@@ -98,7 +98,7 @@ public class Dive extends Action {
 		playerYSpeedOld = playerYSpeed = ySpeed;
 		Animation animation = Animation.get(player);
 		if (animation != null) {
-			animation.setAnimator(new DiveAnimator(ySpeed));
+			animation.setAnimator(new DiveAnimationHostAnimator(ySpeed));
 		}
 	}
 }

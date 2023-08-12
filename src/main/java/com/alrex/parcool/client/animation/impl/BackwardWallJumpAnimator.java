@@ -106,7 +106,7 @@ public class BackwardWallJumpAnimator extends Animator {
 
 		rotator
 				.startBasedCenter()
-				.rotateFrontward(factor * -360)
+				.rotatePitchFrontward(factor * -360)
 				.end();
 	}
 

@@ -7,7 +7,7 @@ import net.minecraftforge.client.event.EntityViewRenderEvent;
 public abstract class Animator {
 	private int tick = 0;
 
-	public final void tick() {
+	public void tick() {
 		tick++;
 	}
 

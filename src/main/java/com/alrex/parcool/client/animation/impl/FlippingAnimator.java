@@ -155,7 +155,7 @@ public class FlippingAnimator extends Animator {
 		}
 		rotator
 				.startBasedCenter()
-				.rotateFrontward(angle)
+				.rotatePitchFrontward(angle)
 				.end();
 	}
 

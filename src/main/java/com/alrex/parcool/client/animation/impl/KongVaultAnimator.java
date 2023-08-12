@@ -57,7 +57,7 @@ public class KongVaultAnimator extends Animator {
 		float factor = getFactor(phase);
 		rotator
 				.startBasedCenter()
-				.rotateFrontward(factor * 95)
+				.rotatePitchFrontward(factor * 95)
 				.end();
 	}
 

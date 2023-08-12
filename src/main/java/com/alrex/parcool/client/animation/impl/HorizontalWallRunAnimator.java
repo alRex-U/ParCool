@@ -54,7 +54,7 @@ public class HorizontalWallRunAnimator extends Animator {
 		float angle = factor * 30 * (wallIsRightSide ? -1 : 1);
 		rotator
 				.startBasedCenter()
-				.rotateRightward(angle)
+				.rotateRollRightward(angle)
 				.end();
 	}
 

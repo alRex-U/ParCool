@@ -36,7 +36,7 @@ public class SlidingAnimator extends Animator {
 		float swimAmount = player.getSwimAmount(rotator.getPartialTick());
 		rotator
 				.startBasedCenter()
-				.rotateFrontward(-70 * bodyAngleFactor(swimAmount) - 90 * swimAmount)
+				.rotatePitchFrontward(-70 * bodyAngleFactor(swimAmount) - 90 * swimAmount)
 				.end();
 	}
 }

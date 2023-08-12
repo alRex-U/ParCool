@@ -64,7 +64,7 @@ public class HangAnimator extends Animator {
 	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		HangDown hangDown = parkourability.get(HangDown.class);
 		rotator.startBasedTop()
-				.rotateFrontward(getRotateAngle(hangDown, rotator.getPartialTick()))
+				.rotatePitchFrontward(getRotateAngle(hangDown, rotator.getPartialTick()))
 				.end();
 	}
 

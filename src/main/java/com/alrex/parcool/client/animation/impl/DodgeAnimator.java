@@ -128,7 +128,7 @@ public class DodgeAnimator extends Animator {
 		float factor = factorFunc(phase);
 		rotator
 				.startBasedCenter()
-				.rotateFrontward(
+				.rotatePitchFrontward(
 						(parkourability.get(Dodge.class).getDodgeDirection() == Dodge.DodgeDirection.Back ? -1 : 1)
 								* lerp(0, 30, factor)
 				)

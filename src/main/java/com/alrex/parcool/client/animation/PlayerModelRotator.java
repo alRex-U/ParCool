@@ -50,7 +50,7 @@ public class PlayerModelRotator {
 		return this;
 	}
 
-	public PlayerModelRotator rotateFrontward(float angleDegree) {
+	public PlayerModelRotator rotatePitchFrontward(float angleDegree) {
 		Vector3d lookVec = VectorUtil.fromYawDegree(player.yBodyRot).yRot((float) Math.PI / 2);
 		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
 		angleFront += angleDegree;
@@ -58,10 +58,15 @@ public class PlayerModelRotator {
 		return this;
 	}
 
-	public PlayerModelRotator rotateRightward(float angleDegree) {
+	public PlayerModelRotator rotateRollRightward(float angleDegree) {
 		Vector3d lookVec = VectorUtil.fromYawDegree(player.yBodyRot);
 		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
 		stack.mulPose(vec.rotationDegrees(angleDegree));
+		return this;
+	}
+
+	public PlayerModelRotator rotateYawRightward(float angleDegree) {
+		stack.mulPose(Vector3f.YP.rotationDegrees(angleDegree));
 		return this;
 	}
 

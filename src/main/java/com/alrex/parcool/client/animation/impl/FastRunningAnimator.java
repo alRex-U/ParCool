@@ -40,7 +40,7 @@ public class FastRunningAnimator extends Animator {
 		float bodyAngle = bodyAngleFactor(phase) * 20;
 		rotator
 				.startBasedCenter()
-				.rotateFrontward(bodyAngle)
+				.rotatePitchFrontward(bodyAngle)
 				.end();
 	}
 }
