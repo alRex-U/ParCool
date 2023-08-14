@@ -69,7 +69,7 @@ public class StaminaHUD extends AbstractGui {
 		float staminaScale = (float) stamina.get() / stamina.getActualMaxStamina();
 		float coolTimeScale =
 				Math.min(
-						parkourability.get(Dodge.class).getCoolDownPhase(),
+						parkourability.get(Dodge.class).getCoolDownPhase(parkourability.getActionInfo()),
 						parkourability.get(CatLeap.class).getCoolDownPhase()
 				);
 		if (staminaScale < 0) staminaScale = 0;

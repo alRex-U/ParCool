@@ -8,6 +8,7 @@ import com.alrex.parcool.client.hud.impl.HUDType;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.action.impl.Crawl;
+import com.alrex.parcool.common.action.impl.Dodge;
 import com.alrex.parcool.common.action.impl.FastRun;
 import com.alrex.parcool.common.action.impl.Vault;
 import net.minecraftforge.api.distmarker.Dist;
@@ -222,6 +223,18 @@ public class ParCoolConfig {
 			SlidingContinuableTick(
 					ConfigGroup.Modifier, "How long you can do Slide",
 					"sliding_continuable_tick", 15, 10, 30
+			),
+			SuccessiveDodgeCoolTime(
+					ConfigGroup.Control, "How long duration of dodge is deal as successive dodge",
+					"successive_dodge_cool_time", 30, 0, Integer.MAX_VALUE
+			),
+			DodgeCoolTime(
+					ConfigGroup.Control, "Cool time of Dodge action",
+					"dodge_cool_time", Dodge.MAX_TICK + 4, Dodge.MAX_TICK, Integer.MAX_VALUE
+			),
+			MaxSuccessiveDodgeCount(
+					ConfigGroup.Control, "Max number of times of successive Dodge action",
+					"successive_dodge_count", 3, 1, Integer.MAX_VALUE
 			),
 			MaxStamina(
 					ConfigGroup.Stamina, null, "max_value_of_stamina",
@@ -533,6 +546,18 @@ public class ParCoolConfig {
 			MaxStaminaRecovery(
 					ConfigGroup.Stamina, "Limitation of max stamina recovery",
 					"max_stamina_recovery_limit", Integer.MAX_VALUE, 1, Integer.MAX_VALUE
+			),
+			SuccessiveDodgeCoolTime(
+					ConfigGroup.Control, "How long duration of dodge is deal as successive dodge",
+					"least_successive_dodge_cool_time", 0, 0, Integer.MAX_VALUE
+			),
+			DodgeCoolTime(
+					ConfigGroup.Control, "Cool time of Dodge action",
+					"least_dodge_cool_time", Dodge.MAX_TICK, Dodge.MAX_TICK, Integer.MAX_VALUE
+			),
+			MaxSuccessiveDodgeCount(
+					ConfigGroup.Control, "Max number of times of successive Dodge action",
+					"max_successive_dodge_count", Integer.MAX_VALUE, 1, Integer.MAX_VALUE
 			);
 			public final ConfigGroup Group;
 			@Nullable

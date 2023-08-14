@@ -238,7 +238,6 @@ public class Limitations {
 		}
 
 		public Changer setAllDefault() {
-			instance.enabled = false;
 			for (ParCoolConfig.Server.Booleans item : ParCoolConfig.Server.Booleans.values()) {
 				instance.booleans.put(item, item.DefaultValue);
 			}
