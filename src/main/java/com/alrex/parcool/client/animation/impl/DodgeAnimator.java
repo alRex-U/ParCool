@@ -36,8 +36,63 @@ public class DodgeAnimator extends Animator {
 				.squareIn(0.75f, 1, 1, 0)
 				.get();
 		switch (direction) {
-			case Right:
+			case Right: {
+				float leftArmXFactor = new Easing(phase)
+						.sinInOut(0, 0.40f, 0, 1)
+						.linear(0.40f, 0.7f, 1, 1)
+						.sinInOut(0.7f, 1, 1, 0)
+						.get();
+				float rightArmXFactor = new Easing(phase)
+						.sinInOut(0, 0.3f, 0, -0.8f)
+						.sinInOut(0.3f, 0.6f, -0.8f, 1)
+						.sinInOut(0.6f, 1, 1, 0)
+						.get();
+				float rightArmZFactor = new Easing(phase)
+						.linear(0, 0.3f, 0, 0)
+						.sinInOut(0.4f, 0.7f, 0, 1)
+						.sinInOut(0.7f, 1, 1, 0)
+						.get();
+				float leftArmZFactor = new Easing(phase)
+						.sinInOut(0, 0.5f, 0, 1)
+						.sinInOut(0.5f, 1, 1, 0)
+						.get();
+				float rightLegXFactor = new Easing(phase)
+						.sinInOut(0, 0.35f, 0, 1)
+						.linear(0.35f, 0.65f, 1, 1)
+						.sinInOut(0.65f, 1, 1, 0)
+						.get();
+				float rightLegZFactor = new Easing(phase)
+						.linear(0, 0.5f, 0, 0.2f)
+						.sinInOut(0.5f, 0.75f, 0.2f, 1)
+						.sinInOut(0.75f, 1, 1, 0)
+						.get();
+				float leftLegXFactor = new Easing(phase)
+						.linear(0, 0.2f, 0, 0)
+						.sinInOut(0.2f, 0.6f, 0, 1)
+						.sinInOut(0.6f, 1, 1, 0).get();
+				float leftLegZFactor = new Easing(phase)
+						.squareOut(0, 0.4f, 0, 1)
+						.sinInOut(0.4f, 0.75f, 1, 0.2f)
+						.linear(0.75f, 1, 0.2f, 0)
+						.get();
+				float headYawFactor = new Easing(phase)
+						.sinInOut(0, 0.5f, 0, 1)
+						.sinInOut(0.5f, 1, 1, 0)
+						.get();
+				float headPitchFactor = new Easing(phase)
+						.sinInOut(0, 0.5f, 0, 1)
+						.sinInOut(0.5f, 1, 1, 0)
+						.get();
+				transformer
+						.rotateRightLeg((float) Math.toRadians(-85 * rightLegXFactor), 0, (float) Math.toRadians(30 * rightLegZFactor), animFactor)
+						.rotateLeftLeg((float) Math.toRadians(-85 * leftLegXFactor + 15), 0, (float) Math.toRadians(-35 * leftLegZFactor), animFactor)
+						.rotateRightArm((float) Math.toRadians(-5 + 45 * rightArmXFactor), 0, (float) Math.toRadians(-20 * rightArmZFactor), animFactor)
+						.rotateLeftArm((float) Math.toRadians(-60 * leftArmXFactor), 0, (float) Math.toRadians(40 * leftArmZFactor), animFactor)
+						.rotateAdditionallyHeadPitch(40 * headPitchFactor)
+						.rotateAdditionallyHeadYaw(-30 * headYawFactor)
+						.end();
 				break;
+			}
 			case Left: {
 				float rightArmXFactor = new Easing(phase)
 						.sinInOut(0, 0.40f, 0, 1)
@@ -186,7 +241,8 @@ public class DodgeAnimator extends Animator {
 						.end();
 				break;
 			}
-			case Left: {//side rolling
+			case Left:
+			case Right: {//side rolling
 				float bodyPitchFactor = new Easing(phase)
 						.squareOut(0, 0.45f, 0, 1)
 						.linear(0.45f, 0.55f, 1, 1)
@@ -205,12 +261,21 @@ public class DodgeAnimator extends Animator {
 						.linear(0.45f, 0.55f, 1, 1)
 						.sinInOut(0.55f, 1, 1, 0)
 						.get();
-				rotator.startBasedCenter()
-						.translateY(-yTranslateFactor * player.getBbHeight() / 3.5f)
-						.rotateYawRightward(25 * yawFactor - 13)
-						.rotatePitchFrontward(110 * bodyPitchFactor)
-						.rotateYawRightward(360 * bodyYawFactor)
-						.end();
+				if (direction == Dodge.DodgeDirection.Left) {
+					rotator.startBasedCenter()
+							.translateY(-yTranslateFactor * player.getBbHeight() / 3.5f)
+							.rotateYawRightward(25 * yawFactor - 13)
+							.rotatePitchFrontward(110 * bodyPitchFactor)
+							.rotateYawRightward(360 * bodyYawFactor)
+							.end();
+				} else {
+					rotator.startBasedCenter()
+							.translateY(-yTranslateFactor * player.getBbHeight() / 3.5f)
+							.rotateYawRightward(-25 * yawFactor + 13)
+							.rotatePitchFrontward(110 * bodyPitchFactor)
+							.rotateYawRightward(-360 * bodyYawFactor)
+							.end();
+				}
 				break;
 			}
 			case Back: {//backward handspring
@@ -240,7 +305,8 @@ public class DodgeAnimator extends Animator {
 				event.setPitch(event.getPitch() + 360 * bodyPitchFactor);
 				break;
 			}
-			case Left: {
+			case Left:
+			case Right: {
 				float bodyPitchFactor = new Easing(phase)
 						.squareOut(0, 0.45f, 0, 1)
 						.linear(0.45f, 0.55f, 1, 1)
@@ -250,7 +316,10 @@ public class DodgeAnimator extends Animator {
 						.sinInOut(0, 1, 0, 1)
 						.get();
 				event.setPitch(event.getPitch() + 40 * bodyPitchFactor);
-				event.setRoll(event.getRoll() - 360 * bodyYawFactor);
+				if (direction == Dodge.DodgeDirection.Right)
+					event.setRoll(event.getRoll() + 360 * bodyYawFactor);
+				else
+					event.setRoll(event.getRoll() - 360 * bodyYawFactor);
 				break;
 			}
 			case Back: {
@@ -266,6 +335,10 @@ public class DodgeAnimator extends Animator {
 	@Override
 	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
 		switch (direction) {
+			case Right: {
+				player.setYBodyRot(player.getYHeadRot() - 5);
+				break;
+			}
 			case Left: {
 				player.setYBodyRot(player.getYHeadRot() + 5);
 				break;
