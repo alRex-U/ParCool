@@ -9,7 +9,7 @@ import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.utilities.EntityUtil;
+import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
@@ -20,35 +20,9 @@ import java.nio.ByteBuffer;
 
 public class Dodge extends Action {
 	public static final int MAX_COOL_DOWN_TICK = 10;
+	public static final int MAX_TICK = 11;
 	public enum DodgeDirection {
 		Front, Back, Left, Right;
-
-		int getCode() {
-			switch (this) {
-				case Front:
-					return 0;
-				case Back:
-					return 1;
-				case Left:
-					return 2;
-				case Right:
-					return 3;
-			}
-			return -1;
-		}
-
-		public static DodgeDirection getFromCode(int code) {
-			switch (code) {
-				case 1:
-					return Back;
-				case 2:
-					return Left;
-				case 3:
-					return Right;
-				default:
-					return Front;
-			}
-		}
 	}
 
 	private DodgeDirection dodgeDirection = null;
@@ -89,7 +63,7 @@ public class Dodge extends Action {
 			if (KeyBindings.getKeyRight().isDown()) direction = DodgeDirection.Right;
 		}
 		if (direction == null) return false;
-		startInfo.putInt(direction.getCode());
+		startInfo.putInt(direction.ordinal());
 		return (parkourability.getActionInfo().can(Dodge.class)
 				&& !isInSuccessiveCoolDown()
 				&& coolTime <= 0
@@ -104,7 +78,8 @@ public class Dodge extends Action {
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		return !(parkourability.get(Roll.class).isDoing()
 				|| parkourability.get(ClingToCliff.class).isDoing()
-				|| player.isOnGround()
+				|| !player.isOnGround()
+				|| getDoingTick() >= MAX_TICK
 				|| player.isInWaterOrBubble()
 				|| player.isFallFlying()
 				|| player.abilities.flying
@@ -115,10 +90,20 @@ public class Dodge extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
-		dodgeDirection = DodgeDirection.getFromCode(startData.getInt());
-		Vector3d lookVec = player.getLookAngle();
-		lookVec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
-		final double jump = 0.3;
+		dodgeDirection = DodgeDirection.values()[startData.getInt()];
+		coolTime = MAX_COOL_DOWN_TICK;
+		if (successivelyCount < 3) {
+			successivelyCount++;
+		}
+		successivelyCoolTick = MAX_COOL_DOWN_TICK * 3;
+		Animation animation = Animation.get(player);
+		if (animation != null) animation.setAnimator(new DodgeAnimator(dodgeDirection));
+	}
+
+	@Override
+	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		if (!player.isOnGround()) return;
+		Vector3d lookVec = VectorUtil.fromYawDegree(player.getYHeadRot());
 		Vector3d dodgeVec = Vector3d.ZERO;
 		switch (dodgeDirection) {
 			case Front:
@@ -134,27 +119,16 @@ public class Dodge extends Action {
 				dodgeVec = lookVec.yRot((float) Math.PI / 2);
 				break;
 		}
-		coolTime = MAX_COOL_DOWN_TICK;
-		if (successivelyCount < 3) {
-			successivelyCount++;
-		}
-		successivelyCoolTick = MAX_COOL_DOWN_TICK * 3;
-		dodgeVec = dodgeVec.scale(.6 * ParCoolConfig.Client.Doubles.DodgeSpeedModifier.get());
-		EntityUtil.addVelocity(player, new Vector3d(dodgeVec.x(), jump, dodgeVec.z()));
-		Animation animation = Animation.get(player);
-		if (animation != null) animation.setAnimator(new DodgeAnimator());
+		dodgeVec = dodgeVec.scale(.9 * ParCoolConfig.Client.Doubles.DodgeSpeedModifier.get());
+		player.setDeltaMovement(dodgeVec);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
-		dodgeDirection = DodgeDirection.getFromCode(startData.getInt());
+		dodgeDirection = DodgeDirection.values()[startData.getInt()];
 		Animation animation = Animation.get(player);
-		if (animation != null) animation.setAnimator(new DodgeAnimator());
-	}
-
-	public DodgeDirection getDodgeDirection() {
-		return dodgeDirection;
+		if (animation != null) animation.setAnimator(new DodgeAnimator(dodgeDirection));
 	}
 
 	public int getCoolTime() {

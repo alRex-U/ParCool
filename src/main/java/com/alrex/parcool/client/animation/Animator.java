@@ -3,6 +3,7 @@ package com.alrex.parcool.client.animation;
 import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.event.TickEvent;
 
 public abstract class Animator {
 	private int tick = 0;
@@ -49,6 +50,13 @@ public abstract class Animator {
 	public void onCameraSetUp(
 			EntityViewRenderEvent.CameraSetup event,
 			PlayerEntity clientPlayer,
+			Parkourability parkourability
+	) {
+	}
+
+	public void onRenderTick(
+			TickEvent.RenderTickEvent event,
+			PlayerEntity player,
 			Parkourability parkourability
 	) {
 	}

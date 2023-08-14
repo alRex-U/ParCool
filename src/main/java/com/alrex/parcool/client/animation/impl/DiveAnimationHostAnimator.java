@@ -223,7 +223,7 @@ public class DiveAnimationHostAnimator extends Animator {
 			pitchAngle = basePitchAngle + 24 * forwardAngleFactor;
 			rotator.startBasedCenter()
 					.rotatePitchFrontward(pitchAngle)
-					.rotateYawRightward(24 * rightAngleFactor)
+					.rotateYawRightward(-24 * rightAngleFactor)
 					.end();
 		}
 

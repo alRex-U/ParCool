@@ -82,6 +82,10 @@ public class ParCoolConfig {
 					ConfigGroup.CameraAnimation, "Enable first-person-view animations",
 					"enable_fov_animation", true
 			),
+			EnableCameraAnimationOfDodge(
+					ConfigGroup.CameraAnimation, "Enable rotation of camera by Dodge",
+					"enable_camera_rotation_dodge", false
+			),
 			EnableCameraAnimationOfBackWallJump(
 					ConfigGroup.CameraAnimation, "Enable rotation of camera by Backward Wall-Jump",
 					"enable_camera_rotation_back_wall_jump", true

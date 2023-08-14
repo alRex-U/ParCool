@@ -13,6 +13,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.TickEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class Animation {
@@ -71,6 +72,12 @@ public class Animation {
 		if (animator != null) {
 			animator.tick();
 			if (animator.shouldRemoved(player, parkourability)) animator = null;
+		}
+	}
+
+	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+		if (animator != null) {
+			animator.onRenderTick(event, player, parkourability);
 		}
 	}
 

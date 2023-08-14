@@ -25,6 +25,7 @@ public class Slide extends Action {
 		return (!stamina.isExhausted()
 				&& parkourability.getActionInfo().can(Slide.class)
 				&& KeyRecorder.keyCrawlState.isPressed()
+				&& !player.isOnGround()
 				&& !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()
 				&& parkourability.get(Crawl.class).isDoing()

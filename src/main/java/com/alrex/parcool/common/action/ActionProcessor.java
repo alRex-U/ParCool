@@ -158,6 +158,9 @@ public class ActionProcessor {
 			for (Action action : actions) {
 				action.onRenderTick(event, player, parkourability);
 			}
+			Animation animation = Animation.get(player);
+			if (animation == null) return;
+			animation.onRenderTick(event, player, parkourability);
 		}
 	}
 
