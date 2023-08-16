@@ -250,36 +250,33 @@ public class WorldUtil {
 
 	public static boolean existsDivableSpace(LivingEntity entity) {
 		World world = entity.level;
-		Vector3d lookAngle = entity.getLookAngle();
-		Vector3d center = entity.position().add(new Vector3d(lookAngle.x(), 0, lookAngle.z()).normalize().multiply(3, 0, 3));
-		if (center.y() <= world.getMaxBuildHeight() && !world.isLoaded(new BlockPos(center))) {
-			return false;
+		double width = entity.getBbWidth() * 1.5;
+		double height = entity.getBbHeight() * 1.5;
+		double wideWidth = entity.getBbWidth() * 2;
+		Vector3d center = entity.position();
+		Vector3d diveDirection = VectorUtil.fromYawDegree(entity.getYHeadRot());
+		for (int i = 0; i < 4; i++) {
+			Vector3d centerPoint = center.add(diveDirection.scale(width * i));
+			AxisAlignedBB box = new AxisAlignedBB(
+					centerPoint.x() - width,
+					centerPoint.y() + 0.05,
+					centerPoint.z() - width,
+					centerPoint.x() + width,
+					centerPoint.y() + height,
+					centerPoint.z() + width
+			);
+			if (!world.noCollision(box)) return false;
 		}
-		BlockPos centerPos = new BlockPos(center);
-		final int neededSpaceHeight = 9;
-		boolean hasSpace = true;
-		for (int i = 0; i < neededSpaceHeight; i++) {
-			hasSpace = !world.getBlockState(centerPos).getMaterial().blocksMotion();
-			hasSpace = hasSpace && world.isLoaded(centerPos.west()) && !world.getBlockState(centerPos.west()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && world.isLoaded(centerPos.east()) && !world.getBlockState(centerPos.east()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && world.isLoaded(centerPos.north()) && !world.getBlockState(centerPos.north()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && world.isLoaded(centerPos.south()) && !world.getBlockState(centerPos.south()).getMaterial().blocksMotion();
-			if (!hasSpace) break;
-			centerPos = centerPos.below();
-		}
-		if (!hasSpace) return false;
-		center = entity.position().add(new Vector3d(lookAngle.x(), 0, lookAngle.z()).normalize().multiply(5, 0, 5));
-		centerPos = new BlockPos(center);
-		for (int i = 0; i < neededSpaceHeight; i++) {
-			hasSpace = !world.getBlockState(centerPos).getMaterial().blocksMotion();
-			hasSpace = hasSpace && world.isLoaded(centerPos.west()) && !world.getBlockState(centerPos.west()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && world.isLoaded(centerPos.east()) && !world.getBlockState(centerPos.east()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && world.isLoaded(centerPos.north()) && !world.getBlockState(centerPos.north()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && world.isLoaded(centerPos.south()) && !world.getBlockState(centerPos.south()).getMaterial().blocksMotion();
-			if (!hasSpace) break;
-			centerPos = centerPos.below();
-		}
-		return hasSpace;
+		center = center.add(diveDirection.scale(4));
+		AxisAlignedBB verticalWideBox = new AxisAlignedBB(
+				center.x() - wideWidth,
+				center.y() - 9,
+				center.z() - wideWidth,
+				center.x() + wideWidth,
+				center.y() + height,
+				center.z() + wideWidth
+		);
+		return world.noCollision(verticalWideBox);
 	}
 
 	@Nullable

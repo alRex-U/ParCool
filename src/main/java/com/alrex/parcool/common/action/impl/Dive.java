@@ -86,6 +86,13 @@ public class Dive extends Action {
 	}
 
 	@Override
+	public void onStop(PlayerEntity player) {
+		if (player.isInWaterOrBubble()) {
+			player.setSwimming(true);
+		}
+	}
+
+	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
 		return StaminaConsumeTiming.None;
 	}
