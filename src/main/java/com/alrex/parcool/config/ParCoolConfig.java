@@ -230,7 +230,7 @@ public class ParCoolConfig {
 			),
 			DodgeCoolTime(
 					ConfigGroup.Control, "Cool time of Dodge action",
-					"dodge_cool_time", Dodge.MAX_TICK + 4, Dodge.MAX_TICK, Integer.MAX_VALUE
+					"dodge_cool_time", Dodge.MAX_TICK, Dodge.MAX_TICK, Integer.MAX_VALUE
 			),
 			MaxSuccessiveDodgeCount(
 					ConfigGroup.Control, "Max number of times of successive Dodge action",
@@ -429,6 +429,7 @@ public class ParCoolConfig {
 						animatorPossibilities[i] = builder.define("enable_" + AnimatorList.ANIMATORS.get(i).getSimpleName(), true);
 					}
 				}
+				builder.pop();
 				register(builder, ConfigGroup.Animation);
 				register(builder, ConfigGroup.CameraAnimation);
 			}

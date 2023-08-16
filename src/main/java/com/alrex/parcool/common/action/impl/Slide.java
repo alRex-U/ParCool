@@ -9,7 +9,6 @@ import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.utilities.EntityUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
@@ -62,8 +61,8 @@ public class Slide extends Action {
 	@Override
 	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		if (player.isOnGround() && slidingVec != null) {
-			Vector3d vec = slidingVec.scale(0.2);
-			EntityUtil.addVelocity(player, vec);
+			Vector3d vec = slidingVec.scale(0.58);
+			player.setDeltaMovement(vec);
 		}
 	}
 
