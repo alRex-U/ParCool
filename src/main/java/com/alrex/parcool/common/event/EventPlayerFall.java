@@ -22,12 +22,13 @@ public class EventPlayerFall {
 				&& (parkourability.getClientInfo().getPossibilityOf(Tap.class)
 				|| parkourability.getClientInfo().getPossibilityOf(Roll.class))
 		) {
+			boolean justTime = parkourability.get(BreakfallReady.class).getDoingTick() < 5;
 			float distance = event.getDistance();
-			if (distance > 2) StartBreakfallMessage.send(player);
-			if (distance < 6) {
+			if (distance > 2) StartBreakfallMessage.send(player, justTime);
+			if (distance < 6 || (justTime && distance < 8)) {
 				event.setCanceled(true);
 			} else {
-				event.setDamageMultiplier(event.getDamageMultiplier() / 2);
+				event.setDamageMultiplier(event.getDamageMultiplier() * (justTime ? 0.4f : 0.6f));
 			}
 		}
 	}

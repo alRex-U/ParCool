@@ -132,8 +132,12 @@ public class ParCoolConfig {
 					"enable_wall_jump_backward", true
 			),
 			EnableRollWhenCreative(
-					ConfigGroup.Control, "Enable Roll when creative mode(experimental)",
+					ConfigGroup.Control, "Enable Roll when creative mode (experimental)",
 					"enable_roll_creative", false
+			),
+			EnableJustTimeEffectOfBreakfall(
+					ConfigGroup.Other, "Enable just timing effect of Breakfall",
+					"enable_just_time_effect_breakfall", true
 			),
 			VaultKeyPressedNeeded(
 					ConfigGroup.Control, "Make Vault Need Vault Key Pressed",

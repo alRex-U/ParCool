@@ -164,9 +164,8 @@ public class DodgeAnimator extends Animator {
 						.sinInOut(0.75f, 1, -0.3f, 0)
 						.get();
 				float armXFactor = new Easing(phase)
-						.sinInOut(0, 0.10f, 0, -0.2f)
-						.sinInOut(0.10f, 0.25f, -0.2f, 1)
-						.sinInOut(0.25f, 1, 1f, 0)
+						.squareOut(0.0f, 0.20f, -0.1f, 1)
+						.sinInOut(0.0f, 1, 1f, 0)
 						.get();
 				float headPitchFactor = new Easing(phase)
 						.sinInOut(0, 0.10f, 0, -0.2f)
@@ -180,8 +179,8 @@ public class DodgeAnimator extends Animator {
 				transformer
 						.rotateRightLeg((float) Math.toRadians(rightLegXFactor * -70), 0, 0, animFactor)
 						.rotateLeftLeg((float) Math.toRadians(leftLegXFactor * -70), 0, 0, animFactor)
-						.rotateRightArm((float) Math.toRadians(-180 * armXFactor), 0, (float) Math.toRadians(10 * armZFactor), animFactor)
-						.rotateLeftArm((float) Math.toRadians(-180 * armXFactor), 0, (float) Math.toRadians(-10 * armZFactor), animFactor)
+						.rotateRightArm((float) Math.toRadians(-210 * armXFactor), 0, (float) Math.toRadians(10 * armZFactor), animFactor)
+						.rotateLeftArm((float) Math.toRadians(-210 * armXFactor), 0, (float) Math.toRadians(-10 * armZFactor), animFactor)
 						.rotateAdditionallyHeadPitch(40 * headPitchFactor)
 						.end();
 				break;
@@ -234,7 +233,7 @@ public class DodgeAnimator extends Animator {
 		switch (direction) {
 			case Front: {
 				float bodyPitchFactor = new Easing(phase)
-						.sinInOut(0, 1, 0, 1)
+						.squareOut(0, 1, 0, 1)
 						.get();
 				rotator.startBasedCenter()
 						.rotatePitchFrontward(360 * bodyPitchFactor)

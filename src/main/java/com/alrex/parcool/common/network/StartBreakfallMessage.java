@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 
 public class StartBreakfallMessage {
 	UUID playerID = null;
+	boolean justTimed = false;
 
 	public UUID getPlayerID() {
 		return playerID;
@@ -27,11 +28,13 @@ public class StartBreakfallMessage {
 	public void encode(PacketBuffer packet) {
 		packet.writeLong(playerID.getMostSignificantBits());
 		packet.writeLong(playerID.getLeastSignificantBits());
+		packet.writeBoolean(justTimed);
 	}
 
 	public static StartBreakfallMessage decode(PacketBuffer packet) {
 		StartBreakfallMessage message = new StartBreakfallMessage();
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
+		message.justTimed = packet.readBoolean();
 		return message;
 	}
 
@@ -48,7 +51,7 @@ public class StartBreakfallMessage {
 				IStamina stamina = IStamina.get(player);
 				if (stamina == null) return;
 
-				parkourability.get(BreakfallReady.class).startBreakfall(player, parkourability, stamina);
+				parkourability.get(BreakfallReady.class).startBreakfall(player, parkourability, stamina, justTimed);
 			}
 		});
 		contextSupplier.get().setPacketHandled(true);
@@ -58,9 +61,10 @@ public class StartBreakfallMessage {
 	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
 	}
 
-	public static void send(ServerPlayerEntity player) {
+	public static void send(ServerPlayerEntity player, boolean justTimed) {
 		StartBreakfallMessage message = new StartBreakfallMessage();
 		message.playerID = player.getUUID();
+		message.justTimed = justTimed;
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
 	}
 }
