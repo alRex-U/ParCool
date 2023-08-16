@@ -122,6 +122,32 @@ public class WorldUtil {
 		return new Vector3d(stepX, 0, stepZ);
 	}
 
+	public static double getWallHeight(LivingEntity entity, Vector3d direction, double maxHeight, double accuracy) {
+		final double d = entity.getBbWidth() * 0.5;
+		direction = direction.normalize();
+		World world = entity.level;
+		Vector3d pos = entity.position();
+		double x1 = pos.x() + d + (direction.x() > 0 ? 1 : 0);
+		double y1 = pos.y();
+		double z1 = pos.z() + d + (direction.z() > 0 ? 1 : 0);
+		double x2 = pos.x() - d + (direction.x() < 0 ? -1 : 0);
+		double z2 = pos.z() - d + (direction.z() < 0 ? -1 : 0);
+		boolean canReturn = false;
+		for (double height = 0; height < maxHeight; height += accuracy) {
+			AxisAlignedBB box = new AxisAlignedBB(
+					x1, y1 + height, z1, x2, y1 + height + accuracy, z2
+			);
+			if (!world.noCollision(box)) {
+				canReturn = true;
+			} else {
+				if (canReturn) {
+					return height;
+				}
+			}
+		}
+		return maxHeight;
+	}
+
 	public static double getWallHeight(LivingEntity entity) {
 		Vector3d wall = getWall(entity);
 		if (wall == null) return 0;

@@ -62,7 +62,7 @@ public class Flipping extends Action {
 
 	@Override
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		return !player.isOnGround() || getDoingTick() <= 2;
+		return !player.isOnGround() || getDoingTick() <= 10;
 	}
 
 	@Override

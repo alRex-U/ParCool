@@ -29,6 +29,7 @@ public class FastRun extends Action {
 	private static final UUID FAST_RUNNING_MODIFIER_UUID = UUID.randomUUID();
 	private double speedModifier = 0;
 	private boolean toggleStatus = false;
+	private int lastDashTick = 0;
 
 	@Override
 	public void onServerTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
@@ -96,6 +97,13 @@ public class FastRun extends Action {
 		speedModifier = parkourability.getClientInfo().get(ParCoolConfig.Client.Doubles.FastRunSpeedModifier);
 	}
 
+	@Override
+	public void onStopInLocalClient(PlayerEntity player) {
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) return;
+		lastDashTick = getDashTick(parkourability.getAdditionalProperties());
+	}
+
 	@OnlyIn(Dist.CLIENT)
 	public boolean canActWithRunning(PlayerEntity player) {
 		return ParCoolConfig.Client.Booleans.SubstituteSprintForFastRun.get() ? player.isSprinting() : this.isDoing();
@@ -110,5 +118,9 @@ public class FastRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	public int getNotDashTick(AdditionalProperties properties) {
 		return ParCoolConfig.Client.Booleans.SubstituteSprintForFastRun.get() ? properties.getNotSprintingTick() : this.getNotDoingTick();
+	}
+
+	public int getLastDashTick() {
+		return lastDashTick;
 	}
 }

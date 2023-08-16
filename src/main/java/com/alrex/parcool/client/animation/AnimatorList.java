@@ -25,6 +25,7 @@ public class AnimatorList {
 			SlidingAnimator.class,
 			SpeedVaultAnimator.class,
 			TapAnimator.class,
+			VerticalWallRunAnimator.class,
 			WallJumpAnimator.class,
 			WallSlideAnimator.class
 	);

@@ -251,6 +251,11 @@ public class PlayerModelTransformer {
 		return this;
 	}
 
+	public PlayerModelTransformer rotateAdditionallyHeadRoll(float yawDegree) {
+		model.head.zRot = (float) Math.toRadians(yawDegree + netHeadYaw);
+		return this;
+	}
+
 	public void copyFromBodyToWear() {
 		model.rightSleeve.copyFrom(model.rightArm);
 		model.leftSleeve.copyFrom(model.leftArm);

@@ -31,6 +31,7 @@ public class ActionList {
 			new ActionRegistry<>(Slide.class, Slide::new, 0),
 			new ActionRegistry<>(Tap.class, Tap::new, 100),
 			new ActionRegistry<>(Vault.class, Vault::new, 50),
+			new ActionRegistry<>(VerticalWallRun.class, VerticalWallRun::new, 150),
 			new ActionRegistry<>(WallJump.class, WallJump::new, 120),
 			new ActionRegistry<>(WallSlide.class, WallSlide::new, 2)
 	);

@@ -12,9 +12,10 @@ public class EventPlayerJump {
 	public static void onJump(LivingEvent.LivingJumpEvent event) {
 		if (!(event.getEntity() instanceof PlayerEntity)) return;
 		PlayerEntity player = (PlayerEntity) event.getEntity();
-		if (!player.isLocalPlayer()) return;
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
+		parkourability.getAdditionalProperties().onJump();
+		if (!player.isLocalPlayer()) return;
 		IStamina stamina = IStamina.get(player);
 		if (stamina == null) return;
 		parkourability.get(Dive.class).onJump(player, parkourability, stamina);

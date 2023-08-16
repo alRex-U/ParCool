@@ -18,6 +18,7 @@ public class Dive extends Action {
 	private boolean justJumped = false;
 	private double playerYSpeedOld = 0;
 	private double playerYSpeed = 0;
+	private int fallingTick = 0;
 
 	public double getPlayerYSpeed(float partialTick) {
 		return MathHelper.lerp(partialTick, playerYSpeedOld, playerYSpeed);
@@ -27,6 +28,15 @@ public class Dive extends Action {
 	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		playerYSpeedOld = playerYSpeed;
 		playerYSpeed = player.getDeltaMovement().y();
+	}
+
+	@Override
+	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		if (isDoing() && (playerYSpeed < 0 || fallingTick > 0)) {
+			fallingTick++;
+		} else {
+			fallingTick = 0;
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -54,6 +64,7 @@ public class Dive extends Action {
 				|| player.isInLava()
 				|| player.isSwimming()
 				|| player.isOnGround()
+				|| (fallingTick > 5 && player.fallDistance < 0.1)
 				|| stamina.isExhausted()
 		);
 	}
