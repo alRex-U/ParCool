@@ -92,7 +92,7 @@ public class Dodge extends Action {
 		}
 		if (direction == null) return false;
 		startInfo.putInt(direction.ordinal());
-		return (parkourability.getActionInfo().can(Dodge.class)
+		return (parkourability.getAdditionalProperties().getLandingTick() > 5
 				&& !isInSuccessiveCoolDown(parkourability.getActionInfo())
 				&& coolTime <= 0
 				&& player.isOnGround()

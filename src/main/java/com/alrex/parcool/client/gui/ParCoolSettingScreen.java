@@ -501,6 +501,7 @@ public class ParCoolSettingScreen extends Screen {
 					break;
 				} else if (width - offsetX < mouseX) {
 					configMode = ConfigMode.values()[(configMode.ordinal() + 1) % ConfigMode.values().length];
+					topIndex = 0;
 					Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1f));
 					break;
 				}

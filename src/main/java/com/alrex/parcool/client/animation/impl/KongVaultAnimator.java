@@ -5,6 +5,7 @@ import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.EasingFunctions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,13 +41,17 @@ public class KongVaultAnimator extends Animator {
 		float phase = (getTick() + transformer.getPartialTick()) / MAX_TIME;
 		float armFactor = getArmFactor(phase);
 		float factor = getFactor(phase);
-		float fadeFactor = (float) (1 - Math.abs(Math.pow(2 * (phase - 0.5), 3)));
+		float animFactor = new Easing(phase)
+				.sinInOut(0, 0.25f, 0, 1)
+				.linear(0.25f, 0.75f, 1, 1)
+				.sinInOut(0.75f, 1, 1, 0)
+				.get();
 		transformer
 				.rotateAdditionallyHeadPitch(-40 * armFactor)
-				.rotateRightArm((float) toRadians(30 - 195 * armFactor), 0, (float) toRadians(30 - 30 * armFactor), fadeFactor)
-				.rotateLeftArm((float) toRadians(25 - 195 * armFactor), 0, (float) toRadians(-30 + 30 * armFactor), fadeFactor)
-				.rotateRightLeg((float) toRadians(-20 + 55 * factor), 0, 0, fadeFactor)
-				.rotateLeftLeg((float) toRadians(-10 + 20 * factor), 0, 0, fadeFactor)
+				.rotateRightArm((float) toRadians(30 - 195 * armFactor), 0, (float) toRadians(30 - 30 * armFactor), animFactor)
+				.rotateLeftArm((float) toRadians(25 - 195 * armFactor), 0, (float) toRadians(-30 + 30 * armFactor), animFactor)
+				.rotateRightLeg((float) toRadians(-20 + 55 * factor), 0, 0, animFactor)
+				.rotateLeftLeg((float) toRadians(-10 + 20 * factor), 0, 0, animFactor)
 				.makeLegsLittleMoving()
 				.end();
 	}
@@ -55,8 +60,13 @@ public class KongVaultAnimator extends Animator {
 	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / MAX_TIME;
 		float factor = getFactor(phase);
+		float yFactor = new Easing(phase)
+				.squareOut(0, 0.5f, 0, 1)
+				.squareIn(0.5f, 1, 1, 0)
+				.get();
 		rotator
 				.startBasedCenter()
+				.translateY(-yFactor * player.getBbHeight() / 5)
 				.rotatePitchFrontward(factor * 95)
 				.end();
 	}

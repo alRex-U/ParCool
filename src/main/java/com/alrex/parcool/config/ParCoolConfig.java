@@ -563,6 +563,14 @@ public class ParCoolConfig {
 			MaxSuccessiveDodgeCount(
 					ConfigGroup.Control, "Max number of times of successive Dodge action",
 					"max_successive_dodge_count", Integer.MAX_VALUE, 1, Integer.MAX_VALUE
+			),
+			MaxWallRunContinuableTick(
+					ConfigGroup.Modifier, "How long you can do Horizontal Wall Run",
+					"wall-run_continuable_tick", 40, 15, 40
+			),
+			MaxSlidingContinuableTick(
+					ConfigGroup.Modifier, "How long you can do Slide",
+					"sliding_continuable_tick", 30, 10, 30
 			);
 			public final ConfigGroup Group;
 			@Nullable

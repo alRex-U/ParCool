@@ -32,7 +32,7 @@ public class BreakfallReady extends Action {
 				);
 			}
 		}
-		if (((KeyBindings.getKeyForward().isDown() || KeyBindings.getKeyBack().isDown())
+		if (((KeyBindings.getKeyForward().isDown() || KeyBindings.getKeyBack().isDown() || KeyBindings.getKeyLeft().isDown() || KeyBindings.getKeyRight().isDown())
 				&& parkourability.getActionInfo().can(Roll.class))
 				|| !parkourability.getActionInfo().can(Tap.class)
 		) {

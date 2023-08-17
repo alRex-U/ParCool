@@ -7,6 +7,7 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
@@ -23,7 +24,17 @@ import java.nio.ByteBuffer;
 public class HorizontalWallRun extends Action {
 	private int coolTime = 0;
 	private float bodyYaw = 0;
-	private static final int Max_Running_Tick = ParCoolConfig.Client.Integers.WallRunContinuableTick.get();
+
+	private int getMaxRunningTick(ActionInfo info) {
+		Integer value = info.getClientInformation().get(ParCoolConfig.Client.Integers.WallRunContinuableTick);
+		if (value == null) return ParCoolConfig.Client.Integers.WallRunContinuableTick.DefaultValue;
+		if (info.getServerLimitation().isEnabled())
+			value = Math.min(value, info.getServerLimitation().get(ParCoolConfig.Server.Integers.MaxWallRunContinuableTick));
+		if (info.getIndividualLimitation().isEnabled())
+			value = Math.min(value, info.getIndividualLimitation().get(ParCoolConfig.Server.Integers.MaxWallRunContinuableTick));
+		return value;
+	}
+
 	private boolean wallIsRightward = false;
 	private Vector3d runningWallDirection = null;
 	private Vector3d runningDirection = null;
@@ -59,7 +70,7 @@ public class HorizontalWallRun extends Action {
 		if (slipperiness <= 0.8) {
 			player.setDeltaMovement(
 					runningDirection.x() * 0.34,
-					movement.y() * (slipperiness - 0.1) * ((double) getDoingTick()) / Max_Running_Tick,
+					movement.y() * (slipperiness - 0.1) * ((double) getDoingTick()) / getMaxRunningTick(parkourability.getActionInfo()),
 					runningDirection.z() * 0.34
 			);
 		}
@@ -111,7 +122,7 @@ public class HorizontalWallRun extends Action {
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth());
 		if (wallDirection == null) return false;
-		return (getDoingTick() < Max_Running_Tick
+		return (getDoingTick() < getMaxRunningTick(parkourability.getActionInfo())
 				&& !stamina.isExhausted()
 				&& parkourability.getActionInfo().can(HorizontalWallRun.class)
 				&& !parkourability.get(WallJump.class).justJumped()

@@ -5,7 +5,6 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.network.SyncActionStateMessage;
 import com.alrex.parcool.common.network.SyncStaminaMessage;
-import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -93,7 +92,7 @@ public class ActionProcessor {
 					}
 				} else {
 					bufferOfStarting.clear();
-					boolean start = ParCoolConfig.Client.getPossibilityOf(action.getClass()).get()
+					boolean start = parkourability.getActionInfo().can(action.getClass())
 							&& action.canStart(player, parkourability, stamina, bufferOfStarting);
 					bufferOfStarting.flip();
 					if (start) {

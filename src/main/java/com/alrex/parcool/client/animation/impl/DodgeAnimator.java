@@ -306,19 +306,13 @@ public class DodgeAnimator extends Animator {
 			}
 			case Left:
 			case Right: {
-				float bodyPitchFactor = new Easing(phase)
-						.squareOut(0, 0.45f, 0, 1)
-						.linear(0.45f, 0.55f, 1, 1)
-						.sinInOut(0.55f, 1, 1, 0)
+				float rollFactor = new Easing(phase)
+						.squareOut(0, 1, 0, 1)
 						.get();
-				float bodyYawFactor = new Easing(phase)
-						.sinInOut(0, 1, 0, 1)
-						.get();
-				event.setPitch(event.getPitch() + 40 * bodyPitchFactor);
 				if (direction == Dodge.DodgeDirection.Right)
-					event.setRoll(event.getRoll() + 360 * bodyYawFactor);
+					event.setRoll(event.getRoll() + 360 * rollFactor);
 				else
-					event.setRoll(event.getRoll() - 360 * bodyYawFactor);
+					event.setRoll(event.getRoll() - 360 * rollFactor);
 				break;
 			}
 			case Back: {
