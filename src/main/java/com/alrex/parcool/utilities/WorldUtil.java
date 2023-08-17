@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 public class WorldUtil {
 
 	public static Vector3d getRunnableWall(LivingEntity entity, double range) {
-		double width = entity.getBbWidth() / 2;
+		double width = entity.getBbWidth() * 0.4f;
 		double wallX = 0;
 		double wallZ = 0;
 		Vector3d pos = entity.position();

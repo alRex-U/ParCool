@@ -26,6 +26,7 @@ public class HorizontalWallRun extends Action {
 	private static final int Max_Running_Tick = ParCoolConfig.Client.Integers.WallRunContinuableTick.get();
 	private boolean wallIsRightward = false;
 	private Vector3d runningWallDirection = null;
+	private Vector3d runningDirection = null;
 
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
@@ -37,16 +38,16 @@ public class HorizontalWallRun extends Action {
 	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth());
 		if (wallDirection == null) return;
-		Vector3d targetVec = wallDirection.yRot((wallIsRightward ? 1 : -1) * (float) Math.PI / 2);
-		Vector3d lookVec = player.getLookAngle();
+		if (runningWallDirection == null) return;
+		if (runningDirection == null) return;
+		Vector3d lookVec = VectorUtil.fromYawDegree(player.yBodyRot);
 		double differenceAngle = Math.asin(
 				new Vector3d(
-						lookVec.x() * targetVec.x() + lookVec.z() * targetVec.z(), 0,
-						-lookVec.x() * targetVec.z() + lookVec.z() * targetVec.x()
+						lookVec.x() * runningDirection.x() + lookVec.z() * runningDirection.z(), 0,
+						-lookVec.x() * runningDirection.z() + lookVec.z() * runningDirection.x()
 				).normalize().z()
 		);
-		bodyYaw = (float) VectorUtil.toYawDegree(targetVec.yRot((float) (differenceAngle / 10)));
-		if (runningWallDirection == null) return;
+		bodyYaw = (float) VectorUtil.toYawDegree(lookVec.yRot((float) (differenceAngle / 10)));
 		Vector3d movement = player.getDeltaMovement();
 		BlockPos leanedBlock = new BlockPos(
 				player.getX() + runningWallDirection.x(),
@@ -57,9 +58,9 @@ public class HorizontalWallRun extends Action {
 		float slipperiness = player.level.getBlockState(leanedBlock).getSlipperiness(player.level, leanedBlock, player);
 		if (slipperiness <= 0.8) {
 			player.setDeltaMovement(
-					movement.x(),
+					runningDirection.x() * 0.34,
 					movement.y() * (slipperiness - 0.1) * ((double) getDoingTick()) / Max_Running_Tick,
-					movement.z()
+					runningDirection.z() * 0.34
 			);
 		}
 	}
@@ -70,20 +71,26 @@ public class HorizontalWallRun extends Action {
 		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth());
 		if (wallDirection == null) return false;
 		Vector3d wallVec = wallDirection.normalize();
-		Vector3d direction = VectorUtil.fromYawDegree(player.yBodyRot);
-		direction = new Vector3d(direction.x(), 0, direction.z()).normalize();
+		Vector3d lookDirection = VectorUtil.fromYawDegree(player.yBodyRot);
+		lookDirection = new Vector3d(lookDirection.x(), 0, lookDirection.z()).normalize();
 		//doing "wallDirection/direction" as complex number(x + z i) to calculate difference of player's direction to steps
 		Vector3d dividedVec =
 				new Vector3d(
-						wallVec.x() * direction.x() + wallVec.z() * direction.z(), 0,
-						-wallVec.x() * direction.z() + wallVec.z() * direction.x()
+						wallVec.x() * lookDirection.x() + wallVec.z() * lookDirection.z(), 0,
+						-wallVec.x() * lookDirection.z() + wallVec.z() * lookDirection.x()
 				).normalize();
 		if (Math.abs(dividedVec.z()) < 0.9) {
 			return false;
 		}
 		BufferUtil.wrap(startInfo).putBoolean(dividedVec.z() > 0/*if true, wall is in right side*/);
+		Vector3d runDirection = wallVec.yRot((float) (Math.PI / 2));
+		if (runDirection.dot(lookDirection) < 0) {
+			runDirection = runDirection.reverse();
+		}
 		startInfo.putDouble(wallDirection.x())
-				.putDouble(wallDirection.z());
+				.putDouble(wallDirection.z())
+				.putDouble(runDirection.x())
+				.putDouble(runDirection.z());
 
 		return (!parkourability.get(WallJump.class).justJumped()
 				&& !parkourability.get(Crawl.class).isDoing()
@@ -109,6 +116,8 @@ public class HorizontalWallRun extends Action {
 				&& parkourability.getActionInfo().can(HorizontalWallRun.class)
 				&& !parkourability.get(WallJump.class).justJumped()
 				&& !parkourability.get(Crawl.class).isDoing()
+				&& !parkourability.get(Dodge.class).isDoing()
+				&& !parkourability.get(Vault.class).isDoing()
 				&& KeyBindings.getKeyHorizontalWallRun().isDown()
 				&& !player.isOnGround()
 		);
@@ -123,6 +132,7 @@ public class HorizontalWallRun extends Action {
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		wallIsRightward = BufferUtil.getBoolean(startData);
 		runningWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		runningDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new HorizontalWallRunAnimator(wallIsRightward));
@@ -133,6 +143,7 @@ public class HorizontalWallRun extends Action {
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
 		wallIsRightward = BufferUtil.getBoolean(startData);
 		runningWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		runningDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new HorizontalWallRunAnimator(wallIsRightward));
@@ -143,7 +154,20 @@ public class HorizontalWallRun extends Action {
 	@Override
 	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
 		if (isDoing()) {
-			player.yRot = bodyYaw;
+			if (runningDirection == null) return;
+			Vector3d lookVec = VectorUtil.fromYawDegree(player.getYHeadRot());
+			double differenceAngle = Math.asin(
+					new Vector3d(
+							lookVec.x() * runningDirection.x() + lookVec.z() * runningDirection.z(), 0,
+							-lookVec.x() * runningDirection.z() + lookVec.z() * runningDirection.x()
+					).normalize().z()
+			);
+			if (Math.abs(differenceAngle) > Math.PI / 4) {
+				player.yRot = ((float) VectorUtil.toYawDegree(
+						runningDirection.yRot((float) (-Math.signum(differenceAngle) * Math.PI / 4))
+				));
+			}
+			player.setYBodyRot(bodyYaw);
 		}
 	}
 

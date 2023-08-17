@@ -71,7 +71,7 @@ public class Dodge extends Action {
 
 	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
-		return StaminaConsumeTiming.None;
+		return StaminaConsumeTiming.OnStart;
 	}
 
 	@OnlyIn(Dist.CLIENT)

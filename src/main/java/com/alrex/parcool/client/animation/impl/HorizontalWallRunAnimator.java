@@ -30,16 +30,16 @@ public class HorizontalWallRunAnimator extends Animator {
 					.addRotateLeftArm(0, 0, (float) Math.toRadians(-30))
 					.makeArmsNatural()
 					.rotateRightArm(0, 0, (float) Math.toRadians(60))
-					.addRotateRightLeg(0, 0, (float) Math.toRadians(10))
-					.addRotateLeftLeg(0, 0, (float) Math.toRadians(15))
+					.addRotateRightLeg(0, 0, (float) Math.toRadians(17))
+					.addRotateLeftLeg(0, 0, (float) Math.toRadians(25))
 					.end();
 		} else {
 			transformer
 					.addRotateRightArm(0, 0, (float) Math.toRadians(30))
 					.makeArmsNatural()
 					.rotateLeftArm(0, 0, (float) Math.toRadians(-60))
-					.addRotateRightLeg(0, 0, (float) Math.toRadians(-15))
-					.addRotateLeftLeg(0, 0, (float) Math.toRadians(-10))
+					.addRotateRightLeg(0, 0, (float) Math.toRadians(-25))
+					.addRotateLeftLeg(0, 0, (float) Math.toRadians(-17))
 					.end();
 		}
 	}

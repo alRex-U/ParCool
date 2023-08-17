@@ -36,10 +36,10 @@ public class BreakfallReady extends Action {
 				&& parkourability.getActionInfo().can(Roll.class))
 				|| !parkourability.getActionInfo().can(Tap.class)
 		) {
-			stamina.consume((int) ((justTimed ? 0.5f : 1) * parkourability.getActionInfo().getStaminaConsumptionOf(Roll.class)));
+			stamina.consume((int) ((justTimed ? 0.25f : 1) * parkourability.getActionInfo().getStaminaConsumptionOf(Roll.class)));
 			parkourability.get(Roll.class).startRoll(player);
 		} else {
-			stamina.consume((int) ((justTimed ? 0.5f : 1) * parkourability.getActionInfo().getStaminaConsumptionOf(Tap.class)));
+			stamina.consume((int) ((justTimed ? 0.25f : 1) * parkourability.getActionInfo().getStaminaConsumptionOf(Tap.class)));
 			parkourability.get(Tap.class).startTap(player);
 		}
 	}
