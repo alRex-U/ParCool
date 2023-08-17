@@ -5,6 +5,7 @@ import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -20,10 +21,12 @@ import java.util.function.Supplier;
 public class SyncClientInformationMessage {
 	private final ByteBuffer data = ByteBuffer.allocate(512);
 	private UUID playerID = null;
+	private boolean requestLimitations = false;
 
 	public void encode(PacketBuffer packet) {
 		packet.writeLong(playerID.getMostSignificantBits());
 		packet.writeLong(playerID.getLeastSignificantBits());
+		packet.writeBoolean(requestLimitations);
 		packet.writeBytes(data);
 		data.rewind();
 	}
@@ -31,6 +34,7 @@ public class SyncClientInformationMessage {
 	public static SyncClientInformationMessage decode(PacketBuffer packet) {
 		SyncClientInformationMessage message = new SyncClientInformationMessage();
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
+		message.requestLimitations = packet.readBoolean();
 		while (packet.isReadable()) {
 			message.data.put(packet.readByte());
 		}
@@ -48,9 +52,14 @@ public class SyncClientInformationMessage {
 				player = world.getPlayerByUUID(playerID);
 				if (player == null) return;
 			} else {
-				player = contextSupplier.get().getSender();
+				ServerPlayerEntity serverPlayer = contextSupplier.get().getSender();
+				player = serverPlayer;
 				if (player == null) return;
 				ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
+				if (requestLimitations) {
+					SyncLimitationMessage.sendServerLimitation(serverPlayer);
+					SyncLimitationMessage.sendIndividualLimitation(serverPlayer);
+				}
 			}
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
@@ -65,12 +74,16 @@ public class SyncClientInformationMessage {
 
 	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
-			PlayerEntity player = contextSupplier.get().getSender();
+			ServerPlayerEntity player = contextSupplier.get().getSender();
 			if (player == null) return;
 			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
+			if (requestLimitations) {
+				SyncLimitationMessage.sendServerLimitation(player);
+				SyncLimitationMessage.sendIndividualLimitation(player);
+			}
 			parkourability.getClientInfo().readFrom(data);
 			data.rewind();
 			parkourability.getClientInfo().setSynced(true);
@@ -79,7 +92,7 @@ public class SyncClientInformationMessage {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void sync(ClientPlayerEntity player) {
+	public static void sync(ClientPlayerEntity player, boolean requestSendLimitation) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 		parkourability.getClientInfo().readFromLocalConfig();
@@ -88,6 +101,7 @@ public class SyncClientInformationMessage {
 		parkourability.getClientInfo().writeTo(message.data);
 		message.data.flip();
 		message.playerID = player.getUUID();
+		message.requestLimitations = requestSendLimitation;
 
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.SERVER.noArg(), message);
 	}

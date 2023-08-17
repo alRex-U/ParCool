@@ -61,8 +61,7 @@ public class Stamina implements IStamina {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 		if (exhausted
-				|| (ParCoolConfig.Client.Booleans.InfiniteStamina.get() && parkourability.getActionInfo().isInfiniteStaminaPermitted())
-				|| (ParCoolConfig.Client.Booleans.InfiniteStaminaWhenCreative.get() && player.isCreative())
+				|| parkourability.getActionInfo().isStaminaInfinite(player.isSpectator() || player.isCreative())
 				|| player.hasEffect(Effects.INEXHAUSTIBLE)
 		) return;
 		if (ParCoolConfig.Client.Booleans.UseHungerBarInstead.get()) {

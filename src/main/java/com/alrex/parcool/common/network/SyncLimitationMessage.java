@@ -48,7 +48,6 @@ public class SyncLimitationMessage {
 			} else {
 				parkourability.getActionInfo().getServerLimitation().readFrom(data);
 				data.rewind();
-				SyncClientInformationMessage.sync(player);
 			}
 		});
 		contextSupplier.get().setPacketHandled(true);
@@ -64,6 +63,8 @@ public class SyncLimitationMessage {
 	public static void sendServerLimitation(ServerPlayerEntity player) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
+		parkourability.getActionInfo().getServerLimitation().readFromServerConfig();
+		parkourability.getActionInfo().getServerLimitation().setReceived();
 		SyncLimitationMessage msg = newInstance(parkourability.getActionInfo().getServerLimitation());
 		msg.forIndividuals = false;
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), msg);
@@ -72,6 +73,7 @@ public class SyncLimitationMessage {
 	public static void sendIndividualLimitation(ServerPlayerEntity player) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
+		parkourability.getActionInfo().getIndividualLimitation().setReceived();
 		SyncLimitationMessage msg = newInstance(parkourability.getActionInfo().getIndividualLimitation());
 		msg.forIndividuals = true;
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), msg);

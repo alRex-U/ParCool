@@ -112,7 +112,7 @@ public class ParCoolSettingScreen extends Screen {
 		for (int i = 0; i < actionList.length; i++) {
 			actionList[i].setter.accept(actionButtons[i].selected());
 		}
-		SyncClientInformationMessage.sync(player);
+		SyncClientInformationMessage.sync(player, true);
 		super.onClose();
 	}
 
