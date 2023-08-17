@@ -74,6 +74,8 @@ public class FastRun extends Action {
 	@Override
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		return (!stamina.isExhausted()
+				&& player.getVehicle() == null
+				&& !player.isFallFlying()
 				&& player.isSprinting()
 				&& !player.isVisuallyCrawling()
 				&& !player.isSwimming()

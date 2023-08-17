@@ -32,6 +32,7 @@ public class VerticalWallRun extends Action {
 				&& (Math.abs(player.getDeltaMovement().y()) <= player.getBbHeight() / 5)
 				&& (4 < tickAfterJump && tickAfterJump < 13)
 				&& getNotDoingTick() > 15
+				&& !player.isFallFlying()
 				&& KeyBindings.getKeyJump().isDown()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& !parkourability.get(Crawl.class).isDoing()
