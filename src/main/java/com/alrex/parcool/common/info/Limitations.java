@@ -107,10 +107,10 @@ public class Limitations {
 					.putInt(limitation.getLeastStaminaConsumption());
 		}
 		for (ParCoolConfig.Server.Booleans item : ParCoolConfig.Server.Booleans.values()) {
-			buffer.put((byte) (booleans.get(item) ? 1 : 0));
+			buffer.put((byte) (get(item) ? 1 : 0));
 		}
 		for (ParCoolConfig.Server.Integers item : ParCoolConfig.Server.Integers.values()) {
-			buffer.putInt(integers.get(item));
+			buffer.putInt(get(item));
 		}
 	}
 
@@ -133,10 +133,10 @@ public class Limitations {
 		CompoundNBT nbt = new CompoundNBT();
 		nbt.putBoolean("limitation_imposed", enabled);
 		for (ParCoolConfig.Server.Booleans item : ParCoolConfig.Server.Booleans.values()) {
-			nbt.putBoolean(item.Path, booleans.get(item));
+			nbt.putBoolean(item.Path, get(item));
 		}
 		for (ParCoolConfig.Server.Integers item : ParCoolConfig.Server.Integers.values()) {
-			nbt.putInt(item.Path, integers.get(item));
+			nbt.putInt(item.Path, get(item));
 		}
 
 		ListNBT limitationList = new ListNBT();

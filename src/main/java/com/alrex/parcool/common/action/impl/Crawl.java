@@ -32,6 +32,7 @@ public class Crawl extends Action {
 				&& !parkourability.get(Tap.class).isDoing()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& parkourability.get(Vault.class).getNotDoingTick() >= 8
+				&& player.getVehicle() == null
 				&& !player.isInWaterOrBubble()
 				&& (player.isOnGround() || ParCoolConfig.Client.Booleans.EnableCrawlInAir.get());
 	}
