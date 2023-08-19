@@ -90,6 +90,8 @@ public class FastRun extends Action {
 				&& !player.isVisuallyCrawling()
 				&& !player.isSwimming()
 				&& !parkourability.get(Crawl.class).isDoing()
+				&& !parkourability.get(ClingToCliff.class).isDoing()
+				&& !parkourability.get(HangDown.class).isDoing()
 				&& ((ParCoolConfig.Client.FastRunControl.get() == ControlType.PressKey && KeyBindings.getKeyFastRunning().isDown())
 				|| (ParCoolConfig.Client.FastRunControl.get() == ControlType.Toggle && toggleStatus)
 				|| ParCoolConfig.Client.FastRunControl.get() == ControlType.Auto)

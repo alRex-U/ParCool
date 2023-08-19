@@ -9,7 +9,6 @@ import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -23,12 +22,12 @@ import java.nio.ByteBuffer;
 public class WallJump extends Action {
 
 	private boolean jump = false;
-	private float forceBodyAngle = 0;
 
 	public boolean justJumped() {
 		return jump;
 	}
 
+	private final float MAX_COOL_DOWN_TICK = 8;
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		jump = false;
@@ -48,9 +47,12 @@ public class WallJump extends Action {
 		Vector3d lookVec = player.getLookAngle();
 		Vector3d vec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
 		Vector3d value;
+		double dotProduct = wall.dot(vec);
 
-		if (wall.dot(vec) > 0) {//To Wall
+		if (dotProduct > 0.35) {
 			if (!ParCoolConfig.Client.Booleans.EnableWallJumpBackward.get()) return null;
+		}
+		if (dotProduct > 0) {//To Wall
 			double dot = vec.reverse().dot(wall);
 			value = vec.add(wall.scale(2 * dot / wall.length()));
 		} else {//back on Wall
@@ -58,6 +60,12 @@ public class WallJump extends Action {
 		}
 
 		return value.normalize().add(wall.scale(-0.7)).scale(0.85);
+	}
+
+	public float getCoolDownPhase() {
+		float phase = getNotDoingTick() / MAX_COOL_DOWN_TICK;
+		if (phase > 1) return 1;
+		else return phase;
 	}
 
 	@Override
@@ -68,7 +76,7 @@ public class WallJump extends Action {
 		ClingToCliff cling = parkourability.get(ClingToCliff.class);
 
 		boolean value = (!stamina.isExhausted()
-				&& parkourability.getActionInfo().can(WallJump.class)
+				&& getNotDoingTick() > MAX_COOL_DOWN_TICK
 				&& !player.isOnGround()
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
@@ -161,7 +169,6 @@ public class WallJump extends Action {
 		if (animation != null) {
 			switch (type) {
 				case Back:
-					forceBodyAngle = (float) VectorUtil.toYawDegree(wallDirection);
 					animation.setAnimator(new BackwardWallJumpAnimator());
 					break;
 				case SwingLeftArm:
@@ -182,7 +189,6 @@ public class WallJump extends Action {
 		if (animation != null) {
 			switch (type) {
 				case Back:
-					forceBodyAngle = (float) VectorUtil.toYawDegree(wallDirection);
 					animation.setAnimator(new BackwardWallJumpAnimator());
 					break;
 				case SwingLeftArm:

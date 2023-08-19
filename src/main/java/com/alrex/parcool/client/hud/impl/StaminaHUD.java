@@ -4,6 +4,7 @@ package com.alrex.parcool.client.hud.impl;
 import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.common.action.impl.CatLeap;
 import com.alrex.parcool.common.action.impl.Dodge;
+import com.alrex.parcool.common.action.impl.WallJump;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
@@ -71,6 +72,11 @@ public class StaminaHUD extends AbstractGui {
 				Math.min(
 						parkourability.get(Dodge.class).getCoolDownPhase(parkourability.getActionInfo()),
 						parkourability.get(CatLeap.class).getCoolDownPhase()
+				);
+		coolTimeScale =
+				Math.min(
+						coolTimeScale,
+						parkourability.get(WallJump.class).getCoolDownPhase()
 				);
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;

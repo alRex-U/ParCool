@@ -18,7 +18,7 @@ public class CatLeap extends Action {
 	private int coolTimeTick = 0;
 	private boolean ready = false;
 	private int readyTick = 0;
-	private int MAX_COOL_TIME_TICK = 30;
+	private final int MAX_COOL_TIME_TICK = 30;
 
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {

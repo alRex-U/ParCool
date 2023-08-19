@@ -69,9 +69,9 @@ public class HorizontalWallRun extends Action {
 		float slipperiness = player.level.getBlockState(leanedBlock).getSlipperiness(player.level, leanedBlock, player);
 		if (slipperiness <= 0.8) {
 			player.setDeltaMovement(
-					runningDirection.x() * 0.34,
+					runningDirection.x() * 0.3,
 					movement.y() * (slipperiness - 0.1) * ((double) getDoingTick()) / getMaxRunningTick(parkourability.getActionInfo()),
-					runningDirection.z() * 0.34
+					runningDirection.z() * 0.3
 			);
 		}
 	}
