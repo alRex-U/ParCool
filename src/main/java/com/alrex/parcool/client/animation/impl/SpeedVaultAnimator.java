@@ -3,6 +3,7 @@ package com.alrex.parcool.client.animation.impl;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
+import com.alrex.parcool.common.action.impl.Vault;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.Easing;
@@ -14,15 +15,14 @@ import net.minecraftforge.client.event.EntityViewRenderEvent;
 import static com.alrex.parcool.utilities.MathUtil.lerp;
 
 public class SpeedVaultAnimator extends Animator {
-	private static final int MAX_TIME = 11;
 
 	@Override
 	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
-		return getTick() >= MAX_TIME;
+		return getTick() >= Vault.MAX_TICK;
 	}
 
 	private float getFactor(float tick) {
-		float phase = tick / MAX_TIME;
+		float phase = tick / Vault.MAX_TICK;
 		if (phase < 0.5) {
 			return EasingFunctions.SinInOutBySquare(phase * 2);
 		} else {
@@ -32,7 +32,7 @@ public class SpeedVaultAnimator extends Animator {
 
 	@Override
 	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
-		float phase = (getTick() + rotator.getPartialTick()) / MAX_TIME;
+		float phase = (getTick() + rotator.getPartialTick()) / Vault.MAX_TICK;
 		float factor = getFactor(getTick() + rotator.getPartialTick());
 		float forwardFactor = (float) Math.sin(phase * 2 * Math.PI) + 0.5f;
 		float yFactor = new Easing(phase)
@@ -49,7 +49,7 @@ public class SpeedVaultAnimator extends Animator {
 
 	@Override
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
-		float phase = (getTick() + transformer.getPartialTick()) / MAX_TIME;
+		float phase = (getTick() + transformer.getPartialTick()) / Vault.MAX_TICK;
 		float animFactor = new Easing(phase)
 				.sinInOut(0, 0.25f, 0, 1)
 				.linear(0.25f, 0.75f, 1, 1)
@@ -109,7 +109,7 @@ public class SpeedVaultAnimator extends Animator {
 		if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
 				!ParCoolConfig.Client.Booleans.EnableCameraAnimationOfVault.get()) return;
 		float factor = getFactor((float) (getTick() + event.getRenderPartialTicks()));
-		float phase = (float) ((getTick() + event.getRenderPartialTicks()) / MAX_TIME);
+		float phase = (float) ((getTick() + event.getRenderPartialTicks()) / Vault.MAX_TICK);
 		float forwardFactor = (float) Math.sin(phase * 2 * Math.PI) + 0.5f;
 		event.setPitch(15 * forwardFactor);
 		switch (type) {

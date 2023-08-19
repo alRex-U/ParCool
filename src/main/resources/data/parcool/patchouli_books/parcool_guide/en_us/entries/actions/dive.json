@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "ParCool has special jumping animation: $(bold)Diving$(). Let's see it by third-person view."
+      "text": "ParCool has special jumping animation: $(bold)Diving$(). Let's see it by third-person view. In addition by pressing jump key again after a few seconds, Dive goes Sky-Diving."
     },
     {
       "type": "patchouli:image",

@@ -40,7 +40,7 @@
     },
     {
       "type": "patchouli:text",
-      "title": "翻訳者 (スペイン語翻訳)",
+      "title": "翻訳者 (スペイン語)",
       "text": "$(bold)es-es$()$(italic)$(list)GhostOfCazador"
     }
   ]

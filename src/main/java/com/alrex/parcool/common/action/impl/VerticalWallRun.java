@@ -10,6 +10,7 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.event.TickEvent;
 
@@ -50,7 +51,15 @@ public class VerticalWallRun extends Action {
 			if (wall.dot(VectorUtil.fromYawDegree(player.getYHeadRot())) > 0.93) {
 				double height = WorldUtil.getWallHeight(player, wall, player.getBbHeight() * 2.2, 0.2);
 				if (height > 2.3) {
+					BlockPos targetBlock = new BlockPos(
+							player.getX() + wall.x(),
+							player.getBoundingBox().minY + player.getBbHeight() * 0.5,
+							player.getZ() + wall.z()
+					);
+					if (!player.level.isLoaded(targetBlock)) return false;
+					float slipperiness = player.level.getBlockState(targetBlock).getSlipperiness(player.level, targetBlock, player);
 					startInfo.putDouble(height);
+					startInfo.putFloat(slipperiness);
 					startInfo.putDouble(wall.x());
 					startInfo.putDouble(wall.y());
 					startInfo.putDouble(wall.z());
@@ -74,16 +83,18 @@ public class VerticalWallRun extends Action {
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		double height = startData.getDouble();
+		float slipperiness = startData.getFloat();
 		player.setDeltaMovement(player
 				.getDeltaMovement()
 				.multiply(1, 0, 1)
-				.add(0, 0.32 * Math.sqrt(height), 0)
+				.add(0, (slipperiness <= 0.8f ? 0.32 : 0.16) * Math.sqrt(height), 0)
 		);
 		onStartInOtherClient(player, parkourability, startData);
 	}
 
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+		startData.position(12);
 		wallDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		Animation animation = Animation.get(player);
 		if (animation != null) {

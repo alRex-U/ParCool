@@ -23,6 +23,7 @@ public class Vault extends Action {
 	public enum TypeSelectionMode {
 		SpeedVault, KongVault, Dynamic
 	}
+	public static final int MAX_TICK = 11;
 
 	public enum AnimationType {
 		SpeedVault((byte) 0), KongVault((byte) 1);
@@ -112,7 +113,7 @@ public class Vault extends Action {
 	}
 
 	private int getVaultAnimateTime() {
-		return 2;
+		return MAX_TICK;
 	}
 
 	@OnlyIn(Dist.CLIENT)
