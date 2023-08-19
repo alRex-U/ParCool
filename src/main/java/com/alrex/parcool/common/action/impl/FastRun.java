@@ -9,6 +9,7 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -30,6 +31,15 @@ public class FastRun extends Action {
 	private double speedModifier = 0;
 	private boolean toggleStatus = false;
 	private int lastDashTick = 0;
+
+	public double getSpeedModifier(ActionInfo info) {
+		double value = info.getClientInformation().get(ParCoolConfig.Client.Doubles.FastRunSpeedModifier);
+		if (info.getServerLimitation().isEnabled())
+			value = Math.min(value, info.getServerLimitation().get(ParCoolConfig.Server.Doubles.MaxFastRunSpeedModifier));
+		if (info.getIndividualLimitation().isEnabled())
+			value = Math.min(value, info.getIndividualLimitation().get(ParCoolConfig.Server.Doubles.MaxFastRunSpeedModifier));
+		return value;
+	}
 
 	@Override
 	public void onServerTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
@@ -96,7 +106,7 @@ public class FastRun extends Action {
 
 	@Override
 	public void onStartInServer(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
-		speedModifier = parkourability.getClientInfo().get(ParCoolConfig.Client.Doubles.FastRunSpeedModifier);
+		speedModifier = getSpeedModifier(parkourability.getActionInfo());
 	}
 
 	@Override

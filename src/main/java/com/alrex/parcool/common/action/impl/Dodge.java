@@ -74,6 +74,15 @@ public class Dodge extends Action {
 		return StaminaConsumeTiming.OnStart;
 	}
 
+	public double getSpeedModifier(ActionInfo info) {
+		double value = info.getClientInformation().get(ParCoolConfig.Client.Doubles.DodgeSpeedModifier);
+		if (info.getServerLimitation().isEnabled())
+			value = Math.min(value, info.getServerLimitation().get(ParCoolConfig.Server.Doubles.MaxDodgeSpeedModifier));
+		if (info.getIndividualLimitation().isEnabled())
+			value = Math.min(value, info.getIndividualLimitation().get(ParCoolConfig.Server.Doubles.MaxDodgeSpeedModifier));
+		return value;
+	}
+
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
@@ -147,7 +156,7 @@ public class Dodge extends Action {
 				dodgeVec = lookVec.yRot((float) Math.PI / 2);
 				break;
 		}
-		dodgeVec = dodgeVec.scale(.9 * ParCoolConfig.Client.Doubles.DodgeSpeedModifier.get());
+		dodgeVec = dodgeVec.scale(.9 * getSpeedModifier(parkourability.getActionInfo()));
 		player.setDeltaMovement(dodgeVec);
 	}
 

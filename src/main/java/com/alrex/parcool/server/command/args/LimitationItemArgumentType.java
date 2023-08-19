@@ -62,11 +62,19 @@ public class LimitationItemArgumentType<V, T extends Enum<T> & ParCoolConfig.Ite
 		return new LimitationItemArgumentType<>(ParCoolConfig.Server.Integers.class);
 	}
 
+	public static LimitationItemArgumentType<Double, ParCoolConfig.Server.Doubles> doubles() {
+		return new LimitationItemArgumentType<>(ParCoolConfig.Server.Doubles.class);
+	}
+
 	public static ParCoolConfig.Server.Booleans getBool(CommandContext<?> context, String name) {
 		return context.getArgument(name, ParCoolConfig.Server.Booleans.class);
 	}
 
 	public static ParCoolConfig.Server.Integers getInt(CommandContext<?> context, String name) {
 		return context.getArgument(name, ParCoolConfig.Server.Integers.class);
+	}
+
+	public static ParCoolConfig.Server.Doubles getDouble(CommandContext<?> context, String name) {
+		return context.getArgument(name, ParCoolConfig.Server.Doubles.class);
 	}
 }

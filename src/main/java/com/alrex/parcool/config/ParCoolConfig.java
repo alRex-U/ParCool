@@ -638,6 +638,83 @@ public class ParCoolConfig {
 			}
 		}
 
+		public enum Doubles implements Item<Double> {
+			MaxFastRunSpeedModifier(
+					ConfigGroup.Modifier, "FastRun speed modifier",
+					"max_fast-run_modifier", 2, 0.001, 4
+			),
+			MaxDodgeSpeedModifier(
+					ConfigGroup.Modifier, "Dodge speed modifier",
+					"max_dodge-speed_modifier", 1, 0.5, 1.5
+			);
+			public final ConfigGroup Group;
+			@Nullable
+			public final String Comment;
+			public final String Path;
+			public final double DefaultValue;
+			public final double Min;
+			public final double Max;
+			@Nullable
+			private ForgeConfigSpec.DoubleValue configInstance = null;
+
+			Doubles(
+					ConfigGroup group,
+					@Nullable String comment,
+					String path,
+					double defaultValue,
+					double min,
+					double max
+			) {
+				Group = group;
+				Comment = comment;
+				Path = path;
+				DefaultValue = defaultValue;
+				Min = min;
+				Max = max;
+			}
+
+			@Override
+			public String getPath() {
+				return Path;
+			}
+
+			public void register(ForgeConfigSpec.Builder builder) {
+				if (Comment != null) {
+					builder.comment(Comment);
+				}
+				configInstance = builder.defineInRange(Path, DefaultValue, Min, Max);
+			}
+
+			@Override
+			public void writeToBuffer(ByteBuffer buffer) {
+				buffer.putDouble(get());
+			}
+
+			@Override
+			public Double readFromBuffer(ByteBuffer buffer) {
+				return buffer.getDouble();
+			}
+
+			@Override
+			public Double get() {
+				if (configInstance == null) return DefaultValue;
+				return configInstance.get();
+			}
+
+			@Override
+			public void set(Double value) {
+				if (configInstance != null) {
+					configInstance.set(value);
+				}
+			}
+
+			@OnlyIn(Dist.CLIENT)
+			@Nullable
+			public ForgeConfigSpec.DoubleValue getInternalInstance() {
+				return configInstance;
+			}
+		}
+
 		public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 		public static final ForgeConfigSpec BUILT_CONFIG;
 		private static final ForgeConfigSpec.BooleanValue[] actionPermissions = new ForgeConfigSpec.BooleanValue[ActionList.ACTIONS.size()];
@@ -652,6 +729,7 @@ public class ParCoolConfig {
 		private static void register(ForgeConfigSpec.Builder builder, ConfigGroup group) {
 			Arrays.stream(Server.Booleans.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
 			Arrays.stream(Server.Integers.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
+			Arrays.stream(Server.Doubles.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
 		}
 
 		public static int getLeastStaminaConsumptionOf(Class<? extends Action> action) {

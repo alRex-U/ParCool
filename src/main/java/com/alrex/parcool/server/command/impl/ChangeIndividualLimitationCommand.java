@@ -7,6 +7,7 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.server.command.args.ActionArgumentType;
 import com.alrex.parcool.server.command.args.LimitationItemArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -54,7 +55,7 @@ public class ChangeIndividualLimitationCommand {
 										.executes(ChangeIndividualLimitationCommand::setLimitationDefault)
 								)
 								.then(Commands
-										.literal("bool")
+										.literal("boolean")
 										.then(Commands
 												.argument(ARGS_NAME_CONFIG_ITEM, LimitationItemArgumentType.booleans())
 												.then(Commands
@@ -64,12 +65,22 @@ public class ChangeIndividualLimitationCommand {
 										)
 								)
 								.then(Commands
-										.literal("int")
+										.literal("integer")
 										.then(Commands
 												.argument(ARGS_NAME_CONFIG_ITEM, LimitationItemArgumentType.integers())
 												.then(Commands
 														.argument(ARGS_NAME_VALUE, IntegerArgumentType.integer())
 														.executes(ChangeIndividualLimitationCommand::setIntLimitation)
+												)
+										)
+								)
+								.then(Commands
+										.literal("reals")
+										.then(Commands
+												.argument(ARGS_NAME_CONFIG_ITEM, LimitationItemArgumentType.doubles())
+												.then(Commands
+														.argument(ARGS_NAME_VALUE, DoubleArgumentType.doubleArg())
+														.executes(ChangeIndividualLimitationCommand::setDoubleLimitation)
 												)
 										)
 								)
@@ -186,6 +197,12 @@ public class ChangeIndividualLimitationCommand {
 		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
 		ParCoolConfig.Server.Integers item = LimitationItemArgumentType.getInt(context, ARGS_NAME_CONFIG_ITEM);
 		int value = IntegerArgumentType.getInteger(context, ARGS_NAME_VALUE);
+		if (value < item.Min) {
+			value = item.Min;
+		}
+		if (value > item.Max) {
+			value = item.Max;
+		}
 		int num = 0;
 		for (ServerPlayerEntity player : targets) {
 			Limitations.Changer.get(player)
@@ -194,6 +211,27 @@ public class ChangeIndividualLimitationCommand {
 			num++;
 		}
 		context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.set", num, item.getPath(), Integer.toString(value)), true);
+		return 0;
+	}
+
+	private static int setDoubleLimitation(CommandContext<CommandSource> context) throws CommandSyntaxException {
+		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
+		ParCoolConfig.Server.Doubles item = LimitationItemArgumentType.getDouble(context, ARGS_NAME_CONFIG_ITEM);
+		double value = DoubleArgumentType.getDouble(context, ARGS_NAME_VALUE);
+		if (value < item.Min) {
+			value = item.Min;
+		}
+		if (value > item.Max) {
+			value = item.Max;
+		}
+		int num = 0;
+		for (ServerPlayerEntity player : targets) {
+			Limitations.Changer.get(player)
+					.set(item, value)
+					.sync();
+			num++;
+		}
+		context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.set", num, item.getPath(), Double.toString(value)), true);
 		return 0;
 	}
 

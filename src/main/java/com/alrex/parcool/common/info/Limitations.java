@@ -24,6 +24,7 @@ public class Limitations {
 	private boolean enabled = false;
 	private final EnumMap<ParCoolConfig.Server.Booleans, Boolean> booleans = new EnumMap<>(ParCoolConfig.Server.Booleans.class);
 	private final EnumMap<ParCoolConfig.Server.Integers, Integer> integers = new EnumMap<>(ParCoolConfig.Server.Integers.class);
+	private final EnumMap<ParCoolConfig.Server.Doubles, Double> doubles = new EnumMap<>(ParCoolConfig.Server.Doubles.class);
 	private final ActionLimitation[] actionLimitations = new ActionLimitation[ActionList.ACTIONS.size()];
 
 	public Limitations() {
@@ -76,6 +77,16 @@ public class Limitations {
 		return value;
 	}
 
+	public double get(ParCoolConfig.Server.Doubles item) {
+		if (!haveReceived) return 0;
+		if (!enabled) return item.DefaultValue;
+		Double value = doubles.get(item);
+		if (value == null) {
+			return item.DefaultValue;
+		}
+		return value;
+	}
+
 	public boolean isInfiniteStaminaPermitted() {
 		return (!enabled ||
 				booleans.get(ParCoolConfig.Server.Booleans.AllowInfiniteStamina));
@@ -87,6 +98,9 @@ public class Limitations {
 		}
 		for (ParCoolConfig.Server.Integers item : ParCoolConfig.Server.Integers.values()) {
 			integers.put(item, item.get());
+		}
+		for (ParCoolConfig.Server.Doubles item : ParCoolConfig.Server.Doubles.values()) {
+			doubles.put(item, item.get());
 		}
 		for (int i = 0; i < actionLimitations.length; i++) {
 			actionLimitations[i] = new ActionLimitation(
@@ -112,6 +126,9 @@ public class Limitations {
 		for (ParCoolConfig.Server.Integers item : ParCoolConfig.Server.Integers.values()) {
 			buffer.putInt(get(item));
 		}
+		for (ParCoolConfig.Server.Doubles item : ParCoolConfig.Server.Doubles.values()) {
+			buffer.putDouble(get(item));
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -126,6 +143,9 @@ public class Limitations {
 		for (ParCoolConfig.Server.Integers item : ParCoolConfig.Server.Integers.values()) {
 			integers.put(item, buffer.getInt());
 		}
+		for (ParCoolConfig.Server.Doubles item : ParCoolConfig.Server.Doubles.values()) {
+			doubles.put(item, buffer.getDouble());
+		}
 		setReceived();
 	}
 
@@ -137,6 +157,9 @@ public class Limitations {
 		}
 		for (ParCoolConfig.Server.Integers item : ParCoolConfig.Server.Integers.values()) {
 			nbt.putInt(item.Path, get(item));
+		}
+		for (ParCoolConfig.Server.Doubles item : ParCoolConfig.Server.Doubles.values()) {
+			nbt.putDouble(item.Path, get(item));
 		}
 
 		ListNBT limitationList = new ListNBT();
@@ -164,6 +187,9 @@ public class Limitations {
 			}
 			for (ParCoolConfig.Server.Integers item : ParCoolConfig.Server.Integers.values()) {
 				integers.put(item, compoundNBT.getInt(item.Path));
+			}
+			for (ParCoolConfig.Server.Doubles item : ParCoolConfig.Server.Doubles.values()) {
+				doubles.put(item, compoundNBT.getDouble(item.Path));
 			}
 			for (INBT inbt : compoundNBT.getList("actions", compoundNBT.getByte("list_type"))) {
 				if (!(inbt instanceof CompoundNBT)) {
@@ -208,6 +234,11 @@ public class Limitations {
 
 		public Changer set(ParCoolConfig.Server.Integers item, int value) {
 			instance.integers.put(item, value);
+			return this;
+		}
+
+		public Changer set(ParCoolConfig.Server.Doubles item, double value) {
+			instance.doubles.put(item, value);
 			return this;
 		}
 
