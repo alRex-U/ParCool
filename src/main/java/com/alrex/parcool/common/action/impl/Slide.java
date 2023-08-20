@@ -66,9 +66,9 @@ public class Slide extends Action {
 
 	@Override
 	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		if (player.isOnGround() && slidingVec != null) {
-			Vector3d vec = slidingVec.scale(0.58);
-			player.setDeltaMovement(vec);
+		if (slidingVec != null) {
+			Vector3d vec = slidingVec.scale(0.45);
+			player.setDeltaMovement((player.isOnGround() ? vec : vec.scale(0.6)).add(0, player.getDeltaMovement().y(), 0));
 		}
 	}
 
