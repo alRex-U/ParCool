@@ -15,9 +15,13 @@ public class CrawlAnimator extends Animator {
 	@Override
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float factor = (float) Math.sin(transformer.getLimbSwing() / 10 * Math.PI);
+		float leftZFactor = (float) Math.cos(transformer.getLimbSwing() / 10 * Math.PI);
+		float rightZFactor = -leftZFactor;
+		if (leftZFactor < 0) leftZFactor /= 5;
+		if (rightZFactor < 0) rightZFactor /= 5;
 		transformer
-				.rotateLeftArm((float) Math.toRadians(-15), 0, (float) Math.toRadians(-120 - 25 * factor))
-				.rotateRightArm((float) Math.toRadians(-15), 0, (float) Math.toRadians(120 - 25 * factor))
+				.rotateLeftArm((float) Math.toRadians(-15 + 45 * leftZFactor), 0, (float) Math.toRadians(-130 - 30 * factor))
+				.rotateRightArm((float) Math.toRadians(-15 + 45 * rightZFactor), 0, (float) Math.toRadians(130 - 30 * factor))
 				.rotateLeftLeg((float) Math.toRadians(-8 + 8 * factor), 0, (float) Math.toRadians(-5 + 5 * factor))
 				.rotateRightLeg((float) Math.toRadians(-8 - 8 * factor), 0, (float) Math.toRadians(5 + 5 * factor))
 				.end();

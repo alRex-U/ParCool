@@ -104,8 +104,11 @@ public class HorizontalWallRun extends Action {
 				.putDouble(runDirection.z());
 
 		return (!parkourability.get(WallJump.class).justJumped()
-				&& !parkourability.get(Crawl.class).isDoing()
 				&& KeyBindings.getKeyHorizontalWallRun().isDown()
+				&& !parkourability.get(WallJump.class).justJumped()
+				&& !parkourability.get(Crawl.class).isDoing()
+				&& !parkourability.get(Dodge.class).isDoing()
+				&& !parkourability.get(Vault.class).isDoing()
 				&& Math.abs(player.getDeltaMovement().y()) < 0.3
 				&& coolTime == 0
 				&& !player.isOnGround()
@@ -124,7 +127,6 @@ public class HorizontalWallRun extends Action {
 		if (wallDirection == null) return false;
 		return (getDoingTick() < getMaxRunningTick(parkourability.getActionInfo())
 				&& !stamina.isExhausted()
-				&& parkourability.getActionInfo().can(HorizontalWallRun.class)
 				&& !parkourability.get(WallJump.class).justJumped()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Dodge.class).isDoing()

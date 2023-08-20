@@ -109,11 +109,11 @@ public class Vault extends Action {
 
 	@Override
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		return getDoingTick() < getVaultAnimateTime();
+		return getDoingTick() < MAX_TICK;
 	}
 
 	private int getVaultAnimateTime() {
-		return MAX_TICK;
+		return 2;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -160,11 +160,20 @@ public class Vault extends Action {
 	@Override
 	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		if (stepDirection == null) return;
-		player.setDeltaMovement(
-				stepDirection.x() / 10,
-				((stepHeight + 0.02) / this.getVaultAnimateTime()) / (player.getBbHeight() / 1.8),
-				stepDirection.z() / 10
-		);
+		if (getDoingTick() < getVaultAnimateTime()) {
+			player.setDeltaMovement(
+					stepDirection.x() / 10,
+					((stepHeight + 0.02) / this.getVaultAnimateTime()) / (player.getBbHeight() / 1.8),
+					stepDirection.z() / 10
+			);
+		} else if (getDoingTick() == getVaultAnimateTime()) {
+			stepDirection = stepDirection.normalize();
+			player.setDeltaMovement(
+					stepDirection.x() * 0.45,
+					0.075 * (player.getBbHeight() / 1.8),
+					stepDirection.z() * 0.45
+			);
+		}
 	}
 
 	@Override
@@ -175,12 +184,6 @@ public class Vault extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStopInLocalClient(PlayerEntity player) {
-		stepDirection = stepDirection.normalize();
-		player.setDeltaMovement(
-				stepDirection.x() * 0.45,
-				0.075 * (player.getBbHeight() / 1.8),
-				stepDirection.z() * 0.45
-		);
 	}
 }
 
