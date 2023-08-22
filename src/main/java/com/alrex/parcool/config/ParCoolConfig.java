@@ -128,8 +128,8 @@ public class ParCoolConfig {
 					"enable_vault_in_air", true
 			),
 			EnableWallJumpBackward(
-					ConfigGroup.Control, "Enable Wall-Jump backward when facing to wall",
-					"enable_wall_jump_backward", true
+					ConfigGroup.Control, "Enable backward Wall-Jump when facing to wall",
+					"enable_wall_jump_backward", false
 			),
 			EnableRollWhenCreative(
 					ConfigGroup.Control, "Enable Roll when creative mode (experimental)",

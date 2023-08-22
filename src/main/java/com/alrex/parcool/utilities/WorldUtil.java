@@ -3,6 +3,7 @@ package com.alrex.parcool.utilities;
 import com.alrex.parcool.common.action.impl.HangDown;
 import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.state.properties.Half;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -118,6 +119,21 @@ public class WorldUtil {
 			stepZ--;
 		}
 		if (stepX == 0 && stepZ == 0) return null;
+		if (stepX == 0 || stepZ == 0) {
+			Vector3d result = new Vector3d(stepX, 0, stepZ);
+			BlockPos target = new BlockPos(entity.position().add(result).add(0, 0.5, 0));
+			if (!world.isLoaded(target)) return null;
+			BlockState state = world.getBlockState(target);
+			if (state.getBlock() instanceof StairsBlock) {
+				Half half = state.getValue(StairsBlock.HALF);
+				if (half != Half.BOTTOM) return result;
+				Direction direction = state.getValue(StairsBlock.FACING);
+				if (stepZ > 0 && direction == Direction.SOUTH) return null;
+				if (stepZ < 0 && direction == Direction.NORTH) return null;
+				if (stepX > 0 && direction == Direction.EAST) return null;
+				if (stepX < 0 && direction == Direction.WEST) return null;
+			}
+		}
 
 		return new Vector3d(stepX, 0, stepZ);
 	}
