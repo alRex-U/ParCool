@@ -1,11 +1,11 @@
 package com.alrex.parcool.common.capability;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PassiveCustomAnimation;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,6 +13,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.TickEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class Animation {
@@ -26,9 +27,8 @@ public class Animation {
 	private final PassiveCustomAnimation passiveAnimation = new PassiveCustomAnimation();
 
 	public void setAnimator(Animator animator) {
-		if (ParCoolConfig.CONFIG_CLIENT.disableAnimation.get()) return;
-		ParCoolConfig.Client config = ParCoolConfig.CONFIG_CLIENT;
-		if (!config.canAnimate(animator.getClass()).get()) return;
+		if (!ParCoolConfig.Client.Booleans.EnableAnimation.get()) return;
+		if (!ParCoolConfig.Client.canAnimate(animator.getClass()).get()) return;
 		this.animator = animator;
 	}
 
@@ -62,7 +62,7 @@ public class Animation {
 		if (animator == null) return;
 		if (player.isLocalPlayer()
 				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()
-				&& ParCoolConfig.CONFIG_CLIENT.disableFPVAnimation.get()
+				&& !ParCoolConfig.Client.Booleans.EnableFPVAnimation.get()
 		) return;
 		animator.onCameraSetUp(event, player, parkourability);
 	}
@@ -72,6 +72,12 @@ public class Animation {
 		if (animator != null) {
 			animator.tick();
 			if (animator.shouldRemoved(player, parkourability)) animator = null;
+		}
+	}
+
+	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+		if (animator != null) {
+			animator.onRenderTick(event, player, parkourability);
 		}
 	}
 

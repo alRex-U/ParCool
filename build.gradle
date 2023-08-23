@@ -92,12 +92,14 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven { url = 'https://maven.blamejared.com' }
+    maven { url "https://www.cursemaven.com" }
 }
 dependencies {
     // Specify the version of Minecraft to use.
     minecraft "net.minecraftforge:forge:${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
+    runtimeOnly fg.deobf("curse.maven:pehkui-319596:4461971")
 }
 
 jar {

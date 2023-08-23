@@ -1,6 +1,8 @@
 package com.alrex.parcool.common.event;
 
 import com.alrex.parcool.common.action.impl.BreakfallReady;
+import com.alrex.parcool.common.action.impl.Roll;
+import com.alrex.parcool.common.action.impl.Tap;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.network.StartBreakfallMessage;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -16,15 +18,17 @@ public class EventPlayerFall {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 
-		if (
-				parkourability.get(BreakfallReady.class).isDoing()
+		if (parkourability.get(BreakfallReady.class).isDoing()
+				&& (parkourability.getClientInfo().getPossibilityOf(Tap.class)
+				|| parkourability.getClientInfo().getPossibilityOf(Roll.class))
 		) {
+			boolean justTime = parkourability.get(BreakfallReady.class).getDoingTick() < 5;
 			float distance = event.getDistance();
-			if (distance > 2) StartBreakfallMessage.send(player);
-			if (distance < 6) {
+			if (distance > 2) StartBreakfallMessage.send(player, justTime);
+			if (distance < 6 || (justTime && distance < 8)) {
 				event.setCanceled(true);
 			} else {
-				event.setDamageMultiplier(event.getDamageMultiplier() / 2);
+				event.setDamageMultiplier(event.getDamageMultiplier() * (justTime ? 0.4f : 0.6f));
 			}
 		}
 	}

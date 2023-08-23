@@ -25,9 +25,9 @@ public class ServerProxy extends CommonProxy {
 		);
 		instance.registerMessage(
 				12,
-				LimitationByServerMessage.class,
-				LimitationByServerMessage::encode,
-				LimitationByServerMessage::decode,
+				SyncLimitationMessage.class,
+				SyncLimitationMessage::encode,
+				SyncLimitationMessage::decode,
 				null
 		);
 		instance.registerMessage(
@@ -43,6 +43,13 @@ public class ServerProxy extends CommonProxy {
 				StaminaControlMessage::encode,
 				StaminaControlMessage::decode,
 				null
+		);
+		instance.registerMessage(
+				17,
+				SyncClientInformationMessage.class,
+				SyncClientInformationMessage::encode,
+				SyncClientInformationMessage::decode,
+				SyncClientInformationMessage::handleServer
 		);
 	}
 }

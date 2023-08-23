@@ -2,14 +2,10 @@
 
 # ParCool MOD
 
----
-
 **Welcome to this project!**
 
 *ParCool* is a mod of Minecraft, for more *Cool* Actions like *Parkour*.  
-It's inspired by [SmartMoving](https://www.curseforge.com/minecraft/mc-mods/smart-moving). That was a very great mod,
-but it's abandoned now. I'm so sad.  
-(Actually, there are some alternate projects...)
+It's inspired by [SmartMoving](https://www.curseforge.com/minecraft/mc-mods/smart-moving). That was a very great mod.
 
 Players can do more actions such as...
 
@@ -25,5 +21,10 @@ If it made you traceurs or traceuses ; parkour practitioners, I couldn't be happ
 
 This project is always ready to accept your contribution.
 
-*ParCool* are licensed under  
+### For Developers
+
+This mod provides some features for mod developers, server-hosts and mod-packers.
+Please read [ParCool Guide](docs/parcool-gude-on-web-v3.1.0.0/Introduction.md).
+
+*ParCool* is licensed under  
 **GNU GENERAL PUBLIC LICENSE Version 3**.

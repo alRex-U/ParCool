@@ -3,6 +3,7 @@ package com.alrex.parcool.utilities;
 import com.alrex.parcool.common.action.impl.HangDown;
 import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.state.properties.Half;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -14,7 +15,7 @@ import javax.annotation.Nullable;
 public class WorldUtil {
 
 	public static Vector3d getRunnableWall(LivingEntity entity, double range) {
-		double width = entity.getBbWidth() / 2;
+		double width = entity.getBbWidth() * 0.4f;
 		double wallX = 0;
 		double wallZ = 0;
 		Vector3d pos = entity.position();
@@ -118,17 +119,58 @@ public class WorldUtil {
 			stepZ--;
 		}
 		if (stepX == 0 && stepZ == 0) return null;
+		if (stepX == 0 || stepZ == 0) {
+			Vector3d result = new Vector3d(stepX, 0, stepZ);
+			BlockPos target = new BlockPos(entity.position().add(result).add(0, 0.5, 0));
+			if (!world.isLoaded(target)) return null;
+			BlockState state = world.getBlockState(target);
+			if (state.getBlock() instanceof StairsBlock) {
+				Half half = state.getValue(StairsBlock.HALF);
+				if (half != Half.BOTTOM) return result;
+				Direction direction = state.getValue(StairsBlock.FACING);
+				if (stepZ > 0 && direction == Direction.SOUTH) return null;
+				if (stepZ < 0 && direction == Direction.NORTH) return null;
+				if (stepX > 0 && direction == Direction.EAST) return null;
+				if (stepX < 0 && direction == Direction.WEST) return null;
+			}
+		}
 
 		return new Vector3d(stepX, 0, stepZ);
+	}
+
+	public static double getWallHeight(LivingEntity entity, Vector3d direction, double maxHeight, double accuracy) {
+		final double d = entity.getBbWidth() * 0.5;
+		direction = direction.normalize();
+		World world = entity.level;
+		Vector3d pos = entity.position();
+		double x1 = pos.x() + d + (direction.x() > 0 ? 1 : 0);
+		double y1 = pos.y();
+		double z1 = pos.z() + d + (direction.z() > 0 ? 1 : 0);
+		double x2 = pos.x() - d + (direction.x() < 0 ? -1 : 0);
+		double z2 = pos.z() - d + (direction.z() < 0 ? -1 : 0);
+		boolean canReturn = false;
+		for (double height = 0; height < maxHeight; height += accuracy) {
+			AxisAlignedBB box = new AxisAlignedBB(
+					x1, y1 + height, z1, x2, y1 + height + accuracy, z2
+			);
+			if (!world.noCollision(box)) {
+				canReturn = true;
+			} else {
+				if (canReturn) {
+					return height;
+				}
+			}
+		}
+		return maxHeight;
 	}
 
 	public static double getWallHeight(LivingEntity entity) {
 		Vector3d wall = getWall(entity);
 		if (wall == null) return 0;
 		World world = entity.level;
-		final double v = 0.1;
+		final double accuracy = entity.getBbHeight() / 18; // normally about 0.1
 		final double d = entity.getBbWidth() * 0.5;
-		int loopNum = (int) Math.round(entity.getBbHeight() / v);
+		int loopNum = (int) Math.round(entity.getBbHeight() / accuracy);
 		Vector3d pos = entity.position();
 		double x1 = pos.x() + d + (wall.x() > 0 ? 1 : 0);
 		double y1 = pos.y();
@@ -138,13 +180,13 @@ public class WorldUtil {
 		boolean canReturn = false;
 		for (int i = 0; i < loopNum; i++) {
 			AxisAlignedBB box = new AxisAlignedBB(
-					x1, y1 + v * i, z1, x2, y1 + v * (i + 1), z2
+					x1, y1 + accuracy * i, z1, x2, y1 + accuracy * (i + 1), z2
 			);
 
 			if (!world.noCollision(box)) {
 				canReturn = true;
 			} else {
-				if (canReturn) return v * i;
+				if (canReturn) return accuracy * i;
 			}
 		}
 		return entity.getBbHeight();
@@ -168,14 +210,15 @@ public class WorldUtil {
 				entity.getY() + entity.getBbHeight() + 0.4,
 				entity.getZ()
 		);
+		if (!entity.level.isLoaded(pos)) return null;
 		BlockState state = entity.level.getBlockState(pos);
 		Block block = state.getBlock();
 		HangDown.BarAxis axis = null;
 		if (block instanceof RotatedPillarBlock) {
-			Direction.Axis pillarAxis = state.getValue(RotatedPillarBlock.AXIS);
 			if (state.isCollisionShapeFullBlock(entity.level, pos)) {
 				return null;
 			}
+			Direction.Axis pillarAxis = state.getValue(RotatedPillarBlock.AXIS);
 			switch (pillarAxis) {
 				case X:
 					axis = HangDown.BarAxis.X;
@@ -184,7 +227,10 @@ public class WorldUtil {
 					axis = HangDown.BarAxis.Z;
 					break;
 			}
-		} else if (block instanceof EndRodBlock) {
+		} else if (block instanceof DirectionalBlock) {
+			if (state.isCollisionShapeFullBlock(entity.level, pos)) {
+				return null;
+			}
 			Direction direction = state.getValue(DirectionalBlock.FACING);
 			switch (direction) {
 				case EAST:
@@ -195,7 +241,7 @@ public class WorldUtil {
 				case SOUTH:
 					axis = HangDown.BarAxis.Z;
 			}
-		} else if (block instanceof FenceBlock || block instanceof PaneBlock) {
+		} else if (block instanceof FourWayBlock) {
 			int zCount = 0;
 			int xCount = 0;
 			if (state.getValue(FourWayBlock.NORTH)) zCount++;
@@ -220,36 +266,33 @@ public class WorldUtil {
 
 	public static boolean existsDivableSpace(LivingEntity entity) {
 		World world = entity.level;
-		Vector3d lookAngle = entity.getLookAngle();
-		Vector3d center = entity.position().add(new Vector3d(lookAngle.x(), 0, lookAngle.z()).normalize().multiply(3, 0, 3));
-		if (!world.isLoaded(new BlockPos(center))) {
-			return false;
+		double width = entity.getBbWidth() * 1.5;
+		double height = entity.getBbHeight() * 1.5;
+		double wideWidth = entity.getBbWidth() * 2;
+		Vector3d center = entity.position();
+		Vector3d diveDirection = VectorUtil.fromYawDegree(entity.getYHeadRot());
+		for (int i = 0; i < 4; i++) {
+			Vector3d centerPoint = center.add(diveDirection.scale(width * i));
+			AxisAlignedBB box = new AxisAlignedBB(
+					centerPoint.x() - width,
+					centerPoint.y() + 0.05,
+					centerPoint.z() - width,
+					centerPoint.x() + width,
+					centerPoint.y() + height,
+					centerPoint.z() + width
+			);
+			if (!world.noCollision(box)) return false;
 		}
-		BlockPos centerPos = new BlockPos(center);
-		final int neededSpaceHeight = 9;
-		boolean hasSpace = true;
-		for (int i = 0; i < neededSpaceHeight; i++) {
-			hasSpace = !world.getBlockState(centerPos).getMaterial().blocksMotion();
-			hasSpace = hasSpace && !world.getBlockState(centerPos.west()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && !world.getBlockState(centerPos.east()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && !world.getBlockState(centerPos.north()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && !world.getBlockState(centerPos.south()).getMaterial().blocksMotion();
-			if (!hasSpace) break;
-			centerPos = centerPos.below();
-		}
-		if (!hasSpace) return false;
-		center = entity.position().add(new Vector3d(lookAngle.x(), 0, lookAngle.z()).normalize().multiply(5, 0, 5));
-		centerPos = new BlockPos(center);
-		for (int i = 0; i < neededSpaceHeight; i++) {
-			hasSpace = !world.getBlockState(centerPos).getMaterial().blocksMotion();
-			hasSpace = hasSpace && !world.getBlockState(centerPos.west()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && !world.getBlockState(centerPos.east()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && !world.getBlockState(centerPos.north()).getMaterial().blocksMotion();
-			hasSpace = hasSpace && !world.getBlockState(centerPos.south()).getMaterial().blocksMotion();
-			if (!hasSpace) break;
-			centerPos = centerPos.below();
-		}
-		return hasSpace;
+		center = center.add(diveDirection.scale(4));
+		AxisAlignedBB verticalWideBox = new AxisAlignedBB(
+				center.x() - wideWidth,
+				center.y() - 9,
+				center.z() - wideWidth,
+				center.x() + wideWidth,
+				center.y() + height,
+				center.z() + wideWidth
+		);
+		return world.noCollision(verticalWideBox);
 	}
 
 	@Nullable

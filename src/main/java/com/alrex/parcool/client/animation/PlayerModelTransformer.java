@@ -204,7 +204,15 @@ public class PlayerModelTransformer {
 		return this;
 	}
 
-	public PlayerModelTransformer makeArmsMovingDynamically(float factor) {
+	public PlayerModelTransformer makeLegsMoveDynamically(float factor) {
+		model.rightLeg.zRot += MathHelper.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
+		model.leftLeg.zRot -= MathHelper.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
+		model.rightLeg.xRot += MathHelper.sin(ageInTicks * 0.56F) * 0.8F * factor;
+		model.leftLeg.xRot -= MathHelper.sin(ageInTicks * 0.56F) * 0.8F * factor;
+		return this;
+	}
+
+	public PlayerModelTransformer makeArmsMoveDynamically(float factor) {
 		model.rightArm.zRot += MathHelper.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
 		model.leftArm.zRot -= MathHelper.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
 		model.rightArm.xRot += MathHelper.sin(ageInTicks * 0.56F) * 0.8F * factor;
@@ -240,6 +248,11 @@ public class PlayerModelTransformer {
 
 	public PlayerModelTransformer rotateAdditionallyHeadYaw(float yawDegree) {
 		model.head.yRot = (float) Math.toRadians(yawDegree + netHeadYaw);
+		return this;
+	}
+
+	public PlayerModelTransformer rotateAdditionallyHeadRoll(float yawDegree) {
+		model.head.zRot = (float) Math.toRadians(yawDegree + netHeadYaw);
 		return this;
 	}
 

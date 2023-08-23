@@ -13,7 +13,7 @@ public class AnimatorList {
 			ClimbUpAnimator.class,
 			ClingToCliffAnimator.class,
 			CrawlAnimator.class,
-			DiveAnimator.class,
+			DiveAnimationHostAnimator.class,
 			DodgeAnimator.class,
 			FastRunningAnimator.class,
 			FlippingAnimator.class,
@@ -25,6 +25,7 @@ public class AnimatorList {
 			SlidingAnimator.class,
 			SpeedVaultAnimator.class,
 			TapAnimator.class,
+			VerticalWallRunAnimator.class,
 			WallJumpAnimator.class,
 			WallSlideAnimator.class
 	);

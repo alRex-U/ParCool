@@ -11,27 +11,37 @@
     {
       "type": "patchouli:text",
       "title": "Mod Developers",
-      "text": "$(italic)$(list)alRex-U"
+      "text": "Main Development$()$(italic)$(list)alRex-U$()$(br2)Bugfix Contributions$()$(italic)$(list)JulyLynn"
     },
     {
       "type": "patchouli:text",
-      "title": "Translators (en_us)",
-      "text": "$(bold)English Translators$()$(italic)$(list)alRex-U"
+      "title": "Translators (English)",
+      "text": "$(bold)en_us$()$(italic)$(list)alRex-U"
     },
     {
       "type": "patchouli:text",
-      "title": "Translators (ja_jp)",
-      "text": "$(bold)Japanese Translators$()$(italic)$(list)alRex-U"
+      "title": "Translators (Japanese)",
+      "text": "$(bold)ja_jp$()$(italic)$(list)alRex-U"
     },
     {
       "type": "patchouli:text",
-      "title": "Translators (ch_zn)",
-      "text": "$(bold)Chinese Translators$()$(italic)$(list)CatalystGinger"
+      "title": "Translators (Chinese)",
+      "text": "$(bold)ch_zn$()$(italic)$(list)CatalystGinger$(list)GuoDaiYi$(list)njt-233"
     },
     {
       "type": "patchouli:text",
-      "title": "Translators (fr-fr)",
-      "text": "$(bold)French Translators$()$(italic)$(list)COwOkie"
+      "title": "Translators (French)",
+      "text": "$(bold)fr-fr$()$(italic)$(list)COwOkie"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Translators (Brazilian)",
+      "text": "$(bold)pt-br$()$(italic)$(list)FITFC"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Translators (Spanish)",
+      "text": "$(bold)es-es$()$(italic)$(list)GhostOfCazador"
     }
   ]
 }

@@ -1,12 +1,13 @@
 package com.alrex.parcool.client.hud.impl;
 
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.common.action.impl.CatLeap;
 import com.alrex.parcool.common.action.impl.Dodge;
+import com.alrex.parcool.common.action.impl.WallJump;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
@@ -23,10 +24,7 @@ import net.minecraftforge.event.TickEvent;
 public class StaminaHUD extends AbstractGui {
 	public static final ResourceLocation STAMINA = new ResourceLocation("parcool", "textures/gui/stamina_bar.png");
 
-	private final Position pos;
-
-	public StaminaHUD(Position pos) {
-		this.pos = pos;
+	public StaminaHUD() {
 	}
 
 	private float shadowScale = 1f;
@@ -52,21 +50,33 @@ public class StaminaHUD extends AbstractGui {
 		Parkourability parkourability = Parkourability.get(player);
 		if (stamina == null || parkourability == null) return;
 
-		if (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && parkourability.getActionInfo().isInfiniteStaminaPermitted())
-			return;
+		if (ParCoolConfig.Client.Booleans.HideStaminaHUDWhenStaminaIsInfinite.get() &&
+				parkourability.getActionInfo().isStaminaInfinite(player.isCreative() || player.isSpectator())
+		) return;
 
 		MainWindow window = Minecraft.getInstance().getWindow();
+		Position position = new Position(
+				ParCoolConfig.Client.AlignHorizontalStaminaHUD.get(),
+				ParCoolConfig.Client.AlignVerticalStaminaHUD.get(),
+				ParCoolConfig.Client.Integers.HorizontalMarginOfStaminaHUD.get(),
+				ParCoolConfig.Client.Integers.VerticalMarginOfStaminaHUD.get()
+		);
 		final int width = window.getGuiScaledWidth();
 		final int height = window.getGuiScaledHeight();
 		final int boxWidth = 91;
 		final int boxHeight = 17;
-		final Tuple<Integer, Integer> pos = this.pos.calculate(boxWidth, boxHeight, width, height);
+		final Tuple<Integer, Integer> pos = position.calculate(boxWidth, boxHeight, width, height);
 
 		float staminaScale = (float) stamina.get() / stamina.getActualMaxStamina();
 		float coolTimeScale =
 				Math.min(
-						parkourability.get(Dodge.class).getCoolDownPhase(),
+						parkourability.get(Dodge.class).getCoolDownPhase(parkourability.getActionInfo()),
 						parkourability.get(CatLeap.class).getCoolDownPhase()
+				);
+		coolTimeScale =
+				Math.min(
+						coolTimeScale,
+						parkourability.get(WallJump.class).getCoolDownPhase()
 				);
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;

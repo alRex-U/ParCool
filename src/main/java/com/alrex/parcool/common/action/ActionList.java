@@ -14,6 +14,7 @@ public class ActionList {
 	public static final List<ActionRegistry<? extends Action>> ACTION_REGISTRIES = Arrays.asList(
 			new ActionRegistry<>(BreakfallReady.class, BreakfallReady::new, 0),
 			new ActionRegistry<>(CatLeap.class, CatLeap::new, 150),
+			new ActionRegistry<>(ClimbPoles.class, ClimbPoles::new, 0),
 			new ActionRegistry<>(ClimbUp.class, ClimbUp::new, 150),
 			new ActionRegistry<>(ClingToCliff.class, ClingToCliff::new, 2),
 			new ActionRegistry<>(Crawl.class, Crawl::new, 0),
@@ -26,9 +27,11 @@ public class ActionList {
 			new ActionRegistry<>(JumpFromBar.class, JumpFromBar::new, 100),
 			new ActionRegistry<>(QuickTurn.class, QuickTurn::new, 0),
 			new ActionRegistry<>(Roll.class, Roll::new, 100),
+			new ActionRegistry<>(SkyDive.class, SkyDive::new, 0),
 			new ActionRegistry<>(Slide.class, Slide::new, 0),
 			new ActionRegistry<>(Tap.class, Tap::new, 100),
 			new ActionRegistry<>(Vault.class, Vault::new, 50),
+			new ActionRegistry<>(VerticalWallRun.class, VerticalWallRun::new, 150),
 			new ActionRegistry<>(WallJump.class, WallJump::new, 120),
 			new ActionRegistry<>(WallSlide.class, WallSlide::new, 2)
 	);

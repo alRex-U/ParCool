@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "$(bold)Dodge$() is action for avoiding bullets or arrows. You can quick short-jump.$(br)However be careful with cool time!"
+      "text": "$(bold)Dodge$() is action for avoiding bullets or arrows. You can quickly move short distance. $(br)However be careful with cool time!"
     },
     {
       "type": "patchouli:text",

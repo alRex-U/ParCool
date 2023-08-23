@@ -1,6 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.client.animation.impl.DiveAnimator;
+import com.alrex.parcool.client.animation.impl.DiveAnimationHostAnimator;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
@@ -8,6 +8,7 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -15,16 +16,26 @@ import java.nio.ByteBuffer;
 
 public class Dive extends Action {
 	private boolean justJumped = false;
+	private double playerYSpeedOld = 0;
 	private double playerYSpeed = 0;
+	private int fallingTick = 0;
 
-	public double getPlayerYSpeed() {
-		return playerYSpeed;
+	public double getPlayerYSpeed(float partialTick) {
+		return MathHelper.lerp(partialTick, playerYSpeedOld, playerYSpeed);
+	}
+
+	@Override
+	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		playerYSpeedOld = playerYSpeed;
+		playerYSpeed = player.getDeltaMovement().y();
 	}
 
 	@Override
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		if (isDoing() && player.isLocalPlayer()) {
-			playerYSpeed = player.getDeltaMovement().y();
+		if (isDoing() && (playerYSpeed < 0 || fallingTick > 0)) {
+			fallingTick++;
+		} else {
+			fallingTick = 0;
 		}
 	}
 
@@ -53,6 +64,7 @@ public class Dive extends Action {
 				|| player.isInLava()
 				|| player.isSwimming()
 				|| player.isOnGround()
+				|| (fallingTick > 5 && player.fallDistance < 0.1)
 				|| stamina.isExhausted()
 		);
 	}
@@ -66,9 +78,17 @@ public class Dive extends Action {
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		double ySpeed = startData.getDouble();
+		playerYSpeedOld = playerYSpeed = ySpeed;
 		Animation animation = Animation.get(player);
 		if (animation != null) {
-			animation.setAnimator(new DiveAnimator(ySpeed));
+			animation.setAnimator(new DiveAnimationHostAnimator(ySpeed));
+		}
+	}
+
+	@Override
+	public void onStop(PlayerEntity player) {
+		if (player.isInWaterOrBubble()) {
+			player.setSwimming(true);
 		}
 	}
 
@@ -79,21 +99,24 @@ public class Dive extends Action {
 
 	@Override
 	public void saveSynchronizedState(ByteBuffer buffer) {
-		buffer.putDouble(playerYSpeed);
+		buffer.putDouble(playerYSpeed)
+				.putDouble(playerYSpeedOld);
 	}
 
 	@Override
 	public void restoreSynchronizedState(ByteBuffer buffer) {
 		playerYSpeed = buffer.getDouble();
+		playerYSpeedOld = buffer.getDouble();
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
 		double ySpeed = startData.getDouble();
+		playerYSpeedOld = playerYSpeed = ySpeed;
 		Animation animation = Animation.get(player);
 		if (animation != null) {
-			animation.setAnimator(new DiveAnimator(ySpeed));
+			animation.setAnimator(new DiveAnimationHostAnimator(ySpeed));
 		}
 	}
 }

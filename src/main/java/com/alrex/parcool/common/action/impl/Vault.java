@@ -1,6 +1,5 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.impl.KongVaultAnimator;
 import com.alrex.parcool.client.animation.impl.SpeedVaultAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
@@ -9,9 +8,11 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -23,6 +24,7 @@ public class Vault extends Action {
 	public enum TypeSelectionMode {
 		SpeedVault, KongVault, Dynamic
 	}
+	public static final int MAX_TICK = 11;
 
 	public enum AnimationType {
 		SpeedVault((byte) 0), KongVault((byte) 1);
@@ -71,7 +73,7 @@ public class Vault extends Action {
 		}
 		AnimationType animationType = null;
 		SpeedVaultAnimator.Type type = SpeedVaultAnimator.Type.Right;
-		switch (ParCoolConfig.CONFIG_CLIENT.vaultAnimationMode.get()) {
+		switch (ParCoolConfig.Client.VaultAnimationMode.get()) {
 			case KongVault:
 				animationType = AnimationType.KongVault;
 				break;
@@ -97,19 +99,18 @@ public class Vault extends Action {
 				.putDouble(step.z())
 				.putDouble(wallHeight);
 
-		return (parkourability.getActionInfo().can(Vault.class)
-				&& !stamina.isExhausted()
-				&& !(ParCoolConfig.CONFIG_CLIENT.vaultNeedKeyPressed.get() && !KeyBindings.getKeyVault().isDown())
+		return (!stamina.isExhausted()
+				&& !(ParCoolConfig.Client.Booleans.VaultKeyPressedNeeded.get() && !KeyBindings.getKeyVault().isDown())
 				&& parkourability.get(FastRun.class).canActWithRunning(player)
 				&& !stamina.isExhausted()
-				&& (player.isOnGround() || !ParCoolConfig.CONFIG_CLIENT.disableVaultInAir.get())
+				&& (player.isOnGround() || ParCoolConfig.Client.Booleans.EnableVaultInAir.get())
 				&& wallHeight > player.getBbHeight() * 0.44 /*about 0.8*/
 		);
 	}
 
 	@Override
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		return getDoingTick() < getVaultAnimateTime();
+		return getDoingTick() < MAX_TICK;
 	}
 
 	private int getVaultAnimateTime() {
@@ -122,6 +123,8 @@ public class Vault extends Action {
 		AnimationType animationType = AnimationType.fromCode(startData.get());
 		SpeedVaultAnimator.Type speedVaultType = BufferUtil.getBoolean(startData) ?
 				SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.PLAYER_ATTACK_STRONG, 1f, 0.7f);
 		stepDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		stepHeight = startData.getDouble();
 		Animation animation = Animation.get(player);
@@ -160,11 +163,20 @@ public class Vault extends Action {
 	@Override
 	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		if (stepDirection == null) return;
-		player.setDeltaMovement(
-				stepDirection.x() / 10,
-				((stepHeight + 0.02) / this.getVaultAnimateTime()) / (player.getBbHeight() / 1.8),
-				stepDirection.z() / 10
-		);
+		if (getDoingTick() < getVaultAnimateTime()) {
+			player.setDeltaMovement(
+					stepDirection.x() / 10,
+					((stepHeight + 0.02) / this.getVaultAnimateTime()) / (player.getBbHeight() / 1.8),
+					stepDirection.z() / 10
+			);
+		} else if (getDoingTick() == getVaultAnimateTime()) {
+			stepDirection = stepDirection.normalize();
+			player.setDeltaMovement(
+					stepDirection.x() * 0.45,
+					0.075 * (player.getBbHeight() / 1.8),
+					stepDirection.z() * 0.45
+			);
+		}
 	}
 
 	@Override
@@ -175,12 +187,6 @@ public class Vault extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStopInLocalClient(PlayerEntity player) {
-		stepDirection = stepDirection.normalize();
-		player.setDeltaMovement(
-				stepDirection.x() * 0.45,
-				0.075 * (player.getBbHeight() / 1.8),
-				stepDirection.z() * 0.45
-		);
 	}
 }
 

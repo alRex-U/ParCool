@@ -10,6 +10,7 @@ public class PlayerModelRotator {
 	private final MatrixStack stack;
 	private final PlayerEntity player;
 	private final float partial;
+	private double playerHeight = 1.8;
 
 	public float getPartialTick() {
 		return partial;
@@ -25,6 +26,12 @@ public class PlayerModelRotator {
 		this.stack = stack;
 		this.player = player;
 		this.partial = partial;
+		switch (player.getPose()) {
+			case SWIMMING:
+			case CROUCHING:
+			case SLEEPING:
+				playerHeight = 0.6;
+		}
 	}
 
 	public PlayerModelRotator start() {
@@ -33,17 +40,22 @@ public class PlayerModelRotator {
 
 	public PlayerModelRotator startBasedCenter() {
 		basedCenter = true;
-		stack.translate(0, player.getBbHeight() / 2, 0);
+		stack.translate(0, playerHeight / 2, 0);
 		return this;
 	}
 
 	public PlayerModelRotator startBasedTop() {
 		basedTop = true;
-		stack.translate(0, player.getBbHeight(), 0);
+		stack.translate(0, playerHeight, 0);
 		return this;
 	}
 
-	public PlayerModelRotator rotateFrontward(float angleDegree) {
+	public PlayerModelRotator translateY(float offset) {
+		stack.translate(0, offset, 0);
+		return this;
+	}
+
+	public PlayerModelRotator rotatePitchFrontward(float angleDegree) {
 		Vector3d lookVec = VectorUtil.fromYawDegree(player.yBodyRot).yRot((float) Math.PI / 2);
 		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
 		angleFront += angleDegree;
@@ -51,19 +63,24 @@ public class PlayerModelRotator {
 		return this;
 	}
 
-	public PlayerModelRotator rotateRightward(float angleDegree) {
+	public PlayerModelRotator rotateRollRightward(float angleDegree) {
 		Vector3d lookVec = VectorUtil.fromYawDegree(player.yBodyRot);
 		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
 		stack.mulPose(vec.rotationDegrees(angleDegree));
 		return this;
 	}
 
+	public PlayerModelRotator rotateYawRightward(float angleDegree) {
+		stack.mulPose(Vector3f.YN.rotationDegrees(angleDegree));
+		return this;
+	}
+
 	public void end() {
 		if (basedCenter) {
-			stack.translate(0, -player.getBbHeight() / 2, 0);
+			stack.translate(0, -playerHeight / 2, 0);
 		}
 		if (basedTop) {
-			stack.translate(0, -player.getBbHeight(), 0);
+			stack.translate(0, -playerHeight, 0);
 		}
 	}
 

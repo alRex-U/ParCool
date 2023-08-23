@@ -7,7 +7,9 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -18,7 +20,7 @@ public class CatLeap extends Action {
 	private int coolTimeTick = 0;
 	private boolean ready = false;
 	private int readyTick = 0;
-	private int MAX_COOL_TIME_TICK = 30;
+	private final int MAX_COOL_TIME_TICK = 30;
 
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
@@ -68,6 +70,8 @@ public class CatLeap extends Action {
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		final double catLeapYSpeed = 0.49;
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 0.8f, 0.7f);
 		Vector3d motionVec = player.getDeltaMovement();
 		Vector3d vec = new Vector3d(motionVec.x(), 0, motionVec.z()).normalize();
 		coolTimeTick = MAX_COOL_TIME_TICK;

@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(bold)Q. Is Fabric supported?$()$(br2)$(bold)A. No.$()$(br)This mod is maintained by one developer so it must take much time to port to fabric."
+      "text": "$(bold)Q. Is Fabric supported?$()$(br2)$(bold)A. No.$()$(br)Developer don't plan to port this to fabric now"
     }
   ]
 }

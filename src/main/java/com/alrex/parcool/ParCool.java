@@ -10,6 +10,7 @@ import com.alrex.parcool.common.potion.PotionRecipeRegistry;
 import com.alrex.parcool.common.potion.Potions;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
 import com.alrex.parcool.common.registries.EventBusModRegistry;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.proxy.ClientProxy;
 import com.alrex.parcool.proxy.CommonProxy;
 import com.alrex.parcool.proxy.ServerProxy;
@@ -53,12 +54,7 @@ public class ParCool {
 
 	//only in Client
 	public static boolean isActive() {
-		return ParCoolConfig.CONFIG_CLIENT.parCoolActivation.get();
-	}
-
-	//only in Client
-	public static void setActivation(boolean activation) {
-		ParCoolConfig.CONFIG_CLIENT.parCoolActivation.set(activation);
+		return ParCoolConfig.Client.Booleans.ParCoolIsActive.get();
 	}
 
 	public ParCool() {
@@ -75,8 +71,8 @@ public class ParCool {
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		ItemRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
 
-		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ParCoolConfig.SERVER_SPEC);
-		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.CLIENT_SPEC);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ParCoolConfig.Server.BUILT_CONFIG);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.Client.BUILT_CONFIG);
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {
