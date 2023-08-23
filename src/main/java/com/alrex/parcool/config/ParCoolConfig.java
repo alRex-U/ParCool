@@ -139,6 +139,10 @@ public class ParCoolConfig {
 					ConfigGroup.Other, "Enable just timing effect of Breakfall",
 					"enable_just_time_effect_breakfall", true
 			),
+			EnableActionSounds(
+					ConfigGroup.Other, "Enable sounds triggered by Action",
+					"enable_sounds", true
+			),
 			VaultKeyPressedNeeded(
 					ConfigGroup.Control, "Make Vault Need Vault Key Pressed",
 					"vault_needs_key_pressed", false

@@ -7,6 +7,7 @@
 - Action : Climb Poles
 - Action : Wall Run
 - Action : Sky Diving
+- Actions play sound
 - Backward Wall Jump
 - Just-time Breakfall
 - Some New Configs

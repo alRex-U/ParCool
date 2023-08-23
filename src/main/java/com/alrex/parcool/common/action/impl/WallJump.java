@@ -11,6 +11,7 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
@@ -136,6 +137,8 @@ public class WallJump extends Action {
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		double speedScale = 1;
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.PLAYER_ATTACK_STRONG, 1f, 0.7f);
 		Vector3d jumpDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble()).scale(speedScale);
 		Vector3d direction = new Vector3d(jumpDirection.x(), 1.512, jumpDirection.z()).scale(.3);
 		Vector3d wallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());

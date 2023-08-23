@@ -12,6 +12,7 @@ import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -132,6 +133,8 @@ public class Dodge extends Action {
 		if (successivelyCount < getMaxSuccessiveDodge(parkourability.getActionInfo())) {
 			successivelyCount++;
 		}
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 0.75f, 0.6f);
 		successivelyCoolTick = getSuccessiveCoolTime(parkourability.getActionInfo());
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new DodgeAnimator(dodgeDirection));

@@ -13,6 +13,7 @@ import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
@@ -146,6 +147,8 @@ public class HorizontalWallRun extends Action {
 		wallIsRightward = BufferUtil.getBoolean(startData);
 		runningWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		runningDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.PLAYER_ATTACK_STRONG, 1f, 0.7f);
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new HorizontalWallRunAnimator(wallIsRightward));

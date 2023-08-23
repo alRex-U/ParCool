@@ -18,7 +18,8 @@ public class BreakfallReady extends Action {
 	public void startBreakfall(PlayerEntity player, Parkourability parkourability, IStamina stamina, boolean justTimed) {
 		setDoing(false);
 		if (justTimed && ParCoolConfig.Client.Booleans.EnableJustTimeEffectOfBreakfall.get()) {
-			player.playSound(SoundEvents.ANVIL_PLACE, 0.75f, 2f);
+			if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+				player.playSound(SoundEvents.ANVIL_PLACE, 0.75f, 2f);
 			Vector3d pos = player.position();
 			Random rand = player.getRandom();
 			for (int i = 0; i < 12; i++) {
@@ -31,7 +32,9 @@ public class BreakfallReady extends Action {
 						(rand.nextDouble() - 0.5) * 0.5
 				);
 			}
-		}
+		} else if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.PLAYER_ATTACK_STRONG, 1f, 0.7f);
+
 		if (((KeyBindings.getKeyForward().isDown() || KeyBindings.getKeyBack().isDown() || KeyBindings.getKeyLeft().isDown() || KeyBindings.getKeyRight().isDown())
 				&& parkourability.getActionInfo().can(Roll.class))
 				|| !parkourability.getActionInfo().can(Tap.class)

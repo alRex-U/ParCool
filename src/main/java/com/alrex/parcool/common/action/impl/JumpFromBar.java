@@ -7,8 +7,10 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.EntityUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.SoundEvents;
 
 import java.nio.ByteBuffer;
 
@@ -30,6 +32,8 @@ public class JumpFromBar extends Action {
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		EntityUtil.addVelocity(player, player.getLookAngle().multiply(1, 0, 1).normalize().scale(player.getBbWidth() * 0.75));
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.PLAYER_ATTACK_STRONG, 1f, 0.6f);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new JumpFromBarAnimator());
 	}
