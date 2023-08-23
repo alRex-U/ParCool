@@ -17,7 +17,7 @@
     {
       "type": "patchouli:text",
       "title": "How to Use",
-      "text": "$(bold)1.$() Look up more than about 10 degree and take running up with $(l:parcool:actions/fast_run)Fast Run$()$(br)$(bold)2.$() Jump onto wall with not release jump key.$(br)$(br)It may be little difficult but try it."
+      "text": "$(bold)1.$() Look above horizontal line and take running up with $(l:parcool:actions/fast_run)Fast Run$()$(br)$(bold)2.$() Jump onto wall with not releasing jump key.$(br)$(br)It may be little difficult but try it."
     }
   ]
 }

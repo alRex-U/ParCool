@@ -245,11 +245,11 @@ public class ParCoolConfig {
 					"successive_dodge_count", 3, 1, Integer.MAX_VALUE
 			),
 			MaxStamina(
-					ConfigGroup.Stamina, null, "max_value_of_stamina",
+					ConfigGroup.Stamina, null, "max_stamina",
 					2000, 300, 10000
 			),
 			StaminaRecoveryValue(
-					ConfigGroup.Stamina, null, "value_of_stamina_recovery",
+					ConfigGroup.Stamina, null, "stamina_recovery",
 					20, 1, 10000
 			);
 			public final ConfigGroup Group;
