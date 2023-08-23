@@ -31,7 +31,6 @@ public class Slide extends Action {
 				&& !parkourability.get(Tap.class).isDoing()
 				&& parkourability.get(Crawl.class).isDoing()
 				&& !player.isInWaterOrBubble()
-				&& (player.isOnGround() || ParCoolConfig.Client.Booleans.EnableCrawlInAir.get())
 				&& parkourability.get(FastRun.class).getDashTick(parkourability.getAdditionalProperties()) > 5
 		);
 	}
