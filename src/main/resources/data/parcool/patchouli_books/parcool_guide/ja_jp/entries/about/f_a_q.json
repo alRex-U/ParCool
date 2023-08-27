@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(bold)Q. Fabric はサポートされますか？$()$(br2)$(bold)A. いいえ。$()$(br)現在開発者にはFabricへの移植に十分な時間はありません。"
+      "text": "$(bold)Q. Fabric はサポートされますか？$()$(br2)$(bold)A. いいえ。$()$(br)現在開発者はFabricへの移植は予定していません。"
     }
   ]
 }

@@ -13,7 +13,7 @@
       "images": [
         "parcool:textures/gui/entries/image_vault.png"
       ],
-      "text": "$(italic)スピードヴォールト$()のスクリーンショット"
+      "title": "$(italic)スピードヴォールト$()"
     },
     {
       "type": "patchouli:text",

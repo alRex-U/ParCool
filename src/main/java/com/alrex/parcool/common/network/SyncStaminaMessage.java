@@ -1,8 +1,8 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -88,7 +88,7 @@ public class SyncStaminaMessage {
 		message.stamina = stamina.get();
 		message.exhausted = stamina.isExhausted();
 		message.playerID = player.getUUID();
-		message.clientDemandedMaxValue = ParCoolConfig.CONFIG_CLIENT.staminaMax.get();
+		message.clientDemandedMaxValue = ParCoolConfig.Client.Integers.MaxStamina.get();
 
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);
 	}

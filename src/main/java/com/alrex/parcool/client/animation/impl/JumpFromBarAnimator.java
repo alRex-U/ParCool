@@ -66,7 +66,7 @@ public class JumpFromBarAnimator extends Animator {
 		float phase = tick / MAX_TICK;
 		float factor = getBodyAngleFactor(phase);
 		rotator.startBasedCenter()
-				.rotateFrontward(-factor * 40)
+				.rotatePitchFrontward(-factor * 40)
 				.end();
 	}
 }

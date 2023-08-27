@@ -39,7 +39,7 @@ public class ClimbUpAnimator extends Animator {
 
 		rotator
 				.startBasedCenter()
-				.rotateFrontward(factor * 50)
+				.rotatePitchFrontward(factor * 50)
 				.end();
 	}
 

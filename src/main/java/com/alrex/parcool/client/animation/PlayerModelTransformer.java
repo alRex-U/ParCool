@@ -2,17 +2,17 @@ package com.alrex.parcool.client.animation;
 
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.AnimationUtils;
-import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.renderer.model.ModelHelper;
+import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * Using Radians
  */
 public class PlayerModelTransformer {
-	private final Player player;
+	private final PlayerEntity player;
 	private final PlayerModel model;
 	private final boolean slim;
 	private final float partial;
@@ -47,7 +47,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer(
-			Player player,
+			PlayerEntity player,
 			PlayerModel model,
 			boolean slim,
 			float ageInTicks,
@@ -73,7 +73,7 @@ public class PlayerModelTransformer {
 	 * @param angleZ swing arm upward or downward
 	 */
 	public PlayerModelTransformer rotateRightArm(float angleX, float angleY, float angleZ) {
-		ModelPart rightArm = model.rightArm;
+		ModelRenderer rightArm = model.rightArm;
 		if (rightArm.visible) {
 			setRotations(rightArm, angleX, angleY, angleZ);
 		}
@@ -81,7 +81,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer rotateRightArm(float angleX, float angleY, float angleZ, float factor) {
-		ModelPart rightArm = model.rightArm;
+		ModelRenderer rightArm = model.rightArm;
 		if (rightArm.visible) {
 			setRotations(rightArm,
 					MathUtil.lerp(rightArm.xRot, angleX, factor),
@@ -98,7 +98,7 @@ public class PlayerModelTransformer {
 	 * @param angleZ swing arm upward or downward
 	 */
 	public PlayerModelTransformer rotateLeftArm(float angleX, float angleY, float angleZ) {
-		ModelPart leftArm = model.leftArm;
+		ModelRenderer leftArm = model.leftArm;
 		if (leftArm.visible) {
 			setRotations(leftArm, angleX, angleY, angleZ);
 		}
@@ -106,7 +106,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer rotateLeftArm(float angleX, float angleY, float angleZ, float factor) {
-		ModelPart leftArm = model.leftArm;
+		ModelRenderer leftArm = model.leftArm;
 		if (leftArm.visible) {
 			setRotations(leftArm,
 					MathUtil.lerp(leftArm.xRot, angleX, factor),
@@ -123,7 +123,7 @@ public class PlayerModelTransformer {
 	 * @param angleZ swing leg upward or downward
 	 */
 	public PlayerModelTransformer rotateRightLeg(float angleX, float angleY, float angleZ) {
-		ModelPart rightLeg = model.rightLeg;
+		ModelRenderer rightLeg = model.rightLeg;
 		if (rightLeg.visible) {
 			setRotations(rightLeg, angleX, angleY, angleZ);
 		}
@@ -131,7 +131,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer rotateRightLeg(float angleX, float angleY, float angleZ, float factor) {
-		ModelPart rightLeg = model.rightLeg;
+		ModelRenderer rightLeg = model.rightLeg;
 		if (rightLeg.visible) {
 			setRotations(rightLeg,
 					MathUtil.lerp(rightLeg.xRot, angleX, factor),
@@ -148,7 +148,7 @@ public class PlayerModelTransformer {
 	 * @param angleZ swing leg upward or downward
 	 */
 	public PlayerModelTransformer rotateLeftLeg(float angleX, float angleY, float angleZ) {
-		ModelPart leftLeg = model.leftLeg;
+		ModelRenderer leftLeg = model.leftLeg;
 		if (leftLeg.visible) {
 			setRotations(leftLeg, angleX, angleY, angleZ);
 		}
@@ -156,7 +156,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer rotateLeftLeg(float angleX, float angleY, float angleZ, float factor) {
-		ModelPart leftLeg = model.leftLeg;
+		ModelRenderer leftLeg = model.leftLeg;
 		if (leftLeg.visible) {
 			setRotations(leftLeg,
 					MathUtil.lerp(leftLeg.xRot, angleX, factor),
@@ -168,7 +168,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer addRotateRightArm(float angleX, float angleY, float angleZ) {
-		ModelPart arm = model.rightArm;
+		ModelRenderer arm = model.rightArm;
 		if (arm.visible) {
 			setRotations(arm, arm.xRot + angleX, arm.yRot + angleY, arm.zRot + angleZ);
 		}
@@ -176,7 +176,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer addRotateLeftArm(float angleX, float angleY, float angleZ) {
-		ModelPart arm = model.leftArm;
+		ModelRenderer arm = model.leftArm;
 		if (arm.visible) {
 			setRotations(arm, arm.xRot + angleX, arm.yRot + angleY, arm.zRot + angleZ);
 		}
@@ -184,7 +184,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer addRotateRightLeg(float angleX, float angleY, float angleZ) {
-		ModelPart leg = model.rightLeg;
+		ModelRenderer leg = model.rightLeg;
 		if (leg.visible) {
 			setRotations(leg, leg.xRot + angleX, leg.yRot + angleY, leg.zRot + angleZ);
 		}
@@ -192,7 +192,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer addRotateLeftLeg(float angleX, float angleY, float angleZ) {
-		ModelPart leg = model.leftLeg;
+		ModelRenderer leg = model.leftLeg;
 		if (leg.visible) {
 			setRotations(leg, leg.xRot + angleX, leg.yRot + angleY, leg.zRot + angleZ);
 		}
@@ -200,28 +200,36 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer makeArmsNatural() {
-		AnimationUtils.bobArms(model.rightArm, model.leftArm, ageInTicks);
+		ModelHelper.bobArms(model.rightArm, model.leftArm, ageInTicks);
 		return this;
 	}
 
-	public PlayerModelTransformer makeArmsMovingDynamically(float factor) {
-		model.rightArm.zRot += Mth.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
-		model.leftArm.zRot -= Mth.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
-		model.rightArm.xRot += Mth.sin(ageInTicks * 0.56F) * 0.8F * factor;
-		model.leftArm.xRot -= Mth.sin(ageInTicks * 0.56F) * 0.8F * factor;
+	public PlayerModelTransformer makeLegsMoveDynamically(float factor) {
+		model.rightLeg.zRot += MathHelper.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
+		model.leftLeg.zRot -= MathHelper.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
+		model.rightLeg.xRot += MathHelper.sin(ageInTicks * 0.56F) * 0.8F * factor;
+		model.leftLeg.xRot -= MathHelper.sin(ageInTicks * 0.56F) * 0.8F * factor;
+		return this;
+	}
+
+	public PlayerModelTransformer makeArmsMoveDynamically(float factor) {
+		model.rightArm.zRot += MathHelper.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
+		model.leftArm.zRot -= MathHelper.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
+		model.rightArm.xRot += MathHelper.sin(ageInTicks * 0.56F) * 0.8F * factor;
+		model.leftArm.xRot -= MathHelper.sin(ageInTicks * 0.56F) * 0.8F * factor;
 		return this;
 	}
 
 	public PlayerModelTransformer makeLegsLittleMoving() {
-		AnimationUtils.bobArms(model.rightLeg, model.leftLeg, ageInTicks);
+		ModelHelper.bobArms(model.rightLeg, model.leftLeg, ageInTicks);
 		return this;
 	}
 
 	public PlayerModelTransformer makeLegsShakingDynamically(float factor) {
-		model.rightLeg.zRot += Mth.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
-		model.leftLeg.zRot += Mth.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
-		model.rightLeg.xRot += Mth.sin(ageInTicks * 0.56F) * 0.2F * factor;
-		model.leftLeg.xRot -= Mth.sin(ageInTicks * 0.56F) * 0.2F * factor;
+		model.rightLeg.zRot += MathHelper.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
+		model.leftLeg.zRot += MathHelper.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
+		model.rightLeg.xRot += MathHelper.sin(ageInTicks * 0.56F) * 0.2F * factor;
+		model.leftLeg.xRot -= MathHelper.sin(ageInTicks * 0.56F) * 0.2F * factor;
 		return this;
 	}
 
@@ -243,6 +251,11 @@ public class PlayerModelTransformer {
 		return this;
 	}
 
+	public PlayerModelTransformer rotateAdditionallyHeadRoll(float yawDegree) {
+		model.head.zRot = (float) Math.toRadians(yawDegree + netHeadYaw);
+		return this;
+	}
+
 	public void copyFromBodyToWear() {
 		model.rightSleeve.copyFrom(model.rightArm);
 		model.leftSleeve.copyFrom(model.leftArm);
@@ -252,7 +265,7 @@ public class PlayerModelTransformer {
 		model.hat.copyFrom(model.head);
 	}
 
-	private void setRotations(ModelPart renderer, float angleX, float angleY, float angleZ) {
+	private void setRotations(ModelRenderer renderer, float angleX, float angleY, float angleZ) {
 		renderer.xRot = angleX;
 		renderer.yRot = angleY;
 		renderer.zRot = angleZ;
@@ -296,7 +309,7 @@ public class PlayerModelTransformer {
 		}
 	}
 
-	public void resetModel(ModelPart model) {
+	public void resetModel(ModelRenderer model) {
 		model.xRot = 0;
 		model.yRot = 0;
 		model.zRot = 0;

@@ -5,14 +5,12 @@ import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
+import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.impl.Animation;
-import com.alrex.parcool.common.capability.impl.Parkourability;
-import net.minecraft.world.entity.player.Player;
+import com.alrex.parcool.common.capability.Parkourability;
+import net.minecraft.entity.player.PlayerEntity;
 
 import java.nio.ByteBuffer;
-
-;
 
 public class Flipping extends Action {
 
@@ -41,7 +39,7 @@ public class Flipping extends Action {
 	}
 
 	@Override
-	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		FlippingDirection fDirection;
 		if (KeyBindings.getKeyBack().isDown()) {
 			fDirection = FlippingDirection.Back;
@@ -63,12 +61,12 @@ public class Flipping extends Action {
 	}
 
 	@Override
-	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
-		return !player.isOnGround() || getDoingTick() <= 2;
+	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		return !player.isOnGround() || getDoingTick() <= 10;
 	}
 
 	@Override
-	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		player.jumpFromGround();
 		stamina.consume(parkourability.getActionInfo().getStaminaConsumptionOf(Flipping.class));
 		Animation animation = Animation.get(player);
@@ -80,7 +78,7 @@ public class Flipping extends Action {
 	}
 
 	@Override
-	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
+	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new FlippingAnimator(

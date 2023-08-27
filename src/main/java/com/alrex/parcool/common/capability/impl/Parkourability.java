@@ -1,11 +1,12 @@
-package com.alrex.parcool.common.capability.impl;
+package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.action.AdditionalProperties;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.info.ActionInfo;
-import net.minecraft.world.entity.player.Player;
+import com.alrex.parcool.common.info.ClientInformation;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class Parkourability {
 	@Nullable
-	public static Parkourability get(Player player) {
+	public static Parkourability get(PlayerEntity player) {
 		LazyOptional<Parkourability> optional = player.getCapability(Capabilities.PARKOURABILITY_CAPABILITY);
 		return optional.orElse(null);
 	}
@@ -30,6 +31,17 @@ public class Parkourability {
 		for (short i = 0; i < actions.size(); i++) {
 			Action action = actions.get(i);
 			actionsMap.put(action.getClass(), action);
+		}
+	}
+
+	public Parkourability(PlayerEntity player) {
+		actionsMap = new HashMap<>((int) (actions.size() * 1.5));
+		for (short i = 0; i < actions.size(); i++) {
+			Action action = actions.get(i);
+			actionsMap.put(action.getClass(), action);
+		}
+		if (player.isLocalPlayer()) {
+			getActionInfo().getClientInformation().readFromLocalConfig();
 		}
 	}
 
@@ -61,12 +73,16 @@ public class Parkourability {
 		return info;
 	}
 
+	public ClientInformation getClientInfo() {
+		return info.getClientInformation();
+	}
+
 	public List<Action> getList() {
 		return actions;
 	}
 
 	public void CopyFrom(Parkourability original) {
-		getActionInfo().getIndividualLimitation().readTag(original.getActionInfo().getIndividualLimitation().writeTag());
-		getActionInfo().getServerLimitation().readTag(original.getActionInfo().getServerLimitation().writeTag());
+		getActionInfo().getIndividualLimitation().readNBT(original.getActionInfo().getIndividualLimitation().writeNBT());
+		getActionInfo().getServerLimitation().readNBT(original.getActionInfo().getServerLimitation().writeNBT());
 	}
 }

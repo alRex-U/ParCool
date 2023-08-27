@@ -57,8 +57,8 @@ public class WallJumpAnimator extends Animator {
 		float factor = getFactor(phase);
 		rotator
 				.startBasedCenter()
-				.rotateFrontward(factor * 20)
-				.rotateRightward((swingRightArm ? -1 : 1) * 15 * factor)
+				.rotatePitchFrontward(factor * 20)
+				.rotateRollRightward((swingRightArm ? -1 : 1) * 15 * factor)
 				.end();
 	}
 }

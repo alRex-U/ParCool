@@ -1,63 +1,85 @@
 package com.alrex.parcool.common.info;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.network.LimitationByServerMessage;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.nbt.Tag;
 
 public class ActionInfo {
-	private final LimitationByServer serverLimitation = new LimitationByServer();
-	private final LimitationByServer individualLimitation = new LimitationByServer();
+	private final Limitations[] Limitations = new Limitations[]{
+			new Limitations(), //server limitation
+			new Limitations()  //individual limitation
+	};
 
-	public LimitationByServer getIndividualLimitation() {
-		return individualLimitation;
+	public Limitations getServerLimitation() {
+		return Limitations[0];
 	}
 
-	public LimitationByServer getServerLimitation() {
-		return serverLimitation;
+	public Limitations getIndividualLimitation() {
+		return Limitations[1];
 	}
+
+	public ClientInformation getClientInformation() {
+		return clientInformation;
+	}
+
+	private final ClientInformation clientInformation = new ClientInformation();
 
 	public boolean can(Class<? extends Action> action) {
+		for (Limitations limitation : Limitations) {
+			if (!limitation.isPermitted(action)) return false;
+		}
 		return ParCool.isActive()
-				&& ParCoolConfig.CONFIG_CLIENT.getPossibilityOf(action).get()
-				&& serverLimitation.isPermitted(action)
-				&& individualLimitation.isPermitted(action);
+				&& getClientInformation().getPossibilityOf(action);
 	}
 
 	public int getStaminaConsumptionOf(Class<? extends Action> action) {
-		int value = ParCoolConfig.CONFIG_CLIENT.getStaminaConsumptionOf(action).get();
-		value = Math.max(value, serverLimitation.getLeastStaminaConsumption(action));
-		value = Math.max(value, individualLimitation.getLeastStaminaConsumption(action));
+		int value = getClientInformation().getStaminaConsumptionOf(action);
+		for (Limitations limitation : Limitations) {
+			value = Math.max(value, limitation.getLeastStaminaConsumption(action));
+		}
 		return value;
 	}
 
-	public int getMaxStaminaRecoveryLimitation() {
-		return Math.min(serverLimitation.getMaxStaminaRecovery(), individualLimitation.getMaxStaminaRecovery());
+	public int getStaminaRecovery() {
+		int value = getClientInformation().get(ParCoolConfig.Client.Integers.StaminaRecoveryValue);
+		for (Limitations limitation : Limitations) {
+			value = Math.min(value, limitation.get(ParCoolConfig.Server.Integers.MaxStaminaRecovery));
+		}
+		return value;
 	}
 
-	public int getMaxStaminaLimitation() {
-		return Math.min(serverLimitation.getMaxStaminaLimitation(), individualLimitation.getMaxStaminaLimitation());
+	public int getMaxStamina() {
+		int value = getClientInformation().get(ParCoolConfig.Client.Integers.MaxStamina);
+		for (Limitations limitation : Limitations) {
+			value = Math.min(value, limitation.get(ParCoolConfig.Server.Integers.MaxStaminaLimit));
+		}
+		return value;
+	}
+
+	public boolean isStaminaInfinite(boolean creativeOrSpectator) {
+		if (getClientInformation().get(ParCoolConfig.Client.Booleans.InfiniteStamina) && isInfiniteStaminaPermitted())
+			return true;
+		return creativeOrSpectator && getClientInformation().get(ParCoolConfig.Client.Booleans.InfiniteStaminaWhenCreative);
 	}
 
 	public boolean isInfiniteStaminaPermitted() {
-		return serverLimitation.isInfiniteStaminaPermitted()
-				&& individualLimitation.isInfiniteStaminaPermitted();
+		for (Limitations limitation : Limitations) {
+			if (!limitation.isInfiniteStaminaPermitted()) return false;
+		}
+		return true;
 	}
 
 	public void readTag(Tag inbt) {
-		individualLimitation.readTag(inbt);
+		getIndividualLimitation().readTag(inbt);
 	}
 
 	public Tag writeTag() {
-		return individualLimitation.writeTag();
+		return getIndividualLimitation().writeTag();
 	}
 
-	public void receiveLimitation(LimitationByServerMessage msg) {
-		serverLimitation.receive(msg);
-	}
-
-	public void receiveIndividualLimitation(LimitationByServerMessage msg) {
-		individualLimitation.receive(msg);
+	public Tag writeTag() {
+		return getIndividualLimitation().writeTag();
 	}
 }

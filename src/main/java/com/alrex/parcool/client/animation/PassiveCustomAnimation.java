@@ -1,16 +1,14 @@
 package com.alrex.parcool.client.animation;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.impl.ClingToCliff;
 import com.alrex.parcool.common.action.impl.Dive;
-import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.EasingFunctions;
 import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.world.entity.player.Player;
-
-;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class PassiveCustomAnimation {
 	private int fallingAnimationTick = 0;
@@ -19,9 +17,9 @@ public class PassiveCustomAnimation {
 	private int flyingAnimationLevel = 0;
 	private static final int flyingMaxLevel = 20;
 
-	public void tick(Player player, Parkourability parkourability) {
+	public void tick(PlayerEntity player, Parkourability parkourability) {
 		flyingAnimationLevelOld = flyingAnimationLevel;
-		if (KeyBindings.getKeyForward().isDown() && player.getAbilities().flying) {
+		if (KeyBindings.getKeyForward().isDown() && player.abilities.flying) {
 			flyingAnimationLevel++;
 			if (flyingAnimationLevel > flyingMaxLevel) {
 				flyingAnimationLevel = flyingMaxLevel;
@@ -34,7 +32,7 @@ public class PassiveCustomAnimation {
 		}
 		if (!player.isOnGround()
 				&& player.fallDistance > 1
-				&& !player.getAbilities().flying
+				&& !player.abilities.flying
 				&& !player.isFallFlying()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 		) {
@@ -44,16 +42,16 @@ public class PassiveCustomAnimation {
 		}
 	}
 
-	public void animate(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animate(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		if (fallingAnimationTick >= FallingStartLine
-				&& !ParCoolConfig.CONFIG_CLIENT.disableFallingAnimation.get()
+				&& ParCoolConfig.Client.Booleans.EnableFallingAnimation.get()
 				&& !parkourability.get(Dive.class).isDoing()
 		) {
 			animateFalling(parkourability, transformer);
 		}
 	}
 
-	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 	}
 
 	private void animateFalling(Parkourability parkourability, PlayerModelTransformer transformer) {
@@ -64,12 +62,12 @@ public class PassiveCustomAnimation {
 				.addRotateLeftArm(0, 0, (float) Math.toRadians(-80 * factor))
 				.addRotateRightLeg(0, 0, (float) Math.toRadians(10 * factor))
 				.addRotateLeftLeg(0, 0, (float) Math.toRadians(-10 * factor))
-				.makeArmsMovingDynamically(factor)
+				.makeArmsMoveDynamically(factor)
 				.makeLegsShakingDynamically(factor)
 				.end();
 	}
 
-	private void animateCreativeFlying(Player player, PlayerModelTransformer transformer) {
+	private void animateCreativeFlying(PlayerEntity player, PlayerModelTransformer transformer) {
 		float angle = getAngleCreativeFlying(player, transformer.getPartialTick());
 		float factor = getFactorCreativeFlying(transformer.getPartialTick());
 		if (flyingAnimationLevel > 0) {
@@ -91,14 +89,14 @@ public class PassiveCustomAnimation {
 		}
 	}
 
-	private void rotateCreativeFlying(Player player, PlayerModelRotator rotator) {
+	private void rotateCreativeFlying(PlayerEntity player, PlayerModelRotator rotator) {
 		rotator
 				.startBasedCenter()
-				.rotateFrontward(getAngleCreativeFlying(player, rotator.getPartialTick()))
+				.rotatePitchFrontward(getAngleCreativeFlying(player, rotator.getPartialTick()))
 				.end();
 	}
 
-	private float getAngleCreativeFlying(Player player, float partial) {
+	private float getAngleCreativeFlying(PlayerEntity player, float partial) {
 		float xRot = (float) VectorUtil.toPitchDegree(player.getDeltaMovement());
 		return (xRot + 90) * getFactorCreativeFlying(partial);
 	}

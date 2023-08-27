@@ -1,6 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.client.animation.impl.DiveAnimator;
+import com.alrex.parcool.client.animation.impl.DiveAnimationHostAnimator;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.IStamina;
@@ -18,6 +18,7 @@ public class Dive extends Action {
 	private boolean justJumped = false;
 	private double playerYSpeedOld = 0;
 	private double playerYSpeed = 0;
+	private int fallingTick = 0;
 
 	public double getPlayerYSpeed(float partialTick) {
 		return Mth.lerp(partialTick, playerYSpeedOld, playerYSpeed);
@@ -27,6 +28,15 @@ public class Dive extends Action {
 	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
 		playerYSpeedOld = playerYSpeed;
 		playerYSpeed = player.getDeltaMovement().y();
+	}
+
+	@Override
+	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		if (isDoing() && (playerYSpeed < 0 || fallingTick > 0)) {
+			fallingTick++;
+		} else {
+			fallingTick = 0;
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -54,6 +64,7 @@ public class Dive extends Action {
 				|| player.isInLava()
 				|| player.isSwimming()
 				|| player.isOnGround()
+				|| (fallingTick > 5 && player.fallDistance < 0.1)
 				|| stamina.isExhausted()
 		);
 	}
@@ -70,7 +81,14 @@ public class Dive extends Action {
 		playerYSpeedOld = playerYSpeed = ySpeed;
 		Animation animation = Animation.get(player);
 		if (animation != null) {
-			animation.setAnimator(new DiveAnimator(ySpeed));
+			animation.setAnimator(new DiveAnimationHostAnimator(ySpeed));
+		}
+	}
+
+	@Override
+	public void onStop(PlayerEntity player) {
+		if (player.isInWaterOrBubble()) {
+			player.setSwimming(true);
 		}
 	}
 
@@ -98,7 +116,7 @@ public class Dive extends Action {
 		playerYSpeedOld = playerYSpeed = ySpeed;
 		Animation animation = Animation.get(player);
 		if (animation != null) {
-			animation.setAnimator(new DiveAnimator(ySpeed));
+			animation.setAnimator(new DiveAnimationHostAnimator(ySpeed));
 		}
 	}
 }

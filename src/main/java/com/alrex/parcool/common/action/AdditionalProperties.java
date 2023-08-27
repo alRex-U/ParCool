@@ -11,8 +11,14 @@ public class AdditionalProperties {
 	private int landingTick = 0;
 	private int notSprintingTick = 0;
 	private int notCreativeFlyingTick = 0;
+	private int tickAfterLastJump = 0;
+
+	public void onJump() {
+		tickAfterLastJump = 0;
+	}
 
 	public void onTick(Player player, Parkourability parkourability) {
+		tickAfterLastJump++;
 		if (player.isSprinting()) {
 			notSprintingTick = 0;
 			sprintingTick++;
@@ -52,5 +58,9 @@ public class AdditionalProperties {
 
 	public int getNotCreativeFlyingTick() {
 		return notCreativeFlyingTick;
+	}
+
+	public int getTickAfterLastJump() {
+		return tickAfterLastJump;
 	}
 }
