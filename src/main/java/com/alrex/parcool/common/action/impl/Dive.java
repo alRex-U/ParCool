@@ -4,8 +4,8 @@ import com.alrex.parcool.client.animation.impl.DiveAnimationHostAnimator;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.impl.Animation;
-import com.alrex.parcool.common.capability.impl.Parkourability;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -31,7 +31,7 @@ public class Dive extends Action {
 	}
 
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
 		if (isDoing() && (playerYSpeed < 0 || fallingTick > 0)) {
 			fallingTick++;
 		} else {
@@ -86,7 +86,7 @@ public class Dive extends Action {
 	}
 
 	@Override
-	public void onStop(PlayerEntity player) {
+	public void onStop(Player player) {
 		if (player.isInWaterOrBubble()) {
 			player.setSwimming(true);
 		}

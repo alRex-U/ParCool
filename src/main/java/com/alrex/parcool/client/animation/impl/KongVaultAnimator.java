@@ -3,7 +3,10 @@ package com.alrex.parcool.client.animation.impl;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
+import com.alrex.parcool.common.action.impl.Vault;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.EasingFunctions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -29,12 +32,12 @@ public class KongVaultAnimator extends Animator {
 	}
 
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(Player player, Parkourability parkourability) {
 		return getTick() >= Vault.MAX_TICK;
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float phase = (getTick() + transformer.getPartialTick()) / Vault.MAX_TICK;
 		float armFactor = getArmFactor(phase);
 		float factor = getFactor(phase);
@@ -54,7 +57,7 @@ public class KongVaultAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / Vault.MAX_TICK;
 		float factor = getFactor(phase);
 		float yFactor = new Easing(phase)
@@ -73,7 +76,7 @@ public class KongVaultAnimator extends Animator {
 		if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
 				!ParCoolConfig.Client.Booleans.EnableCameraAnimationOfVault.get()
 		) return;
-		float phase = (float) ((getTick() + event.getRenderPartialTicks()) / Vault.MAX_TICK);
+		float phase = (float) ((getTick() + event.getPartialTicks()) / Vault.MAX_TICK);
 		float factor = getFactor(phase);
 		event.setPitch(30 * factor + clientPlayer.getViewXRot((float) event.getPartialTicks()));
 	}

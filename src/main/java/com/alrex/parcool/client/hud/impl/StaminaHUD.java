@@ -8,20 +8,20 @@ import com.alrex.parcool.common.action.impl.WallJump;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.MainWindow;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.event.TickEvent;
 
 @OnlyIn(Dist.CLIENT)
-public class StaminaHUD extends AbstractGui {
+public class StaminaHUD extends GuiComponent {
 	public static final ResourceLocation STAMINA = new ResourceLocation("parcool", "textures/gui/stamina_bar.png");
 
 	public StaminaHUD() {
@@ -32,7 +32,7 @@ public class StaminaHUD extends AbstractGui {
 	private int renderGageType = 0;
 	private int renderGageTick = 0;
 
-	public void onTick(TickEvent.ClientTickEvent event, ClientPlayerEntity player) {
+	public void onTick(TickEvent.ClientTickEvent event, LocalPlayer player) {
 		if (++renderGageTick >= 5) {
 			renderGageTick = 0;
 			if (++renderGageType > 2) {
@@ -41,8 +41,8 @@ public class StaminaHUD extends AbstractGui {
 		}
 	}
 
-	public void render(RenderGameOverlayEvent.Post event, MatrixStack stack) {
-		ClientPlayerEntity player = Minecraft.getInstance().player;
+	public void render(ForgeIngameGui gui, PoseStack stack, float partialTick, int width, int height) {
+		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null) return;
 		if (player.isCreative()) return;
 
@@ -54,15 +54,13 @@ public class StaminaHUD extends AbstractGui {
 				parkourability.getActionInfo().isStaminaInfinite(player.isCreative() || player.isSpectator())
 		) return;
 
-		MainWindow window = Minecraft.getInstance().getWindow();
+		var window = Minecraft.getInstance().getWindow();
 		Position position = new Position(
 				ParCoolConfig.Client.AlignHorizontalStaminaHUD.get(),
 				ParCoolConfig.Client.AlignVerticalStaminaHUD.get(),
 				ParCoolConfig.Client.Integers.HorizontalMarginOfStaminaHUD.get(),
 				ParCoolConfig.Client.Integers.VerticalMarginOfStaminaHUD.get()
 		);
-		final int width = window.getGuiScaledWidth();
-		final int height = window.getGuiScaledHeight();
 		final int boxWidth = 91;
 		final int boxHeight = 17;
 		final Tuple<Integer, Integer> pos = position.calculate(boxWidth, boxHeight, width, height);
@@ -81,7 +79,7 @@ public class StaminaHUD extends AbstractGui {
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
 
-		Minecraft.getInstance().getTextureManager().bind(STAMINA);
+		RenderSystem.setShaderTexture(0, StaminaHUD.STAMINA);
 		blit(stack, pos.getA(), pos.getB(), 0, 0, 93, 17, 128, 128);
 		if (!stamina.isExhausted()) {
 			blit(stack, pos.getA(), pos.getB(), 0, 102, (int) Math.ceil(92 * coolTimeScale), 17, 128, 128);

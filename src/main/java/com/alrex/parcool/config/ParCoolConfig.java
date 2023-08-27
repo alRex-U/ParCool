@@ -154,6 +154,10 @@ public class ParCoolConfig {
 			ParCoolIsActive(
 					ConfigGroup.Other, "Whether ParCool is active",
 					"parcool_activation", true
+			),
+			UseFeathers(
+					ConfigGroup.Other, "Whether to use Feathers as stamina system if it's installed",
+					"use_Feathers", true
 			);
 			public final ConfigGroup Group;
 			@Nullable

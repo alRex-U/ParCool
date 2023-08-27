@@ -1,6 +1,7 @@
 package com.alrex.parcool;
 
 import com.alrex.parcool.client.animation.AnimatorList;
+import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
@@ -11,13 +12,13 @@ import com.alrex.parcool.common.potion.Potions;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
 import com.alrex.parcool.common.registries.EventBusModRegistry;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.extern.feathers.FeathersManager;
 import com.alrex.parcool.proxy.ClientProxy;
 import com.alrex.parcool.proxy.CommonProxy;
 import com.alrex.parcool.proxy.ServerProxy;
 import com.alrex.parcool.server.command.CommandRegistry;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -25,10 +26,9 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.*;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -64,11 +64,11 @@ public class ParCool {
 		eventBus.addListener(this::doClientStuff);
 		eventBus.addListener(this::loaded);
 		eventBus.addListener(this::doServerStuff);
+		eventBus.register(Capabilities.class);
 		Effects.registerAll(eventBus);
 		Potions.registerAll(eventBus);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
 		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
 		ItemRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
 
 		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ParCoolConfig.Server.BUILT_CONFIG);
@@ -76,29 +76,25 @@ public class ParCool {
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {
+		FeathersManager.init();
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
 		CommandRegistry.registerArgumentTypes(event);
 		EventBusForgeRegistry.register(MinecraftForge.EVENT_BUS);
 		EventBusModRegistry.register(FMLJavaModLoadingContext.get().getModEventBus());
-		Capabilities.register(CapabilityManager.INSTANCE);
 		PotionRecipeRegistry.register(event);
 		PROXY.registerMessages(CHANNEL_INSTANCE);
 	}
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
 		KeyBindings.register(event);
-		Capabilities.registerClient(CapabilityManager.INSTANCE);
 		EventBusForgeRegistry.registerClient(MinecraftForge.EVENT_BUS);
 		EventBusModRegistry.registerClient(FMLJavaModLoadingContext.get().getModEventBus());
+		HUDRegistry.getInstance().onSetup(event);
 	}
 
 	private void doServerStuff(final FMLDedicatedServerSetupEvent event) {
-	}
-
-	private void serverStarting(final FMLServerAboutToStartEvent event) {
-
 	}
 
 	private void processIMC(final InterModProcessEvent event) {

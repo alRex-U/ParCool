@@ -5,15 +5,15 @@ import com.alrex.parcool.client.animation.impl.SpeedVaultAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.capability.impl.Animation;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -52,19 +52,19 @@ public class Vault extends Action {
 
 	//only in client
 	private double stepHeight = 0;
-	private Vector3d stepDirection = null;
+	private Vec3 stepDirection = null;
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		Vector3d lookVec = player.getLookAngle();
-		lookVec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
-		Vector3d step = WorldUtil.getVaultableStep(player);
+	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		Vec3 lookVec = player.getLookAngle();
+		lookVec = new Vec3(lookVec.x(), 0, lookVec.z()).normalize();
+		Vec3 step = WorldUtil.getVaultableStep(player);
 		if (step == null) return false;
 		step = step.normalize();
 		//doing "vec/stepDirection" as complex number(x + z i) to calculate difference of player's direction to steps
-		Vector3d dividedVec =
-				new Vector3d(
+		Vec3 dividedVec =
+				new Vec3(
 						lookVec.x() * step.x() + lookVec.z() * step.z(), 0,
 						-lookVec.x() * step.z() + lookVec.z() * step.x()
 				).normalize();
@@ -109,7 +109,7 @@ public class Vault extends Action {
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
 		return getDoingTick() < MAX_TICK;
 	}
 
@@ -119,13 +119,13 @@ public class Vault extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		AnimationType animationType = AnimationType.fromCode(startData.get());
 		SpeedVaultAnimator.Type speedVaultType = BufferUtil.getBoolean(startData) ?
 				SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			player.playSound(SoundEvents.PLAYER_ATTACK_STRONG, 1f, 0.7f);
-		stepDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
+		stepDirection = new Vec3(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		stepHeight = startData.getDouble();
 		Animation animation = Animation.get(player);
 		if (animation != null && animationType != null) {
@@ -142,7 +142,7 @@ public class Vault extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		AnimationType animationType = AnimationType.fromCode(startData.get());
 		SpeedVaultAnimator.Type speedVaultType = BufferUtil.getBoolean(startData) ?
 				SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
@@ -161,7 +161,7 @@ public class Vault extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
 		if (stepDirection == null) return;
 		if (getDoingTick() < getVaultAnimateTime()) {
 			player.setDeltaMovement(
@@ -186,7 +186,7 @@ public class Vault extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onStopInLocalClient(PlayerEntity player) {
+	public void onStopInLocalClient(Player player) {
 	}
 }
 

@@ -1,15 +1,18 @@
 package com.alrex.parcool.common.event;
 
-import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
+import com.alrex.parcool.common.capability.impl.Animation;
+import com.alrex.parcool.common.capability.impl.Stamina;
+import com.alrex.parcool.common.capability.storage.ParkourabilityStorage;
+import com.alrex.parcool.common.capability.storage.StaminaStorage;
 import com.alrex.parcool.config.ParCoolConfig;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import com.alrex.parcool.extern.feathers.FeathersManager;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -24,16 +27,16 @@ public class EventAttachCapability {
 
 	@SubscribeEvent
 	public static void onAttachCapability(AttachCapabilitiesEvent<Entity> event) {
-		if (!(event.getObject() instanceof PlayerEntity)) return;
-		PlayerEntity player = (PlayerEntity) event.getObject();
+		if (!(event.getObject() instanceof Player)) return;
+		Player player = (Player) event.getObject();
 		//Parkourability
 		{
 			Parkourability instance = new Parkourability(player);
 			LazyOptional<Parkourability> optional = LazyOptional.of(() -> instance);
-			ICapabilityProvider provider = new ICapabilitySerializable<CompoundNBT>() {
+			ICapabilityProvider provider = new ICapabilitySerializable<CompoundTag>() {
 				@Override
-				public CompoundNBT serializeNBT() {
-					return (CompoundNBT) Capabilities.PARKOURABILITY_CAPABILITY.getStorage().writeNBT(
+				public CompoundTag serializeNBT() {
+					return (CompoundTag) new ParkourabilityStorage().writeTag(
 							Capabilities.PARKOURABILITY_CAPABILITY,
 							instance,
 							null
@@ -41,8 +44,8 @@ public class EventAttachCapability {
 				}
 
 				@Override
-				public void deserializeNBT(CompoundNBT nbt) {
-					Capabilities.PARKOURABILITY_CAPABILITY.getStorage().readNBT(
+				public void deserializeNBT(CompoundTag nbt) {
+					new ParkourabilityStorage().readTag(
 							Capabilities.PARKOURABILITY_CAPABILITY,
 							instance,
 							null,
@@ -63,26 +66,33 @@ public class EventAttachCapability {
 		}
 		//Stamina
 		{
-			IStamina instance = new Stamina(player);
-			LazyOptional<IStamina> optional = LazyOptional.of(() -> instance);
+			IStamina instance = null;
+			if (player.isLocalPlayer() && FeathersManager.isUsingFeathers()) {
+				instance = FeathersManager.newFeathersStaminaFor(player);
+			}
+			if (instance == null) {
+				instance = new Stamina(player);
+			}
+			final IStamina finalInstance = instance;
+			LazyOptional<IStamina> optional = LazyOptional.of(() -> finalInstance);
 			if (player.isLocalPlayer()) {
 				instance.setMaxStamina(ParCoolConfig.Client.Integers.MaxStamina.get());
 			}
-			ICapabilityProvider provider = new ICapabilitySerializable<CompoundNBT>() {
+			ICapabilityProvider provider = new ICapabilitySerializable<CompoundTag>() {
 				@Override
-				public CompoundNBT serializeNBT() {
-					return (CompoundNBT) Capabilities.STAMINA_CAPABILITY.getStorage().writeNBT(
+				public CompoundTag serializeNBT() {
+					return (CompoundTag) new StaminaStorage().writeTag(
 							Capabilities.STAMINA_CAPABILITY,
-							instance,
+							finalInstance,
 							null
 					);
 				}
 
 				@Override
-				public void deserializeNBT(CompoundNBT nbt) {
-					Capabilities.STAMINA_CAPABILITY.getStorage().readNBT(
+				public void deserializeNBT(CompoundTag nbt) {
+					new StaminaStorage().readTag(
 							Capabilities.STAMINA_CAPABILITY,
-							instance,
+							finalInstance,
 							null,
 							nbt
 					);

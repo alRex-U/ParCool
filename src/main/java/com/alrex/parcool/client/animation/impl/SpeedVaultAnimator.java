@@ -17,7 +17,7 @@ import static com.alrex.parcool.utilities.MathUtil.lerp;
 public class SpeedVaultAnimator extends Animator {
 
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(Player player, Parkourability parkourability) {
 		return getTick() >= Vault.MAX_TICK;
 	}
 
@@ -31,7 +31,7 @@ public class SpeedVaultAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / Vault.MAX_TICK;
 		float factor = getFactor(getTick() + rotator.getPartialTick());
 		float forwardFactor = (float) Math.sin(phase * 2 * Math.PI) + 0.5f;
@@ -48,7 +48,7 @@ public class SpeedVaultAnimator extends Animator {
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float phase = (getTick() + transformer.getPartialTick()) / Vault.MAX_TICK;
 		float animFactor = new Easing(phase)
 				.sinInOut(0, 0.25f, 0, 1)
@@ -108,8 +108,8 @@ public class SpeedVaultAnimator extends Animator {
 	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, Player clientPlayer, Parkourability parkourability) {
 		if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
 				!ParCoolConfig.Client.Booleans.EnableCameraAnimationOfVault.get()) return;
-		float factor = getFactor((float) (getTick() + event.getRenderPartialTicks()));
-		float phase = (float) ((getTick() + event.getRenderPartialTicks()) / Vault.MAX_TICK);
+		float factor = getFactor((float) (getTick() + event.getPartialTicks()));
+		float phase = (float) ((getTick() + event.getPartialTicks()) / Vault.MAX_TICK);
 		float forwardFactor = (float) Math.sin(phase * 2 * Math.PI) + 0.5f;
 		event.setPitch(15 * forwardFactor);
 		switch (type) {

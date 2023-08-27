@@ -5,15 +5,15 @@ import com.alrex.parcool.client.animation.impl.WallJumpAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.capability.impl.Animation;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -29,8 +29,9 @@ public class WallJump extends Action {
 	}
 
 	private final float MAX_COOL_DOWN_TICK = 8;
+
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onTick(Player player, Parkourability parkourability, IStamina stamina) {
 		jump = false;
 	}
 
@@ -42,12 +43,12 @@ public class WallJump extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Nullable
-	private Vector3d getJumpDirection(PlayerEntity player, Vector3d wall) {
+	private Vec3 getJumpDirection(Player player, Vec3 wall) {
 		if (wall == null) return null;
 		wall = wall.normalize();
-		Vector3d lookVec = player.getLookAngle();
-		Vector3d vec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
-		Vector3d value;
+		Vec3 lookVec = player.getLookAngle();
+		Vec3 vec = new Vec3(lookVec.x(), 0, lookVec.z()).normalize();
+		Vec3 value;
 		double dotProduct = wall.dot(vec);
 
 		if (dotProduct > 0.35) {
@@ -70,9 +71,9 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		Vector3d wallDirection = WorldUtil.getWall(player);
-		Vector3d jumpDirection = getJumpDirection(player, wallDirection);
+	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		Vec3 wallDirection = WorldUtil.getWall(player);
+		Vec3 jumpDirection = getJumpDirection(player, wallDirection);
 		if (jumpDirection == null) return false;
 		ClingToCliff cling = parkourability.get(ClingToCliff.class);
 
@@ -81,7 +82,7 @@ public class WallJump extends Action {
 				&& !player.isOnGround()
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
-				&& !player.abilities.flying
+				&& !player.getAbilities().flying
 				&& parkourability.getAdditionalProperties().getNotCreativeFlyingTick() > 10
 				&& ((!cling.isDoing() && cling.getNotDoingTick() > 3)
 				|| (cling.isDoing() && cling.getFacingDirection() != ClingToCliff.FacingDirection.ToWall))
@@ -94,14 +95,14 @@ public class WallJump extends Action {
 		if (!value) return false;
 
 		//doing "wallDirection/jumpDirection" as complex number(x + z i) to calculate difference of player's direction to wall
-		Vector3d dividedVec =
-				new Vector3d(
+		Vec3 dividedVec =
+				new Vec3(
 						wallDirection.x() * jumpDirection.x() + wallDirection.z() * jumpDirection.z(), 0,
 						-wallDirection.x() * jumpDirection.z() + wallDirection.z() * jumpDirection.x()
 				).normalize();
-		Vector3d lookVec = player.getLookAngle().multiply(1, 0, 1).normalize();
-		Vector3d lookDividedVec =
-				new Vector3d(
+		Vec3 lookVec = player.getLookAngle().multiply(1, 0, 1).normalize();
+		Vec3 lookDividedVec =
+				new Vec3(
 						lookVec.x() * wallDirection.x() + lookVec.z() * wallDirection.z(), 0,
 						-lookVec.x() * wallDirection.z() + lookVec.z() * wallDirection.x()
 				).normalize();
@@ -124,25 +125,25 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
 		return false;
 	}
 
 	@Override
-	public void onStart(PlayerEntity player, Parkourability parkourability) {
+	public void onStart(Player player, Parkourability parkourability) {
 		jump = true;
 		player.fallDistance = 0;
 	}
 
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		double speedScale = 1;
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			player.playSound(SoundEvents.PLAYER_ATTACK_STRONG, 1f, 0.7f);
-		Vector3d jumpDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble()).scale(speedScale);
-		Vector3d direction = new Vector3d(jumpDirection.x(), 1.512, jumpDirection.z()).scale(.3);
-		Vector3d wallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
-		Vector3d motion = player.getDeltaMovement();
+		Vec3 jumpDirection = new Vec3(startData.getDouble(), 0, startData.getDouble()).scale(speedScale);
+		Vec3 direction = new Vec3(jumpDirection.x(), 1.512, jumpDirection.z()).scale(.3);
+		Vec3 wallDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
+		Vec3 motion = player.getDeltaMovement();
 
 		BlockPos leanedBlock = new BlockPos(
 				player.getX() + wallDirection.x(),
@@ -150,7 +151,7 @@ public class WallJump extends Action {
 				player.getZ() + wallDirection.z()
 		);
 		float slipperiness = player.level.isLoaded(leanedBlock) ?
-				player.level.getBlockState(leanedBlock).getSlipperiness(player.level, leanedBlock, player)
+				player.level.getBlockState(leanedBlock).getFriction(player.level, leanedBlock, player)
 				: 0.6f;
 
 		double ySpeed;
@@ -184,9 +185,9 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		startData.position(16);
-		Vector3d wallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		Vec3 wallDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
 		WallJumpAnimationType type = WallJumpAnimationType.fromCode(startData.get());
 		Animation animation = Animation.get(player);
 		if (animation != null) {
@@ -204,7 +205,7 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInClient(Player player, Parkourability parkourability, IStamina stamina) {
 		super.onWorkingTickInClient(player, parkourability, stamina);
 	}
 

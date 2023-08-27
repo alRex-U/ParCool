@@ -9,7 +9,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,7 +26,7 @@ public class LimitationItemArgumentType<V, T extends Enum<T> & ParCoolConfig.Ite
 		String name = reader.readUnquotedString();
 		int index = paths.indexOf(name);
 		if (index == -1) {
-			Message message = new TranslationTextComponent("parcool.command.message.invalidConfigName", name);
+			Message message = new TranslatableComponent("parcool.command.message.invalidConfigName", name);
 			throw new CommandSyntaxException(new SimpleCommandExceptionType(message), message);
 		}
 		return enumConstants[index];

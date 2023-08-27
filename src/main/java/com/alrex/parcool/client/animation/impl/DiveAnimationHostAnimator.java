@@ -9,7 +9,7 @@ import com.alrex.parcool.common.action.impl.SkyDive;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.EasingFunctions;
 import com.alrex.parcool.utilities.MathUtil;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
 
@@ -38,7 +38,7 @@ public class DiveAnimationHostAnimator extends Animator {
 	}
 
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(Player player, Parkourability parkourability) {
 		return !parkourability.get(Dive.class).isDoing();
 	}
 
@@ -53,7 +53,7 @@ public class DiveAnimationHostAnimator extends Animator {
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		checkTransition(parkourability);
 		if (parkourability.get(SkyDive.class).isDoing()) {
 			if (skyDiveAnimator == null) {
@@ -77,7 +77,7 @@ public class DiveAnimationHostAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		checkTransition(parkourability);
 		if (parkourability.get(SkyDive.class).isDoing()) {
 			if (skyDiveAnimator == null) {
@@ -125,7 +125,7 @@ public class DiveAnimationHostAnimator extends Animator {
 		}
 
 		@Override
-		public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+		public boolean shouldRemoved(Player player, Parkourability parkourability) {
 			return false;
 		}
 
@@ -161,11 +161,11 @@ public class DiveAnimationHostAnimator extends Animator {
 		}
 
 		@Override
-		public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+		public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 			animatePost(player, parkourability, transformer, 1);
 		}
 
-		public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer, float factor) {
+		public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer, float factor) {
 			float forwardAngleFactor = getForwardAngleFactor(transformer.getPartialTick());
 			float rightAngleFactor = getRightAngleFactor(transformer.getPartialTick());
 			transformer.
@@ -212,7 +212,7 @@ public class DiveAnimationHostAnimator extends Animator {
 		}
 
 		@Override
-		public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+		public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 			float forwardAngleFactor = getForwardAngleFactor(rotator.getPartialTick());
 			float rightAngleFactor = getRightAngleFactor(rotator.getPartialTick());
 			float basePitchAngle;
@@ -246,16 +246,16 @@ public class DiveAnimationHostAnimator extends Animator {
 		}
 
 		@Override
-		public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+		public boolean shouldRemoved(Player player, Parkourability parkourability) {
 			return false;
 		}
 
 		@Override
-		public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+		public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 			animatePost(player, parkourability, transformer, 1);
 		}
 
-		void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer, float factor) {
+		void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer, float factor) {
 			double ySpeed = parkourability.get(Dive.class).getPlayerYSpeed(transformer.getPartialTick());
 			float bodyFactor = getFactor(ySpeed);
 			transformer
@@ -269,11 +269,11 @@ public class DiveAnimationHostAnimator extends Animator {
 		}
 
 		@Override
-		public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+		public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 			rotate(player, parkourability, rotator, 1, 0);
 		}
 
-		public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator, float factor, float transitionBaseAngle) {
+		public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator, float factor, float transitionBaseAngle) {
 			double ySpeed = parkourability.get(Dive.class).getPlayerYSpeed(rotator.getPartialTick());
 			float angleFactor = getFactor(ySpeed);
 			pitchAngle = 180 * angleFactor;

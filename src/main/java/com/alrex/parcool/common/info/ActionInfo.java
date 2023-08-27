@@ -2,7 +2,6 @@ package com.alrex.parcool.common.info;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.network.LimitationByServerMessage;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.nbt.Tag;
 
@@ -73,10 +72,6 @@ public class ActionInfo {
 
 	public void readTag(Tag inbt) {
 		getIndividualLimitation().readTag(inbt);
-	}
-
-	public Tag writeTag() {
-		return getIndividualLimitation().writeTag();
 	}
 
 	public Tag writeTag() {

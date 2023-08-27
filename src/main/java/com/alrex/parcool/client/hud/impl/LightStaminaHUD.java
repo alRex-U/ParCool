@@ -3,15 +3,15 @@ package com.alrex.parcool.client.hud.impl;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.event.TickEvent;
 
-public class LightStaminaHUD extends AbstractGui {
+public class LightStaminaHUD extends GuiComponent {
 	private long lastStaminaChangedTick = 0;
 	//1-> recovering, -1->consuming, 0->no changing
 	private int lastChangingSign = 0;
@@ -20,7 +20,7 @@ public class LightStaminaHUD extends AbstractGui {
 	private int randomOffset = 0;
 	private boolean justBecameMax = false;
 
-	public void onTick(TickEvent.ClientTickEvent event, ClientPlayerEntity player) {
+	public void onTick(TickEvent.ClientTickEvent event, LocalPlayer player) {
 		IStamina stamina = IStamina.get(player);
 		if (stamina == null) return;
 		changingSign = (int) Math.signum(stamina.get() - stamina.getOldValue());
@@ -42,8 +42,8 @@ public class LightStaminaHUD extends AbstractGui {
 		justBecameMax = stamina.getOldValue() < stamina.get() && stamina.get() == stamina.getActualMaxStamina();
 	}
 
-	public void render(RenderGameOverlayEvent.Post event, MatrixStack stack) {
-		ClientPlayerEntity player = Minecraft.getInstance().player;
+	public void render(ForgeIngameGui gui, PoseStack stack, float partialTick, int width, int height) {
+		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null || player.isCreative()) return;
 
 		IStamina stamina = IStamina.get(player);
@@ -61,12 +61,10 @@ public class LightStaminaHUD extends AbstractGui {
 		if (staminaScale > 1) staminaScale = 1;
 		staminaScale *= 10;
 		Minecraft mc = Minecraft.getInstance();
-		int scaledWidth = event.getWindow().getGuiScaledWidth();
-		int scaledHeight = event.getWindow().getGuiScaledHeight();
 
-		mc.getTextureManager().bind(StaminaHUD.STAMINA);
-		int baseX = scaledWidth / 2 + 92;
-		int baseY = scaledHeight - ForgeIngameGui.right_height;
+		RenderSystem.setShaderTexture(0, StaminaHUD.STAMINA);
+		int baseX = width / 2 + 92;
+		int baseY = height - gui.right_height;
 		final boolean exhausted = stamina.isExhausted();
 		for (int i = 0; i < 10; i++) {
 			int x = baseX - i * 8 - 9;
@@ -91,6 +89,6 @@ public class LightStaminaHUD extends AbstractGui {
 
 			blit(stack, x, baseY + offsetY, textureX, 119, 9, 9, 129, 128);
 		}
-		ForgeIngameGui.right_height += 10;
+		gui.right_height += 10;
 	}
 }

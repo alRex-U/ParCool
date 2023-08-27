@@ -1,13 +1,15 @@
-package com.alrex.parcool.common.capability;
+package com.alrex.parcool.common.capability.impl;
 
+import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.potion.Effects;
 import com.alrex.parcool.config.ParCoolConfig;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
 
 public class Stamina implements IStamina {
-	public Stamina(@Nullable PlayerEntity player) {
+	public Stamina(@Nullable Player player) {
 		this.player = player;
 		if (player != null && player.isLocalPlayer()) {
 			maxStamina = ParCoolConfig.Client.Integers.MaxStamina.get();
@@ -20,7 +22,7 @@ public class Stamina implements IStamina {
 	}
 
 	@Nullable
-	private final PlayerEntity player;
+	private final Player player;
 
 	private int stamina = 0;
 	private int staminaOld = 0;
@@ -35,7 +37,7 @@ public class Stamina implements IStamina {
 	@Override
 	public int getActualMaxStamina() {
 		if (player == null) return maxStamina;
-		Parkourability parkourability = Parkourability.get(player);
+		Parkourability parkourability = com.alrex.parcool.common.capability.Parkourability.get(player);
 		if (parkourability == null) return maxStamina;
 		return parkourability.getActionInfo().getMaxStamina();
 	}
@@ -101,7 +103,7 @@ public class Stamina implements IStamina {
 		if (recoverCoolTime > 0) recoverCoolTime--;
 		if (recoverCoolTime <= 0) {
 			if (player == null) return;
-			Parkourability parkourability = Parkourability.get(player);
+			com.alrex.parcool.common.capability.Parkourability parkourability = com.alrex.parcool.common.capability.Parkourability.get(player);
 			if (parkourability == null) return;
 			recover(parkourability.getActionInfo().getStaminaRecovery());
 		}

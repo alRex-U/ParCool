@@ -6,15 +6,14 @@ import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.AdditionalProperties;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.capability.impl.Animation;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -42,8 +41,8 @@ public class FastRun extends Action {
 	}
 
 	@Override
-	public void onServerTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		ModifiableAttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
+	public void onServerTick(Player player, Parkourability parkourability, IStamina stamina) {
+		var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (attr == null) return;
 		if (attr.getModifier(FAST_RUNNING_MODIFIER_UUID) != null) attr.removeModifier(FAST_RUNNING_MODIFIER_UUID);
 		if (isDoing()) {
@@ -58,7 +57,7 @@ public class FastRun extends Action {
 	}
 
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
 		if (player.isLocalPlayer()) {
 			if (ParCoolConfig.Client.FastRunControl.get() == ControlType.Toggle
 					&& parkourability.getAdditionalProperties().getSprintingTick() > 3
@@ -77,12 +76,12 @@ public class FastRun extends Action {
 	}
 
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		return canContinue(player, parkourability, stamina);
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
 		return (!stamina.isExhausted()
 				&& player.getVehicle() == null
 				&& !player.isFallFlying()
@@ -99,7 +98,7 @@ public class FastRun extends Action {
 	}
 
 	@Override
-	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInClient(Player player, Parkourability parkourability, IStamina stamina) {
 		Animation animation = Animation.get(player);
 		if (animation != null && !animation.hasAnimator()) {
 			animation.setAnimator(new FastRunningAnimator());
@@ -107,19 +106,19 @@ public class FastRun extends Action {
 	}
 
 	@Override
-	public void onStartInServer(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+	public void onStartInServer(Player player, Parkourability parkourability, ByteBuffer startData) {
 		speedModifier = getSpeedModifier(parkourability.getActionInfo());
 	}
 
 	@Override
-	public void onStopInLocalClient(PlayerEntity player) {
+	public void onStopInLocalClient(Player player) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 		lastDashTick = getDashTick(parkourability.getAdditionalProperties());
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public boolean canActWithRunning(PlayerEntity player) {
+	public boolean canActWithRunning(Player player) {
 		return ParCoolConfig.Client.Booleans.SubstituteSprintForFastRun.get() ? player.isSprinting() : this.isDoing();
 	}
 

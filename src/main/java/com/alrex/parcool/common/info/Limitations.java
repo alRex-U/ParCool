@@ -5,10 +5,10 @@ import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.network.SyncLimitationMessage;
 import com.alrex.parcool.config.ParCoolConfig;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -149,8 +149,8 @@ public class Limitations {
 		setReceived();
 	}
 
-	public INBT writeNBT() {
-		CompoundNBT nbt = new CompoundNBT();
+	public Tag writeTag() {
+		CompoundTag nbt = new CompoundTag();
 		nbt.putBoolean("limitation_imposed", enabled);
 		for (ParCoolConfig.Server.Booleans item : ParCoolConfig.Server.Booleans.values()) {
 			nbt.putBoolean(item.Path, get(item));
@@ -162,12 +162,12 @@ public class Limitations {
 			nbt.putDouble(item.Path, get(item));
 		}
 
-		ListNBT limitationList = new ListNBT();
+		ListTag limitationList = new ListTag();
 		for (int i = 0; i < actionLimitations.length; i++) {
 			ActionLimitation limitation = actionLimitations[i];
 			if (limitation == null) continue;
 			Class<? extends Action> action = ActionList.getByIndex(i);
-			CompoundNBT actionNbt = new CompoundNBT();
+			CompoundTag actionNbt = new CompoundTag();
 			actionNbt.putString("action_name", action.getSimpleName());
 			actionNbt.putBoolean("action_permitted", limitation.isPossible());
 			actionNbt.putInt("action_stamina_consumption", limitation.getLeastStaminaConsumption());
@@ -178,9 +178,9 @@ public class Limitations {
 		return nbt;
 	}
 
-	public void readNBT(INBT nbt) {
-		if (nbt instanceof CompoundNBT) {
-			CompoundNBT compoundNBT = (CompoundNBT) nbt;
+	public void readTag(Tag nbt) {
+		if (nbt instanceof CompoundTag) {
+			CompoundTag compoundNBT = (CompoundTag) nbt;
 			enabled = compoundNBT.getBoolean("limitation_imposed");
 			for (ParCoolConfig.Server.Booleans item : ParCoolConfig.Server.Booleans.values()) {
 				booleans.put(item, compoundNBT.getBoolean(item.Path));
@@ -191,11 +191,11 @@ public class Limitations {
 			for (ParCoolConfig.Server.Doubles item : ParCoolConfig.Server.Doubles.values()) {
 				doubles.put(item, compoundNBT.getDouble(item.Path));
 			}
-			for (INBT inbt : compoundNBT.getList("actions", compoundNBT.getByte("list_type"))) {
-				if (!(inbt instanceof CompoundNBT)) {
+			for (Tag inbt : compoundNBT.getList("actions", compoundNBT.getByte("list_type"))) {
+				if (!(inbt instanceof CompoundTag)) {
 					continue;
 				}
-				CompoundNBT actionNbt = (CompoundNBT) inbt;
+				CompoundTag actionNbt = (CompoundTag) inbt;
 				int i;
 				String name = actionNbt.getString("action_name");
 				for (i = 0; i < ActionList.ACTIONS.size(); i++) {
@@ -210,19 +210,19 @@ public class Limitations {
 				);
 			}
 		} else {
-			throw new IllegalArgumentException("NBT for Limitation, is not CompoundNBT");
+			throw new IllegalArgumentException("NBT for Limitation, is not CompoundTag");
 		}
 	}
 
 	public static class Changer {
-		public static Changer get(ServerPlayerEntity player) {
+		public static Changer get(ServerPlayer player) {
 			return new Changer(Parkourability.get(player).getActionInfo().getIndividualLimitation(), player);
 		}
 
 		final Limitations instance;
-		final ServerPlayerEntity player;
+		final ServerPlayer player;
 
-		Changer(Limitations limitations, ServerPlayerEntity player) {
+		Changer(Limitations limitations, ServerPlayer player) {
 			instance = limitations;
 			this.player = player;
 		}

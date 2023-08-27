@@ -5,12 +5,12 @@ import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.capability.impl.Animation;
 import com.alrex.parcool.config.ParCoolConfig;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -25,7 +25,7 @@ public class Crawl extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		return ((ParCoolConfig.Client.CrawlControl.get() == ControlType.PressKey && KeyRecorder.keyCrawlState.isPressed())
 				|| (ParCoolConfig.Client.CrawlControl.get() == ControlType.Toggle && toggleStatus))
 				&& !parkourability.get(Roll.class).isDoing()
@@ -40,7 +40,7 @@ public class Crawl extends Action {
 				&& (player.isOnGround() || ParCoolConfig.Client.Booleans.EnableCrawlInAir.get());
 	}
 
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
 		if (player.isLocalPlayer()) {
 			if (ParCoolConfig.Client.CrawlControl.get() == Crawl.ControlType.Toggle) {
 				if (KeyRecorder.keyCrawlState.isPressed())
@@ -52,7 +52,7 @@ public class Crawl extends Action {
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
 		return ((ParCoolConfig.Client.CrawlControl.get() == ControlType.PressKey && KeyBindings.getKeyCrawl().isDown())
 				|| (ParCoolConfig.Client.CrawlControl.get() == ControlType.Toggle && toggleStatus))
 				&& !parkourability.get(Dive.class).isDoing()
@@ -60,7 +60,7 @@ public class Crawl extends Action {
 	}
 
 	@Override
-	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInClient(Player player, Parkourability parkourability, IStamina stamina) {
 		Animation animation = Animation.get(player);
 		if (animation != null && !animation.hasAnimator()) {
 			animation.setAnimator(new CrawlAnimator());
@@ -73,7 +73,7 @@ public class Crawl extends Action {
 	}
 
 	@Override
-	public void onWorkingTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTick(Player player, Parkourability parkourability, IStamina stamina) {
 		player.setSprinting(false);
 		player.setPose(Pose.SWIMMING);
 	}

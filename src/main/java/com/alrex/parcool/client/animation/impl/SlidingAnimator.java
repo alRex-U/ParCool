@@ -6,7 +6,7 @@ import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.Slide;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.Easing;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 public class SlidingAnimator extends Animator {
 	private static final int MAX_TRANSITION_TICK = 5;
@@ -16,7 +16,7 @@ public class SlidingAnimator extends Animator {
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float animFactor = (getTick() + transformer.getPartialTick()) / MAX_TRANSITION_TICK;
 		if (animFactor > 1) animFactor = 1;
 		animFactor = new Easing(animFactor)

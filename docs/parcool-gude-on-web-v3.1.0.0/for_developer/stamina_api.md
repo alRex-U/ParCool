@@ -35,7 +35,7 @@ import com.alrex.parcool.api.Stamina;
 Stamina instance = Stamina.get(player);
 ```
 
-`Stamina.get(PlayerEntity)` returns `@Nullable Stamina`, so don't forget null-check.
+`Stamina.get(Player)` returns `@Nullable Stamina`, so don't forget null-check.
 This method returns *null* when initialization is not done yet.
 
 ### Accessors

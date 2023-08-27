@@ -4,33 +4,33 @@ import com.alrex.parcool.client.animation.impl.VerticalWallRunAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.capability.impl.Animation;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
 
 public class VerticalWallRun extends Action {
 	private double playerYSpeed = 0;
-	private Vector3d wallDirection = null;
+	private Vec3 wallDirection = null;
 
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onTick(Player player, Parkourability parkourability, IStamina stamina) {
 		playerYSpeed = player.getDeltaMovement().y();
 	}
 
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		int tickAfterJump = parkourability.getAdditionalProperties().getTickAfterLastJump();
-		Vector3d lookVec = player.getLookAngle();
+		Vec3 lookVec = player.getLookAngle();
 		boolean able = !stamina.isExhausted()
 				&& (Math.abs(player.getDeltaMovement().y()) <= player.getBbHeight() / 5)
 				&& (4 < tickAfterJump && tickAfterJump < 13)
@@ -47,7 +47,7 @@ public class VerticalWallRun extends Action {
 				&& parkourability.get(FastRun.class).getLastDashTick() > 12
 				&& lookVec.y() > 0;
 		if (able) {
-			Vector3d wall = WorldUtil.getWall(player);
+			Vec3 wall = WorldUtil.getWall(player);
 			if (wall == null) return false;
 			wall = wall.normalize();
 			if (wall.dot(VectorUtil.fromYawDegree(player.getYHeadRot())) > 0.93) {
@@ -59,7 +59,7 @@ public class VerticalWallRun extends Action {
 							player.getZ() + wall.z()
 					);
 					if (!player.level.isLoaded(targetBlock)) return false;
-					float slipperiness = player.level.getBlockState(targetBlock).getSlipperiness(player.level, targetBlock, player);
+					float slipperiness = player.level.getBlockState(targetBlock).getFriction(player.level, targetBlock, player);
 					startInfo.putDouble(height);
 					startInfo.putFloat(slipperiness);
 					startInfo.putDouble(wall.x());
@@ -73,8 +73,8 @@ public class VerticalWallRun extends Action {
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		Vector3d wall = WorldUtil.getWall(player);
+	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
+		Vec3 wall = WorldUtil.getWall(player);
 		if (wall == null) return false;
 		wall = wall.normalize();
 		return (wall.dot(VectorUtil.fromYawDegree(player.getYHeadRot())) > 0.93
@@ -83,7 +83,7 @@ public class VerticalWallRun extends Action {
 	}
 
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		double height = startData.getDouble();
 		float slipperiness = startData.getFloat();
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
@@ -97,9 +97,9 @@ public class VerticalWallRun extends Action {
 	}
 
 	@Override
-	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		startData.position(12);
-		wallDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
+		wallDirection = new Vec3(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new VerticalWallRunAnimator());
@@ -107,7 +107,7 @@ public class VerticalWallRun extends Action {
 	}
 
 	@Override
-	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRenderTick(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
 		if (wallDirection != null && isDoing()) {
 			player.setYHeadRot((float) VectorUtil.toYawDegree(wallDirection));
 			player.setYBodyRot(player.getYHeadRot());

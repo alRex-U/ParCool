@@ -4,18 +4,17 @@ import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.Dodge;
-import com.alrex.parcool.common.capability.impl.Parkourability;
-import com.alrex.parcool.utilities.EasingFunctions;
-import com.alrex.parcool.utilities.MathUtil;
+import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.utilities.Easing;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
-
-import static com.alrex.parcool.utilities.MathUtil.lerp;
-
-;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.event.TickEvent;
 
 public class DodgeAnimator extends Animator {
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(Player player, Parkourability parkourability) {
 		return getTick() >= Dodge.MAX_TICK;
 	}
 
@@ -26,7 +25,7 @@ public class DodgeAnimator extends Animator {
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float phase = (getTick() + transformer.getPartialTick()) / Dodge.MAX_TICK;
 		if (phase > 1) {
 			return;
@@ -226,7 +225,7 @@ public class DodgeAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / Dodge.MAX_TICK;
 		if (phase > 1) {
 			return;
@@ -291,12 +290,12 @@ public class DodgeAnimator extends Animator {
 	}
 
 	@Override
-	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
+	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, Player clientPlayer, Parkourability parkourability) {
 		if (!(clientPlayer.isLocalPlayer() &&
 				Minecraft.getInstance().options.getCameraType().isFirstPerson() &&
 				ParCoolConfig.Client.Booleans.EnableCameraAnimationOfDodge.get()
 		)) return;
-		float phase = (float) ((getTick() + event.getRenderPartialTicks()) / Dodge.MAX_TICK);
+		float phase = (float) ((getTick() + event.getPartialTicks()) / Dodge.MAX_TICK);
 		switch (direction) {
 			case Front: {
 				float bodyPitchFactor = new Easing(phase)
@@ -327,7 +326,7 @@ public class DodgeAnimator extends Animator {
 	}
 
 	@Override
-	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRenderTick(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
 		switch (direction) {
 			case Right: {
 				player.setYBodyRot(player.getYHeadRot() - 5);

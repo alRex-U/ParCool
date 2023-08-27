@@ -15,6 +15,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -135,28 +136,28 @@ public class ChangeIndividualLimitationCommand {
 				);
 	}
 
-	private static int getLimitationValue(CommandContext<CommandSource> context, int code) throws CommandSyntaxException {
-		ServerPlayerEntity player = EntityArgument.getPlayer(context, ARGS_NAME_PLAYER);
+	private static int getLimitationValue(CommandContext<CommandSourceStack> context, int code) throws CommandSyntaxException {
+		ServerPlayer player = EntityArgument.getPlayer(context, ARGS_NAME_PLAYER);
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) {
-			context.getSource().sendFailure(new StringTextComponent("§4[Internal Error] Parkourability is null"));
+			context.getSource().sendSuccess(new TextComponent("§4[Internal Error] Parkourability is null"), true);
 			return 1;
 		}
 		Class<? extends Action> action;
 		switch (code) {
 			case 0:
-				context.getSource().sendSuccess(new StringTextComponent(Integer.toString(parkourability.getActionInfo().getIndividualLimitation().get(ParCoolConfig.Server.Integers.MaxStaminaLimit))), false);
+				context.getSource().sendSuccess(new TextComponent(Integer.toString(parkourability.getActionInfo().getIndividualLimitation().get(ParCoolConfig.Server.Integers.MaxStaminaLimit))), false);
 				break;
 			case 1:
-				context.getSource().sendSuccess(new StringTextComponent(Boolean.toString(parkourability.getActionInfo().getIndividualLimitation().isInfiniteStaminaPermitted())), false);
+				context.getSource().sendSuccess(new TextComponent(Boolean.toString(parkourability.getActionInfo().getIndividualLimitation().isInfiniteStaminaPermitted())), false);
 				break;
 			case 2:
 				action = ActionArgumentType.getAction(context, ARGS_NAME_ACTION);
-				context.getSource().sendSuccess(new StringTextComponent(Boolean.toString(parkourability.getActionInfo().getIndividualLimitation().isPermitted(action))), false);
+				context.getSource().sendSuccess(new TextComponent(Boolean.toString(parkourability.getActionInfo().getIndividualLimitation().isPermitted(action))), false);
 				break;
 			case 3:
 				action = ActionArgumentType.getAction(context, ARGS_NAME_ACTION);
-				context.getSource().sendSuccess(new StringTextComponent(Integer.toString(parkourability.getActionInfo().getIndividualLimitation().getLeastStaminaConsumption(action))), false);
+				context.getSource().sendSuccess(new TextComponent(Integer.toString(parkourability.getActionInfo().getIndividualLimitation().getLeastStaminaConsumption(action))), false);
 				break;
 			default:
 				return 1;
@@ -167,7 +168,7 @@ public class ChangeIndividualLimitationCommand {
 	private static int setLimitationDefault(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 		Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
 		int num = 0;
-		for (ServerPlayerEntity player : targets) {
+		for (ServerPlayer player : targets) {
 			Limitations.Changer.get(player)
 					.setAllDefault()
 					.sync();
@@ -177,23 +178,23 @@ public class ChangeIndividualLimitationCommand {
 		return 0;
 	}
 
-	private static int setBoolLimitation(CommandContext<CommandSource> context) throws CommandSyntaxException {
-		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
+	private static int setBoolLimitation(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+		Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
 		ParCoolConfig.Server.Booleans item = LimitationItemArgumentType.getBool(context, ARGS_NAME_CONFIG_ITEM);
 		boolean value = BoolArgumentType.getBool(context, ARGS_NAME_VALUE);
 		int num = 0;
-		for (ServerPlayerEntity player : targets) {
+		for (ServerPlayer player : targets) {
 			Limitations.Changer.get(player)
 					.set(item, value)
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.set", num, item.getPath(), Boolean.toString(value)), true);
+		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.set", num, item.getPath(), Boolean.toString(value)), true);
 		return 0;
 	}
 
-	private static int setIntLimitation(CommandContext<CommandSource> context) throws CommandSyntaxException {
-		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
+	private static int setIntLimitation(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+		Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
 		ParCoolConfig.Server.Integers item = LimitationItemArgumentType.getInt(context, ARGS_NAME_CONFIG_ITEM);
 		int value = IntegerArgumentType.getInteger(context, ARGS_NAME_VALUE);
 		if (value < item.Min) {
@@ -203,18 +204,18 @@ public class ChangeIndividualLimitationCommand {
 			value = item.Max;
 		}
 		int num = 0;
-		for (ServerPlayerEntity player : targets) {
+		for (ServerPlayer player : targets) {
 			Limitations.Changer.get(player)
 					.set(item, value)
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.set", num, item.getPath(), Integer.toString(value)), true);
+		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.set", num, item.getPath(), Integer.toString(value)), true);
 		return 0;
 	}
 
-	private static int setDoubleLimitation(CommandContext<CommandSource> context) throws CommandSyntaxException {
-		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
+	private static int setDoubleLimitation(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+		Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
 		ParCoolConfig.Server.Doubles item = LimitationItemArgumentType.getDouble(context, ARGS_NAME_CONFIG_ITEM);
 		double value = DoubleArgumentType.getDouble(context, ARGS_NAME_VALUE);
 		if (value < item.Min) {
@@ -224,54 +225,54 @@ public class ChangeIndividualLimitationCommand {
 			value = item.Max;
 		}
 		int num = 0;
-		for (ServerPlayerEntity player : targets) {
+		for (ServerPlayer player : targets) {
 			Limitations.Changer.get(player)
 					.set(item, value)
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.set", num, item.getPath(), Double.toString(value)), true);
+		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.set", num, item.getPath(), Double.toString(value)), true);
 		return 0;
 	}
 
-	private static int enableLimitation(CommandContext<CommandSource> context) throws CommandSyntaxException {
-		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
+	private static int enableLimitation(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+		Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
 		int num = 0;
-		for (ServerPlayerEntity player : targets) {
+		for (ServerPlayer player : targets) {
 			Limitations.Changer.get(player)
 					.setEnabled(true)
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.enableLimitation", num), true);
+		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.enableLimitation", num), true);
 		return 0;
 	}
 
-	private static int disableLimitation(CommandContext<CommandSource> context) throws CommandSyntaxException {
-		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
+	private static int disableLimitation(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+		Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
 		int num = 0;
-		for (ServerPlayerEntity player : targets) {
+		for (ServerPlayer player : targets) {
 			Limitations.Changer.get(player)
 					.setEnabled(false)
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.disableLimitation", num), true);
+		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.disableLimitation", num), true);
 		return 0;
 	}
 
-	private static int changeStaminaConsumption(CommandContext<CommandSource> context) throws CommandSyntaxException {
-		Collection<ServerPlayerEntity> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
+	private static int changeStaminaConsumption(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+		Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
 		Class<? extends Action> action = ActionArgumentType.getAction(context, ARGS_NAME_ACTION);
 		int newValue = IntegerArgumentType.getInteger(context, ARGS_NAME_STAMINA_CONSUMPTION);
 		int num = 0;
-		for (ServerPlayerEntity player : targets) {
+		for (ServerPlayer player : targets) {
 			Limitations.Changer.get(player)
 					.setLeastStaminaConsumption(action, newValue)
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.setStaminaConsumption", num, action.getSimpleName(), newValue), true);
+		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.setStaminaConsumption", num, action.getSimpleName(), newValue), true);
 		return 0;
 	}
 
@@ -280,7 +281,7 @@ public class ChangeIndividualLimitationCommand {
 		Class<? extends Action> action = ActionArgumentType.getAction(context, ARGS_NAME_ACTION);
 		boolean newValue = BoolArgumentType.getBool(context, ARGS_NAME_POSSIBILITY);
 		int num = 0;
-		for (ServerPlayerEntity player : targets) {
+		for (ServerPlayer player : targets) {
 			Limitations.Changer.get(player)
 					.setPossibilityOf(action, newValue)
 					.sync();

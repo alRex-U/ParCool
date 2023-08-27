@@ -2,8 +2,8 @@ package com.alrex.parcool.common.capability.capabilities;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.impl.Animation;
-import com.alrex.parcool.common.capability.impl.Parkourability;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -12,8 +12,6 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-
-;
 
 public class Capabilities {
 	public static final Capability<IStamina> STAMINA_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {

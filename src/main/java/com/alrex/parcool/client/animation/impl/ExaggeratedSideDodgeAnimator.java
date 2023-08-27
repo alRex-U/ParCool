@@ -6,14 +6,14 @@ import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.Dodge;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.Easing;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
 
 public class ExaggeratedSideDodgeAnimator extends Animator {
 	public static final int Dodge_Max_Tick = 14;
 
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(Player player, Parkourability parkourability) {
 		return getTick() >= Dodge_Max_Tick;
 	}
 
@@ -24,7 +24,7 @@ public class ExaggeratedSideDodgeAnimator extends Animator {
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float phase = (getTick() + transformer.getPartialTick()) / Dodge_Max_Tick;
 		if (phase > 1) {
 			return;
@@ -103,7 +103,7 @@ public class ExaggeratedSideDodgeAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / Dodge_Max_Tick;
 		if (phase > 1) {
 			return;
@@ -147,7 +147,7 @@ public class ExaggeratedSideDodgeAnimator extends Animator {
 	}
 
 	@Override
-	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRenderTick(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
 		player.setYBodyRot(player.getYHeadRot());
 	}
 }

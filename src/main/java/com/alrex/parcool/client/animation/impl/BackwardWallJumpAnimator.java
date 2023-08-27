@@ -3,13 +3,12 @@ package com.alrex.parcool.client.animation.impl;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
-import com.alrex.parcool.common.capability.impl.Parkourability;
-import net.minecraft.world.entity.player.Player;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.EasingFunctions;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 public class BackwardWallJumpAnimator extends Animator {
@@ -62,7 +61,7 @@ public class BackwardWallJumpAnimator extends Animator {
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float phase = (getTick() + transformer.getPartialTick()) / maxTick;
 		float armAngleX = MathUtil.lerp(20, -190, armAngleXFactorBack(phase));
 		float armAngleZ = MathUtil.lerp(phase > 0.75 ? 0 : 14, 28, armAngleZFactor(phase));
@@ -101,7 +100,7 @@ public class BackwardWallJumpAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / maxTick;
 		float factor = angleFactor(phase);
 
@@ -112,13 +111,13 @@ public class BackwardWallJumpAnimator extends Animator {
 	}
 
 	@Override
-	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
+	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, Player clientPlayer, Parkourability parkourability) {
 		if (!(clientPlayer.isLocalPlayer() &&
 				Minecraft.getInstance().options.getCameraType().isFirstPerson() &&
 				ParCoolConfig.Client.Booleans.EnableWallJumpBackward.get()
 		)) return;
-		float phase = (float) ((getTick() + event.getRenderPartialTicks()) / maxTick);
+		float phase = (float) ((getTick() + event.getPartialTicks()) / maxTick);
 		float factor = angleFactor(phase);
-		event.setPitch(clientPlayer.getViewXRot((float) event.getRenderPartialTicks()) - factor * 360 + ((phase > 0.5) ? 360 : 0));
+		event.setPitch(clientPlayer.getViewXRot((float) event.getPartialTicks()) - factor * 360 + ((phase > 0.5) ? 360 : 0));
 	}
 }

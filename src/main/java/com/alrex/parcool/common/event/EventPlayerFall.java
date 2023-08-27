@@ -5,15 +5,14 @@ import com.alrex.parcool.common.action.impl.Roll;
 import com.alrex.parcool.common.action.impl.Tap;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.network.StartBreakfallMessage;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class EventPlayerFall {
 	@SubscribeEvent
 	public static void onDamage(LivingFallEvent event) {
-		if (!(event.getEntity() instanceof ServerPlayerEntity)) return;
-		ServerPlayerEntity player = (ServerPlayerEntity) event.getEntity();
+		if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;

@@ -6,7 +6,7 @@ import com.alrex.parcool.common.action.AdditionalProperties;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientInformation;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Parkourability {
 	@Nullable
-	public static Parkourability get(PlayerEntity player) {
+	public static Parkourability get(Player player) {
 		LazyOptional<Parkourability> optional = player.getCapability(Capabilities.PARKOURABILITY_CAPABILITY);
 		return optional.orElse(null);
 	}
@@ -34,7 +34,7 @@ public class Parkourability {
 		}
 	}
 
-	public Parkourability(PlayerEntity player) {
+	public Parkourability(Player player) {
 		actionsMap = new HashMap<>((int) (actions.size() * 1.5));
 		for (short i = 0; i < actions.size(); i++) {
 			Action action = actions.get(i);
@@ -82,7 +82,7 @@ public class Parkourability {
 	}
 
 	public void CopyFrom(Parkourability original) {
-		getActionInfo().getIndividualLimitation().readNBT(original.getActionInfo().getIndividualLimitation().writeNBT());
-		getActionInfo().getServerLimitation().readNBT(original.getActionInfo().getServerLimitation().writeNBT());
+		getActionInfo().getIndividualLimitation().readTag(original.getActionInfo().getIndividualLimitation().writeTag());
+		getActionInfo().getServerLimitation().readTag(original.getActionInfo().getServerLimitation().writeTag());
 	}
 }

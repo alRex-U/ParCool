@@ -1,24 +1,27 @@
 package com.alrex.parcool.client.hud;
 
 import com.alrex.parcool.client.hud.impl.StaminaHUDController;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.gui.IIngameOverlay;
+import net.minecraftforge.client.gui.OverlayRegistry;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class HUDRegistry {
 	private static HUDRegistry instance = null;
+
+	private final StaminaHUDController staminaHUD = new StaminaHUDController();
+
+	private static IIngameOverlay Stamina_HUD = null;
 
 	public static HUDRegistry getInstance() {
 		if (instance == null) instance = new HUDRegistry();
 		return instance;
 	}
 
-	private final StaminaHUDController staminaHUD = new StaminaHUDController();
-
 	@SubscribeEvent
-	public void onOverlay(RenderGameOverlayEvent.Post event) {
-		if (event.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE) return;
-		staminaHUD.render(event, event.getMatrixStack());
+	public void onSetup(FMLClientSetupEvent event) {
+		Stamina_HUD = OverlayRegistry.registerOverlayTop("ParCool Stamina", staminaHUD);
 	}
 
 	@SubscribeEvent

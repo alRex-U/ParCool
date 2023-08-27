@@ -1,7 +1,7 @@
 package com.alrex.parcool.extern.feathers;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,6 +30,6 @@ public class FeathersManager {
 
 	@OnlyIn(Dist.CLIENT)
 	public static boolean isUsingFeathers() {
-		return feathersInstalled && ParCoolConfig.CONFIG_CLIENT.useFeathers.get();
+		return feathersInstalled && ParCoolConfig.Client.Booleans.UseFeathers.get();
 	}
 }

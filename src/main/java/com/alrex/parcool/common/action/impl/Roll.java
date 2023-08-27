@@ -4,14 +4,14 @@ import com.alrex.parcool.client.animation.impl.RollAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.capability.impl.Animation;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -25,7 +25,7 @@ public class Roll extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
 		if (player.isLocalPlayer()) {
 			if (KeyBindings.getKeyBreakfall().isDown()
 					&& KeyBindings.getKeyForward().isDown()
@@ -50,8 +50,8 @@ public class Roll extends Action {
 	}
 
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		ClientPlayerEntity clientPlayer = (ClientPlayerEntity) player;
+	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		LocalPlayer clientPlayer = (LocalPlayer) player;
 		Direction rollDirection = Direction.Front;
 		if (clientPlayer.input.leftImpulse < -0.5) {
 			rollDirection = Direction.Right;
@@ -66,12 +66,12 @@ public class Roll extends Action {
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
 		return getDoingTick() < getRollMaxTick();
 	}
 
 	@Override
-	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		startRequired = false;
 		Direction direction = Direction.values()[startData.getInt()];
 		Animation animation = Animation.get(player);
@@ -79,11 +79,11 @@ public class Roll extends Action {
 	}
 
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		startRequired = false;
 		Direction direction = Direction.values()[startData.getInt()];
 		double modifier = Math.sqrt(player.getBbWidth());
-		Vector3d vec = VectorUtil.fromYawDegree(player.yBodyRot).scale(modifier);
+		Vec3 vec = VectorUtil.fromYawDegree(player.yBodyRot).scale(modifier);
 		switch (direction) {
 			case Back:
 				vec = vec.reverse();
@@ -100,7 +100,7 @@ public class Roll extends Action {
 		if (animation != null) animation.setAnimator(new RollAnimator(direction));
 	}
 
-	public void startRoll(PlayerEntity player) {
+	public void startRoll(Player player) {
 		startRequired = true;
 	}
 

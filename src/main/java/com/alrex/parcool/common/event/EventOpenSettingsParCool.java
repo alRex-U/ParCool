@@ -5,8 +5,8 @@ import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -19,11 +19,11 @@ public class EventOpenSettingsParCool {
 		if (event.phase == TickEvent.Phase.END) return;
 
 		if (KeyRecorder.keyOpenSettingsState.isPressed()) {
-			ClientPlayerEntity player = Minecraft.getInstance().player;
+			LocalPlayer player = Minecraft.getInstance().player;
 			if (player == null) return;
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
-			Minecraft.getInstance().setScreen(new ParCoolSettingScreen(new StringTextComponent("ParCool Setting"), parkourability.getActionInfo(), ParCoolConfig.Client.GUIColorTheme.get()));
+			Minecraft.getInstance().setScreen(new ParCoolSettingScreen(new TextComponent("ParCool Setting"), parkourability.getActionInfo(), ParCoolConfig.Client.GUIColorTheme.get()));
 		}
 	}
 }

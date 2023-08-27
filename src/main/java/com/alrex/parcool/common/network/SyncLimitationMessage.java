@@ -4,13 +4,13 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.Limitations;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.nio.ByteBuffer;
 import java.util.function.Supplier;
@@ -19,13 +19,13 @@ public class SyncLimitationMessage {
 	private final ByteBuffer data = ByteBuffer.allocate(512);
 	private boolean forIndividuals = false;
 
-	public void encode(PacketBuffer packet) {
+	public void encode(FriendlyByteBuf packet) {
 		packet.writeBoolean(forIndividuals);
 		packet.writeBytes(data);
 		data.rewind();
 	}
 
-	public static SyncLimitationMessage decode(PacketBuffer packet) {
+	public static SyncLimitationMessage decode(FriendlyByteBuf packet) {
 		SyncLimitationMessage message = new SyncLimitationMessage();
 		message.forIndividuals = packet.readBoolean();
 		while (packet.isReadable()) {
@@ -38,7 +38,7 @@ public class SyncLimitationMessage {
 	@OnlyIn(Dist.CLIENT)
 	public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
-			ClientPlayerEntity player = Minecraft.getInstance().player;
+			LocalPlayer player = Minecraft.getInstance().player;
 			if (player == null) return;
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
@@ -60,7 +60,7 @@ public class SyncLimitationMessage {
 		return message;
 	}
 
-	public static void sendServerLimitation(ServerPlayerEntity player) {
+	public static void sendServerLimitation(ServerPlayer player) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 		parkourability.getActionInfo().getServerLimitation().readFromServerConfig();
@@ -70,7 +70,7 @@ public class SyncLimitationMessage {
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), msg);
 	}
 
-	public static void sendIndividualLimitation(ServerPlayerEntity player) {
+	public static void sendIndividualLimitation(ServerPlayer player) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 		parkourability.getActionInfo().getIndividualLimitation().setReceived();
