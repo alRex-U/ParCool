@@ -20,6 +20,5 @@ public class EventBusForgeRegistry {
 		bus.register(HUDRegistry.getInstance());
 		bus.register(KeyRecorder.class);
 		bus.register(EventOpenSettingsParCool.class);
-		bus.addListener(HUDRegistry.getInstance()::onTick);
 	}
 }

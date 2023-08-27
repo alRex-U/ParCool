@@ -1,12 +1,13 @@
 package com.alrex.parcool.common.event;
 
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.capability.impl.Animation;
-import com.alrex.parcool.common.capability.impl.Parkourability;
 import com.alrex.parcool.common.capability.impl.Stamina;
 import com.alrex.parcool.common.capability.storage.ParkourabilityStorage;
 import com.alrex.parcool.common.capability.storage.StaminaStorage;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.extern.feathers.FeathersManager;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -22,16 +23,15 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-;
-
 public class EventAttachCapability {
 
 	@SubscribeEvent
 	public static void onAttachCapability(AttachCapabilitiesEvent<Entity> event) {
-		if (!(event.getObject() instanceof Player player)) return;
+		if (!(event.getObject() instanceof Player)) return;
+		Player player = (Player) event.getObject();
 		//Parkourability
 		{
-			Parkourability instance = new Parkourability();
+			Parkourability instance = new Parkourability(player);
 			LazyOptional<Parkourability> optional = LazyOptional.of(() -> instance);
 			ICapabilityProvider provider = new ICapabilitySerializable<CompoundTag>() {
 				@Override
@@ -75,6 +75,9 @@ public class EventAttachCapability {
 			}
 			final IStamina finalInstance = instance;
 			LazyOptional<IStamina> optional = LazyOptional.of(() -> finalInstance);
+			if (player.isLocalPlayer()) {
+				instance.setMaxStamina(ParCoolConfig.Client.Integers.MaxStamina.get());
+			}
 			ICapabilityProvider provider = new ICapabilitySerializable<CompoundTag>() {
 				@Override
 				public CompoundTag serializeNBT() {

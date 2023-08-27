@@ -5,10 +5,12 @@ import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.impl.Animation;
-import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,8 +19,6 @@ import net.minecraftforge.event.TickEvent;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
-
-;
 
 public class ClingToCliff extends Action {
 	private float armSwingAmount = 0;
@@ -43,16 +43,15 @@ public class ClingToCliff extends Action {
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		boolean value = (!stamina.isExhausted()
-				&& player.getDeltaMovement().y < 0.2
-				&& parkourability.getActionInfo().can(ClingToCliff.class)
+				&& player.getDeltaMovement().y() < 0.2
+				&& !parkourability.get(HorizontalWallRun.class).isDoing()
 				&& KeyBindings.getKeyGrabWall().isDown()
 		);
 		if (!value) return false;
 		Vec3 wallVec = WorldUtil.getGrabbableWall(player);
-
 		if (wallVec == null) return false;
-		startInfo.putDouble(wallVec.x)
-				.putDouble(wallVec.z);
+		startInfo.putDouble(wallVec.x())
+				.putDouble(wallVec.z());
 		//Check whether player is facing to wall
 		return 0.5 < wallVec.normalize().dot(player.getLookAngle().multiply(1, 0, 1).normalize());
 	}
@@ -63,6 +62,7 @@ public class ClingToCliff extends Action {
 		return (!stamina.isExhausted()
 				&& parkourability.getActionInfo().can(ClingToCliff.class)
 				&& KeyBindings.getKeyGrabWall().isDown()
+				&& !parkourability.get(HorizontalWallRun.class).isDoing()
 				&& !parkourability.get(ClimbUp.class).isDoing()
 				&& WorldUtil.getGrabbableWall(player) != null
 		);
@@ -74,6 +74,8 @@ public class ClingToCliff extends Action {
 		clingWallDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
 		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.PLAYER_ATTACK_WEAK, 1f, 0.6f);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new ClingToCliffAnimator());
 	}
@@ -113,12 +115,12 @@ public class ClingToCliff extends Action {
 		Vec3 lookingAngle = player.getLookAngle().multiply(1, 0, 1).normalize();
 		Vec3 angle =
 				new Vec3(
-						clingWallDirection.x * lookingAngle.x + clingWallDirection.z * lookingAngle.z, 0,
-						-clingWallDirection.x * lookingAngle.z + clingWallDirection.z * lookingAngle.x
+						clingWallDirection.x() * lookingAngle.x() + clingWallDirection.z() * lookingAngle.z(), 0,
+						-clingWallDirection.x() * lookingAngle.z() + clingWallDirection.z() * lookingAngle.x()
 				).normalize();
-		if (angle.x > 0.342) {
+		if (angle.x() > 0.342) {
 			facingDirection = FacingDirection.ToWall;
-		} else if (angle.z < 0) {
+		} else if (angle.z() < 0) {
 			facingDirection = FacingDirection.RightAgainstWall;
 		} else {
 			facingDirection = FacingDirection.LeftAgainstWall;

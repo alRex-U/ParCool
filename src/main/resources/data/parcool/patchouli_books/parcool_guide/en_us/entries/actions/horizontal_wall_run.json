@@ -1,0 +1,23 @@
+{
+  "name": "Horizontal Wall Run",
+  "icon": "minecraft:bricks",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "You can do wall-running horizontally. But if wall is slippery, you cannot do this.$(br)Sometimes misunderstood, but the technique of $(italic)Wall Run$() is vertical one, not horizontal."
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/image_wall_run.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(bold)1.$() Do $(l:parcool:actions/fast_run)Fast Run$() in air along the wall$(br)$(bold)2.$() Continue to press Wall-Run Key($(k:parcool.HorizontalWallRun))"
+    }
+  ]
+}

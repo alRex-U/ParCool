@@ -1,27 +1,28 @@
 package com.alrex.parcool.client.animation.impl;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
-import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.action.impl.Vault;
+import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.EasingFunctions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.event.ViewportEvent;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 import static com.alrex.parcool.utilities.MathUtil.lerp;
 
 public class SpeedVaultAnimator extends Animator {
-	private static final int MAX_TIME = 11;
 
 	@Override
 	public boolean shouldRemoved(Player player, Parkourability parkourability) {
-		return getTick() >= MAX_TIME;
+		return getTick() >= Vault.MAX_TICK;
 	}
 
 	private float getFactor(float tick) {
-		float phase = tick / MAX_TIME;
+		float phase = tick / Vault.MAX_TICK;
 		if (phase < 0.5) {
 			return EasingFunctions.SinInOutBySquare(phase * 2);
 		} else {
@@ -31,20 +32,38 @@ public class SpeedVaultAnimator extends Animator {
 
 	@Override
 	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
-		float phase = (getTick() + rotator.getPartialTick()) / MAX_TIME;
+		float phase = (getTick() + rotator.getPartialTick()) / Vault.MAX_TICK;
 		float factor = getFactor(getTick() + rotator.getPartialTick());
 		float forwardFactor = (float) Math.sin(phase * 2 * Math.PI) + 0.5f;
-
+		float yFactor = new Easing(phase)
+				.squareOut(0, 0.5f, 0, 1)
+				.squareIn(0.5f, 1, 1, 0)
+				.get();
 		rotator
 				.startBasedCenter()
-				.rotateRightward(factor * 70 * (type == Type.Right ? -1 : 1))
-				.rotateFrontward(30 * forwardFactor)
+				.translateY(-yFactor * player.getBbHeight() / 5)
+				.rotateRollRightward(factor * 60 * (type == Type.Right ? -1 : 1))
+				.rotatePitchFrontward(30 * forwardFactor)
 				.end();
 	}
 
 	@Override
 	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
-		float phase = (getTick() + transformer.getPartialTick()) / MAX_TIME;
+		float phase = (getTick() + transformer.getPartialTick()) / Vault.MAX_TICK;
+		float animFactor = new Easing(phase)
+				.sinInOut(0, 0.25f, 0, 1)
+				.linear(0.25f, 0.75f, 1, 1)
+				.sinInOut(0.75f, 1, 1, 0)
+				.get();
+		float freeArmXFactor = new Easing(phase)
+				.squareOut(0, 0.65f, 1, -1)
+				.sinInOut(0.65f, 1, -1, 0)
+				.get();
+		float freeArmZFactor = new Easing(phase)
+				.squareOut(0, 0.40f, 0, 1)
+				.sinInOut(0.40f, 0.65f, 1, -0.3f)
+				.sinInOut(0.65f, 1, -0.3f, 0)
+				.get();
 		float factor = getFactor(getTick() + transformer.getPartialTick());
 		switch (type) {
 			case Right:
@@ -54,8 +73,14 @@ public class SpeedVaultAnimator extends Animator {
 								0,
 								(float) -Math.toRadians(factor * 70)
 						)
-						.addRotateRightLeg(0, 0, (float) Math.toRadians(factor * 25))
-						.addRotateLeftLeg(0, 0, (float) Math.toRadians(factor * 15))
+						.rotateRightArm(
+								(float) Math.toRadians(20 + freeArmXFactor * 50),
+								0,
+								(float) Math.toRadians(freeArmZFactor * 40),
+								animFactor
+						)
+						.addRotateRightLeg(0, 0, (float) Math.toRadians(factor * 30))
+						.addRotateLeftLeg(0, 0, (float) Math.toRadians(factor * 20))
 						.end();
 				break;
 
@@ -66,19 +91,25 @@ public class SpeedVaultAnimator extends Animator {
 								0,
 								(float) Math.toRadians(factor * 70)
 						)
-						.addRotateRightLeg(0, 0, (float) Math.toRadians(factor * -15))
-						.addRotateLeftLeg(0, 0, (float) Math.toRadians(factor * -25))
+						.rotateLeftArm(
+								(float) Math.toRadians(20 + freeArmXFactor * 50),
+								0,
+								(float) Math.toRadians(freeArmZFactor * -40),
+								animFactor
+						)
+						.addRotateRightLeg(0, 0, (float) Math.toRadians(factor * -20))
+						.addRotateLeftLeg(0, 0, (float) Math.toRadians(factor * -30))
 						.end();
 				break;
 		}
 	}
 
 	@Override
-	public void onCameraSetUp(ViewportEvent.ComputeCameraAngles event, Player clientPlayer, Parkourability parkourability) {
+	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, Player clientPlayer, Parkourability parkourability) {
 		if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
-				ParCoolConfig.CONFIG_CLIENT.disableCameraVault.get()) return;
-		float factor = getFactor((float) (getTick() + event.getPartialTick()));
-		float phase = (float) ((getTick() + event.getPartialTick()) / MAX_TIME);
+				!ParCoolConfig.Client.Booleans.EnableCameraAnimationOfVault.get()) return;
+		float factor = getFactor((float) (getTick() + event.getPartialTicks()));
+		float phase = (float) ((getTick() + event.getPartialTicks()) / Vault.MAX_TICK);
 		float forwardFactor = (float) Math.sin(phase * 2 * Math.PI) + 0.5f;
 		event.setPitch(15 * forwardFactor);
 		switch (type) {

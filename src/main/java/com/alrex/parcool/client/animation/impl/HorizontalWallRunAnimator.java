@@ -1,15 +1,15 @@
 package com.alrex.parcool.client.animation.impl;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.HorizontalWallRun;
-import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.event.ViewportEvent;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 public class HorizontalWallRunAnimator extends Animator {
 	final boolean wallIsRightSide;
@@ -30,16 +30,16 @@ public class HorizontalWallRunAnimator extends Animator {
 					.addRotateLeftArm(0, 0, (float) Math.toRadians(-30))
 					.makeArmsNatural()
 					.rotateRightArm(0, 0, (float) Math.toRadians(60))
-					.addRotateRightLeg(0, 0, (float) Math.toRadians(10))
-					.addRotateLeftLeg(0, 0, (float) Math.toRadians(15))
+					.addRotateRightLeg(0, 0, (float) Math.toRadians(17))
+					.addRotateLeftLeg(0, 0, (float) Math.toRadians(25))
 					.end();
 		} else {
 			transformer
 					.addRotateRightArm(0, 0, (float) Math.toRadians(30))
 					.makeArmsNatural()
 					.rotateLeftArm(0, 0, (float) Math.toRadians(-60))
-					.addRotateRightLeg(0, 0, (float) Math.toRadians(-15))
-					.addRotateLeftLeg(0, 0, (float) Math.toRadians(-10))
+					.addRotateRightLeg(0, 0, (float) Math.toRadians(-25))
+					.addRotateLeftLeg(0, 0, (float) Math.toRadians(-17))
 					.end();
 		}
 	}
@@ -54,15 +54,17 @@ public class HorizontalWallRunAnimator extends Animator {
 		float angle = factor * 30 * (wallIsRightSide ? -1 : 1);
 		rotator
 				.startBasedCenter()
-				.rotateRightward(angle)
+				.rotateRollRightward(angle)
 				.end();
 	}
 
 	@Override
-	public void onCameraSetUp(ViewportEvent.ComputeCameraAngles event, Player clientPlayer, Parkourability parkourability) {
-		if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() || ParCoolConfig.CONFIG_CLIENT.disableCameraHorizontalWallRun.get())
+	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, Player clientPlayer, Parkourability parkourability) {
+		if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
+				!ParCoolConfig.Client.Booleans.EnableCameraAnimationOfHWallRun.get()
+		)
 			return;
-		float factor = getFactor((float) (getTick() + event.getPartialTick()));
+		float factor = getFactor((float) (getTick() + event.getPartialTicks()));
 		float angle = factor * 20 * (wallIsRightSide ? -1 : 1);
 		event.setRoll(angle);
 	}

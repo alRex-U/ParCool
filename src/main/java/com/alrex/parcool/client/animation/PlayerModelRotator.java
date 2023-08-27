@@ -50,18 +50,28 @@ public class PlayerModelRotator {
 		return this;
 	}
 
-	public PlayerModelRotator rotateFrontward(float angleDegree) {
+	public PlayerModelRotator translateY(float offset) {
+		stack.translate(0, offset, 0);
+		return this;
+	}
+
+	public PlayerModelRotator rotatePitchFrontward(float angleDegree) {
 		Vec3 lookVec = VectorUtil.fromYawDegree(player.yBodyRot).yRot((float) Math.PI / 2);
-		Vector3f vec = new Vector3f((float) lookVec.x, 0, (float) lookVec.z);
+		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
 		angleFront += angleDegree;
 		stack.mulPose(vec.rotationDegrees(angleDegree));
 		return this;
 	}
 
-	public PlayerModelRotator rotateRightward(float angleDegree) {
+	public PlayerModelRotator rotateRollRightward(float angleDegree) {
 		Vec3 lookVec = VectorUtil.fromYawDegree(player.yBodyRot);
-		Vector3f vec = new Vector3f((float) lookVec.x, 0, (float) lookVec.z);
+		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
 		stack.mulPose(vec.rotationDegrees(angleDegree));
+		return this;
+	}
+
+	public PlayerModelRotator rotateYawRightward(float angleDegree) {
+		stack.mulPose(Vector3f.YN.rotationDegrees(angleDegree));
 		return this;
 	}
 

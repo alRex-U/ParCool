@@ -10,7 +10,7 @@
     {
       "type": "patchouli:text",
       "title": "使い方",
-      "text": "$(list)右移動キーと左移動キーを同時押しする$(list)フリッピングキー($(parcool.Flipping))を押す"
+      "text": "$(list)右移動キーと左移動キーを同時押しする$(list)フリッピングキー($(k:parcool.Flipping))を押す"
     }
   ]
 }
