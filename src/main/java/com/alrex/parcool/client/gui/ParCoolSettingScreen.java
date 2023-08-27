@@ -69,10 +69,10 @@ public class ParCoolSettingScreen extends Screen {
 		}
 		for (int i = 0; i < enumConfigList.length; i++) {
 			int index = i;
-			enumConfigButtons[index] = new Button(0, 0, 0, 0, Component.literal(enumConfigList[index].get().toString()), it -> {
+			enumConfigButtons[index] = new Button.Builder(Component.literal(enumConfigList[index].get().toString()), it -> {
 				enumConfigList[index].next();
 				it.setMessage(Component.literal(enumConfigList[index].get().toString()));
-			});
+			}).build();
 		}
 		infoList = new InfoSet[]{
 				new InfoSet(
@@ -203,12 +203,12 @@ public class ParCoolSettingScreen extends Screen {
 		}
 		for (int i = 0; i < viewableItemCount && i + topIndex < actionButtons.length; i++) {
 			Checkbox button = actionButtons[i + topIndex];
-			button.x = offsetX + 1;
-			button.y = contentOffsetY + Checkbox_Item_Height * i;
+			button.setX(offsetX + 1);
+			button.setY(contentOffsetY + Checkbox_Item_Height * i);
 			button.setWidth(nameColumnWidth - 5);
 			button.setHeight(20);
 			button.render(matrixStack, mouseX, mouseY, p_230430_4_);
-			fill(matrixStack, offsetX, button.y + button.getHeight(), width - offsetX, button.y + button.getHeight() + 1, color.getSubSeparator());
+			fill(matrixStack, offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
 			int rowY = contentOffsetY + Checkbox_Item_Height * i + Checkbox_Item_Height / 2;
 			boolean permitted = actionList[topIndex + i].serverWideLimitation.getAsBoolean();
 			drawCenteredString(
@@ -271,14 +271,14 @@ public class ParCoolSettingScreen extends Screen {
 			case Boolean: {
 				for (int i = 0; i < viewableItemCount && i + topIndex < booleans.length; i++) {
 					Checkbox button = configButtons[i + topIndex];
-					button.x = offsetX + 1;
-					button.y = offsetY + font.lineHeight * 2 + Checkbox_Item_Height * i;
+					button.setX(offsetX + 1);
+					button.setY(offsetY + font.lineHeight * 2 + Checkbox_Item_Height * i);
 					button.setWidth(contentWidth);
 					button.setHeight(20);
 					button.render(matrixStack, mouseX, mouseY, p_230430_4_);
-					fill(matrixStack, offsetX, button.y + button.getHeight(), width - offsetX, button.y + button.getHeight() + 1, color.getSubSeparator());
+					fill(matrixStack, offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
 					String comment = booleans[i + topIndex].Comment;
-					if (comment != null && button.x < mouseX && mouseX < button.x + contentWidth && button.y < mouseY && mouseY < button.y + 20) {
+					if (comment != null && button.getX() < mouseX && mouseX < button.getX() + contentWidth && button.getY() < mouseY && mouseY < button.getY() + 20) {
 						renderComponentTooltip(
 								matrixStack,
 								Collections.singletonList(Component.literal(comment)),
@@ -291,14 +291,14 @@ public class ParCoolSettingScreen extends Screen {
 				for (int i = 0; i < viewableItemCount && i + topIndex < enumConfigList.length; i++) {
 					Button button = enumConfigButtons[i + topIndex];
 					int buttonWidth = contentWidth / 3;
-					button.x = width - offsetX - buttonWidth - 1;
-					button.y = offsetY + font.lineHeight * 2 + Checkbox_Item_Height * i;
+					button.setX(width - offsetX - buttonWidth - 1);
+					button.setY(offsetY + font.lineHeight * 2 + Checkbox_Item_Height * i);
 					button.setWidth(buttonWidth);
 					button.setHeight(20);
 					button.render(matrixStack, mouseX, mouseY, p_230430_4_);
 					List<String> path = enumConfigList[i + topIndex].configInstance.getPath();
-					drawString(matrixStack, font, path.get(path.size() - 1), offsetX + 6, button.y + 1 + (button.getHeight() - font.lineHeight) / 2, color.getText());
-					fill(matrixStack, offsetX, button.y + button.getHeight(), width - offsetX, button.y + button.getHeight() + 1, color.getSubSeparator());
+					drawString(matrixStack, font, path.get(path.size() - 1), offsetX + 6, button.getY() + 1 + (button.getHeight() - font.lineHeight) / 2, color.getText());
+					fill(matrixStack, offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
 				}
 				break;
 			}
