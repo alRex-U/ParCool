@@ -13,7 +13,7 @@
       "images": [
         "parcool:textures/gui/entries/image_vault.png"
       ],
-      "text": "A image of $(italic)Speed Vault$()"
+      "title": "$(italic)Speed Vault$()"
     },
     {
       "type": "patchouli:text",

@@ -2,7 +2,7 @@ package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -17,8 +17,6 @@ import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 import java.util.function.Supplier;
-
-;
 
 public class SyncActionStateMessage {
 	private SyncActionStateMessage() {

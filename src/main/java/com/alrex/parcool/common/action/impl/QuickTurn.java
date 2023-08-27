@@ -4,7 +4,7 @@ import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;

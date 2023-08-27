@@ -1,6 +1,6 @@
 package com.alrex.parcool.common.capability.storage;
 
-import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;

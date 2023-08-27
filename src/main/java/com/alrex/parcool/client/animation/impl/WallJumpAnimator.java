@@ -3,12 +3,10 @@ package com.alrex.parcool.client.animation.impl;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
-import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.world.entity.player.Player;
 
 import static java.lang.Math.toRadians;
-
-;
 
 public class WallJumpAnimator extends Animator {
 	private boolean swingRightArm;
@@ -57,8 +55,8 @@ public class WallJumpAnimator extends Animator {
 		float factor = getFactor(phase);
 		rotator
 				.startBasedCenter()
-				.rotateFrontward(factor * 20)
-				.rotateRightward((swingRightArm ? -1 : 1) * 15 * factor)
+				.rotatePitchFrontward(factor * 20)
+				.rotateRollRightward((swingRightArm ? -1 : 1) * 15 * factor)
 				.end();
 	}
 }

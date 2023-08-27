@@ -10,6 +10,7 @@ public class FeathersStamina implements IStamina {
 
 	private final Player player;
 	private int old;
+	private float fraction = 0;
 
 	public FeathersStamina(Player player) {
 		this.player = player;
@@ -47,12 +48,22 @@ public class FeathersStamina implements IStamina {
 	@Override
 	public void consume(int value) {
 		if (player.isLocalPlayer()) {
-			FeathersHelper.spendFeathers(Math.round(value / 100f));
+			int spentFeathers = value / 100;
+			fraction += (value / 100f) - spentFeathers;
+			FeathersHelper.spendFeathers(spentFeathers);
+			if (fraction >= 1) {
+				fraction -= 1;
+				FeathersHelper.spendFeathers(1);
+			}
 		}
 	}
 
 	@Override
 	public void recover(int value) {
+		fraction -= value / 100f;
+		if (fraction < 0) {
+			fraction = 0;
+		}
 	}
 
 	@Override

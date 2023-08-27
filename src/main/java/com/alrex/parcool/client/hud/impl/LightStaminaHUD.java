@@ -1,8 +1,8 @@
 package com.alrex.parcool.client.hud.impl;
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -10,10 +10,6 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.event.TickEvent;
-
-import java.util.Random;
-
-;
 
 public class LightStaminaHUD extends GuiComponent {
 	private long lastStaminaChangedTick = 0;
@@ -23,7 +19,6 @@ public class LightStaminaHUD extends GuiComponent {
 	private long changingTimeTick = 0;
 	private int randomOffset = 0;
 	private boolean justBecameMax = false;
-	private Random rand = new Random();
 
 	public void onTick(TickEvent.ClientTickEvent event, LocalPlayer player) {
 		IStamina stamina = IStamina.get(player);
@@ -36,8 +31,8 @@ public class LightStaminaHUD extends GuiComponent {
 		} else {
 			changingTimeTick++;
 		}
-		if (rand.nextInt(5) == 0) {
-			randomOffset += rand.nextBoolean() ? 1 : -1;
+		if (player.getRandom().nextInt(5) == 0) {
+			randomOffset += player.getRandom().nextBoolean() ? 1 : -1;
 		} else {
 			randomOffset = 0;
 		}
@@ -55,8 +50,9 @@ public class LightStaminaHUD extends GuiComponent {
 		Parkourability parkourability = Parkourability.get(player);
 		if (stamina == null || parkourability == null) return;
 
-		if (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && parkourability.getActionInfo().isInfiniteStaminaPermitted())
-			return;
+		if (ParCoolConfig.Client.Booleans.HideStaminaHUDWhenStaminaIsInfinite.get() &&
+				parkourability.getActionInfo().isStaminaInfinite(player.isCreative() || player.isSpectator())
+		) return;
 
 		long gameTime = player.level.getGameTime();
 		if (gameTime - lastStaminaChangedTick > 40) return;
