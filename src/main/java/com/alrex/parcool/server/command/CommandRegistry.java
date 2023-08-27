@@ -23,6 +23,6 @@ public class CommandRegistry {
 
 	public static void registerArgumentTypes(FMLCommonSetupEvent event) {
 		ArgumentTypeInfos.registerByClass(ActionArgumentType.class, SingletonArgumentInfo.contextFree(ActionArgumentType::action));
-		ArgumentTypeInfos.registerByClass(LimitationItemArgumentType.class, SingletonArgumentInfo.contextFree(LimitationItemArgumentType::booleans));
+		ArgumentTypeInfos.registerByClass(LimitationItemArgumentType.class, new LimitationItemArgumentType.Info());
 	}
 }
