@@ -31,16 +31,16 @@ public class WorldUtil {
 				pos.z() + width
 		);
 
-		if (!entity.level.noCollision(baseBox.expandTowards(range, 0, 0))) {
+		if (!entity.level.noCollision(entity, baseBox.expandTowards(range, 0, 0))) {
 			wallX++;
 		}
-		if (!entity.level.noCollision(baseBox.expandTowards(-range, 0, 0))) {
+		if (!entity.level.noCollision(entity, baseBox.expandTowards(-range, 0, 0))) {
 			wallX--;
 		}
-		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, range))) {
+		if (!entity.level.noCollision(entity, baseBox.expandTowards(0, 0, range))) {
 			wallZ++;
 		}
-		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, -range))) {
+		if (!entity.level.noCollision(entity, baseBox.expandTowards(0, 0, -range))) {
 			wallZ--;
 		}
 		if (wallX == 0 && wallZ == 0) return null;
@@ -65,16 +65,16 @@ public class WorldUtil {
 				pos.z() + width
 		);
 
-		if (!entity.level.noCollision(baseBox.expandTowards(range, 0, 0))) {
+		if (!entity.level.noCollision(entity, baseBox.expandTowards(range, 0, 0))) {
 			wallX++;
 		}
-		if (!entity.level.noCollision(baseBox.expandTowards(-range, 0, 0))) {
+		if (!entity.level.noCollision(entity, baseBox.expandTowards(-range, 0, 0))) {
 			wallX--;
 		}
-		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, range))) {
+		if (!entity.level.noCollision(entity, baseBox.expandTowards(0, 0, range))) {
 			wallZ++;
 		}
-		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, -range))) {
+		if (!entity.level.noCollision(entity, baseBox.expandTowards(0, 0, -range))) {
 			wallZ--;
 		}
 		if (wallX == 0 && wallZ == 0) return null;
@@ -108,16 +108,16 @@ public class WorldUtil {
 				pos.y() + baseLine + entity.getBbHeight(),
 				pos.z() + d
 		);
-		if (!world.noCollision(baseBoxBottom.expandTowards(distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards((distance + 1.8), 0, 0))) {
+		if (!world.noCollision(entity, baseBoxBottom.expandTowards(distance, 0, 0)) && world.noCollision(entity, baseBoxTop.expandTowards((distance + 1.8), 0, 0))) {
 			stepX++;
 		}
-		if (!world.noCollision(baseBoxBottom.expandTowards(-distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards(-(distance + 1.8), 0, 0))) {
+		if (!world.noCollision(entity, baseBoxBottom.expandTowards(-distance, 0, 0)) && world.noCollision(entity, baseBoxTop.expandTowards(-(distance + 1.8), 0, 0))) {
 			stepX--;
 		}
-		if (!world.noCollision(baseBoxBottom.expandTowards(0, 0, distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, (distance + 1.8)))) {
+		if (!world.noCollision(entity, baseBoxBottom.expandTowards(0, 0, distance)) && world.noCollision(entity, baseBoxTop.expandTowards(0, 0, (distance + 1.8)))) {
 			stepZ++;
 		}
-		if (!world.noCollision(baseBoxBottom.expandTowards(0, 0, -distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, -(distance + 1.8)))) {
+		if (!world.noCollision(entity, baseBoxBottom.expandTowards(0, 0, -distance)) && world.noCollision(entity, baseBoxTop.expandTowards(0, 0, -(distance + 1.8)))) {
 			stepZ--;
 		}
 		if (stepX == 0 && stepZ == 0) return null;
@@ -155,7 +155,7 @@ public class WorldUtil {
 			AABB box = new AABB(
 					x1, y1 + height, z1, x2, y1 + height + accuracy, z2
 			);
-			if (!world.noCollision(box)) {
+			if (!world.noCollision(entity, box)) {
 				canReturn = true;
 			} else {
 				if (canReturn) {
@@ -185,7 +185,7 @@ public class WorldUtil {
 					x1, y1 + accuracy * i, z1, x2, y1 + accuracy * (i + 1), z2
 			);
 
-			if (!world.noCollision(box)) {
+			if (!world.noCollision(entity, box)) {
 				canReturn = true;
 			} else {
 				if (canReturn) return accuracy * i;
@@ -206,7 +206,7 @@ public class WorldUtil {
 				entity.getY() + entity.getBbHeight() + bbHeight,
 				entity.getZ() + bbWidth
 		);
-		if (entity.level.noCollision(bb)) return null;
+		if (entity.level.noCollision(entity, bb)) return null;
 		BlockPos pos = new BlockPos(
 				entity.getX(),
 				entity.getY() + entity.getBbHeight() + 0.4,
@@ -283,7 +283,7 @@ public class WorldUtil {
 					centerPoint.y() + height,
 					centerPoint.z() + width
 			);
-			if (!world.noCollision(box)) return false;
+			if (!world.noCollision(entity, box)) return false;
 		}
 		center = center.add(diveDirection.scale(4));
 		AABB verticalWideBox = new AABB(
@@ -294,7 +294,7 @@ public class WorldUtil {
 				center.y() + height,
 				center.z() + wideWidth
 		);
-		return world.noCollision(verticalWideBox);
+		return world.noCollision(entity, verticalWideBox);
 	}
 
 	@Nullable
@@ -332,13 +332,13 @@ public class WorldUtil {
 		int xDirection = 0;
 		int zDirection = 0;
 
-		if (!world.noCollision(baseBoxSide.expandTowards(distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards(distance, 0, 0)))
+		if (!world.noCollision(entity, baseBoxSide.expandTowards(distance, 0, 0)) && world.noCollision(entity, baseBoxTop.expandTowards(distance, 0, 0)))
 			xDirection++;
-		if (!world.noCollision(baseBoxSide.expandTowards(-distance, 0, 0)) && world.noCollision(baseBoxTop.expandTowards(-distance, 0, 0)))
+		if (!world.noCollision(entity, baseBoxSide.expandTowards(-distance, 0, 0)) && world.noCollision(entity, baseBoxTop.expandTowards(-distance, 0, 0)))
 			xDirection--;
-		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, distance)))
+		if (!world.noCollision(entity, baseBoxSide.expandTowards(0, 0, distance)) && world.noCollision(entity, baseBoxTop.expandTowards(0, 0, distance)))
 			zDirection++;
-		if (!world.noCollision(baseBoxSide.expandTowards(0, 0, -distance)) && world.noCollision(baseBoxTop.expandTowards(0, 0, -distance)))
+		if (!world.noCollision(entity, baseBoxSide.expandTowards(0, 0, -distance)) && world.noCollision(entity, baseBoxTop.expandTowards(0, 0, -distance)))
 			zDirection--;
 		if (xDirection == 0 && zDirection == 0) {
 			return null;
