@@ -54,9 +54,9 @@ public class VerticalWallRun extends Action {
 				double height = WorldUtil.getWallHeight(player, wall, player.getBbHeight() * 2.2, 0.2);
 				if (height > 2.3) {
 					BlockPos targetBlock = new BlockPos(
-							player.getX() + wall.x(),
-							player.getBoundingBox().minY + player.getBbHeight() * 0.5,
-							player.getZ() + wall.z()
+							(int) (player.getX() + wall.x()),
+							(int) (player.getBoundingBox().minY + player.getBbHeight() * 0.5),
+							(int) (player.getZ() + wall.z())
 					);
 					if (!player.level.isLoaded(targetBlock)) return false;
 					float slipperiness = player.level.getBlockState(targetBlock).getFriction(player.level, targetBlock, player);

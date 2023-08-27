@@ -3,6 +3,7 @@ package com.alrex.parcool.utilities;
 import com.alrex.parcool.common.action.impl.HangDown;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -123,7 +124,8 @@ public class WorldUtil {
 		if (stepX == 0 && stepZ == 0) return null;
 		if (stepX == 0 || stepZ == 0) {
 			Vec3 result = new Vec3(stepX, 0, stepZ);
-			BlockPos target = new BlockPos(entity.position().add(result).add(0, 0.5, 0));
+			Vec3 blockPosition = entity.position().add(result).add(0, 0.5, 0);
+			BlockPos target = new BlockPos(new Vec3i((int) blockPosition.x(), (int) blockPosition.y(), (int) blockPosition.z()));
 			if (!world.isLoaded(target)) return null;
 			BlockState state = world.getBlockState(target);
 			if (state.getBlock() instanceof StairBlock) {
@@ -208,9 +210,9 @@ public class WorldUtil {
 		);
 		if (entity.level.noCollision(entity, bb)) return null;
 		BlockPos pos = new BlockPos(
-				entity.getX(),
-				entity.getY() + entity.getBbHeight() + 0.4,
-				entity.getZ()
+				(int) entity.getX(),
+				(int) (entity.getY() + entity.getBbHeight() + 0.4),
+				(int) entity.getZ()
 		);
 		if (!entity.level.isLoaded(pos)) return null;
 		BlockState state = entity.level.getBlockState(pos);
@@ -346,14 +348,14 @@ public class WorldUtil {
 		float slipperiness;
 		if (xDirection != 0 && zDirection != 0) {
 			BlockPos blockPos1 = new BlockPos(
-					entity.getX() + xDirection,
-					entity.getBoundingBox().minY + baseLine - 0.3,
-					entity.getZ()
+					(int) (entity.getX() + xDirection),
+					(int) (entity.getBoundingBox().minY + baseLine - 0.3),
+					(int) entity.getZ()
 			);
 			BlockPos blockPos2 = new BlockPos(
-					entity.getX(),
-					entity.getBoundingBox().minY + baseLine - 0.3,
-					entity.getZ() + zDirection
+					(int) entity.getX(),
+					(int) (entity.getBoundingBox().minY + baseLine - 0.3),
+					(int) (entity.getZ() + zDirection)
 			);
 			if (!entity.level.isLoaded(blockPos1)) return null;
 			if (!entity.level.isLoaded(blockPos2)) return null;
@@ -363,9 +365,9 @@ public class WorldUtil {
 			);
 		} else {
 			BlockPos blockPos = new BlockPos(
-					entity.getX() + xDirection,
-					entity.getBoundingBox().minY + baseLine - 0.3,
-					entity.getZ() + zDirection
+					(int) (entity.getX() + xDirection),
+					(int) (entity.getBoundingBox().minY + baseLine - 0.3),
+					(int) (entity.getZ() + zDirection)
 			);
 			if (!entity.level.isLoaded(blockPos)) return null;
 			slipperiness = entity.level.getBlockState(blockPos).getFriction(entity.level, blockPos, entity);

@@ -62,9 +62,9 @@ public class HorizontalWallRun extends Action {
 		bodyYaw = (float) VectorUtil.toYawDegree(lookVec.yRot((float) (differenceAngle / 10)));
 		Vec3 movement = player.getDeltaMovement();
 		BlockPos leanedBlock = new BlockPos(
-				player.getX() + runningWallDirection.x(),
-				player.getBoundingBox().minY + player.getBbHeight() * 0.5,
-				player.getZ() + runningWallDirection.z()
+				(int) (player.getX() + runningWallDirection.x()),
+				(int) (player.getBoundingBox().minY + player.getBbHeight() * 0.5),
+				(int) (player.getZ() + runningWallDirection.z())
 		);
 		if (!player.level.isLoaded(leanedBlock)) return;
 		float slipperiness = player.level.getBlockState(leanedBlock).getFriction(player.level, leanedBlock, player);
