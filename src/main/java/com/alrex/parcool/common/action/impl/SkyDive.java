@@ -16,7 +16,7 @@ import java.nio.ByteBuffer;
 public class SkyDive extends Action {
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		return parkourability.get(Dive.class).getDoingTick() > 30
+		return parkourability.get(Dive.class).getDoingTick() > 15
 				&& !stamina.isExhausted()
 				&& getNotDoingTick() > 20
 				&& KeyRecorder.keyJumpState.isPressed();

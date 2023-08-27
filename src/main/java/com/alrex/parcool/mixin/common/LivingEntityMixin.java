@@ -50,7 +50,7 @@ public abstract class LivingEntityMixin extends Entity {
 			if (parkourability == null) {
 				return;
 			}
-			if (!parkourability.getClientInfo().getPossibilityOf(ClimbPoles.class)) {
+			if (!parkourability.getActionInfo().can(ClimbPoles.class)) {
 				return;
 			}
 			BlockPos blockpos = this.blockPosition();
