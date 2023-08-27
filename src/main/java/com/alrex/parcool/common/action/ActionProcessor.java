@@ -1,8 +1,8 @@
 package com.alrex.parcool.common.action;
 
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.impl.Animation;
-import com.alrex.parcool.common.capability.impl.Parkourability;
 import com.alrex.parcool.common.network.SyncActionStateMessage;
 import com.alrex.parcool.common.network.SyncStaminaMessage;
 import net.minecraft.client.Minecraft;
@@ -92,7 +92,8 @@ public class ActionProcessor {
 					}
 				} else {
 					bufferOfStarting.clear();
-					boolean start = action.canStart(player, parkourability, stamina, bufferOfStarting);
+					boolean start = parkourability.getActionInfo().can(action.getClass())
+							&& action.canStart(player, parkourability, stamina, bufferOfStarting);
 					bufferOfStarting.flip();
 					if (start) {
 						action.setDoing(true);
@@ -156,6 +157,9 @@ public class ActionProcessor {
 			for (Action action : actions) {
 				action.onRenderTick(event, player, parkourability);
 			}
+			Animation animation = Animation.get(player);
+			if (animation == null) return;
+			animation.onRenderTick(event, player, parkourability);
 		}
 	}
 

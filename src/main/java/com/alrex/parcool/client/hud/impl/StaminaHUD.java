@@ -1,12 +1,13 @@
 package com.alrex.parcool.client.hud.impl;
 
 
-import com.alrex.parcool.ParCoolConfig;
 import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.common.action.impl.CatLeap;
 import com.alrex.parcool.common.action.impl.Dodge;
+import com.alrex.parcool.common.action.impl.WallJump;
 import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -19,18 +20,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.event.TickEvent;
 
-import java.util.function.Supplier;
-
-;
-
 @OnlyIn(Dist.CLIENT)
 public class StaminaHUD extends GuiComponent {
 	public static final ResourceLocation STAMINA = new ResourceLocation("parcool", "textures/gui/stamina_bar.png");
 
-	private final Supplier<Position> pos;
-
-	public StaminaHUD(Supplier<Position> pos) {
-		this.pos = pos;
+	public StaminaHUD() {
 	}
 
 	private float shadowScale = 1f;
@@ -56,23 +50,36 @@ public class StaminaHUD extends GuiComponent {
 		Parkourability parkourability = Parkourability.get(player);
 		if (stamina == null || parkourability == null) return;
 
-		if (ParCoolConfig.CONFIG_CLIENT.infiniteStamina.get() && parkourability.getActionInfo().isInfiniteStaminaPermitted())
-			return;
+		if (ParCoolConfig.Client.Booleans.HideStaminaHUDWhenStaminaIsInfinite.get() &&
+				parkourability.getActionInfo().isStaminaInfinite(player.isCreative() || player.isSpectator())
+		) return;
 
+		var window = Minecraft.getInstance().getWindow();
+		Position position = new Position(
+				ParCoolConfig.Client.AlignHorizontalStaminaHUD.get(),
+				ParCoolConfig.Client.AlignVerticalStaminaHUD.get(),
+				ParCoolConfig.Client.Integers.HorizontalMarginOfStaminaHUD.get(),
+				ParCoolConfig.Client.Integers.VerticalMarginOfStaminaHUD.get()
+		);
 		final int boxWidth = 91;
 		final int boxHeight = 17;
-		final Tuple<Integer, Integer> pos = this.pos.get().calculate(boxWidth, boxHeight, width, height);
+		final Tuple<Integer, Integer> pos = position.calculate(boxWidth, boxHeight, width, height);
 
 		float staminaScale = (float) stamina.get() / stamina.getActualMaxStamina();
 		float coolTimeScale =
 				Math.min(
-						parkourability.get(Dodge.class).getCoolDownPhase(),
+						parkourability.get(Dodge.class).getCoolDownPhase(parkourability.getActionInfo()),
 						parkourability.get(CatLeap.class).getCoolDownPhase()
+				);
+		coolTimeScale =
+				Math.min(
+						coolTimeScale,
+						parkourability.get(WallJump.class).getCoolDownPhase()
 				);
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
 
-		RenderSystem.setShaderTexture(0, STAMINA);
+		RenderSystem.setShaderTexture(0, StaminaHUD.STAMINA);
 		blit(stack, pos.getA(), pos.getB(), 0, 0, 93, 17, 128, 128);
 		if (!stamina.isExhausted()) {
 			blit(stack, pos.getA(), pos.getB(), 0, 102, (int) Math.ceil(92 * coolTimeScale), 17, 128, 128);

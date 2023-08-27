@@ -5,8 +5,10 @@ import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.impl.Animation;
-import com.alrex.parcool.common.capability.impl.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -14,13 +16,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 
-;
-
 public class CatLeap extends Action {
 	private int coolTimeTick = 0;
 	private boolean ready = false;
 	private int readyTick = 0;
-	private int MAX_COOL_TIME_TICK = 30;
+	private final int MAX_COOL_TIME_TICK = 30;
 
 	@Override
 	public void onTick(Player player, Parkourability parkourability, IStamina stamina) {
@@ -70,6 +70,8 @@ public class CatLeap extends Action {
 	@Override
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		final double catLeapYSpeed = 0.49;
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 0.8f, 0.7f);
 		Vec3 motionVec = player.getDeltaMovement();
 		Vec3 vec = new Vec3(motionVec.x, 0, motionVec.z).normalize();
 		coolTimeTick = MAX_COOL_TIME_TICK;

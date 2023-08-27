@@ -1,12 +1,18 @@
 package com.alrex.parcool.client.gui;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.info.ActionInfo;
+import com.alrex.parcool.common.network.SyncClientInformationMessage;
+import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.utilities.ColorUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -16,36 +22,22 @@ import org.lwjgl.glfw.GLFW;
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
-import static com.alrex.parcool.ParCoolConfig.CONFIG_CLIENT;
 
 public class ParCoolSettingScreen extends Screen {
-	private final ConfigSet[] configItemList = new ConfigSet[]{
-			new ConfigSet("Activate ParCool", CONFIG_CLIENT.parCoolActivation::set, CONFIG_CLIENT.parCoolActivation::get),
-			new ConfigSet("Infinite stamina", CONFIG_CLIENT.infiniteStamina::set, CONFIG_CLIENT.infiniteStamina::get),
-			new ConfigSet("Enable actions needing Fast-Run with normal sprint", CONFIG_CLIENT.substituteSprintForFastRun::set, CONFIG_CLIENT.substituteSprintForFastRun::get),
-			new ConfigSet("Always do Fast-Run when doing sprint", CONFIG_CLIENT.replaceSprintWithFastRun::set, CONFIG_CLIENT.replaceSprintWithFastRun::get),
-			new ConfigSet("Hide stamina HUD", CONFIG_CLIENT.hideStaminaHUD::set, CONFIG_CLIENT.hideStaminaHUD::get),
-			new ConfigSet("Use light Stamina HUD", CONFIG_CLIENT.useLightHUD::set, CONFIG_CLIENT.useLightHUD::get),
-			new ConfigSet("Disable a camera rotation of Rolling", CONFIG_CLIENT.disableCameraRolling::set, CONFIG_CLIENT.disableCameraRolling::get),
-			new ConfigSet("Disable a camera rotation of Flipping", CONFIG_CLIENT.disableCameraFlipping::set, CONFIG_CLIENT.disableCameraFlipping::get),
-			new ConfigSet("Disable a camera animation of Horizontal Wall-Run", CONFIG_CLIENT.disableCameraHorizontalWallRun::set, CONFIG_CLIENT.disableCameraHorizontalWallRun::get),
-			new ConfigSet("Disable a camera animation of Vault", CONFIG_CLIENT.disableCameraVault::set, CONFIG_CLIENT.disableCameraVault::get),
-			new ConfigSet("Disable double-tapping for dodge", CONFIG_CLIENT.disableDoubleTappingForDodge::set, CONFIG_CLIENT.disableDoubleTappingForDodge::get),
-			new ConfigSet("Disable crawl in air", CONFIG_CLIENT.disableCrawlInAir::set, CONFIG_CLIENT.disableCrawlInAir::get),
-			new ConfigSet("Disable vault in air", CONFIG_CLIENT.disableVaultInAir::set, CONFIG_CLIENT.disableVaultInAir::get),
-			new ConfigSet("Disable falling animation", CONFIG_CLIENT.disableFallingAnimation::set, CONFIG_CLIENT.disableFallingAnimation::get),
-			new ConfigSet("Disable all animations", CONFIG_CLIENT.disableAnimation::set, CONFIG_CLIENT.disableAnimation::get),
-			new ConfigSet("Disable first person view animations", CONFIG_CLIENT.disableFPVAnimation::set, CONFIG_CLIENT.disableFPVAnimation::get),
-			new ConfigSet("Enable roll when player is creative", CONFIG_CLIENT.enableRollWhenCreative::set, CONFIG_CLIENT.enableRollWhenCreative::get)
-	};
+
+	private final ParCoolConfig.Client.Booleans[] booleans = ParCoolConfig.Client.Booleans.values();
 
 	private enum SettingMode {Actions, Configs, Limitations}
 
+	private enum ConfigMode {Boolean, Enum}
+
 	private SettingMode mode = SettingMode.Actions;
-	private final Checkbox[] configButtons = new Checkbox[configItemList.length];
+	private ConfigMode configMode = ConfigMode.Boolean;
+	private final Checkbox[] configButtons = new Checkbox[booleans.length];
 	private final ActionConfigSet[] actionList = new ActionConfigSet[ActionList.ACTIONS.size()];
 	private final InfoSet[] infoList;
 	private final Checkbox[] actionButtons = new Checkbox[actionList.length];
@@ -54,6 +46,16 @@ public class ParCoolSettingScreen extends Screen {
 			new ModeSet(Component.translatable("parcool.gui.text.config"), SettingMode.Configs, 1, this),
 			new ModeSet(Component.translatable("parcool.gui.text.limitation"), SettingMode.Limitations, 2, this)
 	};
+	private final EnumConfigSet<?>[] enumConfigList = new EnumConfigSet[]{
+			new EnumConfigSet<>(ParCoolConfig.Client.AlignHorizontalStaminaHUD),
+			new EnumConfigSet<>(ParCoolConfig.Client.AlignVerticalStaminaHUD),
+			new EnumConfigSet<>(ParCoolConfig.Client.FastRunControl),
+			new EnumConfigSet<>(ParCoolConfig.Client.CrawlControl),
+			new EnumConfigSet<>(ParCoolConfig.Client.VaultAnimationMode),
+			new EnumConfigSet<>(ParCoolConfig.Client.GUIColorTheme),
+			new EnumConfigSet<>(ParCoolConfig.Client.StaminaHUDType),
+	};
+	private final Button[] enumConfigButtons = new Button[enumConfigList.length];
 	private int modeIndex;
 
 	public ParCoolSettingScreen(Component titleIn, ActionInfo info, ColorTheme theme) {
@@ -62,13 +64,20 @@ public class ParCoolSettingScreen extends Screen {
 			actionList[i] = new ActionConfigSet(ActionList.getByIndex(i), info);
 			actionButtons[i] = new Checkbox(0, 0, 0, Checkbox_Item_Height, Component.literal(actionList[i].name), actionList[i].getter.getAsBoolean());
 		}
-		for (int i = 0; i < configItemList.length; i++) {
-			configButtons[i] = new Checkbox(0, 0, 0, Checkbox_Item_Height, Component.literal(configItemList[i].name), configItemList[i].getter.getAsBoolean());
+		for (int i = 0; i < booleans.length; i++) {
+			configButtons[i] = new Checkbox(0, 0, 0, Checkbox_Item_Height, Component.translatable(booleans[i].Path), booleans[i].get());
+		}
+		for (int i = 0; i < enumConfigList.length; i++) {
+			int index = i;
+			enumConfigButtons[index] = new Button.Builder(Component.literal(enumConfigList[index].get().toString()), it -> {
+				enumConfigList[index].next();
+				it.setMessage(Component.literal(enumConfigList[index].get().toString()));
+			}).build();
 		}
 		infoList = new InfoSet[]{
 				new InfoSet(
-						"Max Stamina Limitation",
-						Integer.toString(info.getMaxStaminaLimitation())
+						"Max Stamina",
+						Integer.toString(info.getMaxStamina())
 				),
 				new InfoSet(
 						"Infinite Stamina Permission",
@@ -89,12 +98,19 @@ public class ParCoolSettingScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		for (int i = 0; i < configItemList.length; i++) {
-			configItemList[i].setter.accept(configButtons[i].selected());
+		LocalPlayer player = Minecraft.getInstance().player;
+		if (player == null) {
+			ParCool.LOGGER.error("ParCool in-game setting menu could not save and sync the values. Something wrong");
+			super.onClose();
+			return;
+		}
+		for (int i = 0; i < booleans.length; i++) {
+			booleans[i].set(configButtons[i].selected());
 		}
 		for (int i = 0; i < actionList.length; i++) {
 			actionList[i].setter.accept(actionButtons[i].selected());
 		}
+		SyncClientInformationMessage.sync(player, true);
 		super.onClose();
 	}
 
@@ -113,12 +129,6 @@ public class ParCoolSettingScreen extends Screen {
 		int topBarItemWidth = (int) (1.6 * Arrays.stream(modeMenuList).map(it -> font.width(it.title)).max(Integer::compareTo).orElse(0));
 		int topBarOffsetX = width - topBarItemWidth * modeMenuList.length;
 		fillGradient(matrixStack, 0, 0, this.width, topBarHeight, color.getTopBar1(), color.getTopBar2());
-		drawString(
-				matrixStack, font, MenuTitle,
-				10,
-				topBarHeight / 4 + 1,
-				color.getText()
-		);
 		for (int i = 0; i < modeMenuList.length; i++) {
 			ModeSet item = modeMenuList[i];
 			item.y = 0;
@@ -145,6 +155,25 @@ public class ParCoolSettingScreen extends Screen {
 			case Limitations:
 				renderLimitations(matrixStack, mouseX, mouseY, p_230430_4_, topBarHeight);
 		}
+		int titleOffset = 0;
+		if (!(serverPermissionReceived.getAsBoolean() && individualPermissionReceived.getAsBoolean())) {
+			fill(matrixStack, 2, 2, topBarHeight - 3, topBarHeight - 3, 0xFFEEEEEE);
+			fill(matrixStack, 3, 3, topBarHeight - 4, topBarHeight - 4, 0xFFEE0000);
+			drawCenteredString(matrixStack, font, "!", topBarHeight / 2, (topBarHeight - font.lineHeight) / 2 + 1, 0xEEEEEE);
+			if (2 <= mouseX && mouseX < topBarHeight - 3 && 1 <= mouseY && mouseY < topBarHeight - 3) {
+				renderComponentTooltip(
+						matrixStack,
+						Collections.singletonList(Permission_Not_Received),
+						mouseX, mouseY);
+			}
+			titleOffset = topBarHeight;
+		}
+		drawString(
+				matrixStack, font, MenuTitle,
+				titleOffset + 5,
+				topBarHeight / 4 + 1,
+				color.getText()
+		);
 	}
 
 	private static final Component Header_ActionName = Component.translatable("parcool.gui.text.actionName");
@@ -154,7 +183,7 @@ public class ParCoolSettingScreen extends Screen {
 	private static final Component Header_IndividualPermissionText = Component.translatable("parcool.gui.text.individualPermission");
 	private static final Component Permission_Permitted = Component.literal("✓");
 	private static final Component Permission_Denied = Component.literal("×");
-	private static final Component Permission_Not_Received = Component.literal("§4Error:Permissions are not sent from a server.\nPlease check whether ParCool is installed or re-login to the server.§r");
+	private static final Component Permission_Not_Received = Component.literal("§4[Error] Permissions are not sent from a server.\n\nBy closing this setting menu, permissions will be sent again.\nIf it were not done, please report to the mod developer after checking whether ParCool is installed and re-login to the server.§r");
 
 	private void renderActions(PoseStack matrixStack, int mouseX, int mouseY, float p_230430_4_, int offsetY) {
 		int offsetX = 40, headerHeight = (int) (font.lineHeight * 1.5f);
@@ -213,26 +242,14 @@ public class ParCoolSettingScreen extends Screen {
 			if ((headerOffsetY < mouseY && mouseY < headerOffsetY + headerHeight)
 					&& (columnCenter - permissionColumnWidth / 2 < mouseX && mouseX < columnCenter + permissionColumnWidth / 2)
 			) {
-				if (serverPermissionReceived.getAsBoolean())
-					renderComponentTooltip(matrixStack, Collections.singletonList(Header_ServerPermissionText), mouseX, mouseY);
-				else
-					renderComponentTooltip(
-							matrixStack,
-							Arrays.asList(Header_ServerPermissionText, Permission_Not_Received),
-							mouseX, mouseY);
+				renderComponentTooltip(matrixStack, Collections.singletonList(Header_ServerPermissionText), mouseX, mouseY);
 			}
 
 			columnCenter = offsetX + nameColumnWidth + permissionColumnWidth + permissionColumnWidth / 2;
 			if ((headerOffsetY < mouseY && mouseY < headerOffsetY + headerHeight)
 					&& (columnCenter - permissionColumnWidth / 2 < mouseX && mouseX < columnCenter + permissionColumnWidth / 2)
 			) {
-				if (individualPermissionReceived.getAsBoolean())
-					renderComponentTooltip(matrixStack, Collections.singletonList(Header_IndividualPermissionText), mouseX, mouseY);
-				else
-					renderComponentTooltip(
-							matrixStack,
-							Arrays.asList(Header_IndividualPermissionText, Permission_Not_Received),
-							mouseX, mouseY);
+				renderComponentTooltip(matrixStack, Collections.singletonList(Header_IndividualPermissionText), mouseX, mouseY);
 			}
 		}
 	}
@@ -246,20 +263,57 @@ public class ParCoolSettingScreen extends Screen {
 		for (Checkbox configButton : configButtons) {
 			configButton.setWidth(0);
 		}
-		for (int i = 0; i < viewableItemCount && i + topIndex < configItemList.length; i++) {
-			Checkbox button = configButtons[i + topIndex];
-			button.setX(offsetX + 1);
-			button.setY(offsetY + font.lineHeight * 2 + Checkbox_Item_Height * i);
-			button.setWidth(contentWidth);
-			button.setHeight(20);
-			button.render(matrixStack, mouseX, mouseY, p_230430_4_);
-			fill(matrixStack, offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
+		for (Button configButton : enumConfigButtons) {
+			configButton.setWidth(0);
+		}
+		switch (configMode) {
+			case Boolean: {
+				for (int i = 0; i < viewableItemCount && i + topIndex < booleans.length; i++) {
+					Checkbox button = configButtons[i + topIndex];
+					button.setX(offsetX + 1);
+					button.setY(offsetY + font.lineHeight * 2 + Checkbox_Item_Height * i);
+					button.setWidth(contentWidth);
+					button.setHeight(20);
+					button.render(matrixStack, mouseX, mouseY, p_230430_4_);
+					fill(matrixStack, offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
+					String comment = booleans[i + topIndex].Comment;
+					if (comment != null && button.getX() < mouseX && mouseX < button.getX() + contentWidth && button.getY() < mouseY && mouseY < button.getY() + 20) {
+						renderComponentTooltip(
+								matrixStack,
+								Collections.singletonList(Component.literal(comment)),
+								mouseX, mouseY);
+					}
+				}
+				break;
+			}
+			case Enum: {
+				for (int i = 0; i < viewableItemCount && i + topIndex < enumConfigList.length; i++) {
+					Button button = enumConfigButtons[i + topIndex];
+					int buttonWidth = contentWidth / 3;
+					button.setX(width - offsetX - buttonWidth - 1);
+					button.setY(offsetY + font.lineHeight * 2 + Checkbox_Item_Height * i);
+					button.setWidth(buttonWidth);
+					button.setHeight(20);
+					button.render(matrixStack, mouseX, mouseY, p_230430_4_);
+					List<String> path = enumConfigList[i + topIndex].configInstance.getPath();
+					drawString(matrixStack, font, path.get(path.size() - 1), offsetX + 6, button.getY() + 1 + (button.getHeight() - font.lineHeight) / 2, color.getText());
+					fill(matrixStack, offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
+				}
+				break;
+			}
 		}
 		fill(matrixStack, width - offsetX, contentOffsetY, width - offsetX - 1, contentOffsetY + contentHeight, color.getSeparator());
 		fill(matrixStack, offsetX, contentOffsetY, offsetX + 1, contentOffsetY + contentHeight, color.getSeparator());
 		fillGradient(matrixStack, 0, offsetY, width, offsetY + font.lineHeight * 2, color.getHeader1(), color.getHeader2());
 		fillGradient(matrixStack, 0, offsetY + contentHeight + font.lineHeight * 2, width, height, color.getHeader1(), color.getHeader2());
 		drawCenteredString(matrixStack, font, modeMenuList[1].title, width / 2, offsetY + font.lineHeight / 2 + 2, color.getStrongText());
+		if (mouseX < offsetX) {
+			fill(matrixStack, 0, contentOffsetY, offsetX, contentOffsetY + contentHeight, ColorUtil.multiple(color.getBackground(), 1.8));
+		} else if (width - offsetX < mouseX) {
+			fill(matrixStack, width - offsetX + 1, contentOffsetY, width, contentOffsetY + contentHeight, ColorUtil.multiple(color.getBackground(), 1.8));
+		}
+		drawCenteredString(matrixStack, font, Component.literal("▶"), width - offsetX / 2, contentOffsetY + contentHeight / 2, color.getText());
+		drawCenteredString(matrixStack, font, Component.literal("◀"), offsetX / 2, contentOffsetY + contentHeight / 2, color.getText());
 		if (topIndex + viewableItemCount < configButtons.length)
 			drawCenteredString(matrixStack, font, Component.literal("↓"), width / 2, height - font.lineHeight - font.lineHeight / 2, color.getSubText());
 	}
@@ -334,11 +388,35 @@ public class ParCoolSettingScreen extends Screen {
 					topIndex = actionButtons.length - viewableItemCount;
 				break;
 			case Configs:
-				if (topIndex > configButtons.length - viewableItemCount)
-					topIndex = configButtons.length - viewableItemCount;
+				if (configMode == ConfigMode.Boolean) {
+					if (topIndex > configButtons.length - viewableItemCount)
+						topIndex = configButtons.length - viewableItemCount;
+				} else if (configMode == ConfigMode.Enum) {
+					if (topIndex > enumConfigButtons.length - viewableItemCount)
+						topIndex = enumConfigButtons.length - viewableItemCount;
+				}
 		}
 		if (topIndex < 0) topIndex = 0;
 		return true;
+	}
+
+	private static class EnumConfigSet<T extends Enum<T>> {
+		final ForgeConfigSpec.EnumValue<T> configInstance;
+		final T[] values;
+
+		public EnumConfigSet(ForgeConfigSpec.EnumValue<T> configInstance) {
+			this.configInstance = configInstance;
+			values = configInstance.get().getDeclaringClass().getEnumConstants();
+		}
+
+		public void next() {
+			int index = (configInstance.get().ordinal() + 1) % values.length;
+			configInstance.set(values[index]);
+		}
+
+		public T get() {
+			return configInstance.get();
+		}
 	}
 
 	private static class ModeSet {
@@ -370,18 +448,6 @@ public class ParCoolSettingScreen extends Screen {
 		}
 	}
 
-	private static class ConfigSet {
-		final String name;
-		final Consumer<Boolean> setter;
-		final BooleanSupplier getter;
-
-		ConfigSet(String name, Consumer<Boolean> setter, BooleanSupplier getter) {
-			this.name = name;
-			this.getter = getter;
-			this.setter = setter;
-		}
-	}
-
 	private static class InfoSet {
 		final String name;
 		final String value;
@@ -401,7 +467,7 @@ public class ParCoolSettingScreen extends Screen {
 
 		ActionConfigSet(Class<? extends Action> action, ActionInfo info) {
 			name = Component.translatable("parcool.action." + action.getSimpleName()).getString();
-			ForgeConfigSpec.BooleanValue config = CONFIG_CLIENT.getPossibilityOf(action);
+			ForgeConfigSpec.BooleanValue config = ParCoolConfig.Client.getPossibilityOf(action);
 			setter = config::set;
 			getter = config::get;
 			serverWideLimitation = () -> info.getServerLimitation().isPermitted(action);
@@ -424,7 +490,21 @@ public class ParCoolSettingScreen extends Screen {
 				}
 				break;
 			case Configs:
+				int offsetX = 40;
+				if (mouseX < offsetX) {
+					configMode = ConfigMode.values()[Math.floorMod(configMode.ordinal() - 1, ConfigMode.values().length)];
+					Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1f));
+					break;
+				} else if (width - offsetX < mouseX) {
+					configMode = ConfigMode.values()[(configMode.ordinal() + 1) % ConfigMode.values().length];
+					topIndex = 0;
+					Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1f));
+					break;
+				}
 				for (Checkbox button : configButtons) {
+					button.mouseClicked(mouseX, mouseY, type);
+				}
+				for (Button button : enumConfigButtons) {
 					button.mouseClicked(mouseX, mouseY, type);
 				}
 		}

@@ -1,0 +1,11 @@
+{
+  "name": "Pole Climbing",
+  "icon": "minecraft:quartz_pillar",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "You can climb pole-like blocks, such as stacked fences, chains, iron bars and etc."
+    }
+  ]
+}

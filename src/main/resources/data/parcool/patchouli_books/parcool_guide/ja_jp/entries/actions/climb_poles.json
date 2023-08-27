@@ -1,0 +1,11 @@
+{
+  "name": "柱登り",
+  "icon": "minecraft:quartz_pillar",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "プレイヤーは柱のような形のブロック、例えば積み重ねた柵や鉄格子、鎖やエンドロッドなどを梯子と同じようによじ登ることができます。"
+    }
+  ]
+}

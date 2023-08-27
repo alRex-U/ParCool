@@ -1,10 +1,11 @@
-package com.alrex.parcool.common.capability.impl;
+package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.action.AdditionalProperties;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.info.ActionInfo;
+import com.alrex.parcool.common.info.ClientInformation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -30,6 +31,17 @@ public class Parkourability {
 		for (short i = 0; i < actions.size(); i++) {
 			Action action = actions.get(i);
 			actionsMap.put(action.getClass(), action);
+		}
+	}
+
+	public Parkourability(Player player) {
+		actionsMap = new HashMap<>((int) (actions.size() * 1.5));
+		for (short i = 0; i < actions.size(); i++) {
+			Action action = actions.get(i);
+			actionsMap.put(action.getClass(), action);
+		}
+		if (player.isLocalPlayer()) {
+			getActionInfo().getClientInformation().readFromLocalConfig();
 		}
 	}
 
@@ -59,6 +71,10 @@ public class Parkourability {
 
 	public ActionInfo getActionInfo() {
 		return info;
+	}
+
+	public ClientInformation getClientInfo() {
+		return info.getClientInformation();
 	}
 
 	public List<Action> getList() {
