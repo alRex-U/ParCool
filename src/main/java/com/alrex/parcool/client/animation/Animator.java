@@ -2,7 +2,7 @@ package com.alrex.parcool.client.animation;
 
 import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 
 ;
@@ -50,7 +50,7 @@ public abstract class Animator {
 	}
 
 	public void onCameraSetUp(
-			EntityViewRenderEvent.CameraSetup event,
+			ViewportEvent.ComputeCameraAngles event,
 			Player clientPlayer,
 			Parkourability parkourability
 	) {

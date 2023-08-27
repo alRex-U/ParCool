@@ -9,7 +9,7 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.Easing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 
 public class DodgeAnimator extends Animator {
@@ -290,12 +290,12 @@ public class DodgeAnimator extends Animator {
 	}
 
 	@Override
-	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, Player clientPlayer, Parkourability parkourability) {
+	public void onCameraSetUp(ViewportEvent.ComputeCameraAngles event, Player clientPlayer, Parkourability parkourability) {
 		if (!(clientPlayer.isLocalPlayer() &&
 				Minecraft.getInstance().options.getCameraType().isFirstPerson() &&
 				ParCoolConfig.Client.Booleans.EnableCameraAnimationOfDodge.get()
 		)) return;
-		float phase = (float) ((getTick() + event.getPartialTicks()) / Dodge.MAX_TICK);
+		float phase = (float) ((getTick() + event.getPartialTick()) / Dodge.MAX_TICK);
 		switch (direction) {
 			case Front: {
 				float bodyPitchFactor = new Easing(phase)

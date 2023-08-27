@@ -1,8 +1,6 @@
 package com.alrex.parcool;
 
 import com.alrex.parcool.client.animation.AnimatorList;
-import com.alrex.parcool.client.hud.HUDRegistry;
-import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.item.ItemRegistry;
@@ -88,10 +86,8 @@ public class ParCool {
 	}
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
-		KeyBindings.register(event);
 		EventBusForgeRegistry.registerClient(MinecraftForge.EVENT_BUS);
 		EventBusModRegistry.registerClient(FMLJavaModLoadingContext.get().getModEventBus());
-		HUDRegistry.getInstance().onSetup(event);
 	}
 
 	private void doServerStuff(final FMLDedicatedServerSetupEvent event) {

@@ -15,8 +15,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Collection;
@@ -140,24 +139,24 @@ public class ChangeIndividualLimitationCommand {
 		ServerPlayer player = EntityArgument.getPlayer(context, ARGS_NAME_PLAYER);
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) {
-			context.getSource().sendSuccess(new TextComponent("§4[Internal Error] Parkourability is null"), true);
+			context.getSource().sendSuccess(Component.literal("§4[Internal Error] Parkourability is null"), true);
 			return 1;
 		}
 		Class<? extends Action> action;
 		switch (code) {
 			case 0:
-				context.getSource().sendSuccess(new TextComponent(Integer.toString(parkourability.getActionInfo().getIndividualLimitation().get(ParCoolConfig.Server.Integers.MaxStaminaLimit))), false);
+				context.getSource().sendSuccess(Component.literal(Integer.toString(parkourability.getActionInfo().getIndividualLimitation().get(ParCoolConfig.Server.Integers.MaxStaminaLimit))), false);
 				break;
 			case 1:
-				context.getSource().sendSuccess(new TextComponent(Boolean.toString(parkourability.getActionInfo().getIndividualLimitation().isInfiniteStaminaPermitted())), false);
+				context.getSource().sendSuccess(Component.literal(Boolean.toString(parkourability.getActionInfo().getIndividualLimitation().isInfiniteStaminaPermitted())), false);
 				break;
 			case 2:
 				action = ActionArgumentType.getAction(context, ARGS_NAME_ACTION);
-				context.getSource().sendSuccess(new TextComponent(Boolean.toString(parkourability.getActionInfo().getIndividualLimitation().isPermitted(action))), false);
+				context.getSource().sendSuccess(Component.literal(Boolean.toString(parkourability.getActionInfo().getIndividualLimitation().isPermitted(action))), false);
 				break;
 			case 3:
 				action = ActionArgumentType.getAction(context, ARGS_NAME_ACTION);
-				context.getSource().sendSuccess(new TextComponent(Integer.toString(parkourability.getActionInfo().getIndividualLimitation().getLeastStaminaConsumption(action))), false);
+				context.getSource().sendSuccess(Component.literal(Integer.toString(parkourability.getActionInfo().getIndividualLimitation().getLeastStaminaConsumption(action))), false);
 				break;
 			default:
 				return 1;
@@ -174,7 +173,7 @@ public class ChangeIndividualLimitationCommand {
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.setLimitationToDefault", num), true);
+		context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.setLimitationToDefault", num), true);
 		return 0;
 	}
 
@@ -189,7 +188,7 @@ public class ChangeIndividualLimitationCommand {
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.set", num, item.getPath(), Boolean.toString(value)), true);
+		context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.set", num, item.getPath(), Boolean.toString(value)), true);
 		return 0;
 	}
 
@@ -210,7 +209,7 @@ public class ChangeIndividualLimitationCommand {
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.set", num, item.getPath(), Integer.toString(value)), true);
+		context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.set", num, item.getPath(), Integer.toString(value)), true);
 		return 0;
 	}
 
@@ -231,7 +230,7 @@ public class ChangeIndividualLimitationCommand {
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.set", num, item.getPath(), Double.toString(value)), true);
+		context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.set", num, item.getPath(), Double.toString(value)), true);
 		return 0;
 	}
 
@@ -244,7 +243,7 @@ public class ChangeIndividualLimitationCommand {
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.enableLimitation", num), true);
+		context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.enableLimitation", num), true);
 		return 0;
 	}
 
@@ -257,7 +256,7 @@ public class ChangeIndividualLimitationCommand {
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.disableLimitation", num), true);
+		context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.disableLimitation", num), true);
 		return 0;
 	}
 
@@ -272,7 +271,7 @@ public class ChangeIndividualLimitationCommand {
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.setStaminaConsumption", num, action.getSimpleName(), newValue), true);
+		context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.setStaminaConsumption", num, action.getSimpleName(), newValue), true);
 		return 0;
 	}
 
@@ -287,7 +286,7 @@ public class ChangeIndividualLimitationCommand {
 					.sync();
 			num++;
 		}
-		context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.setPermissionOfAction", num, action.getSimpleName(), newValue), true);
+		context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.setPermissionOfAction", num, action.getSimpleName(), newValue), true);
 		return 0;
 	}
 }

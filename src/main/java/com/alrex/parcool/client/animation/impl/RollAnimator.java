@@ -10,7 +10,7 @@ import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 
 public class RollAnimator extends Animator {
@@ -263,7 +263,7 @@ public class RollAnimator extends Animator {
 	}
 
 	@Override
-	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, Player clientPlayer, Parkourability parkourability) {
+	public void onCameraSetUp(ViewportEvent.ComputeCameraAngles event, Player clientPlayer, Parkourability parkourability) {
 		switch (direction) {
 			case Front:
 			case Back: {
@@ -278,7 +278,7 @@ public class RollAnimator extends Animator {
 		}
 	}
 
-	void onCameraSetUpFrontBack(EntityViewRenderEvent.CameraSetup event, Player clientPlayer, Parkourability parkourability) {
+	void onCameraSetUpFrontBack(ViewportEvent.ComputeCameraAngles event, Player clientPlayer, Parkourability parkourability) {
 		Roll roll = parkourability.get(Roll.class);
 		float sign = direction == Roll.Direction.Front ? 1 : -1;
 		if (roll.isDoing() &&
@@ -286,13 +286,13 @@ public class RollAnimator extends Animator {
 				Minecraft.getInstance().options.getCameraType().isFirstPerson() &&
 				ParCoolConfig.Client.Booleans.EnableCameraAnimationOfRolling.get()
 		) {
-			float factor = calculateMovementFactor((float) ((roll.getDoingTick() + event.getPartialTicks()) / (float) roll.getRollMaxTick()));
-			event.setPitch(sign * (factor > 0.5 ? factor - 1 : factor) * 360f + clientPlayer.getViewXRot((float) event.getPartialTicks()));
+			float factor = calculateMovementFactor((float) ((roll.getDoingTick() + event.getPartialTick()) / (float) roll.getRollMaxTick()));
+			event.setPitch(sign * (factor > 0.5 ? factor - 1 : factor) * 360f + clientPlayer.getViewXRot((float) event.getPartialTick()));
 		}
 	}
 
-	void onCameraSetUpLeftRight(EntityViewRenderEvent.CameraSetup event, Player clientPlayer, Parkourability parkourability) {
-		float phase = (float) ((getTick() + event.getPartialTicks()) / parkourability.get(Roll.class).getRollMaxTick());
+	void onCameraSetUpLeftRight(ViewportEvent.ComputeCameraAngles event, Player clientPlayer, Parkourability parkourability) {
+		float phase = (float) ((getTick() + event.getPartialTick()) / parkourability.get(Roll.class).getRollMaxTick());
 		if (phase > 1) {
 			return;
 		}

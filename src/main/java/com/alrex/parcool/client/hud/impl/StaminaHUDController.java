@@ -7,12 +7,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.client.gui.IIngameOverlay;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 
 @OnlyIn(Dist.CLIENT)
-public class StaminaHUDController implements IIngameOverlay {
+public class StaminaHUDController implements IGuiOverlay {
 	LightStaminaHUD lightStaminaHUD;
 	StaminaHUD staminaHUD;
 
@@ -29,7 +29,7 @@ public class StaminaHUDController implements IIngameOverlay {
 	}
 
 	@Override
-	public void render(ForgeIngameGui gui, PoseStack poseStack, float partialTick, int width, int height) {
+	public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int width, int height) {
 		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get() ||
 				ParCoolConfig.Client.Booleans.UseHungerBarInstead.get() ||
 				FeathersManager.isUsingFeathers()

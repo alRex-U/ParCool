@@ -8,7 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.event.TickEvent;
 
 public class LightStaminaHUD extends GuiComponent {
@@ -42,7 +42,7 @@ public class LightStaminaHUD extends GuiComponent {
 		justBecameMax = stamina.getOldValue() < stamina.get() && stamina.get() == stamina.getActualMaxStamina();
 	}
 
-	public void render(ForgeIngameGui gui, PoseStack stack, float partialTick, int width, int height) {
+	public void render(ForgeGui gui, PoseStack stack, float partialTick, int width, int height) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null || player.isCreative()) return;
 
@@ -64,7 +64,7 @@ public class LightStaminaHUD extends GuiComponent {
 
 		RenderSystem.setShaderTexture(0, StaminaHUD.STAMINA);
 		int baseX = width / 2 + 92;
-		int baseY = height - gui.right_height;
+		int baseY = height - gui.rightHeight;
 		final boolean exhausted = stamina.isExhausted();
 		for (int i = 0; i < 10; i++) {
 			int x = baseX - i * 8 - 9;
@@ -89,6 +89,6 @@ public class LightStaminaHUD extends GuiComponent {
 
 			blit(stack, x, baseY + offsetY, textureX, 119, 9, 9, 129, 128);
 		}
-		gui.right_height += 10;
+		gui.rightHeight += 10;
 	}
 }

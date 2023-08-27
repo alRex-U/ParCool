@@ -9,7 +9,7 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 
 public class HorizontalWallRunAnimator extends Animator {
 	final boolean wallIsRightSide;
@@ -59,12 +59,12 @@ public class HorizontalWallRunAnimator extends Animator {
 	}
 
 	@Override
-	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, Player clientPlayer, Parkourability parkourability) {
+	public void onCameraSetUp(ViewportEvent.ComputeCameraAngles event, Player clientPlayer, Parkourability parkourability) {
 		if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
 				!ParCoolConfig.Client.Booleans.EnableCameraAnimationOfHWallRun.get()
 		)
 			return;
-		float factor = getFactor((float) (getTick() + event.getPartialTicks()));
+		float factor = getFactor((float) (getTick() + event.getPartialTick()));
 		float angle = factor * 20 * (wallIsRightSide ? -1 : 1);
 		event.setRoll(angle);
 	}

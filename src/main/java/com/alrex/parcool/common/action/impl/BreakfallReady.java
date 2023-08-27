@@ -12,7 +12,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 import java.nio.ByteBuffer;
-import java.util.Random;
 
 public class BreakfallReady extends Action {
 	public void startBreakfall(Player player, Parkourability parkourability, IStamina stamina, boolean justTimed) {
@@ -21,7 +20,7 @@ public class BreakfallReady extends Action {
 			if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 				player.playSound(SoundEvents.ANVIL_PLACE, 0.75f, 2f);
 			Vec3 pos = player.position();
-			Random rand = player.getRandom();
+			var rand = player.getRandom();
 			for (int i = 0; i < 12; i++) {
 				player.level.addParticle(ParticleTypes.END_ROD,
 						pos.x(),

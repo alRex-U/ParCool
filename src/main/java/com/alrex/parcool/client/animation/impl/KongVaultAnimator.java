@@ -10,7 +10,7 @@ import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.EasingFunctions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 
 import static java.lang.Math.toRadians;
 
@@ -72,12 +72,12 @@ public class KongVaultAnimator extends Animator {
 	}
 
 	@Override
-	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, Player clientPlayer, Parkourability parkourability) {
+	public void onCameraSetUp(ViewportEvent.ComputeCameraAngles event, Player clientPlayer, Parkourability parkourability) {
 		if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
 				!ParCoolConfig.Client.Booleans.EnableCameraAnimationOfVault.get()
 		) return;
-		float phase = (float) ((getTick() + event.getPartialTicks()) / Vault.MAX_TICK);
+		float phase = (float) ((getTick() + event.getPartialTick()) / Vault.MAX_TICK);
 		float factor = getFactor(phase);
-		event.setPitch(30 * factor + clientPlayer.getViewXRot((float) event.getPartialTicks()));
+		event.setPitch(30 * factor + clientPlayer.getViewXRot((float) event.getPartialTick()));
 	}
 }
