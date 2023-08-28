@@ -2,6 +2,8 @@
 
 ## ver-3.1.0.0
 
+- Date : 2023 Aug.
+
 ### New Features
 
 - Action : Climb Poles
@@ -22,13 +24,15 @@
 - Dodge Animation
 - Vault Animation
 - FastRun Animation
-- Slide cannot be triggered in air
+- SafetyTap Animation
+- Make Slide impossible to be triggered in air
 - Some Configs are renamed
 - Some Limitations are renamed
 
 ### Bugfix
 
 - ParCool cannot work on plugin installed server.
+- Solid Mobs Incompatibility
 - ParCool disable ladder animation of NotEnoughAnimations
 - ParCool disable ladder detection of other mods.
 - Stamina are not infinite when players are creative.
@@ -36,3 +40,5 @@
 - Fast-run animation stops and does not restart
 - Vault is triggered by stairs
 - Sliding on ice provides over speed
+
+---

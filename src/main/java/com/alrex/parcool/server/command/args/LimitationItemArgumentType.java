@@ -1,6 +1,7 @@
 package com.alrex.parcool.server.command.args;
 
 import com.alrex.parcool.config.ParCoolConfig;
+import com.google.gson.JsonObject;
 import com.mojang.brigadier.Message;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -9,20 +10,24 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.minecraft.command.arguments.IArgumentSerializer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.TranslationTextComponent;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-public class LimitationItemArgumentType<V, T extends Enum<T> & ParCoolConfig.Item<V>> implements ArgumentType<T> {
+public class LimitationItemArgumentType implements ArgumentType<Object> {
 	private final List<String> paths;
-	private final T[] enumConstants;
+	private final Object[] enumConstants;
+	private final Class<?> clazz;
 
 	@Override
-	public T parse(StringReader reader) throws CommandSyntaxException {
+	public Object parse(StringReader reader) throws CommandSyntaxException {
 		String name = reader.readUnquotedString();
 		int index = paths.indexOf(name);
 		if (index == -1) {
@@ -46,24 +51,26 @@ public class LimitationItemArgumentType<V, T extends Enum<T> & ParCoolConfig.Ite
 		return paths;
 	}
 
-	LimitationItemArgumentType(Class<T> clazz) {
+	LimitationItemArgumentType(Class<?> clazz) {
+		this.clazz = clazz;
 		enumConstants = clazz.getEnumConstants();
 		paths = new ArrayList<>(enumConstants.length);
-		for (T enumConstant : enumConstants) {
-			paths.add(enumConstant.getPath());
+		for (Object enumConstant : enumConstants) {
+			ParCoolConfig.Item<?> item = (ParCoolConfig.Item<?>) enumConstant;
+			paths.add(item.getPath());
 		}
 	}
 
-	public static LimitationItemArgumentType<Boolean, ParCoolConfig.Server.Booleans> booleans() {
-		return new LimitationItemArgumentType<>(ParCoolConfig.Server.Booleans.class);
+	public static LimitationItemArgumentType booleans() {
+		return new LimitationItemArgumentType(ParCoolConfig.Server.Booleans.class);
 	}
 
-	public static LimitationItemArgumentType<Integer, ParCoolConfig.Server.Integers> integers() {
-		return new LimitationItemArgumentType<>(ParCoolConfig.Server.Integers.class);
+	public static LimitationItemArgumentType integers() {
+		return new LimitationItemArgumentType(ParCoolConfig.Server.Integers.class);
 	}
 
-	public static LimitationItemArgumentType<Double, ParCoolConfig.Server.Doubles> doubles() {
-		return new LimitationItemArgumentType<>(ParCoolConfig.Server.Doubles.class);
+	public static LimitationItemArgumentType doubles() {
+		return new LimitationItemArgumentType(ParCoolConfig.Server.Doubles.class);
 	}
 
 	public static ParCoolConfig.Server.Booleans getBool(CommandContext<?> context, String name) {
@@ -76,5 +83,32 @@ public class LimitationItemArgumentType<V, T extends Enum<T> & ParCoolConfig.Ite
 
 	public static ParCoolConfig.Server.Doubles getDouble(CommandContext<?> context, String name) {
 		return context.getArgument(name, ParCoolConfig.Server.Doubles.class);
+	}
+
+	public static class Serializer implements IArgumentSerializer<LimitationItemArgumentType> {
+		@Override
+		public void serializeToNetwork(LimitationItemArgumentType instance, PacketBuffer buffer) {
+			buffer.writeUtf(instance.clazz.getName());
+		}
+
+		@Nonnull
+		@Override
+		public LimitationItemArgumentType deserializeFromNetwork(PacketBuffer buffer) {
+			String typeName = buffer.readUtf();
+			if (typeName.equals(ParCoolConfig.Server.Booleans.class.getTypeName())) {
+				return LimitationItemArgumentType.booleans();
+			} else if (typeName.equals(ParCoolConfig.Server.Integers.class.getTypeName())) {
+				return LimitationItemArgumentType.integers();
+			} else if (typeName.equals(ParCoolConfig.Server.Doubles.class.getTypeName())) {
+				return LimitationItemArgumentType.doubles();
+			} else {
+				throw new IllegalArgumentException(String.format("No such Limitation type[%s]", typeName));
+			}
+		}
+
+		@Override
+		public void serializeToJson(LimitationItemArgumentType instance, JsonObject json) {
+			json.addProperty("type", instance.clazz.getTypeName());
+		}
 	}
 }
