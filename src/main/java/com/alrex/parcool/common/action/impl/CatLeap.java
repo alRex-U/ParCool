@@ -49,7 +49,7 @@ public class CatLeap extends Action {
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		return (parkourability.getActionInfo().can(CatLeap.class)
-				&& player.isOnGround()
+				&& player.onGround()
 				&& !stamina.isExhausted()
 				&& coolTimeTick <= 0
 				&& readyTick > 0
@@ -60,7 +60,7 @@ public class CatLeap extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
-		return !((getDoingTick() > 1 && player.isOnGround())
+		return !((getDoingTick() > 1 && player.onGround())
 				|| player.isFallFlying()
 				|| player.isInWaterOrBubble()
 				|| player.isInLava()

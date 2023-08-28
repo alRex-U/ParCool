@@ -32,16 +32,16 @@ public class WorldUtil {
 				pos.z() + width
 		);
 
-		if (!entity.level.noCollision(entity, baseBox.expandTowards(range, 0, 0))) {
+		if (!entity.getCommandSenderWorld().noCollision(entity, baseBox.expandTowards(range, 0, 0))) {
 			wallX++;
 		}
-		if (!entity.level.noCollision(entity, baseBox.expandTowards(-range, 0, 0))) {
+		if (!entity.getCommandSenderWorld().noCollision(entity, baseBox.expandTowards(-range, 0, 0))) {
 			wallX--;
 		}
-		if (!entity.level.noCollision(entity, baseBox.expandTowards(0, 0, range))) {
+		if (!entity.getCommandSenderWorld().noCollision(entity, baseBox.expandTowards(0, 0, range))) {
 			wallZ++;
 		}
-		if (!entity.level.noCollision(entity, baseBox.expandTowards(0, 0, -range))) {
+		if (!entity.getCommandSenderWorld().noCollision(entity, baseBox.expandTowards(0, 0, -range))) {
 			wallZ--;
 		}
 		if (wallX == 0 && wallZ == 0) return null;
@@ -66,16 +66,16 @@ public class WorldUtil {
 				pos.z() + width
 		);
 
-		if (!entity.level.noCollision(entity, baseBox.expandTowards(range, 0, 0))) {
+		if (!entity.getCommandSenderWorld().noCollision(entity, baseBox.expandTowards(range, 0, 0))) {
 			wallX++;
 		}
-		if (!entity.level.noCollision(entity, baseBox.expandTowards(-range, 0, 0))) {
+		if (!entity.getCommandSenderWorld().noCollision(entity, baseBox.expandTowards(-range, 0, 0))) {
 			wallX--;
 		}
-		if (!entity.level.noCollision(entity, baseBox.expandTowards(0, 0, range))) {
+		if (!entity.getCommandSenderWorld().noCollision(entity, baseBox.expandTowards(0, 0, range))) {
 			wallZ++;
 		}
-		if (!entity.level.noCollision(entity, baseBox.expandTowards(0, 0, -range))) {
+		if (!entity.getCommandSenderWorld().noCollision(entity, baseBox.expandTowards(0, 0, -range))) {
 			wallZ--;
 		}
 		if (wallX == 0 && wallZ == 0) return null;
@@ -86,7 +86,7 @@ public class WorldUtil {
 	@Nullable
 	public static Vec3 getVaultableStep(LivingEntity entity) {
 		final double d = entity.getBbWidth() * 0.5;
-		Level world = entity.level;
+		Level world = entity.getCommandSenderWorld();
 		double distance = entity.getBbWidth() / 2;
 		double baseLine = Math.min(entity.getBbHeight() * 0.86, getWallHeight(entity));
 		double stepX = 0;
@@ -145,7 +145,7 @@ public class WorldUtil {
 	public static double getWallHeight(LivingEntity entity, Vec3 direction, double maxHeight, double accuracy) {
 		final double d = entity.getBbWidth() * 0.5;
 		direction = direction.normalize();
-		Level world = entity.level;
+		Level world = entity.getCommandSenderWorld();
 		Vec3 pos = entity.position();
 		double x1 = pos.x() + d + (direction.x() > 0 ? 1 : 0);
 		double y1 = pos.y();
@@ -171,7 +171,7 @@ public class WorldUtil {
 	public static double getWallHeight(LivingEntity entity) {
 		Vec3 wall = getWall(entity);
 		if (wall == null) return 0;
-		Level world = entity.level;
+		Level world = entity.getCommandSenderWorld();
 		final double accuracy = entity.getBbHeight() / 18; // normally about 0.1
 		final double d = entity.getBbWidth() * 0.5;
 		int loopNum = (int) Math.round(entity.getBbHeight() / accuracy);
@@ -208,18 +208,18 @@ public class WorldUtil {
 				entity.getY() + entity.getBbHeight() + bbHeight,
 				entity.getZ() + bbWidth
 		);
-		if (entity.level.noCollision(entity, bb)) return null;
+		if (entity.getCommandSenderWorld().noCollision(entity, bb)) return null;
 		BlockPos pos = new BlockPos(
 				(int) entity.getX(),
-				(int) (entity.getY() + entity.getBbHeight() + 0.4),
+				(int) (entity.getY() + entity.getBbHeight() - 1),
 				(int) entity.getZ()
 		);
-		if (!entity.level.isLoaded(pos)) return null;
-		BlockState state = entity.level.getBlockState(pos);
+		if (!entity.getCommandSenderWorld().isLoaded(pos)) return null;
+		BlockState state = entity.getCommandSenderWorld().getBlockState(pos);
 		Block block = state.getBlock();
 		HangDown.BarAxis axis = null;
 		if (block instanceof RotatedPillarBlock) {
-			if (state.isCollisionShapeFullBlock(entity.level, pos)) {
+			if (state.isCollisionShapeFullBlock(entity.getCommandSenderWorld(), pos)) {
 				return null;
 			}
 			Direction.Axis pillarAxis = state.getValue(RotatedPillarBlock.AXIS);
@@ -232,7 +232,7 @@ public class WorldUtil {
 					break;
 			}
 		} else if (block instanceof DirectionalBlock) {
-			if (state.isCollisionShapeFullBlock(entity.level, pos)) {
+			if (state.isCollisionShapeFullBlock(entity.getCommandSenderWorld(), pos)) {
 				return null;
 			}
 			Direction direction = state.getValue(DirectionalBlock.FACING);
@@ -269,7 +269,7 @@ public class WorldUtil {
 	}
 
 	public static boolean existsDivableSpace(LivingEntity entity) {
-		Level world = entity.level;
+		Level world = entity.getCommandSenderWorld();
 		double width = entity.getBbWidth() * 1.5;
 		double height = entity.getBbHeight() * 1.5;
 		double wideWidth = entity.getBbWidth() * 2;
@@ -302,7 +302,7 @@ public class WorldUtil {
 	@Nullable
 	public static Vec3 getGrabbableWall(LivingEntity entity) {
 		final double d = entity.getBbWidth() * 0.5;
-		Level world = entity.level;
+		Level world = entity.getCommandSenderWorld();
 		double distance = entity.getBbWidth() / 2;
 		double baseLine1 = entity.getEyeHeight() + (entity.getBbHeight() - entity.getEyeHeight()) / 2;
 		double baseLine2 = entity.getBbHeight() + (entity.getBbHeight() - entity.getEyeHeight()) / 2;
@@ -313,7 +313,7 @@ public class WorldUtil {
 
 	private static Vec3 getGrabbableWall(LivingEntity entity, double distance, double baseLine) {
 		final double d = entity.getBbWidth() * 0.49;
-		Level world = entity.level;
+		Level world = entity.getCommandSenderWorld();
 		Vec3 pos = entity.position();
 		AABB baseBoxSide = new AABB(
 				pos.x() - d,
@@ -357,11 +357,11 @@ public class WorldUtil {
 					(int) (entity.getBoundingBox().minY + baseLine - 0.3),
 					(int) (entity.getZ() + zDirection)
 			);
-			if (!entity.level.isLoaded(blockPos1)) return null;
-			if (!entity.level.isLoaded(blockPos2)) return null;
+			if (!entity.getCommandSenderWorld().isLoaded(blockPos1)) return null;
+			if (!entity.getCommandSenderWorld().isLoaded(blockPos2)) return null;
 			slipperiness = Math.min(
-					entity.level.getBlockState(blockPos1).getFriction(entity.level, blockPos1, entity),
-					entity.level.getBlockState(blockPos2).getFriction(entity.level, blockPos2, entity)
+					entity.getCommandSenderWorld().getBlockState(blockPos1).getFriction(entity.getCommandSenderWorld(), blockPos1, entity),
+					entity.getCommandSenderWorld().getBlockState(blockPos2).getFriction(entity.getCommandSenderWorld(), blockPos2, entity)
 			);
 		} else {
 			BlockPos blockPos = new BlockPos(
@@ -369,8 +369,8 @@ public class WorldUtil {
 					(int) (entity.getBoundingBox().minY + baseLine - 0.3),
 					(int) (entity.getZ() + zDirection)
 			);
-			if (!entity.level.isLoaded(blockPos)) return null;
-			slipperiness = entity.level.getBlockState(blockPos).getFriction(entity.level, blockPos, entity);
+			if (!entity.getCommandSenderWorld().isLoaded(blockPos)) return null;
+			slipperiness = entity.getCommandSenderWorld().getBlockState(blockPos).getFriction(entity.getCommandSenderWorld(), blockPos, entity);
 		}
 		return slipperiness <= 0.9 ? new Vec3(xDirection, 0, zDirection) : null;
 	}

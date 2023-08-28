@@ -7,8 +7,8 @@ import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.network.SyncClientInformationMessage;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.ColorUtil;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.screens.Screen;
@@ -122,13 +122,13 @@ public class ParCoolSettingScreen extends Screen {
 	private static final Component MenuTitle = Component.translatable("parcool.gui.title.setting");
 
 	@Override
-	public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float p_230430_4_) {
-		super.render(matrixStack, mouseX, mouseY, p_230430_4_);
-		renderBackground(matrixStack);
+	public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float p_230430_4_) {
+		super.render(graphics, mouseX, mouseY, p_230430_4_);
+		renderBackground(graphics);
 		int topBarHeight = font.lineHeight * 2;
 		int topBarItemWidth = (int) (1.6 * Arrays.stream(modeMenuList).map(it -> font.width(it.title)).max(Integer::compareTo).orElse(0));
 		int topBarOffsetX = width - topBarItemWidth * modeMenuList.length;
-		fillGradient(matrixStack, 0, 0, this.width, topBarHeight, color.getTopBar1(), color.getTopBar2());
+		graphics.fillGradient(0, 0, this.width, topBarHeight, color.getTopBar1(), color.getTopBar2());
 		for (int i = 0; i < modeMenuList.length; i++) {
 			ModeSet item = modeMenuList[i];
 			item.y = 0;
@@ -136,40 +136,40 @@ public class ParCoolSettingScreen extends Screen {
 			item.width = topBarItemWidth;
 			item.height = topBarHeight;
 			boolean selected = (item.mode == mode) || item.isMouseIn(mouseX, mouseY);
-			drawCenteredString(
-					matrixStack, font, item.title,
+			graphics.drawCenteredString(
+					font, item.title,
 					topBarOffsetX + i * topBarItemWidth + topBarItemWidth / 2,
 					topBarHeight / 4 + 1,
 					selected ? color.getText() : color.getSubText()
 			);
-			fill(matrixStack, item.x, 2, item.x + 1, topBarHeight - 3, color.getSeparator());
+			graphics.fill(item.x, 2, item.x + 1, topBarHeight - 3, color.getSeparator());
 		}
-		fill(matrixStack, 0, topBarHeight - 1, width, topBarHeight, color.getSeparator());
+		graphics.fill(0, topBarHeight - 1, width, topBarHeight, color.getSeparator());
 		switch (mode) {
 			case Actions:
-				renderActions(matrixStack, mouseX, mouseY, p_230430_4_, topBarHeight);
+				renderActions(graphics, mouseX, mouseY, p_230430_4_, topBarHeight);
 				break;
 			case Configs:
-				renderConfigs(matrixStack, mouseX, mouseY, p_230430_4_, topBarHeight);
+				renderConfigs(graphics, mouseX, mouseY, p_230430_4_, topBarHeight);
 				break;
 			case Limitations:
-				renderLimitations(matrixStack, mouseX, mouseY, p_230430_4_, topBarHeight);
+				renderLimitations(graphics, mouseX, mouseY, p_230430_4_, topBarHeight);
 		}
 		int titleOffset = 0;
 		if (!(serverPermissionReceived.getAsBoolean() && individualPermissionReceived.getAsBoolean())) {
-			fill(matrixStack, 2, 2, topBarHeight - 3, topBarHeight - 3, 0xFFEEEEEE);
-			fill(matrixStack, 3, 3, topBarHeight - 4, topBarHeight - 4, 0xFFEE0000);
-			drawCenteredString(matrixStack, font, "!", topBarHeight / 2, (topBarHeight - font.lineHeight) / 2 + 1, 0xEEEEEE);
+			graphics.fill(2, 2, topBarHeight - 3, topBarHeight - 3, 0xFFEEEEEE);
+			graphics.fill(3, 3, topBarHeight - 4, topBarHeight - 4, 0xFFEE0000);
+			graphics.drawCenteredString(font, "!", topBarHeight / 2, (topBarHeight - font.lineHeight) / 2 + 1, 0xEEEEEE);
 			if (2 <= mouseX && mouseX < topBarHeight - 3 && 1 <= mouseY && mouseY < topBarHeight - 3) {
-				renderComponentTooltip(
-						matrixStack,
+				graphics.renderComponentTooltip(
+						font,
 						Collections.singletonList(Permission_Not_Received),
 						mouseX, mouseY);
 			}
 			titleOffset = topBarHeight;
 		}
-		drawString(
-				matrixStack, font, MenuTitle,
+		graphics.drawString(
+				font, MenuTitle,
 				titleOffset + 5,
 				topBarHeight / 4 + 1,
 				color.getText()
@@ -185,7 +185,7 @@ public class ParCoolSettingScreen extends Screen {
 	private static final Component Permission_Denied = Component.literal("×");
 	private static final Component Permission_Not_Received = Component.literal("§4[Error] Permissions are not sent from a server.\n\nBy closing this setting menu, permissions will be sent again.\nIf it were not done, please report to the mod developer after checking whether ParCool is installed and re-login to the server.§r");
 
-	private void renderActions(PoseStack matrixStack, int mouseX, int mouseY, float p_230430_4_, int offsetY) {
+	private void renderActions(GuiGraphics graphics, int mouseX, int mouseY, float p_230430_4_, int offsetY) {
 		int offsetX = 40, headerHeight = (int) (font.lineHeight * 1.5f);
 		int headerOffsetY = offsetY + font.lineHeight * 2;
 		int contentOffsetY = headerOffsetY + headerHeight + 2;
@@ -194,9 +194,9 @@ public class ParCoolSettingScreen extends Screen {
 		int contentHeight = height - contentOffsetY - font.lineHeight * 2;
 		viewableItemCount = contentHeight / Checkbox_Item_Height;
 		int headerTextY = headerOffsetY + headerHeight / 2 - font.lineHeight / 2 + 1;
-		drawString(matrixStack, font, Header_ActionName, offsetX + 5, headerTextY, color.getText());
-		drawCenteredString(matrixStack, font, Header_ServerPermission, offsetX + nameColumnWidth + permissionColumnWidth / 2, headerTextY, color.getText());
-		drawCenteredString(matrixStack, font, Header_IndividualPermission, offsetX + nameColumnWidth + permissionColumnWidth + permissionColumnWidth / 2, headerTextY, color.getText());
+		graphics.drawString(font, Header_ActionName, offsetX + 5, headerTextY, color.getText());
+		graphics.drawCenteredString(font, Header_ServerPermission, offsetX + nameColumnWidth + permissionColumnWidth / 2, headerTextY, color.getText());
+		graphics.drawCenteredString(font, Header_IndividualPermission, offsetX + nameColumnWidth + permissionColumnWidth + permissionColumnWidth / 2, headerTextY, color.getText());
 		for (Checkbox actionButton : actionButtons) {
 			actionButton.setWidth(0);
 		}
@@ -206,55 +206,55 @@ public class ParCoolSettingScreen extends Screen {
 			button.setY(contentOffsetY + Checkbox_Item_Height * i);
 			button.setWidth(nameColumnWidth - 5);
 			button.setHeight(20);
-			button.render(matrixStack, mouseX, mouseY, p_230430_4_);
-			fill(matrixStack, offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
+			button.render(graphics, mouseX, mouseY, p_230430_4_);
+			graphics.fill(offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
 			int rowY = contentOffsetY + Checkbox_Item_Height * i + Checkbox_Item_Height / 2;
 			boolean permitted = actionList[topIndex + i].serverWideLimitation.getAsBoolean();
-			drawCenteredString(
-					matrixStack, font,
+			graphics.drawCenteredString(
+					font,
 					permitted ? Permission_Permitted : Permission_Denied,
 					offsetX + nameColumnWidth + permissionColumnWidth / 2,
 					rowY - font.lineHeight / 2,
 					permitted ? 0x00AA00 : 0xAA0000
 			);
 			permitted = actionList[topIndex + i].individualLimitation.getAsBoolean();
-			drawCenteredString(
-					matrixStack, font,
+			graphics.drawCenteredString(
+					font,
 					permitted ? Permission_Permitted : Permission_Denied,
 					offsetX + nameColumnWidth + permissionColumnWidth + permissionColumnWidth / 2,
 					rowY - font.lineHeight / 2,
 					permitted ? 0x00AA00 : 0xAA0000
 			);
 		}
-		fillGradient(matrixStack, 0, offsetY, width, headerOffsetY, color.getHeader1(), color.getHeader2());
-		fillGradient(matrixStack, 0, contentOffsetY + contentHeight, width, height, color.getHeader1(), color.getHeader2());
-		drawCenteredString(matrixStack, font, modeMenuList[0].title, width / 2, offsetY + font.lineHeight / 2 + 2, color.getStrongText());
+		graphics.fillGradient(0, offsetY, width, headerOffsetY, color.getHeader1(), color.getHeader2());
+		graphics.fillGradient(0, contentOffsetY + contentHeight, width, height, color.getHeader1(), color.getHeader2());
+		graphics.drawCenteredString(font, modeMenuList[0].title, width / 2, offsetY + font.lineHeight / 2 + 2, color.getStrongText());
 		if (topIndex + viewableItemCount < actionButtons.length)
-			drawCenteredString(matrixStack, font, Component.literal("↓"), width / 2, height - font.lineHeight - font.lineHeight / 2, color.getStrongText());
+			graphics.drawCenteredString(font, Component.literal("↓"), width / 2, height - font.lineHeight - font.lineHeight / 2, color.getStrongText());
 		//draw separators
-		fill(matrixStack, offsetX, contentOffsetY, width - offsetX, contentOffsetY - 1, color.getSeparator());
-		fill(matrixStack, offsetX, headerOffsetY, offsetX + 1, contentOffsetY + contentHeight, color.getSeparator());
-		fill(matrixStack, offsetX + nameColumnWidth, headerOffsetY, offsetX + nameColumnWidth + 1, contentOffsetY + contentHeight, color.getSeparator());
-		fill(matrixStack, offsetX + nameColumnWidth + permissionColumnWidth, headerOffsetY, offsetX + nameColumnWidth + permissionColumnWidth + 1, contentOffsetY + contentHeight, color.getSeparator());
-		fill(matrixStack, offsetX + nameColumnWidth + permissionColumnWidth * 2, headerOffsetY, offsetX + nameColumnWidth + permissionColumnWidth * 2 + 1, contentOffsetY + contentHeight, color.getSeparator());
+		graphics.fill(offsetX, contentOffsetY, width - offsetX, contentOffsetY - 1, color.getSeparator());
+		graphics.fill(offsetX, headerOffsetY, offsetX + 1, contentOffsetY + contentHeight, color.getSeparator());
+		graphics.fill(offsetX + nameColumnWidth, headerOffsetY, offsetX + nameColumnWidth + 1, contentOffsetY + contentHeight, color.getSeparator());
+		graphics.fill(offsetX + nameColumnWidth + permissionColumnWidth, headerOffsetY, offsetX + nameColumnWidth + permissionColumnWidth + 1, contentOffsetY + contentHeight, color.getSeparator());
+		graphics.fill(offsetX + nameColumnWidth + permissionColumnWidth * 2, headerOffsetY, offsetX + nameColumnWidth + permissionColumnWidth * 2 + 1, contentOffsetY + contentHeight, color.getSeparator());
 		{// draw tooltip
 			int columnCenter = offsetX + nameColumnWidth + permissionColumnWidth / 2;
 			if ((headerOffsetY < mouseY && mouseY < headerOffsetY + headerHeight)
 					&& (columnCenter - permissionColumnWidth / 2 < mouseX && mouseX < columnCenter + permissionColumnWidth / 2)
 			) {
-				renderComponentTooltip(matrixStack, Collections.singletonList(Header_ServerPermissionText), mouseX, mouseY);
+				graphics.renderComponentTooltip(font, Collections.singletonList(Header_ServerPermissionText), mouseX, mouseY);
 			}
 
 			columnCenter = offsetX + nameColumnWidth + permissionColumnWidth + permissionColumnWidth / 2;
 			if ((headerOffsetY < mouseY && mouseY < headerOffsetY + headerHeight)
 					&& (columnCenter - permissionColumnWidth / 2 < mouseX && mouseX < columnCenter + permissionColumnWidth / 2)
 			) {
-				renderComponentTooltip(matrixStack, Collections.singletonList(Header_IndividualPermissionText), mouseX, mouseY);
+				graphics.renderComponentTooltip(font, Collections.singletonList(Header_IndividualPermissionText), mouseX, mouseY);
 			}
 		}
 	}
 
-	private void renderConfigs(PoseStack matrixStack, int mouseX, int mouseY, float p_230430_4_, int offsetY) {
+	private void renderConfigs(GuiGraphics graphics, int mouseX, int mouseY, float p_230430_4_, int offsetY) {
 		int offsetX = 40;
 		int contentWidth = width - offsetX * 2;
 		int contentHeight = height - offsetY - font.lineHeight * 4;
@@ -274,12 +274,12 @@ public class ParCoolSettingScreen extends Screen {
 					button.setY(offsetY + font.lineHeight * 2 + Checkbox_Item_Height * i);
 					button.setWidth(contentWidth);
 					button.setHeight(20);
-					button.render(matrixStack, mouseX, mouseY, p_230430_4_);
-					fill(matrixStack, offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
+					button.render(graphics, mouseX, mouseY, p_230430_4_);
+					graphics.fill(offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
 					String comment = booleans[i + topIndex].Comment;
 					if (comment != null && button.getX() < mouseX && mouseX < button.getX() + contentWidth && button.getY() < mouseY && mouseY < button.getY() + 20) {
-						renderComponentTooltip(
-								matrixStack,
+						graphics.renderComponentTooltip(
+								font,
 								Collections.singletonList(Component.literal(comment)),
 								mouseX, mouseY);
 					}
@@ -294,31 +294,31 @@ public class ParCoolSettingScreen extends Screen {
 					button.setY(offsetY + font.lineHeight * 2 + Checkbox_Item_Height * i);
 					button.setWidth(buttonWidth);
 					button.setHeight(20);
-					button.render(matrixStack, mouseX, mouseY, p_230430_4_);
+					button.render(graphics, mouseX, mouseY, p_230430_4_);
 					List<String> path = enumConfigList[i + topIndex].configInstance.getPath();
-					drawString(matrixStack, font, path.get(path.size() - 1), offsetX + 6, button.getY() + 1 + (button.getHeight() - font.lineHeight) / 2, color.getText());
-					fill(matrixStack, offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
+					graphics.drawString(font, path.get(path.size() - 1), offsetX + 6, button.getY() + 1 + (button.getHeight() - font.lineHeight) / 2, color.getText());
+					graphics.fill(offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
 				}
 				break;
 			}
 		}
-		fill(matrixStack, width - offsetX, contentOffsetY, width - offsetX - 1, contentOffsetY + contentHeight, color.getSeparator());
-		fill(matrixStack, offsetX, contentOffsetY, offsetX + 1, contentOffsetY + contentHeight, color.getSeparator());
-		fillGradient(matrixStack, 0, offsetY, width, offsetY + font.lineHeight * 2, color.getHeader1(), color.getHeader2());
-		fillGradient(matrixStack, 0, offsetY + contentHeight + font.lineHeight * 2, width, height, color.getHeader1(), color.getHeader2());
-		drawCenteredString(matrixStack, font, modeMenuList[1].title, width / 2, offsetY + font.lineHeight / 2 + 2, color.getStrongText());
+		graphics.fill(width - offsetX, contentOffsetY, width - offsetX - 1, contentOffsetY + contentHeight, color.getSeparator());
+		graphics.fill(offsetX, contentOffsetY, offsetX + 1, contentOffsetY + contentHeight, color.getSeparator());
+		graphics.fillGradient(0, offsetY, width, offsetY + font.lineHeight * 2, color.getHeader1(), color.getHeader2());
+		graphics.fillGradient(0, offsetY + contentHeight + font.lineHeight * 2, width, height, color.getHeader1(), color.getHeader2());
+		graphics.drawCenteredString(font, modeMenuList[1].title, width / 2, offsetY + font.lineHeight / 2 + 2, color.getStrongText());
 		if (mouseX < offsetX) {
-			fill(matrixStack, 0, contentOffsetY, offsetX, contentOffsetY + contentHeight, ColorUtil.multiple(color.getBackground(), 1.8));
+			graphics.fill(0, contentOffsetY, offsetX, contentOffsetY + contentHeight, ColorUtil.multiple(color.getBackground(), 1.8));
 		} else if (width - offsetX < mouseX) {
-			fill(matrixStack, width - offsetX + 1, contentOffsetY, width, contentOffsetY + contentHeight, ColorUtil.multiple(color.getBackground(), 1.8));
+			graphics.fill(width - offsetX + 1, contentOffsetY, width, contentOffsetY + contentHeight, ColorUtil.multiple(color.getBackground(), 1.8));
 		}
-		drawCenteredString(matrixStack, font, Component.literal("▶"), width - offsetX / 2, contentOffsetY + contentHeight / 2, color.getText());
-		drawCenteredString(matrixStack, font, Component.literal("◀"), offsetX / 2, contentOffsetY + contentHeight / 2, color.getText());
+		graphics.drawCenteredString(font, Component.literal("▶"), width - offsetX / 2, contentOffsetY + contentHeight / 2, color.getText());
+		graphics.drawCenteredString(font, Component.literal("◀"), offsetX / 2, contentOffsetY + contentHeight / 2, color.getText());
 		if (topIndex + viewableItemCount < configButtons.length)
-			drawCenteredString(matrixStack, font, Component.literal("↓"), width / 2, height - font.lineHeight - font.lineHeight / 2, color.getSubText());
+			graphics.drawCenteredString(font, Component.literal("↓"), width / 2, height - font.lineHeight - font.lineHeight / 2, color.getSubText());
 	}
 
-	private void renderLimitations(PoseStack matrixStack, int mouseX, int mouseY, float p_230430_4_, int offsetY) {
+	private void renderLimitations(GuiGraphics graphics, int mouseX, int mouseY, float p_230430_4_, int offsetY) {
 		int offsetX = 40;
 		int contentHeight = height - offsetY - font.lineHeight * 4;
 		int contentOffsetY = offsetY + font.lineHeight * 2;
@@ -326,32 +326,32 @@ public class ParCoolSettingScreen extends Screen {
 		int valueWidth = Arrays.stream(infoList).map(it -> font.width(it.value)).max(Integer::compareTo).orElse(0);
 		for (int i = 0; i < infoList.length; i++) {
 			InfoSet item = infoList[i];
-			drawString(
-					matrixStack, font,
+			graphics.drawString(
+					font,
 					item.name,
 					offsetX + 5,
 					contentOffsetY + itemHeight * i + itemHeight / 2 - font.lineHeight / 2,
 					color.getText()
 			);
-			drawString(
-					matrixStack, font,
+			graphics.drawString(
+					font,
 					item.value,
 					width - offsetX - 5 - valueWidth,
 					contentOffsetY + itemHeight * i + itemHeight / 2 - font.lineHeight / 2,
 					color.getText()
 			);
-			fill(matrixStack, offsetX, contentOffsetY + itemHeight * (i + 1), width - offsetX, contentOffsetY + itemHeight * (i + 1) + 1, color.getSubSeparator());
+			graphics.fill(offsetX, contentOffsetY + itemHeight * (i + 1), width - offsetX, contentOffsetY + itemHeight * (i + 1) + 1, color.getSubSeparator());
 		}
-		fill(matrixStack, width - offsetX, contentOffsetY, width - offsetX - 1, contentOffsetY + contentHeight, color.getSeparator());
-		fill(matrixStack, offsetX, contentOffsetY, offsetX + 1, contentOffsetY + contentHeight, color.getSeparator());
-		fillGradient(matrixStack, 0, offsetY, width, offsetY + font.lineHeight * 2, color.getHeader1(), color.getHeader2());
-		fillGradient(matrixStack, 0, offsetY + contentHeight + font.lineHeight * 2, width, height, color.getHeader1(), color.getHeader2());
-		drawCenteredString(matrixStack, font, modeMenuList[2].title, width / 2, offsetY + font.lineHeight / 2 + 2, 0x8888FF);
+		graphics.fill(width - offsetX, contentOffsetY, width - offsetX - 1, contentOffsetY + contentHeight, color.getSeparator());
+		graphics.fill(offsetX, contentOffsetY, offsetX + 1, contentOffsetY + contentHeight, color.getSeparator());
+		graphics.fillGradient(0, offsetY, width, offsetY + font.lineHeight * 2, color.getHeader1(), color.getHeader2());
+		graphics.fillGradient(0, offsetY + contentHeight + font.lineHeight * 2, width, height, color.getHeader1(), color.getHeader2());
+		graphics.drawCenteredString(font, modeMenuList[2].title, width / 2, offsetY + font.lineHeight / 2 + 2, 0x8888FF);
 	}
 
 	@Override
-	public void renderBackground(@Nonnull PoseStack p_238651_1_) {
-		fill(p_238651_1_, 0, 0, this.width, this.height, color.getBackground());
+	public void renderBackground(@Nonnull GuiGraphics graphics) {
+		graphics.fill(0, 0, this.width, this.height, color.getBackground());
 	}
 
 	@Override

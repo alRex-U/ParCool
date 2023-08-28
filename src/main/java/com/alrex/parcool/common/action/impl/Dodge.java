@@ -105,7 +105,7 @@ public class Dodge extends Action {
 		return (parkourability.getAdditionalProperties().getLandingTick() > 5
 				&& !isInSuccessiveCoolDown(parkourability.getActionInfo())
 				&& coolTime <= 0
-				&& player.isOnGround()
+				&& player.onGround()
 				&& !player.isShiftKeyDown()
 				&& !stamina.isExhausted()
 		);
@@ -116,7 +116,7 @@ public class Dodge extends Action {
 	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
 		return !(parkourability.get(Roll.class).isDoing()
 				|| parkourability.get(ClingToCliff.class).isDoing()
-				|| !player.isOnGround()
+				|| !player.onGround()
 				|| getDoingTick() >= MAX_TICK
 				|| player.isInWaterOrBubble()
 				|| player.isFallFlying()
@@ -142,7 +142,7 @@ public class Dodge extends Action {
 
 	@Override
 	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
-		if (!player.isOnGround()) return;
+		if (!player.onGround()) return;
 		Vec3 lookVec = VectorUtil.fromYawDegree(player.getYHeadRot());
 		Vec3 dodgeVec = Vec3.ZERO;
 		switch (dodgeDirection) {

@@ -37,7 +37,7 @@ public class WallSlide extends Action {
 	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
 		Vec3 wall = WorldUtil.getWall(player);
 		return (wall != null
-				&& !player.isOnGround()
+				&& !player.onGround()
 				&& parkourability.getActionInfo().can(WallSlide.class)
 				&& !parkourability.get(FastRun.class).isDoing()
 				&& !parkourability.get(Dodge.class).isDoing()
@@ -73,8 +73,8 @@ public class WallSlide extends Action {
 					(int) (player.getY() + player.getBbHeight() * 0.75),
 					(int) (player.getZ() + leanedWallDirection.z)
 			);
-			if (!player.level.isLoaded(leanedBlock)) return;
-			float slipperiness = player.level.getBlockState(leanedBlock).getFriction(player.level, leanedBlock, player);
+			if (!player.getCommandSenderWorld().isLoaded(leanedBlock)) return;
+			float slipperiness = player.getCommandSenderWorld().getBlockState(leanedBlock).getFriction(player.getCommandSenderWorld(), leanedBlock, player);
 			slipperiness = (float) Math.sqrt(slipperiness);
 			player.fallDistance *= slipperiness;
 			player.setDeltaMovement(player.getDeltaMovement().multiply(0.8, slipperiness, 0.8));

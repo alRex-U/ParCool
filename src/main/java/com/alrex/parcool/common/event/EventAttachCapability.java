@@ -8,7 +8,6 @@ import com.alrex.parcool.common.capability.impl.Stamina;
 import com.alrex.parcool.common.capability.storage.ParkourabilityStorage;
 import com.alrex.parcool.common.capability.storage.StaminaStorage;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.extern.feathers.FeathersManager;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -66,13 +65,7 @@ public class EventAttachCapability {
 		}
 		//Stamina
 		{
-			IStamina instance = null;
-			if (player.isLocalPlayer() && FeathersManager.isUsingFeathers()) {
-				instance = FeathersManager.newFeathersStaminaFor(player);
-			}
-			if (instance == null) {
-				instance = new Stamina(player);
-			}
+			IStamina instance = new Stamina(player);
 			final IStamina finalInstance = instance;
 			LazyOptional<IStamina> optional = LazyOptional.of(() -> finalInstance);
 			if (player.isLocalPlayer()) {
@@ -109,7 +102,7 @@ public class EventAttachCapability {
 			};
 			event.addCapability(Capabilities.STAMINA_LOCATION, provider);
 		}
-		if (event.getObject().level.isClientSide) {
+		if (event.getObject().getCommandSenderWorld().isClientSide) {
 			//Animation
 			{
 				Animation instance = new Animation();

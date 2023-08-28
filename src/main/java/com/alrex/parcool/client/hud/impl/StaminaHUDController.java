@@ -1,9 +1,8 @@
 package com.alrex.parcool.client.hud.impl;
 
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.extern.feathers.FeathersManager;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -29,20 +28,20 @@ public class StaminaHUDController implements IGuiOverlay {
 	}
 
 	@Override
-	public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int width, int height) {
+	public void render(ForgeGui gui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight) {
 		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get() ||
-				ParCoolConfig.Client.Booleans.UseHungerBarInstead.get() ||
-				FeathersManager.isUsingFeathers()
+				ParCoolConfig.Client.Booleans.UseHungerBarInstead.get()
 		)
 			return;
 
 		switch (ParCoolConfig.Client.StaminaHUDType.get()) {
 			case Light:
-				lightStaminaHUD.render(gui, poseStack, partialTick, width, height);
+				lightStaminaHUD.render(gui, guiGraphics, partialTick, screenWidth, screenHeight);
 				break;
 			case Normal:
-				staminaHUD.render(gui, poseStack, partialTick, width, height);
+				staminaHUD.render(gui, guiGraphics, partialTick, screenWidth, screenHeight);
 				break;
 		}
+
 	}
 }

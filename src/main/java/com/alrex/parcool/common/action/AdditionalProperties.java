@@ -26,7 +26,7 @@ public class AdditionalProperties {
 			sprintingTick = 0;
 			notSprintingTick++;
 		}
-		if (player.isOnGround()) {
+		if (player.onGround()) {
 			notLandingTick = 0;
 			landingTick++;
 		} else {

@@ -79,7 +79,7 @@ public class WallJump extends Action {
 
 		boolean value = (!stamina.isExhausted()
 				&& getNotDoingTick() > MAX_COOL_DOWN_TICK
-				&& !player.isOnGround()
+				&& !player.onGround()
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
 				&& !player.getAbilities().flying
@@ -150,8 +150,8 @@ public class WallJump extends Action {
 				(int) (player.getBoundingBox().minY + player.getBbHeight() * 0.25),
 				(int) (player.getZ() + wallDirection.z())
 		);
-		float slipperiness = player.level.isLoaded(leanedBlock) ?
-				player.level.getBlockState(leanedBlock).getFriction(player.level, leanedBlock, player)
+		float slipperiness = player.getCommandSenderWorld().isLoaded(leanedBlock) ?
+				player.getCommandSenderWorld().getBlockState(leanedBlock).getFriction(player.getCommandSenderWorld(), leanedBlock, player)
 				: 0.6f;
 
 		double ySpeed;

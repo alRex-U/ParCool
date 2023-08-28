@@ -3,15 +3,13 @@ package com.alrex.parcool.client.hud.impl;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.event.TickEvent;
 
-public class LightStaminaHUD extends GuiComponent {
+public class LightStaminaHUD {
 	private long lastStaminaChangedTick = 0;
 	//1-> recovering, -1->consuming, 0->no changing
 	private int lastChangingSign = 0;
@@ -24,7 +22,7 @@ public class LightStaminaHUD extends GuiComponent {
 		IStamina stamina = IStamina.get(player);
 		if (stamina == null) return;
 		changingSign = (int) Math.signum(stamina.get() - stamina.getOldValue());
-		final long gameTime = player.level.getGameTime();
+		final long gameTime = player.getCommandSenderWorld().getGameTime();
 		if (changingSign != lastChangingSign) {
 			lastChangingSign = changingSign;
 			changingTimeTick = 0;
@@ -42,7 +40,7 @@ public class LightStaminaHUD extends GuiComponent {
 		justBecameMax = stamina.getOldValue() < stamina.get() && stamina.get() == stamina.getActualMaxStamina();
 	}
 
-	public void render(ForgeGui gui, PoseStack stack, float partialTick, int width, int height) {
+	public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null || player.isCreative()) return;
 
@@ -54,7 +52,7 @@ public class LightStaminaHUD extends GuiComponent {
 				parkourability.getActionInfo().isStaminaInfinite(player.isCreative() || player.isSpectator())
 		) return;
 
-		long gameTime = player.level.getGameTime();
+		long gameTime = player.getCommandSenderWorld().getGameTime();
 		if (gameTime - lastStaminaChangedTick > 40) return;
 		float staminaScale = (float) stamina.get() / stamina.getActualMaxStamina();
 		if (staminaScale < 0) staminaScale = 0;
@@ -62,7 +60,6 @@ public class LightStaminaHUD extends GuiComponent {
 		staminaScale *= 10;
 		Minecraft mc = Minecraft.getInstance();
 
-		RenderSystem.setShaderTexture(0, StaminaHUD.STAMINA);
 		int baseX = width / 2 + 92;
 		int baseY = height - gui.rightHeight;
 		final boolean exhausted = stamina.isExhausted();
@@ -87,7 +84,7 @@ public class LightStaminaHUD extends GuiComponent {
 				offsetY = randomOffset;
 			}
 
-			blit(stack, x, baseY + offsetY, textureX, 119, 9, 9, 129, 128);
+			graphics.blit(StaminaHUD.STAMINA, x, baseY + offsetY, textureX, 119, 9, 9, 129, 128);
 		}
 		gui.rightHeight += 10;
 	}

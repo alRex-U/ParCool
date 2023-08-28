@@ -8,10 +8,8 @@ import com.alrex.parcool.common.action.impl.WallJump;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -21,7 +19,7 @@ import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.event.TickEvent;
 
 @OnlyIn(Dist.CLIENT)
-public class StaminaHUD extends GuiComponent {
+public class StaminaHUD {
 	public static final ResourceLocation STAMINA = new ResourceLocation("parcool", "textures/gui/stamina_bar.png");
 
 	public StaminaHUD() {
@@ -41,7 +39,7 @@ public class StaminaHUD extends GuiComponent {
 		}
 	}
 
-	public void render(ForgeGui gui, PoseStack stack, float partialTick, int width, int height) {
+	public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null) return;
 		if (player.isCreative()) return;
@@ -79,14 +77,13 @@ public class StaminaHUD extends GuiComponent {
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
 
-		RenderSystem.setShaderTexture(0, StaminaHUD.STAMINA);
-		blit(stack, pos.getA(), pos.getB(), 0, 0, 93, 17, 128, 128);
+		graphics.blit(STAMINA, pos.getA(), pos.getB(), 0, 0, 93, 17, 128, 128);
 		if (!stamina.isExhausted()) {
-			blit(stack, pos.getA(), pos.getB(), 0, 102, (int) Math.ceil(92 * coolTimeScale), 17, 128, 128);
-			blit(stack, pos.getA(), pos.getB(), 0, 85, Math.round(16 + 69 * shadowScale) + 1, 12, 128, 128);
-			blit(stack, pos.getA(), pos.getB(), 0, 17 * (renderGageType + 1), Math.round(16 + 69 * staminaScale) + 1, 12, 128, 128);
+			graphics.blit(STAMINA, pos.getA(), pos.getB(), 0, 102, (int) Math.ceil(92 * coolTimeScale), 17, 128, 128);
+			graphics.blit(STAMINA, pos.getA(), pos.getB(), 0, 85, Math.round(16 + 69 * shadowScale) + 1, 12, 128, 128);
+			graphics.blit(STAMINA, pos.getA(), pos.getB(), 0, 17 * (renderGageType + 1), Math.round(16 + 69 * staminaScale) + 1, 12, 128, 128);
 		} else {
-			blit(stack, pos.getA(), pos.getB(), 0, 68, Math.round(16 + 69 * staminaScale) + 1, 17, 128, 128);
+			graphics.blit(STAMINA, pos.getA(), pos.getB(), 0, 68, Math.round(16 + 69 * staminaScale) + 1, 17, 128, 128);
 		}
 		shadowScale = staminaScale - (staminaScale - shadowScale) / 1.1f;
 	}

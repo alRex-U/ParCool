@@ -30,7 +30,7 @@ public class PassiveCustomAnimation {
 				flyingAnimationLevel = 0;
 			}
 		}
-		if (!player.isOnGround()
+		if (!player.onGround()
 				&& player.fallDistance > 1
 				&& !player.getAbilities().flying
 				&& !player.isFallFlying()

@@ -33,7 +33,7 @@ public class Roll extends Action {
 					&& ParCoolConfig.Client.Booleans.EnableRollWhenCreative.get()
 					&& player.isCreative()
 					&& parkourability.getAdditionalProperties().getLandingTick() <= 1
-					&& player.isOnGround()
+					&& player.onGround()
 					&& !isDoing()
 					&& creativeCoolTime == 0
 			) {

@@ -10,7 +10,6 @@ import com.alrex.parcool.common.potion.Potions;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
 import com.alrex.parcool.common.registries.EventBusModRegistry;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.extern.feathers.FeathersManager;
 import com.alrex.parcool.proxy.ClientProxy;
 import com.alrex.parcool.proxy.CommonProxy;
 import com.alrex.parcool.proxy.ServerProxy;
@@ -74,7 +73,6 @@ public class ParCool {
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {
-		FeathersManager.init();
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {

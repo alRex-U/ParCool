@@ -26,7 +26,7 @@ public class Slide extends Action {
 		return (!stamina.isExhausted()
 				&& parkourability.getActionInfo().can(Slide.class)
 				&& KeyRecorder.keyCrawlState.isPressed()
-				&& player.isOnGround()
+				&& player.onGround()
 				&& !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()
 				&& parkourability.get(Crawl.class).isDoing()
@@ -70,7 +70,7 @@ public class Slide extends Action {
 	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
 		if (slidingVec != null) {
 			Vec3 vec = slidingVec.scale(0.45);
-			player.setDeltaMovement((player.isOnGround() ? vec : vec.scale(0.6)).add(0, player.getDeltaMovement().y(), 0));
+			player.setDeltaMovement((player.onGround() ? vec : vec.scale(0.6)).add(0, player.getDeltaMovement().y(), 0));
 		}
 	}
 

@@ -66,8 +66,8 @@ public class HorizontalWallRun extends Action {
 				(int) (player.getBoundingBox().minY + player.getBbHeight() * 0.5),
 				(int) (player.getZ() + runningWallDirection.z())
 		);
-		if (!player.level.isLoaded(leanedBlock)) return;
-		float slipperiness = player.level.getBlockState(leanedBlock).getFriction(player.level, leanedBlock, player);
+		if (!player.getCommandSenderWorld().isLoaded(leanedBlock)) return;
+		float slipperiness = player.getCommandSenderWorld().getBlockState(leanedBlock).getFriction(player.getCommandSenderWorld(), leanedBlock, player);
 		if (slipperiness <= 0.8) {
 			player.setDeltaMovement(
 					runningDirection.x() * 0.3,
@@ -112,7 +112,7 @@ public class HorizontalWallRun extends Action {
 				&& !parkourability.get(Vault.class).isDoing()
 				&& Math.abs(player.getDeltaMovement().y()) < 0.3
 				&& coolTime == 0
-				&& !player.isOnGround()
+				&& !player.onGround()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
 				&& (parkourability.get(FastRun.class).canActWithRunning(player)
 				|| parkourability.get(FastRun.class).getNotDashTick(parkourability.getAdditionalProperties()) < 10
@@ -133,7 +133,7 @@ public class HorizontalWallRun extends Action {
 				&& !parkourability.get(Dodge.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
 				&& KeyBindings.getKeyHorizontalWallRun().isDown()
-				&& !player.isOnGround()
+				&& !player.onGround()
 		);
 	}
 

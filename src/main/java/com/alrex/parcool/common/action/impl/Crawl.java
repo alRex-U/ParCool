@@ -37,7 +37,7 @@ public class Crawl extends Action {
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
 				&& !player.onClimbable()
-				&& (player.isOnGround() || ParCoolConfig.Client.Booleans.EnableCrawlInAir.get());
+				&& (player.onGround() || ParCoolConfig.Client.Booleans.EnableCrawlInAir.get());
 	}
 
 	public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {

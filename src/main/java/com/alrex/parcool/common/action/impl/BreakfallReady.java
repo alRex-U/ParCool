@@ -22,7 +22,7 @@ public class BreakfallReady extends Action {
 			Vec3 pos = player.position();
 			var rand = player.getRandom();
 			for (int i = 0; i < 12; i++) {
-				player.level.addParticle(ParticleTypes.END_ROD,
+				player.getCommandSenderWorld().addParticle(ParticleTypes.END_ROD,
 						pos.x(),
 						pos.y() + player.getBbHeight() / 2,
 						pos.z(),
@@ -57,7 +57,7 @@ public class BreakfallReady extends Action {
 				&& !stamina.isExhausted()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !player.isInWaterOrBubble()
-				&& (!player.isOnGround() || parkourability.getAdditionalProperties().getLandingTick() < 3)
+				&& (!player.onGround() || parkourability.getAdditionalProperties().getLandingTick() < 3)
 		);
 	}
 

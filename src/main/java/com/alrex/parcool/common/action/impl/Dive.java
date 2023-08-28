@@ -63,7 +63,7 @@ public class Dive extends Action {
 				|| player.isInWaterOrBubble()
 				|| player.isInLava()
 				|| player.isSwimming()
-				|| player.isOnGround()
+				|| player.onGround()
 				|| (fallingTick > 5 && player.fallDistance < 0.1)
 				|| stamina.isExhausted()
 		);

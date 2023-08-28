@@ -50,7 +50,7 @@ public abstract class LivingEntityMixin extends Entity {
 			}
 			BlockPos blockpos = this.blockPosition();
 			BlockState blockstate = this.getFeetBlockState();
-			boolean onLadder = isLivingOnCustomLadder(blockstate, entity.level, blockpos, entity);
+			boolean onLadder = isLivingOnCustomLadder(blockstate, entity.getCommandSenderWorld(), blockpos, entity);
 			if (onLadder) {
 				cir.cancel();
 				cir.setReturnValue(true);

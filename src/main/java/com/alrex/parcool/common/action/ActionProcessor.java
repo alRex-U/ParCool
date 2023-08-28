@@ -150,7 +150,7 @@ public class ActionProcessor {
 	public void onRenderTick(TickEvent.RenderTickEvent event) {
 		Player clientPlayer = Minecraft.getInstance().player;
 		if (clientPlayer == null) return;
-		for (Player player : clientPlayer.level.players()) {
+		for (Player player : clientPlayer.getCommandSenderWorld().players()) {
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
 			List<Action> actions = parkourability.getList();
