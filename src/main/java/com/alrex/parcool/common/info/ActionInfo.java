@@ -1,6 +1,5 @@
 package com.alrex.parcool.common.info;
 
-import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.nbt.Tag;
@@ -29,7 +28,7 @@ public class ActionInfo {
 		for (Limitations limitation : Limitations) {
 			if (!limitation.isPermitted(action)) return false;
 		}
-		return ParCool.isActive()
+		return getClientInformation().get(ParCoolConfig.Client.Booleans.ParCoolIsActive)
 				&& getClientInformation().getPossibilityOf(action);
 	}
 

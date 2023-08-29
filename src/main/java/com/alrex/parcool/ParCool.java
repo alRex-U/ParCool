@@ -49,11 +49,6 @@ public class ParCool {
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
-	//only in Client
-	public static boolean isActive() {
-		return ParCoolConfig.Client.Booleans.ParCoolIsActive.get();
-	}
-
 	public ParCool() {
 		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		eventBus.addListener(this::setup);
