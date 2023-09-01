@@ -1,6 +1,5 @@
 package com.alrex.parcool;
 
-import com.alrex.parcool.client.animation.AnimatorList;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.item.ItemRegistry;
@@ -34,9 +33,7 @@ import org.apache.logging.log4j.Logger;
 public class ParCool {
 	public static final String MOD_ID = "parcool";
 	private static final String PROTOCOL_VERSION =
-			Integer.toHexString(ActionList.ACTION_REGISTRIES.size())
-					+ "."
-					+ Integer.toHexString(AnimatorList.ANIMATORS.size());
+			Integer.toHexString(ActionList.ACTION_REGISTRIES.size());
 	public static final SimpleChannel CHANNEL_INSTANCE = NetworkRegistry.newSimpleChannel(
 			new ResourceLocation(ParCool.MOD_ID, "message"),
 			() -> PROTOCOL_VERSION,
