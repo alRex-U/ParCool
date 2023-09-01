@@ -5,7 +5,6 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.Limitations;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.server.command.args.ActionArgumentType;
-import com.alrex.parcool.server.command.args.LimitationItemArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -17,6 +16,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.server.command.EnumArgument;
 
 import java.util.Collection;
 
@@ -56,7 +56,7 @@ public class ChangeIndividualLimitationCommand {
 								.then(Commands
 										.literal("boolean")
 										.then(Commands
-												.argument(ARGS_NAME_CONFIG_ITEM, LimitationItemArgumentType.booleans())
+												.argument(ARGS_NAME_CONFIG_ITEM, EnumArgument.enumArgument(ParCoolConfig.Server.Booleans.class))
 												.then(Commands
 														.argument(ARGS_NAME_VALUE, BoolArgumentType.bool())
 														.executes(ChangeIndividualLimitationCommand::setBoolLimitation)
@@ -66,7 +66,7 @@ public class ChangeIndividualLimitationCommand {
 								.then(Commands
 										.literal("integer")
 										.then(Commands
-												.argument(ARGS_NAME_CONFIG_ITEM, LimitationItemArgumentType.integers())
+												.argument(ARGS_NAME_CONFIG_ITEM, EnumArgument.enumArgument(ParCoolConfig.Server.Integers.class))
 												.then(Commands
 														.argument(ARGS_NAME_VALUE, IntegerArgumentType.integer())
 														.executes(ChangeIndividualLimitationCommand::setIntLimitation)
@@ -76,7 +76,7 @@ public class ChangeIndividualLimitationCommand {
 								.then(Commands
 										.literal("reals")
 										.then(Commands
-												.argument(ARGS_NAME_CONFIG_ITEM, LimitationItemArgumentType.doubles())
+												.argument(ARGS_NAME_CONFIG_ITEM, EnumArgument.enumArgument(ParCoolConfig.Server.Doubles.class))
 												.then(Commands
 														.argument(ARGS_NAME_VALUE, DoubleArgumentType.doubleArg())
 														.executes(ChangeIndividualLimitationCommand::setDoubleLimitation)
@@ -180,7 +180,7 @@ public class ChangeIndividualLimitationCommand {
 
 	private static int setBoolLimitation(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 		Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
-		ParCoolConfig.Server.Booleans item = LimitationItemArgumentType.getBool(context, ARGS_NAME_CONFIG_ITEM);
+		ParCoolConfig.Server.Booleans item = context.getArgument(ARGS_NAME_CONFIG_ITEM, ParCoolConfig.Server.Booleans.class);
 		boolean value = BoolArgumentType.getBool(context, ARGS_NAME_VALUE);
 		int num = 0;
 		for (ServerPlayer player : targets) {
@@ -196,7 +196,7 @@ public class ChangeIndividualLimitationCommand {
 
 	private static int setIntLimitation(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 		Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
-		ParCoolConfig.Server.Integers item = LimitationItemArgumentType.getInt(context, ARGS_NAME_CONFIG_ITEM);
+		ParCoolConfig.Server.Integers item = context.getArgument(ARGS_NAME_CONFIG_ITEM, ParCoolConfig.Server.Integers.class);
 		int value = IntegerArgumentType.getInteger(context, ARGS_NAME_VALUE);
 		if (value < item.Min) {
 			value = item.Min;
@@ -219,7 +219,7 @@ public class ChangeIndividualLimitationCommand {
 
 	private static int setDoubleLimitation(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 		Collection<ServerPlayer> targets = EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS);
-		ParCoolConfig.Server.Doubles item = LimitationItemArgumentType.getDouble(context, ARGS_NAME_CONFIG_ITEM);
+		ParCoolConfig.Server.Doubles item = context.getArgument(ARGS_NAME_CONFIG_ITEM, ParCoolConfig.Server.Doubles.class);
 		double value = DoubleArgumentType.getDouble(context, ARGS_NAME_VALUE);
 		if (value < item.Min) {
 			value = item.Min;
