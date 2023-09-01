@@ -114,7 +114,7 @@ public class BackwardWallJumpAnimator extends Animator {
 	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
 		if (!(clientPlayer.isLocalPlayer() &&
 				Minecraft.getInstance().options.getCameraType().isFirstPerson() &&
-				ParCoolConfig.Client.Booleans.EnableWallJumpBackward.get()
+				ParCoolConfig.Client.Booleans.EnableCameraAnimationOfBackWallJump.get()
 		)) return;
 		float phase = (float) ((getTick() + event.getRenderPartialTicks()) / maxTick);
 		float factor = angleFactor(phase);
