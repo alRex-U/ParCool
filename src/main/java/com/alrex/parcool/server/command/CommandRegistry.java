@@ -2,7 +2,6 @@ package com.alrex.parcool.server.command;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.server.command.args.ActionArgumentType;
-import com.alrex.parcool.server.command.args.LimitationItemArgumentType;
 import com.alrex.parcool.server.command.impl.ChangeIndividualLimitationCommand;
 import com.alrex.parcool.server.command.impl.StaminaControlCommand;
 import com.mojang.brigadier.CommandDispatcher;
@@ -23,6 +22,5 @@ public class CommandRegistry {
 
 	public static void registerArgumentTypes(FMLCommonSetupEvent event) {
 		ArgumentTypeInfos.registerByClass(ActionArgumentType.class, SingletonArgumentInfo.contextFree(ActionArgumentType::action));
-		ArgumentTypeInfos.registerByClass(LimitationItemArgumentType.class, new LimitationItemArgumentType.Info());
 	}
 }

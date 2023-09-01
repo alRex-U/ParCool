@@ -32,6 +32,7 @@
 ### Bugfix
 
 - ParCool cannot work on plugin installed server.
+- Solid Mobs Incompatibility
 - ParCool disable ladder animation of NotEnoughAnimations
 - ParCool disable ladder detection of other mods.
 - Stamina are not infinite when players are creative.
