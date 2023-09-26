@@ -9,6 +9,7 @@ public class AdditionalProperties {
 	private int sprintingTick = 0;
 	private int notLandingTick = 0;
 	private int landingTick = 0;
+	private int lastSprintingTick = 0;
 	private int notSprintingTick = 0;
 	private int notCreativeFlyingTick = 0;
 	private int tickAfterLastJump = 0;
@@ -22,6 +23,7 @@ public class AdditionalProperties {
 		if (player.isSprinting()) {
 			notSprintingTick = 0;
 			sprintingTick++;
+			lastSprintingTick = sprintingTick;
 		} else {
 			sprintingTick = 0;
 			notSprintingTick++;
@@ -46,6 +48,10 @@ public class AdditionalProperties {
 
 	public int getNotLandingTick() {
 		return notLandingTick;
+	}
+
+	public int getLastSprintingTick() {
+		return lastSprintingTick;
 	}
 
 	public int getLandingTick() {
