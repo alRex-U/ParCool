@@ -6,5 +6,6 @@
   "pause_game": "true",
   "book_texture": "patchouli:textures/gui/book_blue.png",
   "model": "parcool:parcool_guide",
-  "header_color": "0b2d52"
+  "header_color": "0b2d52",
+  "use_resource_pack": "true"
 }
