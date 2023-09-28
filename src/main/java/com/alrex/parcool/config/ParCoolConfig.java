@@ -11,6 +11,7 @@ import com.alrex.parcool.common.action.impl.Crawl;
 import com.alrex.parcool.common.action.impl.Dodge;
 import com.alrex.parcool.common.action.impl.FastRun;
 import com.alrex.parcool.common.action.impl.Vault;
+import com.alrex.parcool.extern.ExternalStaminaMod;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -154,10 +155,6 @@ public class ParCoolConfig {
 			ParCoolIsActive(
 					ConfigGroup.Other, "Whether ParCool is active",
 					"parcool_activation", true
-			),
-			UseFeathers(
-					ConfigGroup.Other, "Whether to use Feathers as stamina system if it's installed",
-					"use_Feathers", true
 			);
 			public final ConfigGroup Group;
 			@Nullable
@@ -409,6 +406,7 @@ public class ParCoolConfig {
 		public static final ForgeConfigSpec.EnumValue<ColorTheme> GUIColorTheme;
 		public static final ForgeConfigSpec.EnumValue<FastRun.ControlType> FastRunControl;
 		public static final ForgeConfigSpec.EnumValue<Crawl.ControlType> CrawlControl;
+		public static final ForgeConfigSpec.EnumValue<ExternalStaminaMod> ExternalStamina;
 
 		private static void register(ForgeConfigSpec.Builder builder, ConfigGroup group) {
 			Arrays.stream(Booleans.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
@@ -465,7 +463,7 @@ public class ParCoolConfig {
 				register(builder, ConfigGroup.Other);
 			}
 			builder.pop();
-			builder.comment("Stamina Section").push("Stamina");
+			builder.push("Stamina");
 			{
 				builder.push("Consumption");
 				{
@@ -478,6 +476,7 @@ public class ParCoolConfig {
 						);
 					}
 				}
+				ExternalStamina = builder.comment("additional stamina mod dependency(only when it's installed)").defineEnum("external_stamina", ExternalStaminaMod.None);
 				register(builder, ConfigGroup.Stamina);
 			}
 			builder.pop();
