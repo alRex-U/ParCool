@@ -44,7 +44,7 @@ public class VerticalWallRun extends Action {
 				&& !parkourability.get(Vault.class).isDoing()
 				&& !parkourability.get(Flipping.class).isDoing()
 				&& parkourability.get(FastRun.class).getNotDashTick(parkourability.getAdditionalProperties()) < 8
-				&& parkourability.get(FastRun.class).getLastDashTick() > 12
+				&& parkourability.getAdditionalProperties().getLastSprintingTick() > 12
 				&& lookVec.y() > 0;
 		if (able) {
 			Vec3 wall = WorldUtil.getWall(player);

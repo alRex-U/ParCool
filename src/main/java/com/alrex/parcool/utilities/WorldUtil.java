@@ -210,9 +210,9 @@ public class WorldUtil {
 		);
 		if (entity.getCommandSenderWorld().noCollision(entity, bb)) return null;
 		BlockPos pos = new BlockPos(
-				(int) entity.getX(),
-				(int) (entity.getY() + entity.getBbHeight() - 1),
-				(int) entity.getZ()
+				(int) Math.floor(entity.getX()),
+				(int) Math.floor(entity.getY() + entity.getBbHeight() + 0.4),
+				(int) Math.floor(entity.getZ())
 		);
 		if (!entity.getCommandSenderWorld().isLoaded(pos)) return null;
 		BlockState state = entity.getCommandSenderWorld().getBlockState(pos);
