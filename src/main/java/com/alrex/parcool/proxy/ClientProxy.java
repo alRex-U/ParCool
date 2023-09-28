@@ -3,6 +3,7 @@ package com.alrex.parcool.proxy;
 import com.alrex.parcool.common.network.*;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
 import com.alrex.parcool.common.registries.EventBusModRegistry;
+import com.alrex.parcool.extern.paraglider.SyncParagliderStaminaMessage;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -60,6 +61,13 @@ public class ClientProxy extends CommonProxy {
 				SyncClientInformationMessage::encode,
 				SyncClientInformationMessage::decode,
 				SyncClientInformationMessage::handleClient
+		);
+		instance.registerMessage(
+				18,
+				SyncParagliderStaminaMessage.class,
+				SyncParagliderStaminaMessage::encode,
+				SyncParagliderStaminaMessage::decode,
+				SyncParagliderStaminaMessage::handle
 		);
 	}
 }

@@ -8,6 +8,7 @@ import com.alrex.parcool.common.capability.impl.Stamina;
 import com.alrex.parcool.common.capability.storage.ParkourabilityStorage;
 import com.alrex.parcool.common.capability.storage.StaminaStorage;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.extern.paraglider.ParagliderManager;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -65,7 +66,13 @@ public class EventAttachCapability {
 		}
 		//Stamina
 		{
-			IStamina instance = new Stamina(player);
+			IStamina instance = null;
+			if (player.isLocalPlayer() && ParagliderManager.isUsingParaglider()) {
+				instance = ParagliderManager.newParagliderStaminaFor(player);
+			}
+			if (instance == null) {
+				instance = new Stamina(player);
+			}
 			final IStamina finalInstance = instance;
 			LazyOptional<IStamina> optional = LazyOptional.of(() -> finalInstance);
 			if (player.isLocalPlayer()) {

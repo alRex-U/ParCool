@@ -1,5 +1,5 @@
 package com.alrex.parcool.extern;
 
 public enum ExternalStaminaMod {
-	None
+	None, Paraglider
 }

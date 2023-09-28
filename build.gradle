@@ -102,6 +102,8 @@ dependencies {
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
     //compileOnly fg.deobf("curse.maven:feathers-699933:4355018")
     //runtimeOnly fg.deobf("curse.maven:feathers-699933:4355018")
+    compileOnly fg.deobf("curse.maven:paraglider-289240:4729765")
+    //runtimeOnly fg.deobf("curse.maven:paraglider-289240:4729765")
 }
 
 jar {

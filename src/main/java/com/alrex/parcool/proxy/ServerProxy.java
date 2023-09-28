@@ -1,6 +1,7 @@
 package com.alrex.parcool.proxy;
 
 import com.alrex.parcool.common.network.*;
+import com.alrex.parcool.extern.paraglider.SyncParagliderStaminaMessage;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -50,6 +51,13 @@ public class ServerProxy extends CommonProxy {
 				SyncClientInformationMessage::encode,
 				SyncClientInformationMessage::decode,
 				SyncClientInformationMessage::handleServer
+		);
+		instance.registerMessage(
+				18,
+				SyncParagliderStaminaMessage.class,
+				SyncParagliderStaminaMessage::encode,
+				SyncParagliderStaminaMessage::decode,
+				SyncParagliderStaminaMessage::handle
 		);
 	}
 }

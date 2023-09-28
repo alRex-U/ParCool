@@ -1,6 +1,7 @@
 package com.alrex.parcool.client.hud.impl;
 
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.extern.paraglider.ParagliderManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
@@ -30,7 +31,8 @@ public class StaminaHUDController implements IGuiOverlay {
 	@Override
 	public void render(ForgeGui gui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight) {
 		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get() ||
-				ParCoolConfig.Client.Booleans.UseHungerBarInstead.get()
+				ParCoolConfig.Client.Booleans.UseHungerBarInstead.get() ||
+				ParagliderManager.isUsingParaglider()
 		)
 			return;
 

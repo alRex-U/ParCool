@@ -476,7 +476,7 @@ public class ParCoolConfig {
 						);
 					}
 				}
-				ExternalStamina = builder.comment("additional stamina mod dependency(only when it's installed)").defineEnum("external_stamina", ExternalStaminaMod.None);
+				ExternalStamina = builder.comment("additional stamina mod dependency(only when it's installed)").defineEnum("external_stamina", ExternalStaminaMod.Paraglider);
 				register(builder, ConfigGroup.Stamina);
 			}
 			builder.pop();
