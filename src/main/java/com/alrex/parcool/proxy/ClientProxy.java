@@ -67,7 +67,7 @@ public class ClientProxy extends CommonProxy {
 				SyncParagliderStaminaMessage.class,
 				SyncParagliderStaminaMessage::encode,
 				SyncParagliderStaminaMessage::decode,
-				SyncParagliderStaminaMessage::handle
+				SyncParagliderStaminaMessage::handleClient
 		);
 	}
 }

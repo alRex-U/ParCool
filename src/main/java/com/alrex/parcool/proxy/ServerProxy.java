@@ -57,7 +57,7 @@ public class ServerProxy extends CommonProxy {
 				SyncParagliderStaminaMessage.class,
 				SyncParagliderStaminaMessage::encode,
 				SyncParagliderStaminaMessage::decode,
-				SyncParagliderStaminaMessage::handle
+				SyncParagliderStaminaMessage::handleServer
 		);
 	}
 }

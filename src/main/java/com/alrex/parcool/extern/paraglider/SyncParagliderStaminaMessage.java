@@ -5,6 +5,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
@@ -35,7 +37,8 @@ public class SyncParagliderStaminaMessage {
 		return message;
 	}
 
-	public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
+	@OnlyIn(Dist.CLIENT)
+	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
 			Player player;
 			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
@@ -66,6 +69,33 @@ public class SyncParagliderStaminaMessage {
 		contextSupplier.get().setPacketHandled(true);
 	}
 
+	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
+		contextSupplier.get().enqueueWork(() -> {
+			Player player = contextSupplier.get().getSender();
+			if (player == null) return;
+			player = player.getCommandSenderWorld().getPlayerByUUID(this.playerID);
+			if (player == null) return;
+			if (ParagliderManager.isParagliderInstalled()) {
+				switch (commandType) {
+					case SET: {
+						Stamina.get(player).setStamina(value);
+						break;
+					}
+					case GIVE: {
+						Stamina.get(player).giveStamina(value, false);
+						break;
+					}
+					case TAKE: {
+						Stamina.get(player).takeStamina(value, false, false);
+						break;
+					}
+				}
+			}
+		});
+		contextSupplier.get().setPacketHandled(true);
+	}
+
+	@OnlyIn(Dist.CLIENT)
 	public static void send(AbstractClientPlayer player, int value, Type type) {
 		SyncParagliderStaminaMessage message = new SyncParagliderStaminaMessage();
 		message.playerID = player.getUUID();
