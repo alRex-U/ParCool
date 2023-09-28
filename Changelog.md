@@ -1,5 +1,20 @@
 # Changelogs
 
+## ver-3.1.0.4
+
+### New Features
+
+- Supports [Paragliders](https://www.curseforge.com/minecraft/mc-mods/paragliders) Mod as one of stamina systems (only
+  on 1.20.1)
+
+### Bugfix
+
+- Players cannot read in-game guide book of Patchouli books on 1.20.1
+- [#194](https://github.com/alRex-U/ParCool/issues/194)
+- [#197](https://github.com/alRex-U/ParCool/issues/197)
+
+---
+
 ## ver-3.1.0.0
 
 - Date : 2023 Aug.
