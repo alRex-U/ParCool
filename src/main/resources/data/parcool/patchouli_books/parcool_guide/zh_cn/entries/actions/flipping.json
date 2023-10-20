@@ -1,0 +1,16 @@
+{
+  "name": "空翻",
+  "icon": "minecraft:blaze_powder",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "本模组添加了一个特殊的跳跃动画：$(bold)空翻$()。你可以做前空翻和后空翻。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list)同时按下左右移动键$(list)按下空翻键[$(k:parcool.Flipping)]"
+    }
+  ]
+}

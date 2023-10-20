@@ -1,0 +1,16 @@
+{
+  "name": "墙跳",
+  "icon": "minecraft:leather_boots",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "你可以蹬墙远跳。但是要小心，如果你想蹬冰块，你就不能跳得很高！。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list)Press Wall Jump key($(k:parcool.WallJump)) by walls in air。$(7)(进行$(l:parcool:actions/wall_run)踏墙$()时、背靠着$(l:parcool:actions/cling_to_cliff)猫挂$()时、$(l:parcool:actions/wall_slide)滑墙$()时按下飞墙键[$(k:parcool.WallJump)])$(list)$(7)(把他设置成你的跳跃键可能会方便许多)"
+    }
+  ]
+}

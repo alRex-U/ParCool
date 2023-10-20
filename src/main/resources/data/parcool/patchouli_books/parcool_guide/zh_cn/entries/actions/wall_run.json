@@ -1,0 +1,23 @@
+{
+  "name": "蹬壁上墙（踩墙跳）",
+  "icon": "minecraft:bricks",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "你可以用墙垂直跳跃，并且越过它。 但是如果墙很滑，那你就不能这样做了。 不要误把它认为成 $(l:parcool:actions/horizontal_wall_run)水平跑墙$()。"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/image_v_wall_run.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(bold)1.$() 面向墙然后看向水平线上方一点，用 $(l:parcool:actions/fast_run)快速奔跑$()$(br)$(bold)2.$() 按住不松开跳跃键跳到墙上$(br)$(7)（配合$(l:parcool:actions/cling_to_cliff)猫挂$()可以上到个别高度的墙壁上面）$()$(br)$(br)这可能有点难，但试试看。"
+    }
+  ]
+}
