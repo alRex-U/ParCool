@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "$(italic)跑酷$()是由$(italic)Devid Belle$()所组织的一种运动。$(br)目的是尽可能快地让自己移动到别的地方。"
+      "text": "$(italic)跑酷$()是由$(italic)David Belle$()所组织的一种运动。$(br)目的是尽可能快地让自己移动到别的地方。"
     },
     {
       "type": "patchouli:text",
