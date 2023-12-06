@@ -1,5 +1,22 @@
 # Changelogs
 
+## ver-3.1.0.5
+
+### Translation
+
+- Russian (ru_ru) *(Added)*
+  - by *[ Master Xort ]*
+- Chinese (zh_cn) *(Modified)*
+  - by *njt-232*
+
+### Bugfix
+
+- Global Limitation is not synchronized correctly
+- There is a spelling mistake in the translation
+  - contributed by *Marc-Antoine Sauvé*
+
+---
+
 ## ver-3.1.0.4
 
 ### New Features
