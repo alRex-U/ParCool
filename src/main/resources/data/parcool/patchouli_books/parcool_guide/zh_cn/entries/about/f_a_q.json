@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(bold)问：本模组支持Fabric运行吗？$()$(br2)$(bold)答：并不支持。$()$(br)而又因为作者没有足够的时间，所以没有移植到Fabric。$(7)(好可惜)"
+      "text": "$(bold)问：本模组支持Fabric运行吗？$()$(br2)$(bold)答：并不支持。$()$(br)作者现在还没有将本Mod移植到Fabric的打算。$(7)(好可惜)"
     }
   ]
 }

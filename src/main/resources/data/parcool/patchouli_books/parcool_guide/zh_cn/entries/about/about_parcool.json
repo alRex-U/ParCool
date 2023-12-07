@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "感谢你游玩本模组！$(br2)本模组是为Minecraft追加$(bold)跑酷$()$(br)的动作的Mod！有些动作实际上是就是跑酷的技术动作。"
+      "text": "感谢你游玩本模组！$(br2)本模组是一个为Minecraft追加$(bold)跑酷$()$(br)动作的Mod！有些动作实际上就来源于跑酷的技术动作。"
     },
     {
       "type": "patchouli:image",
