@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "$(italic)パルクール$()$(italic)Devid Belle$()によって作られたとされたスポーツの一種です。$(br)別の場所へ自身の肉体で可能な限り早く移動することを目的としています。"
+      "text": "$(italic)パルクール$()$(italic)David Belle$()によって作られたとされたスポーツの一種です。$(br)別の場所へ自身の肉体で可能な限り早く移動することを目的としています。"
     },
     {
       "type": "patchouli:text",
