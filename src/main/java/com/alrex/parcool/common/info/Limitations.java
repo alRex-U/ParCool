@@ -93,6 +93,7 @@ public class Limitations {
 	}
 
 	public void readFromServerConfig() {
+		enabled = ParCoolConfig.Server.LimitationEnabled.get();
 		for (ParCoolConfig.Server.Booleans item : ParCoolConfig.Server.Booleans.values()) {
 			booleans.put(item, item.get());
 		}

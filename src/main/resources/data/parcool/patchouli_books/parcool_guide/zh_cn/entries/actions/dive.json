@@ -1,11 +1,11 @@
 {
-  "name": "俯冲",
+  "name": "跳入与俯冲",
   "icon": "minecraft:cod",
   "category": "parcool:category_actions",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "本模组有一个跳入的特殊动画。从第三人称的角度来观看一下吧。"
+      "text": "本模组有一个跳入的特殊动画。从第三人称的角度来观看一下吧。除此之外，几秒钟后再次按下跳跃键，将进行俯冲。“"
     },
     {
       "type": "patchouli:image",
