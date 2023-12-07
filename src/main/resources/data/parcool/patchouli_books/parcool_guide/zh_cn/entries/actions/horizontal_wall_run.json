@@ -1,0 +1,23 @@
+{
+  "name": "水平跑墙",
+  "icon": "minecraft:bricks",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "你可以沿着水平方向在墙上跑。但是如果墙壁的方块很滑，你就不能这样做了，请注意。$(br)在跑酷里 $(italic)蹬壁上墙$() 的技巧是垂直向上爬墙的，不是水平的。$(7)(跑酷里跑墙和蹬壁上墙都叫 wall run。)$()"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/image_wall_run.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(bold)1.$() 沿着墙壁在空中按$(l:parcool:actions/fast_run)快速奔跑。$() $(br)$(bold)2.$() 按住水平跑墙键($(k:parcool.HorizontalWallRun))"
+    }
+  ]
+}
