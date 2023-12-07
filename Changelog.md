@@ -1,6 +1,6 @@
 # Changelogs
 
-## ver-3.1.0.5
+## ver-3.1.0.6
 
 ### Translation
 
