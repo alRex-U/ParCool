@@ -1,0 +1,11 @@
+{
+  "name": "爬杆",
+  "icon": "minecraft:quartz_pillar",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "你可以爬上类似杆的方块，如堆叠的栅栏、锁链、铁栅栏等。"
+    }
+  ]
+}
