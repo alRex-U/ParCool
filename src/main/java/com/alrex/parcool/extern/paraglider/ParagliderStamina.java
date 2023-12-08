@@ -1,6 +1,7 @@
 package com.alrex.parcool.extern.paraglider;
 
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.player.Player;
 import tictim.paraglider.api.stamina.Stamina;
@@ -43,6 +44,11 @@ public class ParagliderStamina implements IStamina {
 
 	@Override
 	public void consume(int value) {
+		var parkourability = Parkourability.get(player);
+		if (parkourability == null) return;
+		if (parkourability.getActionInfo().isStaminaInfinite(
+				player.isCreative() || player.isSpectator()
+		)) return;
 		Stamina stamina = getInternalInstance();
 		stamina.takeStamina(value, false, false);
 		if (player instanceof AbstractClientPlayer clientPlayer)
