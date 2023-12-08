@@ -5,7 +5,6 @@ import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.FastRun;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.extern.paraglider.ParagliderManager;
 import com.alrex.parcool.utilities.Easing;
 import net.minecraft.world.entity.player.Player;
 
@@ -23,7 +22,7 @@ public class FastRunningAnimator extends Animator {
 
 	@Override
 	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
-		if (ParagliderManager.isFallingWithParaglider(player)) return;
+		//if (ParagliderManager.isFallingWithParaglider(player)) return;
 		float phase = (getTick() + transformer.getPartialTick()) / 10;
 		if (phase > 1) phase = 1;
 		float bodyAngleFactor = bodyAngleFactor(phase);
@@ -47,7 +46,7 @@ public class FastRunningAnimator extends Animator {
 
 	@Override
 	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
-		if (ParagliderManager.isFallingWithParaglider(player)) return;
+		//if (ParagliderManager.isFallingWithParaglider(player)) return;
 		float phase = (getTick() + rotator.getPartialTick()) / 10;
 		if (phase > 1) phase = 1;
 		float tick = getTick() + rotator.getPartialTick();

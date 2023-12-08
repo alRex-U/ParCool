@@ -9,7 +9,6 @@ import com.alrex.parcool.common.potion.Potions;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
 import com.alrex.parcool.common.registries.EventBusModRegistry;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.extern.paraglider.ParagliderManager;
 import com.alrex.parcool.proxy.ClientProxy;
 import com.alrex.parcool.proxy.CommonProxy;
 import com.alrex.parcool.proxy.ServerProxy;
@@ -24,22 +23,23 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.network.Channel;
+import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(ParCool.MOD_ID)
 public class ParCool {
 	public static final String MOD_ID = "parcool";
-	private static final String PROTOCOL_VERSION =
-			Integer.toHexString(ActionList.ACTION_REGISTRIES.size());
-	public static final SimpleChannel CHANNEL_INSTANCE = NetworkRegistry.newSimpleChannel(
-			new ResourceLocation(ParCool.MOD_ID, "message"),
-			() -> PROTOCOL_VERSION,
-			PROTOCOL_VERSION::equals,
-			PROTOCOL_VERSION::equals
-	);
+	private static final int PROTOCOL_VERSION = ActionList.ACTION_REGISTRIES.size();
+	public static final SimpleChannel CHANNEL_INSTANCE = ChannelBuilder
+			.named(
+					new ResourceLocation(ParCool.MOD_ID, "message")
+			)
+			.networkProtocolVersion(PROTOCOL_VERSION)
+			.acceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION))
+			.simpleChannel();
 	public static final CommonProxy PROXY = DistExecutor.unsafeRunForDist(
 			() -> ClientProxy::new,
 			() -> ServerProxy::new
@@ -67,7 +67,7 @@ public class ParCool {
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {
-		ParagliderManager.init();
+		//ParagliderManager.init();
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {

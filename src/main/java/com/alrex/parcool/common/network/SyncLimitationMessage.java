@@ -9,11 +9,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.nio.ByteBuffer;
-import java.util.function.Supplier;
 
 public class SyncLimitationMessage {
 	private final ByteBuffer data = ByteBuffer.allocate(512);
@@ -36,8 +35,8 @@ public class SyncLimitationMessage {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
+	public void handle(CustomPayloadEvent.Context context) {
+		context.enqueueWork(() -> {
 			LocalPlayer player = Minecraft.getInstance().player;
 			if (player == null) return;
 			Parkourability parkourability = Parkourability.get(player);
@@ -50,7 +49,7 @@ public class SyncLimitationMessage {
 				data.rewind();
 			}
 		});
-		contextSupplier.get().setPacketHandled(true);
+		context.setPacketHandled(true);
 	}
 
 	private static SyncLimitationMessage newInstance(Limitations limitation) {
@@ -67,7 +66,7 @@ public class SyncLimitationMessage {
 		parkourability.getActionInfo().getServerLimitation().setReceived();
 		SyncLimitationMessage msg = newInstance(parkourability.getActionInfo().getServerLimitation());
 		msg.forIndividuals = false;
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), msg);
+		ParCool.CHANNEL_INSTANCE.send(msg, PacketDistributor.PLAYER.with(player));
 	}
 
 	public static void sendIndividualLimitation(ServerPlayer player) {
@@ -76,6 +75,6 @@ public class SyncLimitationMessage {
 		parkourability.getActionInfo().getIndividualLimitation().setReceived();
 		SyncLimitationMessage msg = newInstance(parkourability.getActionInfo().getIndividualLimitation());
 		msg.forIndividuals = true;
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), msg);
+		ParCool.CHANNEL_INSTANCE.send(msg, PacketDistributor.PLAYER.with(player));
 	}
 }

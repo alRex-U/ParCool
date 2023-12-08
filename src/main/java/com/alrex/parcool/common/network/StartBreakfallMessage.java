@@ -6,16 +6,14 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class StartBreakfallMessage {
 	UUID playerID = null;
@@ -39,9 +37,9 @@ public class StartBreakfallMessage {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
-			if (contextSupplier.get().getNetworkManager().getDirection() == PacketFlow.CLIENTBOUND) {
+	public void handleClient(CustomPayloadEvent.Context context) {
+		context.enqueueWork(() -> {
+			if (context.isClientSide()) {
 				Player player = Minecraft.getInstance().player;
 				if (player == null) return;
 				if (!playerID.equals(player.getUUID())) return;
@@ -54,17 +52,17 @@ public class StartBreakfallMessage {
 				parkourability.get(BreakfallReady.class).startBreakfall(player, parkourability, stamina, justTimed);
 			}
 		});
-		contextSupplier.get().setPacketHandled(true);
+		context.setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.DEDICATED_SERVER)
-	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
+	public void handleServer(CustomPayloadEvent.Context context) {
 	}
 
 	public static void send(ServerPlayer player, boolean justTimed) {
 		StartBreakfallMessage message = new StartBreakfallMessage();
 		message.playerID = player.getUUID();
 		message.justTimed = justTimed;
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
+		ParCool.CHANNEL_INSTANCE.send(message, PacketDistributor.PLAYER.with(player));
 	}
 }

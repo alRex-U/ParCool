@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '[6.0.16,6.2)', changing: true
         classpath 'org.spongepowered:mixingradle:0.7.+'
     }
 }
@@ -99,10 +99,10 @@ dependencies {
     minecraft "net.minecraftforge:forge:${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     //compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
-    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
+    //runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
     //compileOnly fg.deobf("curse.maven:feathers-699933:4355018")
     //runtimeOnly fg.deobf("curse.maven:feathers-699933:4355018")
-    compileOnly fg.deobf("curse.maven:paraglider-289240:4729765")
+    //compileOnly fg.deobf("curse.maven:paraglider-289240:4729765")
     //runtimeOnly fg.deobf("curse.maven:paraglider-289240:4729765")
 }
 

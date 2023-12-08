@@ -8,11 +8,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
-
-import java.util.function.Supplier;
 
 public class StaminaControlMessage {
 	private int value = 0;
@@ -31,13 +29,14 @@ public class StaminaControlMessage {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
+	public void handleClient(CustomPayloadEvent.Context context) {
+		context.enqueueWork(() -> {
 			Player player;
-			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+
+			if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 				player = Minecraft.getInstance().player;
 			} else {
-				player = contextSupplier.get().getSender();
+				player = context.getSender();
 			}
 			if (player == null) return;
 			IStamina stamina = IStamina.get(player);
@@ -48,7 +47,7 @@ public class StaminaControlMessage {
 				stamina.set(value);
 			}
 		});
-		contextSupplier.get().setPacketHandled(true);
+		context.setPacketHandled(true);
 	}
 
 	public static void sync(ServerPlayer player, int value, boolean add) {
@@ -56,6 +55,6 @@ public class StaminaControlMessage {
 		message.value = value;
 		message.add = add;
 
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
+		ParCool.CHANNEL_INSTANCE.send(message, PacketDistributor.PLAYER.with(player));
 	}
 }

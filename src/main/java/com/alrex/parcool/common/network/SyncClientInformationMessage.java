@@ -10,13 +10,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class SyncClientInformationMessage {
 	private final ByteBuffer data = ByteBuffer.allocate(512);
@@ -43,19 +42,19 @@ public class SyncClientInformationMessage {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
+	public void handleClient(CustomPayloadEvent.Context context) {
+		context.enqueueWork(() -> {
 			Player player;
-			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+			if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 				Level world = Minecraft.getInstance().level;
 				if (world == null) return;
 				player = world.getPlayerByUUID(playerID);
 				if (player == null) return;
 			} else {
-				ServerPlayer serverPlayer = contextSupplier.get().getSender();
+				ServerPlayer serverPlayer = context.getSender();
 				player = serverPlayer;
 				if (player == null) return;
-				ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
+				ParCool.CHANNEL_INSTANCE.send(this, PacketDistributor.ALL.noArg());
 				if (requestLimitations) {
 					SyncLimitationMessage.sendServerLimitation(serverPlayer);
 					SyncLimitationMessage.sendIndividualLimitation(serverPlayer);
@@ -69,14 +68,14 @@ public class SyncClientInformationMessage {
 			}
 			parkourability.getClientInfo().setSynced(true);
 		});
-		contextSupplier.get().setPacketHandled(true);
+		context.setPacketHandled(true);
 	}
 
-	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
-			ServerPlayer player = contextSupplier.get().getSender();
+	public void handleServer(CustomPayloadEvent.Context context) {
+		context.enqueueWork(() -> {
+			ServerPlayer player = context.getSender();
 			if (player == null) return;
-			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
+			ParCool.CHANNEL_INSTANCE.send(this, PacketDistributor.ALL.noArg());
 
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
@@ -88,7 +87,7 @@ public class SyncClientInformationMessage {
 			data.rewind();
 			parkourability.getClientInfo().setSynced(true);
 		});
-		contextSupplier.get().setPacketHandled(true);
+		context.setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -103,6 +102,6 @@ public class SyncClientInformationMessage {
 		message.playerID = player.getUUID();
 		message.requestLimitations = requestSendLimitation;
 
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.SERVER.noArg(), message);
+		ParCool.CHANNEL_INSTANCE.send(message, PacketDistributor.SERVER.noArg());
 	}
 }

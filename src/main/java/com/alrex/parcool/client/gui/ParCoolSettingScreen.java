@@ -124,7 +124,7 @@ public class ParCoolSettingScreen extends Screen {
 	@Override
 	public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float p_230430_4_) {
 		super.render(graphics, mouseX, mouseY, p_230430_4_);
-		renderBackground(graphics);
+		renderBackground(graphics, mouseX, mouseY, p_230430_4_);
 		int topBarHeight = font.lineHeight * 2;
 		int topBarItemWidth = (int) (1.6 * Arrays.stream(modeMenuList).map(it -> font.width(it.title)).max(Integer::compareTo).orElse(0));
 		int topBarOffsetX = width - topBarItemWidth * modeMenuList.length;
@@ -350,7 +350,7 @@ public class ParCoolSettingScreen extends Screen {
 	}
 
 	@Override
-	public void renderBackground(@Nonnull GuiGraphics graphics) {
+	public void renderBackground(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
 		graphics.fill(0, 0, this.width, this.height, color.getBackground());
 	}
 
@@ -380,6 +380,10 @@ public class ParCoolSettingScreen extends Screen {
 	}
 
 	@Override
+	public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_, double p_299502_) {
+		return mouseScrolled(p_94686_, p_94687_, p_94688_);
+	}
+
 	public boolean mouseScrolled(double x, double y, double value) {
 		topIndex -= (int) Math.signum(value);
 		switch (mode) {

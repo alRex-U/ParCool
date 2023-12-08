@@ -9,14 +9,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class SyncActionStateMessage {
 	private SyncActionStateMessage() {
@@ -43,12 +42,12 @@ public class SyncActionStateMessage {
 	}
 
 	@OnlyIn(Dist.DEDICATED_SERVER)
-	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
+	public void handleServer(CustomPayloadEvent.Context context) {
+		context.enqueueWork(() -> {
 			Player player;
 
-			player = contextSupplier.get().getSender();
-			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
+			player = context.getSender();
+			ParCool.CHANNEL_INSTANCE.send(this, PacketDistributor.ALL.noArg());
 			if (player == null) return;
 
 			Parkourability parkourability = Parkourability.get(player);
@@ -76,23 +75,23 @@ public class SyncActionStateMessage {
 				}
 			}
 		});
-		contextSupplier.get().setPacketHandled(true);
+		context.setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
+	public void handleClient(CustomPayloadEvent.Context context) {
+		context.enqueueWork(() -> {
 			Player player;
 			boolean clientSide;
-			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+			if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 				Level world = Minecraft.getInstance().level;
 				if (world == null) return;
 				player = world.getPlayerByUUID(senderUUID);
 				if (player == null || player.isLocalPlayer()) return;
 				clientSide = true;
 			} else {
-				player = contextSupplier.get().getSender();
-				ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
+				player = context.getSender();
+				ParCool.CHANNEL_INSTANCE.send(this, PacketDistributor.ALL.noArg());
 				if (player == null) return;
 				clientSide = false;
 			}
@@ -130,7 +129,7 @@ public class SyncActionStateMessage {
 				}
 			}
 		});
-		contextSupplier.get().setPacketHandled(true);
+		context.setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -142,7 +141,7 @@ public class SyncActionStateMessage {
 		message.buffer = new byte[buffer1.limit()];
 		buffer1.get(message.buffer);
 
-		ParCool.CHANNEL_INSTANCE.sendToServer(message);
+		ParCool.CHANNEL_INSTANCE.send(message, PacketDistributor.SERVER.noArg());
 	}
 
 	public static class Encoder {

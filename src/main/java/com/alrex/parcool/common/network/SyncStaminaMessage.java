@@ -9,12 +9,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class SyncStaminaMessage {
 
@@ -41,11 +40,11 @@ public class SyncStaminaMessage {
 	}
 
 	@OnlyIn(Dist.DEDICATED_SERVER)
-	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
+	public void handleServer(CustomPayloadEvent.Context context) {
+		context.enqueueWork(() -> {
 			Player player;
-			player = contextSupplier.get().getSender();
-			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
+			player = context.getSender();
+			ParCool.CHANNEL_INSTANCE.send(this, PacketDistributor.ALL.noArg());
 			if (player == null) return;
 			IStamina stamina = IStamina.get(player);
 			if (stamina == null) return;
@@ -53,21 +52,21 @@ public class SyncStaminaMessage {
 			stamina.setExhaustion(exhausted);
 			stamina.setMaxStamina(clientDemandedMaxValue);
 		});
-		contextSupplier.get().setPacketHandled(true);
+		context.setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
+	public void handleClient(CustomPayloadEvent.Context context) {
+		context.enqueueWork(() -> {
 			Player player;
-			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+			if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
 				Level world = Minecraft.getInstance().level;
 				if (world == null) return;
 				player = world.getPlayerByUUID(playerID);
 				if (player == null || player.isLocalPlayer()) return;
 			} else {
-				player = contextSupplier.get().getSender();
-				ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
+				player = context.getSender();
+				ParCool.CHANNEL_INSTANCE.send(this, PacketDistributor.ALL.noArg());
 				if (player == null) return;
 			}
 			IStamina stamina = IStamina.get(player);
@@ -76,7 +75,7 @@ public class SyncStaminaMessage {
 			stamina.setExhaustion(exhausted);
 			stamina.setMaxStamina(clientDemandedMaxValue);
 		});
-		contextSupplier.get().setPacketHandled(true);
+		context.setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -90,6 +89,6 @@ public class SyncStaminaMessage {
 		message.playerID = player.getUUID();
 		message.clientDemandedMaxValue = ParCoolConfig.Client.Integers.MaxStamina.get();
 
-		ParCool.CHANNEL_INSTANCE.sendToServer(message);
+		ParCool.CHANNEL_INSTANCE.send(message, PacketDistributor.SERVER.noArg());
 	}
 }
