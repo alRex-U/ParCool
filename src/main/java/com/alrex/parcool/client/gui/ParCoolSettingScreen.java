@@ -62,10 +62,12 @@ public class ParCoolSettingScreen extends Screen {
 		super(titleIn);
 		for (int i = 0; i < actionList.length; i++) {
 			actionList[i] = new ActionConfigSet(ActionList.getByIndex(i), info);
-			actionButtons[i] = new Checkbox(0, 0, 0, Checkbox_Item_Height, Component.literal(actionList[i].name), actionList[i].getter.getAsBoolean());
+            actionButtons[i] = Checkbox.builder(Component.literal(actionList[i].name), font).selected(actionList[i].getter.getAsBoolean()).build();
+            actionButtons[i].setHeight(Checkbox_Item_Height);
 		}
 		for (int i = 0; i < booleans.length; i++) {
-			configButtons[i] = new Checkbox(0, 0, 0, Checkbox_Item_Height, Component.translatable(booleans[i].Path), booleans[i].get());
+            configButtons[i] = Checkbox.builder(Component.translatable(booleans[i].Path), font).selected(booleans[i].get()).build();
+            configButtons[i].setHeight(Checkbox_Item_Height);
 		}
 		for (int i = 0; i < enumConfigList.length; i++) {
 			int index = i;
