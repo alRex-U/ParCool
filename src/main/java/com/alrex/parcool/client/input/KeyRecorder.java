@@ -1,11 +1,6 @@
 package com.alrex.parcool.client.input;
 
-import com.alrex.parcool.ParCool;
-import com.alrex.parcool.config.ParCoolConfig;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -33,15 +28,6 @@ public class KeyRecorder {
 	@SubscribeEvent
 	public static void onClientTick(TickEvent.ClientTickEvent event) {
 		if (event.phase != TickEvent.Phase.START) return;
-
-		if (KeyBindings.getKeyBindEnable().consumeClick()) {
-			ParCoolConfig.Client.Booleans.ParCoolIsActive.set(!ParCoolConfig.Client.Booleans.ParCoolIsActive.get());
-			boolean currentStatus = ParCool.isActive();
-			PlayerEntity player = Minecraft.getInstance().player;
-			if (player != null) {
-				player.displayClientMessage(new TranslationTextComponent(currentStatus ? "key.parcool.enable.enabled" : "key.parcool.enable.disabled"), true);
-			}
-		}
 
 		record(KeyBindings.getKeyForward(), keyForward);
 		record(KeyBindings.getKeyBack(), keyBack);
