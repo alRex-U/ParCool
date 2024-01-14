@@ -29,7 +29,6 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability != null && parkourability.get(ClingToCliff.class).isDoing()) {
 			cir.setReturnValue(false);
-			cir.cancel();
 		}
 	}
 

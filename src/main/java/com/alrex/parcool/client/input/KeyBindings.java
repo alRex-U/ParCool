@@ -16,6 +16,7 @@ import org.lwjgl.glfw.GLFW;
 @OnlyIn(Dist.CLIENT)
 public class KeyBindings {
 	private static final GameSettings settings = Minecraft.getInstance().options;
+	private static final KeyBinding keyBindEnable = new KeyBinding("key.parcool.Enable", GLFW.GLFW_KEY_ENTER, "key.categories.parcool");
 	private static final KeyBinding keyBindCrawl = new KeyBinding("key.parcool.Crawl", GLFW.GLFW_KEY_C, "key.categories.parcool");
 	private static final KeyBinding keyBindGrabWall = new KeyBinding("key.parcool.ClingToCliff", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
 	private static final KeyBinding keyBindBreakfall = new KeyBinding("key.parcool.Breakfall", GLFW.GLFW_KEY_R, "key.categories.parcool");
@@ -56,6 +57,10 @@ public class KeyBindings {
 
 	public static KeyBinding getKeyBack() {
 		return settings.keyDown;
+	}
+
+	public static KeyBinding getKeyBindEnable() {
+		return keyBindEnable;
 	}
 
 	public static KeyBinding getKeyCrawl() {
@@ -112,6 +117,7 @@ public class KeyBindings {
 
 	@SubscribeEvent
 	public static void register(FMLClientSetupEvent event) {
+		ClientRegistry.registerKeyBinding(keyBindEnable);
 		ClientRegistry.registerKeyBinding(keyBindCrawl);
 		ClientRegistry.registerKeyBinding(keyBindGrabWall);
 		ClientRegistry.registerKeyBinding(keyBindBreakfall);

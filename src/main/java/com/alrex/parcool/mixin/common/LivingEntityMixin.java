@@ -38,7 +38,6 @@ public abstract class LivingEntityMixin extends Entity {
 	@Inject(method = "Lnet/minecraft/entity/LivingEntity;onClimbable()Z", at = @At("HEAD"), cancellable = true)
 	public void onClimbable(CallbackInfoReturnable<Boolean> cir) {
 		if (this.isSpectator()) {
-			cir.cancel();
 			cir.setReturnValue(false);
 		} else {
 			LivingEntity entity = (LivingEntity) (Object) this;
@@ -57,7 +56,6 @@ public abstract class LivingEntityMixin extends Entity {
 			BlockState blockstate = this.getFeetBlockState();
 			boolean onLadder = isLivingOnCustomLadder(blockstate, entity.level, blockpos, entity);
 			if (onLadder) {
-				cir.cancel();
 				cir.setReturnValue(true);
 			}
 		}
