@@ -48,7 +48,7 @@ public class HorizontalWallRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth());
+		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() / 2);
 		if (wallDirection == null) return;
 		if (runningWallDirection == null) return;
 		if (runningDirection == null) return;
@@ -80,7 +80,7 @@ public class HorizontalWallRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth());
+		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() / 2);
 		if (wallDirection == null) return false;
 		Vector3d wallVec = wallDirection.normalize();
 		Vector3d lookDirection = VectorUtil.fromYawDegree(player.yBodyRot);
@@ -106,16 +106,16 @@ public class HorizontalWallRun extends Action {
 
 		return (!parkourability.get(WallJump.class).justJumped()
 				&& KeyBindings.getKeyHorizontalWallRun().isDown()
-				&& !parkourability.get(WallJump.class).justJumped()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Dodge.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
-				&& Math.abs(player.getDeltaMovement().y()) < 0.3
+				&& Math.abs(player.getDeltaMovement().y()) < 0.5
 				&& coolTime == 0
 				&& !player.isOnGround()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
-				&& (parkourability.get(FastRun.class).canActWithRunning(player)
-				|| parkourability.get(FastRun.class).getNotDashTick(parkourability.getAdditionalProperties()) < 10
+				&& (
+				parkourability.get(FastRun.class).canActWithRunning(player)
+						|| parkourability.get(FastRun.class).getNotDashTick(parkourability.getAdditionalProperties()) < 10
 		)
 				&& !stamina.isExhausted()
 		);
@@ -124,7 +124,7 @@ public class HorizontalWallRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth());
+		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() / 2);
 		if (wallDirection == null) return false;
 		return (getDoingTick() < getMaxRunningTick(parkourability.getActionInfo())
 				&& !stamina.isExhausted()
