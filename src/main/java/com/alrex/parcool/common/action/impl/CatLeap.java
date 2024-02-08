@@ -53,6 +53,8 @@ public class CatLeap extends Action {
 				&& !stamina.isExhausted()
 				&& coolTimeTick <= 0
 				&& readyTick > 0
+				&& !parkourability.get(Roll.class).isDoing()
+				&& !parkourability.get(Tap.class).isDoing()
 				&& KeyRecorder.keySneak.isReleased()
 		);
 	}
