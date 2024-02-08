@@ -98,7 +98,7 @@ public class VerticalWallRun extends Action {
 
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
-		startData.position(12);
+		startData.position(8 + 4); // skip (double * 1) and (float * 1)
 		wallDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		Animation animation = Animation.get(player);
 		if (animation != null) {

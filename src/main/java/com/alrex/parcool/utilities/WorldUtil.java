@@ -49,7 +49,7 @@ public class WorldUtil {
 	@Nullable
 	public static Vector3d getWall(LivingEntity entity) {
 		double range = entity.getBbWidth() / 2;
-		final double width = entity.getBbWidth() * 0.5;
+		final double width = entity.getBbWidth() * 0.49;
 		double wallX = 0;
 		double wallZ = 0;
 		Vector3d pos = entity.position();
@@ -139,19 +139,19 @@ public class WorldUtil {
 	}
 
 	public static double getWallHeight(LivingEntity entity, Vector3d direction, double maxHeight, double accuracy) {
-		final double d = entity.getBbWidth() * 0.5;
+		final double d = entity.getBbWidth() * 0.49;
 		direction = direction.normalize();
 		World world = entity.level;
 		Vector3d pos = entity.position();
-		double x1 = pos.x() + d + (direction.x() > 0 ? 1 : 0);
-		double y1 = pos.y();
-		double z1 = pos.z() + d + (direction.z() > 0 ? 1 : 0);
-		double x2 = pos.x() - d + (direction.x() < 0 ? -1 : 0);
-		double z2 = pos.z() - d + (direction.z() < 0 ? -1 : 0);
 		boolean canReturn = false;
 		for (double height = 0; height < maxHeight; height += accuracy) {
 			AxisAlignedBB box = new AxisAlignedBB(
-					x1, y1 + height, z1, x2, y1 + height + accuracy, z2
+					pos.x() + d + (direction.x() > 0 ? 1 : 0),
+					pos.y() + height,
+					pos.z() + d + (direction.z() > 0 ? 1 : 0),
+					pos.x() - d + (direction.x() < 0 ? -1 : 0),
+					pos.y() + height + accuracy,
+					pos.z() - d + (direction.z() < 0 ? -1 : 0)
 			);
 			if (!world.noCollision(box)) {
 				canReturn = true;
@@ -172,15 +172,15 @@ public class WorldUtil {
 		final double d = entity.getBbWidth() * 0.5;
 		int loopNum = (int) Math.round(entity.getBbHeight() / accuracy);
 		Vector3d pos = entity.position();
-		double x1 = pos.x() + d + (wall.x() > 0 ? 1 : 0);
-		double y1 = pos.y();
-		double z1 = pos.z() + d + (wall.z() > 0 ? 1 : 0);
-		double x2 = pos.x() - d + (wall.x() < 0 ? -1 : 0);
-		double z2 = pos.z() - d + (wall.z() < 0 ? -1 : 0);
 		boolean canReturn = false;
 		for (int i = 0; i < loopNum; i++) {
 			AxisAlignedBB box = new AxisAlignedBB(
-					x1, y1 + accuracy * i, z1, x2, y1 + accuracy * (i + 1), z2
+					pos.x() + d + (wall.x() > 0 ? 1 : 0),
+					pos.y() + accuracy * i,
+					pos.z() + d + (wall.z() > 0 ? 1 : 0),
+					pos.x() - d + (wall.x() < 0 ? -1 : 0),
+					pos.y() + accuracy * (i + 1),
+					pos.z() - d + (wall.z() < 0 ? -1 : 0)
 			);
 
 			if (!world.noCollision(box)) {

@@ -60,7 +60,7 @@ public class WallJump extends Action {
 			value = vec;
 		}
 
-		return value.normalize().add(wall.scale(-0.7)).scale(0.85);
+		return value.normalize().add(wall.scale(-0.7)).normalize();
 	}
 
 	public float getCoolDownPhase() {
@@ -88,7 +88,7 @@ public class WallJump extends Action {
 				&& KeyRecorder.keyWallJump.isPressed()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(VerticalWallRun.class).isDoing()
-				&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
+				&& parkourability.getAdditionalProperties().getNotLandingTick() > 4
 				&& WorldUtil.getWall(player) != null
 		);
 		if (!value) return false;
@@ -114,8 +114,16 @@ public class WallJump extends Action {
 		} else {
 			type = WallJumpAnimationType.SwingLeftArm;
 		}
+
+		double lookAngleY = player.getLookAngle().normalize().y();
+		if (lookAngleY > 0.5) { // Looking upward
+			jumpDirection = jumpDirection.add(0, lookAngleY * 2, 0).normalize();
+		} else {
+			jumpDirection = jumpDirection.add(0, 1, 0).normalize();
+		}
 		startInfo
 				.putDouble(jumpDirection.x())
+				.putDouble(jumpDirection.y())
 				.putDouble(jumpDirection.z())
 				.putDouble(wallDirection.x())
 				.putDouble(wallDirection.z())
@@ -136,11 +144,9 @@ public class WallJump extends Action {
 
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
-		double speedScale = 1;
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			player.playSound(SoundEvents.PLAYER_ATTACK_STRONG, 1f, 0.7f);
-		Vector3d jumpDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble()).scale(speedScale);
-		Vector3d direction = new Vector3d(jumpDirection.x(), 1.512, jumpDirection.z()).scale(.3);
+		Vector3d jumpMotion = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble()).scale(0.59);
 		Vector3d wallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		Vector3d motion = player.getDeltaMovement();
 
@@ -157,16 +163,14 @@ public class WallJump extends Action {
 		if (slipperiness > 0.9) {// icy blocks
 			ySpeed = motion.y();
 		} else {
-			ySpeed = motion.y() > direction.y() ? motion.y + direction.y() : direction.y();
+			ySpeed = motion.y() > jumpMotion.y() ? motion.y + jumpMotion.y() : jumpMotion.y();
 		}
 		player.setDeltaMovement(
-				motion.x() + direction.x(),
+				motion.x() + jumpMotion.x(),
 				ySpeed,
-				motion.z() + direction.z()
+				motion.z() + jumpMotion.z()
 		);
 
-		
-		
 		WallJumpAnimationType type = WallJumpAnimationType.fromCode(startData.get());
 		Animation animation = Animation.get(player);
 		if (animation != null) {
@@ -185,8 +189,7 @@ public class WallJump extends Action {
 
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
-		startData.position(16);
-		Vector3d wallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		startData.position(8 * 5); //skip double * 5
 		WallJumpAnimationType type = WallJumpAnimationType.fromCode(startData.get());
 		Animation animation = Animation.get(player);
 		if (animation != null) {
