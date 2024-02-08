@@ -71,13 +71,13 @@ public class CatLeap extends Action {
 
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
-		final double catLeapYSpeed = 0.49;
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			player.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 0.8f, 0.7f);
+		coolTimeTick = MAX_COOL_TIME_TICK;
+		player.jumpFromGround();
 		Vector3d motionVec = player.getDeltaMovement();
 		Vector3d vec = new Vector3d(motionVec.x(), 0, motionVec.z()).normalize();
-		coolTimeTick = MAX_COOL_TIME_TICK;
-		player.setDeltaMovement(vec.x(), catLeapYSpeed, vec.z());
+		player.setDeltaMovement(vec.x(), motionVec.y() * 1.16667, vec.z());
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new CatLeapAnimator());
 	}
