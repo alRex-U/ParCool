@@ -1,0 +1,278 @@
+{
+  "action.vault": {
+    "subtitle": "parcool.sound.vault",
+    "sounds": [
+      {
+        "name": "minecraft:entity/player/attack/strong1",
+        "volume": 0.9,
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong2",
+        "volume": 0.9,
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong3",
+        "volume": 0.9,
+        "pitch": 0.6
+      }
+    ]
+  },
+  "action.v_wall_run": {
+    "subtitle": "parcool.sound.v_wall_run",
+    "sounds": [
+      {
+        "name": "minecraft:entity/player/attack/strong1",
+        "volume": 0.9,
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong2",
+        "volume": 0.9,
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong3",
+        "volume": 0.9,
+        "pitch": 0.6
+      }
+    ]
+  },
+  "action.h_wall_run": {
+    "subtitle": "parcool.sound.h_wall_run",
+    "sounds": [
+      {
+        "name": "minecraft:entity/player/attack/strong1",
+        "volume": 0.9,
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong2",
+        "volume": 0.9,
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong3",
+        "volume": 0.9,
+        "pitch": 0.7
+      }
+    ]
+  },
+  "action.breakfall.just": {
+    "subtitle": "parcool.sound.breakfall.just",
+    "sounds": [
+      {
+        "name": "minecraft:random/anvil_land",
+        "volume": 0.75,
+        "pitch": 2
+      }
+    ]
+  },
+  "action.breakfall.roll": {
+    "subtitle": "parcool.sound.breakfall.roll",
+    "sounds": [
+      {
+        "name": "minecraft:entity/player/attack/strong1",
+        "volume": 0.9,
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong2",
+        "volume": 0.9,
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong3",
+        "volume": 0.9,
+        "pitch": 0.6
+      }
+    ]
+  },
+  "action.breakfall.tap": {
+    "subtitle": "parcool.sound.breakfall.tap",
+    "sounds": [
+      {
+        "name": "minecraft:entity/player/attack/strong1",
+        "volume": 0.9,
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong2",
+        "volume": 0.9,
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong3",
+        "volume": 0.9,
+        "pitch": 0.6
+      }
+    ]
+  },
+  "action.catleap": {
+    "subtitle": "parcool.sound.catleap",
+    "sounds": [
+      {
+        "name": "entity/player/attack/sweep1",
+        "volume": 0.8,
+        "pitch": 0.7
+      },
+      {
+        "name": "entity/player/attack/sweep2",
+        "volume": 0.8,
+        "pitch": 0.7
+      },
+      {
+        "name": "entity/player/attack/sweep3",
+        "volume": 0.8,
+        "pitch": 0.7
+      }
+    ]
+  },
+  "action.wall_jump": {
+    "subtitle": "parcool.sound.wall_jump",
+    "sounds": [
+      {
+        "name": "minecraft:entity/player/attack/strong1",
+        "volume": 0.9,
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong2",
+        "volume": 0.9,
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong3",
+        "volume": 0.9,
+        "pitch": 0.7
+      }
+    ]
+  },
+  "action.cling_to_cliff.grab": {
+    "subtitle": "parcool.sound.cling_to_cliff.grab",
+    "sounds": [
+      {
+        "name": "entity/player/attack/weak1",
+        "volume": 0.9,
+        "pitch": 0.6
+      },
+      {
+        "name": "entity/player/attack/weak2",
+        "volume": 0.9,
+        "pitch": 0.6
+      },
+      {
+        "name": "entity/player/attack/weak3",
+        "volume": 0.9,
+        "pitch": 0.6
+      }
+    ]
+  },
+  "action.cling_to_cliff.jump": {
+    "subtitle": "parcool.sound.hang_down.jump",
+    "sounds": [
+      {
+        "name": "minecraft:entity/player/attack/strong1",
+        "volume": 0.75,
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong2",
+        "volume": 0.75,
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong3",
+        "volume": 0.75,
+        "pitch": 0.6
+      }
+    ]
+  },
+  "action.hang_down.grab": {
+    "subtitle": "parcool.sound.hang_down.grab",
+    "sounds": [
+      {
+        "name": "entity/player/attack/weak1",
+        "volume": 0.9,
+        "pitch": 0.6
+      },
+      {
+        "name": "entity/player/attack/weak2",
+        "volume": 0.9,
+        "pitch": 0.6
+      },
+      {
+        "name": "entity/player/attack/weak3",
+        "volume": 0.9,
+        "pitch": 0.6
+      }
+    ]
+  },
+  "action.hang_down.jump": {
+    "subtitle": "parcool.sound.hang_down.jump",
+    "sounds": [
+      {
+        "name": "minecraft:entity/player/attack/strong1",
+        "volume": 0.9,
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong2",
+        "volume": 0.9,
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong3",
+        "volume": 0.9,
+        "pitch": 0.6
+      }
+    ]
+  },
+  "action.slide": {
+    "subtitle": "parcool.sound.slide",
+    "sounds": [
+      {
+        "name": "minecraft:entity/player/attack/strong1",
+        "volume": 0.9,
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong2",
+        "volume": 0.9,
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong3",
+        "volume": 0.9,
+        "pitch": 0.6
+      }
+    ]
+  },
+  "action.dodge": {
+    "subtitle": "parcool.sound.dodge",
+    "sounds": [
+      {
+        "name": "entity/player/attack/sweep1",
+        "volume": 0.6,
+        "pitch": 0.7
+      },
+      {
+        "name": "entity/player/attack/sweep2",
+        "volume": 0.6,
+        "pitch": 0.7
+      },
+      {
+        "name": "entity/player/attack/sweep3",
+        "volume": 0.6,
+        "pitch": 0.7
+      }
+    ]
+  },
+  "parcool.enable": {
+    "subtitle": "parcool.sound.enable_parcool"
+  },
+  "parcool.disable": {
+    "subtitle": "parcool.sound.disable_parcool"
+  }
+}

@@ -2,6 +2,7 @@ package com.alrex.parcool;
 
 import com.alrex.parcool.client.animation.AnimatorList;
 import com.alrex.parcool.client.input.KeyBindings;
+import com.alrex.parcool.client.sound.SoundEvents;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.item.ItemRegistry;
@@ -66,6 +67,7 @@ public class ParCool {
 		eventBus.addListener(this::doServerStuff);
 		Effects.registerAll(eventBus);
 		Potions.registerAll(eventBus);
+		SoundEvents.registerAll(eventBus);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarting);

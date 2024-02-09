@@ -3,6 +3,7 @@ package com.alrex.parcool.common.action.impl;
 import com.alrex.parcool.client.animation.impl.DodgeAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
+import com.alrex.parcool.client.sound.SoundEvents;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
@@ -12,13 +13,11 @@ import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
-
 
 public class Dodge extends Action {
 	public static final int MAX_TICK = 11;
@@ -134,7 +133,7 @@ public class Dodge extends Action {
 			successivelyCount++;
 		}
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 0.75f, 0.6f);
+			player.playSound(SoundEvents.DODGE, 1f, 1f);
 		successivelyCoolTick = getSuccessiveCoolTime(parkourability.getActionInfo());
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new DodgeAnimator(dodgeDirection));
