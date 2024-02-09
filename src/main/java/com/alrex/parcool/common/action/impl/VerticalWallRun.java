@@ -39,6 +39,7 @@ public class VerticalWallRun extends Action {
 				&& KeyBindings.getKeyJump().isDown()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& !parkourability.get(Crawl.class).isDoing()
+				&& !parkourability.get(CatLeap.class).isDoing()
 				&& !parkourability.get(WallSlide.class).isDoing()
 				&& !parkourability.get(HorizontalWallRun.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
