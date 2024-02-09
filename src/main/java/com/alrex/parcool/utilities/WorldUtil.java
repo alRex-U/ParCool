@@ -264,12 +264,29 @@ public class WorldUtil {
 		return axis;
 	}
 
+	public static boolean existsSpaceBelow(LivingEntity entity) {
+		World world = entity.level;
+		Vector3d center = entity.position();
+		if (!world.isLoaded(new BlockPos(center))) return false;
+		double height = entity.getBbHeight() * 1.5;
+		double width = entity.getBbWidth() * 2;
+		AxisAlignedBB boundingBox = new AxisAlignedBB(
+				center.x() - width,
+				center.y() - 9,
+				center.z() - width,
+				center.x() + width,
+				center.y() + height,
+				center.z() + width
+		);
+		return world.noCollision(boundingBox);
+	}
 	public static boolean existsDivableSpace(LivingEntity entity) {
 		World world = entity.level;
 		double width = entity.getBbWidth() * 1.5;
 		double height = entity.getBbHeight() * 1.5;
 		double wideWidth = entity.getBbWidth() * 2;
 		Vector3d center = entity.position();
+		if (!world.isLoaded(new BlockPos(center))) return false;
 		Vector3d diveDirection = VectorUtil.fromYawDegree(entity.getYHeadRot());
 		for (int i = 0; i < 4; i++) {
 			Vector3d centerPoint = center.add(diveDirection.scale(width * i));
@@ -292,7 +309,40 @@ public class WorldUtil {
 				center.y() + height,
 				center.z() + wideWidth
 		);
-		return world.noCollision(verticalWideBox);
+		if (world.noCollision(verticalWideBox)) return true;
+		BlockPos centerBlockPos = new BlockPos(center.add(0, -0.5, 0));
+
+		// check if water pool exists
+		if (!world.isLoaded(centerBlockPos)) return false;
+		verticalWideBox = new AxisAlignedBB(
+				center.x() - wideWidth,
+				center.y() - 2.9,
+				center.z() - wideWidth,
+				center.x() + wideWidth,
+				center.y() + height,
+				center.z() + wideWidth
+		);
+		int i = 0;
+		int waterLevel = -1;
+		for (; i < 6; i++) {
+			Block block = world.getBlockState(centerBlockPos.below(i)).getBlock();
+			if (block == Blocks.AIR) continue;
+			if (block == Blocks.WATER) {
+				waterLevel = i;
+				break;
+			}
+			return false;
+		}
+		if (waterLevel == -1) return false;
+		boolean filledWithWater = true;
+		for (; i < waterLevel + 3; i++) {
+			BlockState state = world.getBlockState(centerBlockPos.below(i));
+			if (state.getBlock() != Blocks.WATER) {
+				filledWithWater = false;
+				break;
+			}
+		}
+		return filledWithWater && world.noCollision(verticalWideBox);
 	}
 
 	@Nullable

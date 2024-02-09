@@ -45,8 +45,13 @@ public class Dive extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		boolean startInAir = parkourability.getAdditionalProperties().getNotLandingTick() > 10 && player.getDeltaMovement().y() < 0 && KeyRecorder.keyJumpState.getTickKeyDown() > 10;
+		boolean startInAir = player.getDeltaMovement().y() < 0
+				&& parkourability.getAdditionalProperties().getNotLandingTick() > 10
+				&& parkourability.getAdditionalProperties().getNotInWaterTick() > 30
+				&& KeyRecorder.keyJumpState.getTickKeyDown() > 10
+				&& WorldUtil.existsSpaceBelow(player);
 		if (!(startInAir || (justJumped && WorldUtil.existsDivableSpace(player) && parkourability.get(FastRun.class).canActWithRunning(player)))) {
+			justJumped = false;
 			return false;
 		}
 
