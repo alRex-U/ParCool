@@ -7,10 +7,7 @@ import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.client.hud.impl.HUDType;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
-import com.alrex.parcool.common.action.impl.Crawl;
-import com.alrex.parcool.common.action.impl.Dodge;
-import com.alrex.parcool.common.action.impl.FastRun;
-import com.alrex.parcool.common.action.impl.Vault;
+import com.alrex.parcool.common.action.impl.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -405,6 +402,7 @@ public class ParCoolConfig {
 		public static final ForgeConfigSpec.EnumValue<ColorTheme> GUIColorTheme;
 		public static final ForgeConfigSpec.EnumValue<FastRun.ControlType> FastRunControl;
 		public static final ForgeConfigSpec.EnumValue<Crawl.ControlType> CrawlControl;
+		public static final ForgeConfigSpec.EnumValue<Flipping.ControlType> FlipControl;
 
 		private static void register(ForgeConfigSpec.Builder builder, ConfigGroup group) {
 			Arrays.stream(Booleans.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
@@ -445,7 +443,8 @@ public class ParCoolConfig {
 			builder.push("Control");
 			{
 				FastRunControl = builder.comment("Control of FastRun").defineEnum("fast-run_control", FastRun.ControlType.PressKey);
-				CrawlControl = builder.comment("Control of FastRun").defineEnum("crawl_control", Crawl.ControlType.PressKey);
+				CrawlControl = builder.comment("Control of Crawl").defineEnum("crawl_control", Crawl.ControlType.PressKey);
+				FlipControl = builder.comment("Control of Flipping").defineEnum("flip_control", Flipping.ControlType.PressRightAndLeft);
 				register(builder, ConfigGroup.Control);
 			}
 			builder.pop();

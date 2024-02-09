@@ -53,6 +53,7 @@ public class ParCoolSettingScreen extends Screen {
 			new EnumConfigSet<>(ParCoolConfig.Client.AlignVerticalStaminaHUD),
 			new EnumConfigSet<>(ParCoolConfig.Client.FastRunControl),
 			new EnumConfigSet<>(ParCoolConfig.Client.CrawlControl),
+			new EnumConfigSet<>(ParCoolConfig.Client.FlipControl),
 			new EnumConfigSet<>(ParCoolConfig.Client.VaultAnimationMode),
 			new EnumConfigSet<>(ParCoolConfig.Client.GUIColorTheme),
 			new EnumConfigSet<>(ParCoolConfig.Client.StaminaHUDType),

@@ -8,55 +8,64 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 
 public class Flipping extends Action {
+	public enum ControlType {
+		PressRightAndLeft, TapMovementAndJump, PressFlippingKey;
 
-	public enum FlippingDirection {
-		Front, Back;
-
-		public int getCode() {
+		@OnlyIn(Dist.CLIENT)
+		public boolean isInputDone(boolean justJumped) {
 			switch (this) {
-				case Front:
-					return 0;
-				case Back:
-					return 1;
+				case PressRightAndLeft:
+					return KeyBindings.getKeyRight().isDown()
+							&& KeyRecorder.keyRight.getTickKeyDown() < 3
+							&& KeyBindings.getKeyLeft().isDown()
+							&& KeyRecorder.keyLeft.getTickKeyDown() < 3;
+				case PressFlippingKey:
+					return KeyRecorder.keyFlipping.isPressed();
+				case TapMovementAndJump:
+					return justJumped && (
+							(KeyBindings.getKeyForward().isDown() && KeyRecorder.keyForward.getTickKeyDown() < 4)
+									|| (KeyBindings.getKeyBack().isDown() && KeyRecorder.keyBack.getTickKeyDown() < 4)
+					);
 			}
-			return -1;
-		}
-
-		public static FlippingDirection getFromCode(int code) {
-			switch (code) {
-				case 0:
-					return Front;
-				case 1:
-					return Back;
-			}
-			return null;
+			return false;
 		}
 	}
 
+	public enum Direction {
+		Front, Back;
+	}
+
+	private boolean justJumped = false;
+
+	public void onJump(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		justJumped = true;
+	}
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		FlippingDirection fDirection;
+		Direction fDirection;
 		if (KeyBindings.getKeyBack().isDown()) {
-			fDirection = FlippingDirection.Back;
+			fDirection = Direction.Back;
 		} else {
-			fDirection = FlippingDirection.Front;
+			fDirection = Direction.Front;
 		}
-		startInfo.putInt(fDirection.getCode());
-		return (parkourability.getActionInfo().can(Flipping.class)
+		ControlType control = ParCoolConfig.Client.FlipControl.get();
+		startInfo
+				.putInt(control.ordinal())
+				.putInt(fDirection.ordinal());
+		boolean input = control.isInputDone(justJumped);
+		justJumped = false;
+		return (input
+				&& parkourability.getActionInfo().can(Flipping.class)
 				&& !stamina.isExhausted()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() <= 1
-				&& (
-				(KeyBindings.getKeyRight().isDown()
-						&& KeyRecorder.keyRight.getTickKeyDown() < 3
-						&& KeyBindings.getKeyLeft().isDown()
-						&& KeyRecorder.keyLeft.getTickKeyDown() < 3
-				) || KeyRecorder.keyFlipping.isPressed()
-		)
 		);
 	}
 
@@ -67,22 +76,24 @@ public class Flipping extends Action {
 
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
-		player.jumpFromGround();
+		ControlType control = ControlType.values()[startData.getInt()];
+		if (control != ControlType.TapMovementAndJump) player.jumpFromGround();
 		stamina.consume(parkourability.getActionInfo().getStaminaConsumptionOf(Flipping.class));
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new FlippingAnimator(
-					FlippingDirection.getFromCode(startData.getInt())
+					Direction.values()[startData.getInt()]
 			));
 		}
 	}
 
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+		startData.position(4); // skip (int * 1)
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new FlippingAnimator(
-					FlippingDirection.getFromCode(startData.getInt())
+					Direction.values()[startData.getInt()]
 			));
 		}
 	}
