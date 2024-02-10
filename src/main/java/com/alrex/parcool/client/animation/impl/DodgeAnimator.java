@@ -344,10 +344,6 @@ public class DodgeAnimator extends Animator {
 				player.setYBodyRot(player.getYHeadRot() + 5);
 				break;
 			}
-			case Back: {
-				player.setYBodyRot(player.getYHeadRot());
-				break;
-			}
 		}
 	}
 }

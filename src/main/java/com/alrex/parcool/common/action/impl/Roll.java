@@ -30,6 +30,9 @@ public class Roll extends Action {
 			if (KeyBindings.getKeyBreakfall().isDown()
 					&& KeyBindings.getKeyForward().isDown()
 					&& !parkourability.get(Dodge.class).isDoing()
+					&& !parkourability.get(Crawl.class).isDoing()
+					&& !player.isVisuallyCrawling()
+					&& !player.isVisuallySwimming()
 					&& ParCoolConfig.Client.Booleans.EnableRollWhenCreative.get()
 					&& player.isCreative()
 					&& parkourability.getAdditionalProperties().getLandingTick() <= 1

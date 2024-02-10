@@ -29,8 +29,8 @@ public class FastRunningAnimator extends Animator {
 		float rightZFactor = (float) (1 - Math.abs(transformer.getRawModel().rightArm.xRot) / (Math.PI / 3));
 		transformer.getRawModel().leftArm.z = (float) (transformer.getRawModel().leftArm.xRot / (Math.PI / 4) * 2);
 		transformer.getRawModel().rightArm.z = (float) (transformer.getRawModel().rightArm.xRot / (Math.PI / 4) * 2);
-		transformer.getRawModel().leftArm.x -= (Math.abs(transformer.getRawModel().leftArm.xRot) / (Math.PI / 3));
-		transformer.getRawModel().rightArm.x += (Math.abs(transformer.getRawModel().rightArm.xRot) / (Math.PI / 3));
+		transformer.getRawModel().leftArm.x -= (float) (Math.abs(transformer.getRawModel().leftArm.xRot) / (Math.PI / 3));
+		transformer.getRawModel().rightArm.x += (float) (Math.abs(transformer.getRawModel().rightArm.xRot) / (Math.PI / 3));
 		transformer.getRawModel().leftArm.y += bodyAngleFactor * 0.8f;
 		transformer.getRawModel().rightArm.y += bodyAngleFactor * 0.8f;
 		float tick = getTick() + transformer.getPartialTick();
