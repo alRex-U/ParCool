@@ -56,6 +56,7 @@ public class Slide extends Action {
 		if (animation != null) {
 			animation.setAnimator(new SlidingAnimator());
 		}
+		parkourability.getCancelMarks().addMarkerCancellingJump(this::isDoing);
 	}
 
 	@Override

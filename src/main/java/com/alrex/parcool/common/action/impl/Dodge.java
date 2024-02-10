@@ -115,12 +115,10 @@ public class Dodge extends Action {
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		return !(parkourability.get(Roll.class).isDoing()
 				|| parkourability.get(ClingToCliff.class).isDoing()
-				|| !player.isOnGround()
 				|| getDoingTick() >= MAX_TICK
 				|| player.isInWaterOrBubble()
 				|| player.isFallFlying()
 				|| player.abilities.flying
-				|| !parkourability.getActionInfo().can(Dodge.class)
 		);
 	}
 
@@ -135,12 +133,7 @@ public class Dodge extends Action {
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			player.playSound(SoundEvents.DODGE, 1f, 1f);
 		successivelyCoolTick = getSuccessiveCoolTime(parkourability.getActionInfo());
-		Animation animation = Animation.get(player);
-		if (animation != null) animation.setAnimator(new DodgeAnimator(dodgeDirection));
-	}
 
-	@Override
-	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		if (!player.isOnGround()) return;
 		Vector3d lookVec = VectorUtil.fromYawDegree(player.getYHeadRot());
 		Vector3d dodgeVec = Vector3d.ZERO;
@@ -160,6 +153,10 @@ public class Dodge extends Action {
 		}
 		dodgeVec = dodgeVec.scale(.9 * getSpeedModifier(parkourability.getActionInfo()));
 		player.setDeltaMovement(dodgeVec);
+
+		Animation animation = Animation.get(player);
+		if (animation != null) animation.setAnimator(new DodgeAnimator(dodgeDirection));
+		parkourability.getCancelMarks().addMarkerCancellingJump(this::isDoing);
 	}
 
 	@OnlyIn(Dist.CLIENT)

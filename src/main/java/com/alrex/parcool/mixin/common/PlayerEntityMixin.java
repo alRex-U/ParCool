@@ -6,7 +6,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerAbilities;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,11 +31,16 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 		}
 	}
 
+	@Inject(method = "jumpFromGround", at = @At("HEAD"), cancellable = true)
+	public void onJumpFromGround(CallbackInfo ci) {
+		Parkourability parkourability = Parkourability.get((PlayerEntity) (Object) this);
+		if (parkourability == null) return;
+		if (parkourability.getCancelMarks().cancelJump()) {
+			ci.cancel();
+		}
+	}
+
 	@Shadow
 	@Final
 	public PlayerAbilities abilities;
-
-	@Inject(method = "travel", at = @At("TAIL"))
-	public void onTravel(Vector3d p_213352_1_, CallbackInfo ci) {
-	}
 }

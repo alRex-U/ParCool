@@ -101,6 +101,7 @@ public class Roll extends Action {
 		player.setDeltaMovement(vec.x(), 0, vec.z());
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new RollAnimator(direction));
+		parkourability.getCancelMarks().addMarkerCancellingJump(this::isDoing);
 	}
 
 	public void startRoll(PlayerEntity player) {
