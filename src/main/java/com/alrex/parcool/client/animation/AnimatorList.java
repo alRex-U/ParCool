@@ -16,6 +16,7 @@ public class AnimatorList {
 			DiveAnimationHostAnimator.class,
 			DodgeAnimator.class,
 			FastRunningAnimator.class,
+			FastSwimAnimator.class,
 			FlippingAnimator.class,
 			HorizontalWallRunAnimator.class,
 			JumpFromBarAnimator.class,

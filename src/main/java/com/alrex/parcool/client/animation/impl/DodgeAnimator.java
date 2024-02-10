@@ -177,7 +177,7 @@ public class DodgeAnimator extends Animator {
 						.sinInOut(0.4f, 1, 1, 0)
 						.get();
 				transformer.getRawModel().leftArm.x -= (float) (0.8 * armZFactor);
-				transformer.getRawModel().rightArm.z += (float) (0.8 * armZFactor);
+				transformer.getRawModel().rightArm.x += (float) (0.8 * armZFactor);
 				transformer
 						.rotateRightLeg((float) Math.toRadians(rightLegXFactor * -70), 0, 0, animFactor)
 						.rotateLeftLeg((float) Math.toRadians(leftLegXFactor * -70), 0, 0, animFactor)
