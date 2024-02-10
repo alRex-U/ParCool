@@ -99,6 +99,7 @@ public class Dive extends Action {
 	@Override
 	public void onStop(PlayerEntity player) {
 		if (player.isInWaterOrBubble()) {
+			player.setSprinting(true);
 			player.setSwimming(true);
 		}
 	}
