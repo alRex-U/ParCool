@@ -11,9 +11,16 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.particles.BlockParticleData;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
@@ -116,7 +123,49 @@ public class VerticalWallRun extends Action {
 	}
 
 	@Override
+	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		spawnRunningParticle(player);
+	}
+
+	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
 		return StaminaConsumeTiming.OnStart;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public void spawnRunningParticle(PlayerEntity player) {
+		if (wallDirection == null) return;
+		World level = player.level;
+		Vector3d pos = player.position();
+		BlockPos leanedBlock = new BlockPos(
+				pos.add(wallDirection.x(), player.getBbHeight() * 0.25, wallDirection.z())
+		);
+		if (!level.isLoaded(leanedBlock)) return;
+		float width = player.getBbWidth();
+		BlockState blockstate = level.getBlockState(leanedBlock);
+
+		Vector3d normalizedWallVec = wallDirection.normalize();
+		Vector3d orthogonalToWallVec = normalizedWallVec.yRot((float) (Math.PI / 2));
+		if (blockstate.getRenderShape() != BlockRenderType.INVISIBLE) {
+			Vector3d particlePos = new Vector3d(
+					pos.x() + (normalizedWallVec.x() * 0.4 + orthogonalToWallVec.x() * (player.getRandom().nextDouble() - 0.5D)) * width,
+					pos.y() + 0.1D + 0.3 * player.getRandom().nextDouble(),
+					pos.z() + (normalizedWallVec.z() * 0.4 + orthogonalToWallVec.z() * (player.getRandom().nextDouble() - 0.5D)) * width
+			);
+			Vector3d particleSpeed = normalizedWallVec
+					.reverse()
+					.yRot((float) (Math.PI * 0.2 * (player.getRandom().nextDouble() - 0.5)))
+					.scale(2 + 4 * player.getRandom().nextDouble())
+					.add(0, 0.5, 0);
+			level.addParticle(
+					new BlockParticleData(ParticleTypes.BLOCK, blockstate).setPos(leanedBlock),
+					particlePos.x(),
+					particlePos.y(),
+					particlePos.z(),
+					particleSpeed.x(),
+					particleSpeed.y(),
+					particleSpeed.z()
+			);
+		}
 	}
 }

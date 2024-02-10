@@ -9,8 +9,14 @@ import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.particles.BlockParticleData;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -48,6 +54,10 @@ public class CatLeap extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		Vector3d movement = player.getDeltaMovement();
+		if (movement.lengthSqr() < 0.001) return false;
+		movement = movement.multiply(1, 0, 1).normalize();
+		startInfo.putDouble(movement.x()).putDouble(movement.z());
 		return (parkourability.getActionInfo().can(CatLeap.class)
 				&& player.isOnGround()
 				&& !stamina.isExhausted()
@@ -71,19 +81,22 @@ public class CatLeap extends Action {
 
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+		Vector3d jumpDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			player.playSound(SoundEvents.CATLEAP, 1, 1);
 		coolTimeTick = MAX_COOL_TIME_TICK;
+		spawnJumpEffect(player, jumpDirection);
 		player.jumpFromGround();
 		Vector3d motionVec = player.getDeltaMovement();
-		Vector3d vec = new Vector3d(motionVec.x(), 0, motionVec.z()).normalize();
-		player.setDeltaMovement(vec.x(), motionVec.y() * 1.16667, vec.z());
+		player.setDeltaMovement(jumpDirection.x(), motionVec.y() * 1.16667, jumpDirection.z());
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new CatLeapAnimator());
 	}
 
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+		Vector3d jumpDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		spawnJumpEffect(player, jumpDirection);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new CatLeapAnimator());
 	}
@@ -95,5 +108,35 @@ public class CatLeap extends Action {
 
 	public float getCoolDownPhase() {
 		return ((float) MAX_COOL_TIME_TICK - coolTimeTick) / MAX_COOL_TIME_TICK;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private void spawnJumpEffect(PlayerEntity player, Vector3d jumpDirection) {
+		World level = player.level;
+		Vector3d pos = player.position();
+		BlockPos blockpos = new BlockPos(pos.add(0, -0.2, 0));
+		if (!level.isLoaded(blockpos)) return;
+		float width = player.getBbWidth();
+		BlockState blockstate = level.getBlockState(blockpos);
+		if (blockstate.getRenderShape() != BlockRenderType.INVISIBLE) {
+			for (int i = 0; i < 20; i++) {
+				Vector3d particlePos = new Vector3d(
+						pos.x() + (jumpDirection.x() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width,
+						pos.y() + 0.1D,
+						pos.z() + (jumpDirection.z() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width
+				);
+				Vector3d particleSpeed = particlePos.subtract(pos).normalize().scale(2.5 + 8 * player.getRandom().nextDouble()).add(0, 1.5, 0);
+				level.addParticle(
+						new BlockParticleData(ParticleTypes.BLOCK, blockstate).setPos(blockpos),
+						particlePos.x(),
+						particlePos.y(),
+						particlePos.z(),
+						particleSpeed.x(),
+						particleSpeed.y(),
+						particleSpeed.z()
+				);
+
+			}
+		}
 	}
 }
