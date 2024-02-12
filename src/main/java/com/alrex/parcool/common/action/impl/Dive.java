@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.client.animation.impl.DiveAnimationHostAnimator;
+import com.alrex.parcool.client.animation.impl.DiveIntoWaterAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
@@ -99,8 +100,11 @@ public class Dive extends Action {
 	@Override
 	public void onStop(PlayerEntity player) {
 		if (player.isInWaterOrBubble()) {
-			player.setSprinting(true);
-			player.setSwimming(true);
+			Animation animation = Animation.get(player);
+			Parkourability parkourability = Parkourability.get(player);
+			if (animation != null && parkourability != null && parkourability.getAdditionalProperties().getNotLandingTick() >= 20) {
+				animation.setAnimator(new DiveIntoWaterAnimator(parkourability.get(SkyDive.class).isDoing()));
+			}
 		}
 	}
 

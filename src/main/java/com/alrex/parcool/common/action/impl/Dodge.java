@@ -105,6 +105,7 @@ public class Dodge extends Action {
 				&& !isInSuccessiveCoolDown(parkourability.getActionInfo())
 				&& coolTime <= 0
 				&& player.isOnGround()
+				&& !player.isInWaterOrBubble()
 				&& !player.isShiftKeyDown()
 				&& !stamina.isExhausted()
 		);

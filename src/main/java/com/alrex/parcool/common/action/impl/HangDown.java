@@ -121,7 +121,7 @@ public class HangDown extends Action {
 			else if (KeyBindings.getKeyBack().isDown()) player.setDeltaMovement(-xSpeed, 0, -zSpeed);
 			else player.setDeltaMovement(0, 0, 0);
 		}
-		armSwingAmount += player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
+		armSwingAmount += (float) player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
 	}
 
 	@Override

@@ -147,7 +147,9 @@ public class DiveAnimationHostAnimator extends Animator {
 
 	public static class SkyDiveAnimator extends Animator {
 		private int forwardAngleCount = 0;
+		private int forwardAngleCountOld = 0;
 		private int rightAngleCount = 0;
+		private int rightAngleCountOld = 0;
 		private final int maxCount = 8;
 		private final float startPitchAngle;
 		private float pitchAngle;
@@ -164,6 +166,8 @@ public class DiveAnimationHostAnimator extends Animator {
 		@Override
 		public void tick() {
 			super.tick();
+			forwardAngleCountOld = forwardAngleCount;
+			rightAngleCountOld = rightAngleCount;
 			if (KeyBindings.getKeyForward().isDown()) {
 				if (KeyBindings.getKeyBack().isDown()) {
 					if (forwardAngleCount > 0) forwardAngleCount--;
@@ -213,8 +217,10 @@ public class DiveAnimationHostAnimator extends Animator {
 
 		private float getForwardAngleFactor(float partial) {
 			float phase;
-			if (forwardAngleCount > 0) phase = (forwardAngleCount + partial) / maxCount;
-			else if (forwardAngleCount < 0) phase = (forwardAngleCount - partial) / maxCount;
+			if (forwardAngleCount > 0)
+				phase = MathUtil.lerp(forwardAngleCountOld, forwardAngleCount, partial) / maxCount;
+			else if (forwardAngleCount < 0)
+				phase = MathUtil.lerp(forwardAngleCountOld, forwardAngleCount, partial) / maxCount;
 			else phase = 0;
 			if (phase > 1) phase = 1;
 			if (phase < -1) phase = -1;
@@ -228,8 +234,9 @@ public class DiveAnimationHostAnimator extends Animator {
 
 		private float getRightAngleFactor(float partial) {
 			float phase;
-			if (rightAngleCount > 0) phase = (rightAngleCount + partial) / maxCount;
-			else if (rightAngleCount < 0) phase = (rightAngleCount - partial) / maxCount;
+			if (rightAngleCount > 0) phase = MathUtil.lerp(rightAngleCountOld, rightAngleCount, partial) / maxCount;
+			else if (rightAngleCount < 0)
+				phase = MathUtil.lerp(rightAngleCountOld, rightAngleCount, partial) / maxCount;
 			else phase = 0;
 			if (phase > 1) phase = 1;
 			if (phase < -1) phase = -1;

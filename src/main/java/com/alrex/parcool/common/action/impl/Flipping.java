@@ -64,6 +64,7 @@ public class Flipping extends Action {
 		justJumped = false;
 		return (input
 				&& parkourability.getActionInfo().can(Flipping.class)
+				&& !parkourability.get(Dive.class).isDoing()
 				&& !stamina.isExhausted()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() <= 1
 		);

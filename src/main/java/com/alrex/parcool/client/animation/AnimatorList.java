@@ -14,6 +14,7 @@ public class AnimatorList {
 			ClingToCliffAnimator.class,
 			CrawlAnimator.class,
 			DiveAnimationHostAnimator.class,
+			DiveIntoWaterAnimator.class,
 			DodgeAnimator.class,
 			FastRunningAnimator.class,
 			FastSwimAnimator.class,
