@@ -48,9 +48,9 @@ public class FastRunningAnimator extends Animator {
 
 	@Override
 	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
-		float phase = (getTick() + rotator.getPartialTick()) / 10;
-		if (phase > 1) phase = 1;
 		float tick = getTick() + rotator.getPartialTick();
+		float phase = tick / 10;
+		if (phase > 1) phase = 1;
 		float pitch = bodyAngleFactor(phase) * 25 + 5f * (float) Math.sin(Math.PI * tick / 10);
 		Vector3d lookAngle = player.getLookAngle();
 		Vector3d bodyAngle = VectorUtil.fromYawDegree(MathUtil.lerp(player.yBodyRotO, player.yBodyRot, rotator.getPartialTick()));
