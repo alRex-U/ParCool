@@ -118,7 +118,7 @@ public class VerticalWallRun extends Action {
 	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
 		if (wallDirection != null && isDoing()) {
 			player.setYHeadRot((float) VectorUtil.toYawDegree(wallDirection));
-			player.setYBodyRot(player.getYHeadRot());
+            player.yBodyRotO = player.yBodyRot = player.getYHeadRot();
 		}
 	}
 

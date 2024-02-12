@@ -92,7 +92,7 @@ public class ClingToCliff extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		armSwingAmount += player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
+		armSwingAmount += (float) player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
 		if (KeyBindings.getKeyLeft().isDown() && KeyBindings.getKeyRight().isDown()) {
 			player.setDeltaMovement(0, 0, 0);
 		} else {
@@ -146,10 +146,10 @@ public class ClingToCliff extends Action {
 					player.setYBodyRot((float) VectorUtil.toYawDegree(clingWallDirection));
 					break;
 				case RightAgainstWall:
-					player.setYBodyRot((float) VectorUtil.toYawDegree(clingWallDirection.yRot((float) (-Math.PI / 2))));
+					player.yBodyRotO = player.yBodyRot = (float) VectorUtil.toYawDegree(clingWallDirection.yRot((float) (-Math.PI / 2)));
 					break;
 				case LeftAgainstWall:
-					player.setYBodyRot((float) VectorUtil.toYawDegree(clingWallDirection.yRot((float) (Math.PI / 2))));
+					player.yBodyRotO = player.yBodyRot = (float) VectorUtil.toYawDegree(clingWallDirection.yRot((float) (Math.PI / 2)));
 			}
 		}
 	}
