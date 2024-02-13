@@ -43,8 +43,8 @@ public class DiveIntoWaterAnimator extends Animator {
         transformer
                 .rotateLeftArm(0, 0, (float) Math.toRadians(-170 * armRollFactor), animationFactor)
                 .rotateRightArm(0, 0, (float) Math.toRadians(170 * armRollFactor), animationFactor)
-                .rotateLeftLeg((float) Math.toRadians(-55 * legPitchFactor), 0, 0, animationFactor)
-                .rotateRightLeg((float) Math.toRadians(20 - 75 * legPitchFactor), 0, 0, animationFactor)
+                .rotateLeftLeg((float) Math.toRadians(-75 * legPitchFactor), 0, 0, animationFactor)
+                .rotateRightLeg((float) Math.toRadians(20 - 95 * legPitchFactor), 0, 0, animationFactor)
                 .makeLegsLittleMoving()
                 .makeArmsNatural()
                 .rotateAdditionallyHeadPitch((float) Math.toRadians(30 * headPitchFactor));
@@ -54,7 +54,10 @@ public class DiveIntoWaterAnimator extends Animator {
     public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
         float phase = (getTick() + rotator.getPartialTick()) / MAX_ANIMATION_TICK;
         if (phase > 1) return;
-        float pitchFactor = new Easing(phase).squareOut(0, 1, 0, 1).get();
+        float pitchFactor = new Easing(phase)
+                .linear(0, 0.10f, 0, 0)
+                .squareOut(0.10f, 1, 0, 1)
+                .get();
         rotator.startBasedCenter()
                 .rotatePitchFrontward(
                         fromSkyDive ? 90f + 270f * pitchFactor : 180f + 180f * pitchFactor

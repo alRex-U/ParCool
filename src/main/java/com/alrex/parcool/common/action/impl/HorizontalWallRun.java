@@ -188,7 +188,7 @@ public class HorizontalWallRun extends Action {
 						runningDirection.yRot((float) (-Math.signum(differenceAngle) * Math.PI / 4))
 				));
 			}
-			player.setYBodyRot(bodyYaw);
+			player.yBodyRotO = player.yBodyRot = bodyYaw;
 		}
 	}
 
