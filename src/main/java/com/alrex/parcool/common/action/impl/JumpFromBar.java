@@ -1,8 +1,8 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.JumpFromBarAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
-import com.alrex.parcool.client.sound.SoundEvents;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
@@ -33,7 +33,7 @@ public class JumpFromBar extends Action {
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		EntityUtil.addVelocity(player, player.getLookAngle().multiply(1, 0, 1).normalize().scale(player.getBbWidth() * 0.75));
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.HANG_DOWN_JUMP, 1f, 1f);
+            player.playSound(SoundEvents.HANG_DOWN_JUMP.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new JumpFromBarAnimator());
 	}

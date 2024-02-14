@@ -1,8 +1,8 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.VerticalWallRunAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
-import com.alrex.parcool.client.sound.SoundEvents;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
@@ -95,7 +95,7 @@ public class VerticalWallRun extends Action {
 		double height = startData.getDouble();
 		float slipperiness = startData.getFloat();
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.VERTICAL_WALL_RUN, 1f, 1f);
+            player.playSound(SoundEvents.VERTICAL_WALL_RUN.get(), 1f, 1f);
 		player.setDeltaMovement(player
 				.getDeltaMovement()
 				.multiply(1, 0, 1)

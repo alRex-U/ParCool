@@ -13,11 +13,7 @@ public interface IStamina {
 		return optional.orElse(null);
 	}
 
-	public int getMaxStamina();
-
 	public int getActualMaxStamina();
-
-	public void setMaxStamina(int value);
 
 	public int get();
 

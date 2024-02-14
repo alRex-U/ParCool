@@ -1,8 +1,8 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.CatLeapAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
-import com.alrex.parcool.client.sound.SoundEvents;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
@@ -83,7 +83,7 @@ public class CatLeap extends Action {
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		Vector3d jumpDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.CATLEAP, 1, 1);
+            player.playSound(SoundEvents.CATLEAP.get(), 1, 1);
 		coolTimeTick = MAX_COOL_TIME_TICK;
 		spawnJumpEffect(player, jumpDirection);
 		player.jumpFromGround();

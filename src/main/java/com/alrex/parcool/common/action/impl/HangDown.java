@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.HangAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
@@ -89,11 +90,13 @@ public class HangDown extends Action {
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		setup(player, startData);
+        player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
 	}
 
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
 		setup(player, startData);
+        player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
 	}
 
 	@OnlyIn(Dist.CLIENT)

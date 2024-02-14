@@ -1,8 +1,8 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.ClimbUpAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
-import com.alrex.parcool.client.sound.SoundEvents;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
@@ -40,7 +40,7 @@ public class ClimbUp extends Action {
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		EntityUtil.addVelocity(player, new Vector3d(0, 0.6, 0));
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.CLING_TO_CLIFF_JUMP, 1f, 1f);
+            player.playSound(SoundEvents.CLING_TO_CLIFF_JUMP.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new ClimbUpAnimator());
 	}

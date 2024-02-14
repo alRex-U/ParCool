@@ -240,14 +240,6 @@ public class ParCoolConfig {
 			MaxSuccessiveDodgeCount(
 					ConfigGroup.Control, "Max number of times of successive Dodge action",
 					"successive_dodge_count", 3, 1, Integer.MAX_VALUE
-			),
-			MaxStamina(
-					ConfigGroup.Stamina, null, "max_stamina",
-					2000, 300, 10000
-			),
-			StaminaRecoveryValue(
-					ConfigGroup.Stamina, null, "stamina_recovery",
-					20, 1, 10000
 			);
 			public final ConfigGroup Group;
 			@Nullable
@@ -462,6 +454,7 @@ public class ParCoolConfig {
 			builder.pop();
 			builder.comment("Stamina Section").push("Stamina");
 			{
+				builder.comment("Caution : Max stamina and stamina recovery config is removed because they became attributes.");
 				builder.push("Consumption");
 				{
 					for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
@@ -757,8 +750,7 @@ public class ParCoolConfig {
 					builder.push("Least Consumption");
 					{
 						for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
-							leastStaminaConsumptions[i]
-									= builder.defineInRange(
+							leastStaminaConsumptions[i] = builder.defineInRange(
 									"stamina_consumption_of_" + ActionList.ACTIONS.get(i).getSimpleName(),
 									ActionList.ACTION_REGISTRIES.get(i).getDefaultStaminaConsumption(),
 									0, 10000

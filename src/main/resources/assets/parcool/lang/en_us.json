@@ -38,6 +38,7 @@
   "parcool.action.Dive": "Dive",
   "parcool.action.Dodge": "Dodge",
   "parcool.action.FastRun": "Fast Run",
+  "parcool.action.FastSwim": "Fast Swim",
   "parcool.action.Flipping": "Flipping",
   "parcool.action.HangDown": "Hang Down",
   "parcool.action.HorizontalWallRun": "Horizontal Wall-Run",

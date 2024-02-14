@@ -14,8 +14,8 @@ public class SettingShowLimitationsScreen extends ParCoolSettingScreen {
         currentScreen = 3;
         infoList = new InfoSet[]{
                 new InfoSet(
-                        "Max Stamina",
-                        Integer.toString(info.getMaxStamina())
+                        "Max Stamina Limit",
+                        Integer.toString(info.getMaxStaminaLimit())
                 ),
                 new InfoSet(
                         "Infinite Stamina Permission",

@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.input.KeyBindings;
-import com.alrex.parcool.client.sound.SoundEvents;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.IStamina;
@@ -20,7 +20,7 @@ public class BreakfallReady extends Action {
 		boolean playSound = false;
 		if (justTimed && ParCoolConfig.Client.Booleans.EnableJustTimeEffectOfBreakfall.get()) {
 			if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-				player.playSound(SoundEvents.BREAKFALL_JUST_TIME, 1, 1);
+                player.playSound(SoundEvents.BREAKFALL_JUST_TIME.get(), 1, 1);
 			Vector3d pos = player.position();
 			Random rand = player.getRandom();
 			for (int i = 0; i < 12; i++) {
@@ -41,11 +41,11 @@ public class BreakfallReady extends Action {
 				|| !parkourability.getActionInfo().can(Tap.class)
 		) {
 			stamina.consume((int) ((justTimed ? 0.25f : 1) * parkourability.getActionInfo().getStaminaConsumptionOf(Roll.class)));
-			if (playSound) player.playSound(SoundEvents.ROLL, 1, 1);
+            if (playSound) player.playSound(SoundEvents.ROLL.get(), 1, 1);
 			parkourability.get(Roll.class).startRoll(player);
 		} else {
 			stamina.consume((int) ((justTimed ? 0.25f : 1) * parkourability.getActionInfo().getStaminaConsumptionOf(Tap.class)));
-			if (playSound) player.playSound(SoundEvents.SAFETY_TAP, 1, 1);
+            if (playSound) player.playSound(SoundEvents.SAFETY_TAP.get(), 1, 1);
 			parkourability.get(Tap.class).startTap(player);
 		}
 	}
