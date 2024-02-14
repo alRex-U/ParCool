@@ -124,6 +124,10 @@ public class ParCoolConfig {
 					ConfigGroup.Control, "Enable Vault in air",
 					"enable_vault_in_air", true
 			),
+			CanGetOffStepsWhileDodge(
+					ConfigGroup.Control, "Enable getting off steps while doing dodge",
+					"can_get_off_steps_while_dodge", false
+			),
 			EnableWallJumpBackward(
 					ConfigGroup.Control, "Enable backward Wall-Jump when facing to wall",
 					"enable_wall_jump_backward", false

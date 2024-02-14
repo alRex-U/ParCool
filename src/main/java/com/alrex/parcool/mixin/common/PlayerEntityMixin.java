@@ -4,12 +4,9 @@ import com.alrex.parcool.common.action.impl.ClingToCliff;
 import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerAbilities;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -40,7 +37,12 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 		}
 	}
 
-	@Shadow
-	@Final
-	public PlayerAbilities abilities;
+	@Inject(method = "isStayingOnGroundSurface", at = @At("HEAD"), cancellable = true)
+	public void onIsStayingOnGroundSurface(CallbackInfoReturnable<Boolean> cir) {
+		Parkourability parkourability = Parkourability.get((PlayerEntity) (Object) this);
+		if (parkourability == null) return;
+		if (parkourability.getCancelMarks().cancelDescendFromEdge()) {
+			cir.setReturnValue(true);
+		}
+	}
 }
