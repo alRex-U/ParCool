@@ -4,6 +4,8 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.potion.Effects;
 import com.alrex.parcool.config.ParCoolConfig;
+
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
@@ -67,7 +69,9 @@ public class Stamina implements IStamina {
 				|| player.hasEffect(Effects.INEXHAUSTIBLE)
 		) return;
 		if (ParCoolConfig.Client.Booleans.UseHungerBarInstead.get()) {
-			player.causeFoodExhaustion(value / 1000f);
+			//player.displayClientMessage(new TextComponent("Debug! " + Float.toString(value / 1000f) + " " + Boolean.toString(player.getAbilities().invulnerable) + " " + Boolean.toString(player.level.isClientSide)), true);
+			//player.causeFoodExhaustion(value / 1000f);
+			player.getFoodData().addExhaustion(value / 1000f);
 			return;
 		}
 		recoverCoolTime = 30;
