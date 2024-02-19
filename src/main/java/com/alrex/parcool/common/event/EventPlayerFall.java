@@ -5,6 +5,8 @@ import com.alrex.parcool.common.action.impl.Roll;
 import com.alrex.parcool.common.action.impl.Tap;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.network.StartBreakfallMessage;
+import com.alrex.parcool.config.ParCoolConfig;
+
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -23,11 +25,14 @@ public class EventPlayerFall {
 		) {
 			boolean justTime = parkourability.get(BreakfallReady.class).getDoingTick() < 5;
 			float distance = event.getDistance();
-			if (distance > 2) StartBreakfallMessage.send(player, justTime);
-			if (distance < 6 || (justTime && distance < 8)) {
-				event.setCanceled(true);
-			} else {
-				event.setDamageMultiplier(event.getDamageMultiplier() * (justTime ? 0.4f : 0.6f));
+			var onlyJustTime = ParCoolConfig.Client.Booleans.EnableJustTimeEffectOfBreakfall.get();
+			if (justTime || !onlyJustTime) {
+				if (distance > 2) StartBreakfallMessage.send(player, justTime);
+				if (distance < 6) {
+					event.setCanceled(true);
+				} else if (justTime) {
+					event.setDamageMultiplier(event.getDamageMultiplier() * (justTime && !onlyJustTime ? 0.4f : 0.6f));
+				}
 			}
 		}
 	}

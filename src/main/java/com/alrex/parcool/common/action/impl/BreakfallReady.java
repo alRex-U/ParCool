@@ -17,33 +17,28 @@ import java.util.Random;
 public class BreakfallReady extends Action {
 	public void startBreakfall(Player player, Parkourability parkourability, IStamina stamina, boolean justTimed) {
 		setDoing(false);
-		if (justTimed && ParCoolConfig.Client.Booleans.EnableJustTimeEffectOfBreakfall.get()) {
-			if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-				player.playSound(SoundEvents.ANVIL_PLACE, 0.75f, 2f);
-			Vec3 pos = player.position();
-			Random rand = player.getRandom();
-			for (int i = 0; i < 12; i++) {
-				player.level.addParticle(ParticleTypes.END_ROD,
-						pos.x(),
-						pos.y() + player.getBbHeight() / 2,
-						pos.z(),
-						(rand.nextDouble() - 0.5) * 0.5,
-						(rand.nextDouble() - 0.5) * 0.5,
-						(rand.nextDouble() - 0.5) * 0.5
-				);
-			}
-		} else if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get()) {
 			player.playSound(SoundEvents.PLAYER_ATTACK_STRONG, 1f, 0.7f);
-
-		if (((KeyBindings.getKeyForward().isDown() || KeyBindings.getKeyBack().isDown() || KeyBindings.getKeyLeft().isDown() || KeyBindings.getKeyRight().isDown())
-				&& parkourability.getActionInfo().can(Roll.class))
+		}
+		
+		var onlyJustTime = ParCoolConfig.Client.Booleans.EnableJustTimeEffectOfBreakfall.get();
+				
+		if (((KeyBindings.getKeyForward().isDown() 
+				|| KeyBindings.getKeyBack().isDown() 
+				|| KeyBindings.getKeyLeft().isDown() 
+				|| KeyBindings.getKeyRight().isDown())
+			&& parkourability.getActionInfo().can(Roll.class))
 				|| !parkourability.getActionInfo().can(Tap.class)
 		) {
-			stamina.consume((int) ((justTimed ? 0.25f : 1) * parkourability.getActionInfo().getStaminaConsumptionOf(Roll.class)));
-			parkourability.get(Roll.class).startRoll(player);
+			stamina.consume((int) ((justTimed && !onlyJustTime ? 0.25f : 1) * parkourability.getActionInfo().getStaminaConsumptionOf(Roll.class)));
+			if (justTimed || !onlyJustTime) {
+				parkourability.get(Roll.class).startRoll(player);			
+			}
 		} else {
-			stamina.consume((int) ((justTimed ? 0.25f : 1) * parkourability.getActionInfo().getStaminaConsumptionOf(Tap.class)));
-			parkourability.get(Tap.class).startTap(player);
+			stamina.consume((int) ((justTimed && !onlyJustTime ? 0.25f : 1) * parkourability.getActionInfo().getStaminaConsumptionOf(Tap.class)));
+			if (justTimed || !onlyJustTime) {
+				parkourability.get(Tap.class).startTap(player);
+			}
 		}
 	}
 
