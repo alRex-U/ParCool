@@ -47,8 +47,8 @@ public class ActionProcessor {
 		boolean needSync = event.side == LogicalSide.CLIENT && player.isLocalPlayer();
 		SyncActionStateMessage.Encoder builder = SyncActionStateMessage.Encoder.reset();
 
+		stamina.tick();
 		if (needSync) {
-			stamina.tick();
 			staminaSyncCoolTimeTick++;
 			if (staminaSyncCoolTimeTick > 5) {
 				staminaSyncCoolTimeTick = 0;

@@ -3,8 +3,9 @@ package com.alrex.parcool.common.event;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.Stamina;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
+import com.alrex.parcool.common.capability.stamina.OtherStamina;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -62,7 +63,12 @@ public class EventAttachCapability {
 		}
 		//Stamina
 		{
-			IStamina instance = new Stamina(player);
+			IStamina instance;
+			if (player.isLocalPlayer()) {
+				instance = ParCoolConfig.Client.StaminaType.get().newInstance(player);
+			} else {
+				instance = new OtherStamina(player);
+			}
 			LazyOptional<IStamina> optional = LazyOptional.of(() -> instance);
 			ICapabilityProvider provider = new ICapabilitySerializable<CompoundNBT>() {
 				@Override

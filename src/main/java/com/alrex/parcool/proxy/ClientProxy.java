@@ -38,18 +38,18 @@ public class ClientProxy extends CommonProxy {
 				SyncActionStateMessage::handleClient
 		);
 		instance.registerMessage(
-				16,
-				StaminaControlMessage.class,
-				StaminaControlMessage::encode,
-				StaminaControlMessage::decode,
-				StaminaControlMessage::handleClient
-		);
-		instance.registerMessage(
 				17,
 				SyncClientInformationMessage.class,
 				SyncClientInformationMessage::encode,
 				SyncClientInformationMessage::decode,
 				SyncClientInformationMessage::handleClient
+		);
+		instance.registerMessage(
+				18,
+				ConsumeHungerMessage.class,
+				ConsumeHungerMessage::encode,
+				ConsumeHungerMessage::decode,
+				ConsumeHungerMessage::handle
 		);
 	}
 }

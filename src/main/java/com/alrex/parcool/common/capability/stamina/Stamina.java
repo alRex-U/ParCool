@@ -1,8 +1,9 @@
-package com.alrex.parcool.common.capability;
+package com.alrex.parcool.common.capability.stamina;
 
 import com.alrex.parcool.api.Attributes;
 import com.alrex.parcool.api.Effects;
-import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -56,10 +57,6 @@ public class Stamina implements IStamina {
 				|| parkourability.getActionInfo().isStaminaInfinite(player.isSpectator() || player.isCreative())
                 || player.hasEffect(Effects.INEXHAUSTIBLE.get())
 		) return;
-		if (ParCoolConfig.Client.Booleans.UseHungerBarInstead.get()) {
-			player.causeFoodExhaustion(value / 1000f);
-			return;
-		}
 		recoverCoolTime = 30;
 		set(stamina - value);
 		if (stamina == 0) {

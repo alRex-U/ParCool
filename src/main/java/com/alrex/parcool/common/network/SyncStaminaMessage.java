@@ -2,6 +2,7 @@ package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.stamina.OtherStamina;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -18,11 +19,13 @@ import java.util.function.Supplier;
 public class SyncStaminaMessage {
 
 	private int stamina = 0;
+	private int max = 0;
 	private boolean exhausted = false;
 	private UUID playerID = null;
 
 	public void encode(PacketBuffer packet) {
 		packet.writeInt(this.stamina);
+		packet.writeInt(this.max);
 		packet.writeBoolean(this.exhausted);
 		packet.writeLong(this.playerID.getMostSignificantBits());
 		packet.writeLong(this.playerID.getLeastSignificantBits());
@@ -31,6 +34,7 @@ public class SyncStaminaMessage {
 	public static SyncStaminaMessage decode(PacketBuffer packet) {
 		SyncStaminaMessage message = new SyncStaminaMessage();
 		message.stamina = packet.readInt();
+		message.max = packet.readInt();
 		message.exhausted = packet.readBoolean();
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
 		return message;
@@ -45,6 +49,9 @@ public class SyncStaminaMessage {
 			if (player == null) return;
 			IStamina stamina = IStamina.get(player);
 			if (stamina == null) return;
+			if (stamina instanceof OtherStamina) {
+				((OtherStamina) stamina).setMax(this.max);
+			}
 			stamina.set(this.stamina);
 			stamina.setExhaustion(exhausted);
 		});
@@ -67,6 +74,9 @@ public class SyncStaminaMessage {
 			}
 			IStamina stamina = IStamina.get(player);
 			if (stamina == null) return;
+			if (stamina instanceof OtherStamina) {
+				((OtherStamina) stamina).setMax(this.max);
+			}
 			stamina.set(this.stamina);
 			stamina.setExhaustion(exhausted);
 		});
@@ -80,6 +90,7 @@ public class SyncStaminaMessage {
 
 		SyncStaminaMessage message = new SyncStaminaMessage();
 		message.stamina = stamina.get();
+		message.max = stamina.getActualMaxStamina();
 		message.exhausted = stamina.isExhausted();
 		message.playerID = player.getUUID();
 

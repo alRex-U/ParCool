@@ -1,5 +1,7 @@
 package com.alrex.parcool.client.hud.impl;
 
+import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.stamina.Stamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
@@ -27,8 +29,10 @@ public class StaminaHUDController {
 	}
 
 	public void render(RenderGameOverlayEvent.Post event, MatrixStack stack) {
+		ClientPlayerEntity player = Minecraft.getInstance().player;
+		if (player == null) return;
 		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get() ||
-				ParCoolConfig.Client.Booleans.UseHungerBarInstead.get())
+				!(IStamina.get(player) instanceof Stamina))
 			return;
 		if (event.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE) return;
 

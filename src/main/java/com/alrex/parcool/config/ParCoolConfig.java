@@ -8,6 +8,7 @@ import com.alrex.parcool.client.hud.impl.HUDType;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.action.impl.*;
+import com.alrex.parcool.common.capability.IStamina;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -63,10 +64,6 @@ public class ParCoolConfig {
 			InfiniteStaminaWhenCreative(
 					ConfigGroup.Stamina, "Infinite Stamina while player is cretive mode",
 					"infinite_stamina_if_creative_mode", true
-			),
-			UseHungerBarInstead(
-					ConfigGroup.Stamina, "ParCool consume hanger value instead of stamina",
-					"use_hanger_instead", false
 			),
 			EnableAnimation(
 					ConfigGroup.Animation, "Enable custom animations",
@@ -399,6 +396,7 @@ public class ParCoolConfig {
 		public static final ForgeConfigSpec.EnumValue<FastRun.ControlType> FastRunControl;
 		public static final ForgeConfigSpec.EnumValue<Crawl.ControlType> CrawlControl;
 		public static final ForgeConfigSpec.EnumValue<Flipping.ControlType> FlipControl;
+		public static final ForgeConfigSpec.EnumValue<IStamina.Type> StaminaType;
 
 		private static void register(ForgeConfigSpec.Builder builder, ConfigGroup group) {
 			Arrays.stream(Booleans.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
@@ -458,6 +456,7 @@ public class ParCoolConfig {
 			builder.pop();
 			builder.comment("Stamina Section").push("Stamina");
 			{
+				StaminaType = builder.defineEnum("used_stamina", IStamina.Type.Default);
 				builder.comment("Caution : Max stamina and stamina recovery config is removed because they became attributes.");
 				builder.push("Consumption");
 				{
