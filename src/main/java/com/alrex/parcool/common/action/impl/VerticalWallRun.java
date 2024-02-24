@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.VerticalWallRunAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
@@ -11,9 +12,15 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
@@ -39,6 +46,7 @@ public class VerticalWallRun extends Action {
 				&& KeyBindings.getKeyJump().isDown()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& !parkourability.get(Crawl.class).isDoing()
+                && !parkourability.get(CatLeap.class).isDoing()
 				&& !parkourability.get(WallSlide.class).isDoing()
 				&& !parkourability.get(HorizontalWallRun.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
@@ -87,7 +95,7 @@ public class VerticalWallRun extends Action {
 		double height = startData.getDouble();
 		float slipperiness = startData.getFloat();
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.PLAYER_ATTACK_STRONG, 1f, 0.7f);
+            player.playSound(SoundEvents.VERTICAL_WALL_RUN.get(), 1f, 1f);
 		player.setDeltaMovement(player
 				.getDeltaMovement()
 				.multiply(1, 0, 1)
@@ -98,7 +106,7 @@ public class VerticalWallRun extends Action {
 
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
-		startData.position(12);
+        startData.position(8 + 4); // skip (double * 1) and (float * 1)
 		wallDirection = new Vec3(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		Animation animation = Animation.get(player);
 		if (animation != null) {
@@ -110,12 +118,54 @@ public class VerticalWallRun extends Action {
 	public void onRenderTick(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
 		if (wallDirection != null && isDoing()) {
 			player.setYHeadRot((float) VectorUtil.toYawDegree(wallDirection));
-			player.setYBodyRot(player.getYHeadRot());
+            player.yBodyRotO = player.yBodyRot = player.getYHeadRot();
 		}
 	}
+
+    @Override
+    public void onWorkingTickInClient(Player player, Parkourability parkourability, IStamina stamina) {
+        spawnRunningParticle(player);
+    }
 
 	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
 		return StaminaConsumeTiming.OnStart;
 	}
+
+    @OnlyIn(Dist.CLIENT)
+    public void spawnRunningParticle(Player player) {
+        if (wallDirection == null) return;
+        Level level = player.level;
+        Vec3 pos = player.position();
+        BlockPos leanedBlock = new BlockPos(
+                pos.add(wallDirection.x(), player.getBbHeight() * 0.25, wallDirection.z())
+        );
+        if (!level.isLoaded(leanedBlock)) return;
+        float width = player.getBbWidth();
+        BlockState blockstate = level.getBlockState(leanedBlock);
+
+        Vec3 normalizedWallVec = wallDirection.normalize();
+        Vec3 orthogonalToWallVec = normalizedWallVec.yRot((float) (Math.PI / 2));
+        if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
+            Vec3 particlePos = new Vec3(
+                    pos.x() + (normalizedWallVec.x() * 0.4 + orthogonalToWallVec.x() * (player.getRandom().nextDouble() - 0.5D)) * width,
+                    pos.y() + 0.1D + 0.3 * player.getRandom().nextDouble(),
+                    pos.z() + (normalizedWallVec.z() * 0.4 + orthogonalToWallVec.z() * (player.getRandom().nextDouble() - 0.5D)) * width
+            );
+            Vec3 particleSpeed = normalizedWallVec
+                    .reverse()
+                    .yRot((float) (Math.PI * 0.2 * (player.getRandom().nextDouble() - 0.5)))
+                    .scale(2 + 4 * player.getRandom().nextDouble())
+                    .add(0, 0.5, 0);
+            level.addParticle(
+                    new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(leanedBlock),
+                    particlePos.x(),
+                    particlePos.y(),
+                    particlePos.z(),
+                    particleSpeed.x(),
+                    particleSpeed.y(),
+                    particleSpeed.z()
+            );
+        }
+    }
 }

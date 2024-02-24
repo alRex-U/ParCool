@@ -1,8 +1,8 @@
 package com.alrex.parcool.extern.feathers;
 
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.stamina.Stamina;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.extern.ExternalStaminaMod;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -23,14 +23,13 @@ public class FeathersManager {
 		feathersInstalled = mod != null;
 	}
 
-	@Nullable
 	public static IStamina newFeathersStaminaFor(Player player) {
-		if (!feathersInstalled) return null;
+        if (!feathersInstalled) return new Stamina(player);
 		return new FeathersStamina(player);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public static boolean isUsingFeathers() {
-		return feathersInstalled && ParCoolConfig.Client.ExternalStamina.get() == ExternalStaminaMod.Feathers;
+        return feathersInstalled && ParCoolConfig.Client.StaminaType.get() == IStamina.Type.Feathers;
 	}
 }

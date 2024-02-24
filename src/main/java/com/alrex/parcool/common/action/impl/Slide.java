@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.CrawlAnimator;
 import com.alrex.parcool.client.animation.impl.SlidingAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
@@ -11,7 +12,6 @@ import com.alrex.parcool.common.capability.impl.Animation;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
@@ -51,11 +51,12 @@ public class Slide extends Action {
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		slidingVec = player.getLookAngle().multiply(1, 0, 1).normalize();
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.PLAYER_ATTACK_STRONG, 1f, 0.6f);
+            player.playSound(SoundEvents.SLIDE.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new SlidingAnimator());
 		}
+        parkourability.getCancelMarks().addMarkerCancellingJump(this::isDoing);
 	}
 
 	@Override

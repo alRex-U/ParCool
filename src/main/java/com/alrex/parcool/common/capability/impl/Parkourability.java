@@ -3,6 +3,7 @@ package com.alrex.parcool.common.capability;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.action.AdditionalProperties;
+import com.alrex.parcool.common.action.CancelMarks;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientInformation;
@@ -22,7 +23,7 @@ public class Parkourability {
 
 	private final ActionInfo info = new ActionInfo();
 	private final AdditionalProperties properties = new AdditionalProperties();
-
+    private final CancelMarks cancelMarks = new CancelMarks();
 	private final List<Action> actions = ActionList.constructActionsList();
 	private final HashMap<Class<? extends Action>, Action> actionsMap;
 
@@ -68,6 +69,10 @@ public class Parkourability {
 	public AdditionalProperties getAdditionalProperties() {
 		return properties;
 	}
+
+    public CancelMarks getCancelMarks() {
+        return cancelMarks;
+    }
 
 	public ActionInfo getActionInfo() {
 		return info;

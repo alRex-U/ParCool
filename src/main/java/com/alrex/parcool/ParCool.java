@@ -1,16 +1,18 @@
 package com.alrex.parcool;
 
+import com.alrex.parcool.api.Attributes;
+import com.alrex.parcool.api.Effects;
+import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.AnimatorList;
 import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
+import com.alrex.parcool.common.event.EventAddAttributes;
 import com.alrex.parcool.common.item.ItemRegistry;
-import com.alrex.parcool.common.potion.Effects;
 import com.alrex.parcool.common.potion.PotionRecipeRegistry;
 import com.alrex.parcool.common.potion.Potions;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
-import com.alrex.parcool.common.registries.EventBusModRegistry;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.extern.feathers.FeathersManager;
 import com.alrex.parcool.proxy.ClientProxy;
@@ -65,8 +67,11 @@ public class ParCool {
 		eventBus.addListener(this::loaded);
 		eventBus.addListener(this::doServerStuff);
 		eventBus.register(Capabilities.class);
+		eventBus.register(EventAddAttributes.class);
 		Effects.registerAll(eventBus);
 		Potions.registerAll(eventBus);
+		Attributes.registerAll(eventBus);
+		SoundEvents.registerAll(eventBus);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
 		MinecraftForge.EVENT_BUS.register(this);
 		ItemRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -82,7 +87,6 @@ public class ParCool {
 	private void setup(final FMLCommonSetupEvent event) {
 		CommandRegistry.registerArgumentTypes(event);
 		EventBusForgeRegistry.register(MinecraftForge.EVENT_BUS);
-		EventBusModRegistry.register(FMLJavaModLoadingContext.get().getModEventBus());
 		PotionRecipeRegistry.register(event);
 		PROXY.registerMessages(CHANNEL_INSTANCE);
 	}
@@ -90,7 +94,6 @@ public class ParCool {
 	private void doClientStuff(final FMLClientSetupEvent event) {
 		KeyBindings.register(event);
 		EventBusForgeRegistry.registerClient(MinecraftForge.EVENT_BUS);
-		EventBusModRegistry.registerClient(FMLJavaModLoadingContext.get().getModEventBus());
 		HUDRegistry.getInstance().onSetup(event);
 	}
 

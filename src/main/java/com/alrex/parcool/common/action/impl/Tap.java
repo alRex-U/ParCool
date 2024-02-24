@@ -30,6 +30,7 @@ public class Tap extends Action {
 		startRequired = false;
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new TapAnimator());
+        parkourability.getCancelMarks().addMarkerCancellingJump(this::isDoing);
 	}
 
 	@Override

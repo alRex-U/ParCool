@@ -13,12 +13,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 public class FlippingAnimator extends Animator {
-	public FlippingAnimator(Flipping.FlippingDirection direction) {
+    public FlippingAnimator(Flipping.Direction direction) {
 		this.direction = direction;
 	}
 
 
-	private final Flipping.FlippingDirection direction;
+    private final Flipping.Direction direction;
 
 	private int getMaxAnimationTick() {
 		return 12;
@@ -79,7 +79,7 @@ public class FlippingAnimator extends Animator {
 	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float phase = (getTick() + transformer.getPartialTick()) / getMaxAnimationTick();
 
-		if (direction == Flipping.FlippingDirection.Front) {
+        if (direction == Flipping.Direction.Front) {
 			float armAngleX = -180 * armAngleXFactorFront(phase) + 25;
 			float armAngleZ = MathUtil.lerp(phase > 0.75 ? 0 : 14, 28, armAngleZFactor(phase));
 			float legAngleX = MathUtil.lerp(0, -50, legAngleFactorFront(phase));
@@ -148,7 +148,7 @@ public class FlippingAnimator extends Animator {
 		float factor = angleFactor(phase);
 
 		float angle;
-		if (direction == Flipping.FlippingDirection.Front) {
+        if (direction == Flipping.Direction.Front) {
 			angle = factor * 360;
 		} else {
 			angle = factor * -360;
@@ -167,7 +167,7 @@ public class FlippingAnimator extends Animator {
 		) return;
 		float phase = (float) ((getTick() + event.getPartialTicks()) / getMaxAnimationTick());
 		float factor = angleFactor(phase);
-		if (direction == Flipping.FlippingDirection.Front) {
+        if (direction == Flipping.Direction.Front) {
 			event.setPitch(clientPlayer.getViewXRot((float) event.getPartialTicks()) + factor * 360 - ((phase > 0.5) ? 360 : 0));
 		} else {
 			event.setPitch(clientPlayer.getViewXRot((float) event.getPartialTicks()) - factor * 360 + ((phase > 0.5) ? 360 : 0));

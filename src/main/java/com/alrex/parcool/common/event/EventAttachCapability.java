@@ -4,11 +4,10 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.capability.impl.Animation;
-import com.alrex.parcool.common.capability.impl.Stamina;
+import com.alrex.parcool.common.capability.stamina.OtherStamina;
 import com.alrex.parcool.common.capability.storage.ParkourabilityStorage;
 import com.alrex.parcool.common.capability.storage.StaminaStorage;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.extern.feathers.FeathersManager;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -66,24 +65,19 @@ public class EventAttachCapability {
 		}
 		//Stamina
 		{
-			IStamina instance = null;
-			if (player.isLocalPlayer() && FeathersManager.isUsingFeathers()) {
-				instance = FeathersManager.newFeathersStaminaFor(player);
-			}
-			if (instance == null) {
-				instance = new Stamina(player);
-			}
-			final IStamina finalInstance = instance;
-			LazyOptional<IStamina> optional = LazyOptional.of(() -> finalInstance);
+			IStamina instance;
 			if (player.isLocalPlayer()) {
-				instance.setMaxStamina(ParCoolConfig.Client.Integers.MaxStamina.get());
+				instance = ParCoolConfig.Client.StaminaType.get().newInstance(player);
+			} else {
+				instance = new OtherStamina(player);
 			}
+			LazyOptional<IStamina> optional = LazyOptional.of(() -> instance);
 			ICapabilityProvider provider = new ICapabilitySerializable<CompoundTag>() {
 				@Override
 				public CompoundTag serializeNBT() {
 					return (CompoundTag) new StaminaStorage().writeTag(
 							Capabilities.STAMINA_CAPABILITY,
-							finalInstance,
+							instance,
 							null
 					);
 				}
@@ -92,7 +86,7 @@ public class EventAttachCapability {
 				public void deserializeNBT(CompoundTag nbt) {
 					new StaminaStorage().readTag(
 							Capabilities.STAMINA_CAPABILITY,
-							finalInstance,
+							instance,
 							null,
 							nbt
 					);
