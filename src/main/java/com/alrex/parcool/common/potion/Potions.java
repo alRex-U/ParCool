@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.potion;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.api.effects.InexhaustibleEffect;
+import com.alrex.parcool.common.potion.effects.InexhaustibleEffect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Potion;
 import net.minecraftforge.eventbus.api.IEventBus;

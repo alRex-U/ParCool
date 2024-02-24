@@ -1,4 +1,4 @@
-package com.alrex.parcool.api.effects;
+package com.alrex.parcool.common.potion.effects;
 
 
 import net.minecraft.potion.Effect;
