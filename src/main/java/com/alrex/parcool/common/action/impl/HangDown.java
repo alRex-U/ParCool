@@ -1,12 +1,13 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.HangAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
+import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.impl.Animation;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.world.entity.player.Player;
@@ -89,11 +90,13 @@ public class HangDown extends Action {
 	@Override
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		setup(player, startData);
+		player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
 	}
 
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		setup(player, startData);
+		player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -121,7 +124,7 @@ public class HangDown extends Action {
 			else if (KeyBindings.getKeyBack().isDown()) player.setDeltaMovement(-xSpeed, 0, -zSpeed);
 			else player.setDeltaMovement(0, 0, 0);
 		}
-		armSwingAmount += player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
+		armSwingAmount += (float) player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package com.alrex.parcool.common.event;
 
-import com.alrex.parcool.client.gui.ParCoolSettingScreen;
+import com.alrex.parcool.client.gui.SettingActionLimitationScreen;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
@@ -23,7 +23,7 @@ public class EventOpenSettingsParCool {
 			if (player == null) return;
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
-			Minecraft.getInstance().setScreen(new ParCoolSettingScreen(Component.literal("ParCool Setting"), parkourability.getActionInfo(), ParCoolConfig.Client.GUIColorTheme.get()));
+			Minecraft.getInstance().setScreen(new SettingActionLimitationScreen(Component.literal("ParCool Setting"), parkourability.getActionInfo(), ParCoolConfig.Client.GUIColorTheme.get()));
 		}
 	}
 }

@@ -199,6 +199,22 @@ public class PlayerModelTransformer {
 		return this;
 	}
 
+	public PlayerModelTransformer addRotateRightArm(float angleX, float angleY, float angleZ, float factor) {
+		return addRotateRightArm(angleX * factor, angleY * factor, angleZ * factor);
+	}
+
+	public PlayerModelTransformer addRotateLeftArm(float angleX, float angleY, float angleZ, float factor) {
+		return addRotateLeftArm(angleX * factor, angleY * factor, angleZ * factor);
+	}
+
+	public PlayerModelTransformer addRotateRightLeg(float angleX, float angleY, float angleZ, float factor) {
+		return addRotateRightLeg(angleX * factor, angleY * factor, angleZ * factor);
+	}
+
+	public PlayerModelTransformer addRotateLeftLeg(float angleX, float angleY, float angleZ, float factor) {
+		return addRotateLeftLeg(angleX * factor, angleY * factor, angleZ * factor);
+	}
+
 	public PlayerModelTransformer makeArmsNatural() {
 		AnimationUtils.bobArms(model.rightArm, model.leftArm, ageInTicks);
 		return this;

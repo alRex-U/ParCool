@@ -21,6 +21,7 @@ public class ActionList {
 			new ActionRegistry<>(Dive.class, Dive::new, 0),
 			new ActionRegistry<>(Dodge.class, Dodge::new, 80),
 			new ActionRegistry<>(FastRun.class, FastRun::new, 2),
+			new ActionRegistry<>(FastSwim.class, FastSwim::new, 3),
 			new ActionRegistry<>(Flipping.class, Flipping::new, 80),
 			new ActionRegistry<>(HangDown.class, HangDown::new, 3),
 			new ActionRegistry<>(HorizontalWallRun.class, HorizontalWallRun::new, 2),

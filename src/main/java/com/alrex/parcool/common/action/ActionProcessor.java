@@ -1,8 +1,8 @@
 package com.alrex.parcool.common.action;
 
+import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.impl.Animation;
 import com.alrex.parcool.common.network.SyncActionStateMessage;
 import com.alrex.parcool.common.network.SyncStaminaMessage;
 import net.minecraft.client.Minecraft;
@@ -47,8 +47,8 @@ public class ActionProcessor {
 		boolean needSync = event.side == LogicalSide.CLIENT && player.isLocalPlayer();
 		SyncActionStateMessage.Encoder builder = SyncActionStateMessage.Encoder.reset();
 
+		stamina.tick();
 		if (needSync) {
-			stamina.tick();
 			staminaSyncCoolTimeTick++;
 			if (staminaSyncCoolTimeTick > 5) {
 				staminaSyncCoolTimeTick = 0;

@@ -7,7 +7,7 @@
 - Russian (ru_ru) *(Added)*
   - by *[ Master Xort ]*
 - Chinese (zh_cn) *(Modified)*
-  - by *njt-232*
+  - by *njt-233*
 
 ### Bugfix
 

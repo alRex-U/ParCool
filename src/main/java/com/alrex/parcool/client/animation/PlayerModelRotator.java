@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.animation;
 
+import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
@@ -18,9 +19,6 @@ public class PlayerModelRotator {
 
 	private boolean basedCenter = false;
 	private boolean basedTop = false;
-	private boolean legGrounding = false;
-
-	private float angleFront = 0;
 
 	public PlayerModelRotator(PoseStack stack, Player player, float partial) {
 		this.stack = stack;
@@ -56,15 +54,14 @@ public class PlayerModelRotator {
 	}
 
 	public PlayerModelRotator rotatePitchFrontward(float angleDegree) {
-		Vec3 lookVec = VectorUtil.fromYawDegree(player.yBodyRot).yRot((float) Math.PI / 2);
+		Vec3 lookVec = VectorUtil.fromYawDegree(MathUtil.lerp(player.yBodyRotO, player.yBodyRot, getPartialTick())).yRot((float) Math.PI / 2);
 		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
-		angleFront += angleDegree;
 		stack.mulPose(vec.rotationDegrees(angleDegree));
 		return this;
 	}
 
 	public PlayerModelRotator rotateRollRightward(float angleDegree) {
-		Vec3 lookVec = VectorUtil.fromYawDegree(player.yBodyRot);
+		Vec3 lookVec = VectorUtil.fromYawDegree(MathUtil.lerp(player.yBodyRotO, player.yBodyRot, getPartialTick()));
 		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
 		stack.mulPose(vec.rotationDegrees(angleDegree));
 		return this;
