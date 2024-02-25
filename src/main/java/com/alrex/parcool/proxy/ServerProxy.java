@@ -44,12 +44,5 @@ public class ServerProxy extends CommonProxy {
 				SyncClientInformationMessage::decode,
 				SyncClientInformationMessage::handleServer
 		);
-        instance.registerMessage(
-                18,
-                ConsumeHungerMessage.class,
-                ConsumeHungerMessage::encode,
-                ConsumeHungerMessage::decode,
-                ConsumeHungerMessage::handle
-        );
 	}
 }
