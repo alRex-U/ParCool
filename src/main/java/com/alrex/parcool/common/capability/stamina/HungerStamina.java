@@ -3,8 +3,8 @@ package com.alrex.parcool.common.capability.stamina;
 import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.network.ConsumeHungerMessage;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 
 public class HungerStamina implements IStamina {
     private final PlayerEntity player;
@@ -55,12 +55,25 @@ public class HungerStamina implements IStamina {
 
     @Override
     public void tick() {
-        if (consumedBuffer == 0f) return;
-        ConsumeHungerMessage.send(player, consumedBuffer);
-        consumedBuffer = 0f;
     }
 
     @Override
     public void set(int value) {
+    }
+
+    @Override
+    public boolean wantToConsumeOnServer() {
+        return consumedBuffer != 0f;
+    }
+
+    @Override
+    public int getRequestedValueConsumedOnServer() {
+        int neededValue = (int) (consumedBuffer * 10000f);
+        consumedBuffer = 0f;
+        return neededValue;
+    }
+
+    public static void consumeOnServer(ServerPlayerEntity player, int value) {
+        player.causeFoodExhaustion(value / 10000f);
     }
 }
