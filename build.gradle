@@ -99,6 +99,9 @@ dependencies {
     minecraft "net.minecraftforge:forge:${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
+
+    compileOnly fg.deobf("curse.maven:epic-fight-mod-405076:${epicfight_version}")
+    runtimeOnly fg.deobf("curse.maven:epic-fight-mod-405076:${epicfight_version}")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
     compileOnly fg.deobf("curse.maven:feathers-699933:4355018")
     runtimeOnly fg.deobf("curse.maven:feathers-699933:4355018")

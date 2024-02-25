@@ -11,6 +11,7 @@ import com.alrex.parcool.common.potion.PotionRecipeRegistry;
 import com.alrex.parcool.common.potion.Potions;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.extern.epicfight.EpicFightManager;
 import com.alrex.parcool.extern.feathers.FeathersManager;
 import com.alrex.parcool.proxy.ClientProxy;
 import com.alrex.parcool.proxy.CommonProxy;
@@ -64,13 +65,13 @@ public class ParCool {
 		MinecraftForge.EVENT_BUS.register(this);
 		ItemRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		PROXY.init();
-
 		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ParCoolConfig.Server.BUILT_CONFIG);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.Client.BUILT_CONFIG);
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {
 		FeathersManager.init();
+		EpicFightManager.init();
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
