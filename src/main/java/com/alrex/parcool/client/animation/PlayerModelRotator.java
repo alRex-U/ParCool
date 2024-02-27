@@ -54,14 +54,24 @@ public class PlayerModelRotator {
 	}
 
 	public PlayerModelRotator rotatePitchFrontward(float angleDegree) {
-		Vector3d lookVec = VectorUtil.fromYawDegree(MathUtil.lerp(player.yBodyRotO, player.yBodyRot, getPartialTick())).yRot((float) Math.PI / 2);
+        Vector3d lookVec;
+        if (player.isLocalPlayer()) {
+            lookVec = VectorUtil.fromYawDegree(MathUtil.lerp(player.yBodyRotO, player.yBodyRot, getPartialTick())).yRot((float) Math.PI / 2);
+        } else {
+            lookVec = VectorUtil.fromYawDegree(player.yBodyRot).yRot((float) Math.PI / 2);
+        }
 		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
 		stack.mulPose(vec.rotationDegrees(angleDegree));
 		return this;
 	}
 
 	public PlayerModelRotator rotateRollRightward(float angleDegree) {
-		Vector3d lookVec = VectorUtil.fromYawDegree(MathUtil.lerp(player.yBodyRotO, player.yBodyRot, getPartialTick()));
+        Vector3d lookVec;
+        if (player.isLocalPlayer()) {
+            lookVec = VectorUtil.fromYawDegree(MathUtil.lerp(player.yBodyRotO, player.yBodyRot, getPartialTick()));
+        } else {
+            lookVec = VectorUtil.fromYawDegree(player.yBodyRot);
+        }
 		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
 		stack.mulPose(vec.rotationDegrees(angleDegree));
 		return this;
