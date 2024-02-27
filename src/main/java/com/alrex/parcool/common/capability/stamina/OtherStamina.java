@@ -67,6 +67,7 @@ public class OtherStamina implements IStamina {
             if (attr.getModifier(EXHAUSTED_SPEED_MODIFIER_UUID) != null)
                 attr.removeModifier(EXHAUSTED_SPEED_MODIFIER_UUID);
             if (isExhausted()) {
+                player.setSprinting(false);
                 attr.addTransientModifier(new AttributeModifier(
                         EXHAUSTED_SPEED_MODIFIER_UUID,
                         EXHAUSTED_SPEED_MODIFIER_NAME,
