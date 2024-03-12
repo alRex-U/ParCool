@@ -7,6 +7,7 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.damage.DamageSources;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -25,6 +26,9 @@ import java.nio.ByteBuffer;
 public class WallSlide extends Action {
 	private Vector3d leanedWallDirection = null;
 	private byte particleSpawnCoolTime = 0;
+	private double startYSpeed = 0;
+	private int damageCount = 0, takenDamageCount = 0;
+	private byte damageCoolTime = 0;
 
 	@Nullable
 	public Vector3d getLeanedWallDirection() {
@@ -34,6 +38,7 @@ public class WallSlide extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		startInfo.putDouble(Math.abs(player.getDeltaMovement().y()));
 		return canContinue(player, parkourability, stamina);
 	}
 
@@ -57,6 +62,14 @@ public class WallSlide extends Action {
 	@Override
 	public void onStart(PlayerEntity player, Parkourability parkourability) {
 		particleSpawnCoolTime = 0;
+	}
+
+	@Override
+	public void onStartInServer(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+		startYSpeed = startData.getDouble();
+		damageCount = (int) (5.5 * (startYSpeed - 1.) / player.getBbHeight());
+		takenDamageCount = 0;
+		damageCoolTime = 0;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -92,6 +105,19 @@ public class WallSlide extends Action {
 			slipperiness = (float) Math.sqrt(slipperiness);
 			player.fallDistance *= slipperiness;
 			player.setDeltaMovement(player.getDeltaMovement().multiply(0.8, slipperiness, 0.8));
+		}
+	}
+
+	@Override
+	public void onWorkingTickInServer(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		if (damageCoolTime <= 0 && damageCount > takenDamageCount++) {
+			int invulnerableTime = player.invulnerableTime; // bypass invulnerableTime
+			damageCoolTime = 1;
+			player.invulnerableTime = 0;
+			player.hurt(DamageSources.WALL_SLIDE, 0.3f);
+			player.invulnerableTime = invulnerableTime;
+		} else {
+			damageCoolTime--;
 		}
 	}
 

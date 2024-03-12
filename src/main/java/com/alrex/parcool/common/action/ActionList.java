@@ -34,7 +34,7 @@ public class ActionList {
 			new ActionRegistry<>(Vault.class, Vault::new, 50),
 			new ActionRegistry<>(VerticalWallRun.class, VerticalWallRun::new, 150),
 			new ActionRegistry<>(WallJump.class, WallJump::new, 120),
-			new ActionRegistry<>(WallSlide.class, WallSlide::new, 2)
+			new ActionRegistry<>(WallSlide.class, WallSlide::new, 8)
 	);
 	private static final HashMap<Class<? extends Action>, Short> INDEX_MAP;
 	private static final TreeMap<String, Short> NAME_2_INDEX_MAP;
