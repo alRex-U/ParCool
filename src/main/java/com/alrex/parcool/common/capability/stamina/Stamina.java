@@ -86,7 +86,11 @@ public class Stamina implements IStamina {
 			if (parkourability == null) return;
             AttributeInstance attr = player.getAttribute(Attributes.STAMINA_RECOVERY.get());
             if (attr == null) return;
-            recover(Math.min((int) attr.getValue(), parkourability.getActionInfo().getStaminaRecoveryLimit()));
+            if (player.isOnGround()) {
+                recover(Math.min((int) attr.getValue(), parkourability.getActionInfo().getStaminaRecoveryLimit()));
+            } else {
+                recover(Math.min((int) attr.getValue(), parkourability.getActionInfo().getStaminaRecoveryLimit()) / 5);
+            }
 		}
 	}
 
