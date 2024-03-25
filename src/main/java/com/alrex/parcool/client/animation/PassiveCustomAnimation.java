@@ -8,7 +8,11 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.EasingFunctions;
 import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 public class PassiveCustomAnimation {
 	private int fallingAnimationTick = 0;
@@ -40,6 +44,12 @@ public class PassiveCustomAnimation {
 		} else {
 			fallingAnimationTick = 0;
 		}
+		/*
+		IStamina stamina=IStamina.get(player);
+		if (stamina!=null && stamina.isExhausted() && player.getRandom().nextBoolean()){
+			spawnSweatParticle(player);
+		}
+		*/
 	}
 
 	public void animate(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
@@ -96,6 +106,20 @@ public class PassiveCustomAnimation {
 				.end();
 	}
 
+    private void spawnSweatParticle(Player player) {
+        Level level = player.level;
+        RandomSource rand = player.getRandom();
+        Vec3 particleSpeed = player.getDeltaMovement().scale(0.6);
+        level.addParticle(
+                ParticleTypes.DRIPPING_WATER,
+                player.getX() + player.getBbWidth() * (rand.nextFloat() - 0.5f),
+                player.getY() + player.getBbHeight() * rand.nextFloat(),
+                player.getZ() + player.getBbWidth() * (rand.nextFloat() - 0.5f),
+                particleSpeed.x(),
+                particleSpeed.y() - 1,
+                particleSpeed.z()
+        );
+    }
 	private float getAngleCreativeFlying(Player player, float partial) {
 		float xRot = (float) VectorUtil.toPitchDegree(player.getDeltaMovement());
 		return (xRot + 90) * getFactorCreativeFlying(partial);

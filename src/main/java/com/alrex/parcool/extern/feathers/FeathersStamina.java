@@ -17,17 +17,8 @@ public class FeathersStamina implements IStamina {
 	}
 
 	@Override
-	public int getMaxStamina() {
-		return MAX_FEATHERS;
-	}
-
-	@Override
 	public int getActualMaxStamina() {
 		return MAX_FEATHERS;
-	}
-
-	@Override
-	public void setMaxStamina(int value) {
 	}
 
 	@Override
@@ -35,9 +26,9 @@ public class FeathersStamina implements IStamina {
 		if (player.isLocalPlayer()) {
 			return FeathersHelper.getFeathers();
 		} else if (player instanceof ServerPlayer serverPlayer) {
-			FeathersHelper.getFeathers(serverPlayer);
+            return FeathersHelper.getFeathers(serverPlayer);
 		}
-		return getMaxStamina();
+        return 1;
 	}
 
 	@Override
@@ -50,10 +41,11 @@ public class FeathersStamina implements IStamina {
 		if (player.isLocalPlayer()) {
 			int spentFeathers = value / 100;
 			fraction += (value / 100f) - spentFeathers;
-			FeathersHelper.spendFeathers(spentFeathers);
 			if (fraction >= 1) {
 				fraction -= 1;
-				FeathersHelper.spendFeathers(1);
+                FeathersHelper.spendFeathers(spentFeathers + 1);
+            } else {
+                FeathersHelper.spendFeathers(spentFeathers);
 			}
 		}
 	}

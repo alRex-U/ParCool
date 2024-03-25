@@ -196,7 +196,7 @@ public class SyncActionStateMessage {
 		Parkourability parkourability;
 
 		Decoder(byte[] buf, Parkourability parkourability) {
-			buffer = ByteBuffer.wrap(buf);
+            buffer = ByteBuffer.wrap(buf).asReadOnlyBuffer();
 			this.parkourability = parkourability;
 		}
 
@@ -230,12 +230,14 @@ public class SyncActionStateMessage {
 				buffer.position(buffer.limit());
 				return null;
 			}
-			byte[] array = new byte[bufferSize];
-			buffer.get(array);
+            ByteBuffer buf = buffer.slice();
+            buf.limit(bufferSize);
+
+            buffer.position(buffer.position() + bufferSize); // skip area of sliced buffer
+
 			if (action == null) {
 				return null;
 			}
-			ByteBuffer buf = ByteBuffer.wrap(array);
 			return new ActionSyncData(action, buf, type);
 		}
 	}
@@ -244,25 +246,11 @@ public class SyncActionStateMessage {
 		Normal, Start, Finish;
 
 		public byte getCode() {
-			switch (this) {
-				case Start:
-					return 1;
-				case Finish:
-					return 2;
-				default:
-					return 0;
-			}
+            return (byte) this.ordinal();
 		}
 
 		public static DataType getFromCode(byte code) {
-			switch (code) {
-				case 1:
-					return Start;
-				case 2:
-					return Finish;
-				default:
-					return Normal;
-			}
+            return DataType.values()[code];
 		}
 	}
 
