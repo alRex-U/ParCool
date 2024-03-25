@@ -271,7 +271,11 @@ public class WorldUtil {
     public static boolean existsSpaceBelow(LivingEntity entity) {
         Level world = entity.level;
         Vec3 center = entity.position();
-        if (!world.isLoaded(new BlockPos(center))) return false;
+        if (!world.isLoaded(new BlockPos(
+                (int) Math.floor(center.x()),
+                (int) Math.floor(center.y()),
+                (int) Math.floor(center.z())
+        ))) return false;
         double height = entity.getBbHeight() * 1.5;
         double width = entity.getBbWidth() * 2;
         AABB boundingBox = new AABB(
@@ -290,7 +294,11 @@ public class WorldUtil {
 		double height = entity.getBbHeight() * 1.5;
 		double wideWidth = entity.getBbWidth() * 2;
 		Vec3 center = entity.position();
-        if (!world.isLoaded(new BlockPos(center))) return false;
+        if (!world.isLoaded(new BlockPos(
+                (int) Math.floor(center.x()),
+                (int) Math.floor(center.y()),
+                (int) Math.floor(center.z())
+        ))) return false;
 		Vec3 diveDirection = VectorUtil.fromYawDegree(entity.getYHeadRot());
 		for (int i = 0; i < 4; i++) {
 			Vec3 centerPoint = center.add(diveDirection.scale(width * i));
@@ -314,7 +322,11 @@ public class WorldUtil {
 				center.z() + wideWidth
 		);
         if (world.noCollision(verticalWideBox)) return true;
-        BlockPos centerBlockPos = new BlockPos(center.add(0, -0.5, 0));
+        BlockPos centerBlockPos = new BlockPos(
+                (int) Math.floor(center.x()),
+                (int) Math.floor(center.y() - 0.5),
+                (int) Math.floor(center.z())
+        );
 
         // check if water pool exists
         if (!world.isLoaded(centerBlockPos)) return false;

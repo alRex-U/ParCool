@@ -1,8 +1,16 @@
 package com.alrex.parcool.common.damage;
 
 
-import net.minecraft.world.damagesource.DamageSource;
+import com.alrex.parcool.ParCool;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageType;
 
 public class DamageSources {
-    public static final DamageSource WALL_SLIDE = new DamageSource("parcool.wall_slide").bypassArmor();
+    public static final ResourceKey<DamageType> WALL_SLIDE = register("parcool.wall_slide");
+
+    private static ResourceKey<DamageType> register(String name) {
+        return ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(ParCool.MOD_ID, name));
+    }
 }

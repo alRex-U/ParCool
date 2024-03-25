@@ -138,7 +138,9 @@ public class VerticalWallRun extends Action {
         Level level = player.level;
         Vec3 pos = player.position();
         BlockPos leanedBlock = new BlockPos(
-                pos.add(wallDirection.x(), player.getBbHeight() * 0.25, wallDirection.z())
+				(int) Math.floor(pos.x() + wallDirection.x()),
+				(int) Math.floor(pos.y() + player.getBbHeight() * 0.25),
+				(int) Math.floor(pos.z() + wallDirection.z())
         );
         if (!level.isLoaded(leanedBlock)) return;
         float width = player.getBbWidth();

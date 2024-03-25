@@ -200,9 +200,9 @@ public class WallJump extends Action {
         Vec3 jumpDirection = new Vec3(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		Vec3 wallDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
         BlockPos leanedBlock = new BlockPos(
-                player.getX() + wallDirection.x(),
-                player.getBoundingBox().minY + player.getBbHeight() * 0.25,
-                player.getZ() + wallDirection.z()
+				(int) Math.floor(player.getX() + wallDirection.x()),
+				(int) Math.floor(player.getBoundingBox().minY + player.getBbHeight() * 0.25),
+				(int) Math.floor(player.getZ() + wallDirection.z())
         );
         float slipperiness = player.level.isLoaded(leanedBlock) ?
                 player.level.getBlockState(leanedBlock).getFriction(player.level, leanedBlock, player)
@@ -237,7 +237,9 @@ public class WallJump extends Action {
         Level level = player.level;
         Vec3 pos = player.position();
         BlockPos leanedBlock = new BlockPos(
-                pos.add(wallDirection.x(), player.getBbHeight() * 0.25, wallDirection.z())
+				(int) Math.floor(pos.x() + wallDirection.x()),
+				(int) Math.floor(pos.y() + player.getBbHeight() * 0.25),
+				(int) Math.floor(pos.z() + wallDirection.z())
         );
         if (!level.isLoaded(leanedBlock)) return;
         float width = player.getBbWidth();

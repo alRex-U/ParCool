@@ -117,7 +117,7 @@ public class WallSlide extends Action {
             int invulnerableTime = player.invulnerableTime; // bypass invulnerableTime
             damageCoolTime = 1;
             player.invulnerableTime = 0;
-            player.hurt(DamageSources.WALL_SLIDE, 0.3f);
+            player.hurt(player.level.damageSources().source(DamageSources.WALL_SLIDE), 0.3f);
             player.invulnerableTime = invulnerableTime;
         } else {
             damageCoolTime--;
@@ -131,7 +131,9 @@ public class WallSlide extends Action {
         Level level = player.level;
         Vec3 pos = player.position();
         BlockPos leanedBlock = new BlockPos(
-                pos.add(leanedWallDirection.x(), player.getBbHeight() * 0.25, leanedWallDirection.z())
+                (int) Math.floor(pos.x() + leanedWallDirection.x()),
+                (int) Math.floor(pos.y() + player.getBbHeight() * 0.25),
+                (int) Math.floor(pos.z() + leanedWallDirection.z())
         );
         if (!level.isLoaded(leanedBlock)) return;
         float width = player.getBbWidth();
