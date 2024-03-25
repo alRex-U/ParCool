@@ -1,50 +1,33 @@
-package com.alrex.parcool.common.capability.impl;
+package com.alrex.parcool.common.capability.stamina;
 
+import com.alrex.parcool.api.Attributes;
+import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.potion.Effects;
-import com.alrex.parcool.config.ParCoolConfig;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 
-import javax.annotation.Nullable;
-
 public class Stamina implements IStamina {
-	public Stamina(@Nullable Player player) {
+    public Stamina(Player player) {
 		this.player = player;
 		if (player != null && player.isLocalPlayer()) {
-			maxStamina = ParCoolConfig.Client.Integers.MaxStamina.get();
-			set(maxStamina);
-		}
+            set(Integer.MAX_VALUE);
+        }
 	}
 
-	public Stamina() {
-		this.player = null;
-	}
-
-	@Nullable
 	private final Player player;
 
 	private int stamina = 0;
 	private int staminaOld = 0;
-	private int maxStamina = 1;
 	private boolean exhausted = false;
 
 	@Override
-	public int getMaxStamina() {
-		return maxStamina;
-	}
-
-	@Override
 	public int getActualMaxStamina() {
-		if (player == null) return maxStamina;
-		Parkourability parkourability = com.alrex.parcool.common.capability.Parkourability.get(player);
-		if (parkourability == null) return maxStamina;
-		return parkourability.getActionInfo().getMaxStamina();
-	}
-
-	@Override
-	public void setMaxStamina(int value) {
-		maxStamina = stamina;
+        Parkourability parkourability = Parkourability.get(player);
+        if (parkourability == null) return 1;
+        AttributeInstance attr = player.getAttribute(Attributes.MAX_STAMINA.get());
+        if (attr == null) return 1;
+        return Math.min((int) attr.getValue(), parkourability.getActionInfo().getMaxStaminaLimit());
 	}
 
 	@Override
@@ -64,12 +47,8 @@ public class Stamina implements IStamina {
 		if (parkourability == null) return;
 		if (exhausted
 				|| parkourability.getActionInfo().isStaminaInfinite(player.isSpectator() || player.isCreative())
-				|| player.hasEffect(Effects.INEXHAUSTIBLE)
+                || player.hasEffect(Effects.INEXHAUSTIBLE.get())
 		) return;
-		if (ParCoolConfig.Client.Booleans.UseHungerBarInstead.get()) {
-			player.causeFoodExhaustion(value / 1000f);
-			return;
-		}
 		recoverCoolTime = 30;
 		set(stamina - value);
 		if (stamina == 0) {
@@ -105,7 +84,13 @@ public class Stamina implements IStamina {
 			if (player == null) return;
 			com.alrex.parcool.common.capability.Parkourability parkourability = com.alrex.parcool.common.capability.Parkourability.get(player);
 			if (parkourability == null) return;
-			recover(parkourability.getActionInfo().getStaminaRecovery());
+            AttributeInstance attr = player.getAttribute(Attributes.STAMINA_RECOVERY.get());
+            if (attr == null) return;
+            if (player.onGround()) {
+                recover(Math.min((int) attr.getValue(), parkourability.getActionInfo().getStaminaRecoveryLimit()));
+            } else {
+                recover(Math.min((int) attr.getValue(), parkourability.getActionInfo().getStaminaRecoveryLimit()) / 5);
+            }
 		}
 	}
 

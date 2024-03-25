@@ -28,10 +28,10 @@ public class ParCoolBrewingRecipe implements IBrewingRecipe {
 	}
 
 	private static final List<MixPredicate> MIXES = Arrays.asList(
-			addMix(Potions.AWKWARD, Items.POISONOUS_POTATO, com.alrex.parcool.common.potion.Potions.POOR_ENERGY_DRINK),
-			addMix(Potions.AWKWARD, Items.CHICKEN, com.alrex.parcool.common.potion.Potions.POOR_ENERGY_DRINK),
-			addMix(com.alrex.parcool.common.potion.Potions.POOR_ENERGY_DRINK, Items.QUARTZ, com.alrex.parcool.common.potion.Potions.ENERGY_DRINK),
-			addMix(Potions.AWKWARD, Items.QUARTZ, com.alrex.parcool.common.potion.Potions.ENERGY_DRINK)
+            addMix(Potions.AWKWARD, Items.POISONOUS_POTATO, com.alrex.parcool.common.potion.Potions.POOR_ENERGY_DRINK.get()),
+            addMix(Potions.AWKWARD, Items.CHICKEN, com.alrex.parcool.common.potion.Potions.POOR_ENERGY_DRINK.get()),
+            addMix(com.alrex.parcool.common.potion.Potions.POOR_ENERGY_DRINK.get(), Items.QUARTZ, com.alrex.parcool.common.potion.Potions.ENERGY_DRINK.get()),
+            addMix(Potions.AWKWARD, Items.QUARTZ, com.alrex.parcool.common.potion.Potions.ENERGY_DRINK.get())
 	);
 
 	private static MixPredicate addMix(Potion from, Item ingredient, Potion result) {
