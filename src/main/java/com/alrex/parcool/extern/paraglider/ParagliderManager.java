@@ -1,8 +1,6 @@
 package com.alrex.parcool.extern.paraglider;
 
 import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.extern.ExternalStaminaMod;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -32,8 +30,8 @@ public class ParagliderManager {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static boolean isUsingParaglider() {
-		return paragliderInstalled && ParCoolConfig.Client.ExternalStamina.get() == ExternalStaminaMod.Paraglider;
+	public static boolean isUsingParaglider(Player player) {
+		return paragliderInstalled && IStamina.get(player) instanceof ParagliderStamina;
 	}
 
 	public static boolean isFallingWithParaglider(Player player) {

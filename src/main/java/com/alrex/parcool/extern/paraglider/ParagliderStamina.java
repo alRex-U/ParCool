@@ -3,6 +3,7 @@ package com.alrex.parcool.extern.paraglider;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import tictim.paraglider.api.stamina.Stamina;
 
@@ -13,23 +14,15 @@ public class ParagliderStamina implements IStamina {
 
 	final Player player;
 	int old;
+	private int consumedBuffer = 0;
 
 	private Stamina getInternalInstance() {
 		return Stamina.get(player);
 	}
 
 	@Override
-	public int getMaxStamina() {
-		return getInternalInstance().maxStamina();
-	}
-
-	@Override
 	public int getActualMaxStamina() {
 		return getInternalInstance().stamina();
-	}
-
-	@Override
-	public void setMaxStamina(int value) {
 	}
 
 	@Override
@@ -52,7 +45,7 @@ public class ParagliderStamina implements IStamina {
 		Stamina stamina = getInternalInstance();
 		stamina.takeStamina(value, false, false);
 		if (player instanceof AbstractClientPlayer clientPlayer)
-			SyncParagliderStaminaMessage.send(clientPlayer, value, SyncParagliderStaminaMessage.Type.TAKE);
+			consumedBuffer += value;
 	}
 
 	@Override
@@ -75,5 +68,22 @@ public class ParagliderStamina implements IStamina {
 
 	@Override
 	public void set(int value) {
+	}
+
+	@Override
+	public boolean wantToConsumeOnServer() {
+		return consumedBuffer != 0;
+	}
+
+	@Override
+	public int getRequestedValueConsumedOnServer() {
+		int neededValue = consumedBuffer;
+		consumedBuffer = 0;
+		return neededValue;
+	}
+
+	public static void consumeOnServer(ServerPlayer player, int value) {
+		Stamina stamina = Stamina.get(player);
+		stamina.takeStamina(value, false, false);
 	}
 }
