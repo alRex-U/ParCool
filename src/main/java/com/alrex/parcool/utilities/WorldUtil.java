@@ -52,7 +52,7 @@ public class WorldUtil {
 	@Nullable
 	public static Vec3 getWall(LivingEntity entity) {
 		double range = entity.getBbWidth() / 2;
-		final double width = entity.getBbWidth() * 0.5;
+        final double width = entity.getBbWidth() * 0.49;
 		double wallX = 0;
 		double wallZ = 0;
 		Vec3 pos = entity.position();
@@ -143,19 +143,19 @@ public class WorldUtil {
 	}
 
 	public static double getWallHeight(LivingEntity entity, Vec3 direction, double maxHeight, double accuracy) {
-		final double d = entity.getBbWidth() * 0.5;
+        final double d = entity.getBbWidth() * 0.49;
 		direction = direction.normalize();
 		Level world = entity.getCommandSenderWorld();
 		Vec3 pos = entity.position();
-		double x1 = pos.x() + d + (direction.x() > 0 ? 1 : 0);
-		double y1 = pos.y();
-		double z1 = pos.z() + d + (direction.z() > 0 ? 1 : 0);
-		double x2 = pos.x() - d + (direction.x() < 0 ? -1 : 0);
-		double z2 = pos.z() - d + (direction.z() < 0 ? -1 : 0);
 		boolean canReturn = false;
 		for (double height = 0; height < maxHeight; height += accuracy) {
 			AABB box = new AABB(
-					x1, y1 + height, z1, x2, y1 + height + accuracy, z2
+                    pos.x() + d + (direction.x() > 0 ? 1 : 0),
+                    pos.y() + height,
+                    pos.z() + d + (direction.z() > 0 ? 1 : 0),
+                    pos.x() - d + (direction.x() < 0 ? -1 : 0),
+                    pos.y() + height + accuracy,
+                    pos.z() - d + (direction.z() < 0 ? -1 : 0)
 			);
 			if (!world.noCollision(entity, box)) {
 				canReturn = true;
@@ -176,15 +176,15 @@ public class WorldUtil {
 		final double d = entity.getBbWidth() * 0.5;
 		int loopNum = (int) Math.round(entity.getBbHeight() / accuracy);
 		Vec3 pos = entity.position();
-		double x1 = pos.x() + d + (wall.x() > 0 ? 1 : 0);
-		double y1 = pos.y();
-		double z1 = pos.z() + d + (wall.z() > 0 ? 1 : 0);
-		double x2 = pos.x() - d + (wall.x() < 0 ? -1 : 0);
-		double z2 = pos.z() - d + (wall.z() < 0 ? -1 : 0);
 		boolean canReturn = false;
 		for (int i = 0; i < loopNum; i++) {
 			AABB box = new AABB(
-					x1, y1 + accuracy * i, z1, x2, y1 + accuracy * (i + 1), z2
+                    pos.x() + d + (wall.x() > 0 ? 1 : 0),
+                    pos.y() + accuracy * i,
+                    pos.z() + d + (wall.z() > 0 ? 1 : 0),
+                    pos.x() - d + (wall.x() < 0 ? -1 : 0),
+                    pos.y() + accuracy * (i + 1),
+                    pos.z() - d + (wall.z() < 0 ? -1 : 0)
 			);
 
 			if (!world.noCollision(entity, box)) {
@@ -268,12 +268,37 @@ public class WorldUtil {
 		return axis;
 	}
 
+    public static boolean existsSpaceBelow(LivingEntity entity) {
+        Level world = entity.level();
+        Vec3 center = entity.position();
+        if (!world.isLoaded(new BlockPos(
+                (int) Math.floor(center.x()),
+                (int) Math.floor(center.y()),
+                (int) Math.floor(center.z())
+        ))) return false;
+        double height = entity.getBbHeight() * 1.5;
+        double width = entity.getBbWidth() * 2;
+        AABB boundingBox = new AABB(
+                center.x() - width,
+                center.y() - 9,
+                center.z() - width,
+                center.x() + width,
+                center.y() + height,
+                center.z() + width
+        );
+        return world.noCollision(boundingBox);
+    }
 	public static boolean existsDivableSpace(LivingEntity entity) {
 		Level world = entity.getCommandSenderWorld();
 		double width = entity.getBbWidth() * 1.5;
 		double height = entity.getBbHeight() * 1.5;
 		double wideWidth = entity.getBbWidth() * 2;
 		Vec3 center = entity.position();
+        if (!world.isLoaded(new BlockPos(
+                (int) Math.floor(center.x()),
+                (int) Math.floor(center.y()),
+                (int) Math.floor(center.z())
+        ))) return false;
 		Vec3 diveDirection = VectorUtil.fromYawDegree(entity.getYHeadRot());
 		for (int i = 0; i < 4; i++) {
 			Vec3 centerPoint = center.add(diveDirection.scale(width * i));
@@ -296,7 +321,44 @@ public class WorldUtil {
 				center.y() + height,
 				center.z() + wideWidth
 		);
-		return world.noCollision(entity, verticalWideBox);
+        if (world.noCollision(verticalWideBox)) return true;
+        BlockPos centerBlockPos = new BlockPos(
+                (int) Math.floor(center.x()),
+                (int) Math.floor(center.y() - 0.5),
+                (int) Math.floor(center.z())
+        );
+
+        // check if water pool exists
+        if (!world.isLoaded(centerBlockPos)) return false;
+        verticalWideBox = new AABB(
+                center.x() - wideWidth,
+                center.y() - 2.9,
+                center.z() - wideWidth,
+                center.x() + wideWidth,
+                center.y() + height,
+                center.z() + wideWidth
+        );
+        int i = 0;
+        int waterLevel = -1;
+        for (; i < 6; i++) {
+            Block block = world.getBlockState(centerBlockPos.below(i)).getBlock();
+            if (block == Blocks.AIR) continue;
+            if (block == Blocks.WATER) {
+                waterLevel = i;
+                break;
+            }
+            return false;
+        }
+        if (waterLevel == -1) return false;
+        boolean filledWithWater = true;
+        for (; i < waterLevel + 3; i++) {
+            BlockState state = world.getBlockState(centerBlockPos.below(i));
+            if (state.getBlock() != Blocks.WATER) {
+                filledWithWater = false;
+                break;
+            }
+        }
+        return filledWithWater && world.noCollision(verticalWideBox);
 	}
 
 	@Nullable

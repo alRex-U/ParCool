@@ -6,9 +6,9 @@ import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.AdditionalProperties;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
+import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.impl.Animation;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -83,6 +83,7 @@ public class FastRun extends Action {
 	@Override
 	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
 		return (!stamina.isExhausted()
+                && !player.isInWaterOrBubble()
 				&& player.getVehicle() == null
 				&& !player.isFallFlying()
 				&& player.isSprinting()

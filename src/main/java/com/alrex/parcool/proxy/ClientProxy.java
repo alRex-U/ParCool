@@ -1,11 +1,13 @@
 package com.alrex.parcool.proxy;
 
+import com.alrex.parcool.client.hud.HUDRegistry;
+import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.network.*;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
-import com.alrex.parcool.common.registries.EventBusModRegistry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.SimpleChannel;
 
@@ -14,7 +16,9 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void init() {
 		EventBusForgeRegistry.registerClient(MinecraftForge.EVENT_BUS);
-		EventBusModRegistry.registerClient(FMLJavaModLoadingContext.get().getModEventBus());
+		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+		bus.addListener(KeyBindings::register);
+		bus.addListener(HUDRegistry.getInstance()::onSetup);
 	}
 
 	@Override
@@ -42,12 +46,6 @@ public class ClientProxy extends CommonProxy {
 				.encoder(SyncActionStateMessage::encode)
 				.decoder(SyncActionStateMessage::decode)
 				.consumerNetworkThread(SyncActionStateMessage::handleClient)
-				.add();
-		instance
-				.messageBuilder(StaminaControlMessage.class)
-				.encoder(StaminaControlMessage::encode)
-				.decoder(StaminaControlMessage::decode)
-				.consumerNetworkThread(StaminaControlMessage::handleClient)
 				.add();
 		instance
 				.messageBuilder(SyncClientInformationMessage.class)
