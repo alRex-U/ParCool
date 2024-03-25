@@ -20,5 +20,6 @@ public class EventBusForgeRegistry {
 		bus.register(HUDRegistry.getInstance());
 		bus.register(KeyRecorder.class);
 		bus.register(EventOpenSettingsParCool.class);
+        bus.register(EventEnableOrDisableParcool.class);
 	}
 }

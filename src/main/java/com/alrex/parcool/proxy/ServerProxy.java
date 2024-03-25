@@ -34,12 +34,6 @@ public class ServerProxy extends CommonProxy {
                 .consumerNetworkThread(SyncActionStateMessage::handleServer)
                 .add();
         instance
-                .messageBuilder(StaminaControlMessage.class)
-                .encoder(StaminaControlMessage::encode)
-                .decoder(StaminaControlMessage::decode)
-                //.consumerNetworkThread(null)
-                .add();
-        instance
                 .messageBuilder(SyncClientInformationMessage.class)
                 .encoder(SyncClientInformationMessage::encode)
                 .decoder(SyncClientInformationMessage::decode)
