@@ -7,6 +7,7 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.damage.DamageSources;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -27,6 +28,9 @@ import java.nio.ByteBuffer;
 public class WallSlide extends Action {
 	private Vec3 leanedWallDirection = null;
 	private byte particleSpawnCoolTime = 0;
+	private double startYSpeed = 0;
+	private int damageCount = 0, takenDamageCount = 0;
+	private byte damageCoolTime = 0;
 
 	@Nullable
 	public Vec3 getLeanedWallDirection() {
@@ -36,6 +40,7 @@ public class WallSlide extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		startInfo.putDouble(Math.abs(player.getDeltaMovement().y()));
 		return canContinue(player, parkourability, stamina);
 	}
 
@@ -51,6 +56,7 @@ public class WallSlide extends Action {
 				&& player.getDeltaMovement().y <= 0
 				&& KeyBindings.getKeyWallSlide().isDown()
 				&& !stamina.isExhausted()
+				&& !parkourability.get(Dive.class).isDoing()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& parkourability.get(ClingToCliff.class).getNotDoingTick() > 12
 		);
@@ -59,6 +65,14 @@ public class WallSlide extends Action {
 	@Override
 	public void onStart(Player player, Parkourability parkourability) {
 		particleSpawnCoolTime = 0;
+	}
+
+	@Override
+	public void onStartInServer(Player player, Parkourability parkourability, ByteBuffer startData) {
+		startYSpeed = startData.getDouble();
+		damageCount = (int) (5.5 * (startYSpeed - 1.) / player.getBbHeight());
+		takenDamageCount = 0;
+		damageCoolTime = 0;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -94,6 +108,19 @@ public class WallSlide extends Action {
 			slipperiness = (float) Math.sqrt(slipperiness);
 			player.fallDistance *= slipperiness;
 			player.setDeltaMovement(player.getDeltaMovement().multiply(0.8, slipperiness, 0.8));
+		}
+	}
+
+	@Override
+	public void onWorkingTickInServer(Player player, Parkourability parkourability, IStamina stamina) {
+		if (damageCoolTime <= 0 && damageCount > takenDamageCount++) {
+			int invulnerableTime = player.invulnerableTime; // bypass invulnerableTime
+			damageCoolTime = 1;
+			player.invulnerableTime = 0;
+			player.hurt(DamageSources.WALL_SLIDE, 0.3f);
+			player.invulnerableTime = invulnerableTime;
+		} else {
+			damageCoolTime--;
 		}
 	}
 
