@@ -3,18 +3,8 @@
     "subtitle": "parcool.sound.vault",
     "sounds": [
       {
-        "name": "minecraft:entity/player/attack/strong1",
-        "volume": 0.9,
-        "pitch": 0.6
-      },
-      {
-        "name": "minecraft:entity/player/attack/strong2",
-        "volume": 0.9,
-        "pitch": 0.6
-      },
-      {
-        "name": "minecraft:entity/player/attack/strong3",
-        "volume": 0.9,
+        "name": "parcool:grabbing",
+        "volume": 1.25,
         "pitch": 0.6
       }
     ]
@@ -23,18 +13,8 @@
     "subtitle": "parcool.sound.v_wall_run",
     "sounds": [
       {
-        "name": "minecraft:entity/player/attack/strong1",
-        "volume": 0.9,
-        "pitch": 0.6
-      },
-      {
-        "name": "minecraft:entity/player/attack/strong2",
-        "volume": 0.9,
-        "pitch": 0.6
-      },
-      {
-        "name": "minecraft:entity/player/attack/strong3",
-        "volume": 0.9,
+        "name": "parcool:wallrun_and_running",
+        "volume": 1.5,
         "pitch": 0.6
       }
     ]
@@ -43,18 +23,8 @@
     "subtitle": "parcool.sound.h_wall_run",
     "sounds": [
       {
-        "name": "minecraft:entity/player/attack/strong1",
-        "volume": 0.9,
-        "pitch": 0.7
-      },
-      {
-        "name": "minecraft:entity/player/attack/strong2",
-        "volume": 0.9,
-        "pitch": 0.7
-      },
-      {
-        "name": "minecraft:entity/player/attack/strong3",
-        "volume": 0.9,
+        "name": "parcool:wallrun_and_running",
+        "volume": 1.5,
         "pitch": 0.7
       }
     ]
@@ -73,19 +43,9 @@
     "subtitle": "parcool.sound.breakfall.roll",
     "sounds": [
       {
-        "name": "minecraft:entity/player/attack/strong1",
-        "volume": 0.9,
-        "pitch": 0.6
-      },
-      {
-        "name": "minecraft:entity/player/attack/strong2",
-        "volume": 0.9,
-        "pitch": 0.6
-      },
-      {
-        "name": "minecraft:entity/player/attack/strong3",
-        "volume": 0.9,
-        "pitch": 0.6
+        "name": "parcool:landing",
+        "volume": 0.55,
+        "pitch": 0.7
       }
     ]
   },
@@ -93,19 +53,9 @@
     "subtitle": "parcool.sound.breakfall.tap",
     "sounds": [
       {
-        "name": "minecraft:entity/player/attack/strong1",
-        "volume": 0.9,
-        "pitch": 0.6
-      },
-      {
-        "name": "minecraft:entity/player/attack/strong2",
-        "volume": 0.9,
-        "pitch": 0.6
-      },
-      {
-        "name": "minecraft:entity/player/attack/strong3",
-        "volume": 0.9,
-        "pitch": 0.6
+        "name": "parcool:landing",
+        "volume": 0.55,
+        "pitch": 0.7
       }
     ]
   },
@@ -113,18 +63,8 @@
     "subtitle": "parcool.sound.catleap",
     "sounds": [
       {
-        "name": "entity/player/attack/sweep1",
-        "volume": 0.8,
-        "pitch": 0.7
-      },
-      {
-        "name": "entity/player/attack/sweep2",
-        "volume": 0.8,
-        "pitch": 0.7
-      },
-      {
-        "name": "entity/player/attack/sweep3",
-        "volume": 0.8,
+        "name": "parcool:jumping",
+        "volume": 0.4,
         "pitch": 0.7
       }
     ]
@@ -133,18 +73,8 @@
     "subtitle": "parcool.sound.wall_jump",
     "sounds": [
       {
-        "name": "minecraft:entity/player/attack/strong1",
-        "volume": 0.9,
-        "pitch": 0.7
-      },
-      {
-        "name": "minecraft:entity/player/attack/strong2",
-        "volume": 0.9,
-        "pitch": 0.7
-      },
-      {
-        "name": "minecraft:entity/player/attack/strong3",
-        "volume": 0.9,
+        "name": "parcool:jumping",
+        "volume": 0.4,
         "pitch": 0.7
       }
     ]
@@ -153,18 +83,8 @@
     "subtitle": "parcool.sound.cling_to_cliff.grab",
     "sounds": [
       {
-        "name": "entity/player/attack/weak1",
-        "volume": 0.9,
-        "pitch": 0.6
-      },
-      {
-        "name": "entity/player/attack/weak2",
-        "volume": 0.9,
-        "pitch": 0.6
-      },
-      {
-        "name": "entity/player/attack/weak3",
-        "volume": 0.9,
+        "name": "parcool:grabbing",
+        "volume": 1.0,
         "pitch": 0.6
       }
     ]
@@ -173,18 +93,8 @@
     "subtitle": "parcool.sound.hang_down.jump",
     "sounds": [
       {
-        "name": "minecraft:entity/player/attack/strong1",
-        "volume": 0.75,
-        "pitch": 0.6
-      },
-      {
-        "name": "minecraft:entity/player/attack/strong2",
-        "volume": 0.75,
-        "pitch": 0.6
-      },
-      {
-        "name": "minecraft:entity/player/attack/strong3",
-        "volume": 0.75,
+        "name": "parcool:jumping",
+        "volume": 0.4,
         "pitch": 0.6
       }
     ]
@@ -193,17 +103,7 @@
     "subtitle": "parcool.sound.hang_down.grab",
     "sounds": [
       {
-        "name": "entity/player/attack/weak1",
-        "volume": 0.9,
-        "pitch": 0.6
-      },
-      {
-        "name": "entity/player/attack/weak2",
-        "volume": 0.9,
-        "pitch": 0.6
-      },
-      {
-        "name": "entity/player/attack/weak3",
+        "name": "parcool:grabbing",
         "volume": 0.9,
         "pitch": 0.6
       }
@@ -213,18 +113,8 @@
     "subtitle": "parcool.sound.hang_down.jump",
     "sounds": [
       {
-        "name": "minecraft:entity/player/attack/strong1",
-        "volume": 0.9,
-        "pitch": 0.6
-      },
-      {
-        "name": "minecraft:entity/player/attack/strong2",
-        "volume": 0.9,
-        "pitch": 0.6
-      },
-      {
-        "name": "minecraft:entity/player/attack/strong3",
-        "volume": 0.9,
+        "name": "parcool:jumping",
+        "volume": 0.4,
         "pitch": 0.6
       }
     ]
@@ -233,18 +123,18 @@
     "subtitle": "parcool.sound.slide",
     "sounds": [
       {
-        "name": "minecraft:entity/player/attack/strong1",
-        "volume": 0.9,
+        "name": "parcool:sliding_1",
+        "volume": 0.5,
         "pitch": 0.6
       },
       {
-        "name": "minecraft:entity/player/attack/strong2",
-        "volume": 0.9,
+        "name": "parcool:sliding_2",
+        "volume": 0.5,
         "pitch": 0.6
       },
       {
-        "name": "minecraft:entity/player/attack/strong3",
-        "volume": 0.9,
+        "name": "parcool:sliding_3",
+        "volume": 0.5,
         "pitch": 0.6
       }
     ]
@@ -253,19 +143,9 @@
     "subtitle": "parcool.sound.dodge",
     "sounds": [
       {
-        "name": "entity/player/attack/sweep1",
-        "volume": 0.6,
-        "pitch": 0.7
-      },
-      {
-        "name": "entity/player/attack/sweep2",
-        "volume": 0.6,
-        "pitch": 0.7
-      },
-      {
-        "name": "entity/player/attack/sweep3",
-        "volume": 0.6,
-        "pitch": 0.7
+        "name": "parcool:roll_and_dodge",
+        "volume": 0.5,
+        "pitch": 1
       }
     ]
   },

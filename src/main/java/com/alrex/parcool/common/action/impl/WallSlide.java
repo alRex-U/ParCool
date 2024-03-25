@@ -54,6 +54,7 @@ public class WallSlide extends Action {
 				&& player.getDeltaMovement().y() <= 0
 				&& KeyBindings.getKeyWallSlide().isDown()
 				&& !stamina.isExhausted()
+				&& !parkourability.get(Dive.class).isDoing()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& parkourability.get(ClingToCliff.class).getNotDoingTick() > 12
 		);
