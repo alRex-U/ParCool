@@ -19,7 +19,11 @@ public class SettingBooleanConfigScreen extends ParCoolSettingScreen {
         super(titleIn, info, theme);
         currentScreen = 1;
         for (int i = 0; i < booleans.length; i++) {
-            configButtons[i] = new Checkbox(0, 0, 0, Checkbox_Item_Height, Component.translatable(booleans[i].Path), booleans[i].get());
+            configButtons[i] = Checkbox
+                    .builder(Component.translatable(booleans[i].Path), font)
+                    .selected(booleans[i].get())
+                    .build();
+            configButtons[i].setHeight(Checkbox_Item_Height);
         }
     }
 

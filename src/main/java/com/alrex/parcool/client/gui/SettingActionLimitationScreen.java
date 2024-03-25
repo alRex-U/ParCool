@@ -25,7 +25,11 @@ public class SettingActionLimitationScreen extends ParCoolSettingScreen {
         currentScreen = 0;
         for (int i = 0; i < actionList.length; i++) {
             actionList[i] = new ActionConfigSet(ActionList.getByIndex(i), info);
-            actionButtons[i] = new Checkbox(0, 0, 0, Checkbox_Item_Height, Component.literal(actionList[i].name), actionList[i].getter.getAsBoolean());
+            actionButtons[i] = Checkbox
+                    .builder(Component.literal(actionList[i].name), font)
+                    .selected(actionList[i].getter.getAsBoolean())
+                    .build();
+            actionButtons[i].setHeight(Checkbox_Item_Height);
         }
     }
 
