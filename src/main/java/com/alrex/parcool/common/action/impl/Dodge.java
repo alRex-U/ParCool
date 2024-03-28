@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.DodgeAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
@@ -12,13 +13,11 @@ import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
-
 
 public class Dodge extends Action {
 	public static final int MAX_TICK = 11;
@@ -106,6 +105,7 @@ public class Dodge extends Action {
 				&& !isInSuccessiveCoolDown(parkourability.getActionInfo())
 				&& coolTime <= 0
 				&& player.isOnGround()
+				&& !player.isInWaterOrBubble()
 				&& !player.isShiftKeyDown()
 				&& !stamina.isExhausted()
 		);
@@ -116,12 +116,10 @@ public class Dodge extends Action {
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		return !(parkourability.get(Roll.class).isDoing()
 				|| parkourability.get(ClingToCliff.class).isDoing()
-				|| !player.isOnGround()
 				|| getDoingTick() >= MAX_TICK
 				|| player.isInWaterOrBubble()
 				|| player.isFallFlying()
 				|| player.abilities.flying
-				|| !parkourability.getActionInfo().can(Dodge.class)
 		);
 	}
 
@@ -134,14 +132,9 @@ public class Dodge extends Action {
 			successivelyCount++;
 		}
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 0.75f, 0.6f);
+            player.playSound(SoundEvents.DODGE.get(), 1f, 1f);
 		successivelyCoolTick = getSuccessiveCoolTime(parkourability.getActionInfo());
-		Animation animation = Animation.get(player);
-		if (animation != null) animation.setAnimator(new DodgeAnimator(dodgeDirection));
-	}
 
-	@Override
-	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		if (!player.isOnGround()) return;
 		Vector3d lookVec = VectorUtil.fromYawDegree(player.getYHeadRot());
 		Vector3d dodgeVec = Vector3d.ZERO;
@@ -161,6 +154,13 @@ public class Dodge extends Action {
 		}
 		dodgeVec = dodgeVec.scale(.9 * getSpeedModifier(parkourability.getActionInfo()));
 		player.setDeltaMovement(dodgeVec);
+
+		Animation animation = Animation.get(player);
+		if (animation != null) animation.setAnimator(new DodgeAnimator(dodgeDirection));
+		parkourability.getCancelMarks().addMarkerCancellingJump(this::isDoing);
+		if (!parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.CanGetOffStepsWhileDodge)) {
+			parkourability.getCancelMarks().addMarkerCancellingDescendFromEdge(this::isDoing);
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)

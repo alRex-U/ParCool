@@ -47,17 +47,7 @@ public class ActionProcessor {
 		boolean needSync = event.side == LogicalSide.CLIENT && player.isLocalPlayer();
 		SyncActionStateMessage.Encoder builder = SyncActionStateMessage.Encoder.reset();
 
-		if (needSync) {
-			stamina.tick();
-			staminaSyncCoolTimeTick++;
-			if (staminaSyncCoolTimeTick > 5) {
-				staminaSyncCoolTimeTick = 0;
-				SyncStaminaMessage.sync(player);
-			}
-			if (stamina.isExhausted()) {
-				player.setSprinting(false);
-			}
-		}
+		stamina.tick();
 		parkourability.getAdditionalProperties().onTick(player, parkourability);
 		for (Action action : actions) {
 			StaminaConsumeTiming timing = action.getStaminaConsumeTiming();
@@ -142,6 +132,15 @@ public class ActionProcessor {
 		}
 		if (needSync) {
 			SyncActionStateMessage.sync(player, builder);
+
+			staminaSyncCoolTimeTick++;
+			if (staminaSyncCoolTimeTick > 5 || stamina.wantToConsumeOnServer()) {
+				staminaSyncCoolTimeTick = 0;
+				SyncStaminaMessage.sync(player);
+			}
+			if (stamina.isExhausted()) {
+				player.setSprinting(false);
+			}
 		}
 	}
 

@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.event;
 
 import com.alrex.parcool.common.action.impl.Dive;
+import com.alrex.parcool.common.action.impl.Flipping;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,5 +20,6 @@ public class EventPlayerJump {
 		IStamina stamina = IStamina.get(player);
 		if (stamina == null) return;
 		parkourability.get(Dive.class).onJump(player, parkourability, stamina);
+		parkourability.get(Flipping.class).onJump(player, parkourability, stamina);
 	}
 }

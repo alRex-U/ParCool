@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.CrawlAnimator;
 import com.alrex.parcool.client.animation.impl.SlidingAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
@@ -11,8 +12,9 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.event.TickEvent;
 
@@ -51,11 +53,12 @@ public class Slide extends Action {
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		slidingVec = player.getLookAngle().multiply(1, 0, 1).normalize();
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.PLAYER_ATTACK_STRONG, 1f, 0.6f);
+            player.playSound(SoundEvents.SLIDE.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new SlidingAnimator());
 		}
+		parkourability.getCancelMarks().addMarkerCancellingJump(this::isDoing);
 	}
 
 	@Override
@@ -69,7 +72,12 @@ public class Slide extends Action {
 	@Override
 	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		if (slidingVec != null) {
-			Vector3d vec = slidingVec.scale(0.45);
+			ModifiableAttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
+			double speedScale = 0.45;
+			if (attr != null) {
+				speedScale = attr.getValue() * 4.5;
+			}
+			Vector3d vec = slidingVec.scale(speedScale);
 			player.setDeltaMovement((player.isOnGround() ? vec : vec.scale(0.6)).add(0, player.getDeltaMovement().y(), 0));
 		}
 	}

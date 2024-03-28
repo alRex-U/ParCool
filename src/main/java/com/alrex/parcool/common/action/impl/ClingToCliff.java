@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.ClingToCliffAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
@@ -11,7 +12,6 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -75,7 +75,7 @@ public class ClingToCliff extends Action {
 		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.PLAYER_ATTACK_WEAK, 1f, 0.6f);
+            player.playSound(SoundEvents.CLING_TO_CLIFF.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new ClingToCliffAnimator());
 	}
@@ -92,7 +92,7 @@ public class ClingToCliff extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		armSwingAmount += player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
+		armSwingAmount += (float) player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
 		if (KeyBindings.getKeyLeft().isDown() && KeyBindings.getKeyRight().isDown()) {
 			player.setDeltaMovement(0, 0, 0);
 		} else {
@@ -146,10 +146,10 @@ public class ClingToCliff extends Action {
 					player.setYBodyRot((float) VectorUtil.toYawDegree(clingWallDirection));
 					break;
 				case RightAgainstWall:
-					player.setYBodyRot((float) VectorUtil.toYawDegree(clingWallDirection.yRot((float) (-Math.PI / 2))));
+					player.yBodyRotO = player.yBodyRot = (float) VectorUtil.toYawDegree(clingWallDirection.yRot((float) (-Math.PI / 2)));
 					break;
 				case LeftAgainstWall:
-					player.setYBodyRot((float) VectorUtil.toYawDegree(clingWallDirection.yRot((float) (Math.PI / 2))));
+					player.yBodyRotO = player.yBodyRot = (float) VectorUtil.toYawDegree(clingWallDirection.yRot((float) (Math.PI / 2)));
 			}
 		}
 	}

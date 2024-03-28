@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.animation;
 
+import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,9 +19,6 @@ public class PlayerModelRotator {
 
 	private boolean basedCenter = false;
 	private boolean basedTop = false;
-	private boolean legGrounding = false;
-
-	private float angleFront = 0;
 
 	public PlayerModelRotator(MatrixStack stack, PlayerEntity player, float partial) {
 		this.stack = stack;
@@ -56,15 +54,24 @@ public class PlayerModelRotator {
 	}
 
 	public PlayerModelRotator rotatePitchFrontward(float angleDegree) {
-		Vector3d lookVec = VectorUtil.fromYawDegree(player.yBodyRot).yRot((float) Math.PI / 2);
+        Vector3d lookVec;
+        if (player.isLocalPlayer()) {
+            lookVec = VectorUtil.fromYawDegree(MathUtil.lerp(player.yBodyRotO, player.yBodyRot, getPartialTick())).yRot((float) Math.PI / 2);
+        } else {
+            lookVec = VectorUtil.fromYawDegree(player.yBodyRot).yRot((float) Math.PI / 2);
+        }
 		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
-		angleFront += angleDegree;
 		stack.mulPose(vec.rotationDegrees(angleDegree));
 		return this;
 	}
 
 	public PlayerModelRotator rotateRollRightward(float angleDegree) {
-		Vector3d lookVec = VectorUtil.fromYawDegree(player.yBodyRot);
+        Vector3d lookVec;
+        if (player.isLocalPlayer()) {
+            lookVec = VectorUtil.fromYawDegree(MathUtil.lerp(player.yBodyRotO, player.yBodyRot, getPartialTick()));
+        } else {
+            lookVec = VectorUtil.fromYawDegree(player.yBodyRot);
+        }
 		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
 		stack.mulPose(vec.rotationDegrees(angleDegree));
 		return this;

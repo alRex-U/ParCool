@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.HorizontalWallRunAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
@@ -12,10 +13,14 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.particles.BlockParticleData;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -48,7 +53,7 @@ public class HorizontalWallRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth());
+		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() / 2);
 		if (wallDirection == null) return;
 		if (runningWallDirection == null) return;
 		if (runningDirection == null) return;
@@ -80,7 +85,7 @@ public class HorizontalWallRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth());
+		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() / 2);
 		if (wallDirection == null) return false;
 		Vector3d wallVec = wallDirection.normalize();
 		Vector3d lookDirection = VectorUtil.fromYawDegree(player.yBodyRot);
@@ -106,16 +111,16 @@ public class HorizontalWallRun extends Action {
 
 		return (!parkourability.get(WallJump.class).justJumped()
 				&& KeyBindings.getKeyHorizontalWallRun().isDown()
-				&& !parkourability.get(WallJump.class).justJumped()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Dodge.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
-				&& Math.abs(player.getDeltaMovement().y()) < 0.3
+				&& Math.abs(player.getDeltaMovement().y()) < 0.5
 				&& coolTime == 0
 				&& !player.isOnGround()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
-				&& (parkourability.get(FastRun.class).canActWithRunning(player)
-				|| parkourability.get(FastRun.class).getNotDashTick(parkourability.getAdditionalProperties()) < 10
+				&& (
+				parkourability.get(FastRun.class).canActWithRunning(player)
+						|| parkourability.get(FastRun.class).getNotDashTick(parkourability.getAdditionalProperties()) < 10
 		)
 				&& !stamina.isExhausted()
 		);
@@ -124,7 +129,7 @@ public class HorizontalWallRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth());
+		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() / 2);
 		if (wallDirection == null) return false;
 		return (getDoingTick() < getMaxRunningTick(parkourability.getActionInfo())
 				&& !stamina.isExhausted()
@@ -148,7 +153,7 @@ public class HorizontalWallRun extends Action {
 		runningWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		runningDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.PLAYER_ATTACK_STRONG, 1f, 0.7f);
+            player.playSound(SoundEvents.HORIZONTAL_WALL_RUN.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new HorizontalWallRunAnimator(wallIsRightward));
@@ -183,8 +188,13 @@ public class HorizontalWallRun extends Action {
 						runningDirection.yRot((float) (-Math.signum(differenceAngle) * Math.PI / 4))
 				));
 			}
-			player.setYBodyRot(bodyYaw);
+			player.yBodyRotO = player.yBodyRot = bodyYaw;
 		}
+	}
+
+	@Override
+	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+		spawnRunningParticle(player);
 	}
 
 	@Override
@@ -200,5 +210,42 @@ public class HorizontalWallRun extends Action {
 	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
 		return StaminaConsumeTiming.OnWorking;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public void spawnRunningParticle(PlayerEntity player) {
+		if (runningDirection == null || runningWallDirection == null) return;
+		World level = player.level;
+		Vector3d pos = player.position();
+		BlockPos leanedBlock = new BlockPos(
+				pos.add(runningWallDirection.x(), player.getBbHeight() * 0.25, runningWallDirection.z())
+		);
+		if (!level.isLoaded(leanedBlock)) return;
+		float width = player.getBbWidth();
+		BlockState blockstate = level.getBlockState(leanedBlock);
+
+		Vector3d wallDirection = runningWallDirection.normalize();
+		Vector3d orthogonalToWallVec = wallDirection.yRot((float) (Math.PI / 2));
+		Vector3d particleBaseDirection = runningDirection.subtract(wallDirection);
+		if (blockstate.getRenderShape() != BlockRenderType.INVISIBLE) {
+			Vector3d particlePos = new Vector3d(
+					pos.x() + (wallDirection.x() * 0.4 + orthogonalToWallVec.x() * (player.getRandom().nextDouble() - 0.5D)) * width,
+					pos.y() + 0.1D + 0.3 * player.getRandom().nextDouble(),
+					pos.z() + (wallDirection.z() * 0.4 + orthogonalToWallVec.z() * (player.getRandom().nextDouble() - 0.5D)) * width
+			);
+			Vector3d particleSpeed = particleBaseDirection
+					.yRot((float) (Math.PI * 0.2 * (player.getRandom().nextDouble() - 0.5)))
+					.scale(3 + 6 * player.getRandom().nextDouble())
+					.add(0, 1.5, 0);
+			level.addParticle(
+					new BlockParticleData(ParticleTypes.BLOCK, blockstate).setPos(leanedBlock),
+					particlePos.x(),
+					particlePos.y(),
+					particlePos.z(),
+					particleSpeed.x(),
+					particleSpeed.y(),
+					particleSpeed.z()
+			);
+		}
 	}
 }

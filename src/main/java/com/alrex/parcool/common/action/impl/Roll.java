@@ -30,6 +30,9 @@ public class Roll extends Action {
 			if (KeyBindings.getKeyBreakfall().isDown()
 					&& KeyBindings.getKeyForward().isDown()
 					&& !parkourability.get(Dodge.class).isDoing()
+					&& !parkourability.get(Crawl.class).isDoing()
+					&& !player.isVisuallyCrawling()
+					&& !player.isVisuallySwimming()
 					&& ParCoolConfig.Client.Booleans.EnableRollWhenCreative.get()
 					&& player.isCreative()
 					&& parkourability.getAdditionalProperties().getLandingTick() <= 1
@@ -98,6 +101,7 @@ public class Roll extends Action {
 		player.setDeltaMovement(vec.x(), 0, vec.z());
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new RollAnimator(direction));
+		parkourability.getCancelMarks().addMarkerCancellingJump(this::isDoing);
 	}
 
 	public void startRoll(PlayerEntity player) {

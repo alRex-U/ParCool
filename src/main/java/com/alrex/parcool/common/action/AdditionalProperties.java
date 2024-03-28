@@ -10,6 +10,8 @@ public class AdditionalProperties {
 	private int lastSprintingTick = 0;
 	private int notSprintingTick = 0;
 	private int notCreativeFlyingTick = 0;
+	private int inWaterTick = 0;
+	private int notInWaterTick = 0;
 	private int tickAfterLastJump = 0;
 
 	public void onJump() {
@@ -38,6 +40,13 @@ public class AdditionalProperties {
 		} else {
 			notCreativeFlyingTick++;
 		}
+		if (player.isInWaterOrBubble()) {
+			inWaterTick++;
+			notInWaterTick = 0;
+		} else {
+			inWaterTick = 0;
+			notInWaterTick++;
+		}
 	}
 
 	public int getSprintingTick() {
@@ -62,6 +71,14 @@ public class AdditionalProperties {
 
 	public int getNotCreativeFlyingTick() {
 		return notCreativeFlyingTick;
+	}
+
+	public int getInWaterTick() {
+		return inWaterTick;
+	}
+
+	public int getNotInWaterTick() {
+		return notInWaterTick;
 	}
 
 	public int getTickAfterLastJump() {

@@ -36,23 +36,26 @@ public class ActionInfo {
 	public int getStaminaConsumptionOf(Class<? extends Action> action) {
 		int value = getClientInformation().getStaminaConsumptionOf(action);
 		for (Limitations limitation : Limitations) {
-			value = Math.max(value, limitation.getLeastStaminaConsumption(action));
+            if (limitation.isEnabled()) value = Math.max(value, limitation.getLeastStaminaConsumption(action));
 		}
 		return value;
 	}
 
-	public int getStaminaRecovery() {
-		int value = getClientInformation().get(ParCoolConfig.Client.Integers.StaminaRecoveryValue);
+    public int getStaminaRecoveryLimit() {
+        int value = Integer.MAX_VALUE;
 		for (Limitations limitation : Limitations) {
-			value = Math.min(value, limitation.get(ParCoolConfig.Server.Integers.MaxStaminaRecovery));
+            if (limitation.isEnabled())
+                value = Math.min(value, limitation.get(ParCoolConfig.Server.Integers.MaxStaminaRecovery));
 		}
 		return value;
 	}
 
-	public int getMaxStamina() {
-		int value = getClientInformation().get(ParCoolConfig.Client.Integers.MaxStamina);
+    public int getMaxStaminaLimit() {
+        //int value = getClientInformation().get(ParCoolConfig.Client.Integers.MaxStamina);
+        int value = Integer.MAX_VALUE;
 		for (Limitations limitation : Limitations) {
-			value = Math.min(value, limitation.get(ParCoolConfig.Server.Integers.MaxStaminaLimit));
+            if (limitation.isEnabled())
+                value = Math.min(value, limitation.get(ParCoolConfig.Server.Integers.MaxStaminaLimit));
 		}
 		return value;
 	}

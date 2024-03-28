@@ -1,4 +1,4 @@
-package com.alrex.parcool.common.potion;
+package com.alrex.parcool.api;
 
 
 import com.alrex.parcool.ParCool;
@@ -11,11 +11,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class Effects {
 	private static final DeferredRegister<Effect> EFFECTS = DeferredRegister.create(ForgeRegistries.POTIONS, ParCool.MOD_ID);
-	public static final Effect INEXHAUSTIBLE = new InexhaustibleEffect();
-	public static final RegistryObject<Effect> INEXHAUSTIBLE_REGISTRY = EFFECTS.register(
-			"inexhaustible", () -> INEXHAUSTIBLE
+    public static final RegistryObject<Effect> INEXHAUSTIBLE = EFFECTS.register(
+            "inexhaustible", InexhaustibleEffect::new
 	);
-
 	public static void registerAll(IEventBus modBus) {
 		EFFECTS.register(modBus);
 	}
