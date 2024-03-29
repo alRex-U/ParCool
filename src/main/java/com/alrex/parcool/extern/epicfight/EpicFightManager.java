@@ -23,7 +23,7 @@ public class EpicFightManager {
         modInstalled = mod != null;
     }
 
-    public static IStamina newFeathersStaminaFor(Player player) {
+    public static IStamina newEpicFightStaminaFor(Player player) {
         if (!modInstalled) return IStamina.Type.Default.newInstance(player);
         return new EpicFightStamina(player);
     }
