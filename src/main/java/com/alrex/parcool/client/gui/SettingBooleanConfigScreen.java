@@ -20,7 +20,8 @@ public class SettingBooleanConfigScreen extends ParCoolSettingScreen {
         currentScreen = 1;
         for (int i = 0; i < booleans.length; i++) {
             configButtons[i] = Checkbox
-                    .builder(Component.translatable(booleans[i].Path), font)
+                    .builder(Component.translatable(booleans[i].Path), Minecraft.getInstance().font)
+                    .pos(0, 0)
                     .selected(booleans[i].get())
                     .build();
             configButtons[i].setHeight(Checkbox_Item_Height);
