@@ -7,7 +7,9 @@ import com.alrex.parcool.common.action.impl.FastSwim;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.math.vector.Vector3d;
 
 public class FastSwimAnimator extends Animator {
@@ -22,24 +24,57 @@ public class FastSwimAnimator extends Animator {
         if (animationFactor > 1) animationFactor = 1;
         float tick = getTick() + transformer.getPartialTick();
         double armFactor = Math.cos(Math.PI * tick / 15.);
+
+        HandSide attackHand = transformer.getRawModel().getAttackArm(player);
+        boolean leftArmAnimatable = attackHand != HandSide.LEFT || transformer.getRawModel().attackTime <= 0f;
+        boolean rightArmAnimatable = attackHand != HandSide.RIGHT || transformer.getRawModel().attackTime <= 0f;
+        if (leftArmAnimatable && ((
+                transformer.getRawModel().leftArmPose != BipedModel.ArmPose.EMPTY
+                        && transformer.getRawModel().leftArmPose != BipedModel.ArmPose.ITEM
+        )
+                || transformer.getRawModel().rightArmPose.isTwoHanded()
+        )
+        ) {
+            leftArmAnimatable = false;
+        }
+        if (rightArmAnimatable && ((
+                transformer.getRawModel().rightArmPose != BipedModel.ArmPose.EMPTY
+                        && transformer.getRawModel().rightArmPose != BipedModel.ArmPose.ITEM
+        )
+                || transformer.getRawModel().leftArmPose.isTwoHanded()
+        )
+        ) {
+            rightArmAnimatable = false;
+        }
+
         double leftArmXAngle = 45 * armFactor;
         double rightArmXAngle = -leftArmXAngle;
         if (rightArmXAngle < 0) rightArmXAngle = -3 * Math.sqrt(-rightArmXAngle);
         if (leftArmXAngle < 0) leftArmXAngle = -3 * Math.sqrt(-leftArmXAngle);
-        transformer.getRawModel().rightArm.x += Math.max(0, 2.4 * Math.sin(Math.PI * tick / 15.));
-        transformer.getRawModel().rightArm.y += Math.max(0, 1.2 * Math.sin(Math.PI * tick / 15.));
-        transformer.getRawModel().rightArm.z -= 1.2 * Math.sin(Math.PI * tick / 15.);
-        transformer.getRawModel().leftArm.x -= Math.max(0, -2.4 * Math.sin(Math.PI * tick / 15.));
-        transformer.getRawModel().leftArm.y += Math.max(0, -1.2 * Math.sin(Math.PI * tick / 15.));
-        transformer.getRawModel().rightArm.z += 1.2 * Math.sin(Math.PI * tick / 15.);
+        if (rightArmAnimatable) {
+            transformer.getRawModel().rightArm.x += Math.max(0, 2.4 * Math.sin(Math.PI * tick / 15.));
+            transformer.getRawModel().rightArm.y += Math.max(0, 1.2 * Math.sin(Math.PI * tick / 15.));
+            transformer.getRawModel().rightArm.z -= 1.2 * Math.sin(Math.PI * tick / 15.);
+        }
+
+        if (leftArmAnimatable) {
+            transformer.getRawModel().leftArm.x -= Math.max(0, -2.4 * Math.sin(Math.PI * tick / 15.));
+            transformer.getRawModel().leftArm.y += Math.max(0, -1.2 * Math.sin(Math.PI * tick / 15.));
+            transformer.getRawModel().leftArm.z += 1.2 * Math.sin(Math.PI * tick / 15.);
+        }
+
         transformer.getRawModel().head.z += 0.5f * animationFactor;
         transformer
                 .rotateAdditionallyHeadYaw((float) (-5 * Math.sin(Math.PI * tick / 15.)))
                 .rotateRightArm((float) Math.toRadians(-190 + rightArmXAngle), 0, (float) Math.toRadians(-40 + 50 * Math.sin(Math.PI * tick / 15.)))
-                .rotateLeftArm((float) Math.toRadians(-190 + leftArmXAngle), 0, (float) Math.toRadians(40 + 50 * Math.sin(Math.PI * tick / 15.)))
-                .rotateRightLeg((float) Math.toRadians(-40 * Math.cos(Math.PI * tick / 9.)), 0, 0, animationFactor)
-                .rotateLeftLeg((float) Math.toRadians(40 * Math.cos(Math.PI * tick / 9.)), 0, 0, animationFactor)
-                .end();
+                .rotateLeftArm((float) Math.toRadians(-190 + leftArmXAngle), 0, (float) Math.toRadians(40 + 50 * Math.sin(Math.PI * tick / 15.)));
+        if (rightArmAnimatable) {
+            transformer.rotateRightLeg((float) Math.toRadians(-40 * Math.cos(Math.PI * tick / 9.)), 0, 0, animationFactor);
+        }
+        if (leftArmAnimatable) {
+            transformer.rotateLeftLeg((float) Math.toRadians(40 * Math.cos(Math.PI * tick / 9.)), 0, 0, animationFactor);
+        }
+        transformer.end();
     }
 
     @Override

@@ -73,6 +73,10 @@ public class ParCoolConfig {
 					ConfigGroup.Animation, "Enable custom animation of falling",
 					"enable_falling_animation", true
 			),
+			EnableLeanAnimationOfFastRun(
+					ConfigGroup.Animation, "Enable lean animation while FastRun",
+					"enable_lean_animation_fast_run", true
+			),
 			EnableFPVAnimation(
 					ConfigGroup.CameraAnimation, "Enable first-person-view animations",
 					"enable_fov_animation", true
