@@ -18,6 +18,9 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class ParCoolConfig {
+	public enum AdvantageousDirection {
+		Lower, Higher
+	}
 	public interface Item<T> {
 		T get();
 
@@ -484,13 +487,14 @@ public class ParCoolConfig {
 		public enum Booleans implements Item<Boolean> {
 			AllowInfiniteStamina(
 					ConfigGroup.Stamina, "Permission of infinite stamina",
-					"allow_infinite_stamina", true
+					"allow_infinite_stamina", true, true
 			);
 			public final ConfigGroup Group;
 			@Nullable
 			public final String Comment;
 			public final String Path;
 			public final boolean DefaultValue;
+			public final boolean AdvantageousValue;
 			@Nullable
 			private ForgeConfigSpec.BooleanValue configInstance = null;
 
@@ -498,12 +502,14 @@ public class ParCoolConfig {
 					ConfigGroup group,
 					@Nullable String comment,
 					String path,
-					boolean defaultValue
+					boolean defaultValue,
+					boolean advantageous
 			) {
 				Group = group;
 				Comment = comment;
 				Path = path;
 				DefaultValue = defaultValue;
+				AdvantageousValue = advantageous;
 			}
 
 			@Override
@@ -549,31 +555,31 @@ public class ParCoolConfig {
 		public enum Integers implements Item<Integer> {
 			MaxStaminaLimit(
 					ConfigGroup.Stamina, "Limitation of max stamina value",
-					"max_stamina_limit", Integer.MAX_VALUE, 300, Integer.MAX_VALUE
+					"max_stamina_limit", Integer.MAX_VALUE, 300, Integer.MAX_VALUE, AdvantageousDirection.Higher
 			),
 			MaxStaminaRecovery(
 					ConfigGroup.Stamina, "Limitation of max stamina recovery",
-					"max_stamina_recovery_limit", Integer.MAX_VALUE, 1, Integer.MAX_VALUE
+					"max_stamina_recovery_limit", Integer.MAX_VALUE, 1, Integer.MAX_VALUE, AdvantageousDirection.Higher
 			),
 			SuccessiveDodgeCoolTime(
 					ConfigGroup.Control, "How long duration of dodge is deal as successive dodge",
-					"least_successive_dodge_cool_time", 0, 0, Integer.MAX_VALUE
+					"least_successive_dodge_cool_time", 0, 0, Integer.MAX_VALUE, AdvantageousDirection.Lower
 			),
 			DodgeCoolTime(
 					ConfigGroup.Control, "Cool time of Dodge action",
-					"least_dodge_cool_time", Dodge.MAX_TICK, Dodge.MAX_TICK, Integer.MAX_VALUE
+					"least_dodge_cool_time", Dodge.MAX_TICK, Dodge.MAX_TICK, Integer.MAX_VALUE, AdvantageousDirection.Lower
 			),
 			MaxSuccessiveDodgeCount(
 					ConfigGroup.Control, "Max number of times of successive Dodge action",
-					"max_successive_dodge_count", Integer.MAX_VALUE, 1, Integer.MAX_VALUE
+					"max_successive_dodge_count", Integer.MAX_VALUE, 1, Integer.MAX_VALUE, AdvantageousDirection.Higher
 			),
 			MaxWallRunContinuableTick(
 					ConfigGroup.Modifier, "How long you can do Horizontal Wall Run",
-					"wall-run_continuable_tick", 40, 15, 40
+					"wall-run_continuable_tick", 40, 15, 40, AdvantageousDirection.Higher
 			),
 			MaxSlidingContinuableTick(
 					ConfigGroup.Modifier, "How long you can do Slide",
-					"sliding_continuable_tick", 30, 10, 30
+					"sliding_continuable_tick", 30, 10, 30, AdvantageousDirection.Higher
 			);
 			public final ConfigGroup Group;
 			@Nullable
@@ -582,6 +588,7 @@ public class ParCoolConfig {
 			public final int DefaultValue;
 			public final int Min;
 			public final int Max;
+			public final AdvantageousDirection Advantageous;
 			@Nullable
 			private ForgeConfigSpec.IntValue configInstance = null;
 
@@ -591,7 +598,8 @@ public class ParCoolConfig {
 					String path,
 					int defaultValue,
 					int min,
-					int max
+					int max,
+					AdvantageousDirection advantageous
 			) {
 				Group = group;
 				Comment = comment;
@@ -599,6 +607,7 @@ public class ParCoolConfig {
 				DefaultValue = defaultValue;
 				Min = min;
 				Max = max;
+				Advantageous = advantageous;
 			}
 
 			@Override
@@ -644,11 +653,11 @@ public class ParCoolConfig {
 		public enum Doubles implements Item<Double> {
 			MaxFastRunSpeedModifier(
 					ConfigGroup.Modifier, "FastRun speed modifier",
-					"max_fast-run_modifier", 2, 0.001, 4
+					"max_fast-run_modifier", 2, 0.001, 4, AdvantageousDirection.Higher
 			),
 			MaxDodgeSpeedModifier(
 					ConfigGroup.Modifier, "Dodge speed modifier",
-					"max_dodge-speed_modifier", 1, 0.5, 1.5
+					"max_dodge-speed_modifier", 1, 0.5, 1.5, AdvantageousDirection.Higher
 			);
 			public final ConfigGroup Group;
 			@Nullable
@@ -657,6 +666,7 @@ public class ParCoolConfig {
 			public final double DefaultValue;
 			public final double Min;
 			public final double Max;
+			public final AdvantageousDirection Advantageous;
 			@Nullable
 			private ForgeConfigSpec.DoubleValue configInstance = null;
 
@@ -666,7 +676,8 @@ public class ParCoolConfig {
 					String path,
 					double defaultValue,
 					double min,
-					double max
+					double max,
+					AdvantageousDirection advantageous
 			) {
 				Group = group;
 				Comment = comment;
@@ -674,6 +685,7 @@ public class ParCoolConfig {
 				DefaultValue = defaultValue;
 				Min = min;
 				Max = max;
+				Advantageous = advantageous;
 			}
 
 			@Override

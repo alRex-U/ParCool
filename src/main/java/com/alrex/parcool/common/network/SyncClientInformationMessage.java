@@ -2,6 +2,7 @@ package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.info.ClientSetting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -57,17 +58,15 @@ public class SyncClientInformationMessage {
 				if (player == null) return;
 				ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 				if (requestLimitations) {
-					SyncLimitationMessage.sendServerLimitation(serverPlayer);
-					SyncLimitationMessage.sendIndividualLimitation(serverPlayer);
+                    SyncLimitationMessage.sync(serverPlayer);
 				}
 			}
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
 			if (!player.isLocalPlayer()) {
-				parkourability.getClientInfo().readFrom(data);
+                parkourability.getActionInfo().setClientSetting(ClientSetting.readFrom(data));
 				data.rewind();
 			}
-			parkourability.getClientInfo().setSynced(true);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
@@ -81,12 +80,10 @@ public class SyncClientInformationMessage {
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
 			if (requestLimitations) {
-				SyncLimitationMessage.sendServerLimitation(player);
-				SyncLimitationMessage.sendIndividualLimitation(player);
+                SyncLimitationMessage.sync(player);
 			}
-			parkourability.getClientInfo().readFrom(data);
+            parkourability.getActionInfo().setClientSetting(ClientSetting.readFrom(data));
 			data.rewind();
-			parkourability.getClientInfo().setSynced(true);
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
@@ -95,9 +92,7 @@ public class SyncClientInformationMessage {
 	public static void sync(ClientPlayerEntity player, boolean requestSendLimitation) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
-		parkourability.getClientInfo().readFromLocalConfig();
 		SyncClientInformationMessage message = new SyncClientInformationMessage();
-		parkourability.getClientInfo().setSynced(false);
 		parkourability.getClientInfo().writeTo(message.data);
 		message.data.flip();
 		message.playerID = player.getUUID();

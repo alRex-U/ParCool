@@ -23,34 +23,28 @@ public class Dodge extends Action {
 	public static final int MAX_TICK = 11;
 
 	private static int getMaxCoolTime(ActionInfo info) {
-		int value = info.getClientInformation().get(ParCoolConfig.Client.Integers.DodgeCoolTime);
-		if (info.getIndividualLimitation().isEnabled())
-			value = Math.max(value, info.getIndividualLimitation().get(ParCoolConfig.Server.Integers.DodgeCoolTime));
-		if (info.getServerLimitation().isEnabled())
-			value = Math.max(value, info.getServerLimitation().get(ParCoolConfig.Server.Integers.DodgeCoolTime));
-		return value;
+		return Math.max(
+				info.getClientSetting().get(ParCoolConfig.Client.Integers.DodgeCoolTime),
+				info.getServerLimitation().get(ParCoolConfig.Server.Integers.DodgeCoolTime)
+		);
 	}
 
 	private static int getMaxSuccessiveDodge(ActionInfo info) {
-		int value = info.getClientInformation().get(ParCoolConfig.Client.Integers.MaxSuccessiveDodgeCount);
-		if (info.getIndividualLimitation().isEnabled())
-			value = Math.min(value, info.getIndividualLimitation().get(ParCoolConfig.Server.Integers.MaxSuccessiveDodgeCount));
-		if (info.getServerLimitation().isEnabled())
-			value = Math.min(value, info.getServerLimitation().get(ParCoolConfig.Server.Integers.MaxSuccessiveDodgeCount));
-		return value;
+		return Math.min(
+				info.getClientSetting().get(ParCoolConfig.Client.Integers.MaxSuccessiveDodgeCount),
+				info.getServerLimitation().get(ParCoolConfig.Server.Integers.MaxSuccessiveDodgeCount)
+		);
 	}
 
 	private static int getSuccessiveCoolTime(ActionInfo info) {
-		int value = info.getClientInformation().get(ParCoolConfig.Client.Integers.SuccessiveDodgeCoolTime);
-		if (info.getIndividualLimitation().isEnabled())
-			value = Math.max(value, info.getIndividualLimitation().get(ParCoolConfig.Server.Integers.SuccessiveDodgeCoolTime));
-		if (info.getServerLimitation().isEnabled())
-			value = Math.max(value, info.getServerLimitation().get(ParCoolConfig.Server.Integers.SuccessiveDodgeCoolTime));
-		return value;
+		return Math.max(
+				info.getClientSetting().get(ParCoolConfig.Client.Integers.SuccessiveDodgeCoolTime),
+				info.getServerLimitation().get(ParCoolConfig.Server.Integers.SuccessiveDodgeCoolTime)
+		);
 	}
 
 	public enum DodgeDirection {
-		Front, Back, Left, Right;
+		Front, Back, Left, Right
 	}
 
 	private DodgeDirection dodgeDirection = null;
@@ -75,12 +69,10 @@ public class Dodge extends Action {
 	}
 
 	public double getSpeedModifier(ActionInfo info) {
-		double value = info.getClientInformation().get(ParCoolConfig.Client.Doubles.DodgeSpeedModifier);
-		if (info.getServerLimitation().isEnabled())
-			value = Math.min(value, info.getServerLimitation().get(ParCoolConfig.Server.Doubles.MaxDodgeSpeedModifier));
-		if (info.getIndividualLimitation().isEnabled())
-			value = Math.min(value, info.getIndividualLimitation().get(ParCoolConfig.Server.Doubles.MaxDodgeSpeedModifier));
-		return value;
+		return Math.min(
+				info.getClientSetting().get(ParCoolConfig.Client.Doubles.DodgeSpeedModifier),
+				info.getServerLimitation().get(ParCoolConfig.Server.Doubles.MaxDodgeSpeedModifier)
+		);
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -10,7 +10,7 @@ public class EventBusForgeRegistry {
 	public static void register(IEventBus bus) {
 		bus.register(EventPlayerJump.class);
 		bus.register(EventAttachCapability.class);
-		bus.register(EventSendPermissions.class);
+        bus.register(EventLoginLogout.class);
 		bus.register(EventPlayerFall.class);
 		bus.register(EventPlayerClone.class);
 		bus.register(new ActionProcessor());

@@ -23,8 +23,7 @@ public abstract class ParCoolSettingScreen extends Screen {
 
 	public ParCoolSettingScreen(ITextComponent titleIn, ActionInfo info, ColorTheme theme) {
 		super(titleIn);
-		serverPermissionReceived = info.getServerLimitation()::isReceived;
-		individualPermissionReceived = info.getIndividualLimitation()::isReceived;
+		serverPermissionReceived = info.getServerLimitation()::isSynced;
 		color = theme;
 		screenList = new ScreenSet[]{
 				new ScreenSet<>(new TranslationTextComponent("parcool.gui.text.action"), () -> new SettingActionLimitationScreen(title, info, theme)),
@@ -39,7 +38,6 @@ public abstract class ParCoolSettingScreen extends Screen {
 	protected static final int Checkbox_Item_Height = 21;
 	protected final ColorTheme color;
 	protected final BooleanSupplier serverPermissionReceived;
-	protected final BooleanSupplier individualPermissionReceived;
 
 	@Override
 	public void resize(@Nonnull Minecraft minecraft, int p_231152_2_, int p_231152_3_) {
@@ -77,7 +75,7 @@ public abstract class ParCoolSettingScreen extends Screen {
 		fill(matrixStack, 0, topBarHeight - 1, width, topBarHeight, color.getSeparator());
 
 		int titleOffset = 0;
-		if (!(serverPermissionReceived.getAsBoolean() && individualPermissionReceived.getAsBoolean())) {
+		if (!serverPermissionReceived.getAsBoolean()) {
 			fill(matrixStack, 2, 2, topBarHeight - 3, topBarHeight - 3, 0xFFEEEEEE);
 			fill(matrixStack, 3, 3, topBarHeight - 4, topBarHeight - 4, 0xFFEE0000);
 			drawCenteredString(matrixStack, font, "!", topBarHeight / 2, (topBarHeight - font.lineHeight) / 2 + 1, 0xEEEEEE);
@@ -98,10 +96,8 @@ public abstract class ParCoolSettingScreen extends Screen {
 	}
 
 	protected static final ITextComponent Header_ActionName = new TranslationTextComponent("parcool.gui.text.actionName");
-	protected static final ITextComponent Header_ServerPermission = new StringTextComponent("G");
-	protected static final ITextComponent Header_ServerPermissionText = new TranslationTextComponent("parcool.gui.text.globalPermission");
-	protected static final ITextComponent Header_IndividualPermission = new StringTextComponent("I");
-	protected static final ITextComponent Header_IndividualPermissionText = new TranslationTextComponent("parcool.gui.text.individualPermission");
+	protected static final ITextComponent Header_Limitation = new StringTextComponent("L");
+	protected static final ITextComponent Header_Limitation_Text = new TranslationTextComponent("parcool.gui.text.limitation");
 	protected static final ITextComponent Permission_Permitted = new StringTextComponent("✓");
 	protected static final ITextComponent Permission_Denied = new StringTextComponent("×");
 	protected static final ITextComponent Permission_Not_Received = new StringTextComponent("§4[Error] Permissions are not sent from a server.\n\nBy closing this setting menu, permissions will be sent again.\nIf it were not done, please report to the mod developer after checking whether ParCool is installed and re-login to the server.§r");
