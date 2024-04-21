@@ -7,6 +7,7 @@ import com.alrex.parcool.common.action.impl.FastSwim;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.HandSide;
@@ -79,6 +80,9 @@ public class FastSwimAnimator extends Animator {
 
     @Override
     public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+        if (player.isLocalPlayer() && Minecraft.getInstance().screen != null) {
+            return;
+        }
         float tick = getTick() + rotator.getPartialTick();
         Vector3d lookAngle = player.getLookAngle();
         Vector3d bodyAngle = VectorUtil.fromYawDegree(MathUtil.lerp(player.yBodyRotO, player.yBodyRot, rotator.getPartialTick()));
