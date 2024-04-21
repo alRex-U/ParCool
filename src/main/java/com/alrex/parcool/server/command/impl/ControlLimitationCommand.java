@@ -2,6 +2,7 @@ package com.alrex.parcool.server.command.impl;
 
 import com.alrex.parcool.api.unstable.Limitation;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.server.command.args.ActionArgumentType;
 import com.alrex.parcool.server.command.args.LimitationIDArgumentType;
@@ -185,18 +186,21 @@ public class ControlLimitationCommand {
                         .literal("get")
                         .then(
                                 getLimitationByNameCommands(false, (it) -> {
+                                    it.executes((context) -> getLimitationInfo(context, true, true));
                                     limitationGetCoreCommands(it, true, true);
                                     return it;
                                 })
                         )
                         .then(
                                 getIndividualLimitationCommands(false, (it) -> {
+                                    it.executes((context) -> getLimitationInfo(context, false, true));
                                     limitationGetCoreCommands(it, false, true);
                                     return it;
                                 })
                         )
                         .then(
                                 getGlobalLimitationCommands((it) -> {
+                                    it.executes((context) -> getLimitationInfo(context, false, false));
                                     limitationGetCoreCommands(it, false, false);
                                     return it;
                                 })
@@ -340,6 +344,40 @@ public class ControlLimitationCommand {
         context.getSource().sendSuccess(
                 new StringTextComponent(
                         Boolean.toString(limitations.get(0).isPermitted(action))
+                ),
+                false
+        );
+        return 0;
+    }
+
+    private static int getLimitationInfo(CommandContext<CommandSource> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
+        List<Limitation> limitations = getLimitationInstance(
+                hasPlayer ? Collections.singletonList(EntityArgument.getPlayer(context, ARGS_NAME_PLAYER)) : Collections.emptyList(),
+                hasID ? LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID) : null,
+                context.getSource().getServer()
+        );
+        Limitation limitation = limitations.get(0);
+        StringBuilder builder = new StringBuilder();
+        builder.append("- Limitation Info -\n");
+        builder.append("Enabled : ").append(limitation.isEnabled()).append('\n');
+        for (Class<? extends Action> action : ActionList.ACTIONS) {
+            builder.append("  ").append(action.getSimpleName()).append(" : ").append('\n')
+                    .append("    ").append("permitted : ").append(limitation.isPermitted(action)).append('\n')
+                    .append("    ").append("stamina consumption : ").append(limitation.getLeastStaminaConsumption(action)).append('\n');
+        }
+        for (ParCoolConfig.Server.Booleans item : ParCoolConfig.Server.Booleans.values()) {
+            builder.append("  ").append(item.getPath()).append(" : ").append(limitation.get(item)).append('\n');
+        }
+        for (ParCoolConfig.Server.Integers item : ParCoolConfig.Server.Integers.values()) {
+            builder.append("  ").append(item.getPath()).append(" : ").append(limitation.get(item)).append('\n');
+        }
+        for (ParCoolConfig.Server.Doubles item : ParCoolConfig.Server.Doubles.values()) {
+            builder.append("  ").append(item.getPath()).append(" : ").append(limitation.get(item)).append('\n');
+        }
+        builder.append("----------");
+        context.getSource().sendSuccess(
+                new StringTextComponent(
+                        builder.toString()
                 ),
                 false
         );
