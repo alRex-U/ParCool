@@ -1,4 +1,4 @@
-package com.alrex.parcool.common.event;
+package com.alrex.parcool.common.handlers;
 
 import com.alrex.parcool.common.action.impl.Dive;
 import com.alrex.parcool.common.action.impl.Flipping;
@@ -8,7 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class EventPlayerJump {
+public class PlayerJumpHandler {
 	@SubscribeEvent
 	public static void onJump(LivingEvent.LivingJumpEvent event) {
 		if (!(event.getEntity() instanceof PlayerEntity)) return;

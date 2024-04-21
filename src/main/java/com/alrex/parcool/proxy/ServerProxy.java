@@ -44,12 +44,5 @@ public class ServerProxy extends CommonProxy {
 				SyncClientInformationMessage::decode,
 				SyncClientInformationMessage::handleServer
 		);
-        instance.registerMessage(
-                18,
-                PlayerLoginEventMessage.class,
-                PlayerLoginEventMessage::encode,
-                PlayerLoginEventMessage::decode,
-                null
-        );
 	}
 }

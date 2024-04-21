@@ -31,9 +31,8 @@ public class Limitations {
     private static SortedMap<Limitation.ID, Limitation> getLimitationMapOf(UUID playerID) {
         SortedMap<Limitation.ID, Limitation> map = Loaded.get(playerID);
         if (map == null) {
-            map = new TreeMap<>();
+            map = load(playerID);
         }
-        Loaded.put(playerID, map);
         return map;
     }
 
@@ -81,7 +80,7 @@ public class Limitations {
         SyncLimitationMessage.sync(player);
     }
 
-    public static void load(UUID playerID) {
+    public static SortedMap<Limitation.ID, Limitation> load(UUID playerID) {
         if (LimitationFolderRootPath == null) {
             throw new IllegalStateException(
                     "When loading Limitation Player:" +
@@ -93,8 +92,9 @@ public class Limitations {
         File[] directories = limitationFolder.listFiles(File::isDirectory);
         if (directories == null) {
             ParCool.LOGGER.error("Cannot get Limitation folders");
-            return;
+            return null;
         }
+        SortedMap<Limitation.ID, Limitation> playerData = Loaded.computeIfAbsent(playerID, k -> new TreeMap<>());
         for (File dir : directories) {
             File[] limitationGroups = dir.listFiles(File::isDirectory);
             if (limitationGroups == null) {
@@ -128,7 +128,6 @@ public class Limitations {
                     ) {
                         Limitation limitation = new Limitation(limitationID);
                         limitation.loadFrom(reader);
-                        SortedMap<Limitation.ID, Limitation> playerData = Loaded.computeIfAbsent(playerUUID, k -> new TreeMap<>());
                         playerData.put(limitation.getID(), limitation);
                     } catch (FileNotFoundException e) {
                         ParCool.LOGGER.error("Could not read '" + limitationFile.getAbsolutePath() + "', skipped.");
@@ -139,6 +138,7 @@ public class Limitations {
             }
         }
         ParCool.LOGGER.info("Limitation of " + playerID + " was loaded");
+        return playerData;
     }
 
     public static void unload(UUID playerID) {

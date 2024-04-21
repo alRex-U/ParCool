@@ -3,11 +3,9 @@ package com.alrex.parcool;
 import com.alrex.parcool.api.Attributes;
 import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.api.SoundEvents;
-import com.alrex.parcool.client.animation.AnimatorList;
 import com.alrex.parcool.client.input.KeyBindings;
-import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
-import com.alrex.parcool.common.event.EventAddAttributes;
+import com.alrex.parcool.common.handlers.AddAttributesHandler;
 import com.alrex.parcool.common.item.ItemRegistry;
 import com.alrex.parcool.common.potion.PotionRecipeRegistry;
 import com.alrex.parcool.common.potion.Potions;
@@ -39,10 +37,7 @@ import org.apache.logging.log4j.Logger;
 @Mod(ParCool.MOD_ID)
 public class ParCool {
 	public static final String MOD_ID = "parcool";
-	private static final String PROTOCOL_VERSION =
-			Integer.toHexString(ActionList.ACTION_REGISTRIES.size())
-					+ "."
-					+ Integer.toHexString(AnimatorList.ANIMATORS.size());
+	private static final String PROTOCOL_VERSION = "3.2.1.0";
 	public static final SimpleChannel CHANNEL_INSTANCE = NetworkRegistry.newSimpleChannel(
 			new ResourceLocation(ParCool.MOD_ID, "message"),
 			() -> PROTOCOL_VERSION,
@@ -67,7 +62,7 @@ public class ParCool {
 		eventBus.addListener(this::doClientStuff);
 		eventBus.addListener(this::loaded);
         EventBusForgeRegistry.register(MinecraftForge.EVENT_BUS);
-        eventBus.register(EventAddAttributes.class);
+		eventBus.register(AddAttributesHandler.class);
 		Effects.registerAll(eventBus);
 		Potions.registerAll(eventBus);
         Attributes.registerAll(eventBus);

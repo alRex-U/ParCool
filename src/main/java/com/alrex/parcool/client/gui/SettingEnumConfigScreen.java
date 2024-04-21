@@ -82,8 +82,6 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
 
     @Override
     public void onClose() {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
-        SyncClientInformationMessage.sync(player, true);
         super.onClose();
     }
 

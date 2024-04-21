@@ -1,4 +1,4 @@
-package com.alrex.parcool.common.event;
+package com.alrex.parcool.common.handlers;
 
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
@@ -20,7 +20,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class EventAttachCapability {
+public class AttachCapabilityHandler {
 
 	@SubscribeEvent
 	public static void onAttachCapability(AttachCapabilitiesEvent<Entity> event) {
