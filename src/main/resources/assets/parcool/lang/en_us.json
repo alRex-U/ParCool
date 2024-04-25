@@ -71,5 +71,6 @@
   "parcool.command.message.success.setPermissionOfAction": "Set %d player's permission of %s action to %d",
   "parcool.command.message.success.setLimitationToDefault": "Set %d player's limitations to default",
   "parcool.command.message.success.enableLimitation": "Enable %d player's Limitations",
-  "parcool.command.message.success.disableLimitation": "Disable %d player's Limitations"
+  "parcool.command.message.success.disableLimitation": "Disable %d player's Limitations",
+  "parcool.command.message.success.deleteLimitation": "Delete Limitation : %d"
 }

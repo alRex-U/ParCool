@@ -10,6 +10,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import org.apache.commons.io.FileUtils;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -54,7 +55,12 @@ public class Limitations {
         for (SortedMap<Limitation.ID, Limitation> limitationMap : Loaded.values()) {
             limitationMap.remove(id);
         }
-        return getFolderPath(LimitationFolderRootPath, id).toFile().delete();
+        try {
+            FileUtils.deleteDirectory(getFolderPath(LimitationFolderRootPath, id).toFile());
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
     }
 
     public static Limitation getGlobalLimitation() {
