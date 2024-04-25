@@ -11,11 +11,12 @@ import javax.annotation.Nullable;
 
 public class ParkourabilityStorage {
 	@Nullable
-	public Tag writeTag(Capability<Parkourability> capability, Parkourability instance, Direction side) {
-		return instance.getActionInfo().writeTag();
+	@Override
+	public INBT writeNBT(Capability<Parkourability> capability, Parkourability instance, Direction side) {
+		return null;
 	}
 
-	public void readTag(Capability<Parkourability> capability, Parkourability instance, Direction side, Tag nbt) {
-		instance.getActionInfo().readTag(nbt);
+	@Override
+	public void readNBT(Capability<Parkourability> capability, Parkourability instance, Direction side, INBT nbt) {
 	}
 }

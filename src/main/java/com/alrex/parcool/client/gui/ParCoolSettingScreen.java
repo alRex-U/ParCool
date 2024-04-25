@@ -24,8 +24,7 @@ public abstract class ParCoolSettingScreen extends Screen {
 
 	public ParCoolSettingScreen(Component titleIn, ActionInfo info, ColorTheme theme) {
 		super(titleIn);
-		serverPermissionReceived = info.getServerLimitation()::isReceived;
-		individualPermissionReceived = info.getIndividualLimitation()::isReceived;
+		serverPermissionReceived = info.getServerLimitation()::isSynced;
 		color = theme;
         screenList = new ScreenSet[]{
                 new ScreenSet<>(new TranslatableComponent("parcool.gui.text.action"), () -> new SettingActionLimitationScreen(title, info, theme)),
@@ -35,12 +34,11 @@ public abstract class ParCoolSettingScreen extends Screen {
         };
 	}
 
-    protected int topIndex = 0;
-    protected int viewableItemCount = 0;
-    protected static final int Checkbox_Item_Height = 21;
-    protected final ColorTheme color;
-    protected final BooleanSupplier serverPermissionReceived;
-    protected final BooleanSupplier individualPermissionReceived;
+	protected int topIndex = 0;
+	protected int viewableItemCount = 0;
+	protected static final int Checkbox_Item_Height = 21;
+	protected final ColorTheme color;
+	protected final BooleanSupplier serverPermissionReceived;
 
 	@Override
     public void resize(@Nonnull Minecraft minecraft, int p_231152_2_, int p_231152_3_) {
@@ -78,7 +76,7 @@ public abstract class ParCoolSettingScreen extends Screen {
         fill(PoseStack, 0, topBarHeight - 1, width, topBarHeight, color.getSeparator());
 
 		int titleOffset = 0;
-		if (!(serverPermissionReceived.getAsBoolean() && individualPermissionReceived.getAsBoolean())) {
+        if (!serverPermissionReceived.getAsBoolean()) {
             fill(PoseStack, 2, 2, topBarHeight - 3, topBarHeight - 3, 0xFFEEEEEE);
             fill(PoseStack, 3, 3, topBarHeight - 4, topBarHeight - 4, 0xFFEE0000);
             drawCenteredString(PoseStack, font, "!", topBarHeight / 2, (topBarHeight - font.lineHeight) / 2 + 1, 0xEEEEEE);
@@ -98,14 +96,12 @@ public abstract class ParCoolSettingScreen extends Screen {
 		);
 	}
 
-    protected static final Component Header_ActionName = new TranslatableComponent("parcool.gui.text.actionName");
-    protected static final Component Header_ServerPermission = new TextComponent("G");
-    protected static final Component Header_ServerPermissionText = new TranslatableComponent("parcool.gui.text.globalPermission");
-    protected static final Component Header_IndividualPermission = new TextComponent("I");
-    protected static final Component Header_IndividualPermissionText = new TranslatableComponent("parcool.gui.text.individualPermission");
-    protected static final Component Permission_Permitted = new TextComponent("✓");
-    protected static final Component Permission_Denied = new TextComponent("×");
-    protected static final Component Permission_Not_Received = new TextComponent("§4[Error] Permissions are not sent from a server.\n\nBy closing this setting menu, permissions will be sent again.\nIf it were not done, please report to the mod developer after checking whether ParCool is installed and re-login to the server.§r");
+	protected static final Component Header_ActionName = new TranslationTextComponent("parcool.gui.text.actionName");
+	protected static final Component Header_Limitation = new StringTextComponent("L");
+	protected static final Component Header_Limitation_Text = new TranslationTextComponent("parcool.gui.text.limitation");
+	protected static final Component Permission_Permitted = new StringTextComponent("✓");
+	protected static final Component Permission_Denied = new StringTextComponent("×");
+	protected static final Component Permission_Not_Received = new StringTextComponent("§4[Error] Permissions are not sent from a server.\n\nBy closing this setting menu, permissions will be sent again.\nIf it were not done, please report to the mod developer after checking whether ParCool is installed and re-login to the server.§r");
 
     protected abstract void renderContents(PoseStack PoseStack, int mouseX, int mouseY, float partialTick, int topOffset, int bottomOffset);
 

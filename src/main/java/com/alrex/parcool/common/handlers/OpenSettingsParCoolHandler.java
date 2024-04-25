@@ -1,4 +1,4 @@
-package com.alrex.parcool.common.event;
+package com.alrex.parcool.common.handlers;
 
 import com.alrex.parcool.client.gui.SettingActionLimitationScreen;
 import com.alrex.parcool.client.input.KeyRecorder;
@@ -13,7 +13,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 @OnlyIn(Dist.CLIENT)
-public class EventOpenSettingsParCool {
+public class OpenSettingsParCoolHandler {
 	@SubscribeEvent
 	public static void onTick(TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.END) return;

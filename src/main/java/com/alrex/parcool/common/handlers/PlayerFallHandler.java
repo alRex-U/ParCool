@@ -1,4 +1,4 @@
-package com.alrex.parcool.common.event;
+package com.alrex.parcool.common.handlers;
 
 import com.alrex.parcool.common.action.impl.BreakfallReady;
 import com.alrex.parcool.common.action.impl.Roll;
@@ -9,7 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class EventPlayerFall {
+public class PlayerFallHandler {
 	@SubscribeEvent
 	public static void onDamage(LivingFallEvent event) {
 		if (!(event.getEntity() instanceof ServerPlayer player)) return;
