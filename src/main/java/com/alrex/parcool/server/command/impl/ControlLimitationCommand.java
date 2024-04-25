@@ -15,13 +15,13 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.server.level.ServerPlayer;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -40,7 +40,7 @@ public class ControlLimitationCommand {
     private static final String ARGS_NAME_CONFIG_ITEM = "limitation_name";
     private static final String ARGS_NAME_LIMITATION_ID = "limitation_id";
 
-    private static ArgumentBuilder<CommandSource, ?> limitationGetCoreCommands(ArgumentBuilder<CommandSource, ?> builder, boolean hasID, boolean hasPlayer) {
+    private static ArgumentBuilder<CommandSourceStack, ?> limitationGetCoreCommands(ArgumentBuilder<CommandSourceStack, ?> builder, boolean hasID, boolean hasPlayer) {
         return builder
                 .then(Commands
                         .literal("boolean")
@@ -79,7 +79,7 @@ public class ControlLimitationCommand {
                 );
     }
 
-    private static ArgumentBuilder<CommandSource, ?> limitationSetCoreCommands(ArgumentBuilder<CommandSource, ?> builder, boolean hasID, boolean hasPlayer) {
+    private static ArgumentBuilder<CommandSourceStack, ?> limitationSetCoreCommands(ArgumentBuilder<CommandSourceStack, ?> builder, boolean hasID, boolean hasPlayer) {
         return builder
                 .then(Commands
                         .literal("to_default")
@@ -137,7 +137,7 @@ public class ControlLimitationCommand {
                 );
     }
 
-    private static ArgumentBuilder<CommandSource, ?> getLimitationByNameCommands(boolean multiPlayer, Function<RequiredArgumentBuilder<CommandSource, ?>, ArgumentBuilder<CommandSource, ?>> afterCommand) {
+    private static ArgumentBuilder<CommandSourceStack, ?> getLimitationByNameCommands(boolean multiPlayer, Function<RequiredArgumentBuilder<CommandSourceStack, ?>, ArgumentBuilder<CommandSourceStack, ?>> afterCommand) {
         if (multiPlayer) {
             return Commands.argument(ARGS_NAME_LIMITATION_ID, LimitationIDArgumentType.limitation())
                     .then(Commands
@@ -157,7 +157,7 @@ public class ControlLimitationCommand {
         }
     }
 
-    private static ArgumentBuilder<CommandSource, ?> getIndividualLimitationCommands(boolean multiPlayer, Function<RequiredArgumentBuilder<CommandSource, ?>, ArgumentBuilder<CommandSource, ?>> afterCommand) {
+    private static ArgumentBuilder<CommandSourceStack, ?> getIndividualLimitationCommands(boolean multiPlayer, Function<RequiredArgumentBuilder<CommandSourceStack, ?>, ArgumentBuilder<CommandSourceStack, ?>> afterCommand) {
         if (multiPlayer) {
             return Commands.literal("individual")
                     .then(Commands.literal("of")
@@ -175,11 +175,11 @@ public class ControlLimitationCommand {
         }
     }
 
-    private static ArgumentBuilder<CommandSource, ?> getGlobalLimitationCommands(Function<LiteralArgumentBuilder<CommandSource>, ArgumentBuilder<CommandSource, ?>> afterCommand) {
+    private static ArgumentBuilder<CommandSourceStack, ?> getGlobalLimitationCommands(Function<LiteralArgumentBuilder<CommandSourceStack>, ArgumentBuilder<CommandSourceStack, ?>> afterCommand) {
         return afterCommand.apply(Commands.literal("global"));
     }
 
-    public static ArgumentBuilder<CommandSource, ?> getBuilder() {
+    public static ArgumentBuilder<CommandSourceStack, ?> getBuilder() {
         return Commands
                 .literal("limitation")
                 .then(Commands
@@ -262,7 +262,7 @@ public class ControlLimitationCommand {
                 );
     }
 
-    private static List<Limitation> getLimitationInstance(Collection<ServerPlayerEntity> players, @Nullable Limitation.ID id, @Nullable MinecraftServer server) {
+    private static List<Limitation> getLimitationInstance(Collection<ServerPlayer> players, @Nullable Limitation.ID id, @Nullable MinecraftServer server) {
         if (players.isEmpty()) {
             if (server != null) {// global limitation
                 return Collections.singletonList(Limitation.getGlobal(server));
@@ -272,13 +272,13 @@ public class ControlLimitationCommand {
             }
         } else if (id != null) {// limitation
             LinkedList<Limitation> list = new LinkedList<>();
-            for (ServerPlayerEntity player : players) {
+            for (ServerPlayer player : players) {
                 list.add(Limitation.get(player, id));
             }
             return list;
         } else {//individual limitation
             LinkedList<Limitation> list = new LinkedList<>();
-            for (ServerPlayerEntity player : players) {
+            for (ServerPlayer player : players) {
                 list.add(Limitation.getIndividual(player));
             }
             return list;
@@ -286,7 +286,7 @@ public class ControlLimitationCommand {
         return Collections.emptyList();
     }
 
-    private static int getBoolLimitation(CommandContext<CommandSource> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
+    private static int getBoolLimitation(CommandContext<CommandSourceStack> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
         List<Limitation> limitations = getLimitationInstance(
                 hasPlayer ? Collections.singletonList(EntityArgument.getPlayer(context, ARGS_NAME_PLAYER)) : Collections.emptyList(),
                 hasID ? LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID) : null,
@@ -294,7 +294,7 @@ public class ControlLimitationCommand {
         );
         ParCoolConfig.Server.Booleans item = LimitationItemArgumentType.getBool(context, ARGS_NAME_CONFIG_ITEM);
         context.getSource().sendSuccess(
-                new StringTextComponent(
+                new TextComponent(
                         Boolean.toString(limitations.get(0).get(item))
                 ),
                 false
@@ -302,7 +302,7 @@ public class ControlLimitationCommand {
         return 0;
     }
 
-    private static int getIntLimitation(CommandContext<CommandSource> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
+    private static int getIntLimitation(CommandContext<CommandSourceStack> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
         List<Limitation> limitations = getLimitationInstance(
                 hasPlayer ? Collections.singletonList(EntityArgument.getPlayer(context, ARGS_NAME_PLAYER)) : Collections.emptyList(),
                 hasID ? LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID) : null,
@@ -310,7 +310,7 @@ public class ControlLimitationCommand {
         );
         ParCoolConfig.Server.Integers item = LimitationItemArgumentType.getInt(context, ARGS_NAME_CONFIG_ITEM);
         context.getSource().sendSuccess(
-                new StringTextComponent(
+                new TextComponent(
                         Integer.toString(limitations.get(0).get(item))
                 ),
                 false
@@ -318,7 +318,7 @@ public class ControlLimitationCommand {
         return 0;
     }
 
-    private static int getDoubleLimitation(CommandContext<CommandSource> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
+    private static int getDoubleLimitation(CommandContext<CommandSourceStack> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
         List<Limitation> limitations = getLimitationInstance(
                 hasPlayer ? Collections.singletonList(EntityArgument.getPlayer(context, ARGS_NAME_PLAYER)) : Collections.emptyList(),
                 hasID ? LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID) : null,
@@ -326,7 +326,7 @@ public class ControlLimitationCommand {
         );
         ParCoolConfig.Server.Doubles item = LimitationItemArgumentType.getDouble(context, ARGS_NAME_CONFIG_ITEM);
         context.getSource().sendSuccess(
-                new StringTextComponent(
+                new TextComponent(
                         Double.toString(limitations.get(0).get(item))
                 ),
                 false
@@ -334,7 +334,7 @@ public class ControlLimitationCommand {
         return 0;
     }
 
-    private static int getActionPossibility(CommandContext<CommandSource> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
+    private static int getActionPossibility(CommandContext<CommandSourceStack> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
         List<Limitation> limitations = getLimitationInstance(
                 hasPlayer ? Collections.singletonList(EntityArgument.getPlayer(context, ARGS_NAME_PLAYER)) : Collections.emptyList(),
                 hasID ? LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID) : null,
@@ -342,7 +342,7 @@ public class ControlLimitationCommand {
         );
         Class<? extends Action> action = ActionArgumentType.getAction(context, ARGS_NAME_ACTION);
         context.getSource().sendSuccess(
-                new StringTextComponent(
+                new TextComponent(
                         Boolean.toString(limitations.get(0).isPermitted(action))
                 ),
                 false
@@ -350,7 +350,7 @@ public class ControlLimitationCommand {
         return 0;
     }
 
-    private static int getLimitationInfo(CommandContext<CommandSource> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
+    private static int getLimitationInfo(CommandContext<CommandSourceStack> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
         List<Limitation> limitations = getLimitationInstance(
                 hasPlayer ? Collections.singletonList(EntityArgument.getPlayer(context, ARGS_NAME_PLAYER)) : Collections.emptyList(),
                 hasID ? LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID) : null,
@@ -376,7 +376,7 @@ public class ControlLimitationCommand {
         }
         builder.append("----------");
         context.getSource().sendSuccess(
-                new StringTextComponent(
+                new TextComponent(
                         builder.toString()
                 ),
                 false
@@ -384,7 +384,7 @@ public class ControlLimitationCommand {
         return 0;
     }
 
-    private static int getLeastStaminaConsumption(CommandContext<CommandSource> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
+    private static int getLeastStaminaConsumption(CommandContext<CommandSourceStack> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
         List<Limitation> limitations = getLimitationInstance(
                 hasPlayer ? Collections.singletonList(EntityArgument.getPlayer(context, ARGS_NAME_PLAYER)) : Collections.emptyList(),
                 hasID ? LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID) : null,
@@ -392,7 +392,7 @@ public class ControlLimitationCommand {
         );
         Class<? extends Action> action = ActionArgumentType.getAction(context, ARGS_NAME_ACTION);
         context.getSource().sendSuccess(
-                new StringTextComponent(
+                new TextComponent(
                         Integer.toString(limitations.get(0).getLeastStaminaConsumption(action))
                 ),
                 false
@@ -400,7 +400,7 @@ public class ControlLimitationCommand {
         return 0;
     }
 
-    private static int setLimitationDefault(CommandContext<CommandSource> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
+    private static int setLimitationDefault(CommandContext<CommandSourceStack> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
         List<Limitation> limitations = getLimitationInstance(
                 hasPlayer ? EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS) : Collections.emptyList(),
                 hasID ? LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID) : null,
@@ -411,11 +411,11 @@ public class ControlLimitationCommand {
             limitation.setDefault().apply();
             num++;
         }
-        context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.setLimitationToDefault", num), true);
+        context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.setLimitationToDefault", num), true);
         return 0;
     }
 
-    private static int setBoolLimitation(CommandContext<CommandSource> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
+    private static int setBoolLimitation(CommandContext<CommandSourceStack> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
         List<Limitation> limitations = getLimitationInstance(
                 hasPlayer ? EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS) : Collections.emptyList(),
                 hasID ? LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID) : null,
@@ -428,11 +428,11 @@ public class ControlLimitationCommand {
             limitation.set(item, value).apply();
             num++;
         }
-        context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.set", num, item.getPath(), Boolean.toString(value)), true);
+        context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.set", num, item.getPath(), Boolean.toString(value)), true);
         return 0;
     }
 
-    private static int setIntLimitation(CommandContext<CommandSource> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
+    private static int setIntLimitation(CommandContext<CommandSourceStack> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
         List<Limitation> limitations = getLimitationInstance(
                 hasPlayer ? EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS) : Collections.emptyList(),
                 hasID ? LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID) : null,
@@ -451,11 +451,11 @@ public class ControlLimitationCommand {
             limitation.set(item, value).apply();
             num++;
         }
-        context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.set", num, item.getPath(), Integer.toString(value)), true);
+        context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.set", num, item.getPath(), Integer.toString(value)), true);
         return 0;
     }
 
-    private static int setDoubleLimitation(CommandContext<CommandSource> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
+    private static int setDoubleLimitation(CommandContext<CommandSourceStack> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
         List<Limitation> limitations = getLimitationInstance(
                 hasPlayer ? EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS) : Collections.emptyList(),
                 hasID ? LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID) : null,
@@ -474,11 +474,11 @@ public class ControlLimitationCommand {
             limitation.set(item, value).apply();
             num++;
         }
-        context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.set", num, item.getPath(), Double.toString(value)), true);
+        context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.set", num, item.getPath(), Double.toString(value)), true);
         return 0;
     }
 
-    private static int enableLimitation(CommandContext<CommandSource> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
+    private static int enableLimitation(CommandContext<CommandSourceStack> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
         List<Limitation> limitations = getLimitationInstance(
                 hasPlayer ? EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS) : Collections.emptyList(),
                 hasID ? LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID) : null,
@@ -489,11 +489,11 @@ public class ControlLimitationCommand {
             limitation.enable().apply();
             num++;
         }
-        context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.enableLimitation", num), true);
+        context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.enableLimitation", num), true);
         return 0;
     }
 
-    private static int disableLimitation(CommandContext<CommandSource> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
+    private static int disableLimitation(CommandContext<CommandSourceStack> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
         List<Limitation> limitations = getLimitationInstance(
                 hasPlayer ? EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS) : Collections.emptyList(),
                 hasID ? LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID) : null,
@@ -504,11 +504,11 @@ public class ControlLimitationCommand {
             limitation.disable().apply();
             num++;
         }
-        context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.disableLimitation", num), true);
+        context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.disableLimitation", num), true);
         return 0;
     }
 
-    private static int changeStaminaConsumption(CommandContext<CommandSource> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
+    private static int changeStaminaConsumption(CommandContext<CommandSourceStack> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
         List<Limitation> limitations = getLimitationInstance(
                 hasPlayer ? EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS) : Collections.emptyList(),
                 hasID ? LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID) : null,
@@ -521,11 +521,11 @@ public class ControlLimitationCommand {
             limitation.setLeastStaminaConsumption(action, newValue).apply();
             num++;
         }
-        context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.setStaminaConsumption", num, action.getSimpleName(), newValue), true);
+        context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.setStaminaConsumption", num, action.getSimpleName(), newValue), true);
         return 0;
     }
 
-    private static int changePossibilityOfAction(CommandContext<CommandSource> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
+    private static int changePossibilityOfAction(CommandContext<CommandSourceStack> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
         List<Limitation> limitations = getLimitationInstance(
                 hasPlayer ? EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS) : Collections.emptyList(),
                 hasID ? LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID) : null,
@@ -538,7 +538,7 @@ public class ControlLimitationCommand {
             limitation.permit(action, newValue).apply();
             num++;
         }
-        context.getSource().sendSuccess(new TranslationTextComponent("parcool.command.message.success.setPermissionOfAction", num, action.getSimpleName(), newValue), true);
+        context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.setPermissionOfAction", num, action.getSimpleName(), newValue), true);
         return 0;
     }
 }

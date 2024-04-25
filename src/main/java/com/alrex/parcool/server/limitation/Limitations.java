@@ -6,10 +6,10 @@ import com.alrex.parcool.common.info.ServerLimitation;
 import com.alrex.parcool.common.network.SyncLimitationMessage;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -73,7 +73,7 @@ public class Limitations {
         return getLimitationMapOf(playerID).get(id);
     }
 
-    public static void update(ServerPlayerEntity player) {
+    public static void update(ServerPlayer player) {
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability == null) return;
         parkourability.getActionInfo().setServerLimitation(ServerLimitation.get(player));
@@ -176,7 +176,7 @@ public class Limitations {
         ParCool.LOGGER.info("Limitation of " + playerID + " was unloaded");
     }
 
-    public static void init(FMLServerAboutToStartEvent event) {
+    public static void init(ServerAboutToStartEvent event) {
         GlobalLimitation.readFromServerConfig();
         Path configPath = ServerLifecycleHooks.getServerConfigPath(event.getServer());
         LimitationFolderRootPath = configPath.resolve("parcool").resolve("limitations");
@@ -186,7 +186,7 @@ public class Limitations {
         }
     }
 
-    public static void save(FMLServerStoppingEvent event) {
+    public static void save(ServerStoppingEvent event) {
         Path configPath = ServerLifecycleHooks.getServerConfigPath(event.getServer());
         Path limitationRootPath = configPath.resolve("parcool").resolve("limitations");
         for (Map.Entry<UUID, SortedMap<Limitation.ID, Limitation>> limitationEntry : Loaded.entrySet()) {

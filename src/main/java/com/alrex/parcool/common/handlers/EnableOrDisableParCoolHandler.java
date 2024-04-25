@@ -9,7 +9,7 @@ import com.alrex.parcool.common.network.SyncClientInformationMessage;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -30,7 +30,7 @@ public class EnableOrDisableParCoolHandler {
             if (parkourability == null) return;
             parkourability.getActionInfo().setClientSetting(ClientSetting.readFromLocalConfig());
             SyncClientInformationMessage.sync(player, false);
-            player.displayClientMessage(new TranslationTextComponent(currentStatus ? "parcool.message.enabled" : "parcool.message.disabled"), true);
+            player.displayClientMessage(new TranslatableComponent(currentStatus ? "parcool.message.enabled" : "parcool.message.disabled"), true);
             if (currentStatus) {
                 player.playSound(SoundEvents.PARCOOL_ENABLE.get(), 1.0f, 1.0f);
             } else {

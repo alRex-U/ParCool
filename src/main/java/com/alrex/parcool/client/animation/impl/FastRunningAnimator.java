@@ -9,6 +9,9 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
@@ -31,12 +34,12 @@ public class FastRunningAnimator extends Animator {
 		float bodyAngleFactor = bodyAngleFactor(phase);
 		double rightXRotFactor = Math.cos(transformer.getLimbSwing() * 0.6662 + Math.PI);
 		double leftXRotFactor = Math.cos(transformer.getLimbSwing() * 0.6662);
-		HandSide attackHand = transformer.getRawModel().getAttackArm(player);
-		boolean leftArmAnimatable = attackHand != HandSide.LEFT || transformer.getRawModel().attackTime <= 0f;
-		boolean rightArmAnimatable = attackHand != HandSide.RIGHT || transformer.getRawModel().attackTime <= 0f;
+		HumanoidArm attackHand = player.getMainArm();
+		boolean leftArmAnimatable = attackHand != HumanoidArm.LEFT || transformer.getRawModel().attackTime <= 0f;
+		boolean rightArmAnimatable = attackHand != HumanoidArm.RIGHT || transformer.getRawModel().attackTime <= 0f;
 		if (leftArmAnimatable && ((
-				transformer.getRawModel().leftArmPose != BipedModel.ArmPose.EMPTY
-						&& transformer.getRawModel().leftArmPose != BipedModel.ArmPose.ITEM
+				transformer.getRawModel().leftArmPose != HumanoidModel.ArmPose.EMPTY
+						&& transformer.getRawModel().leftArmPose != HumanoidModel.ArmPose.ITEM
 		)
 				|| transformer.getRawModel().rightArmPose.isTwoHanded()
 		)
@@ -44,8 +47,8 @@ public class FastRunningAnimator extends Animator {
 			leftArmAnimatable = false;
 		}
 		if (rightArmAnimatable && ((
-				transformer.getRawModel().rightArmPose != BipedModel.ArmPose.EMPTY
-						&& transformer.getRawModel().rightArmPose != BipedModel.ArmPose.ITEM
+				transformer.getRawModel().rightArmPose != HumanoidModel.ArmPose.EMPTY
+						&& transformer.getRawModel().rightArmPose != HumanoidModel.ArmPose.ITEM
 		)
 				|| transformer.getRawModel().leftArmPose.isTwoHanded()
 		)

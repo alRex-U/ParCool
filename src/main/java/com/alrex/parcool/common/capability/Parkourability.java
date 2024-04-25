@@ -6,7 +6,7 @@ import com.alrex.parcool.common.action.AdditionalProperties;
 import com.alrex.parcool.common.action.CancelMarks;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.info.ActionInfo;
-import com.alrex.parcool.common.info.ClientInformation;
+import com.alrex.parcool.common.info.ClientSetting;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 

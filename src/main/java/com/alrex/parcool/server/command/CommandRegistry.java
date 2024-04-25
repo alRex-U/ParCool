@@ -23,6 +23,6 @@ public class CommandRegistry {
 	public static void registerArgumentTypes(FMLCommonSetupEvent event) {
 		ArgumentTypes.register("parcool:action_name", ActionArgumentType.class, new EmptyArgumentSerializer<>(ActionArgumentType::action));
 		ArgumentTypes.register("parcool:limitation_item_name", LimitationItemArgumentType.class, new LimitationItemArgumentType.Serializer());
-        ArgumentTypes.register("parcool:limitation_id", LimitationIDArgumentType.class, new ArgumentSerializer<>(LimitationIDArgumentType::new));
+		ArgumentTypes.register("parcool:limitation_id", LimitationIDArgumentType.class, new EmptyArgumentSerializer<>(LimitationIDArgumentType::new));
 	}
 }

@@ -53,10 +53,10 @@ public class SettingActionLimitationScreen extends ParCoolSettingScreen {
             actionButton.setWidth(0);
         }
         //draw separators
-        fill(matrixStack, offsetX, contentOffsetY, width - offsetX, contentOffsetY - 1, color.getSeparator());
-        fill(matrixStack, offsetX, topOffset, offsetX + 1, height - bottomOffset, color.getSeparator());
-        fill(matrixStack, offsetX + nameColumnWidth, topOffset, offsetX + nameColumnWidth + 1, height - bottomOffset, color.getSeparator());
-        fill(matrixStack, offsetX + nameColumnWidth + permissionColumnWidth, topOffset, offsetX + nameColumnWidth + permissionColumnWidth + 1, height - bottomOffset, color.getSeparator());
+        fill(poseStack, offsetX, contentOffsetY, width - offsetX, contentOffsetY - 1, color.getSeparator());
+        fill(poseStack, offsetX, topOffset, offsetX + 1, height - bottomOffset, color.getSeparator());
+        fill(poseStack, offsetX + nameColumnWidth, topOffset, offsetX + nameColumnWidth + 1, height - bottomOffset, color.getSeparator());
+        fill(poseStack, offsetX + nameColumnWidth + permissionColumnWidth, topOffset, offsetX + nameColumnWidth + permissionColumnWidth + 1, height - bottomOffset, color.getSeparator());
         for (int i = 0; i < viewableItemCount && i + topIndex < actionButtons.length; i++) {
             Checkbox button = actionButtons[i + topIndex];
             button.x = offsetX + 1;
@@ -80,7 +80,7 @@ public class SettingActionLimitationScreen extends ParCoolSettingScreen {
             if ((topOffset < mouseY && mouseY < topOffset + headerHeight)
                     && (columnCenter - permissionColumnWidth / 2 < mouseX && mouseX < columnCenter + permissionColumnWidth / 2)
             ) {
-                renderComponentTooltip(matrixStack, Collections.singletonList(Header_Limitation_Text), mouseX, mouseY);
+                renderComponentTooltip(poseStack, Collections.singletonList(Header_Limitation_Text), mouseX, mouseY);
             }
         }
     }

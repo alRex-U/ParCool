@@ -1,10 +1,9 @@
-package com.alrex.parcool.common.capability.impl;
+package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PassiveCustomAnimation;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
-import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;

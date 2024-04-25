@@ -3,15 +3,15 @@ package com.alrex.parcool.api.unstable;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.server.limitation.Limitations;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 
 public abstract class Limitation {
-    public static Limitation get(ServerPlayerEntity player, ID limitationID) {
+    public static Limitation get(ServerPlayer player, ID limitationID) {
         return new NormalLimitation(player, Limitations.createLimitationOf(player.getUUID(), limitationID.convert()));
     }
 
-    public static Limitation getIndividual(ServerPlayerEntity player) {
+    public static Limitation getIndividual(ServerPlayer player) {
         return new NormalLimitation(player, Limitations.createLimitationOf(player.getUUID(), Limitations.INDIVIDUAL_ID));
     }
 
@@ -113,12 +113,12 @@ public abstract class Limitation {
 
     private static class NormalLimitation extends Limitation {
 
-        private NormalLimitation(ServerPlayerEntity player, com.alrex.parcool.server.limitation.Limitation instance) {
+        private NormalLimitation(ServerPlayer player, com.alrex.parcool.server.limitation.Limitation instance) {
             super(instance);
             this.player = player;
         }
 
-        private final ServerPlayerEntity player;
+        private final ServerPlayer player;
 
         @Override
         public void apply() {
@@ -136,7 +136,7 @@ public abstract class Limitation {
 
         @Override
         public void apply() {
-            for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
+            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                 Limitations.update(player);
             }
         }

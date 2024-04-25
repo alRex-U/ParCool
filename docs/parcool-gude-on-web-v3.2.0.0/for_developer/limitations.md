@@ -123,7 +123,7 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.common.action.impl.FastRun;
 
 public class YouCode {
-    public static void controlLimitation(ServerPlayerEntity target) {
+  public static void controlLimitation(ServerPlayer target) {
         Limitation.get(player, new Limitation.ID("yourmodid", "example"))
                 // enable limitation "yourmodid:example"
                 .enable()

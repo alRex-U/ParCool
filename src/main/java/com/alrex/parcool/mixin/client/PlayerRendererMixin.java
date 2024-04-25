@@ -1,7 +1,7 @@
 package com.alrex.parcool.mixin.client;
 
 import com.alrex.parcool.client.animation.PlayerModelRotator;
-import com.alrex.parcool.common.capability.impl.Animation;
+import com.alrex.parcool.common.capability.Animation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
