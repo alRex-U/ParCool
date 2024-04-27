@@ -7,6 +7,7 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.server.command.args.ActionArgumentType;
 import com.alrex.parcool.server.command.args.LimitationIDArgumentType;
 import com.alrex.parcool.server.command.args.LimitationItemArgumentType;
+import com.alrex.parcool.server.limitation.Limitations;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -259,6 +260,14 @@ public class ControlLimitationCommand {
                                     return it;
                                 })
                         )
+                )
+                .then(Commands
+                        .literal("delete")
+                        .then(Commands
+                                .argument(ARGS_NAME_LIMITATION_ID, LimitationIDArgumentType.limitation())
+                                .requires(commandSource -> commandSource.hasPermission(2))
+                                .executes(ControlLimitationCommand::deleteLimitation)
+                        )
                 );
     }
 
@@ -505,6 +514,19 @@ public class ControlLimitationCommand {
             num++;
         }
         context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.disableLimitation", num), true);
+        return 0;
+    }
+
+    private static int deleteLimitation(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Limitation.ID limitation = LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID);
+        if (Limitation.delete(limitation)) {
+            for (ServerPlayer player : context.getSource().getServer().getPlayerList().getPlayers()) {
+                Limitations.update(player);
+            }
+            context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.deleteLimitation", limitation.toString()), true);
+        } else {
+            context.getSource().sendFailure(new TextComponent("Error:deleting folder failed"));
+        }
         return 0;
     }
 

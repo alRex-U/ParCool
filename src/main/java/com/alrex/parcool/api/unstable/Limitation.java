@@ -39,6 +39,11 @@ public abstract class Limitation {
         com.alrex.parcool.server.limitation.Limitation.ID convert() {
             return new com.alrex.parcool.server.limitation.Limitation.ID(group, name);
         }
+
+        @Override
+        public String toString() {
+            return this.group + ":" + this.name;
+        }
     }
 
     public Limitation set(ParCoolConfig.Server.Booleans item, boolean value) {
@@ -107,8 +112,8 @@ public abstract class Limitation {
 
     public abstract void apply();
 
-    public static void delete(ID limitationID) {
-        Limitations.delete(limitationID.convert());
+    public static boolean delete(ID limitationID) {
+        return Limitations.delete(limitationID.convert());
     }
 
     private static class NormalLimitation extends Limitation {
