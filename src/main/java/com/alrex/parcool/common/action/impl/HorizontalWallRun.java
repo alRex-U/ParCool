@@ -32,13 +32,9 @@ public class HorizontalWallRun extends Action {
 	private float bodyYaw = 0;
 
 	private int getMaxRunningTick(ActionInfo info) {
-		Integer value = info.getClientInformation().get(ParCoolConfig.Client.Integers.WallRunContinuableTick);
-		if (value == null) return ParCoolConfig.Client.Integers.WallRunContinuableTick.DefaultValue;
-		if (info.getServerLimitation().isEnabled())
-			value = Math.min(value, info.getServerLimitation().get(ParCoolConfig.Server.Integers.MaxWallRunContinuableTick));
-		if (info.getIndividualLimitation().isEnabled())
-			value = Math.min(value, info.getIndividualLimitation().get(ParCoolConfig.Server.Integers.MaxWallRunContinuableTick));
-		return value;
+		Integer value = info.getClientSetting().get(ParCoolConfig.Client.Integers.WallRunContinuableTick);
+		if (value == null) value = ParCoolConfig.Client.Integers.WallRunContinuableTick.DefaultValue;
+		return Math.min(value, info.getServerLimitation().get(ParCoolConfig.Server.Integers.MaxWallRunContinuableTick));
 	}
 
 	private boolean wallIsRightward = false;

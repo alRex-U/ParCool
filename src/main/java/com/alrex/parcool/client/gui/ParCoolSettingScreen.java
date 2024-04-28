@@ -1,6 +1,7 @@
 package com.alrex.parcool.client.gui;
 
 import com.alrex.parcool.common.info.ActionInfo;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -21,8 +22,7 @@ public abstract class ParCoolSettingScreen extends Screen {
 
 	public ParCoolSettingScreen(Component titleIn, ActionInfo info, ColorTheme theme) {
 		super(titleIn);
-		serverPermissionReceived = info.getServerLimitation()::isReceived;
-		individualPermissionReceived = info.getIndividualLimitation()::isReceived;
+		serverPermissionReceived = info.getServerLimitation()::isSynced;
 		color = theme;
         screenList = new ScreenSet[]{
                 new ScreenSet<>(Component.translatable("parcool.gui.text.action"), () -> new SettingActionLimitationScreen(title, info, theme)),
@@ -32,12 +32,11 @@ public abstract class ParCoolSettingScreen extends Screen {
         };
 	}
 
-    protected int topIndex = 0;
-    protected int viewableItemCount = 0;
-    protected static final int Checkbox_Item_Height = 21;
-    protected final ColorTheme color;
-    protected final BooleanSupplier serverPermissionReceived;
-    protected final BooleanSupplier individualPermissionReceived;
+	protected int topIndex = 0;
+	protected int viewableItemCount = 0;
+	protected static final int Checkbox_Item_Height = 21;
+	protected final ColorTheme color;
+	protected final BooleanSupplier serverPermissionReceived;
 
 	@Override
     public void resize(@Nonnull Minecraft minecraft, int p_231152_2_, int p_231152_3_) {
@@ -47,61 +46,59 @@ public abstract class ParCoolSettingScreen extends Screen {
 	private static final Component MenuTitle = Component.translatable("parcool.gui.title.setting");
 
 	@Override
-	public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float p_230430_4_) {
-		super.render(graphics, mouseX, mouseY, p_230430_4_);
-		renderBackground(graphics);
+	public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float p_230430_4_) {
+		super.render(poseStack, mouseX, mouseY, p_230430_4_);
+		renderBackground(poseStack, 0);
 		int topBarHeight = font.lineHeight * 2;
-        int topBarItemWidth = (int) (1.2 * Arrays.stream(screenList).map(it -> font.width(it.title)).max(Integer::compareTo).orElse(0));
-        int topBarOffsetX = width - topBarItemWidth * screenList.length;
-		graphics.fillGradient(0, 0, this.width, topBarHeight, color.getTopBar1(), color.getTopBar2());
-        renderSubHeaderAndFooter(graphics, screenList[currentScreen].title, isDownScrollable(), topBarHeight);
-        renderContents(graphics, mouseX, mouseY, p_230430_4_, topBarHeight + font.lineHeight * 2, font.lineHeight * 2);
-        for (int i = 0; i < screenList.length; i++) {
-            ScreenSet<?> item = screenList[i];
+		int topBarItemWidth = (int) (1.2 * Arrays.stream(screenList).map(it -> font.width(it.title)).max(Integer::compareTo).orElse(0));
+		int topBarOffsetX = width - topBarItemWidth * screenList.length;
+		fillGradient(poseStack, 0, 0, this.width, topBarHeight, color.getTopBar1(), color.getTopBar2());
+		renderSubHeaderAndFooter(poseStack, screenList[currentScreen].title, isDownScrollable(), topBarHeight);
+		renderContents(poseStack, mouseX, mouseY, p_230430_4_, topBarHeight + font.lineHeight * 2, font.lineHeight * 2);
+		for (int i = 0; i < screenList.length; i++) {
+			ScreenSet<?> item = screenList[i];
 			item.y = 0;
 			item.x = topBarOffsetX + i * topBarItemWidth;
 			item.width = topBarItemWidth;
 			item.height = topBarHeight;
-            boolean selected = currentScreen == i || item.isMouseIn(mouseX, mouseY);
-			graphics.drawCenteredString(
-					font, item.title,
+			boolean selected = currentScreen == i || item.isMouseIn(mouseX, mouseY);
+			drawCenteredString(
+					poseStack, font, item.title,
 					topBarOffsetX + i * topBarItemWidth + topBarItemWidth / 2,
 					topBarHeight / 4 + 1,
 					selected ? color.getText() : color.getSubText()
 			);
-			graphics.fill(item.x, 2, item.x + 1, topBarHeight - 3, color.getSeparator());
+			fill(poseStack, item.x, 2, item.x + 1, topBarHeight - 3, color.getSeparator());
 		}
-		graphics.fill(0, topBarHeight - 1, width, topBarHeight, color.getSeparator());
+		fill(poseStack, 0, topBarHeight - 1, width, topBarHeight, color.getSeparator());
 
 		int titleOffset = 0;
-		if (!(serverPermissionReceived.getAsBoolean() && individualPermissionReceived.getAsBoolean())) {
-			graphics.fill(2, 2, topBarHeight - 3, topBarHeight - 3, 0xFFEEEEEE);
-			graphics.fill(3, 3, topBarHeight - 4, topBarHeight - 4, 0xFFEE0000);
-			graphics.drawCenteredString(font, "!", topBarHeight / 2, (topBarHeight - font.lineHeight) / 2 + 1, 0xEEEEEE);
+		if (!serverPermissionReceived.getAsBoolean()) {
+			fill(poseStack, 2, 2, topBarHeight - 3, topBarHeight - 3, 0xFFEEEEEE);
+			fill(poseStack, 3, 3, topBarHeight - 4, topBarHeight - 4, 0xFFEE0000);
+			drawCenteredString(poseStack, font, "!", topBarHeight / 2, (topBarHeight - font.lineHeight) / 2 + 1, 0xEEEEEE);
 			if (2 <= mouseX && mouseX < topBarHeight - 3 && 1 <= mouseY && mouseY < topBarHeight - 3) {
-				graphics.renderComponentTooltip(
-						font,
+				renderComponentTooltip(
+						poseStack,
 						Collections.singletonList(Permission_Not_Received),
 						mouseX, mouseY);
 			}
 			titleOffset = topBarHeight;
 		}
-		graphics.drawString(
-				font, MenuTitle,
+		drawString(
+				poseStack, font, MenuTitle,
 				titleOffset + 5,
 				topBarHeight / 4 + 1,
 				color.getText()
 		);
 	}
 
-    protected static final Component Header_ActionName = Component.translatable("parcool.gui.text.actionName");
-    protected static final Component Header_ServerPermission = Component.literal("G");
-    protected static final Component Header_ServerPermissionText = Component.translatable("parcool.gui.text.globalPermission");
-    protected static final Component Header_IndividualPermission = Component.literal("I");
-    protected static final Component Header_IndividualPermissionText = Component.translatable("parcool.gui.text.individualPermission");
-    protected static final Component Permission_Permitted = Component.literal("✓");
-    protected static final Component Permission_Denied = Component.literal("×");
-    protected static final Component Permission_Not_Received = Component.literal("§4[Error] Permissions are not sent from a server.\n\nBy closing this setting menu, permissions will be sent again.\nIf it were not done, please report to the mod developer after checking whether ParCool is installed and re-login to the server.§r");
+	protected static final Component Header_ActionName = Component.translatable("parcool.gui.text.actionName");
+	protected static final Component Header_Limitation = Component.literal("L");
+	protected static final Component Header_Limitation_Text = Component.translatable("parcool.gui.text.limitation");
+	protected static final Component Permission_Permitted = Component.literal("✓");
+	protected static final Component Permission_Denied = Component.literal("×");
+	protected static final Component Permission_Not_Received = Component.literal("§4[Error] Permissions are not sent from a server.\n\nBy closing this setting menu, permissions will be sent again.\nIf it were not done, please report to the mod developer after checking whether ParCool is installed and re-login to the server.§r");
 
     protected abstract void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, int topOffset, int bottomOffset);
 

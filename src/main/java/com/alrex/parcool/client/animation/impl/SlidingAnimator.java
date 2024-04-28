@@ -44,7 +44,11 @@ public class SlidingAnimator extends Animator {
 				.get();
 		rotator
 				.startBasedCenter()
-				.translateY(player.getBbHeight() / 4 * (1 - bodyAnglePhase))
+				.translate(
+						0,
+						player.getBbHeight() * 2f,
+						-player.getBbHeight() * 0.5f
+				)
 				.rotatePitchFrontward(-70 * bodyAngleFactor - 90 * swimAmount)
 				.end();
 	}

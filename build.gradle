@@ -47,7 +47,7 @@ minecraft {
                 property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             }
             mods {
-                examplemod {
+                parcool {
                     source sourceSets.main
                 }
             }
@@ -62,7 +62,7 @@ minecraft {
                 property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             }
             mods {
-                examplemod {
+                parcool {
                     source sourceSets.main
                 }
             }
@@ -80,7 +80,7 @@ minecraft {
             args '--mod', 'parcool', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                examplemod {
+                parcool {
                     source sourceSets.main
                 }
             }
