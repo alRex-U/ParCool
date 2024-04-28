@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.animation;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.world.entity.player.Player;
 
 public class PlayerModelRotator {
@@ -56,17 +56,17 @@ public class PlayerModelRotator {
 	}
 
 	public PlayerModelRotator rotatePitchFrontward(float angleDegree) {
-		stack.mulPose(Vector3f.XN.rotationDegrees(angleDegree));
+		stack.mulPose(Axis.XN.rotationDegrees(angleDegree));
 		return this;
 	}
 
 	public PlayerModelRotator rotateRollRightward(float angleDegree) {
-		stack.mulPose(Vector3f.ZN.rotationDegrees(angleDegree));
+		stack.mulPose(Axis.ZN.rotationDegrees(angleDegree));
 		return this;
 	}
 
 	public PlayerModelRotator rotateYawRightward(float angleDegree) {
-		stack.mulPose(Vector3f.YN.rotationDegrees(angleDegree));
+		stack.mulPose(Axis.YN.rotationDegrees(angleDegree));
 		return this;
 	}
 

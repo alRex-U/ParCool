@@ -40,7 +40,7 @@ public class ClimbUp extends Action {
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		EntityUtil.addVelocity(player, new Vec3(0, 0.6, 0));
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.CLING_TO_CLIFF_JUMP.get(), 1f, 1f);
+            player.playSound(SoundEvents.CLING_TO_CLIFF_JUMP.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new ClimbUpAnimator());
 	}

@@ -27,7 +27,7 @@ public class Slide extends Action {
 		return (!stamina.isExhausted()
 				&& parkourability.getActionInfo().can(Slide.class)
 				&& KeyRecorder.keyCrawlState.isPressed()
-				&& player.isOnGround()
+				&& player.onGround()
 				&& !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()
 				&& parkourability.get(Crawl.class).isDoing()
@@ -50,12 +50,12 @@ public class Slide extends Action {
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		slidingVec = player.getLookAngle().multiply(1, 0, 1).normalize();
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.SLIDE.get(), 1f, 1f);
+            player.playSound(SoundEvents.SLIDE.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new SlidingAnimator());
 		}
-		parkourability.getCancelMarks().addMarkerCancellingJump(this::isDoing);
+        parkourability.getCancelMarks().addMarkerCancellingJump(this::isDoing);
 	}
 
 	@Override
@@ -69,13 +69,13 @@ public class Slide extends Action {
 	@Override
 	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
 		if (slidingVec != null) {
-			AttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
-			double speedScale = 0.45;
-			if (attr != null) {
-				speedScale = attr.getValue() * 4.5;
-			}
-			Vec3 vec = slidingVec.scale(speedScale);
-			player.setDeltaMovement((player.isOnGround() ? vec : vec.scale(0.6)).add(0, player.getDeltaMovement().y(), 0));
+            AttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
+            double speedScale = 0.45;
+            if (attr != null) {
+                speedScale = attr.getValue() * 4.5;
+            }
+            Vec3 vec = slidingVec.scale(speedScale);
+			player.setDeltaMovement((player.onGround() ? vec : vec.scale(0.6)).add(0, player.getDeltaMovement().y(), 0));
 		}
 	}
 

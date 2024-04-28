@@ -48,25 +48,25 @@ public class RollAnimator extends Animator {
 	void animatePostFrontBack(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		Roll roll = parkourability.get(Roll.class);
 		float phase = (getTick() + transformer.getPartialTick()) / roll.getRollMaxTick();
-		if (phase > 1) return;
+        if (phase > 1) return;
 		float factor = 1 - 4 * (0.5f - phase) * (0.5f - phase);
-		float animationFactor = new Easing(phase)
-				.squareOut(0, 0.1f, 0, 1)
-				.linear(0, 0.8f, 1, 1)
-				.sinInOut(0.8f, 1, 1, 0)
-				.get();
+        float animationFactor = new Easing(phase)
+                .squareOut(0, 0.1f, 0, 1)
+                .linear(0, 0.8f, 1, 1)
+                .sinInOut(0.8f, 1, 1, 0)
+                .get();
 		transformer
 				.addRotateLeftLeg(
-						(float) Math.toRadians(-70 * factor), 0, 0, animationFactor
+                        (float) Math.toRadians(-70 * factor), 0, 0, animationFactor
 				)
 				.addRotateRightLeg(
-						(float) Math.toRadians(-70 * factor), 0, 0, animationFactor
+                        (float) Math.toRadians(-70 * factor), 0, 0, animationFactor
 				)
 				.addRotateRightArm(
-						(float) Math.toRadians(-80 * factor), 0, 0, animationFactor
+                        (float) Math.toRadians(-80 * factor), 0, 0, animationFactor
 				)
 				.addRotateLeftArm(
-						(float) Math.toRadians(-80 * factor), 0, 0, animationFactor
+                        (float) Math.toRadians(-80 * factor), 0, 0, animationFactor
 				)
 				.end();
 	}
@@ -214,25 +214,25 @@ public class RollAnimator extends Animator {
 	private void rotateFrontBack(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		Roll roll = parkourability.get(Roll.class);
 		float phase = (getTick() + rotator.getPartialTick()) / roll.getRollMaxTick();
-		if (phase > 1) return;
+        if (phase > 1) return;
 		float factor = calculateMovementFactor(phase);
 		float sign = direction == Roll.Direction.Front ? 1 : -1;
-		float translateYFactor;
-		if (direction == Roll.Direction.Front) {
-			translateYFactor = new Easing(phase)
-					.squareOut(0, 0.5f, 0, 1)
-					.sinInOut(0.5f, 1, 1, 0)
-					.get();
-		} else {
-			translateYFactor = new Easing(phase)
-					.squareOut(0, 0.35f, 0, 0.6f)
-					.sinInOut(0.35f, 0.9f, 0.6f, 0)
-					.linear(0.9f, 1, 0, 0)
-					.get();
-		}
+        float translateYFactor;
+        if (direction == Roll.Direction.Front) {
+            translateYFactor = new Easing(phase)
+                    .squareOut(0, 0.5f, 0, 1)
+                    .sinInOut(0.5f, 1, 1, 0)
+                    .get();
+        } else {
+            translateYFactor = new Easing(phase)
+                    .squareOut(0, 0.35f, 0, 0.6f)
+                    .sinInOut(0.35f, 0.9f, 0.6f, 0)
+                    .linear(0.9f, 1, 0, 0)
+                    .get();
+        }
 		rotator
 				.startBasedCenter()
-				.translateY(-translateYFactor * player.getBbHeight() / 4f)
+                .translateY(-translateYFactor * player.getBbHeight() / 4f)
 				.rotatePitchFrontward(sign * MathUtil.lerp(0, 360, factor))
 				.end();
 	}

@@ -10,22 +10,22 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class SoundEvents {
     private static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, ParCool.MOD_ID);
-    private static final SoundEvent VAULT_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.vault"));
-    private static final SoundEvent VERTICAL_WALL_RUN_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.v_wall_run"));
-    private static final SoundEvent HORIZONTAL_WALL_RUN_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.h_wall_run"));
-    private static final SoundEvent BREAKFALL_JUST_TIME_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.breakfall.just"));
-    private static final SoundEvent ROLL_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.breakfall.roll"));
-    private static final SoundEvent SAFETY_TAP_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.breakfall.tap"));
-    private static final SoundEvent CATLEAP_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.catleap"));
-    private static final SoundEvent WALL_JUMP_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.wall_jump"));
-    private static final SoundEvent CLING_TO_CLIFF_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.cling_to_cliff.grab"));
-    private static final SoundEvent CLING_TO_CLIFF_JUMP_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.cling_to_cliff.jump"));
-    private static final SoundEvent HANG_DOWN_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.hang_down.grab"));
-    private static final SoundEvent HANG_DOWN_JUMP_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.hang_down.jump"));
-    private static final SoundEvent SLIDE_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.slide"));
-    private static final SoundEvent DODGE_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.dodge"));
-    private static final SoundEvent PARCOOL_ENABLE_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "parcool.enable"));
-    private static final SoundEvent PARCOOL_DISABLE_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "parcool.disable"));
+    private static final SoundEvent VAULT_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.vault"));
+    private static final SoundEvent VERTICAL_WALL_RUN_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.v_wall_run"));
+    private static final SoundEvent HORIZONTAL_WALL_RUN_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.h_wall_run"));
+    private static final SoundEvent BREAKFALL_JUST_TIME_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.breakfall.just"));
+    private static final SoundEvent ROLL_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.breakfall.roll"));
+    private static final SoundEvent SAFETY_TAP_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.breakfall.tap"));
+    private static final SoundEvent CATLEAP_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.catleap"));
+    private static final SoundEvent WALL_JUMP_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.wall_jump"));
+    private static final SoundEvent CLING_TO_CLIFF_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.cling_to_cliff.grab"));
+    private static final SoundEvent CLING_TO_CLIFF_JUMP_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.cling_to_cliff.jump"));
+    private static final SoundEvent HANG_DOWN_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.hang_down.grab"));
+    private static final SoundEvent HANG_DOWN_JUMP_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.hang_down.jump"));
+    private static final SoundEvent SLIDE_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.slide"));
+    private static final SoundEvent DODGE_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.dodge"));
+    private static final SoundEvent PARCOOL_ENABLE_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "parcool.enable"));
+    private static final SoundEvent PARCOOL_DISABLE_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "parcool.disable"));
 
     public static final RegistryObject<SoundEvent> VAULT = SOUNDS.register("action.vault", () -> VAULT_SOUND);
     public static final RegistryObject<SoundEvent> VERTICAL_WALL_RUN = SOUNDS.register("action.v_wall_run", () -> VERTICAL_WALL_RUN_SOUND);

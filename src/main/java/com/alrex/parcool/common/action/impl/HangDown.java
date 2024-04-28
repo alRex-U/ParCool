@@ -90,13 +90,13 @@ public class HangDown extends Action {
 	@Override
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		setup(player, startData);
-		player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
+        player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
 	}
 
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		setup(player, startData);
-		player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
+        player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -124,7 +124,7 @@ public class HangDown extends Action {
 			else if (KeyBindings.getKeyBack().isDown()) player.setDeltaMovement(-xSpeed, 0, -zSpeed);
 			else player.setDeltaMovement(0, 0, 0);
 		}
-		armSwingAmount += (float) player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
+        armSwingAmount += (float) player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
 	}
 
 	@Override

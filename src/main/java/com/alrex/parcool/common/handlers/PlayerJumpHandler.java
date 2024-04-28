@@ -19,6 +19,6 @@ public class PlayerJumpHandler {
 		IStamina stamina = IStamina.get(player);
 		if (stamina == null) return;
 		parkourability.get(Dive.class).onJump(player, parkourability, stamina);
-		parkourability.get(Flipping.class).onJump(player, parkourability, stamina);
+        parkourability.get(Flipping.class).onJump(player, parkourability, stamina);
 	}
 }

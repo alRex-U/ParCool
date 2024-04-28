@@ -33,7 +33,7 @@ public class JumpFromBar extends Action {
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		EntityUtil.addVelocity(player, player.getLookAngle().multiply(1, 0, 1).normalize().scale(player.getBbWidth() * 0.75));
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.HANG_DOWN_JUMP.get(), 1f, 1f);
+            player.playSound(SoundEvents.HANG_DOWN_JUMP.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new JumpFromBarAnimator());
 	}

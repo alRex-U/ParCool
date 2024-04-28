@@ -96,8 +96,8 @@ public class Dodge extends Action {
 		return (parkourability.getAdditionalProperties().getLandingTick() > 5
 				&& !isInSuccessiveCoolDown(parkourability.getActionInfo())
 				&& coolTime <= 0
-				&& player.isOnGround()
-				&& !player.isInWaterOrBubble()
+				&& player.onGround()
+                && !player.isInWaterOrBubble()
 				&& !player.isShiftKeyDown()
 				&& !stamina.isExhausted()
 		);
@@ -124,10 +124,10 @@ public class Dodge extends Action {
 			successivelyCount++;
 		}
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.DODGE.get(), 1f, 1f);
+            player.playSound(SoundEvents.DODGE.get(), 1f, 1f);
 		successivelyCoolTick = getSuccessiveCoolTime(parkourability.getActionInfo());
 
-		if (!player.isOnGround()) return;
+		if (!player.onGround()) return;
 		Vec3 lookVec = VectorUtil.fromYawDegree(player.getYHeadRot());
 		Vec3 dodgeVec = switch (dodgeDirection) {
 			case Front -> lookVec;
@@ -138,12 +138,12 @@ public class Dodge extends Action {
 		dodgeVec = dodgeVec.scale(.9 * getSpeedModifier(parkourability.getActionInfo()));
 		player.setDeltaMovement(dodgeVec);
 
-		Animation animation = Animation.get(player);
-		if (animation != null) animation.setAnimator(new DodgeAnimator(dodgeDirection));
-		parkourability.getCancelMarks().addMarkerCancellingJump(this::isDoing);
-		if (!parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.CanGetOffStepsWhileDodge)) {
-			parkourability.getCancelMarks().addMarkerCancellingDescendFromEdge(this::isDoing);
-		}
+        Animation animation = Animation.get(player);
+        if (animation != null) animation.setAnimator(new DodgeAnimator(dodgeDirection));
+        parkourability.getCancelMarks().addMarkerCancellingJump(this::isDoing);
+        if (!parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.CanGetOffStepsWhileDodge)) {
+            parkourability.getCancelMarks().addMarkerCancellingDescendFromEdge(this::isDoing);
+        }
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -46,7 +46,7 @@ public class VerticalWallRun extends Action {
 				&& KeyBindings.getKeyJump().isDown()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& !parkourability.get(Crawl.class).isDoing()
-				&& !parkourability.get(CatLeap.class).isDoing()
+                && !parkourability.get(CatLeap.class).isDoing()
 				&& !parkourability.get(WallSlide.class).isDoing()
 				&& !parkourability.get(HorizontalWallRun.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
@@ -62,12 +62,12 @@ public class VerticalWallRun extends Action {
 				double height = WorldUtil.getWallHeight(player, wall, player.getBbHeight() * 2.2, 0.2);
 				if (height > 2.3) {
 					BlockPos targetBlock = new BlockPos(
-							player.getX() + wall.x(),
-							player.getBoundingBox().minY + player.getBbHeight() * 0.5,
-							player.getZ() + wall.z()
+							(int) (player.getX() + wall.x()),
+							(int) (player.getBoundingBox().minY + player.getBbHeight() * 0.5),
+							(int) (player.getZ() + wall.z())
 					);
-					if (!player.level.isLoaded(targetBlock)) return false;
-					float slipperiness = player.level.getBlockState(targetBlock).getFriction(player.level, targetBlock, player);
+					if (!player.getCommandSenderWorld().isLoaded(targetBlock)) return false;
+					float slipperiness = player.getCommandSenderWorld().getBlockState(targetBlock).getFriction(player.getCommandSenderWorld(), targetBlock, player);
 					startInfo.putDouble(height);
 					startInfo.putFloat(slipperiness);
 					startInfo.putDouble(wall.x());
@@ -95,7 +95,7 @@ public class VerticalWallRun extends Action {
 		double height = startData.getDouble();
 		float slipperiness = startData.getFloat();
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.VERTICAL_WALL_RUN.get(), 1f, 1f);
+            player.playSound(SoundEvents.VERTICAL_WALL_RUN.get(), 1f, 1f);
 		player.setDeltaMovement(player
 				.getDeltaMovement()
 				.multiply(1, 0, 1)
@@ -106,7 +106,7 @@ public class VerticalWallRun extends Action {
 
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
-		startData.position(8 + 4); // skip (double * 1) and (float * 1)
+        startData.position(8 + 4); // skip (double * 1) and (float * 1)
 		wallDirection = new Vec3(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		Animation animation = Animation.get(player);
 		if (animation != null) {
@@ -118,54 +118,56 @@ public class VerticalWallRun extends Action {
 	public void onRenderTick(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
 		if (wallDirection != null && isDoing()) {
 			player.setYHeadRot((float) VectorUtil.toYawDegree(wallDirection));
-			player.yBodyRotO = player.yBodyRot = player.getYHeadRot();
+            player.yBodyRotO = player.yBodyRot = player.getYHeadRot();
 		}
 	}
 
-	@Override
-	public void onWorkingTickInClient(Player player, Parkourability parkourability, IStamina stamina) {
-		spawnRunningParticle(player);
-	}
+    @Override
+    public void onWorkingTickInClient(Player player, Parkourability parkourability, IStamina stamina) {
+        spawnRunningParticle(player);
+    }
 
 	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
 		return StaminaConsumeTiming.OnStart;
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public void spawnRunningParticle(Player player) {
-		if (wallDirection == null) return;
-		Level level = player.level;
-		Vec3 pos = player.position();
-		BlockPos leanedBlock = new BlockPos(
-				pos.add(wallDirection.x(), player.getBbHeight() * 0.25, wallDirection.z())
-		);
-		if (!level.isLoaded(leanedBlock)) return;
-		float width = player.getBbWidth();
-		BlockState blockstate = level.getBlockState(leanedBlock);
+    @OnlyIn(Dist.CLIENT)
+    public void spawnRunningParticle(Player player) {
+        if (wallDirection == null) return;
+        Level level = player.level();
+        Vec3 pos = player.position();
+        BlockPos leanedBlock = new BlockPos(
+                (int) Math.floor(pos.x() + wallDirection.x()),
+                (int) Math.floor(pos.y() + player.getBbHeight() * 0.25),
+                (int) Math.floor(pos.z() + wallDirection.z())
+        );
+        if (!level.isLoaded(leanedBlock)) return;
+        float width = player.getBbWidth();
+        BlockState blockstate = level.getBlockState(leanedBlock);
 
-		Vec3 normalizedWallVec = wallDirection.normalize();
-		Vec3 orthogonalToWallVec = normalizedWallVec.yRot((float) (Math.PI / 2));
-		if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
-			Vec3 particlePos = new Vec3(
-					pos.x() + (normalizedWallVec.x() * 0.4 + orthogonalToWallVec.x() * (player.getRandom().nextDouble() - 0.5D)) * width,
-					pos.y() + 0.1D + 0.3 * player.getRandom().nextDouble(),
-					pos.z() + (normalizedWallVec.z() * 0.4 + orthogonalToWallVec.z() * (player.getRandom().nextDouble() - 0.5D)) * width
-			);
-			Vec3 particleSpeed = normalizedWallVec
-					.reverse()
-					.yRot((float) (Math.PI * 0.2 * (player.getRandom().nextDouble() - 0.5)))
-					.scale(2 + 4 * player.getRandom().nextDouble())
-					.add(0, 0.5, 0);
-			level.addParticle(
-					new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(leanedBlock),
-					particlePos.x(),
-					particlePos.y(),
-					particlePos.z(),
-					particleSpeed.x(),
-					particleSpeed.y(),
-					particleSpeed.z()
-			);
-		}
-	}
+        Vec3 normalizedWallVec = wallDirection.normalize();
+        Vec3 orthogonalToWallVec = normalizedWallVec.yRot((float) (Math.PI / 2));
+        if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
+            Vec3 particlePos = new Vec3(
+                    pos.x() + (normalizedWallVec.x() * 0.4 + orthogonalToWallVec.x() * (player.getRandom().nextDouble() - 0.5D)) * width,
+                    pos.y() + 0.1D + 0.3 * player.getRandom().nextDouble(),
+                    pos.z() + (normalizedWallVec.z() * 0.4 + orthogonalToWallVec.z() * (player.getRandom().nextDouble() - 0.5D)) * width
+            );
+            Vec3 particleSpeed = normalizedWallVec
+                    .reverse()
+                    .yRot((float) (Math.PI * 0.2 * (player.getRandom().nextDouble() - 0.5)))
+                    .scale(2 + 4 * player.getRandom().nextDouble())
+                    .add(0, 0.5, 0);
+            level.addParticle(
+                    new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(leanedBlock),
+                    particlePos.x(),
+                    particlePos.y(),
+                    particlePos.z(),
+                    particleSpeed.x(),
+                    particleSpeed.y(),
+                    particleSpeed.z()
+            );
+        }
+    }
 }

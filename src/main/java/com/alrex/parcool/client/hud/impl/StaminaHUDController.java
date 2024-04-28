@@ -5,8 +5,9 @@ import com.alrex.parcool.common.capability.stamina.HungerStamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.extern.epicfight.EpicFightManager;
 import com.alrex.parcool.extern.feathers.FeathersManager;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.alrex.parcool.extern.paraglider.ParagliderManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -33,22 +34,23 @@ public class StaminaHUDController implements IGuiOverlay {
 	}
 
 	@Override
-	public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int width, int height) {
+	public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height) {
 		AbstractClientPlayer player = Minecraft.getInstance().player;
 		if (player == null) return;
 		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get() ||
 				(IStamina.get(player) instanceof HungerStamina) ||
 				EpicFightManager.isUsingEpicFightStamina(player) ||
-				FeathersManager.isUsingFeathers()
+				FeathersManager.isUsingFeathers(player) ||
+				ParagliderManager.isUsingParaglider(player)
 		)
 			return;
 
 		switch (ParCoolConfig.Client.StaminaHUDType.get()) {
 			case Light:
-				lightStaminaHUD.render(gui, poseStack, partialTick, width, height);
+				lightStaminaHUD.render(gui, graphics, partialTick, width, height);
 				break;
 			case Normal:
-				staminaHUD.render(gui, poseStack, partialTick, width, height);
+				staminaHUD.render(gui, graphics, partialTick, width, height);
 				break;
 		}
 	}

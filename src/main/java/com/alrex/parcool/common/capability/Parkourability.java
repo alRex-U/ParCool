@@ -23,7 +23,7 @@ public class Parkourability {
 
 	private final ActionInfo info;
 	private final AdditionalProperties properties = new AdditionalProperties();
-	private final CancelMarks cancelMarks = new CancelMarks();
+    private final CancelMarks cancelMarks = new CancelMarks();
 	private final List<Action> actions = ActionList.constructActionsList();
 	private final HashMap<Class<? extends Action>, Action> actionsMap;
 
@@ -59,9 +59,9 @@ public class Parkourability {
 		return properties;
 	}
 
-	public CancelMarks getCancelMarks() {
-		return cancelMarks;
-	}
+    public CancelMarks getCancelMarks() {
+        return cancelMarks;
+    }
 
 	public ActionInfo getActionInfo() {
 		return info;

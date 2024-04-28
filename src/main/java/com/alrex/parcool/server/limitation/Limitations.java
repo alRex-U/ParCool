@@ -229,7 +229,13 @@ public class Limitations {
 
     private static Path getServerConfigPath(final MinecraftServer server) {
         final Path serverConfig = server.getWorldPath(SERVERCONFIG);
-        net.minecraftforge.fml.loading.FileUtils.getOrCreateDirectory(serverConfig, "serverconfig");
+        if (!Files.isDirectory(serverConfig)) {
+            try {
+                Files.createDirectories(serverConfig);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         return serverConfig;
     }
 

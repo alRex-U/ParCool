@@ -6,6 +6,7 @@ import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.FastRun;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.extern.paraglider.ParagliderManager;
 import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
@@ -29,6 +30,7 @@ public class FastRunningAnimator extends Animator {
 
 	@Override
 	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
+		if (ParagliderManager.isFallingWithParaglider(player)) return;
 		float phase = (getTick() + transformer.getPartialTick()) / 10;
 		if (phase > 1) phase = 1;
 		float bodyAngleFactor = bodyAngleFactor(phase);
@@ -99,13 +101,14 @@ public class FastRunningAnimator extends Animator {
         }
         transformer
 				.rotateAdditionallyHeadPitch(bodyAngleFactor * -30 - 5f * (float) Math.sin(Math.PI * tick / 10))
-				.addRotateRightLeg((float) Math.toRadians(-15 * bodyAngleFactor), 0, 0)
-				.addRotateLeftLeg((float) Math.toRadians(-15 * bodyAngleFactor), 0, 0)
+                .addRotateRightLeg((float) Math.toRadians(-15 * bodyAngleFactor), 0, 0)
+                .addRotateLeftLeg((float) Math.toRadians(-15 * bodyAngleFactor), 0, 0)
 				.end();
 	}
 
 	@Override
 	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+		if (ParagliderManager.isFallingWithParaglider(player)) return;
 		float tick = getTick() + rotator.getPartialTick();
 		float phase = tick / 10;
 		if (phase > 1) phase = 1;

@@ -8,11 +8,11 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 
 public class Stamina implements IStamina {
-	public Stamina(Player player) {
+    public Stamina(Player player) {
 		this.player = player;
 		if (player != null && player.isLocalPlayer()) {
-			set(Integer.MAX_VALUE);
-		}
+            set(Integer.MAX_VALUE);
+        }
 	}
 
 	private final Player player;
@@ -23,11 +23,11 @@ public class Stamina implements IStamina {
 
 	@Override
 	public int getActualMaxStamina() {
-		Parkourability parkourability = Parkourability.get(player);
-		if (parkourability == null) return 1;
-		AttributeInstance attr = player.getAttribute(Attributes.MAX_STAMINA.get());
-		if (attr == null) return 1;
-		return Math.min((int) attr.getValue(), parkourability.getActionInfo().getMaxStaminaLimit());
+        Parkourability parkourability = Parkourability.get(player);
+        if (parkourability == null) return 1;
+        AttributeInstance attr = player.getAttribute(Attributes.MAX_STAMINA.get());
+        if (attr == null) return 1;
+        return Math.min((int) attr.getValue(), parkourability.getActionInfo().getMaxStaminaLimit());
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class Stamina implements IStamina {
 		if (parkourability == null) return;
 		if (exhausted
 				|| parkourability.getActionInfo().isStaminaInfinite(player.isSpectator() || player.isCreative())
-				|| player.hasEffect(Effects.INEXHAUSTIBLE.get())
+                || player.hasEffect(Effects.INEXHAUSTIBLE.get())
 		) return;
 		recoverCoolTime = 30;
 		set(stamina - value);
@@ -84,13 +84,13 @@ public class Stamina implements IStamina {
 			if (player == null) return;
 			com.alrex.parcool.common.capability.Parkourability parkourability = com.alrex.parcool.common.capability.Parkourability.get(player);
 			if (parkourability == null) return;
-			AttributeInstance attr = player.getAttribute(Attributes.STAMINA_RECOVERY.get());
-			if (attr == null) return;
-			if (player.isOnGround()) {
-				recover(Math.min((int) attr.getValue(), parkourability.getActionInfo().getStaminaRecoveryLimit()));
-			} else {
-				recover(Math.min((int) attr.getValue(), parkourability.getActionInfo().getStaminaRecoveryLimit()) / 5);
-			}
+            AttributeInstance attr = player.getAttribute(Attributes.STAMINA_RECOVERY.get());
+            if (attr == null) return;
+            if (player.onGround()) {
+                recover(Math.min((int) attr.getValue(), parkourability.getActionInfo().getStaminaRecoveryLimit()));
+            } else {
+                recover(Math.min((int) attr.getValue(), parkourability.getActionInfo().getStaminaRecoveryLimit()) / 5);
+            }
 		}
 	}
 

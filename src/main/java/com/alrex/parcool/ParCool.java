@@ -12,6 +12,7 @@ import com.alrex.parcool.common.registries.EventBusForgeRegistry;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.extern.epicfight.EpicFightManager;
 import com.alrex.parcool.extern.feathers.FeathersManager;
+import com.alrex.parcool.extern.paraglider.ParagliderManager;
 import com.alrex.parcool.proxy.ClientProxy;
 import com.alrex.parcool.proxy.CommonProxy;
 import com.alrex.parcool.proxy.ServerProxy;
@@ -66,8 +67,8 @@ public class ParCool {
 		eventBus.register(Capabilities.class);
 		Effects.registerAll(eventBus);
 		Potions.registerAll(eventBus);
-		Attributes.registerAll(eventBus);
-		SoundEvents.registerAll(eventBus);
+        Attributes.registerAll(eventBus);
+        SoundEvents.registerAll(eventBus);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.addListener(Limitations::init);
@@ -80,6 +81,7 @@ public class ParCool {
 
 	private void loaded(FMLLoadCompleteEvent event) {
 		FeathersManager.init();
+		ParagliderManager.init();
 		EpicFightManager.init();
 	}
 

@@ -34,7 +34,7 @@ public class PassiveCustomAnimation {
 				flyingAnimationLevel = 0;
 			}
 		}
-		if (!player.isOnGround()
+		if (!player.onGround()
 				&& player.fallDistance > 1
 				&& !player.getAbilities().flying
 				&& !player.isFallFlying()
@@ -106,20 +106,20 @@ public class PassiveCustomAnimation {
 				.end();
 	}
 
-	private void spawnSweatParticle(Player player) {
-		Level level = player.level;
-		RandomSource rand = player.getRandom();
-		Vec3 particleSpeed = player.getDeltaMovement().scale(0.6);
-		level.addParticle(
-				ParticleTypes.DRIPPING_WATER,
-				player.getX() + player.getBbWidth() * (rand.nextFloat() - 0.5f),
-				player.getY() + player.getBbHeight() * rand.nextFloat(),
-				player.getZ() + player.getBbWidth() * (rand.nextFloat() - 0.5f),
-				particleSpeed.x(),
-				particleSpeed.y() - 1,
-				particleSpeed.z()
-		);
-	}
+    private void spawnSweatParticle(Player player) {
+        Level level = player.level();
+        RandomSource rand = player.getRandom();
+        Vec3 particleSpeed = player.getDeltaMovement().scale(0.6);
+        level.addParticle(
+                ParticleTypes.DRIPPING_WATER,
+                player.getX() + player.getBbWidth() * (rand.nextFloat() - 0.5f),
+                player.getY() + player.getBbHeight() * rand.nextFloat(),
+                player.getZ() + player.getBbWidth() * (rand.nextFloat() - 0.5f),
+                particleSpeed.x(),
+                particleSpeed.y() - 1,
+                particleSpeed.z()
+        );
+    }
 	private float getAngleCreativeFlying(Player player, float partial) {
 		float xRot = (float) VectorUtil.toPitchDegree(player.getDeltaMovement());
 		return (xRot + 90) * getFactorCreativeFlying(partial);

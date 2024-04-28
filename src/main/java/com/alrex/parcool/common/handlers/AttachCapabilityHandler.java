@@ -44,19 +44,19 @@ public class AttachCapabilityHandler {
 		}
 		//Stamina
 		{
-			IStamina instance;
+            IStamina instance;
 			if (player.isLocalPlayer()) {
-				instance = ParCoolConfig.Client.StaminaType.get().newInstance(player);
-			} else {
-				instance = new OtherStamina(player);
+                instance = ParCoolConfig.Client.StaminaType.get().newInstance(player);
+            } else {
+                instance = new OtherStamina(player);
 			}
-			LazyOptional<IStamina> optional = LazyOptional.of(() -> instance);
+            LazyOptional<IStamina> optional = LazyOptional.of(() -> instance);
 			ICapabilityProvider provider = new ICapabilitySerializable<CompoundTag>() {
 				@Override
 				public CompoundTag serializeNBT() {
 					return (CompoundTag) new StaminaStorage().writeTag(
 							Capabilities.STAMINA_CAPABILITY,
-							instance,
+                            instance,
 							null
 					);
 				}
@@ -65,7 +65,7 @@ public class AttachCapabilityHandler {
 				public void deserializeNBT(CompoundTag nbt) {
 					new StaminaStorage().readTag(
 							Capabilities.STAMINA_CAPABILITY,
-							instance,
+                            instance,
 							null,
 							nbt
 					);
@@ -82,7 +82,7 @@ public class AttachCapabilityHandler {
 			};
 			event.addCapability(Capabilities.STAMINA_LOCATION, provider);
 		}
-		if (event.getObject().level.isClientSide) {
+        if (event.getObject().level().isClientSide) {
 			//Animation
 			{
 				Animation instance = new Animation();

@@ -128,10 +128,10 @@ public class ParCoolConfig {
 					ConfigGroup.Control, "Enable Vault in air",
 					"enable_vault_in_air", true
 			),
-			CanGetOffStepsWhileDodge(
-					ConfigGroup.Control, "Enable getting off steps while doing dodge",
-					"can_get_off_steps_while_dodge", false
-			),
+            CanGetOffStepsWhileDodge(
+                    ConfigGroup.Control, "Enable getting off steps while doing dodge",
+                    "can_get_off_steps_while_dodge", false
+            ),
 			EnableWallJumpBackward(
 					ConfigGroup.Control, "Enable backward Wall-Jump when facing to wall",
 					"enable_wall_jump_backward", false
@@ -402,8 +402,8 @@ public class ParCoolConfig {
 		public static final ForgeConfigSpec.EnumValue<ColorTheme> GUIColorTheme;
 		public static final ForgeConfigSpec.EnumValue<FastRun.ControlType> FastRunControl;
 		public static final ForgeConfigSpec.EnumValue<Crawl.ControlType> CrawlControl;
-		public static final ForgeConfigSpec.EnumValue<Flipping.ControlType> FlipControl;
-		public static final ForgeConfigSpec.EnumValue<IStamina.Type> StaminaType;
+        public static final ForgeConfigSpec.EnumValue<Flipping.ControlType> FlipControl;
+        public static final ForgeConfigSpec.EnumValue<IStamina.Type> StaminaType;
 
 		private static void register(ForgeConfigSpec.Builder builder, ConfigGroup group) {
 			Arrays.stream(Booleans.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
@@ -444,8 +444,8 @@ public class ParCoolConfig {
 			builder.push("Control");
 			{
 				FastRunControl = builder.comment("Control of FastRun").defineEnum("fast-run_control", FastRun.ControlType.PressKey);
-				CrawlControl = builder.comment("Control of Crawl").defineEnum("crawl_control", Crawl.ControlType.PressKey);
-				FlipControl = builder.comment("Control of Flipping").defineEnum("flip_control", Flipping.ControlType.PressRightAndLeft);
+                CrawlControl = builder.comment("Control of Crawl").defineEnum("crawl_control", Crawl.ControlType.PressKey);
+                FlipControl = builder.comment("Control of Flipping").defineEnum("flip_control", Flipping.ControlType.PressRightAndLeft);
 				register(builder, ConfigGroup.Control);
 			}
 			builder.pop();
@@ -463,8 +463,8 @@ public class ParCoolConfig {
 			builder.pop();
 			builder.push("Stamina");
 			{
-				StaminaType = builder.defineEnum("used_stamina", IStamina.Type.Default);
-				builder.comment("Caution : Max stamina and stamina recovery config is removed because they became attributes.");
+                StaminaType = builder.defineEnum("used_stamina", IStamina.Type.Default);
+                builder.comment("Caution : Max stamina and stamina recovery config is removed because they became attributes.");
 				builder.push("Consumption");
 				{
 					for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
@@ -769,7 +769,7 @@ public class ParCoolConfig {
 					builder.push("Least Consumption");
 					{
 						for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
-							leastStaminaConsumptions[i] = builder.defineInRange(
+                            leastStaminaConsumptions[i] = builder.defineInRange(
 									"stamina_consumption_of_" + ActionList.ACTIONS.get(i).getSimpleName(),
 									ActionList.ACTION_REGISTRIES.get(i).getDefaultStaminaConsumption(),
 									0, 10000

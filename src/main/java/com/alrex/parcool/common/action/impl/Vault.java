@@ -103,7 +103,7 @@ public class Vault extends Action {
 				&& !(ParCoolConfig.Client.Booleans.VaultKeyPressedNeeded.get() && !KeyBindings.getKeyVault().isDown())
 				&& parkourability.get(FastRun.class).canActWithRunning(player)
 				&& !stamina.isExhausted()
-				&& (player.isOnGround() || ParCoolConfig.Client.Booleans.EnableVaultInAir.get())
+				&& (player.onGround() || ParCoolConfig.Client.Booleans.EnableVaultInAir.get())
 				&& wallHeight > player.getBbHeight() * 0.44 /*about 0.8*/
 		);
 	}
@@ -124,7 +124,7 @@ public class Vault extends Action {
 		SpeedVaultAnimator.Type speedVaultType = BufferUtil.getBoolean(startData) ?
 				SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.VAULT.get(), 1f, 1f);
+            player.playSound(SoundEvents.VAULT.get(), 1f, 1f);
 		stepDirection = new Vec3(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		stepHeight = startData.getDouble();
 		Animation animation = Animation.get(player);

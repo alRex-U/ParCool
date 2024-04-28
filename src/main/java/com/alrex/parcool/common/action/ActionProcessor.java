@@ -47,7 +47,7 @@ public class ActionProcessor {
 		boolean needSync = event.side == LogicalSide.CLIENT && player.isLocalPlayer();
 		SyncActionStateMessage.Encoder builder = SyncActionStateMessage.Encoder.reset();
 
-		stamina.tick();
+        stamina.tick();
 		parkourability.getAdditionalProperties().onTick(player, parkourability);
 		for (Action action : actions) {
 			StaminaConsumeTiming timing = action.getStaminaConsumeTiming();
@@ -133,14 +133,14 @@ public class ActionProcessor {
 		if (needSync) {
 			SyncActionStateMessage.sync(player, builder);
 
-			staminaSyncCoolTimeTick++;
-			if (staminaSyncCoolTimeTick > 5 || stamina.wantToConsumeOnServer()) {
-				staminaSyncCoolTimeTick = 0;
-				SyncStaminaMessage.sync(player);
-			}
-			if (stamina.isExhausted()) {
-				player.setSprinting(false);
-			}
+            staminaSyncCoolTimeTick++;
+            if (staminaSyncCoolTimeTick > 5 || stamina.wantToConsumeOnServer()) {
+                staminaSyncCoolTimeTick = 0;
+                SyncStaminaMessage.sync(player);
+            }
+            if (stamina.isExhausted()) {
+                player.setSprinting(false);
+            }
 		}
 	}
 
@@ -149,7 +149,7 @@ public class ActionProcessor {
 	public void onRenderTick(TickEvent.RenderTickEvent event) {
 		Player clientPlayer = Minecraft.getInstance().player;
 		if (clientPlayer == null) return;
-		for (Player player : clientPlayer.level.players()) {
+		for (Player player : clientPlayer.getCommandSenderWorld().players()) {
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
 			List<Action> actions = parkourability.getList();

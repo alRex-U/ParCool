@@ -5,8 +5,8 @@ import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.network.SyncClientInformationMessage;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
@@ -31,7 +31,7 @@ public class SettingBooleanConfigScreen extends ParCoolSettingScreen {
     }
 
     @Override
-    protected void renderContents(PoseStack poseStack, int mouseX, int mouseY, float partialTick, int topOffset, int bottomOffset) {
+    protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, int topOffset, int bottomOffset) {
         final int offsetX = 40;
         int contentWidth = width - offsetX * 2;
         int contentHeight = height - topOffset - bottomOffset;
@@ -41,22 +41,22 @@ public class SettingBooleanConfigScreen extends ParCoolSettingScreen {
         }
         for (int i = 0; i < viewableItemCount && i + topIndex < booleans.length; i++) {
             Checkbox button = configButtons[i + topIndex];
-            button.x = offsetX + 1;
-            button.y = topOffset + Checkbox_Item_Height * i;
+            button.setX(offsetX + 1);
+            button.setY(topOffset + Checkbox_Item_Height * i);
             button.setWidth(contentWidth);
             button.setHeight(20);
-            button.render(poseStack, mouseX, mouseY, partialTick);
-            fill(poseStack, offsetX, button.y + button.getHeight(), width - offsetX, button.y + button.getHeight() + 1, color.getSubSeparator());
+            button.render(graphics, mouseX, mouseY, partialTick);
+            graphics.fill(offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
             String comment = booleans[i + topIndex].Comment;
-            if (comment != null && button.x < mouseX && mouseX < button.x + contentWidth && button.y < mouseY && mouseY < button.y + 20) {
-                renderComponentTooltip(
-                        poseStack,
+            if (comment != null && button.getX() < mouseX && mouseX < button.getX() + contentWidth && button.getY() < mouseY && mouseY < button.getY() + 20) {
+                graphics.renderComponentTooltip(
+                        font,
                         Collections.singletonList(Component.literal(comment)),
                         mouseX, mouseY);
             }
         }
-        fill(poseStack, width - offsetX, topOffset, width - offsetX - 1, topOffset + contentHeight, color.getSeparator());
-        fill(poseStack, offsetX, topOffset, offsetX + 1, topOffset + contentHeight, color.getSeparator());
+        graphics.fill(width - offsetX, topOffset, width - offsetX - 1, topOffset + contentHeight, color.getSeparator());
+        graphics.fill(offsetX, topOffset, offsetX + 1, topOffset + contentHeight, color.getSeparator());
     }
 
     @Override

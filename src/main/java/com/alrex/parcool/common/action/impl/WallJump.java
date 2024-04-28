@@ -66,7 +66,7 @@ public class WallJump extends Action {
 			value = vec;
 		}
 
-		return value.normalize().add(wall.scale(-0.7)).normalize();
+        return value.normalize().add(wall.scale(-0.7)).normalize();
 	}
 
 	public float getCoolDownPhase() {
@@ -84,7 +84,7 @@ public class WallJump extends Action {
 
 		boolean value = (!stamina.isExhausted()
 				&& getNotDoingTick() > MAX_COOL_DOWN_TICK
-				&& !player.isOnGround()
+				&& !player.onGround()
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
 				&& !player.getAbilities().flying
@@ -94,7 +94,7 @@ public class WallJump extends Action {
 				&& KeyRecorder.keyWallJump.isPressed()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(VerticalWallRun.class).isDoing()
-				&& parkourability.getAdditionalProperties().getNotLandingTick() > 4
+                && parkourability.getAdditionalProperties().getNotLandingTick() > 4
 				&& WorldUtil.getWall(player) != null
 		);
 		if (!value) return false;
@@ -121,15 +121,15 @@ public class WallJump extends Action {
 			type = WallJumpAnimationType.SwingLeftArm;
 		}
 
-		double lookAngleY = player.getLookAngle().normalize().y();
-		if (lookAngleY > 0.5) { // Looking upward
-			jumpDirection = jumpDirection.add(0, lookAngleY * 2, 0).normalize();
-		} else {
-			jumpDirection = jumpDirection.add(0, 1, 0).normalize();
-		}
+        double lookAngleY = player.getLookAngle().normalize().y();
+        if (lookAngleY > 0.5) { // Looking upward
+            jumpDirection = jumpDirection.add(0, lookAngleY * 2, 0).normalize();
+        } else {
+            jumpDirection = jumpDirection.add(0, 1, 0).normalize();
+        }
 		startInfo
 				.putDouble(jumpDirection.x())
-				.putDouble(jumpDirection.y())
+                .putDouble(jumpDirection.y())
 				.putDouble(jumpDirection.z())
 				.putDouble(wallDirection.x())
 				.putDouble(wallDirection.z())
@@ -151,32 +151,32 @@ public class WallJump extends Action {
 	@Override
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.WALL_JUMP.get(), 1f, 1f);
-		Vec3 jumpDirection = new Vec3(startData.getDouble(), startData.getDouble(), startData.getDouble());
-		Vec3 jumpMotion = jumpDirection.scale(0.59);
+            player.playSound(SoundEvents.WALL_JUMP.get(), 1f, 1f);
+        Vec3 jumpDirection = new Vec3(startData.getDouble(), startData.getDouble(), startData.getDouble());
+        Vec3 jumpMotion = jumpDirection.scale(0.59);
 		Vec3 wallDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
 		Vec3 motion = player.getDeltaMovement();
 
 		BlockPos leanedBlock = new BlockPos(
-				player.getX() + wallDirection.x(),
-				player.getBoundingBox().minY + player.getBbHeight() * 0.25,
-				player.getZ() + wallDirection.z()
+				(int) (player.getX() + wallDirection.x()),
+				(int) (player.getBoundingBox().minY + player.getBbHeight() * 0.25),
+				(int) (player.getZ() + wallDirection.z())
 		);
-		float slipperiness = player.level.isLoaded(leanedBlock) ?
-				player.level.getBlockState(leanedBlock).getFriction(player.level, leanedBlock, player)
+		float slipperiness = player.getCommandSenderWorld().isLoaded(leanedBlock) ?
+				player.getCommandSenderWorld().getBlockState(leanedBlock).getFriction(player.getCommandSenderWorld(), leanedBlock, player)
 				: 0.6f;
 
 		double ySpeed;
 		if (slipperiness > 0.9) {// icy blocks
 			ySpeed = motion.y();
 		} else {
-			ySpeed = motion.y() > jumpMotion.y() ? motion.y + jumpMotion.y() : jumpMotion.y();
-			spawnJumpParticles(player, wallDirection, jumpDirection);
+            ySpeed = motion.y() > jumpMotion.y() ? motion.y + jumpMotion.y() : jumpMotion.y();
+            spawnJumpParticles(player, wallDirection, jumpDirection);
 		}
 		player.setDeltaMovement(
-				motion.x() + jumpMotion.x(),
+                motion.x() + jumpMotion.x(),
 				ySpeed,
-				motion.z() + jumpMotion.z()
+                motion.z() + jumpMotion.z()
 		);
 
 		WallJumpAnimationType type = WallJumpAnimationType.fromCode(startData.get());
@@ -197,19 +197,19 @@ public class WallJump extends Action {
 
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
-		Vec3 jumpDirection = new Vec3(startData.getDouble(), startData.getDouble(), startData.getDouble());
+        Vec3 jumpDirection = new Vec3(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		Vec3 wallDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
-		BlockPos leanedBlock = new BlockPos(
-				player.getX() + wallDirection.x(),
-				player.getBoundingBox().minY + player.getBbHeight() * 0.25,
-				player.getZ() + wallDirection.z()
-		);
-		float slipperiness = player.level.isLoaded(leanedBlock) ?
-				player.level.getBlockState(leanedBlock).getFriction(player.level, leanedBlock, player)
-				: 1f;
-		if (slipperiness <= 0.9) {// icy blocks
-			spawnJumpParticles(player, wallDirection, jumpDirection);
-		}
+        BlockPos leanedBlock = new BlockPos(
+                (int) Math.floor(player.getX() + wallDirection.x()),
+                (int) Math.floor(player.getBoundingBox().minY + player.getBbHeight() * 0.25),
+                (int) Math.floor(player.getZ() + wallDirection.z())
+        );
+        float slipperiness = player.level().isLoaded(leanedBlock) ?
+                player.level().getBlockState(leanedBlock).getFriction(player.level(), leanedBlock, player)
+                : 1f;
+        if (slipperiness <= 0.9) {// icy blocks
+            spawnJumpParticles(player, wallDirection, jumpDirection);
+        }
 
 		WallJumpAnimationType type = WallJumpAnimationType.fromCode(startData.get());
 		Animation animation = Animation.get(player);
@@ -232,57 +232,59 @@ public class WallJump extends Action {
 		super.onWorkingTickInClient(player, parkourability, stamina);
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	private void spawnJumpParticles(Player player, Vec3 wallDirection, Vec3 jumpDirection) {
-		Level level = player.level;
-		Vec3 pos = player.position();
-		BlockPos leanedBlock = new BlockPos(
-				pos.add(wallDirection.x(), player.getBbHeight() * 0.25, wallDirection.z())
-		);
-		if (!level.isLoaded(leanedBlock)) return;
-		float width = player.getBbWidth();
-		BlockState blockstate = level.getBlockState(leanedBlock);
+    @OnlyIn(Dist.CLIENT)
+    private void spawnJumpParticles(Player player, Vec3 wallDirection, Vec3 jumpDirection) {
+        Level level = player.level();
+        Vec3 pos = player.position();
+        BlockPos leanedBlock = new BlockPos(
+                (int) Math.floor(pos.x() + wallDirection.x()),
+                (int) Math.floor(pos.y() + player.getBbHeight() * 0.25),
+                (int) Math.floor(pos.z() + wallDirection.z())
+        );
+        if (!level.isLoaded(leanedBlock)) return;
+        float width = player.getBbWidth();
+        BlockState blockstate = level.getBlockState(leanedBlock);
 
-		Vec3 horizontalJumpDirection = jumpDirection.multiply(1, 0, 1).normalize();
+        Vec3 horizontalJumpDirection = jumpDirection.multiply(1, 0, 1).normalize();
 
-		wallDirection = wallDirection.normalize();
-		Vec3 orthogonalToWallVec = wallDirection.yRot((float) (Math.PI / 2)).normalize();
+        wallDirection = wallDirection.normalize();
+        Vec3 orthogonalToWallVec = wallDirection.yRot((float) (Math.PI / 2)).normalize();
 
-		//doing "Conjugate of (horizontalJumpDirection/-wallDirection)" as complex number(x + z i)
-		Vec3 differenceVec =
-				new Vec3(
-						-wallDirection.x() * horizontalJumpDirection.x() - wallDirection.z() * horizontalJumpDirection.z(), 0,
-						wallDirection.z() * horizontalJumpDirection.x() - wallDirection.x() * horizontalJumpDirection.z()
-				).multiply(1, 0, -1).normalize();
-		Vec3 particleBaseDirection =
-				new Vec3(
-						-wallDirection.x() * differenceVec.x() + wallDirection.z() * differenceVec.z(), 0,
-						-wallDirection.x() * differenceVec.z() - wallDirection.z() * differenceVec.x()
-				);
-		if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
-			for (int i = 0; i < 10; i++) {
-				Vec3 particlePos = new Vec3(
-						pos.x() + (wallDirection.x() * 0.4 + orthogonalToWallVec.x() * (player.getRandom().nextDouble() - 0.5D)) * width,
-						pos.y() + 0.1D + 0.3 * player.getRandom().nextDouble(),
-						pos.z() + (wallDirection.z() * 0.4 + orthogonalToWallVec.z() * (player.getRandom().nextDouble() - 0.5D)) * width
-				);
-				Vec3 particleSpeed = particleBaseDirection
-						.yRot((float) (Math.PI * 0.2 * (player.getRandom().nextDouble() - 0.5)))
-						.scale(3 + 9 * player.getRandom().nextDouble())
-						.add(0, -jumpDirection.y() * 3 * player.getRandom().nextDouble(), 0);
-				level.addParticle(
-						new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(leanedBlock),
-						particlePos.x(),
-						particlePos.y(),
-						particlePos.z(),
-						particleSpeed.x(),
-						particleSpeed.y(),
-						particleSpeed.z()
-				);
+        //doing "Conjugate of (horizontalJumpDirection/-wallDirection)" as complex number(x + z i)
+        Vec3 differenceVec =
+                new Vec3(
+                        -wallDirection.x() * horizontalJumpDirection.x() - wallDirection.z() * horizontalJumpDirection.z(), 0,
+                        wallDirection.z() * horizontalJumpDirection.x() - wallDirection.x() * horizontalJumpDirection.z()
+                ).multiply(1, 0, -1).normalize();
+        Vec3 particleBaseDirection =
+                new Vec3(
+                        -wallDirection.x() * differenceVec.x() + wallDirection.z() * differenceVec.z(), 0,
+                        -wallDirection.x() * differenceVec.z() - wallDirection.z() * differenceVec.x()
+                );
+        if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
+            for (int i = 0; i < 10; i++) {
+                Vec3 particlePos = new Vec3(
+                        pos.x() + (wallDirection.x() * 0.4 + orthogonalToWallVec.x() * (player.getRandom().nextDouble() - 0.5D)) * width,
+                        pos.y() + 0.1D + 0.3 * player.getRandom().nextDouble(),
+                        pos.z() + (wallDirection.z() * 0.4 + orthogonalToWallVec.z() * (player.getRandom().nextDouble() - 0.5D)) * width
+                );
+                Vec3 particleSpeed = particleBaseDirection
+                        .yRot((float) (Math.PI * 0.2 * (player.getRandom().nextDouble() - 0.5)))
+                        .scale(3 + 9 * player.getRandom().nextDouble())
+                        .add(0, -jumpDirection.y() * 3 * player.getRandom().nextDouble(), 0);
+                level.addParticle(
+                        new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(leanedBlock),
+                        particlePos.x(),
+                        particlePos.y(),
+                        particlePos.z(),
+                        particleSpeed.x(),
+                        particleSpeed.y(),
+                        particleSpeed.z()
+                );
 
-			}
-		}
-	}
+            }
+        }
+    }
 
 	private enum WallJumpAnimationType {
 		Back, SwingRightArm, SwingLeftArm;

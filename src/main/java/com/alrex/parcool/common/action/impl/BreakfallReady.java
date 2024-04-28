@@ -16,14 +16,14 @@ import java.nio.ByteBuffer;
 public class BreakfallReady extends Action {
 	public void startBreakfall(Player player, Parkourability parkourability, IStamina stamina, boolean justTimed) {
 		setDoing(false);
-		boolean playSound = false;
+        boolean playSound = false;
 		if (justTimed && ParCoolConfig.Client.Booleans.EnableJustTimeEffectOfBreakfall.get()) {
 			if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-				player.playSound(SoundEvents.BREAKFALL_JUST_TIME.get(), 1, 1);
+                player.playSound(SoundEvents.BREAKFALL_JUST_TIME.get(), 1, 1);
 			Vec3 pos = player.position();
 			var rand = player.getRandom();
 			for (int i = 0; i < 12; i++) {
-				player.level.addParticle(ParticleTypes.END_ROD,
+				player.getCommandSenderWorld().addParticle(ParticleTypes.END_ROD,
 						pos.x(),
 						pos.y() + player.getBbHeight() / 2,
 						pos.z(),
@@ -33,18 +33,18 @@ public class BreakfallReady extends Action {
 				);
 			}
 		} else if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			playSound = true;
+            playSound = true;
 
 		if (((KeyBindings.getKeyForward().isDown() || KeyBindings.getKeyBack().isDown() || KeyBindings.getKeyLeft().isDown() || KeyBindings.getKeyRight().isDown())
 				&& parkourability.getActionInfo().can(Roll.class))
 				|| !parkourability.getActionInfo().can(Tap.class)
 		) {
 			stamina.consume((int) ((justTimed ? 0.25f : 1) * parkourability.getActionInfo().getStaminaConsumptionOf(Roll.class)));
-			if (playSound) player.playSound(SoundEvents.ROLL.get(), 1, 1);
+            if (playSound) player.playSound(SoundEvents.ROLL.get(), 1, 1);
 			parkourability.get(Roll.class).startRoll(player);
 		} else {
 			stamina.consume((int) ((justTimed ? 0.25f : 1) * parkourability.getActionInfo().getStaminaConsumptionOf(Tap.class)));
-			if (playSound) player.playSound(SoundEvents.SAFETY_TAP.get(), 1, 1);
+            if (playSound) player.playSound(SoundEvents.SAFETY_TAP.get(), 1, 1);
 			parkourability.get(Tap.class).startTap(player);
 		}
 	}
@@ -60,7 +60,7 @@ public class BreakfallReady extends Action {
 				&& !stamina.isExhausted()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !player.isInWaterOrBubble()
-				&& (!player.isOnGround() || parkourability.getAdditionalProperties().getLandingTick() < 3)
+				&& (!player.onGround() || parkourability.getAdditionalProperties().getLandingTick() < 3)
 		);
 	}
 

@@ -5,8 +5,8 @@ import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.network.SyncClientInformationMessage;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
@@ -32,10 +32,15 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
         currentScreen = 2;
         for (int i = 0; i < enumConfigList.length; i++) {
             int index = i;
-            enumConfigButtons[index] = new Button(0, 0, 0, 0, Component.literal(enumConfigList[index].get().toString()), it -> {
-                enumConfigList[index].next();
-                it.setMessage(Component.literal(enumConfigList[index].get().toString()));
-            });
+            enumConfigButtons[index] = Button
+                    .builder(
+                            Component.literal(enumConfigList[index].get().toString()),
+                            it -> {
+                                enumConfigList[index].next();
+                                it.setMessage(Component.literal(enumConfigList[index].get().toString()));
+                            }
+                    )
+                    .build();
         }
     }
 
@@ -45,7 +50,7 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
     }
 
     @Override
-    protected void renderContents(PoseStack poseStack, int mouseX, int mouseY, float partialTick, int topOffset, int bottomOffset) {
+    protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, int topOffset, int bottomOffset) {
         final int offsetX = 40;
         int contentWidth = width - offsetX * 2;
         int contentHeight = height - topOffset - bottomOffset;
@@ -56,17 +61,17 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
         for (int i = 0; i < viewableItemCount && i + topIndex < enumConfigList.length; i++) {
             Button button = enumConfigButtons[i + topIndex];
             int buttonWidth = contentWidth / 3;
-            button.x = width - offsetX - buttonWidth;
-            button.y = topOffset + Checkbox_Item_Height * i;
+            button.setX(width - offsetX - buttonWidth);
+            button.setY(topOffset + Checkbox_Item_Height * i);
             button.setWidth(buttonWidth);
             button.setHeight(20);
-            button.render(poseStack, mouseX, mouseY, partialTick);
+            button.render(graphics, mouseX, mouseY, partialTick);
             List<String> path = enumConfigList[i + topIndex].configInstance.getPath();
-            drawString(poseStack, font, path.get(path.size() - 1), offsetX + 6, button.y + 1 + (button.getHeight() - font.lineHeight) / 2, color.getText());
-            fill(poseStack, offsetX, button.y + button.getHeight(), width - offsetX, button.y + button.getHeight() + 1, color.getSubSeparator());
+            graphics.drawString(font, path.get(path.size() - 1), offsetX + 6, button.getY() + 1 + (button.getHeight() - font.lineHeight) / 2, color.getText());
+            graphics.fill(offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
         }
-        fill(poseStack, width - offsetX, topOffset, width - offsetX - 1, topOffset + contentHeight, color.getSeparator());
-        fill(poseStack, offsetX, topOffset, offsetX + 1, topOffset + contentHeight, color.getSeparator());
+        graphics.fill(width - offsetX, topOffset, width - offsetX - 1, topOffset + contentHeight, color.getSeparator());
+        graphics.fill(offsetX, topOffset, offsetX + 1, topOffset + contentHeight, color.getSeparator());
     }
 
     @Override

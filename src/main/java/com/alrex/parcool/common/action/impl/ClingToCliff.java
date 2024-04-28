@@ -75,7 +75,7 @@ public class ClingToCliff extends Action {
 		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.CLING_TO_CLIFF.get(), 1f, 1f);
+            player.playSound(SoundEvents.CLING_TO_CLIFF.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new ClingToCliffAnimator());
 	}
@@ -92,7 +92,7 @@ public class ClingToCliff extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
-		armSwingAmount += (float) player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
+        armSwingAmount += (float) player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
 		if (KeyBindings.getKeyLeft().isDown() && KeyBindings.getKeyRight().isDown()) {
 			player.setDeltaMovement(0, 0, 0);
 		} else {
@@ -146,10 +146,10 @@ public class ClingToCliff extends Action {
 					player.setYBodyRot((float) VectorUtil.toYawDegree(clingWallDirection));
 					break;
 				case RightAgainstWall:
-					player.yBodyRotO = player.yBodyRot = (float) VectorUtil.toYawDegree(clingWallDirection.yRot((float) (-Math.PI / 2)));
+                    player.yBodyRotO = player.yBodyRot = (float) VectorUtil.toYawDegree(clingWallDirection.yRot((float) (-Math.PI / 2)));
 					break;
 				case LeftAgainstWall:
-					player.yBodyRotO = player.yBodyRot = (float) VectorUtil.toYawDegree(clingWallDirection.yRot((float) (Math.PI / 2)));
+                    player.yBodyRotO = player.yBodyRot = (float) VectorUtil.toYawDegree(clingWallDirection.yRot((float) (Math.PI / 2)));
 			}
 		}
 	}

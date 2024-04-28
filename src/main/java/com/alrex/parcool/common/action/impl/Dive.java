@@ -19,7 +19,7 @@ import java.nio.ByteBuffer;
 
 public class Dive extends Action {
 	private boolean justJumped = false;
-	private double initialYVelocityOfLastJump = 0.42;
+    private double initialYVelocityOfLastJump = 0.42;
 	private double playerYSpeedOld = 0;
 	private double playerYSpeed = 0;
 	private int fallingTick = 0;
@@ -46,24 +46,24 @@ public class Dive extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		boolean startInAir = player.getDeltaMovement().y() < 0
-				&& parkourability.getAdditionalProperties().getNotLandingTick() > 10
-				&& parkourability.getAdditionalProperties().getNotInWaterTick() > 30
-				&& KeyRecorder.keyJumpState.getTickKeyDown() > 10
-				&& WorldUtil.existsSpaceBelow(player);
-		if (!(startInAir || (justJumped && WorldUtil.existsDivableSpace(player) && parkourability.get(FastRun.class).canActWithRunning(player)))) {
-			justJumped = false;
-			return false;
-		}
+        boolean startInAir = player.getDeltaMovement().y() < 0
+                && parkourability.getAdditionalProperties().getNotLandingTick() > 10
+                && parkourability.getAdditionalProperties().getNotInWaterTick() > 30
+                && KeyRecorder.keyJumpState.getTickKeyDown() > 10
+                && WorldUtil.existsSpaceBelow(player);
+        if (!(startInAir || (justJumped && WorldUtil.existsDivableSpace(player) && parkourability.get(FastRun.class).canActWithRunning(player)))) {
+            justJumped = false;
+            return false;
+        }
 
-		startInfo.putDouble(initialYVelocityOfLastJump);
-		BufferUtil.wrap(startInfo).putBoolean(startInAir);
+        startInfo.putDouble(initialYVelocityOfLastJump);
+        BufferUtil.wrap(startInfo).putBoolean(startInAir);
 
-		justJumped = false;
-		return parkourability.getActionInfo().can(Dive.class)
+        justJumped = false;
+        return parkourability.getActionInfo().can(Dive.class)
 				&& !stamina.isExhausted()
 				&& !parkourability.get(Crawl.class).isDoing()
-				&& !player.isVisuallyCrawling();
+                && !player.isVisuallyCrawling();
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -74,7 +74,7 @@ public class Dive extends Action {
 				|| player.isInWaterOrBubble()
 				|| player.isInLava()
 				|| player.isSwimming()
-				|| player.isOnGround()
+				|| player.onGround()
 				|| (fallingTick > 5 && player.fallDistance < 0.1)
 				|| stamina.isExhausted()
 		);
@@ -82,33 +82,33 @@ public class Dive extends Action {
 
 	public void onJump(Player player, Parkourability parkourability, IStamina stamina) {
 		if (!player.isLocalPlayer()) return;
-		initialYVelocityOfLastJump = player.getDeltaMovement().y();
+        initialYVelocityOfLastJump = player.getDeltaMovement().y();
 		justJumped = true;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
-		double initialYSpeed = startData.getDouble();
-		playerYSpeedOld = playerYSpeed = initialYSpeed;
+        double initialYSpeed = startData.getDouble();
+        playerYSpeedOld = playerYSpeed = initialYSpeed;
 		Animation animation = Animation.get(player);
 		if (animation != null) {
-			animation.setAnimator(new DiveAnimationHostAnimator(initialYSpeed, BufferUtil.getBoolean(startData)));
+            animation.setAnimator(new DiveAnimationHostAnimator(initialYSpeed, BufferUtil.getBoolean(startData)));
 		}
 	}
 
 	@Override
 	public void onStop(Player player) {
 		if (player.isInWaterOrBubble()) {
-			Animation animation = Animation.get(player);
-			Parkourability parkourability = Parkourability.get(player);
-			if (animation != null
-					&& parkourability != null
-					&& parkourability.getAdditionalProperties().getNotLandingTick() >= 5
-					&& player.getDeltaMovement().y() < 0
-			) {
-				animation.setAnimator(new DiveIntoWaterAnimator(parkourability.get(SkyDive.class).isDoing()));
-			}
+            Animation animation = Animation.get(player);
+            Parkourability parkourability = Parkourability.get(player);
+            if (animation != null
+                    && parkourability != null
+                    && parkourability.getAdditionalProperties().getNotLandingTick() >= 5
+                    && player.getDeltaMovement().y() < 0
+            ) {
+                animation.setAnimator(new DiveIntoWaterAnimator(parkourability.get(SkyDive.class).isDoing()));
+            }
 		}
 	}
 
@@ -132,11 +132,11 @@ public class Dive extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
-		double initialYSpeed = startData.getDouble();
-		playerYSpeedOld = playerYSpeed = initialYVelocityOfLastJump = initialYSpeed;
+        double initialYSpeed = startData.getDouble();
+        playerYSpeedOld = playerYSpeed = initialYVelocityOfLastJump = initialYSpeed;
 		Animation animation = Animation.get(player);
 		if (animation != null) {
-			animation.setAnimator(new DiveAnimationHostAnimator(initialYSpeed, BufferUtil.getBoolean(startData)));
+            animation.setAnimator(new DiveAnimationHostAnimator(initialYSpeed, BufferUtil.getBoolean(startData)));
 		}
 	}
 }

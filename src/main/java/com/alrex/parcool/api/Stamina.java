@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 
 public class Stamina {
 	@Nullable
-	public static Stamina get(Player player) {
+    public static Stamina get(Player player) {
 		IStamina instance = IStamina.get(player);
 		if (instance == null) {
 			return null;
@@ -17,7 +17,7 @@ public class Stamina {
 		return new Stamina(instance);
 	}
 
-	private final IStamina staminaInstance;
+    private final IStamina staminaInstance;
 
 	private Stamina(IStamina staminaInstance) {
 		this.staminaInstance = staminaInstance;

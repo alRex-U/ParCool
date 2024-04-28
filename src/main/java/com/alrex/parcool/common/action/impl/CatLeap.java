@@ -54,17 +54,17 @@ public class CatLeap extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		Vec3 movement = player.getDeltaMovement();
-		if (movement.lengthSqr() < 0.001) return false;
-		movement = movement.multiply(1, 0, 1).normalize();
-		startInfo.putDouble(movement.x()).putDouble(movement.z());
+        Vec3 movement = player.getDeltaMovement();
+        if (movement.lengthSqr() < 0.001) return false;
+        movement = movement.multiply(1, 0, 1).normalize();
+        startInfo.putDouble(movement.x()).putDouble(movement.z());
 		return (parkourability.getActionInfo().can(CatLeap.class)
-				&& player.isOnGround()
+				&& player.onGround()
 				&& !stamina.isExhausted()
 				&& coolTimeTick <= 0
 				&& readyTick > 0
-				&& !parkourability.get(Roll.class).isDoing()
-				&& !parkourability.get(Tap.class).isDoing()
+                && !parkourability.get(Roll.class).isDoing()
+                && !parkourability.get(Tap.class).isDoing()
 				&& KeyRecorder.keySneak.isReleased()
 		);
 	}
@@ -72,7 +72,7 @@ public class CatLeap extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
-		return !((getDoingTick() > 1 && player.isOnGround())
+		return !((getDoingTick() > 1 && player.onGround())
 				|| player.isFallFlying()
 				|| player.isInWaterOrBubble()
 				|| player.isInLava()
@@ -81,22 +81,22 @@ public class CatLeap extends Action {
 
 	@Override
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
-		Vec3 jumpDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
+        Vec3 jumpDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.CATLEAP.get(), 1, 1);
+            player.playSound(SoundEvents.CATLEAP.get(), 1, 1);
 		coolTimeTick = MAX_COOL_TIME_TICK;
-		spawnJumpEffect(player, jumpDirection);
-		player.jumpFromGround();
-		Vec3 motionVec = player.getDeltaMovement();
-		player.setDeltaMovement(jumpDirection.x(), motionVec.y() * 1.16667, jumpDirection.z());
+        spawnJumpEffect(player, jumpDirection);
+        player.jumpFromGround();
+        Vec3 motionVec = player.getDeltaMovement();
+        player.setDeltaMovement(jumpDirection.x(), motionVec.y() * 1.16667, jumpDirection.z());
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new CatLeapAnimator());
 	}
 
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
-		Vec3 jumpDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
-		spawnJumpEffect(player, jumpDirection);
+        Vec3 jumpDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
+        spawnJumpEffect(player, jumpDirection);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new CatLeapAnimator());
 	}
@@ -110,33 +110,37 @@ public class CatLeap extends Action {
 		return ((float) MAX_COOL_TIME_TICK - coolTimeTick) / MAX_COOL_TIME_TICK;
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	private void spawnJumpEffect(Player player, Vec3 jumpDirection) {
-		Level level = player.level;
-		Vec3 pos = player.position();
-		BlockPos blockpos = new BlockPos(pos.add(0, -0.2, 0));
-		if (!level.isLoaded(blockpos)) return;
-		float width = player.getBbWidth();
-		BlockState blockstate = level.getBlockState(blockpos);
-		if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
-			for (int i = 0; i < 20; i++) {
-				Vec3 particlePos = new Vec3(
-						pos.x() + (jumpDirection.x() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width,
-						pos.y() + 0.1D,
-						pos.z() + (jumpDirection.z() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width
-				);
-				Vec3 particleSpeed = particlePos.subtract(pos).normalize().scale(2.5 + 8 * player.getRandom().nextDouble()).add(0, 1.5, 0);
-				level.addParticle(
-						new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(blockpos),
-						particlePos.x(),
-						particlePos.y(),
-						particlePos.z(),
-						particleSpeed.x(),
-						particleSpeed.y(),
-						particleSpeed.z()
-				);
+    @OnlyIn(Dist.CLIENT)
+    private void spawnJumpEffect(Player player, Vec3 jumpDirection) {
+        Level level = player.level();
+        Vec3 pos = player.position();
+        BlockPos blockpos = new BlockPos(
+                (int) Math.floor(pos.x()),
+                (int) Math.floor(pos.y() - 0.2),
+                (int) Math.floor(pos.z())
+        );
+        if (!level.isLoaded(blockpos)) return;
+        float width = player.getBbWidth();
+        BlockState blockstate = level.getBlockState(blockpos);
+        if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
+            for (int i = 0; i < 20; i++) {
+                Vec3 particlePos = new Vec3(
+                        pos.x() + (jumpDirection.x() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width,
+                        pos.y() + 0.1D,
+                        pos.z() + (jumpDirection.z() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width
+                );
+                Vec3 particleSpeed = particlePos.subtract(pos).normalize().scale(2.5 + 8 * player.getRandom().nextDouble()).add(0, 1.5, 0);
+                level.addParticle(
+                        new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(blockpos),
+                        particlePos.x(),
+                        particlePos.y(),
+                        particlePos.z(),
+                        particleSpeed.x(),
+                        particleSpeed.y(),
+                        particleSpeed.z()
+                );
 
-			}
-		}
-	}
+            }
+        }
+    }
 }
