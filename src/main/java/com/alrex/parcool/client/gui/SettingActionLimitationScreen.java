@@ -45,16 +45,16 @@ public class SettingActionLimitationScreen extends ParCoolSettingScreen {
         int contentHeight = height - contentOffsetY - bottomOffset;
         viewableItemCount = contentHeight / Checkbox_Item_Height;
         int headerTextY = topOffset + headerHeight / 2 - font.lineHeight / 2 + 1;
-        drawString(poseStack, font, Header_ActionName, offsetX + 5, headerTextY, color.getText());
-        drawCenteredString(poseStack, font, Header_Limitation, offsetX + nameColumnWidth + permissionColumnWidth / 2, headerTextY, color.getText());
+        graphics.drawString(font, Header_ActionName, offsetX + 5, headerTextY, color.getText());
+        graphics.drawCenteredString(font, Header_Limitation, offsetX + nameColumnWidth + permissionColumnWidth / 2, headerTextY, color.getText());
         for (Checkbox actionButton : actionButtons) {
             actionButton.setWidth(0);
         }
         //draw separators
-        fill(poseStack, offsetX, contentOffsetY, width - offsetX, contentOffsetY - 1, color.getSeparator());
-        fill(poseStack, offsetX, topOffset, offsetX + 1, height - bottomOffset, color.getSeparator());
-        fill(poseStack, offsetX + nameColumnWidth, topOffset, offsetX + nameColumnWidth + 1, height - bottomOffset, color.getSeparator());
-        fill(poseStack, offsetX + nameColumnWidth + permissionColumnWidth, topOffset, offsetX + nameColumnWidth + permissionColumnWidth + 1, height - bottomOffset, color.getSeparator());
+        graphics.fill(offsetX, contentOffsetY, width - offsetX, contentOffsetY - 1, color.getSeparator());
+        graphics.fill(offsetX, topOffset, offsetX + 1, height - bottomOffset, color.getSeparator());
+        graphics.fill(offsetX + nameColumnWidth, topOffset, offsetX + nameColumnWidth + 1, height - bottomOffset, color.getSeparator());
+        graphics.fill(offsetX + nameColumnWidth + permissionColumnWidth, topOffset, offsetX + nameColumnWidth + permissionColumnWidth + 1, height - bottomOffset, color.getSeparator());
         for (int i = 0; i < viewableItemCount && i + topIndex < actionButtons.length; i++) {
             Checkbox button = actionButtons[i + topIndex];
             button.setX(offsetX + 1);
@@ -65,8 +65,8 @@ public class SettingActionLimitationScreen extends ParCoolSettingScreen {
             graphics.fill(offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
             int rowY = contentOffsetY + Checkbox_Item_Height * i + Checkbox_Item_Height / 2;
             boolean permitted = actionList[topIndex + i].serverLimitation.getAsBoolean();
-            drawCenteredString(
-                    poseStack, font,
+            graphics.drawCenteredString(
+                    font,
                     permitted ? Permission_Permitted : Permission_Denied,
                     offsetX + nameColumnWidth + permissionColumnWidth / 2,
                     rowY - font.lineHeight / 2,
@@ -78,7 +78,7 @@ public class SettingActionLimitationScreen extends ParCoolSettingScreen {
             if ((topOffset < mouseY && mouseY < topOffset + headerHeight)
                     && (columnCenter - permissionColumnWidth / 2 < mouseX && mouseX < columnCenter + permissionColumnWidth / 2)
             ) {
-                renderComponentTooltip(poseStack, Collections.singletonList(Header_Limitation_Text), mouseX, mouseY);
+                graphics.renderComponentTooltip(font, Collections.singletonList(Header_Limitation_Text), mouseX, mouseY);
             }
         }
     }

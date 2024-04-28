@@ -224,10 +224,10 @@ public class ControlLimitationCommand {
                 )
                 .then(Commands
                         .literal("enable")
+                        .requires(commandSource -> commandSource.hasPermission(2))
                         .then(
                                 getLimitationByNameCommands(true, (it) -> {
                                     it
-                                            .requires(commandSource -> commandSource.hasPermission(2))
                                             .executes((context) -> enableLimitation(context, true, true));
                                     return it;
                                 })
@@ -235,7 +235,6 @@ public class ControlLimitationCommand {
                         .then(
                                 getIndividualLimitationCommands(true, (it) -> {
                                     it
-                                            .requires(commandSource -> commandSource.hasPermission(2))
                                             .executes((context) -> enableLimitation(context, false, true));
                                     return it;
                                 })
@@ -243,10 +242,10 @@ public class ControlLimitationCommand {
                 )
                 .then(Commands
                         .literal("disable")
+                        .requires(commandSource -> commandSource.hasPermission(2))
                         .then(
                                 getLimitationByNameCommands(true, (it) -> {
                                     it
-                                            .requires(commandSource -> commandSource.hasPermission(2))
                                             .executes((context) -> disableLimitation(context, true, true));
                                     return it;
                                 })
@@ -254,7 +253,6 @@ public class ControlLimitationCommand {
                         .then(
                                 getIndividualLimitationCommands(true, (it) -> {
                                     it
-                                            .requires(commandSource -> commandSource.hasPermission(2))
                                             .executes((context) -> disableLimitation(context, false, true));
                                     return it;
                                 })
@@ -262,9 +260,9 @@ public class ControlLimitationCommand {
                 )
                 .then(Commands
                         .literal("delete")
+                        .requires(commandSource -> commandSource.hasPermission(2))
                         .then(Commands
                                 .argument(ARGS_NAME_LIMITATION_ID, LimitationIDArgumentType.limitation())
-                                .requires(commandSource -> commandSource.hasPermission(2))
                                 .executes(ControlLimitationCommand::deleteLimitation)
                         )
                 );
@@ -302,9 +300,10 @@ public class ControlLimitationCommand {
         );
         ParCoolConfig.Server.Booleans item = LimitationItemArgumentType.getBool(context, ARGS_NAME_CONFIG_ITEM);
         context.getSource().sendSuccess(
-                Component.literal(
+                () -> Component.literal(
                         Boolean.toString(limitations.get(0).get(item))
-                ),
+                )
+                ,
                 false
         );
         return 0;
@@ -318,7 +317,7 @@ public class ControlLimitationCommand {
         );
         ParCoolConfig.Server.Integers item = LimitationItemArgumentType.getInt(context, ARGS_NAME_CONFIG_ITEM);
         context.getSource().sendSuccess(
-                Component.literal(
+                () -> Component.literal(
                         Integer.toString(limitations.get(0).get(item))
                 ),
                 false
@@ -334,7 +333,7 @@ public class ControlLimitationCommand {
         );
         ParCoolConfig.Server.Doubles item = LimitationItemArgumentType.getDouble(context, ARGS_NAME_CONFIG_ITEM);
         context.getSource().sendSuccess(
-                Component.literal(
+                () -> Component.literal(
                         Double.toString(limitations.get(0).get(item))
                 ),
                 false
@@ -350,7 +349,7 @@ public class ControlLimitationCommand {
         );
         Class<? extends Action> action = ActionArgumentType.getAction(context, ARGS_NAME_ACTION);
         context.getSource().sendSuccess(
-                Component.literal(
+                () -> Component.literal(
                         Boolean.toString(limitations.get(0).isPermitted(action))
                 ),
                 false
@@ -384,7 +383,7 @@ public class ControlLimitationCommand {
         }
         builder.append("----------");
         context.getSource().sendSuccess(
-                Component.literal(
+                () -> Component.literal(
                         builder.toString()
                 ),
                 false
@@ -400,7 +399,7 @@ public class ControlLimitationCommand {
         );
         Class<? extends Action> action = ActionArgumentType.getAction(context, ARGS_NAME_ACTION);
         context.getSource().sendSuccess(
-                Component.literal(
+                () -> Component.literal(
                         Integer.toString(limitations.get(0).getLeastStaminaConsumption(action))
                 ),
                 false
@@ -419,7 +418,8 @@ public class ControlLimitationCommand {
             limitation.setDefault().apply();
             num++;
         }
-        context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.setLimitationToDefault", num), true);
+        int finalNum = num;
+        context.getSource().sendSuccess(() -> Component.translatable("parcool.command.message.success.setLimitationToDefault", finalNum), true);
         return 0;
     }
 
@@ -436,7 +436,8 @@ public class ControlLimitationCommand {
             limitation.set(item, value).apply();
             num++;
         }
-        context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.set", num, item.getPath(), Boolean.toString(value)), true);
+        int finalNum = num;
+        context.getSource().sendSuccess(() -> Component.translatable("parcool.command.message.success.set", finalNum, item.getPath(), Boolean.toString(value)), true);
         return 0;
     }
 
@@ -459,7 +460,9 @@ public class ControlLimitationCommand {
             limitation.set(item, value).apply();
             num++;
         }
-        context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.set", num, item.getPath(), Integer.toString(value)), true);
+        int finalValue = value;
+        int finalNum = num;
+        context.getSource().sendSuccess(() -> Component.translatable("parcool.command.message.success.set", finalNum, item.getPath(), Integer.toString(finalValue)), true);
         return 0;
     }
 
@@ -482,7 +485,9 @@ public class ControlLimitationCommand {
             limitation.set(item, value).apply();
             num++;
         }
-        context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.set", num, item.getPath(), Double.toString(value)), true);
+        double finalValue = value;
+        int finalNum = num;
+        context.getSource().sendSuccess(() -> Component.translatable("parcool.command.message.success.set", finalNum, item.getPath(), Double.toString(finalValue)), true);
         return 0;
     }
 
@@ -497,7 +502,8 @@ public class ControlLimitationCommand {
             limitation.enable().apply();
             num++;
         }
-        context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.enableLimitation", num), true);
+        int finalNum = num;
+        context.getSource().sendSuccess(() -> Component.translatable("parcool.command.message.success.enableLimitation", finalNum), true);
         return 0;
     }
 
@@ -512,7 +518,8 @@ public class ControlLimitationCommand {
             limitation.disable().apply();
             num++;
         }
-        context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.disableLimitation", num), true);
+        int finalNum = num;
+        context.getSource().sendSuccess(() -> Component.translatable("parcool.command.message.success.disableLimitation", finalNum), true);
         return 0;
     }
 
@@ -522,7 +529,7 @@ public class ControlLimitationCommand {
             for (ServerPlayer player : context.getSource().getServer().getPlayerList().getPlayers()) {
                 Limitations.update(player);
             }
-            context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.deleteLimitation", limitation.toString()), true);
+            context.getSource().sendSuccess(() -> Component.translatable("parcool.command.message.success.deleteLimitation", limitation.toString()), true);
         } else {
             context.getSource().sendFailure(Component.literal("Error:deleting folder failed"));
         }
@@ -542,7 +549,8 @@ public class ControlLimitationCommand {
             limitation.setLeastStaminaConsumption(action, newValue).apply();
             num++;
         }
-        context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.setStaminaConsumption", num, action.getSimpleName(), newValue), true);
+        int finalNum = num;
+        context.getSource().sendSuccess(() -> Component.translatable("parcool.command.message.success.setStaminaConsumption", finalNum, action.getSimpleName(), newValue), true);
         return 0;
     }
 
@@ -559,7 +567,8 @@ public class ControlLimitationCommand {
             limitation.permit(action, newValue).apply();
             num++;
         }
-        context.getSource().sendSuccess(Component.translatable("parcool.command.message.success.setPermissionOfAction", num, action.getSimpleName(), newValue), true);
+        int finalNum = num;
+        context.getSource().sendSuccess(() -> Component.translatable("parcool.command.message.success.setPermissionOfAction", finalNum, action.getSimpleName(), newValue), true);
         return 0;
     }
 }
