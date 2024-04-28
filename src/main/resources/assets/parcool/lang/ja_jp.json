@@ -70,6 +70,6 @@
   "parcool.command.message.success.setPermissionInfiniteStamina": "%d人のプレイヤーの無限スタミナの許可を %d に設定しました",
   "parcool.command.message.success.setPermissionOfAction": "%d人のプレイヤーの %s の許可を %d に設定しました",
   "parcool.command.message.success.setLimitationToDefault": "%d人のプレイヤーの個人アクション制限をデフォルトに設定しました",
-  "parcool.command.message.success.enableLimitation": "%d人のプレイヤーの個人アクション制限を有効化しました",
-  "parcool.command.message.success.disableLimitation": "%d人のプレイヤーの個人アクション制限を無効化しました"
+  "parcool.command.message.success.enableLimitation": "%d人のプレイヤーのアクション制限を有効化しました",
+  "parcool.command.message.success.disableLimitation": "%d人のプレイヤーのアクション制限を無効化しました"
 }

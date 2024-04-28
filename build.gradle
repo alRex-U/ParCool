@@ -35,6 +35,7 @@ println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getPro
 minecraft {
     mappings channel: 'official', version: "${mc_version}"
 
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
         client {
@@ -46,7 +47,7 @@ minecraft {
                 property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             }
             mods {
-                examplemod {
+                parcool {
                     source sourceSets.main
                 }
             }
@@ -61,7 +62,7 @@ minecraft {
                 property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             }
             mods {
-                examplemod {
+                parcool {
                     source sourceSets.main
                 }
             }
@@ -79,7 +80,7 @@ minecraft {
             args '--mod', 'parcool', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                examplemod {
+                parcool {
                     source sourceSets.main
                 }
             }
@@ -100,6 +101,8 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
     runtimeOnly fg.deobf("curse.maven:pehkui-319596:4461971")
+    runtimeOnly fg.deobf("curse.maven:invmove-581854:4346449")
+    runtimeOnly fg.deobf("curse.maven:clothconfig-348521:4633366")
 }
 
 jar {

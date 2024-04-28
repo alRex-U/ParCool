@@ -1,6 +1,8 @@
 package com.alrex.parcool.client.gui;
 
+import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
+import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.network.SyncClientInformationMessage;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -80,6 +82,10 @@ public class SettingBooleanConfigScreen extends ParCoolSettingScreen {
             booleans[i].set(configButtons[i].selected());
         }
         ClientPlayerEntity player = Minecraft.getInstance().player;
+        if (player == null) return;
+        Parkourability parkourability = Parkourability.get(player);
+        if (parkourability == null) return;
+        parkourability.getActionInfo().setClientSetting(ClientSetting.readFromLocalConfig());
         SyncClientInformationMessage.sync(player, true);
     }
 }

@@ -33,12 +33,10 @@ public class FastRun extends Action {
 	private int lastDashTick = 0;
 
 	public double getSpeedModifier(ActionInfo info) {
-		double value = info.getClientInformation().get(ParCoolConfig.Client.Doubles.FastRunSpeedModifier);
-		if (info.getServerLimitation().isEnabled())
-			value = Math.min(value, info.getServerLimitation().get(ParCoolConfig.Server.Doubles.MaxFastRunSpeedModifier));
-		if (info.getIndividualLimitation().isEnabled())
-			value = Math.min(value, info.getIndividualLimitation().get(ParCoolConfig.Server.Doubles.MaxFastRunSpeedModifier));
-		return value;
+        return Math.min(
+                info.getClientSetting().get(ParCoolConfig.Client.Doubles.FastRunSpeedModifier),
+                info.getServerLimitation().get(ParCoolConfig.Server.Doubles.MaxFastRunSpeedModifier)
+        );
 	}
 
 	@Override

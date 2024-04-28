@@ -20,7 +20,7 @@ public abstract class PlayerRendererMixin extends LivingRenderer<AbstractClientP
 		super(p_i50965_1_, p_i50965_2_, p_i50965_3_);
 	}
 
-	@Inject(method = "setupRotations(Lnet/minecraft/client/entity/player/AbstractClientPlayerEntity;Lcom/mojang/blaze3d/matrix/MatrixStack;FFF)V", at = @At("HEAD"))
+	@Inject(method = "setupRotations(Lnet/minecraft/client/entity/player/AbstractClientPlayerEntity;Lcom/mojang/blaze3d/matrix/MatrixStack;FFF)V", at = @At("RETURN"))
 	protected void onSetupRotations(AbstractClientPlayerEntity player, MatrixStack stack, float xRot, float yRot, float zRot, CallbackInfo ci) {
 		// arg names may be incorrect
 		Animation animation = Animation.get(player);

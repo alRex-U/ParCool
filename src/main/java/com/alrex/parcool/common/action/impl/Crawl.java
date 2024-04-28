@@ -55,8 +55,16 @@ public class Crawl extends Action {
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		return ((ParCoolConfig.Client.CrawlControl.get() == ControlType.PressKey && KeyBindings.getKeyCrawl().isDown())
 				|| (ParCoolConfig.Client.CrawlControl.get() == ControlType.Toggle && toggleStatus))
+				&& !parkourability.get(Roll.class).isDoing()
+				&& !parkourability.get(Tap.class).isDoing()
+				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& !parkourability.get(Dive.class).isDoing()
-				&& !player.onClimbable();
+				&& parkourability.get(Vault.class).getNotDoingTick() >= 8
+				&& player.getVehicle() == null
+				&& !player.isInWaterOrBubble()
+				&& !player.isFallFlying()
+				&& !player.onClimbable()
+				&& (player.isOnGround() || ParCoolConfig.Client.Booleans.EnableCrawlInAir.get());
 	}
 
 	@Override
