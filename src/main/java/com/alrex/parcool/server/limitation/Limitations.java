@@ -6,10 +6,11 @@ import com.alrex.parcool.common.info.ServerLimitation;
 import com.alrex.parcool.common.network.SyncLimitationMessage;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.storage.LevelResource;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.commons.io.FileUtils;
 
 import javax.annotation.Nullable;
@@ -184,7 +185,7 @@ public class Limitations {
 
     public static void init(ServerAboutToStartEvent event) {
         GlobalLimitation.readFromServerConfig();
-        Path configPath = ServerLifecycleHooks.getServerConfigPath(event.getServer());
+        Path configPath = getServerConfigPath(event.getServer());
         LimitationFolderRootPath = configPath.resolve("parcool").resolve("limitations");
         File limitationFolder = LimitationFolderRootPath.toFile();
         if (!limitationFolder.exists()) {
@@ -193,7 +194,7 @@ public class Limitations {
     }
 
     public static void save(ServerStoppingEvent event) {
-        Path configPath = ServerLifecycleHooks.getServerConfigPath(event.getServer());
+        Path configPath = getServerConfigPath(event.getServer());
         Path limitationRootPath = configPath.resolve("parcool").resolve("limitations");
         for (Map.Entry<UUID, SortedMap<Limitation.ID, Limitation>> limitationEntry : Loaded.entrySet()) {
             UUID playerID = limitationEntry.getKey();
@@ -222,6 +223,14 @@ public class Limitations {
                 }
             }
         }
+    }
+
+    private static final LevelResource SERVERCONFIG = new LevelResource("serverconfig");
+
+    private static Path getServerConfigPath(final MinecraftServer server) {
+        final Path serverConfig = server.getWorldPath(SERVERCONFIG);
+        net.minecraftforge.fml.loading.FileUtils.getOrCreateDirectory(serverConfig, "serverconfig");
+        return serverConfig;
     }
 
     public static Path getFolderPath(Path limitationRootPath, Limitation.ID id) {

@@ -82,7 +82,6 @@ public class ParCool {
 
 	private void setup(final FMLCommonSetupEvent event) {
 		CommandRegistry.registerArgumentTypes(event);
-		EventBusForgeRegistry.register(MinecraftForge.EVENT_BUS);
 		PotionRecipeRegistry.register(event);
 		PROXY.registerMessages(CHANNEL_INSTANCE);
 	}
