@@ -6,7 +6,7 @@ import com.alrex.parcool.common.action.AdditionalProperties;
 import com.alrex.parcool.common.action.CancelMarks;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.info.ActionInfo;
-import com.alrex.parcool.common.info.ClientInformation;
+import com.alrex.parcool.common.info.ClientSetting;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -21,7 +21,7 @@ public class Parkourability {
 		return optional.orElse(null);
 	}
 
-	private final ActionInfo info = new ActionInfo();
+	private final ActionInfo info;
 	private final AdditionalProperties properties = new AdditionalProperties();
 	private final CancelMarks cancelMarks = new CancelMarks();
 	private final List<Action> actions = ActionList.constructActionsList();
@@ -29,21 +29,10 @@ public class Parkourability {
 
 	public Parkourability() {
 		actionsMap = new HashMap<>((int) (actions.size() * 1.5));
-		for (short i = 0; i < actions.size(); i++) {
-			Action action = actions.get(i);
+		for (Action action : actions) {
 			actionsMap.put(action.getClass(), action);
 		}
-	}
-
-	public Parkourability(Player player) {
-		actionsMap = new HashMap<>((int) (actions.size() * 1.5));
-		for (short i = 0; i < actions.size(); i++) {
-			Action action = actions.get(i);
-			actionsMap.put(action.getClass(), action);
-		}
-		if (player.isLocalPlayer()) {
-			getActionInfo().getClientInformation().readFromLocalConfig();
-		}
+		info = new ActionInfo();
 	}
 
 	public <T extends Action> T get(Class<T> action) {
@@ -78,8 +67,8 @@ public class Parkourability {
 		return info;
 	}
 
-	public ClientInformation getClientInfo() {
-		return info.getClientInformation();
+	public ClientSetting getClientInfo() {
+		return info.getClientSetting();
 	}
 
 	public List<Action> getList() {
@@ -87,7 +76,7 @@ public class Parkourability {
 	}
 
 	public void CopyFrom(Parkourability original) {
-		getActionInfo().getIndividualLimitation().readTag(original.getActionInfo().getIndividualLimitation().writeTag());
-		getActionInfo().getServerLimitation().readTag(original.getActionInfo().getServerLimitation().writeTag());
+		getActionInfo().setClientSetting(original.getActionInfo().getClientSetting());
+		getActionInfo().setServerLimitation(original.getActionInfo().getServerLimitation());
 	}
 }

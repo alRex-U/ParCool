@@ -9,7 +9,6 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -39,12 +38,10 @@ public class Slide extends Action {
 
 	@Override
 	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
-		int maxSlidingTick = ParCoolConfig.Client.Integers.SlidingContinuableTick.get();
-		ActionInfo info = parkourability.getActionInfo();
-		if (info.getServerLimitation().isEnabled())
-			maxSlidingTick = Math.min(maxSlidingTick, info.getServerLimitation().get(ParCoolConfig.Server.Integers.MaxSlidingContinuableTick));
-		if (info.getIndividualLimitation().isEnabled())
-			maxSlidingTick = Math.min(maxSlidingTick, info.getIndividualLimitation().get(ParCoolConfig.Server.Integers.MaxSlidingContinuableTick));
+		int maxSlidingTick = Math.min(
+				parkourability.getActionInfo().getClientSetting().get(ParCoolConfig.Client.Integers.SlidingContinuableTick),
+				parkourability.getActionInfo().getServerLimitation().get(ParCoolConfig.Server.Integers.MaxSlidingContinuableTick)
+		);
 		return getDoingTick() < maxSlidingTick
 				&& parkourability.get(Crawl.class).isDoing();
 	}
