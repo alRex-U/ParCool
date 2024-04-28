@@ -225,10 +225,10 @@ public class ControlLimitationCommand {
                 )
                 .then(Commands
                         .literal("enable")
+                        .requires(commandSource -> commandSource.hasPermission(2))
                         .then(
                                 getLimitationByNameCommands(true, (it) -> {
                                     it
-                                            .requires(commandSource -> commandSource.hasPermission(2))
                                             .executes((context) -> enableLimitation(context, true, true));
                                     return it;
                                 })
@@ -236,7 +236,6 @@ public class ControlLimitationCommand {
                         .then(
                                 getIndividualLimitationCommands(true, (it) -> {
                                     it
-                                            .requires(commandSource -> commandSource.hasPermission(2))
                                             .executes((context) -> enableLimitation(context, false, true));
                                     return it;
                                 })
@@ -244,10 +243,10 @@ public class ControlLimitationCommand {
                 )
                 .then(Commands
                         .literal("disable")
+                        .requires(commandSource -> commandSource.hasPermission(2))
                         .then(
                                 getLimitationByNameCommands(true, (it) -> {
                                     it
-                                            .requires(commandSource -> commandSource.hasPermission(2))
                                             .executes((context) -> disableLimitation(context, true, true));
                                     return it;
                                 })
@@ -255,7 +254,6 @@ public class ControlLimitationCommand {
                         .then(
                                 getIndividualLimitationCommands(true, (it) -> {
                                     it
-                                            .requires(commandSource -> commandSource.hasPermission(2))
                                             .executes((context) -> disableLimitation(context, false, true));
                                     return it;
                                 })
@@ -263,9 +261,9 @@ public class ControlLimitationCommand {
                 )
                 .then(Commands
                         .literal("delete")
+                        .requires(commandSource -> commandSource.hasPermission(2))
                         .then(Commands
                                 .argument(ARGS_NAME_LIMITATION_ID, LimitationIDArgumentType.limitation())
-                                .requires(commandSource -> commandSource.hasPermission(2))
                                 .executes(ControlLimitationCommand::deleteLimitation)
                         )
                 );
