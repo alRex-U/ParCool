@@ -5,6 +5,7 @@ import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.FastSwim;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.utilities.BipedModelUtil;
 import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.Minecraft;
@@ -25,7 +26,6 @@ public class FastSwimAnimator extends Animator {
         if (animationFactor > 1) animationFactor = 1;
         float tick = getTick() + transformer.getPartialTick();
         double armFactor = Math.cos(Math.PI * tick / 15.);
-
 
         HumanoidArm attackHand = player.getMainArm();
         boolean leftArmAnimatable = attackHand != HumanoidArm.LEFT || transformer.getRawModel().attackTime <= 0f;
@@ -54,15 +54,15 @@ public class FastSwimAnimator extends Animator {
         if (rightArmXAngle < 0) rightArmXAngle = -3 * Math.sqrt(-rightArmXAngle);
         if (leftArmXAngle < 0) leftArmXAngle = -3 * Math.sqrt(-leftArmXAngle);
         if (rightArmAnimatable) {
-            transformer.getRawModel().rightArm.x += Math.max(0, 2.4 * Math.sin(Math.PI * tick / 15.));
-            transformer.getRawModel().rightArm.y += Math.max(0, 1.2 * Math.sin(Math.PI * tick / 15.));
-            transformer.getRawModel().rightArm.z -= 1.2 * Math.sin(Math.PI * tick / 15.);
+            transformer.getRawModel().rightArm.x += (float) Math.max(0, 2.4 * Math.sin(Math.PI * tick / 15.));
+            transformer.getRawModel().rightArm.y += (float) Math.max(0, 1.2 * Math.sin(Math.PI * tick / 15.));
+            transformer.getRawModel().rightArm.z -= (float) (1.2 * Math.sin(Math.PI * tick / 15.));
         }
 
         if (leftArmAnimatable) {
-            transformer.getRawModel().leftArm.x -= Math.max(0, -2.4 * Math.sin(Math.PI * tick / 15.));
-            transformer.getRawModel().leftArm.y += Math.max(0, -1.2 * Math.sin(Math.PI * tick / 15.));
-            transformer.getRawModel().leftArm.z += 1.2 * Math.sin(Math.PI * tick / 15.);
+            transformer.getRawModel().leftArm.x -= (float) Math.max(0, -2.4 * Math.sin(Math.PI * tick / 15.));
+            transformer.getRawModel().leftArm.y += (float) Math.max(0, -1.2 * Math.sin(Math.PI * tick / 15.));
+            transformer.getRawModel().leftArm.z += (float) (1.2 * Math.sin(Math.PI * tick / 15.));
         }
 
         transformer.getRawModel().head.z += 0.5f * animationFactor;

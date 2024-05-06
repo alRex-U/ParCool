@@ -18,8 +18,8 @@ public class PlayerFallHandler {
 		if (parkourability == null) return;
 
 		if (parkourability.get(BreakfallReady.class).isDoing()
-				&& (parkourability.getClientInfo().getPossibilityOf(Tap.class)
-				|| parkourability.getClientInfo().getPossibilityOf(Roll.class))
+				&& (parkourability.getActionInfo().can(Tap.class)
+				|| parkourability.getActionInfo().can(Roll.class))
 		) {
 			boolean justTime = parkourability.get(BreakfallReady.class).getDoingTick() < 5;
 			float distance = event.getDistance();
