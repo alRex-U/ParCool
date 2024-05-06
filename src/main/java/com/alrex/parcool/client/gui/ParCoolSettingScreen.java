@@ -93,12 +93,12 @@ public abstract class ParCoolSettingScreen extends Screen {
 		);
 	}
 
-	protected static final Component Header_ActionName = new TranslatableComponent("parcool.gui.text.actionName");
-	protected static final Component Header_Limitation = new TextComponent("L");
-	protected static final Component Header_Limitation_Text = new TranslatableComponent("parcool.gui.text.limitation");
-	protected static final Component Permission_Permitted = new TextComponent("✓");
-	protected static final Component Permission_Denied = new TextComponent("×");
-	protected static final Component Permission_Not_Received = new TextComponent("§4[Error] Permissions are not sent from a server.\n\nBy closing this setting menu, permissions will be sent again.\nIf it were not done, please report to the mod developer after checking whether ParCool is installed and re-login to the server.§r");
+	protected static final Component Header_ActionName = Component.translatable("parcool.gui.text.actionName");
+	protected static final Component Header_Limitation = Component.literal("L");
+	protected static final Component Header_Limitation_Text = Component.translatable("parcool.gui.text.limitation");
+	protected static final Component Permission_Permitted = Component.literal("✓");
+	protected static final Component Permission_Denied = Component.literal("×");
+	protected static final Component Permission_Not_Received = Component.literal("§4[Error] Permissions are not sent from a server.\n\nBy closing this setting menu, permissions will be sent again.\nIf it were not done, please report to the mod developer after checking whether ParCool is installed and re-login to the server.§r");
 
 	protected abstract void renderContents(PoseStack PoseStack, int mouseX, int mouseY, float partialTick, int topOffset, int bottomOffset);
 

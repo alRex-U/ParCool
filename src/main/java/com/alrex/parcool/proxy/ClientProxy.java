@@ -3,6 +3,8 @@ package com.alrex.parcool.proxy;
 import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.network.*;
+import com.alrex.parcool.common.registries.EventBusForgeRegistry;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;

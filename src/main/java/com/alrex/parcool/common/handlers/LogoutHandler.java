@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class LogoutHandler {
 	@SubscribeEvent
 	public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-		Player player = event.getPlayer();
+		Player player = event.getEntity();
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 		if (player instanceof ServerPlayer) {

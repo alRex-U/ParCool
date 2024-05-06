@@ -2,7 +2,9 @@ package com.alrex.parcool.server.command;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.server.command.args.ActionArgumentType;
-import com.alrex.parcool.server.command.impl.ChangeIndividualLimitationCommand;
+import com.alrex.parcool.server.command.args.LimitationIDArgumentType;
+import com.alrex.parcool.server.command.args.LimitationItemArgumentType;
+import com.alrex.parcool.server.command.impl.ControlLimitationCommand;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -19,9 +21,10 @@ public class CommandRegistry {
 	}
 
 	public static void registerArgumentTypes(FMLCommonSetupEvent event) {
-		ArgumentTypes.register("parcool:action_name", ActionArgumentType.class, new EmptyArgumentSerializer<>(ActionArgumentType::action));
-		ArgumentTypes.register("parcool:limitation_item_name", LimitationItemArgumentType.class, new LimitationItemArgumentType.Serializer());
-		ArgumentTypes.register("parcool:limitation_id", LimitationIDArgumentType.class, new EmptyArgumentSerializer<>(LimitationIDArgumentType::new));
 		ArgumentTypeInfos.registerByClass(ActionArgumentType.class, SingletonArgumentInfo.contextFree(ActionArgumentType::action));
+		ArgumentTypeInfos.registerByClass(LimitationIDArgumentType.class, SingletonArgumentInfo.contextFree(LimitationIDArgumentType::limitation));
+		ArgumentTypeInfos.registerByClass(LimitationItemArgumentType.Booleans.class, SingletonArgumentInfo.contextFree(LimitationItemArgumentType::booleans));
+		ArgumentTypeInfos.registerByClass(LimitationItemArgumentType.Integers.class, SingletonArgumentInfo.contextFree(LimitationItemArgumentType::integers));
+		ArgumentTypeInfos.registerByClass(LimitationItemArgumentType.Doubles.class, SingletonArgumentInfo.contextFree(LimitationItemArgumentType::doubles));
 	}
 }

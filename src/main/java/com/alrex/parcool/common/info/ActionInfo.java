@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.info;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.config.ParCoolConfig;
 

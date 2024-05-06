@@ -11,7 +11,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,7 +35,7 @@ public class LimitationIDArgumentType implements ArgumentType<Limitation.ID> {
         String value = read(reader);
         String[] split = value.split(":");
         if (split.length != 2) {
-            Message message = new TextComponent("Too many or less separators(':')");
+            Message message = Component.literal("Too many or less separators(':')");
             throw new CommandSyntaxException(new SimpleCommandExceptionType(message), message);
         }
         return new Limitation.ID(split[0], split[1]);
