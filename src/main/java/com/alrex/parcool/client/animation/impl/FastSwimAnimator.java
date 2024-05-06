@@ -5,7 +5,6 @@ import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.FastSwim;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.utilities.BipedModelUtil;
 import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.Minecraft;
