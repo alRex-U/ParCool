@@ -3,6 +3,9 @@ package com.alrex.parcool;
 import com.alrex.parcool.api.Attributes;
 import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.client.animation.AnimatorList;
+import com.alrex.parcool.client.hud.HUDRegistry;
+import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.event.EventAddAttributes;
@@ -17,6 +20,7 @@ import com.alrex.parcool.proxy.ClientProxy;
 import com.alrex.parcool.proxy.CommonProxy;
 import com.alrex.parcool.proxy.ServerProxy;
 import com.alrex.parcool.server.command.CommandRegistry;
+import com.alrex.parcool.server.limitation.Limitations;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -36,8 +40,7 @@ import org.apache.logging.log4j.Logger;
 @Mod(ParCool.MOD_ID)
 public class ParCool {
 	public static final String MOD_ID = "parcool";
-	private static final String PROTOCOL_VERSION =
-			Integer.toHexString(ActionList.ACTION_REGISTRIES.size());
+	private static final String PROTOCOL_VERSION = "3.2.1.1";
 	public static final SimpleChannel CHANNEL_INSTANCE = NetworkRegistry.newSimpleChannel(
 			new ResourceLocation(ParCool.MOD_ID, "message"),
 			() -> PROTOCOL_VERSION,
@@ -51,10 +54,17 @@ public class ParCool {
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
+	public static boolean isActive() {
+		return PROXY.ParCoolIsActive();
+	}
+
 	public ParCool() {
 		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		eventBus.addListener(this::setup);
+		eventBus.addListener(this::doClientStuff);
 		eventBus.addListener(this::loaded);
+        EventBusForgeRegistry.register(MinecraftForge.EVENT_BUS);
+		eventBus.register(AddAttributesHandler.class);
 		eventBus.register(Capabilities.class);
 		eventBus.register(EventAddAttributes.class);
 		Effects.registerAll(eventBus);
@@ -63,6 +73,8 @@ public class ParCool {
 		SoundEvents.registerAll(eventBus);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
 		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.addListener(Limitations::init);
+		MinecraftForge.EVENT_BUS.addListener(Limitations::save);
 		ItemRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		PROXY.init();
 		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ParCoolConfig.Server.BUILT_CONFIG);
@@ -76,9 +88,14 @@ public class ParCool {
 
 	private void setup(final FMLCommonSetupEvent event) {
 		CommandRegistry.registerArgumentTypes(event);
-		EventBusForgeRegistry.register(MinecraftForge.EVENT_BUS);
 		PotionRecipeRegistry.register(event);
 		PROXY.registerMessages(CHANNEL_INSTANCE);
+	}
+
+	private void doClientStuff(final FMLClientSetupEvent event) {
+		KeyBindings.register(event);
+		EventBusForgeRegistry.registerClient(MinecraftForge.EVENT_BUS);
+		HUDRegistry.getInstance().onSetup(event);
 	}
 
 	private void registerCommand(final RegisterCommandsEvent event) {

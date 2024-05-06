@@ -1,11 +1,10 @@
-package com.alrex.parcool.common.event;
+package com.alrex.parcool.common.handlers;
 
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.capability.stamina.OtherStamina;
-import com.alrex.parcool.common.capability.storage.ParkourabilityStorage;
 import com.alrex.parcool.common.capability.storage.StaminaStorage;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.core.Direction;
@@ -22,7 +21,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class EventAttachCapability {
+public class AttachCapabilityHandler {
 
 	@SubscribeEvent
 	public static void onAttachCapability(AttachCapabilitiesEvent<Entity> event) {
@@ -30,28 +29,9 @@ public class EventAttachCapability {
 		Player player = (Player) event.getObject();
 		//Parkourability
 		{
-			Parkourability instance = new Parkourability(player);
+			Parkourability instance = new Parkourability();
 			LazyOptional<Parkourability> optional = LazyOptional.of(() -> instance);
-			ICapabilityProvider provider = new ICapabilitySerializable<CompoundTag>() {
-				@Override
-				public CompoundTag serializeNBT() {
-					return (CompoundTag) new ParkourabilityStorage().writeTag(
-							Capabilities.PARKOURABILITY_CAPABILITY,
-							instance,
-							null
-					);
-				}
-
-				@Override
-				public void deserializeNBT(CompoundTag nbt) {
-					new ParkourabilityStorage().readTag(
-							Capabilities.PARKOURABILITY_CAPABILITY,
-							instance,
-							null,
-							nbt
-					);
-				}
-
+			ICapabilityProvider provider = new ICapabilityProvider() {
 				@Nonnull
 				@Override
 				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
