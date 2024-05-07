@@ -155,7 +155,12 @@ public class Limitations {
                             ", Initialization is not completed yet"
             );
         }
-        for (Limitation limitation : Loaded.remove(playerID).values()) {
+        SortedMap<Limitation.ID, Limitation> map = Loaded.remove(playerID);
+        if (map == null) {
+            ParCool.LOGGER.warn("Limitation entry is not loaded for UUID:" + playerID + ". Skipped.");
+            return;
+        }
+        for (Limitation limitation : map.values()) {
             File limitationFile = getFolderPath(LimitationFolderRootPath, limitation.getID())
                     .resolve(playerID + ".json").toFile();
             if (!limitationFile.getParentFile().exists()) {
