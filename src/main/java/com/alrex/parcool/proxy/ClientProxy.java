@@ -25,7 +25,6 @@ public class ClientProxy extends CommonProxy {
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		bus.addListener(KeyBindings::register);
 		bus.addListener(HUDRegistry.getInstance()::onSetup);
-
 	}
 
 	@Override
