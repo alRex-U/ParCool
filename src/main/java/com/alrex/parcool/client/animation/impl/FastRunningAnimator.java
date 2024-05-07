@@ -6,6 +6,7 @@ import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.FastRun;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.utilities.BipedModelUtil;
 import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
@@ -34,7 +35,7 @@ public class FastRunningAnimator extends Animator {
 		float bodyAngleFactor = bodyAngleFactor(phase);
 		double rightXRotFactor = Math.cos(transformer.getLimbSwing() * 0.6662 + Math.PI);
 		double leftXRotFactor = Math.cos(transformer.getLimbSwing() * 0.6662);
-		HandSide attackHand = transformer.getRawModel().getAttackArm(player);
+		HandSide attackHand = BipedModelUtil.getAttackArm(player);
 		boolean leftArmAnimatable = attackHand != HandSide.LEFT || transformer.getRawModel().attackTime <= 0f;
 		boolean rightArmAnimatable = attackHand != HandSide.RIGHT || transformer.getRawModel().attackTime <= 0f;
 		if (leftArmAnimatable && ((

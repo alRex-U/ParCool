@@ -1,12 +1,18 @@
 package com.alrex.parcool.proxy;
 
 import com.alrex.parcool.common.network.*;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy extends CommonProxy {
+	@Override
+	public boolean ParCoolIsActive() {
+		return ParCoolConfig.Client.Booleans.ParCoolIsActive.get();
+	}
+
 	@Override
 	public void registerMessages(SimpleChannel instance) {
 		instance.registerMessage(

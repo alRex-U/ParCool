@@ -4,12 +4,12 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ServerLimitation;
 import com.alrex.parcool.common.network.SyncLimitationMessage;
+import com.alrex.parcool.utilities.ServerUtil;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.io.FileUtils;
 
 import javax.annotation.Nullable;
@@ -155,7 +155,12 @@ public class Limitations {
                             ", Initialization is not completed yet"
             );
         }
-        for (Limitation limitation : Loaded.remove(playerID).values()) {
+        SortedMap<Limitation.ID, Limitation> map = Loaded.remove(playerID);
+        if (map == null) {
+            ParCool.LOGGER.warn("Limitation entry is not loaded for UUID:" + playerID + ". Skipped.");
+            return;
+        }
+        for (Limitation limitation : map.values()) {
             File limitationFile = getFolderPath(LimitationFolderRootPath, limitation.getID())
                     .resolve(playerID + ".json").toFile();
             if (!limitationFile.getParentFile().exists()) {
@@ -184,7 +189,7 @@ public class Limitations {
 
     public static void init(FMLServerAboutToStartEvent event) {
         GlobalLimitation.readFromServerConfig();
-        Path configPath = ServerLifecycleHooks.getServerConfigPath(event.getServer());
+        Path configPath = ServerUtil.getServerConfigPath(event.getServer());
         LimitationFolderRootPath = configPath.resolve("parcool").resolve("limitations");
         File limitationFolder = LimitationFolderRootPath.toFile();
         if (!limitationFolder.exists()) {
@@ -193,7 +198,7 @@ public class Limitations {
     }
 
     public static void save(FMLServerStoppingEvent event) {
-        Path configPath = ServerLifecycleHooks.getServerConfigPath(event.getServer());
+        Path configPath = ServerUtil.getServerConfigPath(event.getServer());
         Path limitationRootPath = configPath.resolve("parcool").resolve("limitations");
         for (Map.Entry<UUID, SortedMap<Limitation.ID, Limitation>> limitationEntry : Loaded.entrySet()) {
             UUID playerID = limitationEntry.getKey();
