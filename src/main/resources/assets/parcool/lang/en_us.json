@@ -71,28 +71,5 @@
   "parcool.command.message.success.setPermissionOfAction": "Set %d player's permission of %s action to %d",
   "parcool.command.message.success.setLimitationToDefault": "Set %d player's limitations to default",
   "parcool.command.message.success.enableLimitation": "Enable %d player's Individual Limitations",
-  "parcool.command.message.success.disableLimitation": "Disable %d player's Individual Limitations",
-
-
-  "parcool.sound.breakfall": "Player breakfalls",
-  "parcool.sound.catleap": "Player leaps",
-  "parcool.sound.climb_poles": "Player climbs",
-  "parcool.sound.cling_to_cliff.grab": "Player clings",
-  "parcool.sound.cling_to_cliff.jump": "Player jumps",
-  "parcool.sound.crawl": "Player crawls",
-  "parcool.sound.dodge": "Player dodges",
-  "parcool.sound.dash": "Player dashes",
-  "parcool.sound.flipping": "Player flips",
-  "parcool.sound.hang_down.grab": "Player clings",
-  "parcool.sound.hang_down.jump": "Player jumps",
-  "parcool.sound.h_wall_run": "Player wall runs",
-  "parcool.sound.just": "Player precision lands",
-  "parcool.sound.quick_turn": "Player turns quickly",
-  "parcool.sound.roll": "Player rolls",
-  "parcool.sound.slide": "Player slides",
-  "parcool.sound.tap": "Player precision lands",
-  "parcool.sound.vault": "Player vaults",
-  "parcool.sound.v_wall_run": "Player wall runs",
-  "parcool.sound.wall_jump": "Player wall jumps",
-  "parcool.sound.wall_slide": "Player slides"
+  "parcool.command.message.success.disableLimitation": "Disable %d player's Individual Limitations"
 }
