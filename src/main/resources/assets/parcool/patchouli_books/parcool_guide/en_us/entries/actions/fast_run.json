@@ -1,5 +1,5 @@
 {
-  "name": "Dash",
+  "name": "Fast Run",
   "icon": "minecraft:diamond_boots",
   "category": "parcool:category_actions",
   "pages": [
@@ -10,7 +10,7 @@
     {
       "type": "patchouli:text",
       "title": "How to Use",
-      "text": "$(list) Continue to press Dash key($(k:parcool.FastRun)) during sprinting"
+      "text": "$(list) Continue to press Fast Run key($(k:parcool.FastRun)) during sprinting"
     }
   ]
 }

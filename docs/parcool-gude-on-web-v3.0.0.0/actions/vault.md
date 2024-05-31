@@ -7,5 +7,5 @@ There are numerous variations. In this game, you can use *Speed Vault* and *Kong
 
 ### How to use
 
-1. [Dash](dash.md)
+1. [Fast Run](fast_run.md)
 2. Collide with blocks

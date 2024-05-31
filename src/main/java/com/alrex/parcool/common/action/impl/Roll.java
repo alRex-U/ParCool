@@ -7,12 +7,9 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.registries.ParCoolPoses;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -90,12 +87,17 @@ public class Roll extends Action {
 		Direction direction = Direction.values()[startData.getInt()];
 		double modifier = Math.sqrt(player.getBbWidth());
 		Vec3 vec = VectorUtil.fromYawDegree(player.yBodyRot).scale(modifier);
-        vec = switch (direction) {
-            case Back -> vec.reverse();
-            case Right -> vec.yRot((float) (-Math.PI / 2));
-            case Left -> vec.yRot((float) (Math.PI / 2));
-            default -> vec;
-        };
+		switch (direction) {
+			case Back:
+				vec = vec.reverse();
+				break;
+			case Right:
+				vec = vec.yRot((float) (-Math.PI / 2));
+				break;
+			case Left:
+				vec = vec.yRot((float) (Math.PI / 2));
+				break;
+		}
 		player.setDeltaMovement(vec.x(), 0, vec.z());
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new RollAnimator(direction));

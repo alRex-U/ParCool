@@ -10,7 +10,7 @@
     {
       "type": "patchouli:text",
       "title": "使い方",
-      "text": "$(bold)1.$()$(l:parcool:actions/dash)ファストラン$()をする$(br)$(bold)2.$()素早くスニークする$(br)$(bold)3.$()素早くスニークを止める$(br2)$(l:parcool:actions/cling_to_cliff)崖つかまり$()の併用もおすすめです。"
+      "text": "$(bold)1.$()$(l:parcool:actions/fast_run)ファストラン$()をする$(br)$(bold)2.$()素早くスニークする$(br)$(bold)3.$()素早くスニークを止める$(br2)$(l:parcool:actions/cling_to_cliff)崖つかまり$()の併用もおすすめです。"
     }
   ]
 }

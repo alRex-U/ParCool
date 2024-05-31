@@ -4,5 +4,5 @@ ParCool has special jumping animation: **Diving**. Let's see it by third-person 
 
 ### How to use
 
-1. Do [Dash](dash.md)
+1. Do [Fast Run](fast_run.md)
 2. Jump into enough space from a high place

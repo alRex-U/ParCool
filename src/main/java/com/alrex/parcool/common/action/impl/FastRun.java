@@ -20,13 +20,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
-public class Dash extends Action {
+public class FastRun extends Action {
 	public enum ControlType {
 		PressKey, Toggle, Auto
 	}
 
-	private static final String DASHING_MODIFIER_NAME = "parcool.modifier.fastrunnning";
-	private static final UUID DASHING_MODIFIER_UUID = UUID.randomUUID();
+	private static final String FAST_RUNNING_MODIFIER_NAME = "parcool.modifier.fastrunnning";
+	private static final UUID FAST_RUNNING_MODIFIER_UUID = UUID.randomUUID();
 	private double speedModifier = 0;
 	private boolean toggleStatus = false;
 	private int lastDashTick = 0;
@@ -44,12 +44,12 @@ public class Dash extends Action {
 	public void onServerTick(Player player, Parkourability parkourability, IStamina stamina) {
 		var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (attr == null) return;
-		if (attr.getModifier(DASHING_MODIFIER_UUID) != null) attr.removeModifier(DASHING_MODIFIER_UUID);
+		if (attr.getModifier(FAST_RUNNING_MODIFIER_UUID) != null) attr.removeModifier(FAST_RUNNING_MODIFIER_UUID);
 		if (isDoing()) {
 			player.setSprinting(true);
 			attr.addTransientModifier(new AttributeModifier(
-					DASHING_MODIFIER_UUID,
-					DASHING_MODIFIER_NAME,
+					FAST_RUNNING_MODIFIER_UUID,
+					FAST_RUNNING_MODIFIER_NAME,
 					speedModifier / 100d,
 					AttributeModifier.Operation.ADDITION
 			));

@@ -10,7 +10,7 @@
     {
       "type": "patchouli:text",
       "title": "How to Use",
-      "text": "$(bold)1.$() Do $(l:parcool:actions/dash)Dash$()$(br)$(bold)2.$() Sneak quickly$(br)$(bold)3.$() Cancel sneaking quickly$(br2)I recommend also using $(l:parcool:actions/cling_to_cliff)Cling To Cliff$()."
+      "text": "$(bold)1.$() Do $(l:parcool:actions/fast_run)Fast Run$()$(br)$(bold)2.$() Sneak quickly$(br)$(bold)3.$() Cancel sneaking quickly$(br2)I recommend also using $(l:parcool:actions/cling_to_cliff)Cling To Cliff$()."
     }
   ]
 }

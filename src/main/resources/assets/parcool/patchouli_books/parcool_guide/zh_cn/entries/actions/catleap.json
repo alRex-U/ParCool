@@ -10,7 +10,7 @@
     {
       "type": "patchouli:text",
       "title": "使用方法",
-      "text": "$(bold)1.$()进行$(l:parcool:actions/dash)快速奔跑$()[$(k:parcool.FastRun)]$(7)$(br)$(bold)2.$()按下潜行键$(br)$(bold)3.$()松开潜行键$(br2)建议最后搭配$(l:parcool:actions/cling_to_cliff)猫挂$()使用。$(7)(猫扑到墙壁、栅栏等方块的顶部时使用猫挂即可)"
+      "text": "$(bold)1.$()进行$(l:parcool:actions/fast_run)快速奔跑$()[$(k:parcool.FastRun)]$(7)$(br)$(bold)2.$()按下潜行键$(br)$(bold)3.$()松开潜行键$(br2)建议最后搭配$(l:parcool:actions/cling_to_cliff)猫挂$()使用。$(7)(猫扑到墙壁、栅栏等方块的顶部时使用猫挂即可)"
     }
   ]
 }

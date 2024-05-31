@@ -6,4 +6,4 @@
 
 ### How to use
 
-- do Crawl while doing Dashning
+- do Crawl while doing Fast Running

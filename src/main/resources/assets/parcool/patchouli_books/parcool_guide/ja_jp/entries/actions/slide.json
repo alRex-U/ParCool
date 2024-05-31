@@ -10,7 +10,7 @@
     {
       "type": "patchouli:text",
       "title": "使い方",
-      "text": "$(list)$(l:parcool:actions/dash)ファストラン$()中に$(l:parcool:actions/crawl)匍匐$()をする"
+      "text": "$(list)$(l:parcool:actions/fast_run)ファストラン$()中に$(l:parcool:actions/crawl)匍匐$()をする"
     }
   ]
 }

@@ -29,7 +29,7 @@ These contents are mainly for ver 3.0.0.0.
     - [Crawl](actions/crawl.md)
     - [Dive](actions/dive.md)
     - [Dodge](actions/dodge.md)
-    - [Dash](actions/dash.md)
+    - [Fast Run](actions/fast_run.md)
     - [Flipping](actions/flipping.md)
     - [Hang Down](actions/hang_down.md)
     - [Quick Turn](actions/quick_turn.md)

@@ -1,4 +1,4 @@
-# Dash
+# Fast Run
 
 ---
 
@@ -7,4 +7,4 @@ If you think this feature is annoying, modifying configs can help you.
 
 ### How to use
 
-- Continue to press Dash key during sprinting
+- Continue to press Fast Run key during sprinting

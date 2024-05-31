@@ -6,5 +6,5 @@ Sometimes misunderstood, but the technique of *Wall Run* is vertical one, not ho
 
 ### How to use
 
-1. Do [Dash](dash.md) in air along the wall
+1. Do [Fast Run](fast_run.md) in air along the wall
 2. Continue to press Wall-Run Key

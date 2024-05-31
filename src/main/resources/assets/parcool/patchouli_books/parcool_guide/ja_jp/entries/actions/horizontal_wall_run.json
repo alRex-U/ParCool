@@ -17,7 +17,7 @@
     {
       "type": "patchouli:text",
       "title": "使い方",
-      "text": "$(bold)1.$()空中で壁のそばで$(l:parcool:actions/dash)ファストラン$()をする$(br)$(bold)2.$()ウォールランキー($(k:parcool.HorizontalWallRun))を押し続ける"
+      "text": "$(bold)1.$()空中で壁のそばで$(l:parcool:actions/fast_run)ファストラン$()をする$(br)$(bold)2.$()ウォールランキー($(k:parcool.HorizontalWallRun))を押し続ける"
     }
   ]
 }
