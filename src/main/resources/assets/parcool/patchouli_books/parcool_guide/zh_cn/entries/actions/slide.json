@@ -10,7 +10,7 @@
     {
       "type": "patchouli:text",
       "title": "使用方法",
-      "text": "$(list)在进行$(l:parcool:actions/fast_run)快速奔跑$()的时候按下$(l:parcool:actions/crawl)爬行$()键"
+      "text": "$(list)在进行$(l:parcool:actions/dash)快速奔跑$()的时候按下$(l:parcool:actions/crawl)爬行$()键"
     }
   ]
 }

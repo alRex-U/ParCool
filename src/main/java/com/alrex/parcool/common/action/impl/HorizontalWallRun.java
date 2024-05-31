@@ -119,8 +119,8 @@ public class HorizontalWallRun extends Action {
 				&& !player.onGround()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
                 && (
-                parkourability.get(FastRun.class).canActWithRunning(player)
-                        || parkourability.get(FastRun.class).getNotDashTick(parkourability.getAdditionalProperties()) < 10
+                parkourability.get(Dash.class).canActWithRunning(player)
+                        || parkourability.get(Dash.class).getNotDashTick(parkourability.getAdditionalProperties()) < 10
 		)
 				&& !stamina.isExhausted()
 		);

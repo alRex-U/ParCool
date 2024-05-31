@@ -50,7 +50,7 @@ public class WallSlide extends Action {
 		return (wall != null
 				&& !player.onGround()
 				&& parkourability.getActionInfo().can(WallSlide.class)
-				&& !parkourability.get(FastRun.class).isDoing()
+				&& !parkourability.get(Dash.class).isDoing()
 				&& !parkourability.get(Dodge.class).isDoing()
 				&& !player.getAbilities().flying
 				&& player.getDeltaMovement().y <= 0

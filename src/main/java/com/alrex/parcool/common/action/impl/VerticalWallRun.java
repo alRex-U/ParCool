@@ -51,7 +51,7 @@ public class VerticalWallRun extends Action {
 				&& !parkourability.get(HorizontalWallRun.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
 				&& !parkourability.get(Flipping.class).isDoing()
-				&& parkourability.get(FastRun.class).getNotDashTick(parkourability.getAdditionalProperties()) < 8
+				&& parkourability.get(Dash.class).getNotDashTick(parkourability.getAdditionalProperties()) < 8
 				&& parkourability.getAdditionalProperties().getLastSprintingTick() > 12
 				&& lookVec.y() > 0;
 		if (able) {

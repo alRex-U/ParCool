@@ -15,20 +15,20 @@ import org.lwjgl.glfw.GLFW;
 @OnlyIn(Dist.CLIENT)
 public class KeyBindings {
 	private static final Options settings = Minecraft.getInstance().options;
-    private static final KeyMapping keyBindEnable = new KeyMapping("key.parcool.Enable", KeyConflictContext.UNIVERSAL, KeyModifier.CONTROL, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.categories.parcool");
-	private static final KeyMapping keyBindCrawl = new KeyMapping("key.parcool.Crawl", GLFW.GLFW_KEY_C, "key.categories.parcool");
-	private static final KeyMapping keyBindGrabWall = new KeyMapping("key.parcool.ClingToCliff", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
-	private static final KeyMapping keyBindBreakfall = new KeyMapping("key.parcool.Breakfall", GLFW.GLFW_KEY_R, "key.categories.parcool");
-	private static final KeyMapping keyBindFastRunning = new KeyMapping("key.parcool.FastRun", GLFW.GLFW_KEY_LEFT_CONTROL, "key.categories.parcool");
-	private static final KeyMapping keyBindFlipping = new KeyMapping("key.parcool.Flipping", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
-	private static final KeyMapping keyBindVault = new KeyMapping("key.parcool.Vault", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
-	private static final KeyMapping keyBindDodge = new KeyMapping("key.parcool.Dodge", GLFW.GLFW_KEY_R, "key.categories.parcool");
-	private static final KeyMapping keyBindWallJump = new KeyMapping("key.parcool.WallJump", GLFW.GLFW_KEY_SPACE, "key.categories.parcool");
-	private static final KeyMapping keyBindHangDown = new KeyMapping("key.parcool.HangDown", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
-	private static final KeyMapping keyBindWallSlide = new KeyMapping("key.parcool.WallSlide", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
-	private static final KeyMapping keyBindHorizontalWallRun = new KeyMapping("key.parcool.HorizontalWallRun", GLFW.GLFW_KEY_R, "key.categories.parcool");
-	private static final KeyMapping keyBindQuickTurn = new KeyMapping("key.parcool.QuickTurn", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
-	private static final KeyMapping keyBindOpenSettings = new KeyMapping("key.parcool.openSetting", KeyConflictContext.UNIVERSAL, KeyModifier.ALT, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.categories.parcool");
+    private static final KeyMapping keyBindEnable = new KeyMapping("key.parcool.enable", KeyConflictContext.UNIVERSAL, KeyModifier.CONTROL, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.categories.parcool");
+	private static final KeyMapping keyBindCrawl = new KeyMapping("key.parcool.crawl", GLFW.GLFW_KEY_C, "key.categories.parcool");
+	private static final KeyMapping keyBindGrabWall = new KeyMapping("key.parcool.cling_to_cliff", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
+	private static final KeyMapping keyBindBreakfall = new KeyMapping("key.parcool.breakfall", GLFW.GLFW_KEY_R, "key.categories.parcool");
+	private static final KeyMapping keyBindFastRunning = new KeyMapping("key.parcool.dash", GLFW.GLFW_KEY_LEFT_CONTROL, "key.categories.parcool");
+	private static final KeyMapping keyBindFlipping = new KeyMapping("key.parcool.flipping", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
+	private static final KeyMapping keyBindVault = new KeyMapping("key.parcool.vault", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
+	private static final KeyMapping keyBindDodge = new KeyMapping("key.parcool.dodge", GLFW.GLFW_KEY_R, "key.categories.parcool");
+	private static final KeyMapping keyBindWallJump = new KeyMapping("key.parcool.wall_jump", GLFW.GLFW_KEY_SPACE, "key.categories.parcool");
+	private static final KeyMapping keyBindHangDown = new KeyMapping("key.parcool.hang_down", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
+	private static final KeyMapping keyBindWallSlide = new KeyMapping("key.parcool.wall_slide", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
+	private static final KeyMapping keyBindHorizontalWallRun = new KeyMapping("key.parcool.horizontal_wall_run", GLFW.GLFW_KEY_R, "key.categories.parcool");
+	private static final KeyMapping keyBindQuickTurn = new KeyMapping("key.parcool.quick_turn", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
+	private static final KeyMapping keyBindOpenSettings = new KeyMapping("key.parcool.open_settings", KeyConflictContext.UNIVERSAL, KeyModifier.ALT, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.categories.parcool");
 
 	public static KeyMapping getKeySprint() {
 		return settings.keySprint;

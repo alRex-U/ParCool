@@ -3,7 +3,7 @@ package com.alrex.parcool.client.animation.impl;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
-import com.alrex.parcool.common.action.impl.FastRun;
+import com.alrex.parcool.common.action.impl.Dash;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.extern.paraglider.ParagliderManager;
 import com.alrex.parcool.utilities.Easing;
@@ -15,7 +15,7 @@ import net.minecraft.world.phys.Vec3;
 public class FastRunningAnimator extends Animator {
 	@Override
 	public boolean shouldRemoved(Player player, Parkourability parkourability) {
-		return !parkourability.get(FastRun.class).isDoing();
+		return !parkourability.get(Dash.class).isDoing();
 	}
 
 	private float bodyAngleFactor(float phase) {

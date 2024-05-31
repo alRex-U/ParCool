@@ -6,7 +6,7 @@ Don't mistake this for [Horizontal Wall Run](./h_wall_run.md).
 
 ### How to use
 
-1. Look above horizontal line take running up with [Fast Run](fast_run.md)
+1. Look above horizontal line take running up with [Dash](dash.md)
 2. Jump onto wall with not releasing jump key.
 
 It may be little difficult but try it.

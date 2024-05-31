@@ -10,8 +10,10 @@ import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
+import com.alrex.parcool.common.registries.ParCoolPoses;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -33,7 +35,7 @@ public class Slide extends Action {
 				&& !parkourability.get(Tap.class).isDoing()
 				&& parkourability.get(Crawl.class).isDoing()
 				&& !player.isInWaterOrBubble()
-				&& parkourability.get(FastRun.class).getDashTick(parkourability.getAdditionalProperties()) > 5
+				&& parkourability.get(Dash.class).getDashTick(parkourability.getAdditionalProperties()) > 5
 		);
 	}
 
@@ -107,5 +109,12 @@ public class Slide extends Action {
 	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
 		return StaminaConsumeTiming.None;
+	}
+
+
+	@Override
+	public void onWorkingTick(Player player, Parkourability parkourability, IStamina stamina) {
+		Pose pose = ParCoolPoses.ROLLING.get();
+		player.setPose(pose);
 	}
 }

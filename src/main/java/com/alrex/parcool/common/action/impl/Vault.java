@@ -9,9 +9,11 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.registries.ParCoolPoses;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -101,7 +103,7 @@ public class Vault extends Action {
 
 		return (!stamina.isExhausted()
 				&& !(ParCoolConfig.Client.Booleans.VaultKeyPressedNeeded.get() && !KeyBindings.getKeyVault().isDown())
-				&& parkourability.get(FastRun.class).canActWithRunning(player)
+				&& parkourability.get(Dash.class).canActWithRunning(player)
 				&& !stamina.isExhausted()
 				&& (player.onGround() || ParCoolConfig.Client.Booleans.EnableVaultInAir.get())
 				&& wallHeight > player.getBbHeight() * 0.44 /*about 0.8*/
@@ -187,6 +189,13 @@ public class Vault extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStopInLocalClient(Player player) {
+	}
+
+
+	@Override
+	public void onWorkingTick(Player player, Parkourability parkourability, IStamina stamina) {
+		Pose pose = ParCoolPoses.VAULTING.get();
+		player.setPose(pose);
 	}
 }
 

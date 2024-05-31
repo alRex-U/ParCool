@@ -17,7 +17,7 @@
 ### Modified
 
 - ParCool Logo
-- Fast Run
+- Dash
   - Animation was modified
 - Dodge
   - Players don't get off blocks while doing dodge(configurable)

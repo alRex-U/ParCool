@@ -6,5 +6,5 @@ In addition, by pressing jump key again after a few seconds, Dive animation goes
 
 ### How to use
 
-1. Do [Fast Run](fast_run.md)
+1. Do [Dash](dash.md)
 2. Jump into enough space from a high place

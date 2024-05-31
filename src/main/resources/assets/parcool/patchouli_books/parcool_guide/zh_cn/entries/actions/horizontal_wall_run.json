@@ -17,7 +17,7 @@
     {
       "type": "patchouli:text",
       "title": "How to Use",
-      "text": "$(bold)1.$() 沿着墙壁在空中按$(l:parcool:actions/fast_run)快速奔跑。$() $(br)$(bold)2.$() 按住水平跑墙键($(k:parcool.HorizontalWallRun))"
+      "text": "$(bold)1.$() 沿着墙壁在空中按$(l:parcool:actions/dash)快速奔跑。$() $(br)$(bold)2.$() 按住水平跑墙键($(k:parcool.HorizontalWallRun))"
     }
   ]
 }

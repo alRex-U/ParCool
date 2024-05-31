@@ -393,7 +393,7 @@ public class ParCoolConfig {
 		public static final ForgeConfigSpec.EnumValue<Position.Horizontal> AlignHorizontalStaminaHUD;
 		public static final ForgeConfigSpec.EnumValue<Position.Vertical> AlignVerticalStaminaHUD;
 		public static final ForgeConfigSpec.EnumValue<ColorTheme> GUIColorTheme;
-		public static final ForgeConfigSpec.EnumValue<FastRun.ControlType> FastRunControl;
+		public static final ForgeConfigSpec.EnumValue<Dash.ControlType> FastRunControl;
 		public static final ForgeConfigSpec.EnumValue<Crawl.ControlType> CrawlControl;
         public static final ForgeConfigSpec.EnumValue<Flipping.ControlType> FlipControl;
         public static final ForgeConfigSpec.EnumValue<IStamina.Type> StaminaType;
@@ -436,7 +436,7 @@ public class ParCoolConfig {
 			builder.pop();
 			builder.push("Control");
 			{
-				FastRunControl = builder.comment("Control of FastRun").defineEnum("fast-run_control", FastRun.ControlType.PressKey);
+				FastRunControl = builder.comment("Control of FastRun").defineEnum("fast-run_control", Dash.ControlType.PressKey);
                 CrawlControl = builder.comment("Control of Crawl").defineEnum("crawl_control", Crawl.ControlType.PressKey);
                 FlipControl = builder.comment("Control of Flipping").defineEnum("flip_control", Flipping.ControlType.PressRightAndLeft);
 				register(builder, ConfigGroup.Control);

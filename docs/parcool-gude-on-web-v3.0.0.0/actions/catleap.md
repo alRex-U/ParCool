@@ -11,7 +11,7 @@ In this mod, this is implemented as a long jump. Please careful with the cool ti
 
 ### How to use
 
-1. Do [Fast Run](fast_run.md).
+1. Do [Dash](dash.md).
 2. Sneak quickly.
 3. Cancel sneaking quickly.
 

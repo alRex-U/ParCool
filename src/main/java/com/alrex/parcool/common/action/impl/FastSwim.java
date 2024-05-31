@@ -36,17 +36,17 @@ public class FastSwim extends Action {
                 && !player.isFallFlying()
                 && player.isSprinting()
                 && player.isSwimming()
-                && !parkourability.get(FastRun.class).isDoing()
-                && ((ParCoolConfig.Client.FastRunControl.get() == FastRun.ControlType.PressKey && KeyBindings.getKeyFastRunning().isDown())
-                || (ParCoolConfig.Client.FastRunControl.get() == FastRun.ControlType.Toggle && toggleStatus)
-                || ParCoolConfig.Client.FastRunControl.get() == FastRun.ControlType.Auto)
+                && !parkourability.get(Dash.class).isDoing()
+                && ((ParCoolConfig.Client.FastRunControl.get() == Dash.ControlType.PressKey && KeyBindings.getKeyFastRunning().isDown())
+                || (ParCoolConfig.Client.FastRunControl.get() == Dash.ControlType.Toggle && toggleStatus)
+                || ParCoolConfig.Client.FastRunControl.get() == Dash.ControlType.Auto)
         );
     }
 
     @Override
     public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
         if (player.isLocalPlayer()) {
-            if (ParCoolConfig.Client.FastRunControl.get() == FastRun.ControlType.Toggle
+            if (ParCoolConfig.Client.FastRunControl.get() == Dash.ControlType.Toggle
                     && parkourability.getAdditionalProperties().getSprintingTick() > 3
                     && player.isInWaterOrBubble()
                     && player.isSwimming()
@@ -69,7 +69,7 @@ public class FastSwim extends Action {
 
     @Override
     public void onStartInServer(Player player, Parkourability parkourability, ByteBuffer startData) {
-        speedModifier = parkourability.get(FastRun.class).getSpeedModifier(parkourability.getActionInfo());
+        speedModifier = parkourability.get(Dash.class).getSpeedModifier(parkourability.getActionInfo());
     }
 
     @Override
