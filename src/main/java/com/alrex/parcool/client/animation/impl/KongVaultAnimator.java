@@ -57,7 +57,7 @@ public class KongVaultAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / Vault.MAX_TICK;
 		float factor = getFactor(phase);
 		float yFactor = new Easing(phase)
@@ -69,7 +69,7 @@ public class KongVaultAnimator extends Animator {
 				.translateY(-yFactor * player.getBbHeight() / 5)
 				.rotatePitchFrontward(factor * 95)
 				.end();
-	}
+    }
 
 	@Override
 	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {

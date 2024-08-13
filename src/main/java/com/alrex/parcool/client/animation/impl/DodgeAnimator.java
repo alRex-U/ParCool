@@ -227,10 +227,10 @@ public class DodgeAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / Dodge.MAX_TICK;
 		if (phase > 1) {
-			return;
+            return;
 		}
 		switch (direction) {
 			case Front: {
@@ -295,7 +295,7 @@ public class DodgeAnimator extends Animator {
 				break;
 			}
 		}
-	}
+    }
 
 	@Override
 	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {

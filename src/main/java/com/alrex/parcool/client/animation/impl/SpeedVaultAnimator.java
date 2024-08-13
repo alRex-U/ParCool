@@ -31,7 +31,7 @@ public class SpeedVaultAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / Vault.MAX_TICK;
 		float factor = getFactor(getTick() + rotator.getPartialTick());
 		float forwardFactor = (float) Math.sin(phase * 2 * Math.PI) + 0.5f;
@@ -45,7 +45,7 @@ public class SpeedVaultAnimator extends Animator {
 				.rotateRollRightward(factor * 60 * (type == Type.Right ? -1 : 1))
 				.rotatePitchFrontward(30 * forwardFactor)
 				.end();
-	}
+    }
 
 	@Override
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {

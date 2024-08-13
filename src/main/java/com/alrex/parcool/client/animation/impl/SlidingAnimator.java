@@ -23,33 +23,37 @@ public class SlidingAnimator extends Animator {
 				.sinInOut(0, 1, 0, 1)
 				.get();
 
+		transformer.getRawModel().leftLeg.z -= 2f * animFactor;
+		transformer.getRawModel().leftLeg.y -= 1.2f * animFactor;
+		transformer.getRawModel().rightArm.z += 1.2f * animFactor;
+		transformer.getRawModel().rightArm.y += 1.2f * animFactor;
+		transformer.getRawModel().head.z -= animFactor;
 		transformer
-				.rotateHeadPitch(50)
-				.rotateRightArm((float) Math.toRadians(45), 0, (float) Math.toRadians(110), animFactor)
-				.rotateLeftArm((float) Math.toRadians(50), 0, (float) Math.toRadians(-100), animFactor)
-				.rotateRightLeg((float) Math.toRadians(-17), 0, (float) Math.toRadians(-5), animFactor)
-				.rotateLeftLeg((float) Math.toRadians(-5), 0, (float) Math.toRadians(15), animFactor)
+				.rotateHeadPitch(50 * animFactor)
+				.rotateAdditionallyHeadYaw(50 * animFactor)
+				.rotateAdditionallyHeadRoll(-10 * animFactor)
+				.rotateRightArm((float) Math.toRadians(50), (float) Math.toRadians(-40), 0, animFactor)
+				.rotateLeftArm((float) Math.toRadians(20), 0, (float) Math.toRadians(-100), animFactor)
+				.rotateRightLeg((float) Math.toRadians(-30), (float) Math.toRadians(40), 0, animFactor)
+				.rotateLeftLeg((float) Math.toRadians(40), (float) Math.toRadians(-30), (float) Math.toRadians(15), animFactor)
 				.makeLegsLittleMoving()
 				.makeArmsNatural()
 				.end();
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
-		float swimAmount = player.getSwimAmount(rotator.getPartialTick());
-		float bodyAnglePhase = (getTick() + rotator.getPartialTick()) / MAX_TRANSITION_TICK;
-		if (bodyAnglePhase > 1) bodyAnglePhase = 1;
-		float bodyAngleFactor = new Easing(bodyAnglePhase)
-				.squareOut(0, 1, 0, 1)
+	public boolean rotatePre(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+		float animFactor = (getTick() + rotator.getPartialTick()) / MAX_TRANSITION_TICK;
+		if (animFactor > 1) animFactor = 1;
+		animFactor = new Easing(animFactor)
+				.sinInOut(0, 1, 0, 1)
 				.get();
 		rotator
-				.startBasedCenter()
-				.translate(
-						0,
-						player.getBbHeight() * 2f,
-						-player.getBbHeight() * 0.5f
-				)
-				.rotatePitchFrontward(-70 * bodyAngleFactor - 90 * swimAmount)
-				.end();
+				.rotateYawRightward(180f + rotator.getYRot())
+				.rotatePitchFrontward(-55f * animFactor)
+				.translate(0.35f * animFactor, 0, 0)
+				.rotateYawRightward(-55f * animFactor)
+				.translate(0, -0.7f * animFactor, -0.3f * animFactor);
+		return true;
 	}
 }

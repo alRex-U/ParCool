@@ -9,6 +9,19 @@ public class PlayerModelRotator {
 	private final PlayerEntity player;
 	private final float partial;
 	private double playerHeight = 1.8;
+	private final float givenXRot, givenYRot, givenZRot;
+
+	public float getXRot() {
+		return givenXRot;
+	}
+
+	public float getYRot() {
+		return givenYRot;
+	}
+
+	public float getZRot() {
+		return givenZRot;
+	}
 
 	public float getPartialTick() {
 		return partial;
@@ -17,10 +30,13 @@ public class PlayerModelRotator {
 	private boolean basedCenter = false;
 	private boolean basedTop = false;
 
-	public PlayerModelRotator(MatrixStack stack, PlayerEntity player, float partial) {
+	public PlayerModelRotator(MatrixStack stack, PlayerEntity player, float partial, float xRot, float yRot, float zRot) {
 		this.stack = stack;
 		this.player = player;
 		this.partial = partial;
+		this.givenXRot = xRot;
+		this.givenYRot = yRot;
+		this.givenZRot = zRot;
 		switch (player.getPose()) {
 			case SWIMMING:
 			case CROUCHING:
@@ -43,6 +59,10 @@ public class PlayerModelRotator {
 		basedTop = true;
 		stack.translate(0, playerHeight, 0);
 		return this;
+	}
+
+	public MatrixStack getRawStack() {
+		return stack;
 	}
 
 	public PlayerModelRotator translateY(float offset) {

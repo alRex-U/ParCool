@@ -267,8 +267,8 @@ public class PlayerModelTransformer {
 		return this;
 	}
 
-	public PlayerModelTransformer rotateAdditionallyHeadRoll(float yawDegree) {
-		model.head.zRot = (float) Math.toRadians(yawDegree + netHeadYaw);
+	public PlayerModelTransformer rotateAdditionallyHeadRoll(float rollDegree) {
+		model.head.zRot = (float) Math.toRadians(rollDegree + netHeadYaw);
 		return this;
 	}
 

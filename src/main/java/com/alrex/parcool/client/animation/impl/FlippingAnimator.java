@@ -17,7 +17,6 @@ public class FlippingAnimator extends Animator {
 		this.direction = direction;
 	}
 
-
 	private final Flipping.Direction direction;
 
 	private int getMaxAnimationTick() {
@@ -143,7 +142,7 @@ public class FlippingAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / getMaxAnimationTick();
 		float factor = angleFactor(phase);
 
@@ -157,7 +156,7 @@ public class FlippingAnimator extends Animator {
 				.startBasedCenter()
 				.rotatePitchFrontward(angle)
 				.end();
-	}
+    }
 
 	@Override
 	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {

@@ -48,14 +48,20 @@ public class Animation {
 		animator.animatePost(player, parkourability, modelTransformer);
 	}
 
-	public void applyRotate(AbstractClientPlayerEntity player, PlayerModelRotator rotator) {
+	public boolean rotatePre(AbstractClientPlayerEntity player, PlayerModelRotator rotator) {
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null || animator == null) return false;
+		return animator.rotatePre(player, parkourability, rotator);
+	}
+
+	public void rotatePost(AbstractClientPlayerEntity player, PlayerModelRotator rotator) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 		if (animator == null) {
 			passiveAnimation.rotate(player, parkourability, rotator);
 			return;
 		}
-		animator.rotate(player, parkourability, rotator);
+		animator.rotatePost(player, parkourability, rotator);
 	}
 
 	public void cameraSetup(EntityViewRenderEvent.CameraSetup event, PlayerEntity player, Parkourability parkourability) {

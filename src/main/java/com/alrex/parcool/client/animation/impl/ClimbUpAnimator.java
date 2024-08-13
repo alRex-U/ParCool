@@ -33,7 +33,7 @@ public class ClimbUpAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / MaxTick;
 		float factor = bodyAngleFactor(phase);
 
@@ -41,7 +41,7 @@ public class ClimbUpAnimator extends Animator {
 				.startBasedCenter()
 				.rotatePitchFrontward(factor * 50)
 				.end();
-	}
+    }
 
 	@Override
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {

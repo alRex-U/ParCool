@@ -106,7 +106,7 @@ public class FastRunningAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float tick = getTick() + rotator.getPartialTick();
 		float phase = tick / 10;
 		if (phase > 1) phase = 1;
@@ -137,5 +137,5 @@ public class FastRunningAnimator extends Animator {
 					.rotatePitchFrontward(pitch)
 					.end();
 		}
-	}
+    }
 }

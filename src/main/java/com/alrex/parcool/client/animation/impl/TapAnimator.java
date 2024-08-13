@@ -56,7 +56,7 @@ public class TapAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / parkourability.get(Tap.class).getMaxTappingTick();
 		if (phase > 1) phase = 1;
 		float factor = getAngleFactor(phase);
@@ -66,5 +66,5 @@ public class TapAnimator extends Animator {
 				.translateY(-factor * player.getBbHeight() / 5)
 				.rotatePitchFrontward(angle)
 				.endEnabledLegGrounding();
-	}
+    }
 }
