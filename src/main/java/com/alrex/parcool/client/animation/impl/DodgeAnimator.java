@@ -33,7 +33,7 @@ public class DodgeAnimator extends Animator {
 		float animFactor = new Easing(phase)
 				.squareOut(0, 0.25f, 0, 1)
 				.linear(0.25f, 0.75f, 1, 1)
-				.squareIn(0.75f, 1, 1, 0)
+				.sinInOut(0.70f, 1, 1, 0)
 				.get();
 		switch (direction) {
 			case Right: {
