@@ -320,6 +320,10 @@ public class ParCoolConfig {
 					ConfigGroup.Modifier, "FastRun speed modifier",
 					"fast-run_modifier", 2, 0.001, 4
 			),
+			FastSwimSpeedModifier(
+					ConfigGroup.Modifier, "FastSwim speed modifier",
+					"fast-swim_modifier", 2, 0.001, 4
+			),
 			DodgeSpeedModifier(
 					ConfigGroup.Modifier, "Dodge speed modifier",
 					"dodge-speed_modifier", 1, 0.5, 1.5
@@ -654,6 +658,10 @@ public class ParCoolConfig {
 			MaxFastRunSpeedModifier(
 					ConfigGroup.Modifier, "FastRun speed modifier",
 					"max_fast-run_modifier", 2, 0.001, 4, AdvantageousDirection.Higher
+			),
+			MaxFastSwimSpeedModifier(
+					ConfigGroup.Modifier, "FastSwim speed modifier",
+					"max_fast-swim_modifier", 2, 0.001, 4, AdvantageousDirection.Higher
 			),
 			MaxDodgeSpeedModifier(
 					ConfigGroup.Modifier, "Dodge speed modifier",
