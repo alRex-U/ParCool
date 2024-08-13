@@ -100,6 +100,9 @@ public class Dodge extends Action {
 				&& !player.isInWaterOrBubble()
 				&& !player.isShiftKeyDown()
 				&& !stamina.isExhausted()
+				&& !parkourability.get(Crawl.class).isDoing()
+				&& !parkourability.get(Roll.class).isDoing()
+				&& !parkourability.get(Tap.class).isDoing()
 		);
 	}
 
