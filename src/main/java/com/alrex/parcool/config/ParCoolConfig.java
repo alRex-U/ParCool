@@ -407,6 +407,7 @@ public class ParCoolConfig {
 		public static final ForgeConfigSpec.EnumValue<FastRun.ControlType> FastRunControl;
 		public static final ForgeConfigSpec.EnumValue<Crawl.ControlType> CrawlControl;
 		public static final ForgeConfigSpec.EnumValue<Flipping.ControlType> FlipControl;
+		public static final ForgeConfigSpec.EnumValue<HorizontalWallRun.ControlType> HWallRunControl;
 		public static final ForgeConfigSpec.EnumValue<IStamina.Type> StaminaType;
 
 		private static void register(ForgeConfigSpec.Builder builder, ConfigGroup group) {
@@ -450,6 +451,7 @@ public class ParCoolConfig {
 				FastRunControl = builder.comment("Control of FastRun").defineEnum("fast-run_control", FastRun.ControlType.PressKey);
 				CrawlControl = builder.comment("Control of Crawl").defineEnum("crawl_control", Crawl.ControlType.PressKey);
 				FlipControl = builder.comment("Control of Flipping").defineEnum("flip_control", Flipping.ControlType.PressRightAndLeft);
+				HWallRunControl = builder.comment("Control of Horizontal Wall Run").defineEnum("h-wall-run_control", HorizontalWallRun.ControlType.PressKey);
 				register(builder, ConfigGroup.Control);
 			}
 			builder.pop();

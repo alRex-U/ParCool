@@ -28,6 +28,9 @@ import net.minecraftforge.event.TickEvent;
 import java.nio.ByteBuffer;
 
 public class HorizontalWallRun extends Action {
+	public enum ControlType {
+		PressKey, Auto
+	}
 	private int coolTime = 0;
 	private float bodyYaw = 0;
 
@@ -106,7 +109,10 @@ public class HorizontalWallRun extends Action {
 				.putDouble(runDirection.z());
 
 		return (!parkourability.get(WallJump.class).justJumped()
-				&& KeyBindings.getKeyHorizontalWallRun().isDown()
+				&& (
+				(ParCoolConfig.Client.HWallRunControl.get() == ControlType.PressKey && KeyBindings.getKeyHorizontalWallRun().isDown())
+						|| ParCoolConfig.Client.HWallRunControl.get() == ControlType.Auto
+		)
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Dodge.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
@@ -133,7 +139,10 @@ public class HorizontalWallRun extends Action {
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Dodge.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
-				&& KeyBindings.getKeyHorizontalWallRun().isDown()
+				&& (
+				(ParCoolConfig.Client.HWallRunControl.get() == ControlType.PressKey && KeyBindings.getKeyHorizontalWallRun().isDown())
+						|| ParCoolConfig.Client.HWallRunControl.get() == ControlType.Auto
+		)
 				&& !player.isOnGround()
 		);
 	}
