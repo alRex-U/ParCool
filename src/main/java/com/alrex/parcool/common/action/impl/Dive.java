@@ -46,6 +46,7 @@ public class Dive extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		if (player.getVehicle() != null) return false;
 		boolean startInAir = player.getDeltaMovement().y() < 0
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 10
 				&& parkourability.getAdditionalProperties().getNotInWaterTick() > 30
