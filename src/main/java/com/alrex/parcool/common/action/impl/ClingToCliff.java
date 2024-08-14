@@ -68,6 +68,11 @@ public class ClingToCliff extends Action {
 		);
 	}
 
+    @Override
+    public void onStart(PlayerEntity player, Parkourability parkourability) {
+        armSwingAmount = 0;
+    }
+
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {

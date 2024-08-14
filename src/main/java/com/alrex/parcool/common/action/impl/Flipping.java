@@ -63,6 +63,7 @@ public class Flipping extends Action {
 		boolean input = control.isInputDone(justJumped);
 		justJumped = false;
 		return (input
+                && !player.isShiftKeyDown()
 				&& parkourability.getActionInfo().can(Flipping.class)
 				&& !parkourability.get(Dive.class).isDoing()
 				&& !parkourability.getCancelMarks().cancelJump()

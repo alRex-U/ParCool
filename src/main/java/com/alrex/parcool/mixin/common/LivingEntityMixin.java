@@ -1,6 +1,7 @@
 package com.alrex.parcool.mixin.common;
 
 import com.alrex.parcool.common.action.impl.ClimbPoles;
+import com.alrex.parcool.common.action.impl.ClimbUp;
 import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
@@ -31,6 +32,9 @@ public abstract class LivingEntityMixin extends Entity {
 	@Shadow
 	public abstract void readAdditionalSaveData(CompoundNBT p_70037_1_);
 
+    @Shadow
+    public abstract void releaseUsingItem();
+
 	public LivingEntityMixin(EntityType<?> p_i48580_1_, World p_i48580_2_) {
 		super(p_i48580_1_, p_i48580_2_);
 	}
@@ -51,6 +55,9 @@ public abstract class LivingEntityMixin extends Entity {
 			}
 			if (!parkourability.getActionInfo().can(ClimbPoles.class)) {
 				return;
+            }
+            if (parkourability.get(ClimbUp.class).isDoing()) {
+                return;
 			}
 			BlockPos blockpos = this.blockPosition();
 			BlockState blockstate = this.getFeetBlockState();
