@@ -28,13 +28,19 @@ public class SettingShowLimitationsScreen extends ParCoolSettingScreen {
     }
 
     @Override
+    protected boolean isDownScrollable() {
+        return topIndex + viewableItemCount < infoList.length;
+    }
+
+    @Override
     protected void renderContents(MatrixStack matrixStack, int mouseX, int mouseY, float partialTick, int topOffset, int bottomOffset) {
         final int offsetX = 40;
         int contentHeight = height - topOffset - bottomOffset;
         int itemHeight = font.lineHeight * 2;
         int valueWidth = Arrays.stream(infoList).map(it -> font.width(it.value)).max(Integer::compareTo).orElse(0);
-        for (int i = 0; i < infoList.length; i++) {
-            InfoSet item = infoList[i];
+        viewableItemCount = contentHeight / itemHeight;
+        for (int i = 0; i < viewableItemCount && i + topIndex < infoList.length; i++) {
+            InfoSet item = infoList[topIndex + i];
             drawString(
                     matrixStack, font,
                     item.name,

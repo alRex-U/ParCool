@@ -766,7 +766,7 @@ public class ParCoolConfig {
 			builder.push("Limitations");
 			{
 				LimitationEnabled = builder.comment("Whether these limitations will be imposed to players").define("limitation_imposed", false);
-				builder.push("Action Permissions");
+				builder.push("Action_Permissions");
 				{
 					for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
 						actionPermissions[i]
@@ -776,7 +776,7 @@ public class ParCoolConfig {
 				builder.pop();
 				builder.push("Stamina");
 				{
-					builder.push("Least Consumption");
+					builder.push("Least_Consumption");
 					{
 						for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
 							leastStaminaConsumptions[i] = builder.defineInRange(
@@ -786,6 +786,7 @@ public class ParCoolConfig {
 							);
 						}
 					}
+					builder.pop();
 					register(builder, ConfigGroup.Stamina);
 				}
 				builder.pop();
