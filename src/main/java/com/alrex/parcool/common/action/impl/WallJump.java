@@ -196,6 +196,8 @@ public class WallJump extends Action {
 
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.WALL_JUMP.get(), 1f, 1f);
 		Vector3d jumpDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		Vector3d wallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		BlockPos leanedBlock = new BlockPos(

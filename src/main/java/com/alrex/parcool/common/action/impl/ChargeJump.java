@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.ChargeJumpAnimator;
 import com.alrex.parcool.client.animation.impl.JumpChargingAnimator;
 import com.alrex.parcool.common.action.Action;
@@ -7,6 +8,7 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -46,6 +48,8 @@ public class ChargeJump extends Action {
 
     @Override
     public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+        if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+            player.playSound(SoundEvents.CHARGE_JUMP.get(), 1, 1);
         Animation animation = Animation.get(player);
         if (animation != null) {
             animation.setAnimator(new ChargeJumpAnimator());
@@ -54,6 +58,8 @@ public class ChargeJump extends Action {
 
     @Override
     public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+        if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+            player.playSound(SoundEvents.CHARGE_JUMP.get(), 1, 1);
         Animation animation = Animation.get(player);
         if (animation != null) {
             animation.setAnimator(new ChargeJumpAnimator());

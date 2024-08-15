@@ -179,6 +179,8 @@ public class HorizontalWallRun extends Action {
 		runningWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		runningDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		Animation animation = Animation.get(player);
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.HORIZONTAL_WALL_RUN.get(), 1f, 1f);
 		if (animation != null) {
 			animation.setAnimator(new HorizontalWallRunAnimator(wallIsRightward));
 		}

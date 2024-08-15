@@ -8,6 +8,7 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
@@ -90,13 +91,17 @@ public class HangDown extends Action {
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		setup(player, startData);
-        player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get()) {
+			player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
+		}
 	}
 
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
 		setup(player, startData);
-        player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get()) {
+			player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -96,6 +96,8 @@ public class CatLeap extends Action {
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
 		Vector3d jumpDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.CATLEAP.get(), 1, 1);
 		spawnJumpEffect(player, jumpDirection);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new CatLeapAnimator());
