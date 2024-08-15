@@ -23,6 +23,8 @@ public class Slide extends Action {
 
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		Vector3d lookingVec = player.getLookAngle().multiply(1, 0, 1).normalize();
+		startInfo.putDouble(lookingVec.x()).putDouble(lookingVec.z());
 		return (!stamina.isExhausted()
 				&& parkourability.getActionInfo().can(Slide.class)
 				&& KeyRecorder.keyCrawlState.isPressed()
@@ -47,7 +49,7 @@ public class Slide extends Action {
 
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
-		slidingVec = player.getLookAngle().multiply(1, 0, 1).normalize();
+		slidingVec = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.SLIDE.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
@@ -59,6 +61,7 @@ public class Slide extends Action {
 
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+		slidingVec = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			player.playSound(SoundEvents.SLIDE.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
