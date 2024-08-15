@@ -6,7 +6,9 @@ import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.Slide;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.Easing;
+import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class SlidingAnimator extends Animator {
 	private static final int MAX_TRANSITION_TICK = 5;
@@ -43,13 +45,16 @@ public class SlidingAnimator extends Animator {
 
 	@Override
 	public boolean rotatePre(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+		Vector3d vec = parkourability.get(Slide.class).getSlidingVector();
+		if (vec == null) return false;
 		float animFactor = (getTick() + rotator.getPartialTick()) / MAX_TRANSITION_TICK;
+		float yRot = (float) VectorUtil.toYawDegree(vec);
 		if (animFactor > 1) animFactor = 1;
 		animFactor = new Easing(animFactor)
 				.sinInOut(0, 1, 0, 1)
 				.get();
 		rotator
-				.rotateYawRightward(180f + rotator.getYRot())
+				.rotateYawRightward(180f + yRot)
 				.rotatePitchFrontward(-55f * animFactor)
 				.translate(0.35f * animFactor, 0, 0)
 				.rotateYawRightward(-55f * animFactor)

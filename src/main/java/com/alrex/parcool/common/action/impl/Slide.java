@@ -10,13 +10,12 @@ import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.event.TickEvent;
 
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
 public class Slide extends Action {
@@ -97,10 +96,9 @@ public class Slide extends Action {
 		}
 	}
 
-	@Override
-	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
-		if (slidingVec == null || !isDoing()) return;
-		player.yRot = (float) VectorUtil.toYawDegree(slidingVec);
+	@Nullable
+	public Vector3d getSlidingVector() {
+		return slidingVec;
 	}
 
 	@Override
