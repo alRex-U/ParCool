@@ -1,5 +1,6 @@
 package com.alrex.parcool.mixin.common;
 
+import com.alrex.parcool.common.action.impl.ChargeJump;
 import com.alrex.parcool.common.action.impl.ClimbPoles;
 import com.alrex.parcool.common.action.impl.ClimbUp;
 import com.alrex.parcool.common.capability.Parkourability;
@@ -13,11 +14,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -59,20 +60,25 @@ public abstract class LivingEntityMixin extends Entity {
             if (parkourability.get(ClimbUp.class).isDoing()) {
                 return;
 			}
+			ChargeJump chargeJump = parkourability.get(ChargeJump.class);
+			if (chargeJump.isDoing() || chargeJump.isCharging()) {
+				return;
+			}
 			BlockPos blockpos = this.blockPosition();
 			BlockState blockstate = this.getFeetBlockState();
-			boolean onLadder = isLivingOnCustomLadder(blockstate, entity.level, blockpos, entity);
+			boolean onLadder = parCool$isLivingOnCustomLadder(blockstate, entity.level, blockpos, entity);
 			if (onLadder) {
 				cir.setReturnValue(true);
 			}
 		}
 	}
 
-	public boolean isLivingOnCustomLadder(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull LivingEntity entity) {
+	@Unique
+	public boolean parCool$isLivingOnCustomLadder(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull LivingEntity entity) {
 		boolean isSpectator = (entity instanceof PlayerEntity && entity.isSpectator());
 		if (isSpectator) return false;
 		if (!ForgeConfig.SERVER.fullBoundingBoxLadders.get()) {
-			return isCustomLadder(state, world, pos, entity);
+			return parCool$isCustomLadder(state, world, pos, entity);
 		} else {
 			AxisAlignedBB bb = entity.getBoundingBox();
 			int mX = MathHelper.floor(bb.minX);
@@ -86,7 +92,7 @@ public abstract class LivingEntityMixin extends Entity {
 							return false;
 						}
 						state = world.getBlockState(tmp);
-						if (isCustomLadder(state, world, tmp, entity)) {
+						if (parCool$isCustomLadder(state, world, tmp, entity)) {
 							return true;
 						}
 					}
@@ -96,7 +102,8 @@ public abstract class LivingEntityMixin extends Entity {
 		}
 	}
 
-	private boolean isCustomLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity) {
+	@Unique
+	private boolean parCool$isCustomLadder(BlockState state, World world, BlockPos pos, LivingEntity entity) {
 		Block block = state.getBlockState().getBlock();
 		if (block instanceof FourWayBlock) {
 			int zCount = 0;
@@ -105,8 +112,15 @@ public abstract class LivingEntityMixin extends Entity {
 			if (state.getValue(FourWayBlock.SOUTH)) zCount++;
 			if (state.getValue(FourWayBlock.EAST)) xCount++;
 			if (state.getValue(FourWayBlock.WEST)) xCount++;
-			return (zCount + xCount <= 1) || (zCount == 1 && xCount == 1);
+			boolean stacked = world.isLoaded(pos.above()) && world.getBlockState(pos.above()).getBlock() instanceof FourWayBlock;
+			if (!stacked && world.isLoaded(pos.below()) && world.getBlockState(pos.below()).getBlock() instanceof FourWayBlock)
+				stacked = true;
+
+			return ((zCount + xCount <= 1) || (zCount == 1 && xCount == 1)) && stacked;
 		} else if (block instanceof RotatedPillarBlock) {
+			boolean stacked = world.isLoaded(pos.above()) && world.getBlockState(pos.above()).getBlock() instanceof RotatedPillarBlock;
+			if (!stacked && world.isLoaded(pos.below()) && world.getBlockState(pos.below()).getBlock() instanceof RotatedPillarBlock)
+				stacked = true;
 			return !state.isCollisionShapeFullBlock(world, pos) && state.getValue(RotatedPillarBlock.AXIS).isVertical();
 		} else if (block instanceof DirectionalBlock) {
 			Direction direction = state.getValue(DirectionalBlock.FACING);
