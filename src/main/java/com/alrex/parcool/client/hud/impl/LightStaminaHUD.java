@@ -1,8 +1,10 @@
 package com.alrex.parcool.client.hud.impl;
 
+import com.alrex.parcool.api.Effects;
+import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.utilities.MathUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -20,9 +22,14 @@ public class LightStaminaHUD extends AbstractGui {
 	private int randomOffset = 0;
 	private boolean justBecameMax = false;
 
+	private float statusValue = 0f;
+	private float oldStatusValue = 0f;
+	private boolean showStatus = false;
+
 	public void onTick(TickEvent.ClientTickEvent event, ClientPlayerEntity player) {
 		IStamina stamina = IStamina.get(player);
-		if (stamina == null) return;
+		Parkourability parkourability = Parkourability.get(player);
+		if (stamina == null || parkourability == null) return;
 		changingSign = (int) Math.signum(stamina.get() - stamina.getOldValue());
 		final long gameTime = player.level.getGameTime();
 		if (changingSign != lastChangingSign) {
@@ -40,6 +47,25 @@ public class LightStaminaHUD extends AbstractGui {
 			lastStaminaChangedTick = gameTime;
 		}
 		justBecameMax = stamina.getOldValue() < stamina.get() && stamina.get() == stamina.getActualMaxStamina();
+
+		oldStatusValue = statusValue;
+		boolean oldShowStatus = showStatus;
+		showStatus = false;
+		for (Action a : parkourability.getList()) {
+			if (a.wantsToShowStatusBar(player, parkourability)) {
+				showStatus = true;
+				statusValue = a.getStatusValue(player, parkourability);
+				if (statusValue > 1f) {
+					statusValue = 1f;
+				} else if (statusValue < 0f) {
+					statusValue = 0f;
+				}
+				break;
+			}
+		}
+		if (!oldShowStatus && showStatus) {
+			oldStatusValue = statusValue;
+		}
 	}
 
 	public void render(RenderGameOverlayEvent.Post event, MatrixStack stack) {
@@ -50,31 +76,53 @@ public class LightStaminaHUD extends AbstractGui {
 		Parkourability parkourability = Parkourability.get(player);
 		if (stamina == null || parkourability == null) return;
 
-		if (ParCoolConfig.Client.Booleans.HideStaminaHUDWhenStaminaIsInfinite.get() &&
-				parkourability.getActionInfo().isStaminaInfinite(player.isCreative() || player.isSpectator())
-		) return;
+		final boolean inexhaustible = player.hasEffect(Effects.INEXHAUSTIBLE.get());
+		final boolean exhausted = stamina.isExhausted();
 
-		long gameTime = player.level.getGameTime();
-		if (gameTime - lastStaminaChangedTick > 40) return;
+		if (!showStatus) {
+			long gameTime = player.level.getGameTime();
+			if (gameTime - lastStaminaChangedTick > 40) return;
+		}
 		float staminaScale = (float) stamina.get() / stamina.getActualMaxStamina();
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
-		staminaScale *= 10;
+
+		staminaScale *= 10f;
+		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, event.getPartialTicks()) * 10f : 0f;
+
 		Minecraft mc = Minecraft.getInstance();
 		int scaledWidth = event.getWindow().getGuiScaledWidth();
 		int scaledHeight = event.getWindow().getGuiScaledHeight();
 
 		mc.getTextureManager().bind(StaminaHUD.STAMINA);
-		int baseX = scaledWidth / 2 + 92;
+		int baseX = scaledWidth / 2 + 91;
 		int baseY = scaledHeight - ForgeIngameGui.right_height;
-		final boolean exhausted = stamina.isExhausted();
 		for (int i = 0; i < 10; i++) {
 			int x = baseX - i * 8 - 9;
 			int offsetY = 0;
-			int textureX = exhausted ? 27 : 0;
+			int textureX;
+			if (inexhaustible) {
+				if (showStatus) {
+					if (statusScale > i + 0.9f) {
+						textureX = 90;
+					} else {
+						textureX = 0;
+					}
+				} else {
+					textureX = 54;
+				}
+			} else {
+				if (exhausted) {
+					textureX = 27;
+				} else if (statusScale > i + 0.9f) {
+					textureX = 90;
+				} else {
+					textureX = 0;
+				}
+			}
 			if (justBecameMax) {
 				textureX = 81;
-			} else if (staminaScale <= i) {//empty
+			} else if (staminaScale < i) {//empty
 				textureX += 18;
 			} else if (staminaScale < i + 0.5f) {//not full
 				textureX += 9;

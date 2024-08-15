@@ -12,6 +12,7 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
@@ -186,6 +187,22 @@ public class Dodge extends Action {
 		return Math.min(
 				(float) (maxCoolTime - getCoolTime()) / maxCoolTime,
 				isInSuccessiveCoolDown(info) ? (float) (successiveMaxCoolTime - getSuccessivelyCoolTick()) / (successiveMaxCoolTime) : 1
+		);
+	}
+
+	@Override
+	public boolean wantsToShowStatusBar(ClientPlayerEntity player, Parkourability parkourability) {
+		return coolTime > 0 || isInSuccessiveCoolDown(parkourability.getActionInfo());
+	}
+
+	@Override
+	public float getStatusValue(ClientPlayerEntity player, Parkourability parkourability) {
+		ActionInfo info = parkourability.getActionInfo();
+		int maxCoolTime = getMaxCoolTime(info);
+		int successiveMaxCoolTime = getSuccessiveCoolTime(info);
+		return Math.max(
+				(float) getCoolTime() / maxCoolTime,
+				isInSuccessiveCoolDown(info) ? (float) (getSuccessivelyCoolTick()) / (successiveMaxCoolTime) : 0
 		);
 	}
 }

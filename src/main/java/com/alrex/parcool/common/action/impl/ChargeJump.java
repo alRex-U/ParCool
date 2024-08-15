@@ -66,6 +66,7 @@ public class ChargeJump extends Action {
         if (player instanceof ClientPlayerEntity) {
             ClientPlayerEntity cp = (ClientPlayerEntity) player;
             if (cp.isOnGround()
+                    && !stamina.isExhausted()
                     && parkourability.getActionInfo().can(ChargeJump.class)
                     && cp.isShiftKeyDown()
                     && !cp.isVisuallyCrawling()
@@ -104,6 +105,16 @@ public class ChargeJump extends Action {
             player.setDeltaMovement(player.getDeltaMovement().add(0, 0.11, 0));
             started = true;
         }
+    }
+
+    @Override
+    public boolean wantsToShowStatusBar(ClientPlayerEntity player, Parkourability parkourability) {
+        return isCharging();
+    }
+
+    @Override
+    public float getStatusValue(ClientPlayerEntity player, Parkourability parkourability) {
+        return ((float) getChargingTick()) / JUMP_CHARGE_TICK;
     }
 
     @Override
