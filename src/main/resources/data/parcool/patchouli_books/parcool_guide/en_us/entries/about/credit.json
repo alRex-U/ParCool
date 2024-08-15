@@ -11,7 +11,12 @@
     {
       "type": "patchouli:text",
       "title": "Mod Developers",
-      "text": "Main Development$()$(italic)$(list)alRex-U$()$(br2)Bugfix Contributions$()$(italic)$(list)JulyLynn"
+      "text": "Main Development$()$(italic)$(list)alRex-U$()"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Sound",
+      "text": "$(italic)$(list)SquARzY"
     },
     {
       "type": "patchouli:text",
@@ -26,7 +31,7 @@
     {
       "type": "patchouli:text",
       "title": "Translators (Chinese)",
-      "text": "$(bold)ch_zn$()$(italic)$(list)CatalystGinger$(list)GuoDaiYi$(list)njt-233"
+      "text": "$(bold)ch_zn$()$(italic)$(list)CatalystGinger$(list)GuoDaiYi$(list)njt-233$(list)Kasualix"
     },
     {
       "type": "patchouli:text",
@@ -41,7 +46,17 @@
     {
       "type": "patchouli:text",
       "title": "Translators (Spanish)",
-      "text": "$(bold)es-es$()$(italic)$(list)GhostOfCazador"
+      "text": "$(bold)es-es$()$(italic)$(list)GhostOfCazador$(list)elAltrex"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Translators (Korean)",
+      "text": "$(bold)ko-kr$()$(italic)$(list)Mexwell12"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Translators (Russian)",
+      "text": "$(bold)ru-ru$()$(italic)$(list)MasterXort"
     }
   ]
 }
