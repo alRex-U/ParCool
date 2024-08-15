@@ -45,9 +45,15 @@ public class ChargeJumpAnimator extends Animator {
                 .sinInOut(0.4f, 1, 1, 0)
                 .get();
         transformer.getRawModel().rightArm.x += 0.3f * outFactor;
-        transformer.getRawModel().rightArm.y += 0.4f * outFactor;
+        transformer.getRawModel().rightArm.y += Easing.with(animationPhase)
+                .squareOut(0, 0.35f, 0.4f, -1.2f)
+                .sinInOut(0.35f, 1, -1.2f, 0)
+                .get();
         transformer.getRawModel().leftArm.x -= 0.3f * outFactor;
-        transformer.getRawModel().leftArm.y += 0.4f * outFactor;
+        transformer.getRawModel().leftArm.y += Easing.with(animationPhase)
+                .squareOut(0, 0.35f, 0.4f, -1.2f)
+                .sinInOut(0.35f, 1, -1.2f, 0)
+                .get();
         transformer
                 .rotateLeftLeg(
                         (float) Math.toRadians(

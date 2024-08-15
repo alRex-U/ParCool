@@ -42,11 +42,6 @@ public class ChargeJump extends Action {
     }
 
     @Override
-    public void onWorkingTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-        player.setShiftKeyDown(false);
-    }
-
-    @Override
     public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
         if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.CHARGE_JUMP.get(), 1, 1);
