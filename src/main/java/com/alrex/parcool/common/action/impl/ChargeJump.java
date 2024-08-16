@@ -68,7 +68,6 @@ public class ChargeJump extends Action {
             if (cp.isOnGround()
                     && !stamina.isExhausted()
                     && parkourability.getActionInfo().can(ChargeJump.class)
-                    && cp.isShiftKeyDown()
                     && !cp.isVisuallyCrawling()
                     && !cp.isSprinting()
                     && !cp.isInWaterOrBubble()
@@ -77,16 +76,25 @@ public class ChargeJump extends Action {
                     && !cp.input.right
                     && !cp.input.left
             ) {
-                chargeTick++;
-                lastChargeTick = chargeTick;
-                notChargeTick = 0;
-                Vector3d targetAngle = VectorUtil.fromYawDegree(player.yHeadRot);
-                Vector3d currentAngle = VectorUtil.fromYawDegree(player.yBodyRot);
-                double differenceAngle = Math.atan(
-                        (currentAngle.x() * targetAngle.z() - targetAngle.x() * currentAngle.z())
-                                / (targetAngle.x() * currentAngle.x() + targetAngle.z() * currentAngle.z())
-                );
-                player.setYBodyRot((float) VectorUtil.toYawDegree(currentAngle.yRot((float) (-differenceAngle / 2))));
+                if (cp.isShiftKeyDown()) {
+                    chargeTick++;
+                    if (chargeTick > JUMP_CHARGE_TICK) chargeTick = JUMP_CHARGE_TICK;
+                    lastChargeTick = chargeTick;
+                    notChargeTick = 0;
+                } else {
+                    chargeTick--;
+                    if (chargeTick < 0) chargeTick = 0;
+                    notChargeTick++;
+                }
+                if (isCharging()) {
+                    Vector3d targetAngle = VectorUtil.fromYawDegree(player.yHeadRot);
+                    Vector3d currentAngle = VectorUtil.fromYawDegree(player.yBodyRot);
+                    double differenceAngle = Math.atan(
+                            (currentAngle.x() * targetAngle.z() - targetAngle.x() * currentAngle.z())
+                                    / (targetAngle.x() * currentAngle.x() + targetAngle.z() * currentAngle.z())
+                    );
+                    player.setYBodyRot((float) VectorUtil.toYawDegree(currentAngle.yRot((float) (-differenceAngle / 2))));
+                }
             } else {
                 chargeTick = 0;
                 notChargeTick++;
@@ -101,9 +109,25 @@ public class ChargeJump extends Action {
     }
 
     public void onJump(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-        if (chargeTick > JUMP_CHARGE_TICK || (lastChargeTick > JUMP_CHARGE_TICK && notChargeTick < 5)) {
+        if (chargeTick >= JUMP_CHARGE_TICK || (lastChargeTick > JUMP_CHARGE_TICK && notChargeTick < 5)) {
             player.setDeltaMovement(player.getDeltaMovement().add(0, 0.11, 0));
             started = true;
+        }
+    }
+
+    public void onLand(PlayerEntity player, Parkourability parkourability) {
+        if (player.isLocalPlayer() && player instanceof ClientPlayerEntity) {
+            ClientPlayerEntity cp = (ClientPlayerEntity) player;
+            if (
+                    !cp.input.up
+                            && !cp.input.down
+                            && !cp.input.right
+                            && !cp.input.left
+            ) {
+                chargeTick = JUMP_CHARGE_TICK + 5;
+                lastChargeTick = chargeTick;
+                notChargeTick = 0;
+            }
         }
     }
 
