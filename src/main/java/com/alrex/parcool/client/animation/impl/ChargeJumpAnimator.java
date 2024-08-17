@@ -85,7 +85,8 @@ public class ChargeJumpAnimator extends Animator {
                         (float) Math.toRadians(
                                 Easing.with(animationPhase)
                                         .squareOut(0, 0.35f, -4, 2)
-                                        .sinInOut(0.35f, 1, 2, 0)
+                                        .squareIn(0.35f, 0.85f, 5, -15)
+                                        .squareOut(0.85f, 1f, -15, 0)
                                         .get()
                         )
                 )
@@ -101,10 +102,12 @@ public class ChargeJumpAnimator extends Animator {
                         (float) Math.toRadians(
                                 Easing.with(animationPhase)
                                         .squareOut(0, 0.35f, 4, -2)
-                                        .sinInOut(0.35f, 1, -2, 0)
+                                        .squareIn(0.35f, 0.85f, -5, 15)
+                                        .squareOut(0.85f, 1f, 15, 0)
                                         .get()
                         )
                 )
+                .makeArmsNatural()
                 .rotateAdditionallyHeadPitch(
                         Easing.with(animationPhase)
                                 .sinInOut(0, 1, -45f, 0)
@@ -124,7 +127,7 @@ public class ChargeJumpAnimator extends Animator {
                 .rotateYawRightward(180f + rotator.getYRot())
                 .translate(0, 0f,
                         0.3f * animFactor * Easing.with(animationPhase)
-                                .squareIn(0, 1, 1, 0).get()
+                                .linear(0, 1, 1, 0).get()
                 )
                 .rotatePitchFrontward(
                         25 * animFactor * Easing.with(animationPhase)

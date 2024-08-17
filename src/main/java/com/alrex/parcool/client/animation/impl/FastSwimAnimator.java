@@ -94,7 +94,7 @@ public class FastSwimAnimator extends Animator {
                 ).normalize();
 
         rotator.startBasedCenter()
-                .rotateRollRightward((float) (-15. * Math.asin(differenceVec.z()) + 12.0 * Math.sin(Math.PI * tick / 15.)))
+                .rotateYawRightward((float) (-15. * Math.asin(differenceVec.z()) + 12.0 * Math.sin(Math.PI * tick / 15.)))
                 .end();
     }
 }

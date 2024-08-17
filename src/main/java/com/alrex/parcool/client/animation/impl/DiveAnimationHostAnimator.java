@@ -27,10 +27,10 @@ public class DiveAnimationHostAnimator extends Animator {
 	final static int MaxTransitionTick = 6;
 
 	@Override
-	public void tick() {
-		super.tick();
-		diveAnimator.tick();
-		if (skyDiveAnimator != null) skyDiveAnimator.tick();
+	public void tick(PlayerEntity player) {
+		super.tick(player);
+		diveAnimator.tick(player);
+		if (skyDiveAnimator != null) skyDiveAnimator.tick(player);
 		if (transitioning) {
 			transitionTick++;
 			if (transitionTick >= MaxTransitionTick) {
@@ -164,8 +164,8 @@ public class DiveAnimationHostAnimator extends Animator {
 		}
 
 		@Override
-		public void tick() {
-			super.tick();
+		public void tick(PlayerEntity player) {
+			super.tick(player);
 			forwardAngleCountOld = forwardAngleCount;
 			rightAngleCountOld = rightAngleCount;
 			if (KeyBindings.getKeyForward().isDown()) {

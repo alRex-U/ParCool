@@ -26,7 +26,7 @@ public class CatLeap extends Action {
 	private int coolTimeTick = 0;
 	private boolean ready = false;
 	private int readyTick = 0;
-	private final int MAX_COOL_TIME_TICK = 30;
+    private static final int MAX_COOL_TIME_TICK = 30;
 
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
@@ -63,6 +63,7 @@ public class CatLeap extends Action {
 				&& !stamina.isExhausted()
 				&& coolTimeTick <= 0
 				&& readyTick > 0
+                && parkourability.get(ChargeJump.class).getChargingTick() < ChargeJump.JUMP_CHARGE_TICK / 2
 				&& !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()
 				&& KeyRecorder.keySneak.isReleased()
@@ -106,10 +107,6 @@ public class CatLeap extends Action {
 	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
 		return StaminaConsumeTiming.OnStart;
-	}
-
-	public float getCoolDownPhase() {
-		return ((float) MAX_COOL_TIME_TICK - coolTimeTick) / MAX_COOL_TIME_TICK;
 	}
 
 	@OnlyIn(Dist.CLIENT)
