@@ -37,15 +37,15 @@ public class ParagliderStamina implements IStamina {
 
 	@Override
 	public void consume(int value) {
-		var parkourability = Parkourability.get(player);
-		if (parkourability == null) return;
-		if (parkourability.getActionInfo().isStaminaInfinite(
-				player.isCreative() || player.isSpectator()
-		)) return;
-		Stamina stamina = getInternalInstance();
-		stamina.takeStamina(value, false, false);
-		if (player instanceof AbstractClientPlayer clientPlayer)
-			consumedBuffer += value;
+//		var parkourability = Parkourability.get(player);
+//		if (parkourability == null) return;
+//		if (parkourability.getActionInfo().isStaminaInfinite(
+//				player.isCreative() || player.isSpectator()
+//		)) return;
+//		Stamina stamina = getInternalInstance();
+//		stamina.takeStamina(value, false, false);
+//		if (player instanceof AbstractClientPlayer clientPlayer)
+//			consumedBuffer += value;
 	}
 
 	@Override
