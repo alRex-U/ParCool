@@ -76,23 +76,23 @@ public class KongVaultAnimator extends Animator {
 						(float) toRadians(Easing.with(phase)
 								.squareOut(0, 0.1f, 5, -5)
 								.sinInOut(0.1f, 0.47f, -5, 25)
-								.sinInOut(0.47f, 0.85f, 25, -25)
-								.sinInOut(0.75f, 1f, -25, 0)
+								.sinInOut(0.47f, 0.9f, 25, -25)
+								.sinInOut(0.9f, 1f, -25, 0)
 								.get()
 						),
 						0,
-						difference - (float) Math.toRadians(10 * factor),
+						difference - (float) Math.toRadians(5. * factor),
 						animFactor
 				)
 				.rotateLeftLeg(
 						(float) toRadians(Easing.with(phase)
 								.sinInOut(0, 0.33f, -20, 20)
-								.sinInOut(0.33f, 0.72f, 20, -45)
-								.sinInOut(0.72f, 1f, -45, 0)
+								.sinInOut(0.33f, 0.79f, 20, -45)
+								.sinInOut(0.79f, 1f, -45, 0)
 								.get()
 						),
 						0,
-						difference + (float) Math.toRadians(10 * factor),
+						difference + (float) Math.toRadians(5. * factor),
 						animFactor)
 				.makeLegsLittleMoving()
 				.end();

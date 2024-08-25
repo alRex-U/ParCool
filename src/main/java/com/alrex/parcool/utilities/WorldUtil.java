@@ -20,25 +20,41 @@ public class WorldUtil {
 		double wallZ = 0;
 		Vector3d pos = entity.position();
 
-		AxisAlignedBB baseBox = new AxisAlignedBB(
+		AxisAlignedBB baseBox1 = new AxisAlignedBB(
 				pos.x() - width,
 				pos.y(),
+				pos.z() - width,
+				pos.x() + width,
+				pos.y() + entity.getBbHeight() / 1.63,
+				pos.z() + width
+		);
+		AxisAlignedBB baseBox2 = new AxisAlignedBB(
+				pos.x() - width,
+				pos.y() + entity.getBbHeight() / 1.63,
 				pos.z() - width,
 				pos.x() + width,
 				pos.y() + entity.getBbHeight(),
 				pos.z() + width
 		);
 
-		if (!entity.level.noCollision(baseBox.expandTowards(range, 0, 0))) {
+		if (!entity.level.noCollision(baseBox1.expandTowards(range, 0, 0))
+				&& !entity.level.noCollision(baseBox2.expandTowards(range, 0, 0))
+		) {
 			wallX++;
 		}
-		if (!entity.level.noCollision(baseBox.expandTowards(-range, 0, 0))) {
+		if (!entity.level.noCollision(baseBox1.expandTowards(-range, 0, 0))
+				&& !entity.level.noCollision(baseBox2.expandTowards(-range, 0, 0))
+		) {
 			wallX--;
 		}
-		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, range))) {
+		if (!entity.level.noCollision(baseBox1.expandTowards(0, 0, range))
+				&& !entity.level.noCollision(baseBox2.expandTowards(0, 0, range))
+		) {
 			wallZ++;
 		}
-		if (!entity.level.noCollision(baseBox.expandTowards(0, 0, -range))) {
+		if (!entity.level.noCollision(baseBox1.expandTowards(0, 0, -range))
+				&& !entity.level.noCollision(baseBox1.expandTowards(0, 0, -range))
+		) {
 			wallZ--;
 		}
 		if (wallX == 0 && wallZ == 0) return null;

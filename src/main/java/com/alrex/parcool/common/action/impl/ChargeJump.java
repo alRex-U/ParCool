@@ -75,6 +75,7 @@ public class ChargeJump extends Action {
                     && !cp.input.down
                     && !cp.input.right
                     && !cp.input.left
+                    && !parkourability.get(Crawl.class).isDoing()
             ) {
                 if (cp.isShiftKeyDown()) {
                     chargeTick++;

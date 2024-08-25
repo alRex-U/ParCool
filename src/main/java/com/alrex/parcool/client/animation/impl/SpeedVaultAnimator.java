@@ -100,7 +100,7 @@ public class SpeedVaultAnimator extends Animator {
 						)
 						.addRotateRightLeg(0, 0, (float) Math.toRadians(factor * -20))
 						.addRotateLeftLeg(0, 0, (float) Math.toRadians(factor * -30))
-						.rotateAdditionallyHeadRoll(factor * 15)
+						.rotateAdditionallyHeadRoll(factor * 35)
 						.end();
 				break;
 		}
