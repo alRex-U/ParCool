@@ -126,7 +126,7 @@ public class SpeedVaultAnimator extends Animator {
 
 	public enum Type {Right, Left}
 
-	private Type type;
+	private final Type type;
 
 	public SpeedVaultAnimator(Type type) {
 		this.type = type;

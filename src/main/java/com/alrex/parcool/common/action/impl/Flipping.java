@@ -40,7 +40,7 @@ public class Flipping extends Action {
 	}
 
 	public enum Direction {
-		Front, Back;
+		Front, Back
 	}
 
 	private boolean justJumped = false;
