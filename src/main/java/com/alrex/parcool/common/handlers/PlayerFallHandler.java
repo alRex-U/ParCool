@@ -6,17 +6,15 @@ import com.alrex.parcool.common.action.impl.Roll;
 import com.alrex.parcool.common.action.impl.Tap;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.network.StartBreakfallMessage;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class PlayerFallHandler {
 	@SubscribeEvent
 	public static void onFall(LivingFallEvent event) {
-		if (event.getEntity() instanceof ServerPlayer) {
-			ServerPlayerEntity player = (ServerPlayer) event.getEntity();
+		if (event.getEntity() instanceof ServerPlayer player) {
 
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
@@ -36,8 +34,7 @@ public class PlayerFallHandler {
 					event.setDamageMultiplier(event.getDamageMultiplier() * (justTime ? 0.4f : 0.6f));
 				}
 			}
-		} else if (event.getEntity() instanceof PlayerEntity) {
-			PlayerEntity player = (PlayerEntity) event.getEntity();
+		} else if (event.getEntity() instanceof Player player) {
 			if (!player.isLocalPlayer()) {
 				return;
 			}

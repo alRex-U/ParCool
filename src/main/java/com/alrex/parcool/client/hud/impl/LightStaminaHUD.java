@@ -4,7 +4,7 @@ import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.utilities.MathUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -88,14 +88,11 @@ public class LightStaminaHUD extends GuiComponent {
 		if (staminaScale > 1) staminaScale = 1;
 
 		staminaScale *= 10f;
-		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, event.getPartialTicks()) * 10f : 0f;
+		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick) * 10f : 0f;
 
-		Minecraft mc = Minecraft.getInstance();
-
-		mc.getTextureManager().bind(StaminaHUD.STAMINA);
-        int baseX = scaledWidth / 2 + 91;
-        int baseY = scaledHeight - ForgeIngameGui.right_height;
-		final boolean exhausted = stamina.isExhausted();
+		RenderSystem.setShaderTexture(0, StaminaHUD.STAMINA);
+		int baseX = width / 2 + 91;
+		int baseY = height - gui.right_height;
 		for (int i = 0; i < 10; i++) {
 			int x = baseX - i * 8 - 9;
 			int offsetY = 0;

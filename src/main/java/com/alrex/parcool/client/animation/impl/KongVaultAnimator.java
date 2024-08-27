@@ -12,6 +12,7 @@ import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 import static java.lang.Math.toRadians;
@@ -36,11 +37,11 @@ public class KongVaultAnimator extends Animator {
 	private float yRotDifferenceOld = 0;
 
 	@Override
-	public void tick(PlayerEntity player) {
+	public void tick(Player player) {
 		super.tick(player);
 		yRotDifferenceOld = yRotDifference;
-		Vector3d currentAngle = VectorUtil.fromYawDegree(player.yBodyRot);
-		Vector3d oldAngle = VectorUtil.fromYawDegree(player.yBodyRotO);
+		Vec3 currentAngle = VectorUtil.fromYawDegree(player.yBodyRot);
+		Vec3 oldAngle = VectorUtil.fromYawDegree(player.yBodyRotO);
 		yRotDifference = (float) Math.atan(
 				(oldAngle.x() * currentAngle.z() - currentAngle.x() * oldAngle.z())
 						/ (currentAngle.x() * oldAngle.x() + currentAngle.z() * oldAngle.z())

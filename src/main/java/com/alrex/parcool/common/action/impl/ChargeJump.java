@@ -10,9 +10,9 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 import java.nio.ByteBuffer;
 
@@ -25,14 +25,14 @@ public class ChargeJump extends Action {
     private boolean started = false;
 
     @Override
-    public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+    public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
         boolean start = started;
         started = false;
         return start;
     }
 
     @Override
-    public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+    public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
         return getDoingTick() < JUMP_ANIMATION_TICK;
     }
 
@@ -42,7 +42,7 @@ public class ChargeJump extends Action {
     }
 
     @Override
-    public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+    public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
         if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.CHARGE_JUMP.get(), 1, 1);
         Animation animation = Animation.get(player);
@@ -52,7 +52,7 @@ public class ChargeJump extends Action {
     }
 
     @Override
-    public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+    public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
         if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.CHARGE_JUMP.get(), 1, 1);
         Animation animation = Animation.get(player);
@@ -62,9 +62,8 @@ public class ChargeJump extends Action {
     }
 
     @Override
-    public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-        if (player instanceof ClientPlayerEntity) {
-            ClientPlayerEntity cp = (ClientPlayerEntity) player;
+    public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
+        if (player instanceof LocalPlayer cp) {
             if (cp.isOnGround()
                     && !stamina.isExhausted()
                     && parkourability.getActionInfo().can(ChargeJump.class)
@@ -88,8 +87,8 @@ public class ChargeJump extends Action {
                     notChargeTick++;
                 }
                 if (isCharging()) {
-                    Vector3d targetAngle = VectorUtil.fromYawDegree(player.yHeadRot);
-                    Vector3d currentAngle = VectorUtil.fromYawDegree(player.yBodyRot);
+                    Vec3 targetAngle = VectorUtil.fromYawDegree(player.yHeadRot);
+                    Vec3 currentAngle = VectorUtil.fromYawDegree(player.yBodyRot);
                     double differenceAngle = Math.atan(
                             (currentAngle.x() * targetAngle.z() - targetAngle.x() * currentAngle.z())
                                     / (targetAngle.x() * currentAngle.x() + targetAngle.z() * currentAngle.z())
@@ -109,16 +108,15 @@ public class ChargeJump extends Action {
         }
     }
 
-    public void onJump(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+    public void onJump(Player player, Parkourability parkourability, IStamina stamina) {
         if (chargeTick >= JUMP_CHARGE_TICK || (lastChargeTick > JUMP_CHARGE_TICK && notChargeTick < 5)) {
             player.setDeltaMovement(player.getDeltaMovement().add(0, 0.11, 0));
             started = true;
         }
     }
 
-    public void onLand(PlayerEntity player, Parkourability parkourability) {
-        if (player.isLocalPlayer() && player instanceof ClientPlayerEntity) {
-            ClientPlayerEntity cp = (ClientPlayerEntity) player;
+    public void onLand(Player player, Parkourability parkourability) {
+        if (player.isLocalPlayer() && player instanceof LocalPlayer cp) {
             if (
                     !cp.input.up
                             && !cp.input.down
@@ -133,12 +131,12 @@ public class ChargeJump extends Action {
     }
 
     @Override
-    public boolean wantsToShowStatusBar(ClientPlayerEntity player, Parkourability parkourability) {
+    public boolean wantsToShowStatusBar(LocalPlayer player, Parkourability parkourability) {
         return isCharging();
     }
 
     @Override
-    public float getStatusValue(ClientPlayerEntity player, Parkourability parkourability) {
+    public float getStatusValue(LocalPlayer player, Parkourability parkourability) {
         return ((float) getChargingTick()) / JUMP_CHARGE_TICK;
     }
 

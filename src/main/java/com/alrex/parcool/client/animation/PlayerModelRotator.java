@@ -1,11 +1,8 @@
 package com.alrex.parcool.client.animation;
 
-import com.alrex.parcool.utilities.MathUtil;
-import com.alrex.parcool.utilities.VectorUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 
 public class PlayerModelRotator {
 	private final PoseStack stack;
@@ -64,7 +61,7 @@ public class PlayerModelRotator {
 		return this;
 	}
 
-	public MatrixStack getRawStack() {
+	public PoseStack getRawStack() {
 		return stack;
 	}
 

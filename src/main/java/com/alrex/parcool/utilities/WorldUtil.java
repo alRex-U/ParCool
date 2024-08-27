@@ -30,7 +30,7 @@ public class WorldUtil {
 				pos.y() + entity.getBbHeight() / 1.63,
 				pos.z() + width
 		);
-		AxisAlignedBB baseBox2 = new AxisAlignedBB(
+		AABB baseBox2 = new AABB(
 				pos.x() - width,
 				pos.y() + entity.getBbHeight() / 1.63,
 				pos.z() - width,

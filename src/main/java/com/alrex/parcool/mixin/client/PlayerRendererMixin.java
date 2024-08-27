@@ -25,7 +25,7 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
 	private PlayerModelRotator parCool$rotator = null;
 
 	@Inject(method = "Lnet/minecraft/client/renderer/entity/player/PlayerRenderer;setupRotations(Lnet/minecraft/client/player/AbstractClientPlayer;Lcom/mojang/blaze3d/vertex/PoseStack;FFF)V", at = @At("RETURN"))
-	protected void onSetupRotationsTail(AbstractClientPlayerEntity player, MatrixStack stack, float xRot, float yRot, float zRot, CallbackInfo ci) {
+	protected void onSetupRotationsTail(AbstractClientPlayer player, PoseStack stack, float xRot, float yRot, float zRot, CallbackInfo ci) {
 		// arg names may be incorrect
 		Animation animation = Animation.get(player);
 		if (animation == null) {
@@ -37,8 +37,8 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
 		}
 	}
 
-	@Inject(method = "setupRotations(Lnet/minecraft/client/entity/player/AbstractClientPlayerEntity;Lcom/mojang/blaze3d/matrix/MatrixStack;FFF)V", at = @At("HEAD"), cancellable = true)
-	protected void onSetupRotationsHead(AbstractClientPlayerEntity player, MatrixStack stack, float xRot, float yRot, float zRot, CallbackInfo ci) {
+	@Inject(method = "Lnet/minecraft/client/renderer/entity/player/PlayerRenderer;setupRotations(Lnet/minecraft/client/player/AbstractClientPlayer;Lcom/mojang/blaze3d/vertex/PoseStack;FFF)V", at = @At("HEAD"), cancellable = true)
+	protected void onSetupRotationsHead(AbstractClientPlayer player, PoseStack stack, float xRot, float yRot, float zRot, CallbackInfo ci) {
 		Animation animation = Animation.get(player);
 		if (animation == null) {
 			return;

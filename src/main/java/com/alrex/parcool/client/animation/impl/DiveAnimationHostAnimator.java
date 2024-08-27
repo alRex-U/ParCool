@@ -27,7 +27,7 @@ public class DiveAnimationHostAnimator extends Animator {
 	final static int MaxTransitionTick = 6;
 
 	@Override
-	public void tick(PlayerEntity player) {
+	public void tick(Player player) {
 		super.tick(player);
 		diveAnimator.tick(player);
 		if (skyDiveAnimator != null) skyDiveAnimator.tick(player);

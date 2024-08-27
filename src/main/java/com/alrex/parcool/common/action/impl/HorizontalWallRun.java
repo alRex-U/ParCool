@@ -16,6 +16,7 @@ import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
@@ -74,7 +75,7 @@ public class HorizontalWallRun extends Action {
 		float slipperiness = player.level.getBlockState(leanedBlock).getFriction(player.level, leanedBlock, player);
 		if (slipperiness <= 0.8) {
 			double speedScale = 0.2;
-			ModifiableAttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
+			var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
 			if (attr != null) {
 				speedScale *= attr.getValue() / attr.getBaseValue();
 			}

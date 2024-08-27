@@ -71,7 +71,7 @@ public class ClingToCliff extends Action {
 	}
 
     @Override
-    public void onStart(PlayerEntity player, Parkourability parkourability) {
+	public void onStart(Player player, Parkourability parkourability) {
         armSwingAmount = 0;
     }
 

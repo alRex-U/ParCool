@@ -6,17 +6,17 @@ import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.ChargeJump;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.Easing;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 public class JumpChargingAnimator extends Animator {
     @Override
-    public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+    public boolean shouldRemoved(Player player, Parkourability parkourability) {
         ChargeJump c = parkourability.get(ChargeJump.class);
         return !c.isCharging();
     }
 
     @Override
-    public boolean animatePre(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+    public boolean animatePre(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
         float transitionPhase = Math.min(1f, (parkourability.get(ChargeJump.class).getChargingTick() + transformer.getPartialTick()) / ChargeJump.JUMP_CHARGE_TICK);
         float animFactor = new Easing(transitionPhase)
                 .sinInOut(0, 1, 0, 1)
@@ -40,7 +40,7 @@ public class JumpChargingAnimator extends Animator {
     }
 
     @Override
-    public boolean rotatePre(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public boolean rotatePre(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
         float transitionPhase = Math.min(1f, (parkourability.get(ChargeJump.class).getChargingTick() + rotator.getPartialTick()) / ChargeJump.JUMP_CHARGE_TICK);
         float animFactor = new Easing(transitionPhase)
                 .sinInOut(0, 1, 0, 1)

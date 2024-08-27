@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.slf4j.event.Level;
 
 import java.nio.ByteBuffer;
 
@@ -97,7 +96,7 @@ public class CatLeap extends Action {
 
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
-		Vector3d jumpDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
+		Vec3 jumpDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			player.playSound(SoundEvents.CATLEAP.get(), 1, 1);
 		spawnJumpEffect(player, jumpDirection);
@@ -125,7 +124,7 @@ public class CatLeap extends Action {
 						pos.y() + 0.1D,
 						pos.z() + (jumpDirection.z() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width
 				);
-				Vector3d particleSpeed = particlePos.subtract(pos).normalize().scale(2.5 + 8 * player.getRandom().nextDouble()).add(0, 1.5, 0);
+				Vec3 particleSpeed = particlePos.subtract(pos).normalize().scale(2.5 + 8 * player.getRandom().nextDouble()).add(0, 1.5, 0);
 				level.addParticle(
 						new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(blockpos),
 						particlePos.x(),

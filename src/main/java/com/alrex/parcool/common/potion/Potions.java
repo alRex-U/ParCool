@@ -1,7 +1,6 @@
 package com.alrex.parcool.common.potion;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.common.potion.effects.InexhaustibleEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.alchemy.Potion;
@@ -11,14 +10,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class Potions {
-	private static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(ForgeRegistries.POTION_TYPES, ParCool.MOD_ID);
+	private static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(ForgeRegistries.POTIONS, ParCool.MOD_ID);
 	public static final RegistryObject<Potion> POOR_ENERGY_DRINK =
 			POTIONS.register(
 					"poor_energy_drink",
 					() -> new Potion(
 							new MobEffectInstance(com.alrex.parcool.api.Effects.INEXHAUSTIBLE.get(), 2400/*2 min*/),
-							new MobEffectInstance(Effects.HUNGER, 100),
-							new MobEffectInstance(Effects.POISON, 100)
+							new MobEffectInstance(MobEffects.HUNGER, 100),
+							new MobEffectInstance(MobEffects.POISON, 100)
 					)
 			);
 	public static final RegistryObject<Potion> ENERGY_DRINK =

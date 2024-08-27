@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.ForgeConfig;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -28,16 +29,8 @@ import javax.annotation.Nonnull;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
-	@Shadow
-	public abstract BlockState getFeetBlockState();
 
-	@Shadow
-	public abstract void readAdditionalSaveData(CompoundNBT p_70037_1_);
-
-    @Shadow
-    public abstract void releaseUsingItem();
-
-	public LivingEntityMixin(EntityType<?> p_i48580_1_, World p_i48580_2_) {
+	public LivingEntityMixin(EntityType<?> p_i48580_1_, Level p_i48580_2_) {
 		super(p_i48580_1_, p_i48580_2_);
 	}
 
@@ -75,7 +68,7 @@ public abstract class LivingEntityMixin extends Entity {
 	}
 
 	@Unique
-	public boolean parCool$isLivingOnCustomLadder(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull LivingEntity entity) {
+	public boolean parCool$isLivingOnCustomLadder(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull LivingEntity entity) {
 		boolean isSpectator = (entity instanceof Player && entity.isSpectator());
 		if (isSpectator) return false;
 		if (!ForgeConfig.SERVER.fullBoundingBoxLadders.get()) {
@@ -105,7 +98,7 @@ public abstract class LivingEntityMixin extends Entity {
 
 	@Unique
 	private boolean parCool$isCustomLadder(BlockState state, Level world, BlockPos pos, LivingEntity entity) {
-		Block block = state.getBlockState().getBlock();
+		Block block = state.getBlock();
 		if (block instanceof CrossCollisionBlock) {
 			int zCount = 0;
 			int xCount = 0;
@@ -113,8 +106,8 @@ public abstract class LivingEntityMixin extends Entity {
 			if (state.getValue(CrossCollisionBlock.SOUTH)) zCount++;
 			if (state.getValue(CrossCollisionBlock.EAST)) xCount++;
 			if (state.getValue(CrossCollisionBlock.WEST)) xCount++;
-			boolean stacked = world.isLoaded(pos.above()) && world.getBlockState(pos.above()).getBlock() instanceof FourWayBlock;
-			if (!stacked && world.isLoaded(pos.below()) && world.getBlockState(pos.below()).getBlock() instanceof FourWayBlock)
+			boolean stacked = world.isLoaded(pos.above()) && world.getBlockState(pos.above()).getBlock() instanceof CrossCollisionBlock;
+			if (!stacked && world.isLoaded(pos.below()) && world.getBlockState(pos.below()).getBlock() instanceof CrossCollisionBlock)
 				stacked = true;
 
 			return ((zCount + xCount <= 1) || (zCount == 1 && xCount == 1)) && stacked;

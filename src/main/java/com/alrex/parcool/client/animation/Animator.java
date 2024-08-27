@@ -8,7 +8,7 @@ import net.minecraftforge.event.TickEvent;
 public abstract class Animator {
 	private int tick = 0;
 
-	public void tick(PlayerEntity player) {
+	public void tick(Player player) {
 		tick++;
 	}
 

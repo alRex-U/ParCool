@@ -6,6 +6,7 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.utilities.MathUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -87,7 +88,7 @@ public class StaminaHUD extends GuiComponent {
 		final Tuple<Integer, Integer> pos = position.calculate(boxWidth, boxHeight, width, height);
 
 		float staminaScale = (float) stamina.get() / stamina.getActualMaxStamina();
-		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, event.getPartialTicks()) : 0f;
+		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick) : 0f;
 
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;

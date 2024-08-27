@@ -39,7 +39,7 @@ public class JumpFromBar extends Action {
 	}
 
 	@Override
-	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			player.playSound(SoundEvents.HANG_DOWN_JUMP.get(), 1f, 1f);
 		Animation animation = Animation.get(player);

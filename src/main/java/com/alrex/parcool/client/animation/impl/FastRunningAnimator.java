@@ -36,7 +36,7 @@ public class FastRunningAnimator extends Animator {
 		float bodyAngleFactor = bodyAngleFactor(phase);
 		double rightXRotFactor = Math.cos(limbSwing * 0.6662 + Math.PI);
 		double leftXRotFactor = Math.cos(limbSwing * 0.6662);
-		HandSide attackHand = player.getMainArm();
+		HumanoidArm attackHand = player.getMainArm();
 		boolean leftArmAnimatable = attackHand != HumanoidArm.LEFT || transformer.getRawModel().attackTime <= 0f;
 		boolean rightArmAnimatable = attackHand != HumanoidArm.RIGHT || transformer.getRawModel().attackTime <= 0f;
 		if (leftArmAnimatable && ((

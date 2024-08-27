@@ -407,6 +407,7 @@ public class ParCoolConfig {
 		public static final ForgeConfigSpec.EnumValue<FastRun.ControlType> FastRunControl;
 		public static final ForgeConfigSpec.EnumValue<Crawl.ControlType> CrawlControl;
         public static final ForgeConfigSpec.EnumValue<Flipping.ControlType> FlipControl;
+		public static final ForgeConfigSpec.EnumValue<HorizontalWallRun.ControlType> HWallRunControl;
         public static final ForgeConfigSpec.EnumValue<IStamina.Type> StaminaType;
 
 		private static void register(ForgeConfigSpec.Builder builder, ConfigGroup group) {

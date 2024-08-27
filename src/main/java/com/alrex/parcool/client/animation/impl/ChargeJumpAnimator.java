@@ -6,16 +6,16 @@ import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.ChargeJump;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.Easing;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 public class ChargeJumpAnimator extends Animator {
     @Override
-    public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+    public boolean shouldRemoved(Player player, Parkourability parkourability) {
         return getTick() >= ChargeJump.JUMP_ANIMATION_TICK;
     }
 
     @Override
-    public boolean animatePre(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+    public boolean animatePre(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
         float animationPhase = Math.min(1f, (getTick() + transformer.getPartialTick()) / ChargeJump.JUMP_ANIMATION_TICK);
         float animFactor = new Easing(animationPhase)
                 .linear(0f, 8f, 1f, 1)
@@ -117,7 +117,7 @@ public class ChargeJumpAnimator extends Animator {
     }
 
     @Override
-    public boolean rotatePre(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public boolean rotatePre(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
         float animationPhase = Math.min(1f, (getTick() + rotator.getPartialTick()) / ChargeJump.JUMP_ANIMATION_TICK);
         float animFactor = new Easing(animationPhase)
                 .linear(0f, 8f, 1f, 1)
