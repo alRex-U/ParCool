@@ -13,44 +13,43 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ParCoolBrewingRecipe implements IBrewingRecipe {
-	private static class MixPredicate {
-		MixPredicate(Potion from, Item ingredient, Potion result) {
+	private static class MixRecipe {
+		MixRecipe(Supplier<Potion> from, Supplier<Item> ingredient, Supplier<Potion> result) {
 			this.from = from;
 			this.ingredient = ingredient;
 			this.result = result;
 		}
 
-		private final Potion from;
-		private final Item ingredient;
-		private final Potion result;
+		private final Supplier<Potion> from;
+		private final Supplier<Item> ingredient;
+		private final Supplier<Potion> result;
 	}
 
-	private static final List<MixPredicate> MIXES = Arrays.asList(
-			addMix(Potions.AWKWARD, Items.POISONOUS_POTATO, com.alrex.parcool.common.potion.Potions.POOR_ENERGY_DRINK),
-			addMix(Potions.AWKWARD, Items.CHICKEN, com.alrex.parcool.common.potion.Potions.POOR_ENERGY_DRINK),
-			addMix(com.alrex.parcool.common.potion.Potions.POOR_ENERGY_DRINK, Items.QUARTZ, com.alrex.parcool.common.potion.Potions.ENERGY_DRINK),
-			addMix(Potions.AWKWARD, Items.QUARTZ, com.alrex.parcool.common.potion.Potions.ENERGY_DRINK)
+
+	private static final List<MixRecipe> MIXES = Arrays.asList(
+			new MixRecipe(() -> Potions.AWKWARD, () -> Items.POISONOUS_POTATO, com.alrex.parcool.common.potion.Potions.POOR_ENERGY_DRINK::get),
+			new MixRecipe(() -> Potions.AWKWARD, () -> Items.CHICKEN, com.alrex.parcool.common.potion.Potions.POOR_ENERGY_DRINK::get),
+			new MixRecipe(com.alrex.parcool.common.potion.Potions.POOR_ENERGY_DRINK::get, () -> Items.QUARTZ, com.alrex.parcool.common.potion.Potions.ENERGY_DRINK::get),
+			new MixRecipe(() -> Potions.AWKWARD, () -> Items.QUARTZ, com.alrex.parcool.common.potion.Potions.ENERGY_DRINK::get)
 	);
-
-	private static MixPredicate addMix(Potion from, Item ingredient, Potion result) {
-		return new MixPredicate(from, ingredient, result);
-	}
 
 	@Nullable
 	private static Potion mix(ItemStack input, ItemStack ingredient) {
 		Potion inputPotion = PotionUtils.getPotion(input);
 		Item ingredientItem = ingredient.getItem();
-		return MIXES.stream()
-				.filter((MixPredicate it) -> it.from == inputPotion && it.ingredient == ingredientItem)
-				.findFirst()
-				.orElse(new MixPredicate(null, null, null))
-				.result;
+		for (MixRecipe recipe : MIXES) {
+			if (recipe.from.get() == inputPotion && recipe.ingredient.get() == ingredientItem) {
+				return recipe.result.get();
+			}
+		}
+		return null;
 	}
 
 	private static boolean isPotionIngredient(Item item) {
-		return MIXES.stream().anyMatch((MixPredicate it) -> item == it.ingredient);
+		return MIXES.stream().anyMatch((MixRecipe it) -> item == it.ingredient.get());
 	}
 
 	@Override

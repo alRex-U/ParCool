@@ -48,14 +48,20 @@ public class Animation {
 		animator.animatePost(player, parkourability, modelTransformer);
 	}
 
-	public void applyRotate(AbstractClientPlayer player, PlayerModelRotator rotator) {
+	public boolean rotatePre(AbstractClientPlayer player, PlayerModelRotator rotator) {
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null || animator == null) return false;
+		return animator.rotatePre(player, parkourability, rotator);
+	}
+
+	public void rotatePost(AbstractClientPlayer player, PlayerModelRotator rotator) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 		if (animator == null) {
 			passiveAnimation.rotate(player, parkourability, rotator);
 			return;
 		}
-		animator.rotate(player, parkourability, rotator);
+		animator.rotatePost(player, parkourability, rotator);
 	}
 
 	public void cameraSetup(EntityViewRenderEvent.CameraSetup event, Player player, Parkourability parkourability) {
@@ -70,7 +76,7 @@ public class Animation {
 	public void tick(Player player, Parkourability parkourability) {
 		passiveAnimation.tick(player, parkourability);
 		if (animator != null) {
-			animator.tick();
+            animator.tick(player);
 			if (animator.shouldRemoved(player, parkourability)) animator = null;
 		}
 	}

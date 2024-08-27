@@ -11,26 +11,22 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class Potions {
-	private static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(ForgeRegistries.POTIONS, ParCool.MOD_ID);
-	public static final Potion POOR_ENERGY_DRINK =
-			new Potion(
-					new MobEffectInstance(new InexhaustibleEffect(), 2400/*2 min*/),
-					new MobEffectInstance(MobEffects.HUNGER, 100),
-					new MobEffectInstance(MobEffects.POISON, 100)
-			);
-	public static final Potion ENERGY_DRINK =
-			new Potion(
-					new MobEffectInstance(new InexhaustibleEffect(), 9600/*8 min*/)
-			);
-	private static final RegistryObject<Potion> POOR_ENERGY_DRINK_REGISTRY =
+	private static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(ForgeRegistries.POTION_TYPES, ParCool.MOD_ID);
+	public static final RegistryObject<Potion> POOR_ENERGY_DRINK =
 			POTIONS.register(
 					"poor_energy_drink",
-					() -> POOR_ENERGY_DRINK
+					() -> new Potion(
+							new MobEffectInstance(com.alrex.parcool.api.Effects.INEXHAUSTIBLE.get(), 2400/*2 min*/),
+							new MobEffectInstance(Effects.HUNGER, 100),
+							new MobEffectInstance(Effects.POISON, 100)
+					)
 			);
-	public static final RegistryObject<Potion> ENERGY_DRINK_REGISTRY =
+	public static final RegistryObject<Potion> ENERGY_DRINK =
 			POTIONS.register(
 					"energy_drink",
-					() -> ENERGY_DRINK
+					() -> new Potion(
+							new MobEffectInstance(com.alrex.parcool.api.Effects.INEXHAUSTIBLE.get(), 9600/*8 min*/)
+					)
 			);
 
 	public static void registerAll(IEventBus modBus) {

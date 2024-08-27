@@ -31,7 +31,7 @@ public class SpeedVaultAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / Vault.MAX_TICK;
 		float factor = getFactor(getTick() + rotator.getPartialTick());
 		float forwardFactor = (float) Math.sin(phase * 2 * Math.PI) + 0.5f;
@@ -45,7 +45,7 @@ public class SpeedVaultAnimator extends Animator {
 				.rotateRollRightward(factor * 60 * (type == Type.Right ? -1 : 1))
 				.rotatePitchFrontward(30 * forwardFactor)
 				.end();
-	}
+    }
 
 	@Override
 	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
@@ -81,6 +81,7 @@ public class SpeedVaultAnimator extends Animator {
 						)
 						.addRotateRightLeg(0, 0, (float) Math.toRadians(factor * 30))
 						.addRotateLeftLeg(0, 0, (float) Math.toRadians(factor * 20))
+						.rotateAdditionallyHeadRoll(factor * -15)
 						.end();
 				break;
 
@@ -99,6 +100,7 @@ public class SpeedVaultAnimator extends Animator {
 						)
 						.addRotateRightLeg(0, 0, (float) Math.toRadians(factor * -20))
 						.addRotateLeftLeg(0, 0, (float) Math.toRadians(factor * -30))
+						.rotateAdditionallyHeadRoll(factor * 35)
 						.end();
 				break;
 		}
@@ -124,7 +126,7 @@ public class SpeedVaultAnimator extends Animator {
 
 	public enum Type {Right, Left}
 
-	private Type type;
+	private final Type type;
 
 	public SpeedVaultAnimator(Type type) {
 		this.type = type;

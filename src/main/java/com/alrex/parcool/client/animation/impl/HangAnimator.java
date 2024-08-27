@@ -15,7 +15,6 @@ public class HangAnimator extends Animator {
 	public boolean shouldRemoved(Player player, Parkourability parkourability) {
 		return !parkourability.get(HangDown.class).isDoing();
 	}
-
 	@Override
 	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		HangDown hangDown = parkourability.get(HangDown.class);
@@ -61,12 +60,12 @@ public class HangAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+	public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		HangDown hangDown = parkourability.get(HangDown.class);
 		rotator.startBasedTop()
 				.rotatePitchFrontward(getRotateAngle(hangDown, rotator.getPartialTick()))
 				.end();
-	}
+    }
 
 	@Override
 	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, Player clientPlayer, Parkourability parkourability) {

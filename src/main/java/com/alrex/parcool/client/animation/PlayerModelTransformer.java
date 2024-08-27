@@ -267,8 +267,8 @@ public class PlayerModelTransformer {
 		return this;
 	}
 
-	public PlayerModelTransformer rotateAdditionallyHeadRoll(float yawDegree) {
-		model.head.zRot = (float) Math.toRadians(yawDegree + netHeadYaw);
+	public PlayerModelTransformer rotateAdditionallyHeadRoll(float rollDegree) {
+		model.head.zRot = (float) Math.toRadians(rollDegree + netHeadYaw);
 		return this;
 	}
 
@@ -294,17 +294,16 @@ public class PlayerModelTransformer {
 		resetModel(model.body);
 		{
 			resetModel(model.rightArm);
-			model.rightArm.x = 5.2F;
-			model.rightArm.y = this.slim ? 2.5F : 2.0F;
+			model.rightArm.x = -5.0F;
+			model.rightArm.y = 2.0F;
 			model.rightArm.z = 0.0F;
 			model.rightSleeve.copyFrom(model.rightArm);
 		}
 		{
 			resetModel(model.leftArm);
-			model.leftArm.x = 2.5F;
-			model.leftArm.y = this.slim ? 2.5F : 2.0F;
+			model.leftArm.x = 5.0F;
+			model.leftArm.y = 2.0F;
 			model.leftArm.z = 0.0F;
-
 			model.leftSleeve.copyFrom(model.leftArm);
 		}
 		{

@@ -82,7 +82,7 @@ public class ParCoolConfig {
 			),
 			EnableFPVAnimation(
 					ConfigGroup.CameraAnimation, "Enable first-person-view animations",
-					"enable_fov_animation", true
+					"enable_fov_animation", false
 			),
 			EnableCameraAnimationOfDodge(
 					ConfigGroup.CameraAnimation, "Enable rotation of camera by Dodge",
@@ -320,6 +320,10 @@ public class ParCoolConfig {
 					ConfigGroup.Modifier, "FastRun speed modifier",
 					"fast-run_modifier", 2, 0.001, 4
 			),
+			FastSwimSpeedModifier(
+					ConfigGroup.Modifier, "FastSwim speed modifier",
+					"fast-swim_modifier", 2, 0.001, 4
+			),
 			DodgeSpeedModifier(
 					ConfigGroup.Modifier, "Dodge speed modifier",
 					"dodge-speed_modifier", 1, 0.5, 1.5
@@ -444,8 +448,9 @@ public class ParCoolConfig {
 			builder.push("Control");
 			{
 				FastRunControl = builder.comment("Control of FastRun").defineEnum("fast-run_control", FastRun.ControlType.PressKey);
-                CrawlControl = builder.comment("Control of Crawl").defineEnum("crawl_control", Crawl.ControlType.PressKey);
-                FlipControl = builder.comment("Control of Flipping").defineEnum("flip_control", Flipping.ControlType.PressRightAndLeft);
+				CrawlControl = builder.comment("Control of Crawl").defineEnum("crawl_control", Crawl.ControlType.PressKey);
+				FlipControl = builder.comment("Control of Flipping").defineEnum("flip_control", Flipping.ControlType.PressRightAndLeft);
+				HWallRunControl = builder.comment("Control of Horizontal Wall Run").defineEnum("h-wall-run_control", HorizontalWallRun.ControlType.PressKey);
 				register(builder, ConfigGroup.Control);
 			}
 			builder.pop();
@@ -655,6 +660,10 @@ public class ParCoolConfig {
 					ConfigGroup.Modifier, "FastRun speed modifier",
 					"max_fast-run_modifier", 2, 0.001, 4, AdvantageousDirection.Higher
 			),
+			MaxFastSwimSpeedModifier(
+					ConfigGroup.Modifier, "FastSwim speed modifier",
+					"max_fast-swim_modifier", 2, 0.001, 4, AdvantageousDirection.Higher
+			),
 			MaxDodgeSpeedModifier(
 					ConfigGroup.Modifier, "Dodge speed modifier",
 					"max_dodge-speed_modifier", 1, 0.5, 1.5, AdvantageousDirection.Higher
@@ -756,7 +765,7 @@ public class ParCoolConfig {
 			builder.push("Limitations");
 			{
 				LimitationEnabled = builder.comment("Whether these limitations will be imposed to players").define("limitation_imposed", false);
-				builder.push("Action Permissions");
+				builder.push("Action_Permissions");
 				{
 					for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
 						actionPermissions[i]
@@ -766,7 +775,7 @@ public class ParCoolConfig {
 				builder.pop();
 				builder.push("Stamina");
 				{
-					builder.push("Least Consumption");
+					builder.push("Least_Consumption");
 					{
 						for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
                             leastStaminaConsumptions[i] = builder.defineInRange(
@@ -776,6 +785,7 @@ public class ParCoolConfig {
 							);
 						}
 					}
+					builder.pop();
 					register(builder, ConfigGroup.Stamina);
 				}
 				builder.pop();

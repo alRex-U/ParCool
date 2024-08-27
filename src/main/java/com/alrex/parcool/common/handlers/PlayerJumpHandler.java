@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.handlers;
 
+import com.alrex.parcool.common.action.impl.ChargeJump;
 import com.alrex.parcool.common.action.impl.Dive;
 import com.alrex.parcool.common.action.impl.Flipping;
 import com.alrex.parcool.common.capability.IStamina;
@@ -19,6 +20,7 @@ public class PlayerJumpHandler {
 		IStamina stamina = IStamina.get(player);
 		if (stamina == null) return;
 		parkourability.get(Dive.class).onJump(player, parkourability, stamina);
-        parkourability.get(Flipping.class).onJump(player, parkourability, stamina);
+		parkourability.get(Flipping.class).onJump(player, parkourability, stamina);
+        parkourability.get(ChargeJump.class).onJump(player, parkourability, stamina);
 	}
 }

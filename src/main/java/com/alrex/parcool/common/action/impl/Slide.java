@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
 public class Slide extends Action {
@@ -24,6 +25,8 @@ public class Slide extends Action {
 
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		Vec3 lookingVec = player.getLookAngle().multiply(1, 0, 1).normalize();
+		startInfo.putDouble(lookingVec.x()).putDouble(lookingVec.z());
 		return (!stamina.isExhausted()
 				&& parkourability.getActionInfo().can(Slide.class)
 				&& KeyRecorder.keyCrawlState.isPressed()
@@ -48,7 +51,7 @@ public class Slide extends Action {
 
 	@Override
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
-		slidingVec = player.getLookAngle().multiply(1, 0, 1).normalize();
+		slidingVec = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.SLIDE.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
@@ -60,6 +63,9 @@ public class Slide extends Action {
 
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
+		slidingVec = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.SLIDE.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new SlidingAnimator());
@@ -95,10 +101,9 @@ public class Slide extends Action {
 		}
 	}
 
-	@Override
-	public void onRenderTick(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
-		if (slidingVec == null || !isDoing()) return;
-		player.setYRot((float) VectorUtil.toYawDegree(slidingVec));
+	@Nullable
+	public Vector3d getSlidingVector() {
+		return slidingVec;
 	}
 
 	@Override

@@ -39,9 +39,9 @@ public class Flipping extends Action {
         }
     }
 
-    public enum Direction {
-        Front, Back;
-    }
+	public enum Direction {
+		Front, Back
+	}
 
     private boolean justJumped = false;
 
@@ -56,15 +56,19 @@ public class Flipping extends Action {
 		} else {
             fDirection = Direction.Front;
 		}
-        ControlType control = ParCoolConfig.Client.FlipControl.get();
-        startInfo
-                .putInt(control.ordinal())
-                .putInt(fDirection.ordinal());
-        boolean input = control.isInputDone(justJumped);
-        justJumped = false;
-        return (input
-                && parkourability.getActionInfo().can(Flipping.class)
-                && !parkourability.get(Dive.class).isDoing()
+		ControlType control = ParCoolConfig.Client.FlipControl.get();
+		startInfo
+				.putInt(control.ordinal())
+				.putInt(fDirection.ordinal());
+		boolean input = control.isInputDone(justJumped);
+		justJumped = false;
+		return (input
+                && !player.isShiftKeyDown()
+				&& parkourability.getActionInfo().can(Flipping.class)
+				&& !parkourability.get(Crawl.class).isDoing()
+				&& !parkourability.get(Dive.class).isDoing()
+				&& !parkourability.get(ChargeJump.class).isDoing()
+				&& !parkourability.getCancelMarks().cancelJump()
 				&& !stamina.isExhausted()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() <= 1
 		);

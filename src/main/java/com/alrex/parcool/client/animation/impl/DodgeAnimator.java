@@ -33,7 +33,7 @@ public class DodgeAnimator extends Animator {
 		float animFactor = new Easing(phase)
 				.squareOut(0, 0.25f, 0, 1)
 				.linear(0.25f, 0.75f, 1, 1)
-				.squareIn(0.75f, 1, 1, 0)
+				.sinInOut(0.70f, 1, 1, 0)
 				.get();
 		switch (direction) {
 			case Right: {
@@ -227,10 +227,10 @@ public class DodgeAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / Dodge.MAX_TICK;
 		if (phase > 1) {
-			return;
+            return;
 		}
 		switch (direction) {
 			case Front: {
@@ -295,7 +295,7 @@ public class DodgeAnimator extends Animator {
 				break;
 			}
 		}
-	}
+    }
 
 	@Override
 	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, Player clientPlayer, Parkourability parkourability) {

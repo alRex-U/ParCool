@@ -197,19 +197,21 @@ public class WallJump extends Action {
 
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
-        Vec3 jumpDirection = new Vec3(startData.getDouble(), startData.getDouble(), startData.getDouble());
-		Vec3 wallDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
-        BlockPos leanedBlock = new BlockPos(
-                player.getX() + wallDirection.x(),
-                player.getBoundingBox().minY + player.getBbHeight() * 0.25,
-                player.getZ() + wallDirection.z()
-        );
-        float slipperiness = player.level.isLoaded(leanedBlock) ?
-                player.level.getBlockState(leanedBlock).getFriction(player.level, leanedBlock, player)
-                : 1f;
-        if (slipperiness <= 0.9) {// icy blocks
-            spawnJumpParticles(player, wallDirection, jumpDirection);
-        }
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.WALL_JUMP.get(), 1f, 1f);
+		Vector3d jumpDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
+		Vector3d wallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		BlockPos leanedBlock = new BlockPos(
+				player.getX() + wallDirection.x(),
+				player.getBoundingBox().minY + player.getBbHeight() * 0.25,
+				player.getZ() + wallDirection.z()
+		);
+		float slipperiness = player.level.isLoaded(leanedBlock) ?
+				player.level.getBlockState(leanedBlock).getSlipperiness(player.level, leanedBlock, player)
+				: 1f;
+		if (slipperiness <= 0.9) {// icy blocks
+			spawnJumpParticles(player, wallDirection, jumpDirection);
+		}
 
 		WallJumpAnimationType type = WallJumpAnimationType.fromCode(startData.get());
 		Animation animation = Animation.get(player);

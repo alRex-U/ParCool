@@ -104,5 +104,15 @@ public abstract class Action {
 	public void saveSynchronizedState(ByteBuffer buffer) {
 	}
 
+	@OnlyIn(Dist.CLIENT)
+	public boolean wantsToShowStatusBar(ClientPlayerEntity player, Parkourability parkourability) {
+		return false;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public float getStatusValue(ClientPlayerEntity player, Parkourability parkourability) {
+		return 0;
+	}
+
 	public abstract StaminaConsumeTiming getStaminaConsumeTiming();
 }

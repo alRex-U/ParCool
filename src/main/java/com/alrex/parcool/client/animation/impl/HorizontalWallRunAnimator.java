@@ -49,14 +49,14 @@ public class HorizontalWallRunAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float factor = getFactor(getTick() + rotator.getPartialTick());
 		float angle = factor * 30 * (wallIsRightSide ? -1 : 1);
 		rotator
 				.startBasedCenter()
 				.rotateRollRightward(angle)
 				.end();
-	}
+    }
 
 	@Override
 	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, Player clientPlayer, Parkourability parkourability) {

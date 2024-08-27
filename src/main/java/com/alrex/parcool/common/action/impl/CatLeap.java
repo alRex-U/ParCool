@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.slf4j.event.Level;
 
 import java.nio.ByteBuffer;
 
@@ -26,7 +27,7 @@ public class CatLeap extends Action {
 	private int coolTimeTick = 0;
 	private boolean ready = false;
 	private int readyTick = 0;
-	private final int MAX_COOL_TIME_TICK = 30;
+    private static final int MAX_COOL_TIME_TICK = 30;
 
 	@Override
 	public void onTick(Player player, Parkourability parkourability, IStamina stamina) {
@@ -63,8 +64,9 @@ public class CatLeap extends Action {
 				&& !stamina.isExhausted()
 				&& coolTimeTick <= 0
 				&& readyTick > 0
-                && !parkourability.get(Roll.class).isDoing()
-                && !parkourability.get(Tap.class).isDoing()
+                && parkourability.get(ChargeJump.class).getChargingTick() < ChargeJump.JUMP_CHARGE_TICK / 2
+				&& !parkourability.get(Roll.class).isDoing()
+				&& !parkourability.get(Tap.class).isDoing()
 				&& KeyRecorder.keySneak.isReleased()
 		);
 	}
@@ -95,8 +97,10 @@ public class CatLeap extends Action {
 
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
-        Vec3 jumpDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
-        spawnJumpEffect(player, jumpDirection);
+		Vector3d jumpDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.CATLEAP.get(), 1, 1);
+		spawnJumpEffect(player, jumpDirection);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new CatLeapAnimator());
 	}
@@ -106,35 +110,31 @@ public class CatLeap extends Action {
 		return StaminaConsumeTiming.OnStart;
 	}
 
-	public float getCoolDownPhase() {
-		return ((float) MAX_COOL_TIME_TICK - coolTimeTick) / MAX_COOL_TIME_TICK;
-	}
-
-    @OnlyIn(Dist.CLIENT)
-    private void spawnJumpEffect(Player player, Vec3 jumpDirection) {
-        Level level = player.level;
-        Vec3 pos = player.position();
-        BlockPos blockpos = new BlockPos(pos.add(0, -0.2, 0));
-        if (!level.isLoaded(blockpos)) return;
-        float width = player.getBbWidth();
-        BlockState blockstate = level.getBlockState(blockpos);
-        if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
-            for (int i = 0; i < 20; i++) {
-                Vec3 particlePos = new Vec3(
-                        pos.x() + (jumpDirection.x() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width,
-                        pos.y() + 0.1D,
-                        pos.z() + (jumpDirection.z() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width
-                );
-                Vec3 particleSpeed = particlePos.subtract(pos).normalize().scale(2.5 + 8 * player.getRandom().nextDouble()).add(0, 1.5, 0);
-                level.addParticle(
-                        new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(blockpos),
-                        particlePos.x(),
-                        particlePos.y(),
-                        particlePos.z(),
-                        particleSpeed.x(),
-                        particleSpeed.y(),
-                        particleSpeed.z()
-                );
+	@OnlyIn(Dist.CLIENT)
+	private void spawnJumpEffect(Player player, Vec3 jumpDirection) {
+		Level level = player.level;
+		Vec3 pos = player.position();
+		BlockPos blockpos = new BlockPos(pos.add(0, -0.2, 0));
+		if (!level.isLoaded(blockpos)) return;
+		float width = player.getBbWidth();
+		BlockState blockstate = level.getBlockState(blockpos);
+		if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
+			for (int i = 0; i < 20; i++) {
+				Vec3 particlePos = new Vec3(
+						pos.x() + (jumpDirection.x() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width,
+						pos.y() + 0.1D,
+						pos.z() + (jumpDirection.z() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width
+				);
+				Vector3d particleSpeed = particlePos.subtract(pos).normalize().scale(2.5 + 8 * player.getRandom().nextDouble()).add(0, 1.5, 0);
+				level.addParticle(
+						new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(blockpos),
+						particlePos.x(),
+						particlePos.y(),
+						particlePos.z(),
+						particleSpeed.x(),
+						particleSpeed.y(),
+						particleSpeed.z()
+				);
 
             }
         }
