@@ -80,8 +80,8 @@ public class StaminaHUD extends AbstractGui {
 		Position position = new Position(
 				ParCoolConfig.Client.AlignHorizontalStaminaHUD.get(),
 				ParCoolConfig.Client.AlignVerticalStaminaHUD.get(),
-				ParCoolConfig.Client.Integers.HorizontalMarginOfStaminaHUD.get(),
-				ParCoolConfig.Client.Integers.VerticalMarginOfStaminaHUD.get()
+				ParCoolConfig.Client.Integers.HorizontalOffsetOfStaminaHUD.get(),
+				ParCoolConfig.Client.Integers.VerticalOffsetOfStaminaHUD.get()
 		);
 		final int width = window.getGuiScaledWidth();
 		final int height = window.getGuiScaledHeight();

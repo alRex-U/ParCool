@@ -4,6 +4,7 @@ import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
@@ -95,8 +96,8 @@ public class LightStaminaHUD extends AbstractGui {
 		int scaledHeight = event.getWindow().getGuiScaledHeight();
 
 		mc.getTextureManager().bind(StaminaHUD.STAMINA);
-		int baseX = scaledWidth / 2 + 91;
-		int baseY = scaledHeight - ForgeIngameGui.right_height;
+		int baseX = scaledWidth / 2 + 91 + ParCoolConfig.Client.Integers.HorizontalOffsetOfLightStaminaHUD.get();
+		int baseY = scaledHeight - ForgeIngameGui.right_height + ParCoolConfig.Client.Integers.VerticalOffsetOfLightStaminaHUD.get();
 		for (int i = 0; i < 10; i++) {
 			int x = baseX - i * 8 - 9;
 			int offsetY = 0;
