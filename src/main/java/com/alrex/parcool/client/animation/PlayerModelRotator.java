@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.animation;
 
+import com.alrex.parcool.api.unstable.animation.AnimationOption;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3f;
@@ -8,6 +9,7 @@ public class PlayerModelRotator {
 	private final MatrixStack stack;
 	private final PlayerEntity player;
 	private final float partial;
+	private AnimationOption option = new AnimationOption();
 	private double playerHeight = 1.8;
 	private final float givenXRot, givenYRot, givenZRot;
 
@@ -43,6 +45,10 @@ public class PlayerModelRotator {
 			case SLEEPING:
 				playerHeight = 0.6;
 		}
+	}
+
+	public void setOption(AnimationOption option) {
+		this.option = option;
 	}
 
 	public PlayerModelRotator start() {

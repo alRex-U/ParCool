@@ -25,12 +25,18 @@ public class SlidingAnimator extends Animator {
 				.sinInOut(0, 1, 0, 1)
 				.get();
 
-		transformer.getRawModel().leftLeg.z -= 2f * animFactor;
-		transformer.getRawModel().leftLeg.y -= 1.2f * animFactor;
-		transformer.getRawModel().rightArm.z += 1.2f * animFactor;
-		transformer.getRawModel().rightArm.y += 1.2f * animFactor;
-		transformer.getRawModel().head.z -= animFactor;
 		transformer
+                .translateLeftLeg(
+                        0,
+                        -1.2f * animFactor,
+                        -2f * animFactor
+                )
+                .translateRightArm(
+                        0,
+                        1.2f * animFactor,
+                        1.2f * animFactor
+                )
+                .translateHead(0, 0, -animFactor)
 				.rotateHeadPitch(50 * animFactor)
 				.rotateAdditionallyHeadYaw(50 * animFactor)
 				.rotateAdditionallyHeadRoll(-10 * animFactor)

@@ -24,37 +24,45 @@ public class ChargeJumpAnimator extends Animator {
         float outFactor = new Easing(animationPhase)
                 .sinInOut(0, 1f, 1f, 0)
                 .get();
-        transformer.getRawModel().leftLeg.z
-                -= 2.6f * animFactor * Easing.with(animationPhase)
-                .squareOut(0, 0.40f, 1f, -0.4f)
-                .sinInOut(0.4f, 1f, -0.4f, 0)
-                .get();
-        transformer.getRawModel().leftLeg.y
-                -= 3.4f * animFactor * Easing.with(animationPhase)
-                .squareOut(0, 0.35f, 1f, -0.25f)
-                .sinInOut(0.35f, 1f, -0.25f, 0)
-                .get();
-        transformer.getRawModel().rightLeg.z
-                -= 1.4f * Easing.with(animationPhase)
-                .squareOut(0, 0.4f, 1, 1.2f)
-                .sinInOut(0.4f, 1, 1, 0)
-                .get();
-        transformer.getRawModel().rightLeg.y
-                -= 1.6f * Easing.with(animationPhase)
-                .squareOut(0, 0.4f, 1, 1.5f)
-                .sinInOut(0.4f, 1, 1, 0)
-                .get();
-        transformer.getRawModel().rightArm.x += 0.3f * outFactor;
-        transformer.getRawModel().rightArm.y += Easing.with(animationPhase)
-                .squareOut(0, 0.35f, 0.4f, -1.2f)
-                .sinInOut(0.35f, 1, -1.2f, 0)
-                .get();
-        transformer.getRawModel().leftArm.x -= 0.3f * outFactor;
-        transformer.getRawModel().leftArm.y += Easing.with(animationPhase)
-                .squareOut(0, 0.35f, 0.4f, -1.2f)
-                .sinInOut(0.35f, 1, -1.2f, 0)
-                .get();
         transformer
+                .translateLeftLeg(
+                        0,
+                        -3.4f * animFactor * Easing.with(animationPhase)
+                                .squareOut(0, 0.35f, 1f, -0.25f)
+                                .sinInOut(0.35f, 1f, -0.25f, 0)
+                                .get(),
+                        -2.6f * animFactor * Easing.with(animationPhase)
+                                .squareOut(0, 0.40f, 1f, -0.4f)
+                                .sinInOut(0.4f, 1f, -0.4f, 0)
+                                .get()
+                )
+                .translateRightLeg(
+                        0,
+                        -1.4f * Easing.with(animationPhase)
+                                .squareOut(0, 0.4f, 1, 1.2f)
+                                .sinInOut(0.4f, 1, 1, 0)
+                                .get(),
+                        -1.6f * Easing.with(animationPhase)
+                                .squareOut(0, 0.4f, 1, 1.5f)
+                                .sinInOut(0.4f, 1, 1, 0)
+                                .get()
+                )
+                .translateRightArm(
+                        0.3f * outFactor,
+                        Easing.with(animationPhase)
+                                .squareOut(0, 0.35f, 0.4f, -1.2f)
+                                .sinInOut(0.35f, 1, -1.2f, 0)
+                                .get(),
+                        0
+                )
+                .translateLeftArm(
+                        -0.3f * outFactor,
+                        Easing.with(animationPhase)
+                                .squareOut(0, 0.35f, 0.4f, -1.2f)
+                                .sinInOut(0.35f, 1, -1.2f, 0)
+                                .get(),
+                        0
+                )
                 .rotateLeftLeg(
                         (float) Math.toRadians(
                                 -15 + 55 * Easing.with(animationPhase)

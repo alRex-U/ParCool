@@ -21,15 +21,27 @@ public class JumpChargingAnimator extends Animator {
         float animFactor = new Easing(transitionPhase)
                 .sinInOut(0, 1, 0, 1)
                 .get();
-        transformer.getRawModel().leftLeg.z -= 2.6f * animFactor;
-        transformer.getRawModel().leftLeg.y -= 3.4f * animFactor;
-        transformer.getRawModel().rightLeg.z -= 1.4f * animFactor;
-        transformer.getRawModel().rightLeg.y -= 1.6f * animFactor;
-        transformer.getRawModel().rightArm.x += 0.3f * animFactor;
-        transformer.getRawModel().rightArm.y += 0.4f * animFactor;
-        transformer.getRawModel().leftArm.x -= 0.3f * animFactor;
-        transformer.getRawModel().leftArm.y += 0.4f * animFactor;
         transformer
+                .translateLeftLeg(
+                        0,
+                        -3.4f * animFactor,
+                        -2.6f * animFactor
+                )
+                .translateRightLeg(
+                        0,
+                        -1.4f * animFactor,
+                        -1.6f * animFactor
+                )
+                .translateRightArm(
+                        0.3f * animFactor,
+                        0.4f * animFactor,
+                        0
+                )
+                .translateLeftArm(
+                        -0.3f * animFactor,
+                        0.4f * animFactor,
+                        0
+                )
                 .rotateLeftLeg((float) Math.toRadians(-15), 0, 0, animFactor)
                 .rotateRightLeg((float) Math.toRadians(10), 0, 0, animFactor)
                 .rotateLeftArm((float) Math.toRadians(6), 0, (float) Math.toRadians(-4), animFactor)

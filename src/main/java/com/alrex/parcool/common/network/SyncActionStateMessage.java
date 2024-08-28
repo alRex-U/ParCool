@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.client.Minecraft;
@@ -9,6 +10,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -63,11 +65,13 @@ public class SyncActionStateMessage {
 						action.setDoing(true);
 						action.onStartInServer(player, parkourability, item.getBuffer());
 						action.onStart(player, parkourability);
+						MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
 						break;
 					case Finish:
 						action.setDoing(false);
 						action.onStopInServer(player);
 						action.onStop(player);
+						MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.StopEvent(player, action));
 						break;
 					case Normal:
 						action.restoreSynchronizedState(item.getBuffer());
@@ -113,6 +117,7 @@ public class SyncActionStateMessage {
 							action.onStartInServer(player, parkourability, item.getBuffer());
 						}
 						action.onStart(player, parkourability);
+						MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
 						break;
 					case Finish:
 						action.setDoing(false);
@@ -122,6 +127,7 @@ public class SyncActionStateMessage {
 							action.onStopInServer(player);
 						}
 						action.onStop(player);
+						MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.StopEvent(player, action));
 						break;
 					case Normal:
 						action.restoreSynchronizedState(item.getBuffer());

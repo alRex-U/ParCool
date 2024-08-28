@@ -1,5 +1,7 @@
 package com.alrex.parcool.client.animation;
 
+import com.alrex.parcool.api.unstable.animation.AnimationOption;
+import com.alrex.parcool.api.unstable.animation.AnimationPart;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -14,13 +16,13 @@ import net.minecraft.util.math.MathHelper;
 public class PlayerModelTransformer {
 	private final PlayerEntity player;
 	private final PlayerModel model;
-	private final boolean slim;
 	private final float partial;
 	private final float ageInTicks;
 	private final float limbSwing;
 	private final float limbSwingAmount;
 	private final float netHeadYaw;
 	private final float headPitch;
+    private AnimationOption option = new AnimationOption();
 
 	public float getPartialTick() {
 		return partial;
@@ -58,7 +60,6 @@ public class PlayerModelTransformer {
 	) {
 		this.player = player;
 		this.model = model;
-		this.slim = slim;
 		this.partial = Minecraft.getInstance().getFrameTime();
 		this.ageInTicks = ageInTicks;
 		this.limbSwing = limbSwing;
@@ -67,12 +68,17 @@ public class PlayerModelTransformer {
 		this.headPitch = headPitch;
 	}
 
+    public void setOption(AnimationOption option) {
+        this.option = option;
+    }
+
 	/**
 	 * @param angleX swing arm frontward or backward
 	 * @param angleY rotate arm around
 	 * @param angleZ swing arm upward or downward
 	 */
 	public PlayerModelTransformer rotateRightArm(float angleX, float angleY, float angleZ) {
+        if (option.isCanceled(AnimationPart.RIGHT_ARM)) return this;
 		ModelRenderer rightArm = model.rightArm;
 		if (rightArm.visible) {
 			setRotations(rightArm, angleX, angleY, angleZ);
@@ -81,6 +87,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer rotateRightArm(float angleX, float angleY, float angleZ, float factor) {
+        if (option.isCanceled(AnimationPart.RIGHT_ARM)) return this;
 		ModelRenderer rightArm = model.rightArm;
 		if (rightArm.visible) {
 			setRotations(rightArm,
@@ -98,6 +105,7 @@ public class PlayerModelTransformer {
 	 * @param angleZ swing arm upward or downward
 	 */
 	public PlayerModelTransformer rotateLeftArm(float angleX, float angleY, float angleZ) {
+        if (option.isCanceled(AnimationPart.LEFT_ARM)) return this;
 		ModelRenderer leftArm = model.leftArm;
 		if (leftArm.visible) {
 			setRotations(leftArm, angleX, angleY, angleZ);
@@ -106,6 +114,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer rotateLeftArm(float angleX, float angleY, float angleZ, float factor) {
+        if (option.isCanceled(AnimationPart.LEFT_ARM)) return this;
 		ModelRenderer leftArm = model.leftArm;
 		if (leftArm.visible) {
 			setRotations(leftArm,
@@ -123,6 +132,7 @@ public class PlayerModelTransformer {
 	 * @param angleZ swing leg upward or downward
 	 */
 	public PlayerModelTransformer rotateRightLeg(float angleX, float angleY, float angleZ) {
+        if (option.isCanceled(AnimationPart.RIGHT_LEG)) return this;
 		ModelRenderer rightLeg = model.rightLeg;
 		if (rightLeg.visible) {
 			setRotations(rightLeg, angleX, angleY, angleZ);
@@ -131,6 +141,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer rotateRightLeg(float angleX, float angleY, float angleZ, float factor) {
+        if (option.isCanceled(AnimationPart.RIGHT_LEG)) return this;
 		ModelRenderer rightLeg = model.rightLeg;
 		if (rightLeg.visible) {
 			setRotations(rightLeg,
@@ -148,6 +159,7 @@ public class PlayerModelTransformer {
 	 * @param angleZ swing leg upward or downward
 	 */
 	public PlayerModelTransformer rotateLeftLeg(float angleX, float angleY, float angleZ) {
+        if (option.isCanceled(AnimationPart.LEFT_LEG)) return this;
 		ModelRenderer leftLeg = model.leftLeg;
 		if (leftLeg.visible) {
 			setRotations(leftLeg, angleX, angleY, angleZ);
@@ -156,6 +168,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer rotateLeftLeg(float angleX, float angleY, float angleZ, float factor) {
+        if (option.isCanceled(AnimationPart.LEFT_LEG)) return this;
 		ModelRenderer leftLeg = model.leftLeg;
 		if (leftLeg.visible) {
 			setRotations(leftLeg,
@@ -168,6 +181,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer addRotateRightArm(float angleX, float angleY, float angleZ) {
+        if (option.isCanceled(AnimationPart.RIGHT_ARM)) return this;
 		ModelRenderer arm = model.rightArm;
 		if (arm.visible) {
 			setRotations(arm, arm.xRot + angleX, arm.yRot + angleY, arm.zRot + angleZ);
@@ -176,6 +190,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer addRotateLeftArm(float angleX, float angleY, float angleZ) {
+        if (option.isCanceled(AnimationPart.LEFT_ARM)) return this;
 		ModelRenderer arm = model.leftArm;
 		if (arm.visible) {
 			setRotations(arm, arm.xRot + angleX, arm.yRot + angleY, arm.zRot + angleZ);
@@ -184,6 +199,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer addRotateRightLeg(float angleX, float angleY, float angleZ) {
+        if (option.isCanceled(AnimationPart.RIGHT_LEG)) return this;
 		ModelRenderer leg = model.rightLeg;
 		if (leg.visible) {
 			setRotations(leg, leg.xRot + angleX, leg.yRot + angleY, leg.zRot + angleZ);
@@ -192,6 +208,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer addRotateLeftLeg(float angleX, float angleY, float angleZ) {
+        if (option.isCanceled(AnimationPart.LEFT_LEG)) return this;
 		ModelRenderer leg = model.leftLeg;
 		if (leg.visible) {
 			setRotations(leg, leg.xRot + angleX, leg.yRot + angleY, leg.zRot + angleZ);
@@ -200,27 +217,35 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer addRotateRightArm(float angleX, float angleY, float angleZ, float factor) {
+        if (option.isCanceled(AnimationPart.RIGHT_ARM)) return this;
 		return addRotateRightArm(angleX * factor, angleY * factor, angleZ * factor);
 	}
 
 	public PlayerModelTransformer addRotateLeftArm(float angleX, float angleY, float angleZ, float factor) {
+        if (option.isCanceled(AnimationPart.LEFT_ARM)) return this;
 		return addRotateLeftArm(angleX * factor, angleY * factor, angleZ * factor);
 	}
 
 	public PlayerModelTransformer addRotateRightLeg(float angleX, float angleY, float angleZ, float factor) {
+        if (option.isCanceled(AnimationPart.RIGHT_LEG)) return this;
 		return addRotateRightLeg(angleX * factor, angleY * factor, angleZ * factor);
 	}
 
 	public PlayerModelTransformer addRotateLeftLeg(float angleX, float angleY, float angleZ, float factor) {
+        if (option.isCanceled(AnimationPart.LEFT_LEG)) return this;
 		return addRotateLeftLeg(angleX * factor, angleY * factor, angleZ * factor);
 	}
 
 	public PlayerModelTransformer makeArmsNatural() {
+        if (option.isCanceled(AnimationPart.RIGHT_ARM)) return this;
+        if (option.isCanceled(AnimationPart.LEFT_ARM)) return this;
 		ModelHelper.bobArms(model.rightArm, model.leftArm, ageInTicks);
 		return this;
 	}
 
 	public PlayerModelTransformer makeLegsMoveDynamically(float factor) {
+        if (option.isCanceled(AnimationPart.RIGHT_LEG)) return this;
+        if (option.isCanceled(AnimationPart.LEFT_LEG)) return this;
 		model.rightLeg.zRot += MathHelper.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
 		model.leftLeg.zRot -= MathHelper.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
 		model.rightLeg.xRot += MathHelper.sin(ageInTicks * 0.56F) * 0.8F * factor;
@@ -229,6 +254,8 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer makeArmsMoveDynamically(float factor) {
+        if (option.isCanceled(AnimationPart.RIGHT_ARM)) return this;
+        if (option.isCanceled(AnimationPart.LEFT_ARM)) return this;
 		model.rightArm.zRot += MathHelper.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
 		model.leftArm.zRot -= MathHelper.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
 		model.rightArm.xRot += MathHelper.sin(ageInTicks * 0.56F) * 0.8F * factor;
@@ -237,11 +264,15 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer makeLegsLittleMoving() {
+        if (option.isCanceled(AnimationPart.RIGHT_LEG)) return this;
+        if (option.isCanceled(AnimationPart.LEFT_LEG)) return this;
 		ModelHelper.bobArms(model.rightLeg, model.leftLeg, ageInTicks);
 		return this;
 	}
 
 	public PlayerModelTransformer makeLegsShakingDynamically(float factor) {
+        if (option.isCanceled(AnimationPart.RIGHT_LEG)) return this;
+        if (option.isCanceled(AnimationPart.LEFT_LEG)) return this;
 		model.rightLeg.zRot += MathHelper.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
 		model.leftLeg.zRot += MathHelper.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
 		model.rightLeg.xRot += MathHelper.sin(ageInTicks * 0.56F) * 0.2F * factor;
@@ -250,27 +281,71 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer rotateAdditionallyHeadPitch(float pitchDegree) {
+        if (option.isCanceled(AnimationPart.HEAD)) return this;
 		model.head.xRot = (float) Math.toRadians(pitchDegree + headPitch);
 		return this;
 	}
 
 	public PlayerModelTransformer rotateHeadPitch(float pitchDegree) {
+        if (option.isCanceled(AnimationPart.HEAD)) return this;
 		model.head.xRot = (float) Math.toRadians(pitchDegree);
 		return this;
 	}
 
-	public void end() {
-	}
-
 	public PlayerModelTransformer rotateAdditionallyHeadYaw(float yawDegree) {
+        if (option.isCanceled(AnimationPart.HEAD)) return this;
 		model.head.yRot = (float) Math.toRadians(yawDegree + netHeadYaw);
 		return this;
 	}
 
 	public PlayerModelTransformer rotateAdditionallyHeadRoll(float rollDegree) {
+        if (option.isCanceled(AnimationPart.HEAD)) return this;
 		model.head.zRot = (float) Math.toRadians(rollDegree + netHeadYaw);
 		return this;
 	}
+
+    public PlayerModelTransformer translateRightArm(float xOffset, float yOffset, float zOffset) {
+        if (option.isCanceled(AnimationPart.RIGHT_ARM)) return this;
+        getRawModel().rightArm.x += xOffset;
+        getRawModel().rightArm.y += yOffset;
+        getRawModel().rightArm.z += zOffset;
+        return this;
+    }
+
+    public PlayerModelTransformer translateLeftArm(float xOffset, float yOffset, float zOffset) {
+        if (option.isCanceled(AnimationPart.LEFT_ARM)) return this;
+        getRawModel().leftArm.x += xOffset;
+        getRawModel().leftArm.y += yOffset;
+        getRawModel().leftArm.z += zOffset;
+        return this;
+    }
+
+    public PlayerModelTransformer translateRightLeg(float xOffset, float yOffset, float zOffset) {
+        if (option.isCanceled(AnimationPart.RIGHT_LEG)) return this;
+        getRawModel().rightLeg.x += xOffset;
+        getRawModel().rightLeg.y += yOffset;
+        getRawModel().rightLeg.z += zOffset;
+        return this;
+    }
+
+    public PlayerModelTransformer translateLeftLeg(float xOffset, float yOffset, float zOffset) {
+        if (option.isCanceled(AnimationPart.LEFT_LEG)) return this;
+        getRawModel().leftLeg.x += xOffset;
+        getRawModel().leftLeg.y += yOffset;
+        getRawModel().leftLeg.z += zOffset;
+        return this;
+    }
+
+    public PlayerModelTransformer translateHead(float xOffset, float yOffset, float zOffset) {
+        if (option.isCanceled(AnimationPart.HEAD)) return this;
+        getRawModel().head.x += xOffset;
+        getRawModel().head.y += yOffset;
+        getRawModel().head.z += zOffset;
+        return this;
+    }
+
+    public void end() {
+    }
 
 	public void copyFromBodyToWear() {
 		model.rightSleeve.copyFrom(model.rightArm);

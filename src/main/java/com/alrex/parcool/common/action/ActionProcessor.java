@@ -1,15 +1,19 @@
 package com.alrex.parcool.common.action;
 
+import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.network.SyncActionStateMessage;
 import com.alrex.parcool.common.network.SyncStaminaMessage;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -28,7 +32,7 @@ public class ActionProcessor {
 	public void onTickInClient(TickEvent.PlayerTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) return;
 		if (event.side != LogicalSide.CLIENT) return;
-		PlayerEntity player = event.player;
+        AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) event.player;
 		Animation animation = Animation.get(player);
 		if (animation == null) return;
 		Parkourability parkourability = Parkourability.get(player);
@@ -78,11 +82,13 @@ public class ActionProcessor {
 						action.setDoing(false);
 						action.onStopInLocalClient(player);
 						action.onStop(player);
+                        MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.StopEvent(player, action));
 						builder.appendFinishMsg(parkourability, action);
 					}
 				} else {
 					bufferOfStarting.clear();
 					boolean start = parkourability.getActionInfo().can(action.getClass())
+                            && !MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStartEvent(player, action))
 							&& action.canStart(player, parkourability, stamina, bufferOfStarting);
 					bufferOfStarting.flip();
 					if (start) {
@@ -90,6 +96,7 @@ public class ActionProcessor {
 						action.onStartInLocalClient(player, parkourability, stamina, bufferOfStarting);
 						bufferOfStarting.rewind();
 						action.onStart(player, parkourability);
+                        MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
 						builder.appendStartData(parkourability, action, bufferOfStarting);
 						if (timing == StaminaConsumeTiming.OnStart)
 							stamina.consume(parkourability.getActionInfo().getStaminaConsumptionOf(action.getClass()));
@@ -165,7 +172,7 @@ public class ActionProcessor {
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public void onViewRender(EntityViewRenderEvent.CameraSetup event) {
-		PlayerEntity player = Minecraft.getInstance().player;
+        ClientPlayerEntity player = Minecraft.getInstance().player;
 		if (player == null) return;
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
