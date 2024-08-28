@@ -221,13 +221,21 @@ public class ParCoolConfig {
 		}
 
 		public enum Integers implements Item<Integer> {
-			HorizontalMarginOfStaminaHUD(
-					ConfigGroup.HUD, "horizontal margin of normal HUD",
-					"margin_h_stamina_hud", 3, 0, 100
+            HorizontalOffsetOfStaminaHUD(
+                    ConfigGroup.HUD, "horizontal offset of normal HUD",
+                    "offset_h_stamina_hud", 3, 0, 100
+            ),
+            VerticalOffsetOfStaminaHUD(
+                    ConfigGroup.HUD, "vertical offset of normal HUD",
+                    "offset_v_stamina_hud", 3, 0, 100
 			),
-			VerticalMarginOfStaminaHUD(
-					ConfigGroup.HUD, "vertical margin of normal HUD",
-					"margin_v_stamina_hud", 3, 0, 100
+            HorizontalOffsetOfLightStaminaHUD(
+                    ConfigGroup.HUD, "horizontal offset of light HUD",
+                    "offset_h_light_hud", 0, -100, 100
+            ),
+            VerticalOffsetOfLightStaminaHUD(
+                    ConfigGroup.HUD, "vertical offset of light HUD",
+                    "offset_v_light_hud", 0, -100, 100
 			),
 			WallRunContinuableTick(
 					ConfigGroup.Modifier, "How long you can do Horizontal Wall Run",
@@ -418,14 +426,14 @@ public class ParCoolConfig {
 
 		static {
 			ForgeConfigSpec.Builder builder = BUILDER;
-			builder.push("Possibility of Actions(Some do not have to work)");
+            builder.push("Possibility_of_Actions(Some_do_not_have_to_work)");
 			{
 				for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
 					actionPossibilities[i] = builder.define("can_" + ActionList.ACTIONS.get(i).getSimpleName(), true);
 				}
 			}
 			builder.pop();
-			builder.push("Stamina HUD Configuration");
+            builder.push("Stamina_HUD_Configuration");
 			{
 				StaminaHUDType = builder.defineEnum("stamina_hud_type", HUDType.Light);
 				AlignHorizontalStaminaHUD = builder.comment("horizontal alignment").defineEnum("align_h_s_hud", Position.Horizontal.Right);
@@ -460,7 +468,7 @@ public class ParCoolConfig {
 				register(builder, ConfigGroup.Modifier);
 			}
 			builder.pop();
-			builder.push("Other Configuration");
+            builder.push("Other_Configuration");
 			{
 				VaultAnimationMode = builder.comment("Vault Animation(Dynamic is to select animation dynamically)").defineEnum("vault_animation_mode", Vault.TypeSelectionMode.Dynamic);
 				GUIColorTheme = builder.comment("Color theme of Setting GUI").defineEnum("gui_color_theme", ColorTheme.Blue);

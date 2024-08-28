@@ -4,6 +4,7 @@ import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -91,8 +92,8 @@ public class LightStaminaHUD extends GuiComponent {
 		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick) * 10f : 0f;
 
 		RenderSystem.setShaderTexture(0, StaminaHUD.STAMINA);
-		int baseX = width / 2 + 91;
-		int baseY = height - gui.right_height;
+		int baseX = width / 2 + 91 + ParCoolConfig.Client.Integers.HorizontalOffsetOfLightStaminaHUD.get();
+		int baseY = height - gui.right_height + ParCoolConfig.Client.Integers.VerticalOffsetOfLightStaminaHUD.get();
 		for (int i = 0; i < 10; i++) {
 			int x = baseX - i * 8 - 9;
 			int offsetY = 0;
