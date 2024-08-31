@@ -34,7 +34,7 @@ public abstract class PlayerMixin extends LivingEntity {
     @Inject(method = "getDimensions", at = @At("HEAD"), cancellable = true)
     public void getDimensions(Pose pose, CallbackInfoReturnable<EntityDimensions> cir) {
         if (pose == ParCoolPoses.ROLLING.get()) {
-            cir.setReturnValue(EntityDimensions.fixed(0.6F, 0.6F));
+            cir.setReturnValue(EntityDimensions.fixed(0.6F, 1.45F));
         } else if (pose == ParCoolPoses.VAULTING.get()) {
             cir.setReturnValue(EntityDimensions.fixed(0.6F, 1.5F));
         }
@@ -43,7 +43,7 @@ public abstract class PlayerMixin extends LivingEntity {
     @Inject(method = "getStandingEyeHeight", at = @At("HEAD"), cancellable = true)
     public void getStandingEyeHeight(Pose pose, EntityDimensions dimensions, CallbackInfoReturnable<Float> cir) {
         if (pose == ParCoolPoses.ROLLING.get()) {
-            cir.setReturnValue(0.4F);
+            cir.setReturnValue(1.27F);
         } else if (pose == ParCoolPoses.VAULTING.get()) {
             cir.setReturnValue(1.27F);
         }
