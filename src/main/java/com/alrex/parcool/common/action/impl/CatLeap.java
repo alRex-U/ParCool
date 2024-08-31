@@ -111,9 +111,14 @@ public class CatLeap extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	private void spawnJumpEffect(Player player, Vec3 jumpDirection) {
-		Level level = player.level;
+		Level level = player.level();
 		Vec3 pos = player.position();
-		BlockPos blockpos = new BlockPos(pos.add(0, -0.2, 0));
+		var blockPosVec = pos.add(0, -0.2, 0);
+		BlockPos blockpos = new BlockPos(
+				(int) Math.floor(blockPosVec.x()),
+				(int) Math.floor(blockPosVec.y()),
+				(int) Math.floor(blockPosVec.z())
+		);
 		if (!level.isLoaded(blockpos)) return;
 		float width = player.getBbWidth();
 		BlockState blockstate = level.getBlockState(blockpos);

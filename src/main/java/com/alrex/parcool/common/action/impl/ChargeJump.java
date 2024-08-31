@@ -64,7 +64,7 @@ public class ChargeJump extends Action {
     @Override
     public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
         if (player instanceof LocalPlayer cp) {
-            if (cp.isOnGround()
+            if (cp.onGround()
                     && !stamina.isExhausted()
                     && parkourability.getActionInfo().can(ChargeJump.class)
                     && !cp.isVisuallyCrawling()

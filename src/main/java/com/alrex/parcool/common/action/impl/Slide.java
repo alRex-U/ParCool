@@ -122,9 +122,9 @@ public class Slide extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	private void spawnSlidingParticle(Player player) {
-		var level = player.level;
+		var level = player.level();
 		var pos = player.position();
-		var feetBlock = player.level.getBlockState(player.blockPosition().below());
+		var feetBlock = player.level().getBlockState(player.blockPosition().below());
 		float width = player.getBbWidth();
 		var direction = getSlidingVector();
 		if (direction == null) return;
@@ -139,8 +139,15 @@ public class Slide extends Action {
 					.reverse()
 					.scale(2.5 + 5 * player.getRandom().nextDouble())
 					.add(0, 1.5, 0);
+			var blockPos = player.position().add(0, -0.5, 0);
 			level.addParticle(
-					new BlockParticleOption(ParticleTypes.BLOCK, feetBlock).setPos(new BlockPos(player.position().add(0, -0.5, 0))),
+					new BlockParticleOption(ParticleTypes.BLOCK, feetBlock).setPos(
+							new BlockPos(
+									(int) Math.floor(blockPos.x()),
+									(int) Math.floor(blockPos.y()),
+									(int) Math.floor(blockPos.z())
+							)
+					),
 					particlePos.x(),
 					particlePos.y(),
 					particlePos.z(),

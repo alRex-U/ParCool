@@ -150,7 +150,7 @@ public class HorizontalWallRun extends Action {
 				(ParCoolConfig.Client.HWallRunControl.get() == ControlType.PressKey && KeyBindings.getKeyHorizontalWallRun().isDown())
 						|| ParCoolConfig.Client.HWallRunControl.get() == ControlType.Auto
 		)
-				&& !player.isOnGround()
+				&& !player.onGround()
 		);
 	}
 

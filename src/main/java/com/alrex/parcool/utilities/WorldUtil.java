@@ -141,7 +141,7 @@ public class WorldUtil {
 		if (stepX == 0 || stepZ == 0) {
 			Vec3 result = new Vec3(stepX, 0, stepZ);
 			Vec3 blockPosition = entity.position().add(result).add(0, 0.5, 0);
-			BlockPos target = new BlockPos(new Vec3i((int) blockPosition.x(), (int) blockPosition.y(), (int) blockPosition.z()));
+			BlockPos target = new BlockPos(new Vec3i((int) Math.floor(blockPosition.x()), (int) Math.floor(blockPosition.y()), (int) Math.floor(blockPosition.z())));
 			if (!world.isLoaded(target)) return null;
 			BlockState state = world.getBlockState(target);
 			if (state.getBlock() instanceof StairBlock) {

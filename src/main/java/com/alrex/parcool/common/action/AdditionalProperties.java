@@ -39,7 +39,7 @@ public class AdditionalProperties {
             sneakingTick = 0;
             notSneakingTick++;
         }
-		if (player.isOnGround()) {
+		if (player.onGround()) {
 			notLandingTick = 0;
 			landingTick++;
 		} else {
