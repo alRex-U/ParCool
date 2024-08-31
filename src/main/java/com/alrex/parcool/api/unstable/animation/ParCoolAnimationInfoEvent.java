@@ -7,12 +7,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.Event;
 
 @OnlyIn(Dist.CLIENT)
-public class ParCoolAnimationEvent extends Event {
+public class ParCoolAnimationInfoEvent extends Event {
     private final AbstractClientPlayerEntity player;
     private final Animator animator;
     private final AnimationOption option;
 
-    public ParCoolAnimationEvent(
+    public ParCoolAnimationInfoEvent(
             AbstractClientPlayerEntity player,
             Animator animator
     ) {

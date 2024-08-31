@@ -2,7 +2,7 @@ package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.api.unstable.animation.AnimationOption;
 import com.alrex.parcool.api.unstable.animation.AnimationPart;
-import com.alrex.parcool.api.unstable.animation.ParCoolAnimationEvent;
+import com.alrex.parcool.api.unstable.animation.ParCoolAnimationInfoEvent;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PassiveCustomAnimation;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
@@ -92,7 +92,7 @@ public class Animation {
 			if (animator.shouldRemoved(player, parkourability)) animator = null;
 		}
         {
-            ParCoolAnimationEvent animationEvent = new ParCoolAnimationEvent(player, animator);
+			ParCoolAnimationInfoEvent animationEvent = new ParCoolAnimationInfoEvent(player, animator);
             MinecraftForge.EVENT_BUS.post(animationEvent);
             option = animationEvent.getOption();
         }

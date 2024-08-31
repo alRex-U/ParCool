@@ -24,15 +24,6 @@ public class ParCoolActionEvent extends Event {
 
     @Cancelable
     public static class TryToStartEvent extends ParCoolActionEvent {
-        private boolean canceled = true;
-
-        public void cancelAction() {
-            canceled = false;
-        }
-
-        public boolean isActionCanceled() {
-            return canceled;
-        }
 
         @Override
         public boolean isCancelable() {
