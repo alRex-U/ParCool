@@ -27,26 +27,27 @@ public class CatLeapAnimator extends Animator {
 		if (phase > 1) phase = 1f;
 		float factor = movingFactorFunc(phase);
 		float animationFactor = 1 - phase * phase * phase * phase;
-		transformer.getRawModel().leftLeg.z -=
-				Easing.with(phase)
-						.squareOut(0, 0.1f, 0f, -1.2f)
-						.sinInOut(0.1f, 0.25f, -1.2f, 0.6f)
-						.sinInOut(0.25f, 1, 0.6f, 0f)
-						.get();
-		transformer.getRawModel().rightLeg.z +=
-				Easing.with(phase)
-						.squareOut(0, 0.1f, 0f, -1.2f)
-						.sinInOut(0.1f, 0.25f, -1.2f, 0.6f)
-						.sinInOut(0.25f, 1, 0.6f, 0f)
-						.get();
-		float armY = 1.2f * factor * animationFactor;
-		float armZ = 0.8f * factor * animationFactor;
-		transformer.getRawModel().leftArm.y -= armY;
-		transformer.getRawModel().leftArm.z -= armZ;
-		transformer.getRawModel().rightArm.y -= armY;
-		transformer.getRawModel().rightArm.z -= armZ;
-
-		transformer
+        float armY = 1.2f * factor * animationFactor;
+        float armZ = 0.8f * factor * animationFactor;
+        transformer
+                .translateLeftArm(0, -armY, -armZ)
+                .translateRightArm(0, -armY, -armZ)
+                .translateLeftLeg(
+                        0, 0,
+                        -Easing.with(phase)
+                                .squareOut(0, 0.1f, 0f, -1.2f)
+                                .sinInOut(0.1f, 0.25f, -1.2f, 0.6f)
+                                .sinInOut(0.25f, 1, 0.6f, 0f)
+                                .get()
+                )
+                .translateRightLeg(
+                        0, 0,
+                        Easing.with(phase)
+                                .squareOut(0, 0.1f, 0f, -1.2f)
+                                .sinInOut(0.1f, 0.25f, -1.2f, 0.6f)
+                                .sinInOut(0.25f, 1, 0.6f, 0f)
+                                .get()
+                )
 				.rotateLeftArm(
 						(float) -Math.toRadians(lerp(-25f, 170f, factor)),
 						0,

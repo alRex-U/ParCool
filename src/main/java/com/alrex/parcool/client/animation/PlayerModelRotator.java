@@ -8,6 +8,7 @@ public class PlayerModelRotator {
 	private final PoseStack stack;
 	private final Player player;
 	private final float partial;
+	private AnimationOption option = new AnimationOption();
 	private double playerHeight = 1.8;
 	private final float givenXRot, givenYRot, givenZRot;
 
@@ -43,6 +44,10 @@ public class PlayerModelRotator {
 			case SLEEPING:
 				playerHeight = 0.6;
 		}
+	}
+
+	public void setOption(AnimationOption option) {
+		this.option = option;
 	}
 
 	public PlayerModelRotator start() {

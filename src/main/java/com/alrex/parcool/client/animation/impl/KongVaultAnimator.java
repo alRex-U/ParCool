@@ -64,11 +64,17 @@ public class KongVaultAnimator extends Animator {
 				.sinInOut(0.85f, 1, 1, 0)
 				.get();
 		float difference = MathUtil.lerp(yRotDifferenceOld, yRotDifference, transformer.getPartialTick());
-		transformer.getRawModel().leftLeg.z -= 0.9f * factor;
-		transformer.getRawModel().leftLeg.y -= 0.7f * factor;
-		transformer.getRawModel().rightLeg.z -= 0.9f * factor;
-		transformer.getRawModel().rightLeg.y -= 0.7f * factor;
 		transformer
+                .translateLeftLeg(
+                        0,
+                        -0.7f * factor,
+                        -0.9f * factor
+                )
+                .translateRightLeg(
+                        0,
+                        -0.7f * factor,
+                        -0.9f * factor
+                )
 				.rotateAdditionallyHeadPitch(-40 * armFactor)
 				.rotateRightArm((float) toRadians(30 - 195 * armFactor), 0, (float) toRadians(30 - 30 * armFactor), animFactor)
 				.rotateLeftArm((float) toRadians(25 - 195 * armFactor), 0, (float) toRadians(-30 + 30 * armFactor), animFactor)
