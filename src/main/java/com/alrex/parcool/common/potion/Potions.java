@@ -15,18 +15,18 @@ public class Potions {
     public static final RegistryObject<Potion> POOR_ENERGY_DRINK =
 			POTIONS.register(
 					"poor_energy_drink",
-                    () -> new Potion(
-                            new MobEffectInstance(Effects.INEXHAUSTIBLE.get(), 2400/*2 min*/),
-                            new MobEffectInstance(MobEffects.HUNGER, 100),
-                            new MobEffectInstance(MobEffects.POISON, 100)
-                    )
+					() -> new Potion(
+							new MobEffectInstance(com.alrex.parcool.api.Effects.INEXHAUSTIBLE.get(), 2400/*2 min*/),
+							new MobEffectInstance(MobEffects.HUNGER, 100),
+							new MobEffectInstance(MobEffects.POISON, 100)
+					)
 			);
     public static final RegistryObject<Potion> ENERGY_DRINK =
 			POTIONS.register(
 					"energy_drink",
-                    () -> new Potion(
-                            new MobEffectInstance(Effects.INEXHAUSTIBLE.get(), 9600/*8 min*/)
-                    )
+					() -> new Potion(
+							new MobEffectInstance(com.alrex.parcool.api.Effects.INEXHAUSTIBLE.get(), 9600/*8 min*/)
+					)
 			);
 
 	public static void registerAll(IEventBus modBus) {

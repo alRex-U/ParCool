@@ -56,6 +56,6 @@ public class ActionInfo {
 	}
 
 	public boolean isInfiniteStaminaPermitted() {
-		return true;
+        return serverLimitation.get(ParCoolConfig.Server.Booleans.AllowInfiniteStamina);
 	}
 }

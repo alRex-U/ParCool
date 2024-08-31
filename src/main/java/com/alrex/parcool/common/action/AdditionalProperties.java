@@ -10,8 +10,11 @@ public class AdditionalProperties {
 	private int lastSprintingTick = 0;
 	private int notSprintingTick = 0;
 	private int notCreativeFlyingTick = 0;
-    private int inWaterTick = 0;
-    private int notInWaterTick = 0;
+    private int sneakingTick = 0;
+    private int notSneakingTick = 0;
+    private int lastSneakingTick = 0;
+	private int inWaterTick = 0;
+	private int notInWaterTick = 0;
 	private int tickAfterLastJump = 0;
 
 	public void onJump() {
@@ -28,7 +31,15 @@ public class AdditionalProperties {
 			sprintingTick = 0;
 			notSprintingTick++;
 		}
-		if (player.onGround()) {
+        if (player.isShiftKeyDown()) {
+            sneakingTick++;
+            notSneakingTick = 0;
+            lastSneakingTick = sneakingTick;
+        } else {
+            sneakingTick = 0;
+            notSneakingTick++;
+        }
+		if (player.isOnGround()) {
 			notLandingTick = 0;
 			landingTick++;
 		} else {
@@ -84,4 +95,16 @@ public class AdditionalProperties {
 	public int getTickAfterLastJump() {
 		return tickAfterLastJump;
 	}
+
+    public int getSneakingTick() {
+        return sneakingTick;
+    }
+
+    public int getNotSneakingTick() {
+        return notSneakingTick;
+    }
+
+    public int getLastSneakingTick() {
+        return lastSneakingTick;
+    }
 }

@@ -44,6 +44,7 @@ public class ClingToCliff extends Action {
 	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		boolean value = (!stamina.isExhausted()
 				&& player.getDeltaMovement().y() < 0.2
+				&& !player.isShiftKeyDown()
 				&& !parkourability.get(HorizontalWallRun.class).isDoing()
 				&& KeyBindings.getKeyGrabWall().isDown()
 		);
@@ -60,6 +61,7 @@ public class ClingToCliff extends Action {
 	@Override
 	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
 		return (!stamina.isExhausted()
+				&& !player.isShiftKeyDown()
 				&& parkourability.getActionInfo().can(ClingToCliff.class)
 				&& KeyBindings.getKeyGrabWall().isDown()
 				&& !parkourability.get(HorizontalWallRun.class).isDoing()
@@ -67,6 +69,11 @@ public class ClingToCliff extends Action {
 				&& WorldUtil.getGrabbableWall(player) != null
 		);
 	}
+
+    @Override
+	public void onStart(Player player, Parkourability parkourability) {
+        armSwingAmount = 0;
+    }
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
@@ -85,6 +92,8 @@ public class ClingToCliff extends Action {
 		clingWallDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
 		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.CLING_TO_CLIFF.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new ClingToCliffAnimator());
 	}

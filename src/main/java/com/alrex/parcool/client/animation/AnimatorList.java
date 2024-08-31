@@ -10,6 +10,7 @@ public class AnimatorList {
 	public static final List<Class<? extends Animator>> ANIMATORS = Arrays.asList(
 			BackwardWallJumpAnimator.class,
 			CatLeapAnimator.class,
+            ChargeJumpAnimator.class,
 			ClimbUpAnimator.class,
 			ClingToCliffAnimator.class,
 			CrawlAnimator.class,
@@ -20,6 +21,7 @@ public class AnimatorList {
             FastSwimAnimator.class,
 			FlippingAnimator.class,
 			HorizontalWallRunAnimator.class,
+            JumpChargingAnimator.class,
 			JumpFromBarAnimator.class,
 			HangAnimator.class,
 			KongVaultAnimator.class,

@@ -17,6 +17,7 @@ public class SoundEvents {
     private static final SoundEvent ROLL_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.breakfall.roll"));
     private static final SoundEvent SAFETY_TAP_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.breakfall.tap"));
     private static final SoundEvent CATLEAP_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.catleap"));
+    private static final SoundEvent CHARGE_JUMP_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.charge_jump"));
     private static final SoundEvent WALL_JUMP_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.wall_jump"));
     private static final SoundEvent CLING_TO_CLIFF_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.cling_to_cliff.grab"));
     private static final SoundEvent CLING_TO_CLIFF_JUMP_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ParCool.MOD_ID, "action.cling_to_cliff.jump"));
@@ -34,6 +35,7 @@ public class SoundEvents {
     public static final RegistryObject<SoundEvent> ROLL = SOUNDS.register("action.breakfall.roll", () -> ROLL_SOUND);
     public static final RegistryObject<SoundEvent> SAFETY_TAP = SOUNDS.register("action.breakfall.tap", () -> SAFETY_TAP_SOUND);
     public static final RegistryObject<SoundEvent> CATLEAP = SOUNDS.register("action.catleap", () -> CATLEAP_SOUND);
+    public static final RegistryObject<SoundEvent> CHARGE_JUMP = SOUNDS.register("action.charge_jump", () -> CHARGE_JUMP_SOUND);
     public static final RegistryObject<SoundEvent> WALL_JUMP = SOUNDS.register("action.wall_jump", () -> WALL_JUMP_SOUND);
     public static final RegistryObject<SoundEvent> CLING_TO_CLIFF = SOUNDS.register("action.cling_to_cliff.grab", () -> CLING_TO_CLIFF_SOUND);
     public static final RegistryObject<SoundEvent> CLING_TO_CLIFF_JUMP = SOUNDS.register("action.cling_to_cliff.jump", () -> CLING_TO_CLIFF_JUMP_SOUND);

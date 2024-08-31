@@ -46,15 +46,16 @@ public class Dive extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-        boolean startInAir = player.getDeltaMovement().y() < 0
-                && parkourability.getAdditionalProperties().getNotLandingTick() > 10
-                && parkourability.getAdditionalProperties().getNotInWaterTick() > 30
-                && KeyRecorder.keyJumpState.getTickKeyDown() > 10
-                && WorldUtil.existsSpaceBelow(player);
-        if (!(startInAir || (justJumped && WorldUtil.existsDivableSpace(player) && parkourability.get(FastRun.class).canActWithRunning(player)))) {
-            justJumped = false;
-            return false;
-        }
+		if (player.getVehicle() != null) return false;
+		boolean startInAir = player.getDeltaMovement().y() < 0
+				&& parkourability.getAdditionalProperties().getNotLandingTick() > 10
+				&& parkourability.getAdditionalProperties().getNotInWaterTick() > 30
+				&& KeyRecorder.keyJumpState.getTickKeyDown() > 10
+				&& WorldUtil.existsSpaceBelow(player);
+		if (!(startInAir || (justJumped && WorldUtil.existsDivableSpace(player) && parkourability.get(FastRun.class).canActWithRunning(player)))) {
+			justJumped = false;
+			return false;
+		}
 
         startInfo.putDouble(initialYVelocityOfLastJump);
         BufferUtil.wrap(startInfo).putBoolean(startInAir);
