@@ -15,6 +15,7 @@
   },
   "mixins": [
     "common.LivingEntityMixin",
-    "common.PlayerMixin"
+    "common.PlayerMixin",
+    "common.PoseMixin"
   ]
 }

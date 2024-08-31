@@ -157,4 +157,12 @@ public class Slide extends Action {
 			);
 		}
 	}
+
+
+	@Override
+	public void onWorkingTick(Player player, Parkourability parkourability, IStamina stamina) {
+		Pose pose = Pose.SWIMMING;
+		player.setSprinting(false);
+		player.setPose(pose);
+	}
 }
