@@ -32,12 +32,10 @@ public class TapAnimator extends Animator {
 				.squareIn(0.75f, 1, 1, 0)
 				.get();
 		float angle = 80 * factor;
-		transformer.getRawModel().rightLeg.z += factor;
-		transformer.getRawModel().rightLeg.y -= 2 * factor;
-		transformer.getRawModel().leftLeg.z -= 1.5f * factor;
-		transformer.getRawModel().leftLeg.y -= 5f * factor;
-		transformer.getRawModel().rightArm.y += 4f * factor;
 		transformer
+                .translateRightLeg(0, -2f * factor, factor)
+                .translateLeftLeg(0, -5f * factor, -1.5f * factor)
+                .translateRightArm(0, 4f * factor, 0)
 				.rotateLeftLeg(
 						(float) Math.toRadians(-30 * factor), 0, 0, animFactor
 				)
@@ -56,7 +54,7 @@ public class TapAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / parkourability.get(Tap.class).getMaxTappingTick();
 		if (phase > 1) phase = 1;
 		float factor = getAngleFactor(phase);
@@ -66,5 +64,5 @@ public class TapAnimator extends Animator {
 				.translateY(-factor * player.getBbHeight() / 5)
 				.rotatePitchFrontward(angle)
 				.endEnabledLegGrounding();
-	}
+    }
 }

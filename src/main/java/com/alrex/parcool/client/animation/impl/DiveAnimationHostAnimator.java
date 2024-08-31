@@ -27,10 +27,10 @@ public class DiveAnimationHostAnimator extends Animator {
 	final static int MaxTransitionTick = 6;
 
 	@Override
-	public void tick() {
-		super.tick();
-		diveAnimator.tick();
-		if (skyDiveAnimator != null) skyDiveAnimator.tick();
+	public void tick(Player player) {
+		super.tick(player);
+		diveAnimator.tick(player);
+		if (skyDiveAnimator != null) skyDiveAnimator.tick(player);
 		if (transitioning) {
 			transitionTick++;
 			if (transitionTick >= MaxTransitionTick) {
@@ -100,7 +100,7 @@ public class DiveAnimationHostAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		if (fromInAir && getTick() < MaxTransitionStartedInAirTick) { // transition when started in air
 			float factor = new Easing((getTick() + rotator.getPartialTick()) / MaxTransitionStartedInAirTick)
 					.squareOut(0, 1, 0, 1)
@@ -114,18 +114,18 @@ public class DiveAnimationHostAnimator extends Animator {
 				if (skyDiveAnimator == null) {
 					skyDiveAnimator = new SkyDiveAnimator(diveAnimator.getPitchAngle());
 				}
-				skyDiveAnimator.rotate(player, parkourability, rotator);
+                skyDiveAnimator.rotatePost(player, parkourability, rotator);
 			} else {
 				if (transitioning && skyDiveAnimator != null) {
 					float factor = getTransitionFactor(rotator.getPartialTick());
 					diveAnimator.rotate(player, parkourability, rotator, factor, skyDiveAnimator.getPitchAngle());
 				} else {
 					skyDiveAnimator = null;
-					diveAnimator.rotate(player, parkourability, rotator);
+                    diveAnimator.rotatePost(player, parkourability, rotator);
 				}
 			}
 		}
-	}
+    }
 
 	private void startTransition() {
 		transitioning = true;
@@ -164,8 +164,8 @@ public class DiveAnimationHostAnimator extends Animator {
 		}
 
 		@Override
-		public void tick() {
-			super.tick();
+		public void tick(Player player) {
+			super.tick(player);
 			forwardAngleCountOld = forwardAngleCount;
 			rightAngleCountOld = rightAngleCount;
 			if (KeyBindings.getKeyForward().isDown()) {
@@ -251,7 +251,7 @@ public class DiveAnimationHostAnimator extends Animator {
 		}
 
 		@Override
-		public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+        public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 			float forwardAngleFactor = getForwardAngleFactor(rotator.getPartialTick());
 			float rightAngleFactor = getRightAngleFactor(rotator.getPartialTick());
 			float basePitchAngle;
@@ -264,7 +264,7 @@ public class DiveAnimationHostAnimator extends Animator {
 					.rotatePitchFrontward(pitchAngle)
 					.rotateYawRightward(-24 * rightAngleFactor)
 					.end();
-		}
+        }
 
 		float getPitchAngle() {
 			return pitchAngle;
@@ -311,9 +311,9 @@ public class DiveAnimationHostAnimator extends Animator {
 		}
 
 		@Override
-		public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+        public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 			rotate(player, parkourability, rotator, 1, 0);
-		}
+        }
 
 		public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator, float factor, float transitionBaseAngle) {
 			double ySpeed = parkourability.get(Dive.class).getPlayerYSpeed(rotator.getPartialTick());

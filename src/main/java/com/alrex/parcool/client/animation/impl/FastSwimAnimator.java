@@ -53,19 +53,23 @@ public class FastSwimAnimator extends Animator {
         if (rightArmXAngle < 0) rightArmXAngle = -3 * Math.sqrt(-rightArmXAngle);
         if (leftArmXAngle < 0) leftArmXAngle = -3 * Math.sqrt(-leftArmXAngle);
         if (rightArmAnimatable) {
-            transformer.getRawModel().rightArm.x += (float) Math.max(0, 2.4 * Math.sin(Math.PI * tick / 15.));
-            transformer.getRawModel().rightArm.y += (float) Math.max(0, 1.2 * Math.sin(Math.PI * tick / 15.));
-            transformer.getRawModel().rightArm.z -= (float) (1.2 * Math.sin(Math.PI * tick / 15.));
+            transformer.translateRightArm(
+                    (float) Math.max(0, 2.4 * Math.sin(Math.PI * tick / 15.)),
+                    (float) Math.max(0, 1.2 * Math.sin(Math.PI * tick / 15.)),
+                    (float) (-1.2 * Math.sin(Math.PI * tick / 15.))
+            );
         }
 
         if (leftArmAnimatable) {
-            transformer.getRawModel().leftArm.x -= (float) Math.max(0, -2.4 * Math.sin(Math.PI * tick / 15.));
-            transformer.getRawModel().leftArm.y += (float) Math.max(0, -1.2 * Math.sin(Math.PI * tick / 15.));
-            transformer.getRawModel().leftArm.z += (float) (1.2 * Math.sin(Math.PI * tick / 15.));
+            transformer.translateLeftArm(
+                    -(float) Math.max(0, -2.4 * Math.sin(Math.PI * tick / 15.)),
+                    (float) Math.max(0, -1.2 * Math.sin(Math.PI * tick / 15.)),
+                    (float) (1.2 * Math.sin(Math.PI * tick / 15.))
+            );
         }
 
-        transformer.getRawModel().head.z += 0.5f * animationFactor;
         transformer
+                .translateHead(0, 0, 0.5f * animationFactor)
                 .rotateAdditionallyHeadYaw((float) (-5 * Math.sin(Math.PI * tick / 15.)))
                 .rotateRightArm((float) Math.toRadians(-190 + rightArmXAngle), 0, (float) Math.toRadians(-40 + 50 * Math.sin(Math.PI * tick / 15.)))
                 .rotateLeftArm((float) Math.toRadians(-190 + leftArmXAngle), 0, (float) Math.toRadians(40 + 50 * Math.sin(Math.PI * tick / 15.)));
@@ -79,7 +83,7 @@ public class FastSwimAnimator extends Animator {
     }
 
     @Override
-    public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
         if (player.isLocalPlayer() && Minecraft.getInstance().screen != null) {
             return;
         }
@@ -93,7 +97,7 @@ public class FastSwimAnimator extends Animator {
                 ).normalize();
 
         rotator.startBasedCenter()
-                .rotateRollRightward((float) (-15. * Math.asin(differenceVec.z()) + 12.0 * Math.sin(Math.PI * tick / 15.)))
+                .rotateYawRightward((float) (-15. * Math.asin(differenceVec.z()) + 12.0 * Math.sin(Math.PI * tick / 15.)))
                 .end();
     }
 }

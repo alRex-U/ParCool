@@ -12,6 +12,7 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -100,6 +101,9 @@ public class Dodge extends Action {
 				&& !player.isInWaterOrBubble()
 				&& !player.isShiftKeyDown()
 				&& !stamina.isExhausted()
+				&& !parkourability.get(Crawl.class).isDoing()
+				&& !parkourability.get(Roll.class).isDoing()
+				&& !parkourability.get(Tap.class).isDoing()
 		);
 	}
 
@@ -159,6 +163,8 @@ public class Dodge extends Action {
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		dodgeDirection = DodgeDirection.values()[startData.getInt()];
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.DODGE.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new DodgeAnimator(dodgeDirection));
 	}
@@ -181,6 +187,22 @@ public class Dodge extends Action {
 		return Math.min(
 				(float) (maxCoolTime - getCoolTime()) / maxCoolTime,
 				isInSuccessiveCoolDown(info) ? (float) (successiveMaxCoolTime - getSuccessivelyCoolTick()) / (successiveMaxCoolTime) : 1
+		);
+	}
+
+	@Override
+	public boolean wantsToShowStatusBar(LocalPlayer player, Parkourability parkourability) {
+		return coolTime > 0 || isInSuccessiveCoolDown(parkourability.getActionInfo());
+	}
+
+	@Override
+	public float getStatusValue(LocalPlayer player, Parkourability parkourability) {
+		ActionInfo info = parkourability.getActionInfo();
+		int maxCoolTime = getMaxCoolTime(info);
+		int successiveMaxCoolTime = getSuccessiveCoolTime(info);
+		return Math.max(
+				(float) getCoolTime() / maxCoolTime,
+				isInSuccessiveCoolDown(info) ? (float) (getSuccessivelyCoolTick()) / (successiveMaxCoolTime) : 0
 		);
 	}
 }

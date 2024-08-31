@@ -146,6 +146,8 @@ public class Vault extends Action {
 		AnimationType animationType = AnimationType.fromCode(startData.get());
 		SpeedVaultAnimator.Type speedVaultType = BufferUtil.getBoolean(startData) ?
 				SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.VAULT.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null && animationType != null) {
 			switch (animationType) {

@@ -1,17 +1,27 @@
 package com.alrex.parcool.client.animation;
 
-import com.alrex.parcool.utilities.MathUtil;
-import com.alrex.parcool.utilities.VectorUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 
 public class PlayerModelRotator {
 	private final PoseStack stack;
 	private final Player player;
 	private final float partial;
 	private double playerHeight = 1.8;
+	private final float givenXRot, givenYRot, givenZRot;
+
+	public float getXRot() {
+		return givenXRot;
+	}
+
+	public float getYRot() {
+		return givenYRot;
+	}
+
+	public float getZRot() {
+		return givenZRot;
+	}
 
 	public float getPartialTick() {
 		return partial;
@@ -20,10 +30,13 @@ public class PlayerModelRotator {
 	private boolean basedCenter = false;
 	private boolean basedTop = false;
 
-	public PlayerModelRotator(PoseStack stack, Player player, float partial) {
+	public PlayerModelRotator(PoseStack stack, Player player, float partial, float xRot, float yRot, float zRot) {
 		this.stack = stack;
 		this.player = player;
 		this.partial = partial;
+		this.givenXRot = xRot;
+		this.givenYRot = yRot;
+		this.givenZRot = zRot;
 		switch (player.getPose()) {
 			case SWIMMING:
 			case CROUCHING:
@@ -46,6 +59,10 @@ public class PlayerModelRotator {
 		basedTop = true;
 		stack.translate(0, playerHeight, 0);
 		return this;
+	}
+
+	public PoseStack getRawStack() {
+		return stack;
 	}
 
 	public PlayerModelRotator translateY(float offset) {

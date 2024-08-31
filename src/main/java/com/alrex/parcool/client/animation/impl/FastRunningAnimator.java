@@ -27,13 +27,15 @@ public class FastRunningAnimator extends Animator {
 				.get();
 	}
 
+	private float limbSwing = 0;
 	@Override
 	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
+		limbSwing = transformer.getLimbSwing();
 		float phase = (getTick() + transformer.getPartialTick()) / 10;
 		if (phase > 1) phase = 1;
 		float bodyAngleFactor = bodyAngleFactor(phase);
-		double rightXRotFactor = Math.cos(transformer.getLimbSwing() * 0.6662 + Math.PI);
-		double leftXRotFactor = Math.cos(transformer.getLimbSwing() * 0.6662);
+		double rightXRotFactor = Math.cos(limbSwing * 0.6662 + Math.PI);
+		double leftXRotFactor = Math.cos(limbSwing * 0.6662);
 		HumanoidArm attackHand = player.getMainArm();
 		boolean leftArmAnimatable = attackHand != HumanoidArm.LEFT || transformer.getRawModel().attackTime <= 0f;
 		boolean rightArmAnimatable = attackHand != HumanoidArm.RIGHT || transformer.getRawModel().attackTime <= 0f;
@@ -57,59 +59,80 @@ public class FastRunningAnimator extends Animator {
 		}
 
 		if (leftArmAnimatable) {
-			transformer.getRawModel().leftArm.z += (float) (leftXRotFactor * 2);
-			transformer.getRawModel().leftArm.x -= (float) (Math.abs(leftXRotFactor));
-			transformer.getRawModel().leftArm.y += bodyAngleFactor * 0.8f;
+            transformer.translateLeftArm(
+                    (float) (-Math.abs(leftXRotFactor)),
+                    bodyAngleFactor * 0.8f,
+                    (float) (leftXRotFactor * 2.)
+            );
 		}
 
 		if (rightArmAnimatable) {
-			transformer.getRawModel().rightArm.z += (float) (rightXRotFactor * 2);
-			transformer.getRawModel().rightArm.x += (float) (Math.abs(rightXRotFactor));
-			transformer.getRawModel().rightArm.y += bodyAngleFactor * 0.8f;
+            transformer.translateRightArm(
+                    (float) (Math.abs(rightXRotFactor)),
+                    bodyAngleFactor * 0.8f,
+                    (float) (rightXRotFactor * 2)
+            );
 		}
 
-		transformer.getRawModel().rightLeg.y += (float) (Math.min(0, transformer.getRawModel().rightLeg.xRot / (Math.PI / 2.)));
-		transformer.getRawModel().rightLeg.z += (float) (transformer.getRawModel().rightLeg.xRot / (Math.PI / 3.));
+        transformer
+                .translateRightLeg(
+                        0,
+                        (float) (Math.min(0, transformer.getRawModel().rightLeg.xRot / (Math.PI / 2.))),
+                        (float) (transformer.getRawModel().rightLeg.xRot / (Math.PI / 3.))
+                )
+                .translateLeftLeg(
+                        0,
+                        (float) (Math.min(0, transformer.getRawModel().leftLeg.xRot / (Math.PI / 2.))),
+                        (float) (transformer.getRawModel().leftLeg.xRot / (Math.PI / 3.))
+                );
 
-		transformer.getRawModel().leftLeg.y += (float) (Math.min(0, transformer.getRawModel().leftLeg.xRot / (Math.PI / 2.)));
-		transformer.getRawModel().leftLeg.z += (float) (transformer.getRawModel().leftLeg.xRot / (Math.PI / 3.));
-
+		float bodyYaw = (float) (10. * Math.cos(limbSwing * 0.6662));
 		float tick = getTick() + transformer.getPartialTick();
 		if (leftArmAnimatable) {
 			transformer
 					.rotateLeftArm(
-							(float) (Math.toRadians(-20 * bodyAngleFactor) + leftXRotFactor * transformer.getLimbSwingAmount()),
+							(float) (Math.toRadians(-25 * bodyAngleFactor) + 1.2 * leftXRotFactor * transformer.getLimbSwingAmount()),
 							0,
 							(float) Math.toRadians(
 									bodyAngleFactor * -15
-											+ (1. + Math.cos(transformer.getLimbSwing() * 1.3324)) / 2. * Math.sin(transformer.getLimbSwing() * 1.3324) * -17
+											+ (0.65 + Math.cos(limbSwing * 1.3324)) / 2. * Math.sin(limbSwing * 1.3324) * -30
 							)
 					);
 		}
 		if (rightArmAnimatable) {
 			transformer
 					.rotateRightArm(
-							(float) (Math.toRadians(-20 * bodyAngleFactor) + rightXRotFactor * transformer.getLimbSwingAmount()),
+							(float) (Math.toRadians(-25 * bodyAngleFactor) + 1.2 * rightXRotFactor * transformer.getLimbSwingAmount()),
 							0,
 							(float) Math.toRadians(
 									bodyAngleFactor * 15
-											+ (1. + Math.cos(transformer.getLimbSwing() * 1.3324 + Math.PI)) / 2. * Math.sin(transformer.getLimbSwing() * 1.3324 + Math.PI) * 17
+											+ (0.65 + Math.cos(limbSwing * 1.3324 + Math.PI)) / 2. * Math.sin(limbSwing * 1.3324 + Math.PI) * 30
 							)
 					);
 		}
 		transformer
 				.rotateAdditionallyHeadPitch(bodyAngleFactor * -30 - 5f * (float) Math.sin(Math.PI * tick / 10))
-				.addRotateRightLeg((float) Math.toRadians(-15 * bodyAngleFactor), 0, 0)
-				.addRotateLeftLeg((float) Math.toRadians(-15 * bodyAngleFactor), 0, 0)
+				.rotateAdditionallyHeadYaw(bodyYaw)
+				.addRotateRightLeg(
+						(float) Math.toRadians(-15 * bodyAngleFactor),
+						(float) Math.toRadians(bodyYaw),
+						0
+				)
+				.addRotateLeftLeg(
+						(float) Math.toRadians(-15 * bodyAngleFactor),
+						(float) Math.toRadians(bodyYaw),
+						0
+				)
 				.end();
 	}
 
 	@Override
-	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float tick = getTick() + rotator.getPartialTick();
 		float phase = tick / 10;
 		if (phase > 1) phase = 1;
-		float pitch = bodyAngleFactor(phase) * 25 + 5f * (float) Math.sin(Math.PI * tick / 10);
+		float bodyYaw = (float) (-10. * Math.cos(limbSwing * 0.6662));
+		float pitch = bodyAngleFactor(phase) * 30 + 5f * (float) Math.sin(Math.PI * tick / 10);
 		if (parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.EnableLeanAnimationOfFastRun)) {
 			if (player.isLocalPlayer() && Minecraft.getInstance().screen != null) {
 				rotator
@@ -127,6 +150,7 @@ public class FastRunningAnimator extends Animator {
 				rotator
 						.startBasedCenter()
 						.rotatePitchFrontward(pitch)
+						.rotateYawRightward(bodyYaw)
 						.rotateRollRightward((float) (30. * phase * Math.asin(differenceVec.z())))
 						.end();
 			}
@@ -136,5 +160,5 @@ public class FastRunningAnimator extends Animator {
 					.rotatePitchFrontward(pitch)
 					.end();
 		}
-	}
+    }
 }

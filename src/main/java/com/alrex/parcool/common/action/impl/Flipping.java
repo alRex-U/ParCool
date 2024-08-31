@@ -40,7 +40,7 @@ public class Flipping extends Action {
 	}
 
 	public enum Direction {
-		Front, Back;
+		Front, Back
 	}
 
 	private boolean justJumped = false;
@@ -63,8 +63,12 @@ public class Flipping extends Action {
 		boolean input = control.isInputDone(justJumped);
 		justJumped = false;
 		return (input
+                && !player.isShiftKeyDown()
 				&& parkourability.getActionInfo().can(Flipping.class)
+				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Dive.class).isDoing()
+				&& !parkourability.get(ChargeJump.class).isDoing()
+				&& !parkourability.getCancelMarks().cancelJump()
 				&& !stamina.isExhausted()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() <= 1
 		);

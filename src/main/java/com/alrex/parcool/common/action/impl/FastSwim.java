@@ -8,6 +8,7 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -22,6 +23,13 @@ public class FastSwim extends Action {
     private static final UUID FAST_SWIM_MODIFIER_UUID = UUID.randomUUID();
     private double speedModifier = 0;
     private boolean toggleStatus;
+
+    public double getSpeedModifier(ActionInfo info) {
+        return Math.min(
+                info.getClientSetting().get(ParCoolConfig.Client.Doubles.FastSwimSpeedModifier),
+                info.getServerLimitation().get(ParCoolConfig.Server.Doubles.MaxFastSwimSpeedModifier)
+        );
+    }
 
     @Override
     public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
@@ -69,7 +77,7 @@ public class FastSwim extends Action {
 
     @Override
     public void onStartInServer(Player player, Parkourability parkourability, ByteBuffer startData) {
-        speedModifier = parkourability.get(FastRun.class).getSpeedModifier(parkourability.getActionInfo());
+        speedModifier = parkourability.get(FastSwim.class).getSpeedModifier(parkourability.getActionInfo());
     }
 
     @Override
