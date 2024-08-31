@@ -1,0 +1,16 @@
+{
+  "name": "Charge Jump",
+  "icon": "minecraft:rabbit_foot",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "You can use $(bold)Charge Jump$() for jumping up higher.$(br)This helps you get over fences and climb high wall.$(br2)Though a simple skill, it should be helpful for you!"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(bold)1.$() Stand in place and sneak for few seconds $(br)$(bold)2.$() Release shift key and press jump key simultaneously."
+    }
+  ]
+}
