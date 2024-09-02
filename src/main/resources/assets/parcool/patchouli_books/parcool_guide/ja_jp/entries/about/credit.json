@@ -11,7 +11,12 @@
     {
       "type": "patchouli:text",
       "title": "モッド開発者",
-      "text": "主開発$()$(italic)$(list)alRex-U$()$(br2)バグ修正協力$()$(italic)$(list)JulyLynn"
+      "text": "主開発$()$(italic)$(list)alRex-U$()"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "音",
+      "text": "$(italic)$(list)SquARzY"
     },
     {
       "type": "patchouli:text",
@@ -26,7 +31,7 @@
     {
       "type": "patchouli:text",
       "title": "翻訳者 (中国語)",
-      "text": "$(bold)ch_zn$()$(italic)$(list)CatalystGinger$(list)GuoDaiYi$(list)njt-233"
+      "text": "$(bold)ch_zn$()$(italic)$(list)CatalystGinger$(list)GuoDaiYi$(list)njt-233$(list)Kasualix"
     },
     {
       "type": "patchouli:text",
@@ -41,7 +46,17 @@
     {
       "type": "patchouli:text",
       "title": "翻訳者 (スペイン語)",
-      "text": "$(bold)es-es$()$(italic)$(list)GhostOfCazador"
+      "text": "$(bold)es-es$()$(italic)$(list)GhostOfCazador$(list)elAltrex"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "翻訳者 (韓国語)",
+      "text": "$(bold)ko-kr$()$(italic)$(list)Mexwell12"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "翻訳者 (ロシア語)",
+      "text": "$(bold)ru-ru$()$(italic)$(list)MasterXort"
     }
   ]
 }

@@ -26,7 +26,7 @@ public class CatLeap extends Action {
 	private int coolTimeTick = 0;
 	private boolean ready = false;
 	private int readyTick = 0;
-	private final int MAX_COOL_TIME_TICK = 30;
+    private static final int MAX_COOL_TIME_TICK = 30;
 
 	@Override
 	public void onTick(Player player, Parkourability parkourability, IStamina stamina) {
@@ -63,6 +63,7 @@ public class CatLeap extends Action {
 				&& !stamina.isExhausted()
 				&& coolTimeTick <= 0
 				&& readyTick > 0
+                && parkourability.get(ChargeJump.class).getChargingTick() < ChargeJump.JUMP_CHARGE_TICK / 2
                 && !parkourability.get(Roll.class).isDoing()
                 && !parkourability.get(Tap.class).isDoing()
 				&& KeyRecorder.keySneak.isReleased()
@@ -96,6 +97,8 @@ public class CatLeap extends Action {
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
         Vec3 jumpDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
+        if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+            player.playSound(SoundEvents.CATLEAP.get(), 1, 1);
         spawnJumpEffect(player, jumpDirection);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new CatLeapAnimator());
@@ -106,18 +109,15 @@ public class CatLeap extends Action {
 		return StaminaConsumeTiming.OnStart;
 	}
 
-	public float getCoolDownPhase() {
-		return ((float) MAX_COOL_TIME_TICK - coolTimeTick) / MAX_COOL_TIME_TICK;
-	}
-
     @OnlyIn(Dist.CLIENT)
     private void spawnJumpEffect(Player player, Vec3 jumpDirection) {
         Level level = player.level();
         Vec3 pos = player.position();
+        var blockPosVec = pos.add(0, -0.2, 0);
         BlockPos blockpos = new BlockPos(
-                (int) Math.floor(pos.x()),
-                (int) Math.floor(pos.y() - 0.2),
-                (int) Math.floor(pos.z())
+                (int) Math.floor(blockPosVec.x()),
+                (int) Math.floor(blockPosVec.y()),
+                (int) Math.floor(blockPosVec.z())
         );
         if (!level.isLoaded(blockpos)) return;
         float width = player.getBbWidth();

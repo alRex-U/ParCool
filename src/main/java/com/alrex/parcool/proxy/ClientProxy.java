@@ -4,6 +4,7 @@ import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.network.*;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -13,6 +14,11 @@ import net.minecraftforge.network.SimpleChannel;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy extends CommonProxy {
+    @Override
+    public boolean ParCoolIsActive() {
+        return ParCoolConfig.Client.Booleans.ParCoolIsActive.get();
+    }
+
 	@Override
 	public void init() {
 		EventBusForgeRegistry.registerClient(MinecraftForge.EVENT_BUS);

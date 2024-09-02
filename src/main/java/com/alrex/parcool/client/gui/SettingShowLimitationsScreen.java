@@ -1,10 +1,12 @@
 package com.alrex.parcool.client.gui;
 
 import com.alrex.parcool.common.info.ActionInfo;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 
 public class SettingShowLimitationsScreen extends ParCoolSettingScreen {
     private final InfoSet[] infoList;
@@ -12,16 +14,22 @@ public class SettingShowLimitationsScreen extends ParCoolSettingScreen {
     public SettingShowLimitationsScreen(Component titleIn, ActionInfo info, ColorTheme theme) {
         super(titleIn, info, theme);
         currentScreen = 3;
-        infoList = new InfoSet[]{
-                new InfoSet(
-                        "Max Stamina Limit",
-                        Integer.toString(info.getMaxStaminaLimit())
-                ),
-                new InfoSet(
-                        "Infinite Stamina Permission",
-                        Boolean.toString(info.isInfiniteStaminaPermitted())
-                )
-        };
+        LinkedList<InfoSet> infoSets = new LinkedList<>();
+        for (ParCoolConfig.Server.Booleans item : ParCoolConfig.Server.Booleans.values()) {
+            infoSets.add(new InfoSet(item.Path, Boolean.toString(info.getServerLimitation().get(item))));
+        }
+        for (ParCoolConfig.Server.Integers item : ParCoolConfig.Server.Integers.values()) {
+            infoSets.add(new InfoSet(item.Path, Integer.toString(info.getServerLimitation().get(item))));
+        }
+        for (ParCoolConfig.Server.Doubles item : ParCoolConfig.Server.Doubles.values()) {
+            infoSets.add(new InfoSet(item.Path, Double.toString(info.getServerLimitation().get(item))));
+        }
+        infoList = infoSets.toArray(new InfoSet[0]);
+    }
+
+    @Override
+    protected boolean isDownScrollable() {
+        return topIndex + viewableItemCount < infoList.length;
     }
 
     @Override
@@ -30,8 +38,9 @@ public class SettingShowLimitationsScreen extends ParCoolSettingScreen {
         int contentHeight = height - topOffset - bottomOffset;
         int itemHeight = font.lineHeight * 2;
         int valueWidth = Arrays.stream(infoList).map(it -> font.width(it.value)).max(Integer::compareTo).orElse(0);
-        for (int i = 0; i < infoList.length; i++) {
-            InfoSet item = infoList[i];
+        viewableItemCount = contentHeight / itemHeight;
+        for (int i = 0; i < viewableItemCount && i + topIndex < infoList.length; i++) {
+            InfoSet item = infoList[topIndex + i];
             graphics.drawString(
                     font,
                     item.name,

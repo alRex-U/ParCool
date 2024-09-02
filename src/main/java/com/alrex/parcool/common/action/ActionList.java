@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 public class ActionList {
 	public static final List<ActionRegistry<? extends Action>> ACTION_REGISTRIES = Arrays.asList(
 			new ActionRegistry<>(BreakfallReady.class, BreakfallReady::new, 0),
-			new ActionRegistry<>(CatLeap.class, CatLeap::new, 150),
+            new ActionRegistry<>(CatLeap.class, CatLeap::new, 200),
+            new ActionRegistry<>(ChargeJump.class, ChargeJump::new, 100),
 			new ActionRegistry<>(ClimbPoles.class, ClimbPoles::new, 0),
 			new ActionRegistry<>(ClimbUp.class, ClimbUp::new, 150),
 			new ActionRegistry<>(ClingToCliff.class, ClingToCliff::new, 2),

@@ -33,7 +33,7 @@ public class DodgeAnimator extends Animator {
 		float animFactor = new Easing(phase)
 				.squareOut(0, 0.25f, 0, 1)
 				.linear(0.25f, 0.75f, 1, 1)
-				.squareIn(0.75f, 1, 1, 0)
+                .sinInOut(0.70f, 1, 1, 0)
 				.get();
 		switch (direction) {
 			case Right: {
@@ -176,9 +176,9 @@ public class DodgeAnimator extends Animator {
 						.sinInOut(0, 0.4f, 0, 1)
 						.sinInOut(0.4f, 1, 1, 0)
 						.get();
-                transformer.getRawModel().leftArm.x -= (float) (0.8 * armZFactor);
-                transformer.getRawModel().rightArm.x += (float) (0.8 * armZFactor);
 				transformer
+                        .translateLeftArm(-0.8f * armZFactor, 0, 0)
+                        .translateRightArm(0.8f * armZFactor, 0, 0)
 						.rotateRightLeg((float) Math.toRadians(rightLegXFactor * -70), 0, 0, animFactor)
 						.rotateLeftLeg((float) Math.toRadians(leftLegXFactor * -70), 0, 0, animFactor)
                         .rotateRightArm((float) Math.toRadians(-170 * armXFactor), 0, (float) Math.toRadians(15 * armZFactor), animFactor)
@@ -227,10 +227,10 @@ public class DodgeAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / Dodge.MAX_TICK;
 		if (phase > 1) {
-			return;
+            return;
 		}
 		switch (direction) {
 			case Front: {
@@ -295,7 +295,7 @@ public class DodgeAnimator extends Animator {
 				break;
 			}
 		}
-	}
+    }
 
 	@Override
 	public void onCameraSetUp(ViewportEvent.ComputeCameraAngles event, Player clientPlayer, Parkourability parkourability) {

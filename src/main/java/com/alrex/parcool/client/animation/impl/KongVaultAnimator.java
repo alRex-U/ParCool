@@ -8,8 +8,11 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.EasingFunctions;
+import com.alrex.parcool.utilities.MathUtil;
+import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.ViewportEvent;
 
 import static java.lang.Math.toRadians;
@@ -22,7 +25,6 @@ public class KongVaultAnimator extends Animator {
 		} else {
 			return EasingFunctions.SinInOutBySquare(2 - phase * 2);
 		}
-		//return 1 - 4 * MathUtil.squaring(phase - 0.5f);
 	}
 
 	float getArmFactor(float phase) {
@@ -30,6 +32,21 @@ public class KongVaultAnimator extends Animator {
 				1 - 25 * (phase - 0.2f) * (phase - 0.2f) :
 				1 - EasingFunctions.SinInOutBySquare((phase - 0.2f) * 1.25f);
 	}
+
+    private float yRotDifference = 0;
+    private float yRotDifferenceOld = 0;
+
+    @Override
+    public void tick(Player player) {
+        super.tick(player);
+        yRotDifferenceOld = yRotDifference;
+        Vec3 currentAngle = VectorUtil.fromYawDegree(player.yBodyRot);
+        Vec3 oldAngle = VectorUtil.fromYawDegree(player.yBodyRotO);
+        yRotDifference = (float) Math.atan(
+                (oldAngle.x() * currentAngle.z() - currentAngle.x() * oldAngle.z())
+                        / (currentAngle.x() * oldAngle.x() + currentAngle.z() * oldAngle.z())
+        );
+    }
 
 	@Override
 	public boolean shouldRemoved(Player player, Parkourability parkourability) {
@@ -42,22 +59,53 @@ public class KongVaultAnimator extends Animator {
 		float armFactor = getArmFactor(phase);
 		float factor = getFactor(phase);
 		float animFactor = new Easing(phase)
-				.sinInOut(0, 0.25f, 0, 1)
-				.linear(0.25f, 0.75f, 1, 1)
-				.sinInOut(0.75f, 1, 1, 0)
+                .sinInOut(0, 0.15f, 0, 1)
+                .linear(0.15f, 0.85f, 1, 1)
+                .sinInOut(0.85f, 1, 1, 0)
 				.get();
+        float difference = MathUtil.lerp(yRotDifferenceOld, yRotDifference, transformer.getPartialTick());
 		transformer
+                .translateLeftLeg(
+                        0,
+                        -0.7f * factor,
+                        -0.9f * factor
+                )
+                .translateRightLeg(
+                        0,
+                        -0.7f * factor,
+                        -0.9f * factor
+                )
 				.rotateAdditionallyHeadPitch(-40 * armFactor)
 				.rotateRightArm((float) toRadians(30 - 195 * armFactor), 0, (float) toRadians(30 - 30 * armFactor), animFactor)
 				.rotateLeftArm((float) toRadians(25 - 195 * armFactor), 0, (float) toRadians(-30 + 30 * armFactor), animFactor)
-				.rotateRightLeg((float) toRadians(-20 + 55 * factor), 0, 0, animFactor)
-				.rotateLeftLeg((float) toRadians(-10 + 20 * factor), 0, 0, animFactor)
+                .rotateRightLeg(
+                        (float) toRadians(Easing.with(phase)
+                                .squareOut(0, 0.1f, 5, -5)
+                                .sinInOut(0.1f, 0.47f, -5, 25)
+                                .sinInOut(0.47f, 0.9f, 25, -25)
+                                .sinInOut(0.9f, 1f, -25, 0)
+                                .get()
+                        ),
+                        0,
+                        difference - (float) Math.toRadians(5. * factor),
+                        animFactor
+                )
+                .rotateLeftLeg(
+                        (float) toRadians(Easing.with(phase)
+                                .sinInOut(0, 0.33f, -20, 20)
+                                .sinInOut(0.33f, 0.79f, 20, -45)
+                                .sinInOut(0.79f, 1f, -45, 0)
+                                .get()
+                        ),
+                        0,
+                        difference + (float) Math.toRadians(5. * factor),
+                        animFactor)
 				.makeLegsLittleMoving()
 				.end();
 	}
 
 	@Override
-	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / Vault.MAX_TICK;
 		float factor = getFactor(phase);
 		float yFactor = new Easing(phase)
@@ -69,7 +117,7 @@ public class KongVaultAnimator extends Animator {
 				.translateY(-yFactor * player.getBbHeight() / 5)
 				.rotatePitchFrontward(factor * 95)
 				.end();
-	}
+    }
 
 	@Override
 	public void onCameraSetUp(ViewportEvent.ComputeCameraAngles event, Player clientPlayer, Parkourability parkourability) {

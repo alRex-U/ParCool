@@ -23,25 +23,41 @@ public class WorldUtil {
 		double wallZ = 0;
 		Vec3 pos = entity.position();
 
-		AABB baseBox = new AABB(
+        AABB baseBox1 = new AABB(
 				pos.x() - width,
 				pos.y(),
 				pos.z() - width,
 				pos.x() + width,
+                pos.y() + entity.getBbHeight() / 1.63,
+                pos.z() + width
+        );
+        AABB baseBox2 = new AABB(
+                pos.x() - width,
+                pos.y() + entity.getBbHeight() / 1.63,
+                pos.z() - width,
+                pos.x() + width,
 				pos.y() + entity.getBbHeight(),
 				pos.z() + width
 		);
 
-		if (!entity.getCommandSenderWorld().noCollision(entity, baseBox.expandTowards(range, 0, 0))) {
+        if (!entity.level().noCollision(baseBox1.expandTowards(range, 0, 0))
+                && !entity.level().noCollision(baseBox2.expandTowards(range, 0, 0))
+        ) {
 			wallX++;
 		}
-		if (!entity.getCommandSenderWorld().noCollision(entity, baseBox.expandTowards(-range, 0, 0))) {
+        if (!entity.level().noCollision(baseBox1.expandTowards(-range, 0, 0))
+                && !entity.level().noCollision(baseBox2.expandTowards(-range, 0, 0))
+        ) {
 			wallX--;
 		}
-		if (!entity.getCommandSenderWorld().noCollision(entity, baseBox.expandTowards(0, 0, range))) {
+        if (!entity.level().noCollision(baseBox1.expandTowards(0, 0, range))
+                && !entity.level().noCollision(baseBox2.expandTowards(0, 0, range))
+        ) {
 			wallZ++;
 		}
-		if (!entity.getCommandSenderWorld().noCollision(entity, baseBox.expandTowards(0, 0, -range))) {
+        if (!entity.level().noCollision(baseBox1.expandTowards(0, 0, -range))
+                && !entity.level().noCollision(baseBox1.expandTowards(0, 0, -range))
+        ) {
 			wallZ--;
 		}
 		if (wallX == 0 && wallZ == 0) return null;
@@ -125,7 +141,7 @@ public class WorldUtil {
 		if (stepX == 0 || stepZ == 0) {
 			Vec3 result = new Vec3(stepX, 0, stepZ);
 			Vec3 blockPosition = entity.position().add(result).add(0, 0.5, 0);
-			BlockPos target = new BlockPos(new Vec3i((int) blockPosition.x(), (int) blockPosition.y(), (int) blockPosition.z()));
+            BlockPos target = new BlockPos(new Vec3i((int) Math.floor(blockPosition.x()), (int) Math.floor(blockPosition.y()), (int) Math.floor(blockPosition.z())));
 			if (!world.isLoaded(target)) return null;
 			BlockState state = world.getBlockState(target);
 			if (state.getBlock() instanceof StairBlock) {

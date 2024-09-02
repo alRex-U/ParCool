@@ -9,6 +9,10 @@ public class Easing {
 		this.phase = phase;
 	}
 
+    public static Easing with(float phase) {
+        return new Easing(phase);
+    }
+
 	public boolean isInRange(float start, float until) {
 		return start <= phase && phase < until;
 	}

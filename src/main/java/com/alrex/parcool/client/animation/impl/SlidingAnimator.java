@@ -6,7 +6,9 @@ import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.Slide;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.Easing;
+import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 public class SlidingAnimator extends Animator {
 	private static final int MAX_TRANSITION_TICK = 5;
@@ -24,28 +26,45 @@ public class SlidingAnimator extends Animator {
 				.get();
 
 		transformer
-				.rotateHeadPitch(50)
-				.rotateRightArm((float) Math.toRadians(45), 0, (float) Math.toRadians(110), animFactor)
-				.rotateLeftArm((float) Math.toRadians(50), 0, (float) Math.toRadians(-100), animFactor)
-				.rotateRightLeg((float) Math.toRadians(-17), 0, (float) Math.toRadians(-5), animFactor)
-				.rotateLeftLeg((float) Math.toRadians(-5), 0, (float) Math.toRadians(15), animFactor)
+                .translateLeftLeg(
+                        0,
+                        -1.2f * animFactor,
+                        -2f * animFactor
+                )
+                .translateRightArm(
+                        0,
+                        1.2f * animFactor,
+                        1.2f * animFactor
+                )
+                .translateHead(0, 0, -animFactor)
+                .rotateHeadPitch(50 * animFactor)
+                .rotateAdditionallyHeadYaw(50 * animFactor)
+                .rotateAdditionallyHeadRoll(-10 * animFactor)
+                .rotateRightArm((float) Math.toRadians(50), (float) Math.toRadians(-40), 0, animFactor)
+                .rotateLeftArm((float) Math.toRadians(20), 0, (float) Math.toRadians(-100), animFactor)
+                .rotateRightLeg((float) Math.toRadians(-30), (float) Math.toRadians(40), 0, animFactor)
+                .rotateLeftLeg((float) Math.toRadians(40), (float) Math.toRadians(-30), (float) Math.toRadians(15), animFactor)
 				.makeLegsLittleMoving()
 				.makeArmsNatural()
 				.end();
 	}
 
 	@Override
-	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
-		float swimAmount = player.getSwimAmount(rotator.getPartialTick());
-		float bodyAnglePhase = (getTick() + rotator.getPartialTick()) / MAX_TRANSITION_TICK;
-		if (bodyAnglePhase > 1) bodyAnglePhase = 1;
-		float bodyAngleFactor = new Easing(bodyAnglePhase)
-				.squareOut(0, 1, 0, 1)
+    public boolean rotatePre(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+        Vec3 vec = parkourability.get(Slide.class).getSlidingVector();
+        if (vec == null) return false;
+        float animFactor = (getTick() + rotator.getPartialTick()) / MAX_TRANSITION_TICK;
+        float yRot = (float) VectorUtil.toYawDegree(vec);
+        if (animFactor > 1) animFactor = 1;
+        animFactor = new Easing(animFactor)
+                .sinInOut(0, 1, 0, 1)
 				.get();
 		rotator
-				.startBasedCenter()
-				.translateY(player.getBbHeight() / 4 * (1 - bodyAnglePhase))
-				.rotatePitchFrontward(-70 * bodyAngleFactor - 90 * swimAmount)
-				.end();
+                .rotateYawRightward(180f + yRot)
+                .rotatePitchFrontward(-55f * animFactor)
+                .translate(0.35f * animFactor, 0, 0)
+                .rotateYawRightward(-55f * animFactor)
+                .translate(0, -0.7f * animFactor, -0.3f * animFactor);
+        return true;
 	}
 }

@@ -9,7 +9,6 @@ import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.utilities.EntityUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,7 +37,8 @@ public class ClimbUp extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
-		EntityUtil.addVelocity(player, new Vec3(0, 0.6, 0));
+        Vec3 speed = player.getDeltaMovement();
+        player.setDeltaMovement(speed.x(), 0.6, speed.z());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.CLING_TO_CLIFF_JUMP.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
@@ -47,6 +47,8 @@ public class ClimbUp extends Action {
 
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
+        if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+            player.playSound(SoundEvents.CLING_TO_CLIFF_JUMP.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new ClimbUpAnimator());
 	}

@@ -18,6 +18,9 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class ParCoolConfig {
+    public enum AdvantageousDirection {
+        Lower, Higher
+    }
 	public interface Item<T> {
 		T get();
 
@@ -73,9 +76,13 @@ public class ParCoolConfig {
 					ConfigGroup.Animation, "Enable custom animation of falling",
 					"enable_falling_animation", true
 			),
+            EnableLeanAnimationOfFastRun(
+                    ConfigGroup.Animation, "Enable lean animation while FastRun",
+                    "enable_lean_animation_fast_run", true
+            ),
 			EnableFPVAnimation(
 					ConfigGroup.CameraAnimation, "Enable first-person-view animations",
-					"enable_fov_animation", true
+                    "enable_fov_animation", false
 			),
 			EnableCameraAnimationOfDodge(
 					ConfigGroup.CameraAnimation, "Enable rotation of camera by Dodge",
@@ -214,13 +221,21 @@ public class ParCoolConfig {
 		}
 
 		public enum Integers implements Item<Integer> {
-			HorizontalMarginOfStaminaHUD(
-					ConfigGroup.HUD, "horizontal margin of normal HUD",
-					"margin_h_stamina_hud", 3, 0, 100
+            HorizontalOffsetOfStaminaHUD(
+                    ConfigGroup.HUD, "horizontal offset of normal HUD",
+                    "offset_h_stamina_hud", 3, 0, 100
+            ),
+            VerticalOffsetOfStaminaHUD(
+                    ConfigGroup.HUD, "vertical offset of normal HUD",
+                    "offset_v_stamina_hud", 3, 0, 100
 			),
-			VerticalMarginOfStaminaHUD(
-					ConfigGroup.HUD, "vertical margin of normal HUD",
-					"margin_v_stamina_hud", 3, 0, 100
+            HorizontalOffsetOfLightStaminaHUD(
+                    ConfigGroup.HUD, "horizontal offset of light HUD",
+                    "offset_h_light_hud", 0, -100, 100
+            ),
+            VerticalOffsetOfLightStaminaHUD(
+                    ConfigGroup.HUD, "vertical offset of light HUD",
+                    "offset_v_light_hud", 0, -100, 100
 			),
 			WallRunContinuableTick(
 					ConfigGroup.Modifier, "How long you can do Horizontal Wall Run",
@@ -313,6 +328,10 @@ public class ParCoolConfig {
 					ConfigGroup.Modifier, "FastRun speed modifier",
 					"fast-run_modifier", 2, 0.001, 4
 			),
+            FastSwimSpeedModifier(
+                    ConfigGroup.Modifier, "FastSwim speed modifier",
+                    "fast-swim_modifier", 2, 0.001, 4
+            ),
 			DodgeSpeedModifier(
 					ConfigGroup.Modifier, "Dodge speed modifier",
 					"dodge-speed_modifier", 1, 0.5, 1.5
@@ -396,6 +415,7 @@ public class ParCoolConfig {
 		public static final ForgeConfigSpec.EnumValue<FastRun.ControlType> FastRunControl;
 		public static final ForgeConfigSpec.EnumValue<Crawl.ControlType> CrawlControl;
         public static final ForgeConfigSpec.EnumValue<Flipping.ControlType> FlipControl;
+        public static final ForgeConfigSpec.EnumValue<HorizontalWallRun.ControlType> HWallRunControl;
         public static final ForgeConfigSpec.EnumValue<IStamina.Type> StaminaType;
 
 		private static void register(ForgeConfigSpec.Builder builder, ConfigGroup group) {
@@ -406,14 +426,14 @@ public class ParCoolConfig {
 
 		static {
 			ForgeConfigSpec.Builder builder = BUILDER;
-			builder.push("Possibility of Actions(Some do not have to work)");
+            builder.push("Possibility_of_Actions(Some_do_not_have_to_work)");
 			{
 				for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
 					actionPossibilities[i] = builder.define("can_" + ActionList.ACTIONS.get(i).getSimpleName(), true);
 				}
 			}
 			builder.pop();
-			builder.push("Stamina HUD Configuration");
+            builder.push("Stamina_HUD_Configuration");
 			{
 				StaminaHUDType = builder.defineEnum("stamina_hud_type", HUDType.Light);
 				AlignHorizontalStaminaHUD = builder.comment("horizontal alignment").defineEnum("align_h_s_hud", Position.Horizontal.Right);
@@ -439,6 +459,7 @@ public class ParCoolConfig {
 				FastRunControl = builder.comment("Control of FastRun").defineEnum("fast-run_control", FastRun.ControlType.PressKey);
                 CrawlControl = builder.comment("Control of Crawl").defineEnum("crawl_control", Crawl.ControlType.PressKey);
                 FlipControl = builder.comment("Control of Flipping").defineEnum("flip_control", Flipping.ControlType.PressRightAndLeft);
+                HWallRunControl = builder.comment("Control of Horizontal Wall Run").defineEnum("h-wall-run_control", HorizontalWallRun.ControlType.PressKey);
 				register(builder, ConfigGroup.Control);
 			}
 			builder.pop();
@@ -447,7 +468,7 @@ public class ParCoolConfig {
 				register(builder, ConfigGroup.Modifier);
 			}
 			builder.pop();
-			builder.push("Other Configuration");
+            builder.push("Other_Configuration");
 			{
 				VaultAnimationMode = builder.comment("Vault Animation(Dynamic is to select animation dynamically)").defineEnum("vault_animation_mode", Vault.TypeSelectionMode.Dynamic);
 				GUIColorTheme = builder.comment("Color theme of Setting GUI").defineEnum("gui_color_theme", ColorTheme.Blue);
@@ -480,13 +501,14 @@ public class ParCoolConfig {
 		public enum Booleans implements Item<Boolean> {
 			AllowInfiniteStamina(
 					ConfigGroup.Stamina, "Permission of infinite stamina",
-					"allow_infinite_stamina", true
+                    "allow_infinite_stamina", true, true
 			);
 			public final ConfigGroup Group;
 			@Nullable
 			public final String Comment;
 			public final String Path;
 			public final boolean DefaultValue;
+            public final boolean AdvantageousValue;
 			@Nullable
 			private ForgeConfigSpec.BooleanValue configInstance = null;
 
@@ -494,12 +516,14 @@ public class ParCoolConfig {
 					ConfigGroup group,
 					@Nullable String comment,
 					String path,
-					boolean defaultValue
+                    boolean defaultValue,
+                    boolean advantageous
 			) {
 				Group = group;
 				Comment = comment;
 				Path = path;
 				DefaultValue = defaultValue;
+                AdvantageousValue = advantageous;
 			}
 
 			@Override
@@ -545,31 +569,31 @@ public class ParCoolConfig {
 		public enum Integers implements Item<Integer> {
 			MaxStaminaLimit(
 					ConfigGroup.Stamina, "Limitation of max stamina value",
-					"max_stamina_limit", Integer.MAX_VALUE, 300, Integer.MAX_VALUE
+                    "max_stamina_limit", Integer.MAX_VALUE, 300, Integer.MAX_VALUE, AdvantageousDirection.Higher
 			),
 			MaxStaminaRecovery(
 					ConfigGroup.Stamina, "Limitation of max stamina recovery",
-					"max_stamina_recovery_limit", Integer.MAX_VALUE, 1, Integer.MAX_VALUE
+                    "max_stamina_recovery_limit", Integer.MAX_VALUE, 1, Integer.MAX_VALUE, AdvantageousDirection.Higher
 			),
 			SuccessiveDodgeCoolTime(
 					ConfigGroup.Control, "How long duration of dodge is deal as successive dodge",
-					"least_successive_dodge_cool_time", 0, 0, Integer.MAX_VALUE
+                    "least_successive_dodge_cool_time", 0, 0, Integer.MAX_VALUE, AdvantageousDirection.Lower
 			),
 			DodgeCoolTime(
 					ConfigGroup.Control, "Cool time of Dodge action",
-					"least_dodge_cool_time", Dodge.MAX_TICK, Dodge.MAX_TICK, Integer.MAX_VALUE
+                    "least_dodge_cool_time", Dodge.MAX_TICK, Dodge.MAX_TICK, Integer.MAX_VALUE, AdvantageousDirection.Lower
 			),
 			MaxSuccessiveDodgeCount(
 					ConfigGroup.Control, "Max number of times of successive Dodge action",
-					"max_successive_dodge_count", Integer.MAX_VALUE, 1, Integer.MAX_VALUE
+                    "max_successive_dodge_count", Integer.MAX_VALUE, 1, Integer.MAX_VALUE, AdvantageousDirection.Higher
 			),
 			MaxWallRunContinuableTick(
 					ConfigGroup.Modifier, "How long you can do Horizontal Wall Run",
-					"wall-run_continuable_tick", 40, 15, 40
+                    "wall-run_continuable_tick", 40, 15, 40, AdvantageousDirection.Higher
 			),
 			MaxSlidingContinuableTick(
 					ConfigGroup.Modifier, "How long you can do Slide",
-					"sliding_continuable_tick", 30, 10, 30
+                    "sliding_continuable_tick", 30, 10, 30, AdvantageousDirection.Higher
 			);
 			public final ConfigGroup Group;
 			@Nullable
@@ -578,6 +602,7 @@ public class ParCoolConfig {
 			public final int DefaultValue;
 			public final int Min;
 			public final int Max;
+            public final AdvantageousDirection Advantageous;
 			@Nullable
 			private ForgeConfigSpec.IntValue configInstance = null;
 
@@ -587,7 +612,8 @@ public class ParCoolConfig {
 					String path,
 					int defaultValue,
 					int min,
-					int max
+                    int max,
+                    AdvantageousDirection advantageous
 			) {
 				Group = group;
 				Comment = comment;
@@ -595,6 +621,7 @@ public class ParCoolConfig {
 				DefaultValue = defaultValue;
 				Min = min;
 				Max = max;
+                Advantageous = advantageous;
 			}
 
 			@Override
@@ -640,11 +667,15 @@ public class ParCoolConfig {
 		public enum Doubles implements Item<Double> {
 			MaxFastRunSpeedModifier(
 					ConfigGroup.Modifier, "FastRun speed modifier",
-					"max_fast-run_modifier", 2, 0.001, 4
+                    "max_fast-run_modifier", 2, 0.001, 4, AdvantageousDirection.Higher
+            ),
+            MaxFastSwimSpeedModifier(
+                    ConfigGroup.Modifier, "FastSwim speed modifier",
+                    "max_fast-swim_modifier", 2, 0.001, 4, AdvantageousDirection.Higher
 			),
 			MaxDodgeSpeedModifier(
 					ConfigGroup.Modifier, "Dodge speed modifier",
-					"max_dodge-speed_modifier", 1, 0.5, 1.5
+                    "max_dodge-speed_modifier", 1, 0.5, 1.5, AdvantageousDirection.Higher
 			);
 			public final ConfigGroup Group;
 			@Nullable
@@ -653,6 +684,7 @@ public class ParCoolConfig {
 			public final double DefaultValue;
 			public final double Min;
 			public final double Max;
+            public final AdvantageousDirection Advantageous;
 			@Nullable
 			private ForgeConfigSpec.DoubleValue configInstance = null;
 
@@ -662,7 +694,8 @@ public class ParCoolConfig {
 					String path,
 					double defaultValue,
 					double min,
-					double max
+                    double max,
+                    AdvantageousDirection advantageous
 			) {
 				Group = group;
 				Comment = comment;
@@ -670,6 +703,7 @@ public class ParCoolConfig {
 				DefaultValue = defaultValue;
 				Min = min;
 				Max = max;
+                Advantageous = advantageous;
 			}
 
 			@Override
@@ -740,7 +774,7 @@ public class ParCoolConfig {
 			builder.push("Limitations");
 			{
 				LimitationEnabled = builder.comment("Whether these limitations will be imposed to players").define("limitation_imposed", false);
-				builder.push("Action Permissions");
+                builder.push("Action_Permissions");
 				{
 					for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
 						actionPermissions[i]
@@ -750,7 +784,7 @@ public class ParCoolConfig {
 				builder.pop();
 				builder.push("Stamina");
 				{
-					builder.push("Least Consumption");
+                    builder.push("Least_Consumption");
 					{
 						for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
                             leastStaminaConsumptions[i] = builder.defineInRange(
@@ -760,6 +794,7 @@ public class ParCoolConfig {
 							);
 						}
 					}
+                    builder.pop();
 					register(builder, ConfigGroup.Stamina);
 				}
 				builder.pop();

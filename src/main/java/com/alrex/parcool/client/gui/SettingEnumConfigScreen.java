@@ -1,6 +1,8 @@
 package com.alrex.parcool.client.gui;
 
+import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
+import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.network.SyncClientInformationMessage;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
@@ -19,6 +21,7 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
             new EnumConfigSet<>(ParCoolConfig.Client.FastRunControl),
             new EnumConfigSet<>(ParCoolConfig.Client.CrawlControl),
             new EnumConfigSet<>(ParCoolConfig.Client.FlipControl),
+            new EnumConfigSet<>(ParCoolConfig.Client.HWallRunControl),
             new EnumConfigSet<>(ParCoolConfig.Client.VaultAnimationMode),
             new EnumConfigSet<>(ParCoolConfig.Client.GUIColorTheme),
             new EnumConfigSet<>(ParCoolConfig.Client.StaminaHUDType),
@@ -84,14 +87,16 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
 
     @Override
     public void onClose() {
-        LocalPlayer player = Minecraft.getInstance().player;
-        SyncClientInformationMessage.sync(player, true);
         super.onClose();
     }
 
     @Override
     protected void save() {
         LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null) return;
+        Parkourability parkourability = Parkourability.get(player);
+        if (parkourability == null) return;
+        parkourability.getActionInfo().setClientSetting(ClientSetting.readFromLocalConfig());
         SyncClientInformationMessage.sync(player, true);
     }
 

@@ -1,82 +1,61 @@
 package com.alrex.parcool.common.info;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.config.ParCoolConfig;
-import net.minecraft.nbt.Tag;
 
 public class ActionInfo {
-	private final Limitations[] Limitations = new Limitations[]{
-			new Limitations(), //server limitation
-			new Limitations()  //individual limitation
-	};
+    public ActionInfo() {
+    }
 
-	public Limitations getServerLimitation() {
-		return Limitations[0];
+    public ClientSetting getClientSetting() {
+        return clientSetting;
+    }
+
+    public void setClientSetting(ClientSetting clientSetting) {
+        this.clientSetting = clientSetting;
 	}
 
-	public Limitations getIndividualLimitation() {
-		return Limitations[1];
+    private ClientSetting clientSetting = ClientSetting.UNSYNCED_INSTANCE;
+
+    public ServerLimitation getServerLimitation() {
+        return serverLimitation;
 	}
 
-	public ClientInformation getClientInformation() {
-		return clientInformation;
-	}
+    public void setServerLimitation(ServerLimitation serverLimitation) {
+        this.serverLimitation = serverLimitation;
+    }
 
-	private final ClientInformation clientInformation = new ClientInformation();
+    private ServerLimitation serverLimitation = ServerLimitation.UNSYNCED_INSTANCE;
 
 	public boolean can(Class<? extends Action> action) {
-		for (Limitations limitation : Limitations) {
-			if (!limitation.isPermitted(action)) return false;
-		}
-		return getClientInformation().get(ParCoolConfig.Client.Booleans.ParCoolIsActive)
-				&& getClientInformation().getPossibilityOf(action);
+        return ParCool.isActive()
+                && getClientSetting().getPossibilityOf(action)
+                && getServerLimitation().isPermitted(action);
 	}
 
 	public int getStaminaConsumptionOf(Class<? extends Action> action) {
-		int value = getClientInformation().getStaminaConsumptionOf(action);
-		for (Limitations limitation : Limitations) {
-            if (limitation.isEnabled()) value = Math.max(value, limitation.getLeastStaminaConsumption(action));
-		}
-		return value;
+        return Math.max(
+                getClientSetting().getStaminaConsumptionOf(action),
+                getServerLimitation().getStaminaConsumptionOf(action)
+        );
 	}
 
     public int getStaminaRecoveryLimit() {
-        int value = Integer.MAX_VALUE;
-		for (Limitations limitation : Limitations) {
-            if (limitation.isEnabled())
-                value = Math.min(value, limitation.get(ParCoolConfig.Server.Integers.MaxStaminaRecovery));
-		}
-		return value;
+        return getServerLimitation().get(ParCoolConfig.Server.Integers.MaxStaminaRecovery);
 	}
 
     public int getMaxStaminaLimit() {
-        //int value = getClientInformation().get(ParCoolConfig.Client.Integers.MaxStamina);
-        int value = Integer.MAX_VALUE;
-		for (Limitations limitation : Limitations) {
-            if (limitation.isEnabled())
-                value = Math.min(value, limitation.get(ParCoolConfig.Server.Integers.MaxStaminaLimit));
-		}
-		return value;
+        return getServerLimitation().get(ParCoolConfig.Server.Integers.MaxStaminaLimit);
 	}
 
 	public boolean isStaminaInfinite(boolean creativeOrSpectator) {
-		if (getClientInformation().get(ParCoolConfig.Client.Booleans.InfiniteStamina) && isInfiniteStaminaPermitted())
+        if (getClientSetting().get(ParCoolConfig.Client.Booleans.InfiniteStamina) && isInfiniteStaminaPermitted())
 			return true;
-		return creativeOrSpectator && getClientInformation().get(ParCoolConfig.Client.Booleans.InfiniteStaminaWhenCreative);
+        return creativeOrSpectator && getClientSetting().get(ParCoolConfig.Client.Booleans.InfiniteStaminaWhenCreative);
 	}
 
 	public boolean isInfiniteStaminaPermitted() {
-		for (Limitations limitation : Limitations) {
-			if (!limitation.isInfiniteStaminaPermitted()) return false;
-		}
-		return true;
-	}
-
-	public void readTag(Tag inbt) {
-		getIndividualLimitation().readTag(inbt);
-	}
-
-	public Tag writeTag() {
-		return getIndividualLimitation().writeTag();
+        return serverLimitation.get(ParCoolConfig.Server.Booleans.AllowInfiniteStamina);
 	}
 }

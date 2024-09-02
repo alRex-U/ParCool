@@ -50,7 +50,7 @@ public class WallJumpAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / maxTick;
 		float factor = getFactor(phase);
 		rotator
@@ -58,5 +58,5 @@ public class WallJumpAnimator extends Animator {
 				.rotatePitchFrontward(factor * 20)
 				.rotateRollRightward((swingRightArm ? -1 : 1) * 15 * factor)
 				.end();
-	}
+    }
 }

@@ -16,6 +16,7 @@ import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
@@ -28,17 +29,16 @@ import net.minecraftforge.event.TickEvent;
 import java.nio.ByteBuffer;
 
 public class HorizontalWallRun extends Action {
+    public enum ControlType {
+        PressKey, Auto
+    }
 	private int coolTime = 0;
 	private float bodyYaw = 0;
 
 	private int getMaxRunningTick(ActionInfo info) {
-		Integer value = info.getClientInformation().get(ParCoolConfig.Client.Integers.WallRunContinuableTick);
-		if (value == null) return ParCoolConfig.Client.Integers.WallRunContinuableTick.DefaultValue;
-		if (info.getServerLimitation().isEnabled())
-			value = Math.min(value, info.getServerLimitation().get(ParCoolConfig.Server.Integers.MaxWallRunContinuableTick));
-		if (info.getIndividualLimitation().isEnabled())
-			value = Math.min(value, info.getIndividualLimitation().get(ParCoolConfig.Server.Integers.MaxWallRunContinuableTick));
-		return value;
+        Integer value = info.getClientSetting().get(ParCoolConfig.Client.Integers.WallRunContinuableTick);
+        if (value == null) value = ParCoolConfig.Client.Integers.WallRunContinuableTick.DefaultValue;
+        return Math.min(value, info.getServerLimitation().get(ParCoolConfig.Server.Integers.MaxWallRunContinuableTick));
 	}
 
 	private boolean wallIsRightward = false;
@@ -74,10 +74,15 @@ public class HorizontalWallRun extends Action {
 		if (!player.getCommandSenderWorld().isLoaded(leanedBlock)) return;
 		float slipperiness = player.getCommandSenderWorld().getBlockState(leanedBlock).getFriction(player.getCommandSenderWorld(), leanedBlock, player);
 		if (slipperiness <= 0.8) {
+            double speedScale = 0.2;
+            var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
+            if (attr != null) {
+                speedScale *= attr.getValue() / attr.getBaseValue();
+            }
 			player.setDeltaMovement(
-					runningDirection.x() * 0.3,
+                    runningDirection.x() * speedScale,
 					movement.y() * (slipperiness - 0.1) * ((double) getDoingTick()) / getMaxRunningTick(parkourability.getActionInfo()),
-					runningDirection.z() * 0.3
+                    runningDirection.z() * speedScale
 			);
 		}
 	}
@@ -110,10 +115,14 @@ public class HorizontalWallRun extends Action {
 				.putDouble(runDirection.z());
 
 		return (!parkourability.get(WallJump.class).justJumped()
-				&& KeyBindings.getKeyHorizontalWallRun().isDown()
+                && (
+                (ParCoolConfig.Client.HWallRunControl.get() == ControlType.PressKey && KeyBindings.getKeyHorizontalWallRun().isDown())
+                        || ParCoolConfig.Client.HWallRunControl.get() == ControlType.Auto
+        )
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Dodge.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
+                && !player.isInWaterOrBubble()
                 && Math.abs(player.getDeltaMovement().y()) < 0.5
 				&& coolTime == 0
 				&& !player.onGround()
@@ -137,7 +146,10 @@ public class HorizontalWallRun extends Action {
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Dodge.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
-				&& KeyBindings.getKeyHorizontalWallRun().isDown()
+                && (
+                (ParCoolConfig.Client.HWallRunControl.get() == ControlType.PressKey && KeyBindings.getKeyHorizontalWallRun().isDown())
+                        || ParCoolConfig.Client.HWallRunControl.get() == ControlType.Auto
+        )
 				&& !player.onGround()
 		);
 	}
@@ -166,6 +178,8 @@ public class HorizontalWallRun extends Action {
 		runningWallDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
 		runningDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
 		Animation animation = Animation.get(player);
+        if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+            player.playSound(SoundEvents.HORIZONTAL_WALL_RUN.get(), 1f, 1f);
 		if (animation != null) {
 			animation.setAnimator(new HorizontalWallRunAnimator(wallIsRightward));
 		}

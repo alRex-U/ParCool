@@ -1,18 +1,27 @@
 package com.alrex.parcool.client.animation;
 
-import com.alrex.parcool.utilities.MathUtil;
-import com.alrex.parcool.utilities.VectorUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
 
 public class PlayerModelRotator {
 	private final PoseStack stack;
 	private final Player player;
 	private final float partial;
 	private double playerHeight = 1.8;
+    private final float givenXRot, givenYRot, givenZRot;
+
+    public float getXRot() {
+        return givenXRot;
+    }
+
+    public float getYRot() {
+        return givenYRot;
+    }
+
+    public float getZRot() {
+        return givenZRot;
+    }
 
 	public float getPartialTick() {
 		return partial;
@@ -21,10 +30,13 @@ public class PlayerModelRotator {
 	private boolean basedCenter = false;
 	private boolean basedTop = false;
 
-	public PlayerModelRotator(PoseStack stack, Player player, float partial) {
+    public PlayerModelRotator(PoseStack stack, Player player, float partial, float xRot, float yRot, float zRot) {
 		this.stack = stack;
 		this.player = player;
 		this.partial = partial;
+        this.givenXRot = xRot;
+        this.givenYRot = yRot;
+        this.givenZRot = zRot;
 		switch (player.getPose()) {
 			case SWIMMING:
 			case CROUCHING:
@@ -49,31 +61,27 @@ public class PlayerModelRotator {
 		return this;
 	}
 
+    public PoseStack getRawStack() {
+        return stack;
+    }
+
 	public PlayerModelRotator translateY(float offset) {
 		stack.translate(0, offset, 0);
 		return this;
 	}
 
+    public PlayerModelRotator translate(float offsetX, float offsetY, float offsetZ) {
+        stack.translate(offsetX, offsetY, offsetZ);
+        return this;
+    }
+
 	public PlayerModelRotator rotatePitchFrontward(float angleDegree) {
-        Vec3 lookVec;
-        if (player.isLocalPlayer()) {
-            lookVec = VectorUtil.fromYawDegree(MathUtil.lerp(player.yBodyRotO, player.yBodyRot, getPartialTick())).yRot((float) Math.PI / 2);
-        } else {
-            lookVec = VectorUtil.fromYawDegree(player.yBodyRot).yRot((float) Math.PI / 2);
-        }
-        stack.mulPose(Axis.of(lookVec.toVector3f()).rotationDegrees(angleDegree));
+        stack.mulPose(Axis.XN.rotationDegrees(angleDegree));
 		return this;
 	}
 
 	public PlayerModelRotator rotateRollRightward(float angleDegree) {
-        Vec3 lookVec;
-        if (player.isLocalPlayer()) {
-            lookVec = VectorUtil.fromYawDegree(MathUtil.lerp(player.yBodyRotO, player.yBodyRot, getPartialTick()));
-        } else {
-            lookVec = VectorUtil.fromYawDegree(player.yBodyRot);
-        }
-		Vector3f vec = new Vector3f((float) lookVec.x(), 0, (float) lookVec.z());
-		stack.mulPose(Axis.of(lookVec.toVector3f()).rotationDegrees(angleDegree));
+        stack.mulPose(Axis.ZN.rotationDegrees(angleDegree));
 		return this;
 	}
 

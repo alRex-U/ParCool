@@ -2,6 +2,7 @@ package com.alrex.parcool.common.action;
 
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -103,6 +104,16 @@ public abstract class Action {
 
 	public void saveSynchronizedState(ByteBuffer buffer) {
 	}
+
+    @OnlyIn(Dist.CLIENT)
+    public boolean wantsToShowStatusBar(LocalPlayer player, Parkourability parkourability) {
+        return false;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getStatusValue(LocalPlayer player, Parkourability parkourability) {
+        return 0;
+    }
 
 	public abstract StaminaConsumeTiming getStaminaConsumeTiming();
 }

@@ -7,9 +7,11 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.registries.ParCoolPoses;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -110,5 +112,11 @@ public class Roll extends Action {
 
 	public int getRollMaxTick() {
 		return 9;
+	}
+
+	@Override
+	public void onWorkingTick(Player player, Parkourability parkourability, IStamina stamina) {
+		Pose pose = ParCoolPoses.ROLLING.get();
+		player.setPose(pose);
 	}
 }
