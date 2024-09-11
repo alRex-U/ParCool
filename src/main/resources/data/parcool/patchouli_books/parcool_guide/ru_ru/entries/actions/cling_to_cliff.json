@@ -1,0 +1,23 @@
+﻿{
+  "name": "Захват за уступ",
+  "icon": "minecraft:stone",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Вы можете цепляться за края и уступы.$(br)Вы также можете взобраться на уступ, нажав клавишу прыжка."
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/image_cling_cliff.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Как использовать",
+      "text": "$(list) Нажмите клавишу 'Зацеп за уступ' ($(k:parcool.ClingToCliff)) у стены$(br)"
+    }
+  ]
+}

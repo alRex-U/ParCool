@@ -69,12 +69,6 @@ public class WallJump extends Action {
 		return value.normalize().add(wall.scale(-0.7)).normalize();
 	}
 
-	public float getCoolDownPhase() {
-		float phase = getNotDoingTick() / MAX_COOL_DOWN_TICK;
-		if (phase > 1) return 1;
-		else return phase;
-	}
-
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		Vec3 wallDirection = WorldUtil.getWall(player);
