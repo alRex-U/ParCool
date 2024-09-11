@@ -1,5 +1,74 @@
 # Changelogs
 
+## ver-3.3.0.1
+
+### Translation
+
+- Russian (ru_ru) (Modified)
+  - by Quarkrus
+
+### Bugfix
+
+- Some configs are generated on Server
+- Charge Jump can be triggered even when it is disabled
+
+---
+
+## ver-3.3.0.0
+
+### New Features
+
+- Action : Charge Jump
+- API : Action Event
+- API : Animation Event
+  - Addon for animation compatibility with other mods is planned
+
+### Modified
+
+- Catleap
+  - Animation modified
+- Fast Run
+  - Animation modified
+- Vault
+  - Animation modified
+- Dodge
+  - Possible to go through narrow space up to about 1.5 block (1.20.x)
+- Cling To Cliff
+  - Cancelable by sneaking
+- Hang Down
+  - Cancelable by sneaking
+- Fast Swim
+  - Animation modified
+  - Fast Swim speed modifier added
+- Slide
+  - Animation modified
+  - Possible to look around
+  - Add particle effect
+- Horizontal Wall Run
+  - Auto is selectable as one of controls in config
+- Pole Climbing
+  - More appropriate ladder detection
+- HUD
+  - HUDs show charge rate and action cool down
+
+### Translation
+
+- Korean(South Korea) (ko_kr) (Added)
+  - by Maxwell12
+
+### Bugfix
+
+- Players can use some actions during crawling
+- Players can start dive during riding objects
+- Players can flip during roll and dodge
+- Crawl stops when release button even in narrow space
+- Horizontal Wall Run is not affected by speed attributes
+- Limitations:AllowInfiniteStamina is not applied in client
+- Sound subtitles missing
+- etc
+
+---
+
 ## ver-3.2.0.0
 
 ### New Features

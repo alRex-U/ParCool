@@ -782,6 +782,7 @@ public class ParCoolConfig {
 					}
 				}
 				builder.pop();
+
 				builder.push("Stamina");
 				{
 					builder.push("Least_Consumption");
@@ -798,6 +799,14 @@ public class ParCoolConfig {
 					register(builder, ConfigGroup.Stamina);
 				}
 				builder.pop();
+				builder.push("Control");
+				{
+					register(builder, ConfigGroup.Control);
+				}
+				builder.push("Modifier");
+				{
+					register(builder, ConfigGroup.Modifier);
+				}
 			}
 			builder.pop();
 			BUILT_CONFIG = builder.build();
