@@ -1,9 +1,8 @@
 package com.alrex.parcool.mixin.client;
 
+import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
-import com.alrex.parcool.common.capability.Animation;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -24,8 +23,8 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
     @Unique
     private PlayerModelRotator parCool$rotator = null;
 
-    @Inject(method = "Lnet/minecraft/client/renderer/entity/player/PlayerRenderer;setupRotations(Lnet/minecraft/client/player/AbstractClientPlayer;Lcom/mojang/blaze3d/vertex/PoseStack;FFF)V", at = @At("RETURN"))
-    protected void onSetupRotationsTail(AbstractClientPlayer player, PoseStack stack, float xRot, float yRot, float zRot, CallbackInfo ci) {
+    @Inject(method = "Lnet/minecraft/client/renderer/entity/player/PlayerRenderer;setupRotations(Lnet/minecraft/client/player/AbstractClientPlayer;Lcom/mojang/blaze3d/vertex/PoseStack;FFFF)V", at = @At("RETURN"))
+    protected void onSetupRotationsTail(AbstractClientPlayer player, PoseStack poseStack, float bob, float yBodyRot, float partialTick, float scale, CallbackInfo ci) {
 		// arg names may be incorrect
 		Animation animation = Animation.get(player);
 		if (animation == null) {
@@ -37,13 +36,13 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
         }
     }
 
-    @Inject(method = "Lnet/minecraft/client/renderer/entity/player/PlayerRenderer;setupRotations(Lnet/minecraft/client/player/AbstractClientPlayer;Lcom/mojang/blaze3d/vertex/PoseStack;FFF)V", at = @At("HEAD"), cancellable = true)
-    protected void onSetupRotationsHead(AbstractClientPlayer player, PoseStack stack, float xRot, float yRot, float zRot, CallbackInfo ci) {
+    @Inject(method = "Lnet/minecraft/client/renderer/entity/player/PlayerRenderer;setupRotations(Lnet/minecraft/client/player/AbstractClientPlayer;Lcom/mojang/blaze3d/vertex/PoseStack;FFFF)V", at = @At("HEAD"), cancellable = true)
+    protected void onSetupRotationsHead(AbstractClientPlayer player, PoseStack poseStack, float bob, float yBodyRot, float partialTick, float scale, CallbackInfo ci) {
         Animation animation = Animation.get(player);
         if (animation == null) {
             return;
         }
-        parCool$rotator = new PlayerModelRotator(stack, player, Minecraft.getInstance().getFrameTime(), xRot, yRot, zRot);
+        parCool$rotator = new PlayerModelRotator(poseStack, player, partialTick, yBodyRot);
         if (animation.rotatePre(player, parCool$rotator)) {
             parCool$rotator = null;
             ci.cancel();

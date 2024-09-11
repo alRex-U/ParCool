@@ -1,7 +1,7 @@
 package com.alrex.parcool.server.command.args;
 
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.ActionList;
+import com.alrex.parcool.common.action.Actions;
 import com.mojang.brigadier.Message;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -19,7 +19,7 @@ public class ActionArgumentType implements ArgumentType<Class<? extends Action>>
 	@Override
 	public Class<? extends Action> parse(StringReader reader) throws CommandSyntaxException {
 		String name = reader.readUnquotedString();
-		Class<? extends Action> result = ActionList.getByName(name);
+		Class<? extends Action> result = Actions.getByName(name);
 		if (result == null) {
 			Message message = Component.translatable("parcool.command.message.invalidActionName", name);
 			throw new CommandSyntaxException(new SimpleCommandExceptionType(message), message);
@@ -30,7 +30,7 @@ public class ActionArgumentType implements ArgumentType<Class<? extends Action>>
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
 		String remain = builder.getRemaining();
-		for (String name : ActionList.NAMES.stream().filter(it -> it.startsWith(remain)).toList()) {
+		for (String name : Actions.NAMES.stream().filter(it -> it.startsWith(remain)).toList()) {
 			builder.suggest(name);
 		}
 		return builder.buildFuture();
@@ -38,7 +38,7 @@ public class ActionArgumentType implements ArgumentType<Class<? extends Action>>
 
 	@Override
 	public Collection<String> getExamples() {
-		return ActionList.NAMES;
+		return Actions.NAMES;
 	}
 
 	public static ActionArgumentType action() {

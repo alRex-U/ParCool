@@ -1,21 +1,20 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.ClingToCliffAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
@@ -31,7 +30,7 @@ public class ClingToCliff extends Action {
 	}
 
 	@Override
-	public void onWorkingTick(Player player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTick(Player player, Parkourability parkourability) {
 		player.fallDistance = 0;
 	}
 
@@ -41,9 +40,8 @@ public class ClingToCliff extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		boolean value = (!stamina.isExhausted()
-				&& player.getDeltaMovement().y() < 0.2
+	public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
+		boolean value = (player.getDeltaMovement().y() < 0.2
                 && !player.isShiftKeyDown()
 				&& !parkourability.get(HorizontalWallRun.class).isDoing()
 				&& KeyBindings.getKeyGrabWall().isDown()
@@ -59,9 +57,8 @@ public class ClingToCliff extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
-		return (!stamina.isExhausted()
-                && !player.isShiftKeyDown()
+	public boolean canContinue(Player player, Parkourability parkourability) {
+		return (!player.isShiftKeyDown()
 				&& parkourability.getActionInfo().can(ClingToCliff.class)
 				&& KeyBindings.getKeyGrabWall().isDown()
 				&& !parkourability.get(HorizontalWallRun.class).isDoing()
@@ -77,7 +74,7 @@ public class ClingToCliff extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		clingWallDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
 		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
@@ -100,7 +97,7 @@ public class ClingToCliff extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability) {
         armSwingAmount += (float) player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
 		if (KeyBindings.getKeyLeft().isDown() && KeyBindings.getKeyRight().isDown()) {
 			player.setDeltaMovement(0, 0, 0);
@@ -117,7 +114,7 @@ public class ClingToCliff extends Action {
 	}
 
 	@Override
-	public void onWorkingTickInClient(Player player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInClient(Player player, Parkourability parkourability) {
 		clingWallDirection = WorldUtil.getGrabbableWall(player);
 		if (clingWallDirection == null) return;
 		clingWallDirection = clingWallDirection.normalize();
@@ -148,7 +145,7 @@ public class ClingToCliff extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onRenderTick(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
+	public void onRenderTick(RenderFrameEvent event, Player player, Parkourability parkourability) {
 		if (isDoing() && clingWallDirection != null) {
 			switch (facingDirection) {
 				case ToWall:

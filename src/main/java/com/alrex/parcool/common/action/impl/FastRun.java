@@ -1,32 +1,31 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCool;
+import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.FastRunningAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.AdditionalProperties;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
-import java.util.UUID;
 
 public class FastRun extends Action {
 	public enum ControlType {
 		PressKey, Toggle, Auto
 	}
 
-	private static final String FAST_RUNNING_MODIFIER_NAME = "parcool.modifier.fastrunnning";
-	private static final UUID FAST_RUNNING_MODIFIER_UUID = UUID.randomUUID();
+	private static final ResourceLocation FAST_RUNNING_MODIFIER = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "modifier.speed.fastrun");
 	private double speedModifier = 0;
 	private boolean toggleStatus = false;
 	private int lastDashTick = 0;
@@ -39,23 +38,22 @@ public class FastRun extends Action {
 	}
 
 	@Override
-	public void onServerTick(Player player, Parkourability parkourability, IStamina stamina) {
+	public void onServerTick(Player player, Parkourability parkourability) {
 		var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (attr == null) return;
-		if (attr.getModifier(FAST_RUNNING_MODIFIER_UUID) != null) attr.removeModifier(FAST_RUNNING_MODIFIER_UUID);
+		if (attr.getModifier(FAST_RUNNING_MODIFIER) != null) attr.removeModifier(FAST_RUNNING_MODIFIER);
 		if (isDoing()) {
 			player.setSprinting(true);
 			attr.addTransientModifier(new AttributeModifier(
-					FAST_RUNNING_MODIFIER_UUID,
-					FAST_RUNNING_MODIFIER_NAME,
+					FAST_RUNNING_MODIFIER,
 					speedModifier / 100d,
-					AttributeModifier.Operation.ADDITION
+					AttributeModifier.Operation.ADD_VALUE
 			));
 		}
 	}
 
 	@Override
-	public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
+	public void onClientTick(Player player, Parkourability parkourability) {
 		if (player.isLocalPlayer()) {
 			if (ParCoolConfig.Client.FastRunControl.get() == ControlType.Toggle
 					&& parkourability.getAdditionalProperties().getSprintingTick() > 3
@@ -74,14 +72,13 @@ public class FastRun extends Action {
 	}
 
 	@Override
-	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		return canContinue(player, parkourability, stamina);
+	public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
+		return canContinue(player, parkourability);
 	}
 
 	@Override
-	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
-		return (!stamina.isExhausted()
-                && !player.isInWaterOrBubble()
+	public boolean canContinue(Player player, Parkourability parkourability) {
+		return (!player.isInWaterOrBubble()
 				&& player.getVehicle() == null
 				&& !player.isFallFlying()
 				&& player.isSprinting()
@@ -97,7 +94,7 @@ public class FastRun extends Action {
 	}
 
 	@Override
-	public void onWorkingTickInClient(Player player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInClient(Player player, Parkourability parkourability) {
 		Animation animation = Animation.get(player);
 		if (animation != null && !animation.hasAnimator()) {
 			animation.setAnimator(new FastRunningAnimator());

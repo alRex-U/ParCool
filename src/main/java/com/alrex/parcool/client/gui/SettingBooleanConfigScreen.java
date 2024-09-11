@@ -1,15 +1,16 @@
 package com.alrex.parcool.client.gui;
 
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
-import com.alrex.parcool.common.network.SyncClientInformationMessage;
+import com.alrex.parcool.common.network.payload.ClientInformationPayload;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Collections;
 
@@ -49,7 +50,7 @@ public class SettingBooleanConfigScreen extends ParCoolSettingScreen {
             button.setX(offsetX + 1);
             button.setY(topOffset + Checkbox_Item_Height * i);
             button.setWidth(contentWidth);
-            button.setHeight(20);
+            button.setHeight(Checkbox_Item_Height - 1);
             button.render(graphics, mouseX, mouseY, partialTick);
             graphics.fill(offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
             String comment = booleans[i + topIndex].Comment;
@@ -89,6 +90,6 @@ public class SettingBooleanConfigScreen extends ParCoolSettingScreen {
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability == null) return;
         parkourability.getActionInfo().setClientSetting(ClientSetting.readFromLocalConfig());
-        SyncClientInformationMessage.sync(player, true);
+        PacketDistributor.sendToServer(new ClientInformationPayload(player.getUUID(), true, parkourability.getClientInfo()));
     }
 }

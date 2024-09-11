@@ -10,7 +10,7 @@ import java.util.TreeMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class ActionList {
+public class Actions {
 	public static final List<ActionRegistry<? extends Action>> ACTION_REGISTRIES = Arrays.asList(
 			new ActionRegistry<>(BreakfallReady.class, BreakfallReady::new, 0),
             new ActionRegistry<>(CatLeap.class, CatLeap::new, 200),
@@ -39,15 +39,15 @@ public class ActionList {
 	);
 	private static final HashMap<Class<? extends Action>, Short> INDEX_MAP;
 	private static final TreeMap<String, Short> NAME_2_INDEX_MAP;
-	public static final List<Class<? extends Action>> ACTIONS
+    public static final List<Class<? extends Action>> LIST
 			= ACTION_REGISTRIES.stream().map(ActionRegistry::getClassInstance).collect(Collectors.toList());
-	public static final List<String> NAMES = ACTIONS.stream().map(Class::getSimpleName).collect(Collectors.toList());
+    public static final List<String> NAMES = LIST.stream().map(Class::getSimpleName).collect(Collectors.toList());
 
 	static {
-		INDEX_MAP = new HashMap<>((int) (ACTIONS.size() * 1.5));
+        INDEX_MAP = new HashMap<>((int) (LIST.size() * 1.5));
 		NAME_2_INDEX_MAP = new TreeMap<>();
-		for (Class<? extends Action> action : ACTIONS) {
-			short index = (short) ACTIONS.indexOf(action);
+        for (Class<? extends Action> action : LIST) {
+            short index = (short) LIST.indexOf(action);
 			INDEX_MAP.put(action, index);
 			NAME_2_INDEX_MAP.put(action.getSimpleName(), index);
 		}
@@ -58,14 +58,14 @@ public class ActionList {
 	}
 
 	public static Class<? extends Action> getByIndex(int index) {
-		return ACTIONS.get(index);
+        return LIST.get(index);
 	}
 
 	@Nullable
 	public static Class<? extends Action> getByName(String name) {
 		short index = NAME_2_INDEX_MAP.getOrDefault(name, (short) -1);
 		if (index == -1) return null;
-		return ACTIONS.get(index);
+        return LIST.get(index);
 	}
 
 	public static List<Action> constructActionsList() {

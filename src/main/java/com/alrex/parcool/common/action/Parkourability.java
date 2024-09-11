@@ -1,30 +1,50 @@
-package com.alrex.parcool.common.capability;
+package com.alrex.parcool.common.action;
 
-import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.ActionList;
-import com.alrex.parcool.common.action.AdditionalProperties;
-import com.alrex.parcool.common.action.CancelMarks;
-import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.UUID;
 
 public class Parkourability {
+	public static class Registry {
+		private static final TreeMap<UUID, Parkourability> mapClient = new TreeMap<>();
+		private static final TreeMap<UUID, Parkourability> mapServer = new TreeMap<>();
+
+		@Nullable
+		private static Parkourability get(Player player) {
+			return player.level().isClientSide() ? mapClient.get(player.getUUID()) : mapServer.get(player.getUUID());
+		}
+
+		public static void setupInClient(UUID id) {
+			mapClient.putIfAbsent(id, new Parkourability());
+		}
+
+		public static void setupInServer(UUID id) {
+			mapServer.putIfAbsent(id, new Parkourability());
+		}
+
+		public static void unloadInClient(UUID id) {
+			mapClient.remove(id);
+		}
+
+		public static void unloadInServer(UUID id) {
+			mapServer.remove(id);
+		}
+	}
 	@Nullable
 	public static Parkourability get(Player player) {
-		LazyOptional<Parkourability> optional = player.getCapability(Capabilities.PARKOURABILITY_CAPABILITY);
-		return optional.orElse(null);
+		return Registry.get(player);
 	}
 
     private final ActionInfo info;
 	private final AdditionalProperties properties = new AdditionalProperties();
     private final CancelMarks cancelMarks = new CancelMarks();
-	private final List<Action> actions = ActionList.constructActionsList();
+	private final List<Action> actions = Actions.constructActionsList();
 	private final HashMap<Class<? extends Action>, Action> actionsMap;
 
 	public Parkourability() {
@@ -44,7 +64,7 @@ public class Parkourability {
 	}
 
 	public short getActionID(Action instance) {
-		return ActionList.getIndexOf(instance.getClass());
+		return Actions.getIndexOf(instance.getClass());
 	}
 
 	@Nullable

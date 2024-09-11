@@ -1,9 +1,9 @@
 package com.alrex.parcool.client.animation;
 
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.action.Parkourability;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.event.ViewportEvent;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
+import net.neoforged.neoforge.client.event.ViewportEvent;
 
 public abstract class Animator {
 	private int tick = 0;
@@ -63,7 +63,7 @@ public abstract class Animator {
 	}
 
 	public void onRenderTick(
-			TickEvent.RenderTickEvent event,
+            RenderFrameEvent event,
 			Player player,
 			Parkourability parkourability
 	) {

@@ -33,7 +33,7 @@ public abstract class ParCoolSettingScreen extends Screen {
 
     protected int topIndex = 0;
     protected int viewableItemCount = 0;
-    protected static final int Checkbox_Item_Height = 21;
+	protected static final int Checkbox_Item_Height = 18;
     protected final ColorTheme color;
     protected final BooleanSupplier serverPermissionReceived;
 
@@ -150,8 +150,8 @@ public abstract class ParCoolSettingScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_, double p_299502_) {
-		return mouseScrolled(p_94686_, p_94687_, p_94688_);
+	public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+		return mouseScrolled(mouseX, mouseY, scrollY);
 	}
 
 	public boolean mouseScrolled(double x, double y, double value) {

@@ -5,9 +5,9 @@ import com.alrex.parcool.client.animation.impl.ChargeJumpAnimator;
 import com.alrex.parcool.client.animation.impl.JumpChargingAnimator;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.client.animation.Animation;
+
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.player.LocalPlayer;
@@ -25,14 +25,14 @@ public class ChargeJump extends Action {
     private boolean started = false;
 
     @Override
-    public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+    public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
         boolean start = started;
         started = false;
         return start;
     }
 
     @Override
-    public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
+    public boolean canContinue(Player player, Parkourability parkourability) {
         return getDoingTick() < JUMP_ANIMATION_TICK;
     }
 
@@ -42,7 +42,7 @@ public class ChargeJump extends Action {
     }
 
     @Override
-    public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+    public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
         if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.CHARGE_JUMP.get(), 1, 1);
         Animation animation = Animation.get(player);
@@ -62,10 +62,9 @@ public class ChargeJump extends Action {
     }
 
     @Override
-    public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onClientTick(Player player, Parkourability parkourability) {
         if (player instanceof LocalPlayer cp) {
             if (cp.onGround()
-                    && !stamina.isExhausted()
                     && parkourability.getActionInfo().can(ChargeJump.class)
                     && !cp.isVisuallyCrawling()
                     && !cp.isSprinting()
@@ -108,7 +107,7 @@ public class ChargeJump extends Action {
         }
     }
 
-    public void onJump(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onJump(Player player, Parkourability parkourability) {
         if (chargeTick >= JUMP_CHARGE_TICK || (lastChargeTick > JUMP_CHARGE_TICK && notChargeTick < 5)) {
             player.setDeltaMovement(player.getDeltaMovement().add(0, 0.11, 0));
             started = true;

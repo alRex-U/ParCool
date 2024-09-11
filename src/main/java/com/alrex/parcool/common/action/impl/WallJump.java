@@ -1,14 +1,13 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.BackwardWallJumpAnimator;
 import com.alrex.parcool.client.animation.impl.WallJumpAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.core.BlockPos;
@@ -19,8 +18,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
@@ -36,7 +35,7 @@ public class WallJump extends Action {
 	private final float MAX_COOL_DOWN_TICK = 8;
 
 	@Override
-	public void onTick(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onTick(Player player, Parkourability parkourability) {
 		jump = false;
 	}
 
@@ -76,14 +75,13 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+    public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
 		Vec3 wallDirection = WorldUtil.getWall(player);
 		Vec3 jumpDirection = getJumpDirection(player, wallDirection);
 		if (jumpDirection == null) return false;
 		ClingToCliff cling = parkourability.get(ClingToCliff.class);
 
-		boolean value = (!stamina.isExhausted()
-				&& getNotDoingTick() > MAX_COOL_DOWN_TICK
+        boolean value = (getNotDoingTick() > MAX_COOL_DOWN_TICK
 				&& !player.onGround()
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
@@ -138,7 +136,7 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
+    public boolean canContinue(Player player, Parkourability parkourability) {
 		return false;
 	}
 
@@ -149,7 +147,7 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+    public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.WALL_JUMP.get(), 1f, 1f);
         Vec3 jumpDirection = new Vec3(startData.getDouble(), startData.getDouble(), startData.getDouble());
@@ -230,8 +228,8 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public void onWorkingTickInClient(Player player, Parkourability parkourability, IStamina stamina) {
-		super.onWorkingTickInClient(player, parkourability, stamina);
+    public void onWorkingTickInClient(Player player, Parkourability parkourability) {
+        super.onWorkingTickInClient(player, parkourability);
 	}
 
     @OnlyIn(Dist.CLIENT)

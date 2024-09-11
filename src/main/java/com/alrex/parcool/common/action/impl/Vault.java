@@ -1,23 +1,20 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.KongVaultAnimator;
 import com.alrex.parcool.client.animation.impl.SpeedVaultAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.registries.ParCoolPoses;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
@@ -58,7 +55,7 @@ public class Vault extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
 		Vec3 lookVec = player.getLookAngle();
 		lookVec = new Vec3(lookVec.x(), 0, lookVec.z()).normalize();
 		Vec3 step = WorldUtil.getVaultableStep(player);
@@ -101,17 +98,15 @@ public class Vault extends Action {
 				.putDouble(step.z())
 				.putDouble(wallHeight);
 
-		return (!stamina.isExhausted()
-				&& !(ParCoolConfig.Client.Booleans.VaultKeyPressedNeeded.get() && !KeyBindings.getKeyVault().isDown())
+		return (!(ParCoolConfig.Client.Booleans.VaultKeyPressedNeeded.get() && !KeyBindings.getKeyVault().isDown())
 				&& parkourability.get(FastRun.class).canActWithRunning(player)
-				&& !stamina.isExhausted()
 				&& (player.onGround() || ParCoolConfig.Client.Booleans.EnableVaultInAir.get())
 				&& wallHeight > player.getBbHeight() * 0.44 /*about 0.8*/
 		);
 	}
 
 	@Override
-	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(Player player, Parkourability parkourability) {
 		return getDoingTick() < MAX_TICK;
 	}
 
@@ -121,7 +116,7 @@ public class Vault extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		AnimationType animationType = AnimationType.fromCode(startData.get());
 		SpeedVaultAnimator.Type speedVaultType = BufferUtil.getBoolean(startData) ?
 				SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
@@ -165,7 +160,7 @@ public class Vault extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability) {
 		if (stepDirection == null) return;
 		if (getDoingTick() < getVaultAnimateTime()) {
 			player.setDeltaMovement(
@@ -186,12 +181,6 @@ public class Vault extends Action {
 	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
 		return StaminaConsumeTiming.OnStart;
-	}
-
-	@Override
-	public void onWorkingTick(Player player, Parkourability parkourability, IStamina stamina) {
-		Pose pose = ParCoolPoses.VAULTING.get();
-		player.setPose(pose);
 	}
 }
 

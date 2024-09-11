@@ -1,7 +1,8 @@
 package com.alrex.parcool.server.limitation;
 
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.ActionList;
+import com.alrex.parcool.common.action.Actions;
+import com.alrex.parcool.common.stamina.StaminaType;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
@@ -19,7 +20,8 @@ public class Limitation {
     private final EnumMap<ParCoolConfig.Server.Booleans, Boolean> booleans = new EnumMap<>(ParCoolConfig.Server.Booleans.class);
     private final EnumMap<ParCoolConfig.Server.Integers, Integer> integers = new EnumMap<>(ParCoolConfig.Server.Integers.class);
     private final EnumMap<ParCoolConfig.Server.Doubles, Double> doubles = new EnumMap<>(ParCoolConfig.Server.Doubles.class);
-    private final ActionLimitation[] actionLimitations = new ActionLimitation[ActionList.ACTIONS.size()];
+    private final ActionLimitation[] actionLimitations = new ActionLimitation[Actions.LIST.size()];
+    private StaminaType forcedStamina = StaminaType.NONE;
 
     public Limitation(ID id) {
         this.id = id;
@@ -38,11 +40,11 @@ public class Limitation {
     }
 
     public boolean isPermitted(Class<? extends Action> action) {
-        return actionLimitations[ActionList.getIndexOf(action)].isPossible();
+        return actionLimitations[Actions.getIndexOf(action)].isPossible();
     }
 
     public int getLeastStaminaConsumption(Class<? extends Action> action) {
-        return actionLimitations[ActionList.getIndexOf(action)].getLeastStaminaConsumption();
+        return actionLimitations[Actions.getIndexOf(action)].getLeastStaminaConsumption();
     }
 
     public boolean get(ParCoolConfig.Server.Booleans item) {
@@ -58,6 +60,10 @@ public class Limitation {
     public double get(ParCoolConfig.Server.Doubles item) {
         Double value = doubles.get(item);
         return value != null ? value : item.DefaultValue;
+    }
+
+    public StaminaType getForcedStamina() {
+        return forcedStamina;
     }
 
     public void set(ParCoolConfig.Server.Booleans item, boolean value) {
@@ -77,7 +83,7 @@ public class Limitation {
     }
 
     public void setPossibilityOf(Class<? extends Action> action, boolean value) {
-        int index = ActionList.getIndexOf(action);
+        int index = Actions.getIndexOf(action);
         actionLimitations[index] =
                 new ActionLimitation(
                         value,
@@ -85,8 +91,12 @@ public class Limitation {
                 );
     }
 
+    public void setForcedStamina(StaminaType forcedStamina) {
+        this.forcedStamina = forcedStamina;
+    }
+
     public void setLeastStaminaConsumption(Class<? extends Action> action, int value) {
-        int index = ActionList.getIndexOf(action);
+        int index = Actions.getIndexOf(action);
         actionLimitations[index] =
                 new ActionLimitation(
                         actionLimitations[index].isPossible(),
@@ -104,6 +114,7 @@ public class Limitation {
         for (int i = 0; i < actionLimitations.length; i++) {
             actionLimitations[i] = new ActionLimitation(true, 0);
         }
+        forcedStamina = StaminaType.NONE;
     }
 
     public void readFromServerConfig() {
@@ -119,10 +130,11 @@ public class Limitation {
         }
         for (int i = 0; i < actionLimitations.length; i++) {
             actionLimitations[i] = new ActionLimitation(
-                    ParCoolConfig.Server.getPermissionOf(ActionList.getByIndex(i)),
-                    ParCoolConfig.Server.getLeastStaminaConsumptionOf(ActionList.getByIndex(i))
+                    ParCoolConfig.Server.getPermissionOf(Actions.getByIndex(i)),
+                    ParCoolConfig.Server.getLeastStaminaConsumptionOf(Actions.getByIndex(i))
             );
         }
+        forcedStamina = ParCoolConfig.Server.StaminaType.get();
     }
 
     public void saveTo(JsonWriter writer) {
@@ -153,13 +165,14 @@ public class Limitation {
         for (int i = 0; i < actionLimitations.length; i++) {
             ActionLimitation limitation = actionLimitations[i];
             if (limitation == null) continue;
-            Class<? extends Action> action = ActionList.getByIndex(i);
+            Class<? extends Action> action = Actions.getByIndex(i);
             LimitationJson.ActionPermission permission = new LimitationJson.ActionPermission();
             permission.name = action.getSimpleName();
             permission.permitted = limitation.isPossible();
             permission.stamina_consumption = limitation.getLeastStaminaConsumption();
             json.actions.add(permission);
         }
+        json.stamina = getForcedStamina();
         Gson gson = new Gson();
         gson.toJson(json, LimitationJson.class, writer);
     }
@@ -193,16 +206,18 @@ public class Limitation {
             }
         }
         for (LimitationJson.ActionPermission item : parsed.actions) {
-            for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
-                if (ActionList.ACTIONS.get(i).getSimpleName().equals(item.name)) {
+            for (int i = 0; i < Actions.LIST.size(); i++) {
+                if (Actions.LIST.get(i).getSimpleName().equals(item.name)) {
                     actionLimitations[i] = new ActionLimitation(item.permitted, item.stamina_consumption);
                 }
             }
         }
+        forcedStamina = parsed.stamina;
     }
 
     private static class LimitationJson {
         public Boolean imposed;
+        public StaminaType stamina;
         public List<BooleanItem> booleans;
         public List<IntegerItem> integers;
         public List<DoubleItem> doubles;

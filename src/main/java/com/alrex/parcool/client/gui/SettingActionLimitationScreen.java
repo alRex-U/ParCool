@@ -1,32 +1,32 @@
 package com.alrex.parcool.client.gui;
 
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.ActionList;
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.action.Actions;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
-import com.alrex.parcool.common.network.SyncClientInformationMessage;
+import com.alrex.parcool.common.network.payload.ClientInformationPayload;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Collections;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 public class SettingActionLimitationScreen extends ParCoolSettingScreen {
-    private final ActionConfigSet[] actionList = new ActionConfigSet[ActionList.ACTIONS.size()];
+    private final ActionConfigSet[] actionList = new ActionConfigSet[Actions.LIST.size()];
     private final Checkbox[] actionButtons = new Checkbox[actionList.length];
 
     public SettingActionLimitationScreen(Component titleIn, ActionInfo info, ColorTheme theme) {
         super(titleIn, info, theme);
         currentScreen = 0;
         for (int i = 0; i < actionList.length; i++) {
-            actionList[i] = new ActionConfigSet(ActionList.getByIndex(i), info);
+            actionList[i] = new ActionConfigSet(Actions.getByIndex(i), info);
             actionButtons[i] = Checkbox
                     .builder(Component.literal(actionList[i].name), Minecraft.getInstance().font)
                     .selected(actionList[i].getter.getAsBoolean())
@@ -65,7 +65,7 @@ public class SettingActionLimitationScreen extends ParCoolSettingScreen {
             button.setX(offsetX + 1);
             button.setY(contentOffsetY + Checkbox_Item_Height * i);
             button.setWidth(nameColumnWidth - 5);
-            button.setHeight(20);
+            button.setHeight(Checkbox_Item_Height - 1);
             button.render(graphics, mouseX, mouseY, partialTick);
             graphics.fill(offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
             int rowY = contentOffsetY + Checkbox_Item_Height * i + Checkbox_Item_Height / 2;
@@ -106,7 +106,7 @@ public class SettingActionLimitationScreen extends ParCoolSettingScreen {
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability == null) return;
         parkourability.getActionInfo().setClientSetting(ClientSetting.readFromLocalConfig());
-        SyncClientInformationMessage.sync(player, true);
+        PacketDistributor.sendToServer(new ClientInformationPayload(player.getUUID(), true, parkourability.getClientInfo()));
     }
 
     private static class ActionConfigSet {
@@ -117,7 +117,7 @@ public class SettingActionLimitationScreen extends ParCoolSettingScreen {
 
         ActionConfigSet(Class<? extends Action> action, ActionInfo info) {
             name = Component.translatable("parcool.action." + action.getSimpleName()).getString();
-            ForgeConfigSpec.BooleanValue config = ParCoolConfig.Client.getPossibilityOf(action);
+            var config = ParCoolConfig.Client.getPossibilityOf(action);
             setter = config::set;
             getter = config::get;
             serverLimitation = () -> info.getServerLimitation().isPermitted(action);

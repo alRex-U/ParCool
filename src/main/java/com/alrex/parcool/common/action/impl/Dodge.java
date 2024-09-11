@@ -1,24 +1,21 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.DodgeAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
-import com.alrex.parcool.common.registries.ParCoolPoses;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 
@@ -57,7 +54,7 @@ public class Dodge extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onClientTick(Player player, Parkourability parkourability) {
 		if (coolTime > 0) coolTime--;
 		if (successivelyCoolTick > 0) {
 			successivelyCoolTick--;
@@ -80,7 +77,7 @@ public class Dodge extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+    public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
 		boolean enabledDoubleTap = ParCoolConfig.Client.Booleans.EnableDoubleTappingForDodge.get();
 		DodgeDirection direction = null;
 		if (enabledDoubleTap) {
@@ -102,7 +99,6 @@ public class Dodge extends Action {
 				&& player.onGround()
                 && !player.isInWaterOrBubble()
 				&& !player.isShiftKeyDown()
-				&& !stamina.isExhausted()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()
@@ -111,7 +107,7 @@ public class Dodge extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
+    public boolean canContinue(Player player, Parkourability parkourability) {
 		return !(parkourability.get(Roll.class).isDoing()
 				|| parkourability.get(ClingToCliff.class).isDoing()
 				|| getDoingTick() >= MAX_TICK
@@ -123,7 +119,7 @@ public class Dodge extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+    public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		dodgeDirection = DodgeDirection.values()[startData.getInt()];
 		coolTime = getMaxCoolTime(parkourability.getActionInfo());
 		if (successivelyCount < getMaxSuccessiveDodge(parkourability.getActionInfo())) {
@@ -197,11 +193,5 @@ public class Dodge extends Action {
 				(float) getCoolTime() / maxCoolTime,
 				isInSuccessiveCoolDown(info) ? (float) (getSuccessivelyCoolTick()) / (successiveMaxCoolTime) : 0
 		);
-	}
-
-	@Override
-	public void onWorkingTick(Player player, Parkourability parkourability, IStamina stamina) {
-		Pose pose = ParCoolPoses.ROLLING.get();
-		player.setPose(pose);
 	}
 }

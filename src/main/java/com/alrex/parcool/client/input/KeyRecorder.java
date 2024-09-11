@@ -1,10 +1,10 @@
 package com.alrex.parcool.client.input;
 
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 
 
 @OnlyIn(Dist.CLIENT)
@@ -26,9 +26,7 @@ public class KeyRecorder {
 	public static final KeyState keyFlipping = new KeyState();
 
 	@SubscribeEvent
-	public static void onClientTick(TickEvent.ClientTickEvent event) {
-		if (event.phase != TickEvent.Phase.START) return;
-
+	public static void onClientTick(ClientTickEvent.Post event) {
 		record(KeyBindings.getKeyForward(), keyForward);
 		record(KeyBindings.getKeyBack(), keyBack);
 		record(KeyBindings.getKeyRight(), keyRight);

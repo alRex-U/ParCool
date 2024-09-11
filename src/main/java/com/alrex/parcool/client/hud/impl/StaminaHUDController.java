@@ -1,20 +1,23 @@
 package com.alrex.parcool.client.hud.impl;
 
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.stamina.HungerStamina;
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.config.ParCoolConfig;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
-import net.minecraftforge.event.TickEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+
+import javax.annotation.Nonnull;
 
 @OnlyIn(Dist.CLIENT)
-public class StaminaHUDController implements IGuiOverlay {
+public class StaminaHUDController implements LayeredDraw.Layer {
+	public static ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud.stamina");
 	LightStaminaHUD lightStaminaHUD;
 	StaminaHUD staminaHUD;
 
@@ -23,7 +26,7 @@ public class StaminaHUDController implements IGuiOverlay {
 		staminaHUD = new StaminaHUD();
 	}
 
-	public void onTick(TickEvent.ClientTickEvent event) {
+	public void onTick(ClientTickEvent.Post event) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null || player.isCreative()) return;
 		lightStaminaHUD.onTick(event, player);
@@ -31,20 +34,18 @@ public class StaminaHUDController implements IGuiOverlay {
 	}
 
 	@Override
-	public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height) {
+	public void render(@Nonnull GuiGraphics graphics, @Nonnull DeltaTracker partialTick) {
 		AbstractClientPlayer player = Minecraft.getInstance().player;
 		if (player == null) return;
-		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get() ||
-				(IStamina.get(player) instanceof HungerStamina)
-		)
+		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get())
 			return;
 
 		switch (ParCoolConfig.Client.StaminaHUDType.get()) {
 			case Light:
-				lightStaminaHUD.render(gui, graphics, partialTick, width, height);
+				lightStaminaHUD.render(graphics, partialTick);
 				break;
 			case Normal:
-				staminaHUD.render(gui, graphics, partialTick, width, height);
+				staminaHUD.render(graphics, partialTick);
 				break;
 		}
 	}

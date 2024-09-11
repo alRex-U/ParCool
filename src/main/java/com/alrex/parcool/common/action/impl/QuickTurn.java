@@ -2,13 +2,12 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 
 import java.nio.ByteBuffer;
 
@@ -20,7 +19,7 @@ public class QuickTurn extends Action {
 	private Vec3 startAngle = null;
 
 	@Override
-	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+    public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
 		Vec3 angle = player.getLookAngle();
 		startInfo
 				.putDouble(angle.x)
@@ -33,12 +32,12 @@ public class QuickTurn extends Action {
 	}
 
 	@Override
-	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
+    public boolean canContinue(Player player, Parkourability parkourability) {
 		return getDoingTick() < AnimationTickLength;
 	}
 
 	@Override
-	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+    public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		turnRightward = !turnRightward;
 		startAngle = new Vec3(
 				startData.getDouble(),
@@ -48,9 +47,9 @@ public class QuickTurn extends Action {
 	}
 
 	@Override
-	public void onRenderTick(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
+    public void onRenderTick(RenderFrameEvent event, Player player, Parkourability parkourability) {
 		if (isDoing() && startAngle != null) {
-			float renderTick = getDoingTick() + event.renderTickTime;
+            float renderTick = getDoingTick() + event.getPartialTick().getGameTimeDeltaPartialTick(true);
 			float animationPhase = renderTick / AnimationTickLength;
 			Vec3 rotatedAngle = startAngle.yRot((float) (Math.PI * animationPhase * (turnRightward ? -1 : 1)));
 			player.setYRot((float) VectorUtil.toYawDegree(rotatedAngle));

@@ -1,15 +1,16 @@
 package com.alrex.parcool.common.handlers;
 
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.impl.BreakfallReady;
 import com.alrex.parcool.common.action.impl.ChargeJump;
 import com.alrex.parcool.common.action.impl.Roll;
 import com.alrex.parcool.common.action.impl.Tap;
-import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.network.StartBreakfallMessage;
+import com.alrex.parcool.common.network.payload.StartBreakfallEventPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class PlayerFallHandler {
 	@SubscribeEvent
@@ -26,7 +27,7 @@ public class PlayerFallHandler {
 				boolean justTime = parkourability.get(BreakfallReady.class).getDoingTick() < 5;
 				float distance = event.getDistance();
 				if (distance > 2) {
-					StartBreakfallMessage.send(player, justTime);
+					PacketDistributor.sendToPlayer(player, new StartBreakfallEventPayload(justTime));
 				}
 				if (distance < 6 || (justTime && distance < 8)) {
 					event.setCanceled(true);

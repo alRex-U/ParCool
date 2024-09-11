@@ -2,16 +2,16 @@ package com.alrex.parcool.client.hud.impl;
 
 import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.stamina.LocalStamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 
 public class LightStaminaHUD {
 	private long lastStaminaChangedTick = 0;
@@ -25,12 +25,14 @@ public class LightStaminaHUD {
     private float statusValue = 0f;
     private float oldStatusValue = 0f;
     private boolean showStatus = false;
+	private int oldValue = 0;
 
-	public void onTick(TickEvent.ClientTickEvent event, LocalPlayer player) {
-		IStamina stamina = IStamina.get(player);
+	public void onTick(ClientTickEvent.Post event, LocalPlayer player) {
+		LocalStamina stamina = LocalStamina.get();
         Parkourability parkourability = Parkourability.get(player);
         if (stamina == null || parkourability == null) return;
-		changingSign = (int) Math.signum(stamina.get() - stamina.getOldValue());
+		int newValue = stamina.getValue();
+		changingSign = (int) Math.signum(newValue - oldValue);
 		final long gameTime = player.getCommandSenderWorld().getGameTime();
 		if (changingSign != lastChangingSign) {
 			lastChangingSign = changingSign;
@@ -43,10 +45,10 @@ public class LightStaminaHUD {
 		} else {
 			randomOffset = 0;
 		}
-		if (stamina.get() != stamina.getOldValue() || stamina.isExhausted()) {
+		if (newValue != oldValue || stamina.isExhausted()) {
 			lastStaminaChangedTick = gameTime;
 		}
-		justBecameMax = stamina.getOldValue() < stamina.get() && stamina.get() == stamina.getActualMaxStamina();
+		justBecameMax = oldValue < newValue && newValue == stamina.getMax();
 
         oldStatusValue = statusValue;
         boolean oldShowStatus = showStatus;
@@ -66,33 +68,36 @@ public class LightStaminaHUD {
         if (!oldShowStatus && showStatus) {
             oldStatusValue = statusValue;
         }
+		oldValue = newValue;
 	}
 
-	public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height) {
+	public void render(GuiGraphics graphics, DeltaTracker partialTick) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null || player.isCreative()) return;
 
-		IStamina stamina = IStamina.get(player);
+		LocalStamina stamina = LocalStamina.get();
 		Parkourability parkourability = Parkourability.get(player);
 		if (stamina == null || parkourability == null) return;
 
-        final boolean inexhaustible = player.hasEffect(Effects.INEXHAUSTIBLE.get());
+		final boolean inexhaustible = player.hasEffect(Effects.INEXHAUSTIBLE);
         final boolean exhausted = stamina.isExhausted();
 
         if (!showStatus) {
             long gameTime = player.level().getGameTime();
             if (gameTime - lastStaminaChangedTick > 40) return;
         }
-		float staminaScale = (float) stamina.get() / stamina.getActualMaxStamina();
+		float staminaScale = (float) stamina.getValue() / stamina.getMax();
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
 
         staminaScale *= 10f;
-        float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick) * 10f : 0f;
+		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick.getGameTimeDeltaPartialTick(true)) * 10f : 0f;
 
         RenderSystem.setShaderTexture(0, StaminaHUD.STAMINA);
+		final int width = graphics.guiWidth();
+		final int height = graphics.guiHeight();
         int baseX = width / 2 + 91 + ParCoolConfig.Client.Integers.HorizontalOffsetOfLightStaminaHUD.get();
-        int baseY = height - gui.rightHeight + ParCoolConfig.Client.Integers.VerticalOffsetOfLightStaminaHUD.get();
+		int baseY = height - Minecraft.getInstance().gui.rightHeight + ParCoolConfig.Client.Integers.VerticalOffsetOfLightStaminaHUD.get();
 		for (int i = 0; i < 10; i++) {
 			int x = baseX - i * 8 - 9;
 			int offsetY = 0;
@@ -126,7 +131,7 @@ public class LightStaminaHUD {
 			if (justBecameMax) {
 				offsetY = -1;
 			} else if (changingSign == 1) {
-				if ((changingTimeTick & 31) == i) {
+				if ((changingTimeTick & 0b11111) == i) {
 					offsetY = -1;
 				}
 			} else if (i + 1 > staminaScale && staminaScale > i && changingSign == -1) {
@@ -135,6 +140,6 @@ public class LightStaminaHUD {
 
 			graphics.blit(StaminaHUD.STAMINA, x, baseY + offsetY, textureX, 119, 9, 9, 129, 128);
 		}
-		gui.rightHeight += 10;
+		Minecraft.getInstance().gui.rightHeight += 10;
 	}
 }

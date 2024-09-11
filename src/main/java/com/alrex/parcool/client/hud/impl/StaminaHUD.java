@@ -1,25 +1,26 @@
 package com.alrex.parcool.client.hud.impl;
 
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.stamina.LocalStamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class StaminaHUD {
-	public static final ResourceLocation STAMINA = new ResourceLocation("parcool", "textures/gui/stamina_bar.png");
+	public static final ResourceLocation STAMINA = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "textures/gui/stamina_bar.png");
 
 	public StaminaHUD() {
 	}
@@ -32,7 +33,7 @@ public class StaminaHUD {
     private float oldStatusValue = 0f;
     private boolean showStatus = false;
 
-	public void onTick(TickEvent.ClientTickEvent event, LocalPlayer player) {
+	public void onTick(ClientTickEvent.Post event, LocalPlayer player) {
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability == null) return;
 		if (++renderGageTick >= 5) {
@@ -61,20 +62,17 @@ public class StaminaHUD {
         }
 	}
 
-	public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height) {
+	public void render(GuiGraphics graphics, DeltaTracker partialTick) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null) return;
 		if (player.isCreative()) return;
 
-		IStamina stamina = IStamina.get(player);
+		LocalStamina stamina = LocalStamina.get();
 		Parkourability parkourability = Parkourability.get(player);
 		if (stamina == null || parkourability == null) return;
 
-		if (ParCoolConfig.Client.Booleans.HideStaminaHUDWhenStaminaIsInfinite.get() &&
-				parkourability.getActionInfo().isStaminaInfinite(player.isCreative() || player.isSpectator())
-		) return;
+		if (parkourability.getActionInfo().isStaminaInfinite()) return;
 
-		var window = Minecraft.getInstance().getWindow();
 		Position position = new Position(
 				ParCoolConfig.Client.AlignHorizontalStaminaHUD.get(),
 				ParCoolConfig.Client.AlignVerticalStaminaHUD.get(),
@@ -83,10 +81,12 @@ public class StaminaHUD {
 		);
 		final int boxWidth = 91;
 		final int boxHeight = 17;
+		final int width = graphics.guiWidth();
+		final int height = graphics.guiHeight();
 		final Tuple<Integer, Integer> pos = position.calculate(boxWidth, boxHeight, width, height);
 
-		float staminaScale = (float) stamina.get() / stamina.getActualMaxStamina();
-        float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick) : 0f;
+		float staminaScale = (float) stamina.getValue() / stamina.getMax();
+		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick.getGameTimeDeltaPartialTick(true)) : 0f;
 
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;

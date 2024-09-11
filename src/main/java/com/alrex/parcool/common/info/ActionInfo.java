@@ -2,7 +2,12 @@ package com.alrex.parcool.common.info;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.stamina.LocalStamina;
+import com.alrex.parcool.common.stamina.StaminaType;
 import com.alrex.parcool.config.ParCoolConfig;
+import net.minecraft.client.player.LocalPlayer;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class ActionInfo {
     public ActionInfo() {
@@ -29,10 +34,22 @@ public class ActionInfo {
     private ServerLimitation serverLimitation = ServerLimitation.UNSYNCED_INSTANCE;
 
 	public boolean can(Class<? extends Action> action) {
-        return ParCool.isActive()
+        return getClientSetting().get(ParCoolConfig.Client.Booleans.ParCoolIsActive)
                 && getClientSetting().getPossibilityOf(action)
                 && getServerLimitation().isPermitted(action);
 	}
+
+    public StaminaType getStaminaType() {
+        var forcedStamina = getServerLimitation().getForcedStamina();
+        if (forcedStamina == StaminaType.NONE) {
+            var requestedStamina = getClientSetting().getRequestedStamina();
+            if (requestedStamina == StaminaType.NONE) {
+                return isInfiniteStaminaPermitted() ? StaminaType.NONE : StaminaType.PARCOOL;
+            }
+            return requestedStamina;
+        }
+        return forcedStamina;
+    }
 
 	public int getStaminaConsumptionOf(Class<? extends Action> action) {
         return Math.max(
@@ -49,13 +66,21 @@ public class ActionInfo {
         return getServerLimitation().get(ParCoolConfig.Server.Integers.MaxStaminaLimit);
 	}
 
-	public boolean isStaminaInfinite(boolean creativeOrSpectator) {
-        if (getClientSetting().get(ParCoolConfig.Client.Booleans.InfiniteStamina) && isInfiniteStaminaPermitted())
-			return true;
-        return creativeOrSpectator && getClientSetting().get(ParCoolConfig.Client.Booleans.InfiniteStaminaWhenCreative);
+    @OnlyIn(Dist.CLIENT)
+    public boolean isStaminaInfinite() {
+        var stamina = LocalStamina.get();
+        if (stamina == null) return false;
+        return stamina.isInfinite();
 	}
 
 	public boolean isInfiniteStaminaPermitted() {
         return serverLimitation.get(ParCoolConfig.Server.Booleans.AllowInfiniteStamina);
 	}
+
+    @OnlyIn(Dist.CLIENT)
+    public void updateStaminaType() {
+        var stamina = LocalStamina.get();
+        if (stamina == null) return;
+        stamina.changeType(getStaminaType());
+    }
 }

@@ -1,16 +1,22 @@
 package com.alrex.parcool.common.info;
 
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.ActionList;
+import com.alrex.parcool.common.action.Actions;
+import com.alrex.parcool.common.stamina.StaminaType;
 import com.alrex.parcool.config.ParCoolConfig;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.EnumMap;
 
 public abstract class ClientSetting {
+    public static final StreamCodec<ByteBuf, ClientSetting> STREAM_CODEC = StreamCodec.of(
+            (buffer, value) -> value.writeTo(buffer),
+            ClientSetting::readFrom
+    );
 
     private static class Default extends ClientSetting {
         @Override
@@ -21,6 +27,11 @@ public abstract class ClientSetting {
         @Override
         public int getStaminaConsumptionOf(Class<? extends Action> action) {
             return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public StaminaType getRequestedStamina() {
+            return StaminaType.NONE;
         }
 
         @Override
@@ -40,11 +51,12 @@ public abstract class ClientSetting {
     }
 
     private static class Remote extends ClientSetting {
-        private final boolean[] actionPossibilities = new boolean[ActionList.ACTIONS.size()];
-        private final int[] staminaConsumptions = new int[ActionList.ACTIONS.size()];
+        private final boolean[] actionPossibilities = new boolean[Actions.LIST.size()];
+        private final int[] staminaConsumptions = new int[Actions.LIST.size()];
         private final EnumMap<ParCoolConfig.Client.Booleans, Boolean> booleans = new EnumMap<>(ParCoolConfig.Client.Booleans.class);
         private final EnumMap<ParCoolConfig.Client.Integers, Integer> integers = new EnumMap<>(ParCoolConfig.Client.Integers.class);
         private final EnumMap<ParCoolConfig.Client.Doubles, Double> doubles = new EnumMap<>(ParCoolConfig.Client.Doubles.class);
+        private StaminaType requestedStamina = null;
 
         public Remote() {
             Arrays.fill(actionPossibilities, true);
@@ -62,12 +74,17 @@ public abstract class ClientSetting {
 
         @Override
         public boolean getPossibilityOf(Class<? extends Action> action) {
-            return actionPossibilities[ActionList.getIndexOf(action)];
+            return actionPossibilities[Actions.getIndexOf(action)];
         }
 
         @Override
         public int getStaminaConsumptionOf(Class<? extends Action> action) {
-            return staminaConsumptions[ActionList.getIndexOf(action)];
+            return staminaConsumptions[Actions.getIndexOf(action)];
+        }
+
+        @Override
+        public StaminaType getRequestedStamina() {
+            return requestedStamina;
         }
 
         @Override
@@ -84,6 +101,7 @@ public abstract class ClientSetting {
         public Double get(ParCoolConfig.Client.Doubles item) {
             return doubles.get(item);
         }
+
     }
 
     public static final ClientSetting UNSYNCED_INSTANCE = new Default();
@@ -91,6 +109,8 @@ public abstract class ClientSetting {
     public abstract boolean getPossibilityOf(Class<? extends Action> action);
 
     public abstract int getStaminaConsumptionOf(Class<? extends Action> action);
+
+    public abstract StaminaType getRequestedStamina();
 
     public abstract Boolean get(ParCoolConfig.Client.Booleans item);
 
@@ -102,8 +122,8 @@ public abstract class ClientSetting {
     public static ClientSetting readFromLocalConfig() {
         Remote instance = new Remote();
         for (int i = 0; i < instance.actionPossibilities.length; i++) {
-            instance.actionPossibilities[i] = ParCoolConfig.Client.getPossibilityOf(ActionList.ACTIONS.get(i)).get();
-            instance.staminaConsumptions[i] = ParCoolConfig.Client.getStaminaConsumptionOf(ActionList.ACTIONS.get(i)).get();
+            instance.actionPossibilities[i] = ParCoolConfig.Client.getPossibilityOf(Actions.LIST.get(i)).get();
+            instance.staminaConsumptions[i] = ParCoolConfig.Client.getStaminaConsumptionOf(Actions.LIST.get(i)).get();
         }
         for (ParCoolConfig.Client.Booleans item : ParCoolConfig.Client.Booleans.values()) {
             instance.booleans.put(item, item.get());
@@ -114,30 +134,32 @@ public abstract class ClientSetting {
         for (ParCoolConfig.Client.Doubles item : ParCoolConfig.Client.Doubles.values()) {
             instance.doubles.put(item, item.get());
         }
+        instance.requestedStamina = ParCoolConfig.Client.StaminaType.get();
         return instance;
     }
 
-    public void writeTo(ByteBuffer buffer) {
-        for (Class<? extends Action> action : ActionList.ACTIONS) {
-            buffer.put((byte) (getPossibilityOf(action) ? 1 : 0));
-            buffer.putInt(getStaminaConsumptionOf(action));
+    public void writeTo(ByteBuf buffer) {
+        for (Class<? extends Action> action : Actions.LIST) {
+            buffer.writeByte((byte) (getPossibilityOf(action) ? 1 : 0));
+            buffer.writeInt(getStaminaConsumptionOf(action));
         }
         for (ParCoolConfig.Client.Booleans item : ParCoolConfig.Client.Booleans.values()) {
-            buffer.put((byte) (get(item) ? 1 : 0));
+            buffer.writeByte((byte) (get(item) ? 1 : 0));
         }
         for (ParCoolConfig.Client.Integers item : ParCoolConfig.Client.Integers.values()) {
-            buffer.putInt(get(item));
+            buffer.writeInt(get(item));
         }
         for (ParCoolConfig.Client.Doubles item : ParCoolConfig.Client.Doubles.values()) {
-            buffer.putDouble(get(item));
+            buffer.writeDouble(get(item));
         }
+        buffer.writeByte(getRequestedStamina().ordinal());
     }
 
-    public static ClientSetting readFrom(ByteBuffer buffer) {
+    public static ClientSetting readFrom(ByteBuf buffer) {
         Remote instance = new Remote();
         for (int i = 0; i < instance.actionPossibilities.length; i++) {
-            instance.actionPossibilities[i] = buffer.get() != 0;
-            instance.staminaConsumptions[i] = buffer.getInt();
+            instance.actionPossibilities[i] = buffer.readByte() != 0;
+            instance.staminaConsumptions[i] = buffer.readInt();
         }
         for (ParCoolConfig.Client.Booleans item : ParCoolConfig.Client.Booleans.values()) {
             instance.booleans.put(item, item.readFromBuffer(buffer));
@@ -148,6 +170,7 @@ public abstract class ClientSetting {
         for (ParCoolConfig.Client.Doubles item : ParCoolConfig.Client.Doubles.values()) {
             instance.doubles.put(item, item.readFromBuffer(buffer));
         }
+        instance.requestedStamina = StaminaType.values()[buffer.readByte()];
         return instance;
     }
 

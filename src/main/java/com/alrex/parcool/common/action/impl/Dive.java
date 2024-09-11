@@ -1,19 +1,19 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.DiveAnimationHostAnimator;
 import com.alrex.parcool.client.animation.impl.DiveIntoWaterAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.attachment.Attachments;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 
@@ -29,13 +29,13 @@ public class Dive extends Action {
 	}
 
 	@Override
-	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onWorkingTickInLocalClient(Player player, Parkourability parkourability) {
 		playerYSpeedOld = playerYSpeed;
 		playerYSpeed = player.getDeltaMovement().y();
 	}
 
 	@Override
-	public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onClientTick(Player player, Parkourability parkourability) {
 		if (isDoing() && (playerYSpeed < 0 || fallingTick > 0)) {
 			fallingTick++;
 		} else {
@@ -45,7 +45,7 @@ public class Dive extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+    public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
         if (player.getVehicle() != null) return false;
         boolean startInAir = player.getDeltaMovement().y() < 0
                 && parkourability.getAdditionalProperties().getNotLandingTick() > 10
@@ -62,14 +62,13 @@ public class Dive extends Action {
 
         justJumped = false;
         return parkourability.getActionInfo().can(Dive.class)
-				&& !stamina.isExhausted()
 				&& !parkourability.get(Crawl.class).isDoing()
                 && !player.isVisuallyCrawling();
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
+    public boolean canContinue(Player player, Parkourability parkourability) {
 		return !(player.isFallFlying()
 				|| player.getAbilities().flying
 				|| player.isInWaterOrBubble()
@@ -77,11 +76,11 @@ public class Dive extends Action {
 				|| player.isSwimming()
 				|| player.onGround()
 				|| (fallingTick > 5 && player.fallDistance < 0.1)
-				|| stamina.isExhausted()
+                || player.getData(Attachments.STAMINA).isExhausted()
 		);
 	}
 
-	public void onJump(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onJump(Player player, Parkourability parkourability) {
 		if (!player.isLocalPlayer()) return;
         initialYVelocityOfLastJump = player.getDeltaMovement().y();
 		justJumped = true;
@@ -89,7 +88,7 @@ public class Dive extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+    public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
         double initialYSpeed = startData.getDouble();
         playerYSpeedOld = playerYSpeed = initialYSpeed;
 		Animation animation = Animation.get(player);

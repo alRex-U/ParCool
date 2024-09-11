@@ -1,21 +1,21 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.HangAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.attachment.Attachments;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
@@ -50,10 +50,9 @@ public class HangDown extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+    public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
 		startInfo.putDouble(Math.max(-1, Math.min(1, 3 * player.getLookAngle().multiply(1, 0, 1).normalize().dot(player.getDeltaMovement()))));
-		return (!stamina.isExhausted()
-				&& !player.isShiftKeyDown()
+        return (!player.isShiftKeyDown()
 				&& Math.abs(player.getDeltaMovement().y) < 0.2
 				&& KeyBindings.getKeyHangDown().isDown()
 				&& parkourability.getActionInfo().can(HangDown.class)
@@ -65,8 +64,8 @@ public class HangDown extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
-		return (!stamina.isExhausted()
+    public boolean canContinue(Player player, Parkourability parkourability) {
+        return (!player.getData(Attachments.STAMINA).isExhausted()
                 && !player.isShiftKeyDown()
 				&& KeyBindings.getKeyHangDown().isDown()
 				&& parkourability.getActionInfo().can(HangDown.class)
@@ -90,7 +89,7 @@ public class HangDown extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+    public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		setup(player, startData);
         if (ParCoolConfig.Client.Booleans.EnableActionSounds.get()) {
             player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
@@ -107,7 +106,7 @@ public class HangDown extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onWorkingTickInLocalClient(Player player, Parkourability parkourability) {
 		Vec3 bodyVec = VectorUtil.fromYawDegree(player.yBodyRot);
 		final double speed = 0.1;
 		double xSpeed = 0, zSpeed = 0;
@@ -134,7 +133,7 @@ public class HangDown extends Action {
 	}
 
 	@Override
-	public void onWorkingTickInClient(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onWorkingTickInClient(Player player, Parkourability parkourability) {
 		hangingBarAxis = WorldUtil.getHangableBars(player);
 		Vec3 bodyVec = VectorUtil.fromYawDegree(player.yBodyRot);
 		orthogonalToBar =
@@ -159,7 +158,7 @@ public class HangDown extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onRenderTick(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
+    public void onRenderTick(RenderFrameEvent event, Player player, Parkourability parkourability) {
 		if (isDoing()) {
 			if (hangingBarAxis == null) return;
 			Vec3 bodyVec = VectorUtil.fromYawDegree(player.yBodyRot).normalize();

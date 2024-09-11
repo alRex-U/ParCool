@@ -1,17 +1,16 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.FlippingAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 
@@ -45,11 +44,11 @@ public class Flipping extends Action {
 
     private boolean justJumped = false;
 
-    public void onJump(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onJump(Player player, Parkourability parkourability) {
         justJumped = true;
     }
 	@Override
-	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+    public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
         Direction fDirection;
 		if (KeyBindings.getKeyBack().isDown()) {
             fDirection = Direction.Back;
@@ -69,21 +68,19 @@ public class Flipping extends Action {
                 && !parkourability.get(Dive.class).isDoing()
                 && !parkourability.get(ChargeJump.class).isDoing()
                 && !parkourability.getCancelMarks().cancelJump()
-				&& !stamina.isExhausted()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() <= 1
 		);
 	}
 
 	@Override
-	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
+    public boolean canContinue(Player player, Parkourability parkourability) {
 		return !player.onGround() || getDoingTick() <= 10;
 	}
 
 	@Override
-	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+    public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
         ControlType control = ControlType.values()[startData.getInt()];
         if (control != ControlType.TapMovementAndJump) player.jumpFromGround();
-		stamina.consume(parkourability.getActionInfo().getStaminaConsumptionOf(Flipping.class));
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new FlippingAnimator(

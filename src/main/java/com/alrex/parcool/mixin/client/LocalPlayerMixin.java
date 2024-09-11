@@ -1,6 +1,7 @@
 package com.alrex.parcool.mixin.client;
 
-import com.alrex.parcool.common.capability.IStamina;
+
+import com.alrex.parcool.common.attachment.Attachments;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -20,7 +21,7 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
 	@Inject(method = "Lnet/minecraft/client/player/LocalPlayer;aiStep()V", at = @At("TAIL"))
 	public void onAiStep(CallbackInfo ci) {
 		LocalPlayer player = (LocalPlayer) (Object) this;
-		IStamina stamina = IStamina.get(player);
+		var stamina = player.getData(Attachments.STAMINA);
 		if (stamina == null) return;
 		if (stamina.isExhausted()) {
 			player.setSprinting(false);

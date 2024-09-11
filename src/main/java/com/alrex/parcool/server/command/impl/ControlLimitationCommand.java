@@ -2,11 +2,13 @@ package com.alrex.parcool.server.command.impl;
 
 import com.alrex.parcool.api.unstable.Limitation;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.ActionList;
+import com.alrex.parcool.common.action.Actions;
+import com.alrex.parcool.common.stamina.StaminaType;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.server.command.args.ActionArgumentType;
 import com.alrex.parcool.server.command.args.LimitationIDArgumentType;
 import com.alrex.parcool.server.command.args.LimitationItemArgumentType;
+import com.alrex.parcool.server.command.args.StaminaTypeArgumentType;
 import com.alrex.parcool.server.limitation.Limitations;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
@@ -39,6 +41,7 @@ public class ControlLimitationCommand {
     private static final String ARGS_NAME_VALUE = "value";
     private static final String ARGS_NAME_CONFIG_ITEM = "limitation_name";
     private static final String ARGS_NAME_LIMITATION_ID = "limitation_id";
+    private static final String ARGS_NAME_STAMINA_TYPE = "stamina_type";
 
     private static ArgumentBuilder<CommandSourceStack, ?> limitationGetCoreCommands(ArgumentBuilder<CommandSourceStack, ?> builder, boolean hasID, boolean hasPlayer) {
         return builder
@@ -76,6 +79,10 @@ public class ControlLimitationCommand {
                                 .argument(ARGS_NAME_ACTION, ActionArgumentType.action())
                                 .executes((context) -> getLeastStaminaConsumption(context, hasID, hasPlayer))
                         )
+                )
+                .then(Commands
+                        .literal("stamina_type")
+                        .executes((context -> getStaminaType(context, hasID, hasPlayer)))
                 );
     }
 
@@ -134,6 +141,14 @@ public class ControlLimitationCommand {
                                         .executes((context) -> changeStaminaConsumption(context, hasID, hasPlayer))
                                 )
                         )
+                )
+                .then(Commands
+                        .literal("stamina_type")
+                        .then(Commands
+                                .argument(ARGS_NAME_STAMINA_TYPE, StaminaTypeArgumentType.type())
+                                .executes((context -> setStaminaType(context, hasID, hasPlayer)))
+                        )
+
                 );
     }
 
@@ -367,7 +382,7 @@ public class ControlLimitationCommand {
         StringBuilder builder = new StringBuilder();
         builder.append("- Limitation Info -\n");
         builder.append("Enabled : ").append(limitation.isEnabled()).append('\n');
-        for (Class<? extends Action> action : ActionList.ACTIONS) {
+        for (Class<? extends Action> action : Actions.LIST) {
             builder.append("  ").append(action.getSimpleName()).append(" : ").append('\n')
                     .append("    ").append("permitted : ").append(limitation.isPermitted(action)).append('\n')
                     .append("    ").append("stamina consumption : ").append(limitation.getLeastStaminaConsumption(action)).append('\n');
@@ -401,6 +416,22 @@ public class ControlLimitationCommand {
         context.getSource().sendSuccess(
                 () -> Component.literal(
                         Integer.toString(limitations.get(0).getLeastStaminaConsumption(action))
+                ),
+                false
+        );
+        return 0;
+    }
+
+    private static int getStaminaType(CommandContext<CommandSourceStack> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
+        List<Limitation> limitations = getLimitationInstance(
+                hasPlayer ? Collections.singletonList(EntityArgument.getPlayer(context, ARGS_NAME_PLAYER)) : Collections.emptyList(),
+                hasID ? LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID) : null,
+                context.getSource().getServer()
+        );
+        Class<? extends Action> action = ActionArgumentType.getAction(context, ARGS_NAME_ACTION);
+        context.getSource().sendSuccess(
+                () -> Component.literal(
+                        limitations.get(0).getStaminaType().toString()
                 ),
                 false
         );
@@ -551,6 +582,23 @@ public class ControlLimitationCommand {
         }
         int finalNum = num;
         context.getSource().sendSuccess(() -> Component.translatable("parcool.command.message.success.setStaminaConsumption", finalNum, action.getSimpleName(), newValue), true);
+        return 0;
+    }
+
+    private static int setStaminaType(CommandContext<CommandSourceStack> context, boolean hasID, boolean hasPlayer) throws CommandSyntaxException {
+        List<Limitation> limitations = getLimitationInstance(
+                hasPlayer ? EntityArgument.getPlayers(context, ARGS_NAME_PLAYERS) : Collections.emptyList(),
+                hasID ? LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID) : null,
+                context.getSource().getServer()
+        );
+        StaminaType type = StaminaTypeArgumentType.getStamina(context, ARGS_NAME_STAMINA_TYPE);
+        int num = 0;
+        for (Limitation limitation : limitations) {
+            limitation.setStaminaType(type);
+            num++;
+        }
+        int finalNum = num;
+        context.getSource().sendSuccess(() -> Component.translatable("parcool.command.message.success.setStaminaType", finalNum, type.name()), true);
         return 0;
     }
 

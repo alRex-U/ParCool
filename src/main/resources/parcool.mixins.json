@@ -1,11 +1,9 @@
 {
   "required": true,
   "package": "com.alrex.parcool.mixin",
-  "plugin": "com.alrex.parcool.mixin.ParCoolMixinPlugin",
-  "refmap": "parcool.refmap.json",
-  "compatibilityLevel": "JAVA_8",
-  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_21",
   "client": [
+    "client.ClientPacketListenerMixin",
     "client.LocalPlayerMixin",
     "client.PlayerModelMixin",
     "client.PlayerRendererMixin"
@@ -15,7 +13,6 @@
   },
   "mixins": [
     "common.LivingEntityMixin",
-    "common.PlayerMixin",
-    "common.PoseMixin"
+    "common.PlayerMixin"
   ]
 }

@@ -1,12 +1,10 @@
 package com.alrex.parcool.common.action;
 
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 
 import java.nio.ByteBuffer;
 
@@ -40,10 +38,10 @@ public abstract class Action {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public abstract boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo);
+	public abstract boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo);
 
 	@OnlyIn(Dist.CLIENT)
-	public abstract boolean canContinue(Player player, Parkourability parkourability, IStamina stamina);
+	public abstract boolean canContinue(Player player, Parkourability parkourability);
 
 	public void onStart(Player player, Parkourability parkourability) {
 	}
@@ -56,7 +54,7 @@ public abstract class Action {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 	}
 
 	public void onStop(Player player) {
@@ -71,32 +69,32 @@ public abstract class Action {
 	public void onStopInLocalClient(Player player) {
 	}
 
-	public void onWorkingTick(Player player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTick(Player player, Parkourability parkourability) {
 	}
 
-	public void onWorkingTickInServer(Player player, Parkourability parkourability, IStamina stamina) {
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public void onWorkingTickInClient(Player player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInServer(Player player, Parkourability parkourability) {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
-	}
-
-	public void onTick(Player player, Parkourability parkourability, IStamina stamina) {
-	}
-
-	public void onServerTick(Player player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInClient(Player player, Parkourability parkourability) {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability) {
+	}
+
+	public void onTick(Player player, Parkourability parkourability) {
+	}
+
+	public void onServerTick(Player player, Parkourability parkourability) {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void onRenderTick(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
+	public void onClientTick(Player player, Parkourability parkourability) {
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public void onRenderTick(RenderFrameEvent event, Player player, Parkourability parkourability) {
 	}
 
 	public void restoreSynchronizedState(ByteBuffer buffer) {

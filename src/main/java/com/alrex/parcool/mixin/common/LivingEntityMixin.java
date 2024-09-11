@@ -1,9 +1,9 @@
 package com.alrex.parcool.mixin.common;
 
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.impl.ChargeJump;
 import com.alrex.parcool.common.action.impl.ClimbPoles;
 import com.alrex.parcool.common.action.impl.ClimbUp;
-import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.ForgeConfig;
+import net.neoforged.neoforge.common.NeoForgeConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,7 +34,7 @@ public abstract class LivingEntityMixin extends Entity {
 		super(p_i48580_1_, p_i48580_2_);
 	}
 
-	@Inject(method = "net.minecraft.world.entity.LivingEntity.onClimbable", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "Lnet/minecraft/world/entity/LivingEntity;onClimbable()Z", at = @At("HEAD"), cancellable = true)
 	public void onClimbable(CallbackInfoReturnable<Boolean> cir) {
 		if (this.isSpectator()) {
 			cir.setReturnValue(false);
@@ -59,7 +59,7 @@ public abstract class LivingEntityMixin extends Entity {
 				return;
 			}
 			BlockPos blockpos = this.blockPosition();
-			BlockState blockstate = this.getFeetBlockState();
+			BlockState blockstate = this.getBlockStateOn();
 			boolean onLadder = parCool$isLivingOnCustomLadder(blockstate, entity.level(), blockpos, entity);
 			if (onLadder) {
 				cir.setReturnValue(true);
@@ -71,7 +71,7 @@ public abstract class LivingEntityMixin extends Entity {
 	public boolean parCool$isLivingOnCustomLadder(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull LivingEntity entity) {
 		boolean isSpectator = (entity instanceof Player && entity.isSpectator());
 		if (isSpectator) return false;
-		if (!ForgeConfig.SERVER.fullBoundingBoxLadders.get()) {
+		if (!NeoForgeConfig.SERVER.fullBoundingBoxLadders.get()) {
 			return parCool$isCustomLadder(state, world, pos, entity);
 		} else {
 			AABB bb = entity.getBoundingBox();

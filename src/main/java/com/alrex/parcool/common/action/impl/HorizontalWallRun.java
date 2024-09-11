@@ -1,13 +1,13 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.HorizontalWallRunAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.attachment.Attachments;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.BufferUtil;
@@ -22,9 +22,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 
 import java.nio.ByteBuffer;
 
@@ -46,13 +46,13 @@ public class HorizontalWallRun extends Action {
 	private Vec3 runningDirection = null;
 
 	@Override
-	public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onClientTick(Player player, Parkourability parkourability) {
 		if (coolTime > 0) coolTime--;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onWorkingTickInLocalClient(Player player, Parkourability parkourability) {
         Vec3 wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() / 2);
 		if (wallDirection == null) return;
 		if (runningWallDirection == null) return;
@@ -89,7 +89,7 @@ public class HorizontalWallRun extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+    public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
         Vec3 wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() / 2);
 		if (wallDirection == null) return false;
 		Vec3 wallVec = wallDirection.normalize();
@@ -129,19 +129,17 @@ public class HorizontalWallRun extends Action {
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 5
                 && (
                 parkourability.get(FastRun.class).canActWithRunning(player)
-                        || parkourability.get(FastRun.class).getNotDashTick(parkourability.getAdditionalProperties()) < 10
-		)
-				&& !stamina.isExhausted()
+                        || parkourability.get(FastRun.class).getNotDashTick(parkourability.getAdditionalProperties()) < 10)
 		);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
+    public boolean canContinue(Player player, Parkourability parkourability) {
         Vec3 wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() / 2);
 		if (wallDirection == null) return false;
 		return (getDoingTick() < getMaxRunningTick(parkourability.getActionInfo())
-				&& !stamina.isExhausted()
+                && !player.getData(Attachments.STAMINA).isExhausted()
 				&& !parkourability.get(WallJump.class).justJumped()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Dodge.class).isDoing()
@@ -160,7 +158,7 @@ public class HorizontalWallRun extends Action {
 	}
 
 	@Override
-	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+    public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		wallIsRightward = BufferUtil.getBoolean(startData);
 		runningWallDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
 		runningDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
@@ -187,7 +185,7 @@ public class HorizontalWallRun extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onRenderTick(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
+    public void onRenderTick(RenderFrameEvent event, Player player, Parkourability parkourability) {
 		if (isDoing()) {
 			if (runningDirection == null) return;
 			Vec3 lookVec = VectorUtil.fromYawDegree(player.getYHeadRot());
@@ -207,7 +205,7 @@ public class HorizontalWallRun extends Action {
 	}
 
     @Override
-    public void onWorkingTickInClient(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onWorkingTickInClient(Player player, Parkourability parkourability) {
         spawnRunningParticle(player);
     }
 

@@ -1,21 +1,18 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.RollAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.registries.ParCoolPoses;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 
@@ -27,7 +24,7 @@ public class Roll extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
+	public void onClientTick(Player player, Parkourability parkourability) {
 		if (player.isLocalPlayer()) {
 			if (KeyBindings.getKeyBreakfall().isDown()
 					&& KeyBindings.getKeyForward().isDown()
@@ -55,7 +52,7 @@ public class Roll extends Action {
 	}
 
 	@Override
-	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
 		LocalPlayer clientPlayer = (LocalPlayer) player;
 		Direction rollDirection = Direction.Front;
 		if (clientPlayer.input.leftImpulse < -0.5) {
@@ -71,8 +68,8 @@ public class Roll extends Action {
 	}
 
 	@Override
-	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
-		return getDoingTick() < getRollMaxTick();
+	public boolean canContinue(Player player, Parkourability parkourability) {
+		return getDoingTick() <= getRollMaxTick();
 	}
 
 	@Override
@@ -84,7 +81,7 @@ public class Roll extends Action {
 	}
 
 	@Override
-	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		startRequired = false;
 		Direction direction = Direction.values()[startData.getInt()];
 		double modifier = Math.sqrt(player.getBbWidth());
@@ -112,11 +109,5 @@ public class Roll extends Action {
 
 	public int getRollMaxTick() {
 		return 9;
-	}
-
-	@Override
-	public void onWorkingTick(Player player, Parkourability parkourability, IStamina stamina) {
-		Pose pose = ParCoolPoses.ROLLING.get();
-		player.setPose(pose);
 	}
 }

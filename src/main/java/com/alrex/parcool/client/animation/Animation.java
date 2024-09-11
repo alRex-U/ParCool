@@ -1,31 +1,47 @@
-package com.alrex.parcool.common.capability;
+package com.alrex.parcool.client.animation;
 
 import com.alrex.parcool.api.unstable.animation.AnimationOption;
 import com.alrex.parcool.api.unstable.animation.AnimationPart;
 import com.alrex.parcool.api.unstable.animation.ParCoolAnimationInfoEvent;
-import com.alrex.parcool.client.animation.Animator;
-import com.alrex.parcool.client.animation.PassiveCustomAnimation;
-import com.alrex.parcool.client.animation.PlayerModelRotator;
-import com.alrex.parcool.client.animation.PlayerModelTransformer;
-import com.alrex.parcool.common.capability.capabilities.Capabilities;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ViewportEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
+import net.neoforged.neoforge.client.event.RenderPlayerEvent;
+import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.neoforge.common.NeoForge;
+
+import javax.annotation.Nullable;
+import java.util.TreeMap;
+import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
 public class Animation {
+	public static class Registry {
+		private static final TreeMap<UUID, Animation> map = new TreeMap<>();
+
+		@Nullable
+		private static Animation get(UUID id) {
+			return map.get(id);
+		}
+
+		public static void setup(UUID id) {
+			map.putIfAbsent(id, new Animation());
+		}
+
+		public static void unload(UUID id) {
+			map.remove(id);
+		}
+	}
+
+	@Nullable
 	public static Animation get(Player player) {
-		LazyOptional<Animation> optional = player.getCapability(Capabilities.ANIMATION_CAPABILITY);
-		if (!optional.isPresent()) return null;
-		return optional.orElseThrow(IllegalStateException::new);
+		return Registry.get(player.getUUID());
 	}
 
 	private Animator animator = null;
@@ -93,12 +109,12 @@ public class Animation {
 		}
         {
             ParCoolAnimationInfoEvent animationEvent = new ParCoolAnimationInfoEvent(player, animator);
-            MinecraftForge.EVENT_BUS.post(animationEvent);
+			NeoForge.EVENT_BUS.post(animationEvent);
             option = animationEvent.getOption();
         }
 	}
 
-	public void onRenderTick(TickEvent.RenderTickEvent event, Player player, Parkourability parkourability) {
+	public void onRenderTick(RenderFrameEvent event, Player player, Parkourability parkourability) {
 		if (animator != null) {
 			animator.onRenderTick(event, player, parkourability);
 		}

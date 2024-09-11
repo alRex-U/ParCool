@@ -1,16 +1,17 @@
 package com.alrex.parcool.client.gui;
 
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
-import com.alrex.parcool.common.network.SyncClientInformationMessage;
+import com.alrex.parcool.common.network.payload.ClientInformationPayload;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 
@@ -53,9 +54,10 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
     @Override
     protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, int topOffset, int bottomOffset) {
         final int offsetX = 40;
+        final int boxHeight = 21;
         int contentWidth = width - offsetX * 2;
         int contentHeight = height - topOffset - bottomOffset;
-        viewableItemCount = contentHeight / Checkbox_Item_Height;
+        viewableItemCount = contentHeight / boxHeight;
         for (Button configButton : enumConfigButtons) {
             configButton.setWidth(0);
         }
@@ -63,7 +65,7 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
             Button button = enumConfigButtons[i + topIndex];
             int buttonWidth = contentWidth / 3;
             button.setX(width - offsetX - buttonWidth);
-            button.setY(topOffset + Checkbox_Item_Height * i);
+            button.setY(topOffset + boxHeight * i);
             button.setWidth(buttonWidth);
             button.setHeight(20);
             button.render(graphics, mouseX, mouseY, partialTick);
@@ -97,14 +99,14 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability == null) return;
         parkourability.getActionInfo().setClientSetting(ClientSetting.readFromLocalConfig());
-        SyncClientInformationMessage.sync(player, true);
+        PacketDistributor.sendToServer(new ClientInformationPayload(player.getUUID(), true, parkourability.getClientInfo()));
     }
 
     private static class EnumConfigSet<T extends Enum<T>> {
-        final ForgeConfigSpec.EnumValue<T> configInstance;
+        final ModConfigSpec.EnumValue<T> configInstance;
         final T[] values;
 
-        public EnumConfigSet(ForgeConfigSpec.EnumValue<T> configInstance) {
+        public EnumConfigSet(ModConfigSpec.EnumValue<T> configInstance) {
             this.configInstance = configInstance;
             values = configInstance.get().getDeclaringClass().getEnumConstants();
         }

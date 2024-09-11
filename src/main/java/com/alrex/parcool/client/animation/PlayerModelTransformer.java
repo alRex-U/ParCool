@@ -16,7 +16,6 @@ import net.minecraft.world.entity.player.Player;
 public class PlayerModelTransformer {
 	private final Player player;
 	private final PlayerModel model;
-	private final float partial;
 	private final float ageInTicks;
 	private final float limbSwing;
 	private final float limbSwingAmount;
@@ -25,7 +24,7 @@ public class PlayerModelTransformer {
     private AnimationOption option = new AnimationOption();
 
 	public float getPartialTick() {
-		return partial;
+		return Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
 	}
 
 	public float getHeadPitch() {
@@ -60,7 +59,6 @@ public class PlayerModelTransformer {
 	) {
 		this.player = player;
 		this.model = model;
-		this.partial = Minecraft.getInstance().getFrameTime();
 		this.ageInTicks = ageInTicks;
 		this.limbSwing = limbSwing;
 		this.limbSwingAmount = limbSwingAmount;

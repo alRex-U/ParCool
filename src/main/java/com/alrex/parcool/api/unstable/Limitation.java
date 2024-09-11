@@ -1,6 +1,7 @@
 package com.alrex.parcool.api.unstable;
 
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.stamina.StaminaType;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.server.limitation.Limitations;
 import net.minecraft.server.MinecraftServer;
@@ -61,6 +62,11 @@ public abstract class Limitation {
         return this;
     }
 
+    public Limitation setStaminaType(StaminaType type) {
+        instance.setForcedStamina(type);
+        return this;
+    }
+
     public Limitation setDefault() {
         instance.setAllDefault();
         return this;
@@ -96,6 +102,10 @@ public abstract class Limitation {
 
     public double get(ParCoolConfig.Server.Doubles item) {
         return instance.get(item);
+    }
+
+    public StaminaType getStaminaType() {
+        return instance.getForcedStamina();
     }
 
     public boolean isPermitted(Class<? extends Action> action) {

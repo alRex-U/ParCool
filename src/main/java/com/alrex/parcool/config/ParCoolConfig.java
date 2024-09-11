@@ -6,15 +6,15 @@ import com.alrex.parcool.client.gui.ColorTheme;
 import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.client.hud.impl.HUDType;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.ActionList;
+import com.alrex.parcool.common.action.Actions;
 import com.alrex.parcool.common.action.impl.*;
-import com.alrex.parcool.common.capability.IStamina;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfigSpec;
+import com.alrex.parcool.common.stamina.StaminaType;
+import io.netty.buffer.ByteBuf;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import javax.annotation.Nullable;
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class ParCoolConfig {
@@ -29,13 +29,13 @@ public class ParCoolConfig {
 		String getPath();
 
 		@Nullable
-		ForgeConfigSpec.ConfigValue<T> getInternalInstance();
+		ModConfigSpec.ConfigValue<T> getInternalInstance();
 
-		void register(ForgeConfigSpec.Builder builder);
+		void register(ModConfigSpec.Builder builder);
 
-		void writeToBuffer(ByteBuffer buffer);
+		void writeToBuffer(ByteBuf buffer);
 
-		T readFromBuffer(ByteBuffer buffer);
+		T readFromBuffer(ByteBuf buffer);
 	}
 
 	public enum ConfigGroup {
@@ -43,19 +43,19 @@ public class ParCoolConfig {
 	}
 
 	public static class Client {
-		public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-		public static final ForgeConfigSpec BUILT_CONFIG;
+		public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
+		public static final ModConfigSpec BUILT_CONFIG;
 
-		public static ForgeConfigSpec.BooleanValue getPossibilityOf(Class<? extends Action> action) {
-			return actionPossibilities[ActionList.getIndexOf(action)];
+		public static ModConfigSpec.BooleanValue getPossibilityOf(Class<? extends Action> action) {
+			return actionPossibilities[Actions.getIndexOf(action)];
 		}
 
-		public static ForgeConfigSpec.BooleanValue canAnimate(Class<? extends Animator> animator) {
+		public static ModConfigSpec.BooleanValue canAnimate(Class<? extends Animator> animator) {
 			return animatorPossibilities[AnimatorList.getIndex(animator)];
 		}
 
-		public static ForgeConfigSpec.IntValue getStaminaConsumptionOf(Class<? extends Action> action) {
-			return staminaConsumptions[ActionList.getIndexOf(action)];
+		public static ModConfigSpec.IntValue getStaminaConsumptionOf(Class<? extends Action> action) {
+			return staminaConsumptions[Actions.getIndexOf(action)];
 		}
 
 		public enum Booleans implements Item<Boolean> {
@@ -63,10 +63,6 @@ public class ParCoolConfig {
 					ConfigGroup.Stamina,
 					"Infinite Stamina (this needs a permission from server, even if it is on single player's game. normally permitted)\nPlease check 'parcool-server.toml' in 'serverconfig' directory",
 					"infinite_stamina", false
-			),
-			InfiniteStaminaWhenCreative(
-					ConfigGroup.Stamina, "Infinite Stamina while player is cretive mode",
-					"infinite_stamina_if_creative_mode", true
 			),
 			EnableAnimation(
 					ConfigGroup.Animation, "Enable custom animations",
@@ -166,7 +162,7 @@ public class ParCoolConfig {
 			public final String Path;
 			public final boolean DefaultValue;
 			@Nullable
-			private ForgeConfigSpec.BooleanValue configInstance = null;
+			private ModConfigSpec.BooleanValue configInstance = null;
 
 			Booleans(
 					ConfigGroup group,
@@ -186,7 +182,7 @@ public class ParCoolConfig {
 			}
 
 			@Override
-			public void register(ForgeConfigSpec.Builder builder) {
+			public void register(ModConfigSpec.Builder builder) {
 				if (Comment != null) {
 					builder.comment(Comment);
 				}
@@ -205,18 +201,18 @@ public class ParCoolConfig {
 				}
 			}
 
-			public ForgeConfigSpec.BooleanValue getInternalInstance() {
+			public ModConfigSpec.BooleanValue getInternalInstance() {
 				return configInstance;
 			}
 
 			@Override
-			public void writeToBuffer(ByteBuffer buffer) {
-				buffer.put((byte) (get() ? 1 : 0));
+			public void writeToBuffer(ByteBuf buffer) {
+				buffer.writeByte((byte) (get() ? 1 : 0));
 			}
 
 			@Override
-			public Boolean readFromBuffer(ByteBuffer buffer) {
-				return buffer.get() != 0;
+			public Boolean readFromBuffer(ByteBuf buffer) {
+				return buffer.readByte() != 0;
 			}
 		}
 
@@ -265,7 +261,7 @@ public class ParCoolConfig {
 			public final int Min;
 			public final int Max;
 			@Nullable
-			private ForgeConfigSpec.IntValue configInstance = null;
+			private ModConfigSpec.IntValue configInstance = null;
 
 			Integers(
 					ConfigGroup group,
@@ -288,7 +284,7 @@ public class ParCoolConfig {
 				return Path;
 			}
 
-			public void register(ForgeConfigSpec.Builder builder) {
+			public void register(ModConfigSpec.Builder builder) {
 				if (Comment != null) {
 					builder.comment(Comment);
 				}
@@ -308,18 +304,18 @@ public class ParCoolConfig {
 				}
 			}
 
-			public ForgeConfigSpec.IntValue getInternalInstance() {
+			public ModConfigSpec.IntValue getInternalInstance() {
 				return configInstance;
 			}
 
 			@Override
-			public void writeToBuffer(ByteBuffer buffer) {
-				buffer.putInt(get());
+			public void writeToBuffer(ByteBuf buffer) {
+				buffer.writeInt(get());
 			}
 
 			@Override
-			public Integer readFromBuffer(ByteBuffer buffer) {
-				return buffer.getInt();
+			public Integer readFromBuffer(ByteBuf buffer) {
+				return buffer.readInt();
 			}
 		}
 
@@ -344,7 +340,7 @@ public class ParCoolConfig {
 			public final double Min;
 			public final double Max;
 			@Nullable
-			private ForgeConfigSpec.DoubleValue configInstance = null;
+			private ModConfigSpec.DoubleValue configInstance = null;
 
 			Doubles(
 					ConfigGroup group,
@@ -367,7 +363,7 @@ public class ParCoolConfig {
 				return Path;
 			}
 
-			public void register(ForgeConfigSpec.Builder builder) {
+			public void register(ModConfigSpec.Builder builder) {
 				if (Comment != null) {
 					builder.comment(Comment);
 				}
@@ -375,13 +371,13 @@ public class ParCoolConfig {
 			}
 
 			@Override
-			public void writeToBuffer(ByteBuffer buffer) {
-				buffer.putDouble(get());
+			public void writeToBuffer(ByteBuf buffer) {
+				buffer.writeDouble(get());
 			}
 
 			@Override
-			public Double readFromBuffer(ByteBuffer buffer) {
-				return buffer.getDouble();
+			public Double readFromBuffer(ByteBuf buffer) {
+				return buffer.readDouble();
 			}
 
 			@Override
@@ -399,37 +395,37 @@ public class ParCoolConfig {
 
 			@OnlyIn(Dist.CLIENT)
 			@Nullable
-			public ForgeConfigSpec.DoubleValue getInternalInstance() {
+			public ModConfigSpec.DoubleValue getInternalInstance() {
 				return configInstance;
 			}
 		}
 
-		private static final ForgeConfigSpec.BooleanValue[] actionPossibilities = new ForgeConfigSpec.BooleanValue[ActionList.ACTIONS.size()];
-		private static final ForgeConfigSpec.BooleanValue[] animatorPossibilities = new ForgeConfigSpec.BooleanValue[AnimatorList.ANIMATORS.size()];
-		private static final ForgeConfigSpec.IntValue[] staminaConsumptions = new ForgeConfigSpec.IntValue[ActionList.ACTIONS.size()];
-		public static final ForgeConfigSpec.EnumValue<HUDType> StaminaHUDType;
-		public static final ForgeConfigSpec.EnumValue<Vault.TypeSelectionMode> VaultAnimationMode;
-		public static final ForgeConfigSpec.EnumValue<Position.Horizontal> AlignHorizontalStaminaHUD;
-		public static final ForgeConfigSpec.EnumValue<Position.Vertical> AlignVerticalStaminaHUD;
-		public static final ForgeConfigSpec.EnumValue<ColorTheme> GUIColorTheme;
-		public static final ForgeConfigSpec.EnumValue<FastRun.ControlType> FastRunControl;
-		public static final ForgeConfigSpec.EnumValue<Crawl.ControlType> CrawlControl;
-        public static final ForgeConfigSpec.EnumValue<Flipping.ControlType> FlipControl;
-        public static final ForgeConfigSpec.EnumValue<HorizontalWallRun.ControlType> HWallRunControl;
-        public static final ForgeConfigSpec.EnumValue<IStamina.Type> StaminaType;
+		private static final ModConfigSpec.BooleanValue[] actionPossibilities = new ModConfigSpec.BooleanValue[Actions.LIST.size()];
+		private static final ModConfigSpec.BooleanValue[] animatorPossibilities = new ModConfigSpec.BooleanValue[AnimatorList.ANIMATORS.size()];
+		private static final ModConfigSpec.IntValue[] staminaConsumptions = new ModConfigSpec.IntValue[Actions.LIST.size()];
+		public static final ModConfigSpec.EnumValue<HUDType> StaminaHUDType;
+		public static final ModConfigSpec.EnumValue<StaminaType> StaminaType;
+		public static final ModConfigSpec.EnumValue<Vault.TypeSelectionMode> VaultAnimationMode;
+		public static final ModConfigSpec.EnumValue<Position.Horizontal> AlignHorizontalStaminaHUD;
+		public static final ModConfigSpec.EnumValue<Position.Vertical> AlignVerticalStaminaHUD;
+		public static final ModConfigSpec.EnumValue<ColorTheme> GUIColorTheme;
+		public static final ModConfigSpec.EnumValue<FastRun.ControlType> FastRunControl;
+		public static final ModConfigSpec.EnumValue<Crawl.ControlType> CrawlControl;
+		public static final ModConfigSpec.EnumValue<Flipping.ControlType> FlipControl;
+		public static final ModConfigSpec.EnumValue<HorizontalWallRun.ControlType> HWallRunControl;
 
-		private static void register(ForgeConfigSpec.Builder builder, ConfigGroup group) {
+		private static void register(ModConfigSpec.Builder builder, ConfigGroup group) {
 			Arrays.stream(Booleans.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
 			Arrays.stream(Integers.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
 			Arrays.stream(Doubles.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
 		}
 
 		static {
-			ForgeConfigSpec.Builder builder = BUILDER;
+			ModConfigSpec.Builder builder = BUILDER;
             builder.push("Possibility_of_Actions(Some_do_not_have_to_work)");
 			{
-				for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
-					actionPossibilities[i] = builder.define("can_" + ActionList.ACTIONS.get(i).getSimpleName(), true);
+				for (int i = 0; i < Actions.LIST.size(); i++) {
+					actionPossibilities[i] = builder.define("can_" + Actions.LIST.get(i).getSimpleName(), true);
 				}
 			}
 			builder.pop();
@@ -477,15 +473,15 @@ public class ParCoolConfig {
 			builder.pop();
 			builder.push("Stamina");
 			{
-                StaminaType = builder.defineEnum("used_stamina", IStamina.Type.Default);
                 builder.comment("Caution : Max stamina and stamina recovery config is removed because they became attributes.");
+				StaminaType = builder.defineEnum("used_stamina", com.alrex.parcool.common.stamina.StaminaType.PARCOOL);
 				builder.push("Consumption");
 				{
-					for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
+					for (int i = 0; i < Actions.LIST.size(); i++) {
 						staminaConsumptions[i]
 								= builder.defineInRange(
-								"stamina_consumption_of_" + ActionList.ACTIONS.get(i).getSimpleName(),
-								ActionList.ACTION_REGISTRIES.get(i).getDefaultStaminaConsumption(),
+								"stamina_consumption_of_" + Actions.LIST.get(i).getSimpleName(),
+								Actions.ACTION_REGISTRIES.get(i).getDefaultStaminaConsumption(),
 								0, 10000
 						);
 					}
@@ -510,7 +506,7 @@ public class ParCoolConfig {
 			public final boolean DefaultValue;
             public final boolean AdvantageousValue;
 			@Nullable
-			private ForgeConfigSpec.BooleanValue configInstance = null;
+			private ModConfigSpec.BooleanValue configInstance = null;
 
 			Booleans(
 					ConfigGroup group,
@@ -532,7 +528,7 @@ public class ParCoolConfig {
 			}
 
 			@Override
-			public void register(ForgeConfigSpec.Builder builder) {
+			public void register(ModConfigSpec.Builder builder) {
 				if (Comment != null) {
 					builder.comment(Comment);
 				}
@@ -551,18 +547,18 @@ public class ParCoolConfig {
 				}
 			}
 
-			public ForgeConfigSpec.BooleanValue getInternalInstance() {
+			public ModConfigSpec.BooleanValue getInternalInstance() {
 				return configInstance;
 			}
 
 			@Override
-			public void writeToBuffer(ByteBuffer buffer) {
-				buffer.put((byte) (get() ? 1 : 0));
+			public void writeToBuffer(ByteBuf buffer) {
+				buffer.writeByte((byte) (get() ? 1 : 0));
 			}
 
 			@Override
-			public Boolean readFromBuffer(ByteBuffer buffer) {
-				return buffer.get() != 0;
+			public Boolean readFromBuffer(ByteBuf buffer) {
+				return buffer.readByte() != 0;
 			}
 		}
 
@@ -604,7 +600,7 @@ public class ParCoolConfig {
 			public final int Max;
             public final AdvantageousDirection Advantageous;
 			@Nullable
-			private ForgeConfigSpec.IntValue configInstance = null;
+			private ModConfigSpec.IntValue configInstance = null;
 
 			Integers(
 					ConfigGroup group,
@@ -629,7 +625,7 @@ public class ParCoolConfig {
 				return Path;
 			}
 
-			public void register(ForgeConfigSpec.Builder builder) {
+			public void register(ModConfigSpec.Builder builder) {
 				if (Comment != null) {
 					builder.comment(Comment);
 				}
@@ -649,18 +645,18 @@ public class ParCoolConfig {
 				}
 			}
 
-			public ForgeConfigSpec.IntValue getInternalInstance() {
+			public ModConfigSpec.IntValue getInternalInstance() {
 				return configInstance;
 			}
 
 			@Override
-			public void writeToBuffer(ByteBuffer buffer) {
-				buffer.putInt(get());
+			public void writeToBuffer(ByteBuf buffer) {
+				buffer.writeInt(get());
 			}
 
 			@Override
-			public Integer readFromBuffer(ByteBuffer buffer) {
-				return buffer.getInt();
+			public Integer readFromBuffer(ByteBuf buffer) {
+				return buffer.readInt();
 			}
 		}
 
@@ -686,7 +682,7 @@ public class ParCoolConfig {
 			public final double Max;
             public final AdvantageousDirection Advantageous;
 			@Nullable
-			private ForgeConfigSpec.DoubleValue configInstance = null;
+			private ModConfigSpec.DoubleValue configInstance = null;
 
 			Doubles(
 					ConfigGroup group,
@@ -711,7 +707,7 @@ public class ParCoolConfig {
 				return Path;
 			}
 
-			public void register(ForgeConfigSpec.Builder builder) {
+			public void register(ModConfigSpec.Builder builder) {
 				if (Comment != null) {
 					builder.comment(Comment);
 				}
@@ -719,13 +715,13 @@ public class ParCoolConfig {
 			}
 
 			@Override
-			public void writeToBuffer(ByteBuffer buffer) {
-				buffer.putDouble(get());
+			public void writeToBuffer(ByteBuf buffer) {
+				buffer.writeDouble(get());
 			}
 
 			@Override
-			public Double readFromBuffer(ByteBuffer buffer) {
-				return buffer.getDouble();
+			public Double readFromBuffer(ByteBuf buffer) {
+				return buffer.readDouble();
 			}
 
 			@Override
@@ -743,59 +739,70 @@ public class ParCoolConfig {
 
 			@OnlyIn(Dist.CLIENT)
 			@Nullable
-			public ForgeConfigSpec.DoubleValue getInternalInstance() {
+			public ModConfigSpec.DoubleValue getInternalInstance() {
 				return configInstance;
 			}
 		}
 
-		public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-		public static final ForgeConfigSpec BUILT_CONFIG;
-		private static final ForgeConfigSpec.BooleanValue[] actionPermissions = new ForgeConfigSpec.BooleanValue[ActionList.ACTIONS.size()];
+		public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
+		public static final ModConfigSpec BUILT_CONFIG;
+		private static final ModConfigSpec.BooleanValue[] actionPermissions = new ModConfigSpec.BooleanValue[Actions.LIST.size()];
 
 		public static boolean getPermissionOf(Class<? extends Action> action) {
-			return actionPermissions[ActionList.getIndexOf(action)].get();
+			return actionPermissions[Actions.getIndexOf(action)].get();
 		}
 
-		private static final ForgeConfigSpec.IntValue[] leastStaminaConsumptions = new ForgeConfigSpec.IntValue[ActionList.ACTIONS.size()];
-		public static final ForgeConfigSpec.BooleanValue LimitationEnabled;
+		private static final ModConfigSpec.IntValue[] leastStaminaConsumptions = new ModConfigSpec.IntValue[Actions.LIST.size()];
+		public static final ModConfigSpec.BooleanValue LimitationEnabled;
+		public static final ModConfigSpec.EnumValue<StaminaType> StaminaType;
 
-		private static void register(ForgeConfigSpec.Builder builder, ConfigGroup group) {
+		private static void register(ModConfigSpec.Builder builder, ConfigGroup group) {
 			Arrays.stream(Server.Booleans.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
 			Arrays.stream(Server.Integers.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
 			Arrays.stream(Server.Doubles.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
 		}
 
 		public static int getLeastStaminaConsumptionOf(Class<? extends Action> action) {
-			return leastStaminaConsumptions[ActionList.getIndexOf(action)].get();
+			return leastStaminaConsumptions[Actions.getIndexOf(action)].get();
 		}
 
 		static {
-			ForgeConfigSpec.Builder builder = BUILDER;
+			ModConfigSpec.Builder builder = BUILDER;
 			builder.push("Limitations");
 			{
 				LimitationEnabled = builder.comment("Whether these limitations will be imposed to players").define("limitation_imposed", false);
                 builder.push("Action_Permissions");
 				{
-					for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
+					for (int i = 0; i < Actions.LIST.size(); i++) {
 						actionPermissions[i]
-								= builder.define("permit_" + ActionList.ACTIONS.get(i).getSimpleName(), true);
+								= builder.define("permit_" + Actions.LIST.get(i).getSimpleName(), true);
 					}
 				}
 				builder.pop();
 				builder.push("Stamina");
 				{
+					StaminaType = builder.defineEnum("forced_stamina", com.alrex.parcool.common.stamina.StaminaType.NONE);
                     builder.push("Least_Consumption");
 					{
-						for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
+						for (int i = 0; i < Actions.LIST.size(); i++) {
                             leastStaminaConsumptions[i] = builder.defineInRange(
-									"stamina_consumption_of_" + ActionList.ACTIONS.get(i).getSimpleName(),
-									ActionList.ACTION_REGISTRIES.get(i).getDefaultStaminaConsumption(),
+									"stamina_consumption_of_" + Actions.LIST.get(i).getSimpleName(),
+									Actions.ACTION_REGISTRIES.get(i).getDefaultStaminaConsumption(),
 									0, 10000
 							);
 						}
 					}
                     builder.pop();
 					register(builder, ConfigGroup.Stamina);
+				}
+				builder.pop();
+				builder.push("Control");
+				{
+					register(builder, ConfigGroup.Control);
+				}
+				builder.push("Modifier");
+				{
+					register(builder, ConfigGroup.Modifier);
 				}
 				builder.pop();
 			}

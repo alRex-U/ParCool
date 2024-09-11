@@ -1,34 +1,32 @@
 package com.alrex.parcool.api;
 
-import com.alrex.parcool.common.capability.IStamina;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nullable;
+import com.alrex.parcool.common.attachment.Attachments;
+import com.alrex.parcool.common.attachment.stamina.ReadonlyStamina;
+import com.alrex.parcool.common.stamina.LocalStamina;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class Stamina {
-	@Nullable
     public static Stamina get(Player player) {
-		IStamina instance = IStamina.get(player);
-		if (instance == null) {
-			return null;
-		}
-		return new Stamina(instance);
+		return new Stamina(player.getData(Attachments.STAMINA), player.isLocalPlayer());
 	}
 
-    private final IStamina staminaInstance;
+	private final ReadonlyStamina staminaInstance;
+	private final boolean isLocalPlayer;
 
-	private Stamina(IStamina staminaInstance) {
+	private Stamina(ReadonlyStamina staminaInstance, boolean local) {
 		this.staminaInstance = staminaInstance;
+		isLocalPlayer = local;
 	}
 
 	public int getMaxValue() {
-		return staminaInstance.getActualMaxStamina();
+		return staminaInstance.max();
 	}
 
 	public int getValue() {
-		return staminaInstance.get();
+		return staminaInstance.value();
 	}
 
 	public boolean isExhausted() {
@@ -36,22 +34,18 @@ public class Stamina {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void setValue(int value) {
-		if (value < 0) {
-			value = 0;
-		} else if (value > getMaxValue()) {
-			value = getMaxValue();
-		}
-		staminaInstance.set(value);
-	}
-
-	@OnlyIn(Dist.CLIENT)
 	public void consume(int value) {
-		staminaInstance.consume(value);
+		if (!isLocalPlayer) return;
+		var stamina = LocalStamina.get();
+		if (stamina == null) return;
+		stamina.consume(value);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public void recover(int value) {
-		staminaInstance.recover(value);
+		if (!isLocalPlayer) return;
+		var stamina = LocalStamina.get();
+		if (stamina == null) return;
+		stamina.recover(value);
 	}
 }

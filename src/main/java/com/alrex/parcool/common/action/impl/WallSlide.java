@@ -1,12 +1,12 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.WallSlideAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.attachment.Attachments;
 import com.alrex.parcool.common.damage.DamageSources;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.core.BlockPos;
@@ -17,8 +17,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
@@ -28,7 +28,6 @@ import java.nio.ByteBuffer;
 public class WallSlide extends Action {
 	private Vec3 leanedWallDirection = null;
     private byte particleSpawnCoolTime = 0;
-    private double startYSpeed = 0;
     private int damageCount = 0, takenDamageCount = 0;
     private byte damageCoolTime = 0;
 
@@ -39,13 +38,13 @@ public class WallSlide extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+    public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
         startInfo.putDouble(Math.abs(player.getDeltaMovement().y()));
-		return canContinue(player, parkourability, stamina);
+        return canContinue(player, parkourability);
 	}
 
 	@Override
-	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
+    public boolean canContinue(Player player, Parkourability parkourability) {
 		Vec3 wall = WorldUtil.getWall(player);
 		return (wall != null
 				&& !player.onGround()
@@ -55,7 +54,7 @@ public class WallSlide extends Action {
 				&& !player.getAbilities().flying
 				&& player.getDeltaMovement().y <= 0
 				&& KeyBindings.getKeyWallSlide().isDown()
-				&& !stamina.isExhausted()
+                && !player.getData(Attachments.STAMINA).isExhausted()
                 && !parkourability.get(Dive.class).isDoing()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& parkourability.get(ClingToCliff.class).getNotDoingTick() > 12
@@ -69,7 +68,7 @@ public class WallSlide extends Action {
 
     @Override
     public void onStartInServer(Player player, Parkourability parkourability, ByteBuffer startData) {
-        startYSpeed = startData.getDouble();
+        double startYSpeed = startData.getDouble();
         damageCount = (int) (5.5 * (startYSpeed - 1.) / player.getBbHeight());
         takenDamageCount = 0;
         damageCoolTime = 0;
@@ -77,7 +76,7 @@ public class WallSlide extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onWorkingTickInClient(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onWorkingTickInClient(Player player, Parkourability parkourability) {
 		Animation animation = Animation.get(player);
 		if (animation != null && !animation.hasAnimator()) {
 			animation.setAnimator(new WallSlideAnimator());
@@ -95,7 +94,7 @@ public class WallSlide extends Action {
 	}
 
 	@Override
-	public void onWorkingTick(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onWorkingTick(Player player, Parkourability parkourability) {
 		leanedWallDirection = WorldUtil.getWall(player);
 		if (leanedWallDirection != null) {
 			BlockPos leanedBlock = new BlockPos(
@@ -112,7 +111,7 @@ public class WallSlide extends Action {
 	}
 
     @Override
-    public void onWorkingTickInServer(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onWorkingTickInServer(Player player, Parkourability parkourability) {
         if (damageCoolTime <= 0 && damageCount > takenDamageCount++) {
             int invulnerableTime = player.invulnerableTime; // bypass invulnerableTime
             damageCoolTime = 1;

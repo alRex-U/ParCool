@@ -1,14 +1,13 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.CrawlAnimator;
 import com.alrex.parcool.client.animation.impl.SlidingAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -19,8 +18,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
@@ -29,12 +28,10 @@ public class Slide extends Action {
 	private Vec3 slidingVec = null;
 
 	@Override
-	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
         Vec3 lookingVec = player.getLookAngle().multiply(1, 0, 1).normalize();
         startInfo.putDouble(lookingVec.x()).putDouble(lookingVec.z());
-		return (!stamina.isExhausted()
-				&& parkourability.getActionInfo().can(Slide.class)
-				&& KeyRecorder.keyCrawlState.isPressed()
+		return (KeyRecorder.keyCrawlState.isPressed()
 				&& player.onGround()
 				&& !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()
@@ -45,7 +42,7 @@ public class Slide extends Action {
 	}
 
 	@Override
-	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(Player player, Parkourability parkourability) {
         int maxSlidingTick = Math.min(
                 parkourability.getActionInfo().getClientSetting().get(ParCoolConfig.Client.Integers.SlidingContinuableTick),
                 parkourability.getActionInfo().getServerLimitation().get(ParCoolConfig.Server.Integers.MaxSlidingContinuableTick)
@@ -55,7 +52,7 @@ public class Slide extends Action {
 	}
 
 	@Override
-	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
         slidingVec = new Vec3(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.SLIDE.get(), 1f, 1f);
@@ -78,7 +75,7 @@ public class Slide extends Action {
 	}
 
 	@Override
-	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability) {
 		if (slidingVec != null) {
             AttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
             double speedScale = 0.45;
@@ -91,7 +88,7 @@ public class Slide extends Action {
 	}
 
     @Override
-    public void onWorkingTickInClient(Player player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInClient(Player player, Parkourability parkourability) {
         spawnSlidingParticle(player);
     }
 
@@ -160,10 +157,16 @@ public class Slide extends Action {
     }
 
 
-    @Override
-    public void onWorkingTick(Player player, Parkourability parkourability, IStamina stamina) {
-        Pose pose = Pose.SWIMMING;
-        player.setSprinting(false);
-        player.setPose(pose);
-    }
+	@Override
+	public void onWorkingTick(Player player, Parkourability parkourability) {
+		player.setSprinting(false);
+		if (player.getForcedPose() != Pose.SWIMMING) {
+			player.setForcedPose(Pose.SWIMMING);
+		}
+	}
+
+	@Override
+	public void onStop(Player player) {
+		player.setForcedPose(null);
+	}
 }

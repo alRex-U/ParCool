@@ -1,10 +1,10 @@
 modLoader = "javafml" #mandatory
-loaderVersion = "[43,)"
-license = "GNU GENERAL PUBLIC LICENSE Version 3"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
 issueTrackerURL = "https://github.com/alRex-U/ParCool/issues" #optional
 [[mods]] #mandatory
 modId = "parcool" #mandatory
-version = "${file.jarVersion}" #mandatory
+version = "3.3.0.0" #mandatory
 displayName = "ParCool!" #mandatory
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/parcool" #optional
 logoFile = "../parcool_logo.png" #optional
@@ -15,17 +15,26 @@ description = '''
     Enjoy Minecraft with cool actions!
     If Patchouli mod is installed, let's read ParCool Guide!
 '''
+
+[[mixins]]
+config = "parcool.mixins.json"
+
+[[accessTransformers]]
+file = "META-INF/accesstransformer.cfg"
+
 [[dependencies.parcool]] #optional
-modId = "forge" #mandatory
-mandatory = true #mandatory
-versionRange = "[43,)" #mandatory
+modId = "neoforge" #mandatory
+type = "required"
+versionRange = "${neo_forge_version}" #mandatory
+# BEFORE - This mod is loaded BEFORE the dependency
+# AFTER - This mod is loaded AFTER the dependency
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.parcool]]
 modId = "minecraft"
-mandatory = true
+type = "required"
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
-versionRange = "[1.20.4,1.21)"
+versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"

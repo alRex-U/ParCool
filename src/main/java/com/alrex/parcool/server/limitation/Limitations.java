@@ -1,16 +1,17 @@
 package com.alrex.parcool.server.limitation;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.info.ServerLimitation;
-import com.alrex.parcool.common.network.SyncLimitationMessage;
+import com.alrex.parcool.common.network.payload.LimitationPayload;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.LevelResource;
-import net.minecraftforge.event.server.ServerAboutToStartEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.apache.commons.io.FileUtils;
 
 import javax.annotation.Nullable;
@@ -84,7 +85,7 @@ public class Limitations {
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability == null) return;
         parkourability.getActionInfo().setServerLimitation(ServerLimitation.get(player));
-        SyncLimitationMessage.sync(player);
+        PacketDistributor.sendToPlayer(player, new LimitationPayload(parkourability.getActionInfo().getServerLimitation()));
     }
 
     public static SortedMap<Limitation.ID, Limitation> load(UUID playerID) {

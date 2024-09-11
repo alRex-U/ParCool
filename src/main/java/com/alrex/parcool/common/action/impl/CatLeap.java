@@ -5,9 +5,9 @@ import com.alrex.parcool.client.animation.impl.CatLeapAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.capability.Animation;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.client.animation.Animation;
+
+import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -17,8 +17,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 
@@ -29,14 +29,14 @@ public class CatLeap extends Action {
     private static final int MAX_COOL_TIME_TICK = 30;
 
 	@Override
-	public void onTick(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onTick(Player player, Parkourability parkourability) {
 		if (coolTimeTick > 0) {
 			coolTimeTick--;
 		}
 	}
 
 	@Override
-	public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
+    public void onClientTick(Player player, Parkourability parkourability) {
 		if (player.isLocalPlayer()) {
 			if (KeyRecorder.keySneak.isPressed() && parkourability.get(FastRun.class).getNotDashTick(parkourability.getAdditionalProperties()) < 10) {
 				ready = true;
@@ -53,14 +53,13 @@ public class CatLeap extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+    public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
         Vec3 movement = player.getDeltaMovement();
         if (movement.lengthSqr() < 0.001) return false;
         movement = movement.multiply(1, 0, 1).normalize();
         startInfo.putDouble(movement.x()).putDouble(movement.z());
 		return (parkourability.getActionInfo().can(CatLeap.class)
 				&& player.onGround()
-				&& !stamina.isExhausted()
 				&& coolTimeTick <= 0
 				&& readyTick > 0
                 && parkourability.get(ChargeJump.class).getChargingTick() < ChargeJump.JUMP_CHARGE_TICK / 2
@@ -72,7 +71,7 @@ public class CatLeap extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
+    public boolean canContinue(Player player, Parkourability parkourability) {
 		return !((getDoingTick() > 1 && player.onGround())
 				|| player.isFallFlying()
 				|| player.isInWaterOrBubble()
@@ -81,7 +80,7 @@ public class CatLeap extends Action {
 	}
 
 	@Override
-	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+    public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
         Vec3 jumpDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.CATLEAP.get(), 1, 1);
