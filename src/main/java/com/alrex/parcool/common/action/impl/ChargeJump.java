@@ -120,7 +120,8 @@ public class ChargeJump extends Action {
         if (player.isLocalPlayer() && player instanceof ClientPlayerEntity) {
             ClientPlayerEntity cp = (ClientPlayerEntity) player;
             if (
-                    !cp.input.up
+                    parkourability.getActionInfo().can(ChargeJump.class)
+                            && !cp.input.up
                             && !cp.input.down
                             && !cp.input.right
                             && !cp.input.left

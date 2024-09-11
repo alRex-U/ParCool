@@ -56,7 +56,6 @@ public class HangDown extends Action {
 				&& !player.isShiftKeyDown()
 				&& Math.abs(player.getDeltaMovement().y()) < 0.2
 				&& KeyBindings.getKeyHangDown().isDown()
-				&& parkourability.getActionInfo().can(HangDown.class)
 				&& !parkourability.get(JumpFromBar.class).isDoing()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& WorldUtil.getHangableBars(player) != null

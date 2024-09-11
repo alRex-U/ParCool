@@ -20,7 +20,6 @@ public class JumpFromBar extends Action {
 		HangDown hangDown = parkourability.get(HangDown.class);
 		return hangDown.isDoing()
 				&& hangDown.getDoingTick() > 2
-				&& parkourability.getActionInfo().can(JumpFromBar.class)
 				&& KeyRecorder.keyJumpState.isPressed();
 	}
 

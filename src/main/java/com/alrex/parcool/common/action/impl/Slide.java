@@ -34,7 +34,6 @@ public class Slide extends Action {
 		Vector3d lookingVec = player.getLookAngle().multiply(1, 0, 1).normalize();
 		startInfo.putDouble(lookingVec.x()).putDouble(lookingVec.z());
 		return (!stamina.isExhausted()
-				&& parkourability.getActionInfo().can(Slide.class)
 				&& KeyRecorder.keyCrawlState.isPressed()
 				&& player.isOnGround()
 				&& !parkourability.get(Roll.class).isDoing()
