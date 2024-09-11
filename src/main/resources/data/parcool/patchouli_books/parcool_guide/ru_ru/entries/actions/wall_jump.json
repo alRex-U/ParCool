@@ -1,0 +1,16 @@
+﻿{
+  "name": "Прыжок от стены",
+  "icon": "minecraft:leather_boots",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Вы можете отпнуться от стены, чтобы больше прыгать. Но будьте осторожны, вы не можете набрать высоту, если хотите оттолкнуться от ледяных блоков!"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Как использовать",
+      "text": "$(list)Нажмите клавишу 'прыжка от стены'($(k:parcool.WallJump)) на стенах в воздухе"
+    }
+  ]
+}
