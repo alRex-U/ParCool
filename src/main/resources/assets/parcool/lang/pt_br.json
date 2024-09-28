@@ -10,7 +10,7 @@
   "key.parcool.HorizontalWallRun": "Corrida Horizontal na Parede",
   "key.parcool.openSetting": "Abrir Configurações",
   "key.categories.parcool": "ParCool",
-  "parcool.action.CatLeap": "Pulo do Gato",
+  "parcool.action.CatLeap": "Salto do Gato",
   "parcool.action.Crawl": "Rastejar",
   "parcool.action.Dodge": "Esquivar",
   "parcool.action.FastRun": "Corrida Rápida",
@@ -24,6 +24,6 @@
   "effect.parcool.inexhaustible": "Inesgotável",
   "item.minecraft.potion.effect.poor_energy_drink": "Bebida Energética de Baixa Qualidade",
   "item.minecraft.potion.effect.energy_drink": "Bebida Energética",
-  "item.parcool.parcool_guide": "Guia ParCool",
+  "item.parcool.parcool_guide": "§bGuia ParCool",
   "itemGroup.ParCool": "ParCool!"
 }
