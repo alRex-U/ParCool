@@ -35,13 +35,14 @@ public class ParCool {
 	public ParCool() {
 		IEventBus eventBus = ModLoadingContext.get().getActiveContainer().getEventBus();
 		assert eventBus != null;
+		EventBusForgeRegistry.register(NeoForge.EVENT_BUS);
+		EventBusForgeRegistry.registerClient(NeoForge.EVENT_BUS);
 		eventBus.addListener(this::setup);
-		eventBus.addListener(this::doClientStuff);
+		eventBus.addListener(KeyBindings::register);
 		eventBus.addListener(this::loaded);
 		eventBus.register(AddAttributesHandler.class);
 		eventBus.register(NetworkRegistries.class);
 		eventBus.register(HUDRegistry.class);
-		EventBusForgeRegistry.register(NeoForge.EVENT_BUS);
 		Effects.registerAll(eventBus);
 		Potions.registerAll(eventBus);
 		Attributes.registerAll(eventBus);
@@ -60,13 +61,6 @@ public class ParCool {
 
 	private void setup(final FMLCommonSetupEvent event) {
 		CommandRegistry.registerArgumentTypes(event);
-	}
-
-	private void doClientStuff(final FMLClientSetupEvent event) {
-		EventBusForgeRegistry.registerClient(NeoForge.EVENT_BUS);
-		IEventBus bus = ModLoadingContext.get().getActiveContainer().getEventBus();
-		assert bus != null;
-		bus.addListener(KeyBindings::register);
 	}
 
 	private void registerCommand(final RegisterCommandsEvent event) {
