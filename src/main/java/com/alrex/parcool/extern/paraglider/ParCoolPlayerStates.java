@@ -39,4 +39,7 @@ public interface ParCoolPlayerStates {
 
     ResourceLocation CAT_LEAP = ParagliderAPI.id("cat_leap");
     int CAT_LEAP_STAMINA_DELTA = -15;
+
+    ResourceLocation CHARGE_JUMP = ParagliderAPI.id("charge_jump");
+    int CHARGE_JUMP_STAMINA_DELTA = -15;
 }

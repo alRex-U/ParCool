@@ -27,6 +27,7 @@ public class ParCoolPlugin implements MovementPlugin {
         register.register(VERTICAL_WALL_RUN, VERTICAL_WALL_RUN_STAMINA_DELTA, FLAG_RUNNING);
         register.register(VAULT, VAULT_STAMINA_DELTA, FLAG_RUNNING);
         register.register(CAT_LEAP, CAT_LEAP_STAMINA_DELTA, FLAG_RUNNING);
+        register.register(CHARGE_JUMP, CHARGE_JUMP_STAMINA_DELTA, FLAG_RUNNING);
     }
 
     @Override public void registerStateConnections(@NotNull PlayerStateConnectionRegister register) {
@@ -42,5 +43,6 @@ public class ParCoolPlugin implements MovementPlugin {
         register.addBranch(MIDAIR, (p, s, b, f) -> Objects.requireNonNull(Parkourability.get(p)).get(VerticalWallRun.class).isDoing(), VERTICAL_WALL_RUN);
         register.addBranch(FAST_RUNNING, (p, s, b, f) -> Objects.requireNonNull(Parkourability.get(p)).get(Vault.class).isDoing(), VAULT);
         register.addBranch(FAST_RUNNING, (p, s, b, f) -> Objects.requireNonNull(Parkourability.get(p)).get(CatLeap.class).isDoing(), CAT_LEAP);
+        register.addBranch(MIDAIR, (p, s, b, f) -> Objects.requireNonNull(Parkourability.get(p)).get(ChargeJump.class).isDoing(), CHARGE_JUMP);
     }
 }
