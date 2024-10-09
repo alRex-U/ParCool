@@ -10,7 +10,7 @@ public interface ParCoolPlayerStates {
 
 
     ResourceLocation DODGE = ParagliderAPI.id("dodge");
-    int DODGE_STAMINA_DELTA = -20;
+    int DODGE_STAMINA_DELTA = -15;
     double DODGE_PRIORITY = 4;
 
     ResourceLocation FAST_SWIMMING = ParagliderAPI.id("fast_swimming");
@@ -31,7 +31,12 @@ public interface ParCoolPlayerStates {
 
     ResourceLocation HORIZONTAL_WALL_RUN = ParagliderAPI.id("horizontal_wall_run");
     int HORIZONTAL_WALL_RUN_STAMINA_DELTA = -10;
+
+    ResourceLocation VERTICAL_WALL_RUN = ParagliderAPI.id("vertical_wall_run");
+    int VERTICAL_WALL_RUN_STAMINA_DELTA = -12;
     ResourceLocation VAULT = ParagliderAPI.id("vault");
     int VAULT_STAMINA_DELTA = -12;
 
+    ResourceLocation CAT_LEAP = ParagliderAPI.id("cat_leap");
+    int CAT_LEAP_STAMINA_DELTA = -15;
 }

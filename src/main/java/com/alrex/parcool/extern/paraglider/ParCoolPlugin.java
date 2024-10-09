@@ -24,7 +24,9 @@ public class ParCoolPlugin implements MovementPlugin {
         register.register(BREAKFALL, BREAKFALL_STAMINA_DELTA, FLAG_RUNNING);
         register.register(ROLL, ROLL_STAMINA_DELTA, FLAG_RUNNING);
         register.register(HORIZONTAL_WALL_RUN, HORIZONTAL_WALL_RUN_STAMINA_DELTA, FLAG_RUNNING);
+        register.register(VERTICAL_WALL_RUN, VERTICAL_WALL_RUN_STAMINA_DELTA, FLAG_RUNNING);
         register.register(VAULT, VAULT_STAMINA_DELTA, FLAG_RUNNING);
+        register.register(CAT_LEAP, CAT_LEAP_STAMINA_DELTA, FLAG_RUNNING);
     }
 
     @Override public void registerStateConnections(@NotNull PlayerStateConnectionRegister register) {
@@ -37,6 +39,8 @@ public class ParCoolPlugin implements MovementPlugin {
         register.addBranch(IDLE, (p, s, b, f) -> Objects.requireNonNull(Parkourability.get(p)).get(BreakfallReady.class).isDoing() && !p.isFallFlying(), BREAKFALL);
         register.addBranch(BREAKFALL, (p, s, b, f) -> Objects.requireNonNull(Parkourability.get(p)).get(Roll.class).isDoing() && !p.isFallFlying(), ROLL);
         register.addBranch(MIDAIR, (p, s, b, f) -> Objects.requireNonNull(Parkourability.get(p)).get(HorizontalWallRun.class).isDoing(), HORIZONTAL_WALL_RUN);
+        register.addBranch(MIDAIR, (p, s, b, f) -> Objects.requireNonNull(Parkourability.get(p)).get(VerticalWallRun.class).isDoing(), VERTICAL_WALL_RUN);
         register.addBranch(FAST_RUNNING, (p, s, b, f) -> Objects.requireNonNull(Parkourability.get(p)).get(Vault.class).isDoing(), VAULT);
+        register.addBranch(FAST_RUNNING, (p, s, b, f) -> Objects.requireNonNull(Parkourability.get(p)).get(CatLeap.class).isDoing(), CAT_LEAP);
     }
 }
