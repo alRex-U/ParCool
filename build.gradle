@@ -22,8 +22,8 @@ mixin {
     config 'parcool.mixins.json'
 }
 
-//Version Format (McVersion-MajorMOD.MajorAPI.Minor.Patch-VersionStatus)
-version = "${mc_version}-${major_mod}.${major_api}.${minor}.${patch}-${versionStatus.toString()}"
+//Version Format (MajorMOD.MajorAPI.Minor.Patch)
+version = "${major_mod}.${major_api}.${minor}.${patch}"
 group = 'com.alrex'
 archivesBaseName = 'ParCool'
 
@@ -93,7 +93,7 @@ jar {
         attributes([
                 "Specification-Title"     : "ParCool!",
                 "Specification-Vendor"    : "alRex",
-                "Specification-Version"   : "1",
+                "Specification-Version": "${version}",
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : "${version}",
                 "Implementation-Vendor"   : "alRex",

@@ -138,7 +138,7 @@ public class LightStaminaHUD extends AbstractGui {
 				offsetY = randomOffset;
 			}
 
-			blit(stack, x, baseY + offsetY, textureX, 119, 9, 9, 129, 128);
+			blit(stack, x, baseY + offsetY, textureX, 119, 9, 9, 128, 128);
 		}
 		ForgeIngameGui.right_height += 10;
 	}
