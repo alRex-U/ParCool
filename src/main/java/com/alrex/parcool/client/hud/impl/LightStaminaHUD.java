@@ -133,7 +133,7 @@ public class LightStaminaHUD {
 				offsetY = randomOffset;
 			}
 
-			graphics.blit(StaminaHUD.STAMINA, x, baseY + offsetY, textureX, 119, 9, 9, 129, 128);
+			graphics.blit(StaminaHUD.STAMINA, x, baseY + offsetY, textureX, 119, 9, 9, 128, 128);
 		}
 		gui.rightHeight += 10;
 	}
