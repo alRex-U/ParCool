@@ -17,7 +17,7 @@ tasks.named('wrapper', Wrapper).configure {
 }
 
 //Version Format (MajorMOD.MajorAPI.Minor.Patch)
-version = "${mc_version}-${mod_version}"
+version = "${mc_version}-${mod_version}-NF"
 group = 'com.alrex'
 repositories {
     mavenLocal()
