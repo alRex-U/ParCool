@@ -83,7 +83,8 @@ public class ActionProcessor {
 			if (player.isLocalPlayer()) {
 				if (action.isDoing()) {
 					boolean canContinue = parkourability.getActionInfo().can(action.getClass())
-							&& action.canContinue(player, parkourability, stamina);
+							&& !player.getData(Attachments.STAMINA).isExhausted()
+							&& action.canContinue(player, parkourability);
 					if (!canContinue) {
 						action.setDoing(false);
 						action.onStopInLocalClient(player);

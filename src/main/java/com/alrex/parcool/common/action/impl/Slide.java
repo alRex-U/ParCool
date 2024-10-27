@@ -28,11 +28,10 @@ public class Slide extends Action {
 	private Vec3 slidingVec = null;
 
 	@Override
-	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
 		Vec3 lookingVec = player.getLookAngle().multiply(1, 0, 1).normalize();
 		startInfo.putDouble(lookingVec.x()).putDouble(lookingVec.z());
-		return (!stamina.isExhausted()
-				&& KeyRecorder.keyCrawlState.isPressed()
+		return (KeyRecorder.keyCrawlState.isPressed()
 				&& player.onGround()
 				&& !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()

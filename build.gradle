@@ -17,8 +17,7 @@ tasks.named('wrapper', Wrapper).configure {
 }
 
 //Version Format (MajorMOD.MajorAPI.Minor.Patch)
-var version_code = "${major_mod}.${major_api}.${minor}.${patch}"
-version = "${mc_version}-${version_code}"
+version = "${mc_version}-${mod_version}"
 group = 'com.alrex'
 repositories {
     mavenLocal()
@@ -98,7 +97,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_id                 : mod_id,
             mod_name               : "ParCool",
             mod_license            : "GPL-3.0",
-            mod_version            : version_code,
+            mod_version: mod_version,
             mod_authors            : "alRex_U",
     ]
     inputs.properties replaceProperties
