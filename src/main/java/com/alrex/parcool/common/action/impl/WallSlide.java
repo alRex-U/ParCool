@@ -48,7 +48,6 @@ public class WallSlide extends Action {
 		Vec3 wall = WorldUtil.getWall(player);
 		return (wall != null
 				&& !player.onGround()
-				&& parkourability.getActionInfo().can(WallSlide.class)
 				&& !parkourability.get(FastRun.class).isDoing()
 				&& !parkourability.get(Dodge.class).isDoing()
 				&& !player.getAbilities().flying

@@ -58,8 +58,8 @@ public class CatLeap extends Action {
         if (movement.lengthSqr() < 0.001) return false;
         movement = movement.multiply(1, 0, 1).normalize();
         startInfo.putDouble(movement.x()).putDouble(movement.z());
-		return (parkourability.getActionInfo().can(CatLeap.class)
-				&& player.onGround()
+		return (player.onGround()
+				&& !stamina.isExhausted()
 				&& coolTimeTick <= 0
 				&& readyTick > 0
                 && parkourability.get(ChargeJump.class).getChargingTick() < ChargeJump.JUMP_CHARGE_TICK / 2

@@ -117,7 +117,8 @@ public class ChargeJump extends Action {
     public void onLand(Player player, Parkourability parkourability) {
         if (player.isLocalPlayer() && player instanceof LocalPlayer cp) {
             if (
-                    !cp.input.up
+                    parkourability.getActionInfo().can(ChargeJump.class)
+                            && !cp.input.up
                             && !cp.input.down
                             && !cp.input.right
                             && !cp.input.left

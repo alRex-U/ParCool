@@ -24,7 +24,6 @@ public class ClimbUp extends Action {
 		return cling.isDoing()
 				&& cling.getDoingTick() > 2
 				&& cling.getFacingDirection() == ClingToCliff.FacingDirection.ToWall
-				&& parkourability.getActionInfo().can(ClimbUp.class)
 				&& KeyRecorder.keyJumpState.isPressed();
 	}
 

@@ -779,6 +779,7 @@ public class ParCoolConfig {
 					}
 				}
 				builder.pop();
+
 				builder.push("Stamina");
 				{
 					StaminaType = builder.defineEnum("forced_stamina", com.alrex.parcool.common.stamina.StaminaType.NONE);
@@ -805,6 +806,14 @@ public class ParCoolConfig {
 					register(builder, ConfigGroup.Modifier);
 				}
 				builder.pop();
+				builder.push("Control");
+				{
+					register(builder, ConfigGroup.Control);
+				}
+				builder.push("Modifier");
+				{
+					register(builder, ConfigGroup.Modifier);
+				}
 			}
 			builder.pop();
 			BUILT_CONFIG = builder.build();
