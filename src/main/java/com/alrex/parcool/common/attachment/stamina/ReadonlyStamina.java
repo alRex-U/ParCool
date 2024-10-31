@@ -2,6 +2,7 @@ package com.alrex.parcool.common.attachment.stamina;
 
 import com.alrex.parcool.api.Attributes;
 import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.network.payload.StaminaPayload;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
@@ -10,6 +11,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public record ReadonlyStamina(boolean isExhausted, int value, int max) {
     public static ReadonlyStamina createDefault() {
@@ -44,8 +46,8 @@ public record ReadonlyStamina(boolean isExhausted, int value, int max) {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void sync() {
-
+    public void sync(LocalPlayer player) {
+        PacketDistributor.sendToServer(new StaminaPayload(player.getUUID(), this));
     }
 
     public static final Codec<ReadonlyStamina> CODEC = RecordCodecBuilder.create(staminaInstance ->

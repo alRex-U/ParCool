@@ -1,12 +1,9 @@
 package com.alrex.parcool.common.action;
 
-import com.alrex.parcool.api.Attributes;
 import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.common.attachment.Attachments;
-import com.alrex.parcool.common.attachment.stamina.ReadonlyStamina;
 import com.alrex.parcool.common.network.payload.ActionStatePayload;
-import com.alrex.parcool.common.network.payload.StaminaPayload;
 import com.alrex.parcool.common.stamina.LocalStamina;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -22,7 +19,6 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -182,13 +178,12 @@ public class ActionProcessor {
 				staminaSyncCoolTimeTick++;
 				if (staminaSyncCoolTimeTick > 5) {
 					staminaSyncCoolTimeTick = 0;
-					PacketDistributor.sendToServer(new StaminaPayload(player.getUUID(), player.getData(Attachments.STAMINA)));
+					stamina.sync((LocalPlayer) player);
 				}
 				if (stamina.isExhausted()) {
 					player.setSprinting(false);
 				}
 				stamina.onTick();
-				stamina.sync();
 			}
 		}
 	}
