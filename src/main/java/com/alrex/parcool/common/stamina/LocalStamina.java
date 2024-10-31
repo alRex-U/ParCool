@@ -92,7 +92,8 @@ public class LocalStamina {
         );
     }
 
-    public void sync() {
-        player.getData(Attachments.STAMINA).sync();
+    @OnlyIn(Dist.CLIENT)
+    public void sync(LocalPlayer player) {
+        player.getData(Attachments.STAMINA).sync(player);
     }
 }

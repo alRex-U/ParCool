@@ -30,6 +30,7 @@ public record StaminaProcessOnServerPayload(StaminaType stamina, int value) impl
     }
 
     public static void handleClient(StaminaProcessOnServerPayload payload, IPayloadContext context) {
+        throw new UnsupportedOperationException("This should have been designed not to be called");
     }
 
     public static void handleServer(StaminaProcessOnServerPayload payload, IPayloadContext context) {
