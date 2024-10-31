@@ -6,7 +6,6 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.Actions;
 import com.alrex.parcool.common.action.Parkourability;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -19,10 +18,8 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import javax.annotation.Nonnull;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public record ActionStatePayload(UUID playerID, List<Entry> states) implements CustomPacketPayload {
     public static final Type<ActionStatePayload> TYPE
@@ -60,8 +57,7 @@ public record ActionStatePayload(UUID playerID, List<Entry> states) implements C
     public static void handleClient(ActionStatePayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             Player player;
-            Level world = Minecraft.getInstance().level;
-            if (world == null) return;
+            Level world = context.player().level();
             player = world.getPlayerByUUID(payload.playerID());
             if (player == null || player.isLocalPlayer()) return;
 
@@ -93,9 +89,7 @@ public record ActionStatePayload(UUID playerID, List<Entry> states) implements C
 
     public static void handleServer(ActionStatePayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
-            Player player;
-
-            player = context.player();
+            Player player = context.player();
             PacketDistributor.sendToAllPlayers(payload);
 
             Parkourability parkourability = Parkourability.get(player);

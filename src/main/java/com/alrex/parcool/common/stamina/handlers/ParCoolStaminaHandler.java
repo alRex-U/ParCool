@@ -5,26 +5,32 @@ import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.attachment.stamina.ReadonlyStamina;
 import com.alrex.parcool.common.stamina.IParCoolStaminaHandler;
 import net.minecraft.client.player.LocalPlayer;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class ParCoolStaminaHandler implements IParCoolStaminaHandler {
     private int recoveryCoolDown = 0;
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public ReadonlyStamina initializeStamina(LocalPlayer player, ReadonlyStamina current) {
         return current;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public ReadonlyStamina consume(LocalPlayer player, ReadonlyStamina current, int value) {
         recoveryCoolDown = 30;
         return current.consumed(value);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public ReadonlyStamina recover(LocalPlayer player, ReadonlyStamina current, int value) {
         return current.recovered(value);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public ReadonlyStamina onTick(LocalPlayer player, ReadonlyStamina current) {
         if (recoveryCoolDown > 0) {

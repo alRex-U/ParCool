@@ -37,5 +37,6 @@ public record LimitationPayload(ServerLimitation limitation) implements CustomPa
     }
 
     public static void handleServer(LimitationPayload payload, IPayloadContext context) {
+        throw new UnsupportedOperationException("This should have been designed not to be called");
     }
 }

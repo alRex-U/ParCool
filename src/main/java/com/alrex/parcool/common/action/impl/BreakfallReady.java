@@ -3,9 +3,8 @@ package com.alrex.parcool.common.action.impl;
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.StaminaConsumeTiming;
-
 import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.attachment.Attachments;
 import com.alrex.parcool.common.stamina.LocalStamina;
 import com.alrex.parcool.config.ParCoolConfig;
@@ -13,10 +12,13 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 
 public class BreakfallReady extends Action {
+	@OnlyIn(Dist.CLIENT)
     public void startBreakfall(LocalPlayer player, Parkourability parkourability, boolean justTimed) {
 		setDoing(false);
         boolean playSound = false;

@@ -5,7 +5,6 @@ import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.server.limitation.Limitations;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -17,7 +16,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import javax.annotation.Nonnull;
-import java.nio.ByteBuffer;
 import java.util.UUID;
 
 public record ClientInformationPayload(UUID playerID, boolean requestLimitation,
@@ -44,8 +42,7 @@ public record ClientInformationPayload(UUID playerID, boolean requestLimitation,
 
     public static void handleClient(ClientInformationPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
-            Level world = Minecraft.getInstance().level;
-            if (world == null) return;
+            Level world = context.player().level();
             var player = world.getPlayerByUUID(payload.playerID());
             if (player == null || player.isLocalPlayer()) return;
             Parkourability parkourability = Parkourability.get(player);

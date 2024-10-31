@@ -14,13 +14,14 @@ import com.alrex.parcool.common.registries.EventBusForgeRegistry;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.server.command.CommandRegistry;
 import com.alrex.parcool.server.limitation.Limitations;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import org.apache.logging.log4j.LogManager;
@@ -36,9 +37,11 @@ public class ParCool {
 		IEventBus eventBus = ModLoadingContext.get().getActiveContainer().getEventBus();
 		assert eventBus != null;
 		EventBusForgeRegistry.register(NeoForge.EVENT_BUS);
-		EventBusForgeRegistry.registerClient(NeoForge.EVENT_BUS);
-		eventBus.addListener(this::setup);
-		eventBus.addListener(KeyBindings::register);
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            EventBusForgeRegistry.registerClient(NeoForge.EVENT_BUS);
+            eventBus.addListener(KeyBindings::register);
+        }
+        eventBus.addListener(this::setup);
 		eventBus.addListener(this::loaded);
 		eventBus.register(AddAttributesHandler.class);
 		eventBus.register(NetworkRegistries.class);
