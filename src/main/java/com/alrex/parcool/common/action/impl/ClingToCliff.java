@@ -42,9 +42,9 @@ public class ClingToCliff extends Action {
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
 		boolean value = (player.getDeltaMovement().y() < 0.2
-                && !player.isShiftKeyDown()
 				&& !parkourability.get(HorizontalWallRun.class).isDoing()
 				&& KeyBindings.getKeyGrabWall().isDown()
+				&& (KeyBindings.getKeyGrabWall().getKey().equals(KeyBindings.getKeySneak().getKey()) || !player.isShiftKeyDown())
 		);
 		if (!value) return false;
 		Vec3 wallVec = WorldUtil.getGrabbableWall(player);
@@ -58,8 +58,7 @@ public class ClingToCliff extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canContinue(Player player, Parkourability parkourability) {
-		return (!player.isShiftKeyDown()
-				&& parkourability.getActionInfo().can(ClingToCliff.class)
+		return (parkourability.getActionInfo().can(ClingToCliff.class)
 				&& KeyBindings.getKeyGrabWall().isDown()
 				&& !parkourability.get(HorizontalWallRun.class).isDoing()
 				&& !parkourability.get(ClimbUp.class).isDoing()
@@ -78,6 +77,9 @@ public class ClingToCliff extends Action {
 		clingWallDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
 		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
+		if (!KeyBindings.getKeyGrabWall().getKey().equals(KeyBindings.getKeySneak().getKey())) {
+			parkourability.getCancelMarks().addMarkerCancellingSneak(this::isDoing);
+		}
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.CLING_TO_CLIFF.get(), 1f, 1f);
 		Animation animation = Animation.get(player);

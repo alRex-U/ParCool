@@ -17,7 +17,7 @@ public class JumpChargingAnimator extends Animator {
 
     @Override
     public boolean animatePre(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
-        float transitionPhase = Math.min(1f, (parkourability.get(ChargeJump.class).getChargingTick() + transformer.getPartialTick()) / ChargeJump.JUMP_CHARGE_TICK);
+        float transitionPhase = Math.min(1f, (parkourability.get(ChargeJump.class).getChargingTick() + transformer.getPartialTick()) / ChargeJump.JUMP_MAX_CHARGE_TICK);
         float animFactor = new Easing(transitionPhase)
                 .sinInOut(0, 1, 0, 1)
                 .get();
@@ -53,7 +53,7 @@ public class JumpChargingAnimator extends Animator {
 
     @Override
     public boolean rotatePre(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
-        float transitionPhase = Math.min(1f, (parkourability.get(ChargeJump.class).getChargingTick() + rotator.getPartialTick()) / ChargeJump.JUMP_CHARGE_TICK);
+        float transitionPhase = Math.min(1f, (parkourability.get(ChargeJump.class).getChargingTick() + rotator.getPartialTick()) / ChargeJump.JUMP_MAX_CHARGE_TICK);
         float animFactor = new Easing(transitionPhase)
                 .sinInOut(0, 1, 0, 1)
                 .get();

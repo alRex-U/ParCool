@@ -1,14 +1,14 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.CatLeapAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.client.animation.Animation;
-
 import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.config.ParCoolConfig;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -61,7 +61,7 @@ public class CatLeap extends Action {
 		return (player.onGround()
 				&& coolTimeTick <= 0
 				&& readyTick > 0
-                && parkourability.get(ChargeJump.class).getChargingTick() < ChargeJump.JUMP_CHARGE_TICK / 2
+				&& parkourability.get(ChargeJump.class).getChargingTick() < ChargeJump.JUMP_MAX_CHARGE_TICK / 2
                 && !parkourability.get(Roll.class).isDoing()
                 && !parkourability.get(Tap.class).isDoing()
 				&& KeyRecorder.keySneak.isReleased()
@@ -100,6 +100,16 @@ public class CatLeap extends Action {
         spawnJumpEffect(player, jumpDirection);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new CatLeapAnimator());
+	}
+
+	@Override
+	public boolean wantsToShowStatusBar(LocalPlayer player, Parkourability parkourability) {
+		return coolTimeTick > 0;
+	}
+
+	@Override
+	public float getStatusValue(LocalPlayer player, Parkourability parkourability) {
+		return coolTimeTick / (float) MAX_COOL_TIME_TICK;
 	}
 
 	@Override
