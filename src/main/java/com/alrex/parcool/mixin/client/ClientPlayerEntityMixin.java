@@ -1,13 +1,16 @@
 package com.alrex.parcool.mixin.client;
 
+import com.alrex.parcool.common.capability.Parkourability;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
@@ -17,6 +20,15 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
 	private boolean oldSprinting = false;
 
+	@Inject(method = "isShiftKeyDown", at = @At("HEAD"), cancellable = true)
+	public void onIsShiftKeyDown(CallbackInfoReturnable<Boolean> cir) {
+		Parkourability parkourability = Parkourability.get((PlayerEntity) (Object) this);
+
+		if (parkourability == null) return;
+		if (parkourability.getCancelMarks().cancelSneak()) {
+			cir.setReturnValue(false);
+		}
+	}
 	@Inject(method = "aiStep", at = @At("HEAD"))
 	public void onAiStep(CallbackInfo ci) {
 		ClientPlayerEntity player = (ClientPlayerEntity) (Object) this;

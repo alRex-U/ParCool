@@ -53,12 +53,12 @@ public class HangDown extends Action {
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		startInfo.putDouble(Math.max(-1, Math.min(1, 3 * player.getLookAngle().multiply(1, 0, 1).normalize().dot(player.getDeltaMovement()))));
 		return (!stamina.isExhausted()
-				&& !player.isShiftKeyDown()
 				&& Math.abs(player.getDeltaMovement().y()) < 0.2
 				&& KeyBindings.getKeyHangDown().isDown()
 				&& !parkourability.get(JumpFromBar.class).isDoing()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& WorldUtil.getHangableBars(player) != null
+				&& (KeyBindings.getKeyHangDown().getKey().equals(KeyBindings.getKeySneak().getKey()) || !player.isShiftKeyDown())
 		);
 	}
 
@@ -66,7 +66,6 @@ public class HangDown extends Action {
 	@Override
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		return (!stamina.isExhausted()
-				&& !player.isShiftKeyDown()
 				&& KeyBindings.getKeyHangDown().isDown()
 				&& parkourability.getActionInfo().can(HangDown.class)
 				&& !parkourability.get(JumpFromBar.class).isDoing()
@@ -91,6 +90,9 @@ public class HangDown extends Action {
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		setup(player, startData);
+		if (!KeyBindings.getKeyHangDown().getKey().equals(KeyBindings.getKeySneak().getKey())) {
+			parkourability.getCancelMarks().addMarkerCancellingSneak(this::isDoing);
+		}
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get()) {
 			player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
 		}
