@@ -43,7 +43,7 @@ public class ParCoolActionEvent extends Event {
             return true;
         }
 
-        public TryToContinueEvent(PlayerEntity player, Action action) {
+        public TryToContinueEvent(Player player, Action action) {
             super(player, action);
         }
     }

@@ -9,6 +9,7 @@ import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -104,12 +105,12 @@ public class CatLeap extends Action {
 	}
 
 	@Override
-	public boolean wantsToShowStatusBar(ClientPlayerEntity player, Parkourability parkourability) {
+	public boolean wantsToShowStatusBar(LocalPlayer player, Parkourability parkourability) {
 		return coolTimeTick > 0;
 	}
 
 	@Override
-	public float getStatusValue(ClientPlayerEntity player, Parkourability parkourability) {
+	public float getStatusValue(LocalPlayer player, Parkourability parkourability) {
 		return coolTimeTick / (float) MAX_COOL_TIME_TICK;
 	}
 
