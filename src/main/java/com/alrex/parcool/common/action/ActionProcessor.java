@@ -78,6 +78,7 @@ public class ActionProcessor {
 			if (player.isLocalPlayer()) {
 				if (action.isDoing()) {
 					boolean canContinue = parkourability.getActionInfo().can(action.getClass())
+							&& !MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.TryToContinueEvent(player, action))
 							&& action.canContinue(player, parkourability, stamina);
 					if (!canContinue) {
 						action.setDoing(false);
