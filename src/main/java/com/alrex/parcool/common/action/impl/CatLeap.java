@@ -11,6 +11,7 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
@@ -62,7 +63,7 @@ public class CatLeap extends Action {
 				&& !stamina.isExhausted()
 				&& coolTimeTick <= 0
 				&& readyTick > 0
-                && parkourability.get(ChargeJump.class).getChargingTick() < ChargeJump.JUMP_CHARGE_TICK / 2
+				&& parkourability.get(ChargeJump.class).getChargingTick() < ChargeJump.JUMP_MAX_CHARGE_TICK / 2
 				&& !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()
 				&& KeyRecorder.keySneak.isReleased()
@@ -101,6 +102,16 @@ public class CatLeap extends Action {
 		spawnJumpEffect(player, jumpDirection);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new CatLeapAnimator());
+	}
+
+	@Override
+	public boolean wantsToShowStatusBar(ClientPlayerEntity player, Parkourability parkourability) {
+		return coolTimeTick > 0;
+	}
+
+	@Override
+	public float getStatusValue(ClientPlayerEntity player, Parkourability parkourability) {
+		return coolTimeTick / (float) MAX_COOL_TIME_TICK;
 	}
 
 	@Override
