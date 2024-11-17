@@ -80,6 +80,7 @@ public class ActionProcessor {
 				if (action.isDoing()) {
 					boolean canContinue = parkourability.getActionInfo().can(action.getClass())
 							&& !player.getData(Attachments.STAMINA).isExhausted()
+							&& !NeoForge.EVENT_BUS.post(new ParCoolActionEvent.TryToContinueEvent(player, action)).isCanceled()
 							&& action.canContinue(player, parkourability);
 					if (!canContinue) {
 						action.setDoing(false);

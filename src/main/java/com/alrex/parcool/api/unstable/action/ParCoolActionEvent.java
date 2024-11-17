@@ -29,6 +29,13 @@ public class ParCoolActionEvent extends Event {
         }
     }
 
+    public static class TryToContinueEvent extends ParCoolActionEvent implements ICancellableEvent {
+
+        public TryToContinueEvent(Player player, Action action) {
+            super(player, action);
+        }
+    }
+
     public static class StartEvent extends ParCoolActionEvent {
         public StartEvent(Player player, Action action) {
             super(player, action);
