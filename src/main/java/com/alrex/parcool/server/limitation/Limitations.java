@@ -162,8 +162,7 @@ public class Limitations {
             return;
         }
         for (Limitation limitation : map.values()) {
-            File limitationFile = getFolderPath(LimitationFolderRootPath, limitation.getID())
-                    .resolve(playerID + ".json").toFile();
+            File limitationFile = getActualFilePath(playerID, limitation.getID()).toFile();
             if (!limitationFile.getParentFile().exists()) {
                 limitationFile.getParentFile().mkdirs();
             }
@@ -248,5 +247,12 @@ public class Limitations {
         return limitationRootPath
                 .resolve(id.getGroup())
                 .resolve(id.getName());
+    }
+
+    @Nullable
+    public static Path getActualFilePath(UUID playerID, Limitation.ID id) {
+        if (LimitationFolderRootPath == null) return null;
+        Path folderPath = getFolderPath(LimitationFolderRootPath, id);
+        return folderPath.resolve(playerID + ".json");
     }
 }

@@ -35,6 +35,19 @@ public class ParCoolActionEvent extends Event {
         }
     }
 
+    @Cancelable
+    public static class TryToContinueEvent extends ParCoolActionEvent {
+
+        @Override
+        public boolean isCancelable() {
+            return true;
+        }
+
+        public TryToContinueEvent(Player player, Action action) {
+            super(player, action);
+        }
+    }
+
     public static class StartEvent extends ParCoolActionEvent {
         public StartEvent(Player player, Action action) {
             super(player, action);

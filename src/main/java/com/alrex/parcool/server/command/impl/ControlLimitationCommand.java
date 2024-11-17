@@ -416,6 +416,7 @@ public class ControlLimitationCommand {
         int num = 0;
         for (Limitation limitation : limitations) {
             limitation.setDefault().apply();
+            limitation.save();
             num++;
         }
         int finalNum = num;
@@ -434,6 +435,7 @@ public class ControlLimitationCommand {
         int num = 0;
         for (Limitation limitation : limitations) {
             limitation.set(item, value).apply();
+            limitation.save();
             num++;
         }
         int finalNum = num;
@@ -458,6 +460,7 @@ public class ControlLimitationCommand {
         int num = 0;
         for (Limitation limitation : limitations) {
             limitation.set(item, value).apply();
+            limitation.save();
             num++;
         }
         int finalValue = value;
@@ -483,6 +486,7 @@ public class ControlLimitationCommand {
         int num = 0;
         for (Limitation limitation : limitations) {
             limitation.set(item, value).apply();
+            limitation.save();
             num++;
         }
         double finalValue = value;
@@ -500,6 +504,7 @@ public class ControlLimitationCommand {
         int num = 0;
         for (Limitation limitation : limitations) {
             limitation.enable().apply();
+            limitation.save();
             num++;
         }
         int finalNum = num;
@@ -516,6 +521,7 @@ public class ControlLimitationCommand {
         int num = 0;
         for (Limitation limitation : limitations) {
             limitation.disable().apply();
+            limitation.save();
             num++;
         }
         int finalNum = num;
@@ -547,6 +553,7 @@ public class ControlLimitationCommand {
         int num = 0;
         for (Limitation limitation : limitations) {
             limitation.setLeastStaminaConsumption(action, newValue).apply();
+            limitation.save();
             num++;
         }
         int finalNum = num;
@@ -565,6 +572,7 @@ public class ControlLimitationCommand {
         int num = 0;
         for (Limitation limitation : limitations) {
             limitation.permit(action, newValue).apply();
+            limitation.save();
             num++;
         }
         int finalNum = num;
