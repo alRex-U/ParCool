@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.client.animation.impl.ChargeJumpAnimator;
 import com.alrex.parcool.client.animation.impl.JumpChargingAnimator;
 import com.alrex.parcool.common.action.Action;
@@ -18,10 +19,11 @@ import java.nio.ByteBuffer;
 
 public class ChargeJump extends Action {
     public static final int JUMP_ANIMATION_TICK = 10;
-    public static final int JUMP_CHARGE_TICK = 11;
+    public static final int JUMP_MAX_CHARGE_TICK = 18;
     private int chargeTick = 0;
     private int lastChargeTick = 0;
     private int notChargeTick = 0;
+    private int coolTimeTick = 0;
     private boolean started = false;
 
     @Override
@@ -43,6 +45,7 @@ public class ChargeJump extends Action {
 
     @Override
     public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+        coolTimeTick = 30;
         if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.CHARGE_JUMP.get(), 1, 1);
         Animation animation = Animation.get(player);
@@ -65,6 +68,7 @@ public class ChargeJump extends Action {
     public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
         if (player instanceof LocalPlayer cp) {
             if (cp.isOnGround()
+                    && coolTimeTick <= 0
                     && !stamina.isExhausted()
                     && parkourability.getActionInfo().can(ChargeJump.class)
                     && !cp.isVisuallyCrawling()
@@ -75,10 +79,11 @@ public class ChargeJump extends Action {
                     && !cp.input.right
                     && !cp.input.left
                     && !parkourability.get(Crawl.class).isDoing()
+                    && !MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStartEvent(player, this))
             ) {
                 if (cp.isShiftKeyDown()) {
                     chargeTick++;
-                    if (chargeTick > JUMP_CHARGE_TICK) chargeTick = JUMP_CHARGE_TICK;
+                    if (chargeTick > JUMP_MAX_CHARGE_TICK) chargeTick = JUMP_MAX_CHARGE_TICK;
                     lastChargeTick = chargeTick;
                     notChargeTick = 0;
                 } else {
@@ -96,6 +101,7 @@ public class ChargeJump extends Action {
                     player.setYBodyRot((float) VectorUtil.toYawDegree(currentAngle.yRot((float) (-differenceAngle / 2))));
                 }
             } else {
+                if (coolTimeTick > 0) coolTimeTick--;
                 chargeTick = 0;
                 notChargeTick++;
             }
@@ -109,9 +115,17 @@ public class ChargeJump extends Action {
     }
 
     public void onJump(Player player, Parkourability parkourability, IStamina stamina) {
-        if (chargeTick >= JUMP_CHARGE_TICK || (lastChargeTick > JUMP_CHARGE_TICK && notChargeTick < 5)) {
-            player.setDeltaMovement(player.getDeltaMovement().add(0, 0.11, 0));
+        double power = chargeTick / (double) JUMP_MAX_CHARGE_TICK;
+        if (power >= 0.5) {
             started = true;
+        } else {
+            power = lastChargeTick / (double) JUMP_MAX_CHARGE_TICK;
+            if (power > 0.5 && notChargeTick < 5) {
+                started = true;
+            }
+        }
+        if (started) {
+            player.setDeltaMovement(player.getDeltaMovement().add(0, 0.160 * power, 0));
         }
     }
 
@@ -119,12 +133,13 @@ public class ChargeJump extends Action {
         if (player.isLocalPlayer() && player instanceof LocalPlayer cp) {
             if (
                     parkourability.getActionInfo().can(ChargeJump.class)
+                            && coolTimeTick <= 0
                             && !cp.input.up
                             && !cp.input.down
                             && !cp.input.right
                             && !cp.input.left
             ) {
-                chargeTick = JUMP_CHARGE_TICK + 5;
+                chargeTick = JUMP_MAX_CHARGE_TICK + 5;
                 lastChargeTick = chargeTick;
                 notChargeTick = 0;
             }
@@ -138,7 +153,7 @@ public class ChargeJump extends Action {
 
     @Override
     public float getStatusValue(LocalPlayer player, Parkourability parkourability) {
-        return ((float) getChargingTick()) / JUMP_CHARGE_TICK;
+        return ((float) getChargingTick()) / JUMP_MAX_CHARGE_TICK;
     }
 
     @Override

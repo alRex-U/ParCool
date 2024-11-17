@@ -9,9 +9,14 @@ public class CancelMarks {
 
     private final LinkedList<Marker> jumpCancelMarks = new LinkedList<>();
     private final LinkedList<Marker> descendFromEdgeCancelMarks = new LinkedList<>();
+    private final LinkedList<Marker> sneakCancelMarks = new LinkedList<>();
 
     public void addMarkerCancellingJump(Marker marker) {
         jumpCancelMarks.add(marker);
+    }
+
+    public void addMarkerCancellingSneak(Marker marker) {
+        sneakCancelMarks.add(marker);
     }
 
     public void addMarkerCancellingDescendFromEdge(Marker marker) {
@@ -21,6 +26,11 @@ public class CancelMarks {
     public boolean cancelJump() {
         jumpCancelMarks.removeIf(it -> !it.remain());
         return !jumpCancelMarks.isEmpty();
+    }
+
+    public boolean cancelSneak() {
+        sneakCancelMarks.removeIf(it -> !it.remain());
+        return !sneakCancelMarks.isEmpty();
     }
 
     public boolean cancelDescendFromEdge() {

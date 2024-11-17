@@ -416,6 +416,7 @@ public class ControlLimitationCommand {
         int num = 0;
         for (Limitation limitation : limitations) {
             limitation.setDefault().apply();
+            limitation.save();
             num++;
         }
         context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.setLimitationToDefault", num), true);
@@ -433,6 +434,7 @@ public class ControlLimitationCommand {
         int num = 0;
         for (Limitation limitation : limitations) {
             limitation.set(item, value).apply();
+            limitation.save();
             num++;
         }
         context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.set", num, item.getPath(), Boolean.toString(value)), true);
@@ -456,6 +458,7 @@ public class ControlLimitationCommand {
         int num = 0;
         for (Limitation limitation : limitations) {
             limitation.set(item, value).apply();
+            limitation.save();
             num++;
         }
         context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.set", num, item.getPath(), Integer.toString(value)), true);
@@ -479,6 +482,7 @@ public class ControlLimitationCommand {
         int num = 0;
         for (Limitation limitation : limitations) {
             limitation.set(item, value).apply();
+            limitation.save();
             num++;
         }
         context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.set", num, item.getPath(), Double.toString(value)), true);
@@ -494,6 +498,7 @@ public class ControlLimitationCommand {
         int num = 0;
         for (Limitation limitation : limitations) {
             limitation.enable().apply();
+            limitation.save();
             num++;
         }
         context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.enableLimitation", num), true);
@@ -509,6 +514,7 @@ public class ControlLimitationCommand {
         int num = 0;
         for (Limitation limitation : limitations) {
             limitation.disable().apply();
+            limitation.save();
             num++;
         }
         context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.disableLimitation", num), true);
@@ -539,6 +545,7 @@ public class ControlLimitationCommand {
         int num = 0;
         for (Limitation limitation : limitations) {
             limitation.setLeastStaminaConsumption(action, newValue).apply();
+            limitation.save();
             num++;
         }
         context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.setStaminaConsumption", num, action.getSimpleName(), newValue), true);
@@ -556,6 +563,7 @@ public class ControlLimitationCommand {
         int num = 0;
         for (Limitation limitation : limitations) {
             limitation.permit(action, newValue).apply();
+            limitation.save();
             num++;
         }
         context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.setPermissionOfAction", num, action.getSimpleName(), newValue), true);

@@ -1,10 +1,21 @@
 package com.alrex.parcool.api.unstable;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.server.limitation.Limitations;
+import com.google.gson.stream.JsonWriter;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 
 public abstract class Limitation {
     public static Limitation get(ServerPlayer player, ID limitationID) {
@@ -112,6 +123,8 @@ public abstract class Limitation {
 
     public abstract void apply();
 
+    public abstract void save();
+
     public static boolean delete(ID limitationID) {
         return Limitations.delete(limitationID.convert());
     }
@@ -129,6 +142,44 @@ public abstract class Limitation {
         public void apply() {
             Limitations.update(player);
         }
+
+        @Override
+        public void save() {
+            Path filepath = Limitations.getActualFilePath(player.getUUID(), instance.getID());
+            if (filepath == null) {
+                ParCool.LOGGER.error(
+                        "On Saving Limitation : Could not resolve file("
+                                + player.getUUID()
+                                + ","
+                                + instance.getID().getGroup()
+                                + ":"
+                                + instance.getID().getName()
+                                + ")"
+                );
+                return;
+            }
+            File limitationFile = filepath.toFile();
+            if (!limitationFile.getParentFile().exists()) {
+                limitationFile.getParentFile().mkdirs();
+            }
+            try (JsonWriter writer =
+                         new JsonWriter(
+                                 new OutputStreamWriter(
+                                         new BufferedOutputStream(
+                                                 Files.newOutputStream(limitationFile.toPath(), StandardOpenOption.CREATE, StandardOpenOption.WRITE)
+                                         ),
+                                         StandardCharsets.UTF_8
+                                 )
+                         )
+            ) {
+                instance.saveTo(writer);
+            } catch (IOException e) {
+                ParCool.LOGGER.error(
+                        "IOException during saving limitation : "
+                                + e.getMessage()
+                );
+            }
+        }
     }
 
     private static class GlobalLimitation extends Limitation {
@@ -145,9 +196,13 @@ public abstract class Limitation {
                 Limitations.update(player);
             }
         }
+
+        @Override
+        public void save() {
+        }
     }
 
-    private final com.alrex.parcool.server.limitation.Limitation instance;
+    protected final com.alrex.parcool.server.limitation.Limitation instance;
 
     private Limitation(com.alrex.parcool.server.limitation.Limitation instance) {
         this.instance = instance;
