@@ -77,11 +77,11 @@ public class ParCool {
 
 	private void loaded(FMLLoadCompleteEvent event) {
 		FeathersManager.init();
+		PotionRecipeRegistry.register();
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
 		CommandRegistry.registerArgumentTypes(event);
-		PotionRecipeRegistry.register(event);
 		PROXY.registerMessages(CHANNEL_INSTANCE);
 	}
 
