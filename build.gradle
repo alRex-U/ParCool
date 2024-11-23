@@ -2,6 +2,7 @@ buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://repo.spongepowered.org/maven' }
+        maven { url = "https://maven.blamejared.com/" }
         mavenCentral()
     }
     dependencies {
@@ -91,6 +92,8 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:feathers-699933:4814309")
     compileOnly fg.deobf("curse.maven:epic-fight-mod-405076:${epicfight_version}")
     runtimeOnly fg.deobf("curse.maven:epic-fight-mod-405076:${epicfight_version}")
+    //compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
+    runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))
 }
 
 jar {

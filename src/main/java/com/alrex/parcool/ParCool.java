@@ -82,11 +82,11 @@ public class ParCool {
 		FeathersManager.init();
 		ParagliderManager.init();
 		EpicFightManager.init();
+		PotionRecipeRegistry.register();
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
 		CommandRegistry.registerArgumentTypes(event);
-		PotionRecipeRegistry.register(event);
 		PROXY.registerMessages(CHANNEL_INSTANCE);
 	}
 
