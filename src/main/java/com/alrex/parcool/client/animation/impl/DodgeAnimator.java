@@ -62,18 +62,18 @@ public class DodgeAnimator extends Animator {
 						.sinInOut(0.65f, 1, 1, 0)
 						.get();
 				float rightLegZFactor = new Easing(phase)
-						.linear(0, 0.5f, 0, 0.2f)
-						.sinInOut(0.5f, 0.75f, 0.2f, 1)
-						.sinInOut(0.75f, 1, 1, 0)
+						.linear(0, 0.35f, 0, -0.9f)
+						.sinInOut(0.35f, 0.75f, -0.9f, 1f)
+						.sinInOut(0.75f, 1f, 1f, 0)
 						.get();
 				float leftLegXFactor = new Easing(phase)
 						.linear(0, 0.2f, 0, 0)
 						.sinInOut(0.2f, 0.6f, 0, 1)
 						.sinInOut(0.6f, 1, 1, 0).get();
 				float leftLegZFactor = new Easing(phase)
-						.squareOut(0, 0.4f, 0, 1)
-						.sinInOut(0.4f, 0.75f, 1, 0.2f)
-						.linear(0.75f, 1, 0.2f, 0)
+						.linear(0, 0.3f, 0, -0.5f)
+						.sinInOut(0.3f, 0.6f, -0.5f, 0.8f)
+						.sinInOut(0.6f, 1f, 0.8f, 0)
 						.get();
 				float headYawFactor = new Easing(phase)
 						.sinInOut(0, 0.5f, 0, 1)
@@ -85,7 +85,7 @@ public class DodgeAnimator extends Animator {
 						.get();
 				transformer
 						.rotateRightLeg((float) Math.toRadians(-85 * rightLegXFactor), 0, (float) Math.toRadians(30 * rightLegZFactor), animFactor)
-						.rotateLeftLeg((float) Math.toRadians(-85 * leftLegXFactor + 15), 0, (float) Math.toRadians(-35 * leftLegZFactor), animFactor)
+						.rotateLeftLeg((float) Math.toRadians(-85 * leftLegXFactor + 15), 0, (float) Math.toRadians(30 * leftLegZFactor), animFactor)
 						.rotateRightArm((float) Math.toRadians(-5 + 45 * rightArmXFactor), 0, (float) Math.toRadians(-20 * rightArmZFactor), animFactor)
 						.rotateLeftArm((float) Math.toRadians(-60 * leftArmXFactor), 0, (float) Math.toRadians(40 * leftArmZFactor), animFactor)
 						.rotateAdditionallyHeadPitch(40 * headPitchFactor)
@@ -250,35 +250,36 @@ public class DodgeAnimator extends Animator {
 			case Left:
 			case Right: {//side rolling
 				float bodyPitchFactor = new Easing(phase)
-						.squareOut(0, 0.45f, 0, 1)
-						.linear(0.45f, 0.55f, 1, 1)
-						.sinInOut(0.55f, 1, 1, 0)
+						.squareOut(0, 0.25f, 0, 1)
+						.linear(0.25f, 0.4f, 1, 1)
+						.sinInOut(0.4f, 1, 1, 0)
 						.get();
 				float bodyYawFactor = new Easing(phase)
-						.sinInOut(0, 1, 0, 1)
+						.squareIn(0f, 0.15f, 0, 0.2f)
+						.squareOut(0.15f, 1, 0.2f, 1)
 						.get();
 				float yawFactor = new Easing(phase)
-						.sinInOut(0, 0.3f, 0, -1)
-						.sinInOut(0.3f, 0.7f, -1, 1)
-						.sinInOut(0.7f, 1, 1, 0)
+						.sinInOut(0, 0.15f, 0, -1)
+						.sinInOut(0.15f, 0.8f, -1, 1)
+						.sinInOut(0.8f, 1, 1, 0)
 						.get();
 				float yTranslateFactor = new Easing(phase)
-						.squareOut(0, 0.45f, 0, 1f)
-						.linear(0.45f, 0.55f, 1, 1)
-						.sinInOut(0.55f, 1, 1, 0)
+						.squareOut(0, 0.3f, 0, 1)
+						.linear(0.3f, 0.5f, 1, 1)
+						.sinInOut(0.5f, 1, 1, 0)
 						.get();
 				if (direction == Dodge.DodgeDirection.Left) {
 					rotator.startBasedCenter()
-							.translateY(-yTranslateFactor * player.getBbHeight() / 3.5f)
-							.rotateYawRightward(25 * yawFactor - 13)
-							.rotatePitchFrontward(110 * bodyPitchFactor)
+							.translateY(-yTranslateFactor * player.getBbHeight() / 3f)
+							.rotateYawRightward(25 * yawFactor - 4)
+							.rotatePitchFrontward(105 * bodyPitchFactor)
 							.rotateYawRightward(360 * bodyYawFactor)
 							.end();
 				} else {
 					rotator.startBasedCenter()
-							.translateY(-yTranslateFactor * player.getBbHeight() / 3.5f)
-							.rotateYawRightward(-25 * yawFactor + 13)
-							.rotatePitchFrontward(110 * bodyPitchFactor)
+							.translateY(-yTranslateFactor * player.getBbHeight() / 3f)
+							.rotateYawRightward(-25 * yawFactor + 4)
+							.rotatePitchFrontward(105 * bodyPitchFactor)
 							.rotateYawRightward(-360 * bodyYawFactor)
 							.end();
 				}

@@ -134,7 +134,7 @@ public class FastRunningAnimator extends Animator {
 		if (phase > 1) phase = 1;
 		float bodyYaw = (float) (-10. * Math.cos(limbSwing * 0.6662));
 		float pitch = bodyAngleFactor(phase) * 30 + 5f * (float) Math.sin(Math.PI * tick / 10);
-		float yOffset = 0.145f * (float) Math.pow(Math.sin(limbSwing * 0.6662), 2.);
+		float yOffset = 0.145f * (float) Math.pow(Math.cos(limbSwing * 0.6662), 2.);
 		rotator.translateY(yOffset);
 		if (parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.EnableLeanAnimationOfFastRun)) {
 			if (player.isLocalPlayer() && Minecraft.getInstance().screen != null) {
