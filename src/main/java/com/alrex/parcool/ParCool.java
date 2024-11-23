@@ -76,12 +76,12 @@ public class ParCool {
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {
+		PotionRecipeRegistry.register();
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
 		CommandRegistry.registerArgumentTypes(event);
 		Capabilities.register(CapabilityManager.INSTANCE);
-		PotionRecipeRegistry.register(event);
 		PROXY.registerMessages(CHANNEL_INSTANCE);
 	}
 
