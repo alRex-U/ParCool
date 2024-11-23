@@ -1,0 +1,23 @@
+﻿{
+  "name": "Бег по стене",
+  "icon": "minecraft:stone_bricks",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Вы можете прыгнуть вертикально, используя стену, чтобы перебраться через нее. Но если стена скользкая, этого сделать нельзя. Не путайте с $(l:parcool:actions/horizontal_wall_run)Горизонтальным бегом по стене.$()."
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/image_v_wall_run.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Как использовать",
+      "text": "$(bold)1.$() Посмотрите навверх горизонтальной линии и разбегитесь с помощью $(l:parcool:actions/fast_run)Быстрого бега.$()$(br)$(bold)2.$() Запрыгните на стену, не отпуская клавишу прыжка.$(br)$(br)Это может быть немного сложно, но попробуйте."
+    }
+  ]
+}
