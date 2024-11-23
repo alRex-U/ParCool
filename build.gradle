@@ -2,7 +2,7 @@ buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://repo.spongepowered.org/maven' }
-        maven { url = "https://api.modrinth.com/maven" }
+        maven { url = "https://maven.blamejared.com/" }
         mavenCentral()
     }
     dependencies {
@@ -85,14 +85,13 @@ dependencies {
     minecraft "net.minecraftforge:forge:${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
-
     compileOnly fg.deobf("curse.maven:epic-fight-mod-405076:${epicfight_version}")
     runtimeOnly fg.deobf("curse.maven:epic-fight-mod-405076:${epicfight_version}")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
-    //compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
-    compileOnly fg.deobf("curse.maven:feathers-699933:4355018")
-    runtimeOnly fg.deobf("curse.maven:feathers-699933:4355018")
+    //compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
+    runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))
+    compileOnly fg.deobf("curse.maven:feathers-699933:4573576")
+    runtimeOnly fg.deobf("curse.maven:feathers-699933:4573576")
 }
 
 jar {
