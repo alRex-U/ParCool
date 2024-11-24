@@ -1,7 +1,6 @@
 package com.alrex.parcool.extern.paraglider;
 
 import com.alrex.parcool.common.capability.IStamina;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import tictim.paraglider.api.stamina.Stamina;
 
@@ -12,7 +11,6 @@ public class ParagliderStamina implements IStamina {
 
 	final Player player;
 	int old;
-	private int consumedBuffer = 0;
 
 	private Stamina getInternalInstance() {
 		return Stamina.get(player);
@@ -56,22 +54,5 @@ public class ParagliderStamina implements IStamina {
 
 	@Override
 	public void set(int value) {
-	}
-
-	@Override
-	public boolean wantToConsumeOnServer() {
-		return consumedBuffer != 0;
-	}
-
-	@Override
-	public int getRequestedValueConsumedOnServer() {
-		int neededValue = consumedBuffer;
-		consumedBuffer = 0;
-		return neededValue;
-	}
-
-	public static void consumeOnServer(ServerPlayer player, int value) {
-		Stamina stamina = Stamina.get(player);
-		stamina.takeStamina(value, false, false);
 	}
 }

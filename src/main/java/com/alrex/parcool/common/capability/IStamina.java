@@ -22,7 +22,7 @@ public interface IStamina {
 		Default(Stamina.class, Stamina::new, null),
 		Hunger(HungerStamina.class, HungerStamina::new, HungerStamina::consumeOnServer),
 		Feathers(FeathersStamina.class, FeathersManager::newFeathersStaminaFor, null),
-		Paraglider(ParagliderStamina.class, ParagliderManager::newParagliderStaminaFor, ParagliderStamina::consumeOnServer),
+		Paraglider(ParagliderStamina.class, ParagliderManager::newParagliderStaminaFor, null),
 		EpicFight(EpicFightStamina.class, EpicFightManager::newEpicFightStaminaFor, EpicFightStamina::consumeOnServer);
 
 		Type(Class<? extends IStamina> clazz, Function<Player, IStamina> constructor, BiConsumer<ServerPlayer, Integer> serverStaminaHandler) {

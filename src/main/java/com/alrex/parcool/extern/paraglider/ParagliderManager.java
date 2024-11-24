@@ -25,7 +25,7 @@ public class ParagliderManager {
 
 	@Nullable
 	public static IStamina newParagliderStaminaFor(Player player) {
-		if (!paragliderInstalled) return null;
+		if (!paragliderInstalled) return IStamina.Type.Default.newInstance(player);
 		return new ParagliderStamina(player);
 	}
 

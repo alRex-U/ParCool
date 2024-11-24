@@ -1,45 +1,89 @@
 package com.alrex.parcool.extern.paraglider;
 
+import com.alrex.parcool.ParCool;
+import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.ActionList;
+import com.alrex.parcool.common.action.impl.*;
+import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.resources.ResourceLocation;
-import tictim.paraglider.api.ParagliderAPI;
+import tictim.paraglider.api.movement.ParagliderPlayerStates;
+import tictim.paraglider.api.movement.PlayerStateCondition;
 
-public interface ParCoolPlayerStates {
-    ResourceLocation FAST_RUNNING = ParagliderAPI.id("fast_running");
-    int FAST_RUNNING_STAMINA_DELTA = -15;
-    double FAST_RUNNING_PRIORITY = 3;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
+public class ParCoolPlayerStates {
+    public static final Entry FAST_RUN = new Entry(FastRun.class)
+            .parentID(ParagliderPlayerStates.IDLE)
+            .priority(3);
+    public static final Entry FAST_SWIM = new Entry(FastSwim.class).parentID(ParagliderPlayerStates.SWIMMING);
+    public static final Entry CLING_TO_CLIFF = new Entry(ClingToCliff.class);
+    public static final Entry BREAKFALL = new Entry(BreakfallReady.class)
+            .condition(
+                    (p, s, b, f) -> Objects.requireNonNull(Parkourability.get(p)).get(BreakfallReady.class).isDoing() && !p.isFallFlying()
+            );
+    public static final Entry DODGE = new Entry(Dodge.class).priority(4).parentID(ParagliderPlayerStates.IDLE, ParagliderPlayerStates.RUNNING);
+    public static final Entry CLIMB_UP = new Entry(ClimbUp.class).parentID(CLING_TO_CLIFF.stateID());
+    public static final Entry ROLL = new Entry(Roll.class).parentID(BREAKFALL.stateID())
+            .condition(
+                    (p, s, b, f) -> Objects.requireNonNull(Parkourability.get(p)).get(Roll.class).isDoing() && !p.isFallFlying()
+            );
+    public static final Entry HORIZONTAL_WALL_RUN = new Entry(HorizontalWallRun.class).parentID(ParagliderPlayerStates.MIDAIR);
+    public static final Entry VERTICAL_WALL_RUN = new Entry(VerticalWallRun.class).parentID(ParagliderPlayerStates.MIDAIR);
+    public static final Entry VAULT = new Entry(Vault.class).parentID(FAST_RUN.stateID());
+    public static final Entry CATLEAP = new Entry(CatLeap.class).parentID(FAST_RUN.stateID());
+    public static final Entry CHARGE_JUMP = new Entry(ChargeJump.class).parentID(ParagliderPlayerStates.MIDAIR);
 
-    ResourceLocation DODGE = ParagliderAPI.id("dodge");
-    int DODGE_STAMINA_DELTA = -15;
-    double DODGE_PRIORITY = 4;
+    public static final List<Entry> ENTRIES = Arrays.asList(
+            FAST_RUN,
+            FAST_SWIM,
+            CLING_TO_CLIFF,
+            BREAKFALL,
+            DODGE,
+            CLIMB_UP,
+            ROLL,
+            HORIZONTAL_WALL_RUN,
+            VERTICAL_WALL_RUN,
+            VAULT,
+            CATLEAP,
+            CHARGE_JUMP
+    );
 
-    ResourceLocation FAST_SWIMMING = ParagliderAPI.id("fast_swimming");
-    int FAST_SWIMMING_STAMINA_DELTA = -15;
+    public record Entry(
+            Class<? extends Action> clazz,
+            ResourceLocation stateID,
+            List<ResourceLocation> parentID,
+            int staminaDelta,
+            double priority,
+            PlayerStateCondition condition
+    ) {
+        private Entry(Class<? extends Action> clazz) {
+            this(
+                    clazz,
+                    new ResourceLocation(ParCool.MOD_ID, clazz.getSimpleName().toLowerCase()),
+                    Collections.singletonList(ParagliderPlayerStates.IDLE),
+                    -Math.min(15, ActionList.ACTION_REGISTRIES.get(ActionList.getIndexOf(clazz)).getDefaultStaminaConsumption()),
+                    0,
+                    (p, s, b, f) -> Objects.requireNonNull(Parkourability.get(p)).get(clazz).isDoing()
+            );
+        }
 
+        public Entry condition(PlayerStateCondition value) {
+            return new Entry(clazz, stateID, parentID, staminaDelta, priority, value);
+        }
 
-    ResourceLocation CLING_TO_CLIFF = ParagliderAPI.id("cling_to_cliff");
-    int CLING_TO_CLIFF_STAMINA_DELTA = -5;
+        public Entry priority(double value) {
+            return new Entry(clazz, stateID, parentID, staminaDelta, value, condition);
+        }
 
-    ResourceLocation CLIMB_UP = ParagliderAPI.id("climb_up");
-    int CLIMB_UP_STAMINA_DELTA = -10;
+        public Entry staminaDelta(int value) {
+            return new Entry(clazz, stateID, parentID, value, priority, condition);
+        }
 
-    ResourceLocation BREAKFALL = ParagliderAPI.id("breakfall");
-    int BREAKFALL_STAMINA_DELTA = -20;
-
-    ResourceLocation ROLL = ParagliderAPI.id("roll");
-    int ROLL_STAMINA_DELTA = -15;
-
-    ResourceLocation HORIZONTAL_WALL_RUN = ParagliderAPI.id("horizontal_wall_run");
-    int HORIZONTAL_WALL_RUN_STAMINA_DELTA = -10;
-
-    ResourceLocation VERTICAL_WALL_RUN = ParagliderAPI.id("vertical_wall_run");
-    int VERTICAL_WALL_RUN_STAMINA_DELTA = -12;
-    ResourceLocation VAULT = ParagliderAPI.id("vault");
-    int VAULT_STAMINA_DELTA = -12;
-
-    ResourceLocation CAT_LEAP = ParagliderAPI.id("cat_leap");
-    int CAT_LEAP_STAMINA_DELTA = -15;
-
-    ResourceLocation CHARGE_JUMP = ParagliderAPI.id("charge_jump");
-    int CHARGE_JUMP_STAMINA_DELTA = -15;
+        public Entry parentID(ResourceLocation... value) {
+            return new Entry(clazz, stateID, Arrays.stream(value).toList(), staminaDelta, priority, condition);
+        }
+    }
 }
