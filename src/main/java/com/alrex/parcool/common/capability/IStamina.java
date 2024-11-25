@@ -74,11 +74,8 @@ public interface IStamina {
 		return false;
 	}
 
-	;
-
 	public default int getRequestedValueConsumedOnServer() {
 		return 0;
 	}
 
-	;
 }

@@ -59,7 +59,7 @@ public class ClingToCliffAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		ClingToCliff cling = parkourability.get(ClingToCliff.class);
 		switch (cling.getFacingDirection()) {
 			case RightAgainstWall:
@@ -72,5 +72,5 @@ public class ClingToCliffAnimator extends Animator {
 						.rotateRollRightward(-Lean_Angle)
 						.end();
 		}
-	}
+    }
 }

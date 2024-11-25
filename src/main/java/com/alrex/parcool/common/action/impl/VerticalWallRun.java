@@ -108,6 +108,8 @@ public class VerticalWallRun extends Action {
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
 		startData.position(8 + 4); // skip (double * 1) and (float * 1)
 		wallDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.VERTICAL_WALL_RUN.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null) {
 			animation.setAnimator(new VerticalWallRunAnimator());

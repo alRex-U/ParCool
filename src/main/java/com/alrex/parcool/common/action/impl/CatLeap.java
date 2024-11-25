@@ -11,6 +11,7 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
@@ -26,7 +27,7 @@ public class CatLeap extends Action {
 	private int coolTimeTick = 0;
 	private boolean ready = false;
 	private int readyTick = 0;
-	private final int MAX_COOL_TIME_TICK = 30;
+    private static final int MAX_COOL_TIME_TICK = 30;
 
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
@@ -58,11 +59,11 @@ public class CatLeap extends Action {
 		if (movement.lengthSqr() < 0.001) return false;
 		movement = movement.multiply(1, 0, 1).normalize();
 		startInfo.putDouble(movement.x()).putDouble(movement.z());
-		return (parkourability.getActionInfo().can(CatLeap.class)
-				&& player.isOnGround()
+		return (player.isOnGround()
 				&& !stamina.isExhausted()
 				&& coolTimeTick <= 0
 				&& readyTick > 0
+				&& parkourability.get(ChargeJump.class).getChargingTick() < ChargeJump.JUMP_MAX_CHARGE_TICK / 2
 				&& !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()
 				&& KeyRecorder.keySneak.isReleased()
@@ -96,18 +97,26 @@ public class CatLeap extends Action {
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
 		Vector3d jumpDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.CATLEAP.get(), 1, 1);
 		spawnJumpEffect(player, jumpDirection);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new CatLeapAnimator());
 	}
 
 	@Override
-	public StaminaConsumeTiming getStaminaConsumeTiming() {
-		return StaminaConsumeTiming.OnStart;
+	public boolean wantsToShowStatusBar(ClientPlayerEntity player, Parkourability parkourability) {
+		return coolTimeTick > 0;
 	}
 
-	public float getCoolDownPhase() {
-		return ((float) MAX_COOL_TIME_TICK - coolTimeTick) / MAX_COOL_TIME_TICK;
+	@Override
+	public float getStatusValue(ClientPlayerEntity player, Parkourability parkourability) {
+		return coolTimeTick / (float) MAX_COOL_TIME_TICK;
+	}
+
+	@Override
+	public StaminaConsumeTiming getStaminaConsumeTiming() {
+		return StaminaConsumeTiming.OnStart;
 	}
 
 	@OnlyIn(Dist.CLIENT)

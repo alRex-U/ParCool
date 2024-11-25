@@ -8,7 +8,7 @@ import net.minecraftforge.event.TickEvent;
 public abstract class Animator {
 	private int tick = 0;
 
-	public void tick() {
+	public void tick(PlayerEntity player) {
 		tick++;
 	}
 
@@ -40,7 +40,15 @@ public abstract class Animator {
 	) {
 	}
 
-	public void rotate(
+	public boolean rotatePre(
+			PlayerEntity player,
+			Parkourability parkourability,
+			PlayerModelRotator rotator
+	) {
+		return false;
+	}
+
+	public void rotatePost(
 			PlayerEntity player,
 			Parkourability parkourability,
 			PlayerModelRotator rotator
@@ -60,4 +68,5 @@ public abstract class Animator {
 			Parkourability parkourability
 	) {
 	}
+
 }

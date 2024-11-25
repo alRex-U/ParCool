@@ -2,12 +2,11 @@ package com.alrex.parcool.client.hud.impl;
 
 
 import com.alrex.parcool.client.hud.Position;
-import com.alrex.parcool.common.action.impl.CatLeap;
-import com.alrex.parcool.common.action.impl.Dodge;
-import com.alrex.parcool.common.action.impl.WallJump;
+import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.utilities.MathUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
@@ -31,13 +30,36 @@ public class StaminaHUD extends AbstractGui {
 	//0,1,2
 	private int renderGageType = 0;
 	private int renderGageTick = 0;
+	private float statusValue = 0f;
+	private float oldStatusValue = 0f;
+	private boolean showStatus = false;
 
 	public void onTick(TickEvent.ClientTickEvent event, ClientPlayerEntity player) {
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) return;
 		if (++renderGageTick >= 5) {
 			renderGageTick = 0;
 			if (++renderGageType > 2) {
 				renderGageType = 0;
 			}
+		}
+		oldStatusValue = statusValue;
+		boolean oldShowStatus = showStatus;
+		showStatus = false;
+		for (Action a : parkourability.getList()) {
+			if (a.wantsToShowStatusBar(player, parkourability)) {
+				showStatus = true;
+				statusValue = a.getStatusValue(player, parkourability);
+				if (statusValue > 1f) {
+					statusValue = 1f;
+				} else if (statusValue < 0f) {
+					statusValue = 0f;
+				}
+				break;
+			}
+		}
+		if (!oldShowStatus && showStatus) {
+			oldStatusValue = statusValue;
 		}
 	}
 
@@ -58,8 +80,8 @@ public class StaminaHUD extends AbstractGui {
 		Position position = new Position(
 				ParCoolConfig.Client.AlignHorizontalStaminaHUD.get(),
 				ParCoolConfig.Client.AlignVerticalStaminaHUD.get(),
-				ParCoolConfig.Client.Integers.HorizontalMarginOfStaminaHUD.get(),
-				ParCoolConfig.Client.Integers.VerticalMarginOfStaminaHUD.get()
+				ParCoolConfig.Client.Integers.HorizontalOffsetOfStaminaHUD.get(),
+				ParCoolConfig.Client.Integers.VerticalOffsetOfStaminaHUD.get()
 		);
 		final int width = window.getGuiScaledWidth();
 		final int height = window.getGuiScaledHeight();
@@ -68,23 +90,15 @@ public class StaminaHUD extends AbstractGui {
 		final Tuple<Integer, Integer> pos = position.calculate(boxWidth, boxHeight, width, height);
 
 		float staminaScale = (float) stamina.get() / stamina.getActualMaxStamina();
-		float coolTimeScale =
-				Math.min(
-						parkourability.get(Dodge.class).getCoolDownPhase(parkourability.getActionInfo()),
-						parkourability.get(CatLeap.class).getCoolDownPhase()
-				);
-		coolTimeScale =
-				Math.min(
-						coolTimeScale,
-						parkourability.get(WallJump.class).getCoolDownPhase()
-				);
+		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, event.getPartialTicks()) : 0f;
+
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
 
 		Minecraft.getInstance().getTextureManager().bind(STAMINA);
 		blit(stack, pos.getA(), pos.getB(), 0, 0, 93, 17, 128, 128);
 		if (!stamina.isExhausted()) {
-			blit(stack, pos.getA(), pos.getB(), 0, 102, (int) Math.ceil(92 * coolTimeScale), 17, 128, 128);
+			blit(stack, pos.getA(), pos.getB(), 0, 102, (int) Math.ceil(92 * statusScale), 17, 128, 128);
 			blit(stack, pos.getA(), pos.getB(), 0, 85, Math.round(16 + 69 * shadowScale) + 1, 12, 128, 128);
 			blit(stack, pos.getA(), pos.getB(), 0, 17 * (renderGageType + 1), Math.round(16 + 69 * staminaScale) + 1, 12, 128, 128);
 		} else {

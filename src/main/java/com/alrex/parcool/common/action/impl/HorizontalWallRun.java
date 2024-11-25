@@ -15,6 +15,8 @@ import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
@@ -28,6 +30,9 @@ import net.minecraftforge.event.TickEvent;
 import java.nio.ByteBuffer;
 
 public class HorizontalWallRun extends Action {
+	public enum ControlType {
+		PressKey, Auto
+	}
 	private int coolTime = 0;
 	private float bodyYaw = 0;
 
@@ -70,10 +75,15 @@ public class HorizontalWallRun extends Action {
 		if (!player.level.isLoaded(leanedBlock)) return;
 		float slipperiness = player.level.getBlockState(leanedBlock).getSlipperiness(player.level, leanedBlock, player);
 		if (slipperiness <= 0.8) {
+			double speedScale = 0.2;
+			ModifiableAttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
+			if (attr != null) {
+				speedScale *= attr.getValue() / attr.getBaseValue();
+			}
 			player.setDeltaMovement(
-					runningDirection.x() * 0.3,
+					runningDirection.x() * speedScale,
 					movement.y() * (slipperiness - 0.1) * ((double) getDoingTick()) / getMaxRunningTick(parkourability.getActionInfo()),
-					runningDirection.z() * 0.3
+					runningDirection.z() * speedScale
 			);
 		}
 	}
@@ -106,10 +116,14 @@ public class HorizontalWallRun extends Action {
 				.putDouble(runDirection.z());
 
 		return (!parkourability.get(WallJump.class).justJumped()
-				&& KeyBindings.getKeyHorizontalWallRun().isDown()
+				&& (
+				(ParCoolConfig.Client.HWallRunControl.get() == ControlType.PressKey && KeyBindings.getKeyHorizontalWallRun().isDown())
+						|| ParCoolConfig.Client.HWallRunControl.get() == ControlType.Auto
+		)
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Dodge.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
+				&& !player.isInWaterOrBubble()
 				&& Math.abs(player.getDeltaMovement().y()) < 0.5
 				&& coolTime == 0
 				&& !player.isOnGround()
@@ -133,7 +147,10 @@ public class HorizontalWallRun extends Action {
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Dodge.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
-				&& KeyBindings.getKeyHorizontalWallRun().isDown()
+				&& (
+				(ParCoolConfig.Client.HWallRunControl.get() == ControlType.PressKey && KeyBindings.getKeyHorizontalWallRun().isDown())
+						|| ParCoolConfig.Client.HWallRunControl.get() == ControlType.Auto
+		)
 				&& !player.isOnGround()
 		);
 	}
@@ -162,6 +179,8 @@ public class HorizontalWallRun extends Action {
 		runningWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		runningDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		Animation animation = Animation.get(player);
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.HORIZONTAL_WALL_RUN.get(), 1f, 1f);
 		if (animation != null) {
 			animation.setAnimator(new HorizontalWallRunAnimator(wallIsRightward));
 		}

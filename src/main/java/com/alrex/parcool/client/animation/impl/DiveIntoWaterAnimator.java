@@ -51,7 +51,7 @@ public class DiveIntoWaterAnimator extends Animator {
     }
 
     @Override
-    public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
         float phase = (getTick() + rotator.getPartialTick()) / MAX_ANIMATION_TICK;
         if (phase > 1) return;
         float pitchFactor = new Easing(phase)

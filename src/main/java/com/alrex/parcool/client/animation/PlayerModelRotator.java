@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.animation;
 
+import com.alrex.parcool.api.unstable.animation.AnimationOption;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3f;
@@ -8,7 +9,21 @@ public class PlayerModelRotator {
 	private final MatrixStack stack;
 	private final PlayerEntity player;
 	private final float partial;
+	private AnimationOption option = new AnimationOption();
 	private double playerHeight = 1.8;
+	private final float givenXRot, givenYRot, givenZRot;
+
+	public float getXRot() {
+		return givenXRot;
+	}
+
+	public float getYRot() {
+		return givenYRot;
+	}
+
+	public float getZRot() {
+		return givenZRot;
+	}
 
 	public float getPartialTick() {
 		return partial;
@@ -17,16 +32,23 @@ public class PlayerModelRotator {
 	private boolean basedCenter = false;
 	private boolean basedTop = false;
 
-	public PlayerModelRotator(MatrixStack stack, PlayerEntity player, float partial) {
+	public PlayerModelRotator(MatrixStack stack, PlayerEntity player, float partial, float xRot, float yRot, float zRot) {
 		this.stack = stack;
 		this.player = player;
 		this.partial = partial;
+		this.givenXRot = xRot;
+		this.givenYRot = yRot;
+		this.givenZRot = zRot;
 		switch (player.getPose()) {
 			case SWIMMING:
 			case CROUCHING:
 			case SLEEPING:
 				playerHeight = 0.6;
 		}
+	}
+
+	public void setOption(AnimationOption option) {
+		this.option = option;
 	}
 
 	public PlayerModelRotator start() {
@@ -43,6 +65,10 @@ public class PlayerModelRotator {
 		basedTop = true;
 		stack.translate(0, playerHeight, 0);
 		return this;
+	}
+
+	public MatrixStack getRawStack() {
+		return stack;
 	}
 
 	public PlayerModelRotator translateY(float offset) {

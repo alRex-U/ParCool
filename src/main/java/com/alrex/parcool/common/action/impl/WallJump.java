@@ -68,12 +68,6 @@ public class WallJump extends Action {
 		return value.normalize().add(wall.scale(-0.7)).normalize();
 	}
 
-	public float getCoolDownPhase() {
-		float phase = getNotDoingTick() / MAX_COOL_DOWN_TICK;
-		if (phase > 1) return 1;
-		else return phase;
-	}
-
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		Vector3d wallDirection = WorldUtil.getWall(player);
@@ -196,6 +190,8 @@ public class WallJump extends Action {
 
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.WALL_JUMP.get(), 1f, 1f);
 		Vector3d jumpDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		Vector3d wallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		BlockPos leanedBlock = new BlockPos(

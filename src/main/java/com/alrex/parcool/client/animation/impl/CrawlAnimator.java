@@ -20,10 +20,20 @@ public class CrawlAnimator extends Animator {
 		if (leftZFactor < 0) leftZFactor /= 5;
 		if (rightZFactor < 0) rightZFactor /= 5;
 		transformer
+                .translateLeftLeg(
+                        0,
+                        -0.1f + 0.8f * factor,
+                        -0.6f + 0.6f * factor
+                )
+                .translateRightLeg(
+                        0,
+                        -0.1f - 0.8f * factor,
+                        -0.6f - 0.6f * factor
+                )
 				.rotateLeftArm((float) Math.toRadians(-15 + 45 * leftZFactor), 0, (float) Math.toRadians(-130 - 30 * factor))
 				.rotateRightArm((float) Math.toRadians(-15 + 45 * rightZFactor), 0, (float) Math.toRadians(130 - 30 * factor))
-				.rotateLeftLeg((float) Math.toRadians(-8 + 8 * factor), 0, (float) Math.toRadians(-5 + 5 * factor))
-				.rotateRightLeg((float) Math.toRadians(-8 - 8 * factor), 0, (float) Math.toRadians(5 + 5 * factor))
+				.rotateLeftLeg((float) Math.toRadians(-11 + 7 * factor), 0, (float) Math.toRadians(-5 + 5 * factor))
+				.rotateRightLeg((float) Math.toRadians(-11 - 7 * factor), 0, (float) Math.toRadians(5 + 5 * factor))
 				.end();
 	}
 }

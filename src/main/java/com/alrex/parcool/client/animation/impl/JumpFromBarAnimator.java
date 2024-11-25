@@ -59,12 +59,12 @@ public class JumpFromBarAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float tick = getTick() + rotator.getPartialTick();
 		float phase = tick / MAX_TICK;
 		float factor = getBodyAngleFactor(phase);
 		rotator.startBasedCenter()
 				.rotatePitchFrontward(-factor * 40)
 				.end();
-	}
+    }
 }

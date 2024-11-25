@@ -196,7 +196,7 @@ public class RollAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		switch (direction) {
 			case Front:
 			case Back: {
@@ -209,7 +209,7 @@ public class RollAnimator extends Animator {
 			}
 			break;
 		}
-	}
+    }
 
 	private void rotateFrontBack(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		Roll roll = parkourability.get(Roll.class);

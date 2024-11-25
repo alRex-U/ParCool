@@ -12,6 +12,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -40,7 +41,8 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends BipedMode
 	@Shadow
 	@Final
 	private ModelRenderer ear;
-	private PlayerModelTransformer transformer = null;
+    @Unique
+    private PlayerModelTransformer parCool$transformer = null;
 
 	public PlayerModelMixin(float p_i1148_1_) {
 		super(p_i1148_1_);
@@ -56,7 +58,7 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends BipedMode
 				&& !ParCoolConfig.Client.Booleans.EnableFPVAnimation.get()
 		) return;
 
-		transformer = new PlayerModelTransformer(
+        parCool$transformer = new PlayerModelTransformer(
 				player,
 				model,
 				slim,
@@ -66,15 +68,15 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends BipedMode
 				netHeadYaw,
 				headPitch
 		);
-		transformer.reset();
+        parCool$transformer.reset();
 
 		Animation animation = Animation.get(player);
 		if (animation == null) return;
 
-		boolean shouldCancel = animation.animatePre(player, transformer);
-		transformer.copyFromBodyToWear();
+        boolean shouldCancel = animation.animatePre(player, parCool$transformer);
+        parCool$transformer.copyFromBodyToWear();
 		if (shouldCancel) {
-			transformer = null;
+            parCool$transformer = null;
 			info.cancel();
 		}
 	}
@@ -90,14 +92,14 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends BipedMode
 
 		Animation animation = Animation.get(player);
 		if (animation == null) {
-			transformer = null;
+            parCool$transformer = null;
 			return;
 		}
 
-		if (transformer != null) {
-			animation.animatePost(player, transformer);
-			transformer.copyFromBodyToWear();
-			transformer = null;
+        if (parCool$transformer != null) {
+            animation.animatePost(player, parCool$transformer);
+            parCool$transformer.copyFromBodyToWear();
+            parCool$transformer = null;
 		}
 	}
 

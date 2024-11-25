@@ -74,10 +74,10 @@ public class VerticalWallRunAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / MAX_ANIMATION_TICK;
 		if (phase > 1) {
-			return;
+            return;
 		}
 		float factor = new Easing(phase)
 				.sinInOut(0, 0.3f, 0, 1)
@@ -92,5 +92,5 @@ public class VerticalWallRunAnimator extends Animator {
 				.rotatePitchFrontward(-10 * factor)
 				.rotateRollRightward(-ROLL_ANGLE * rollFactor)
 				.end();
-	}
+    }
 }

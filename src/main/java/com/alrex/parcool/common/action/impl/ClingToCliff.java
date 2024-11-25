@@ -46,6 +46,7 @@ public class ClingToCliff extends Action {
 				&& player.getDeltaMovement().y() < 0.2
 				&& !parkourability.get(HorizontalWallRun.class).isDoing()
 				&& KeyBindings.getKeyGrabWall().isDown()
+				&& (KeyBindings.getKeyGrabWall().getKey().equals(KeyBindings.getKeySneak().getKey()) || !player.isShiftKeyDown())
 		);
 		if (!value) return false;
 		Vector3d wallVec = WorldUtil.getGrabbableWall(player);
@@ -68,12 +69,20 @@ public class ClingToCliff extends Action {
 		);
 	}
 
+    @Override
+    public void onStart(PlayerEntity player, Parkourability parkourability) {
+        armSwingAmount = 0;
+    }
+
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		clingWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
+		if (!KeyBindings.getKeyGrabWall().getKey().equals(KeyBindings.getKeySneak().getKey())) {
+			parkourability.getCancelMarks().addMarkerCancellingSneak(this::isDoing);
+		}
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.CLING_TO_CLIFF.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
@@ -85,6 +94,8 @@ public class ClingToCliff extends Action {
 		clingWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.CLING_TO_CLIFF.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new ClingToCliffAnimator());
 	}

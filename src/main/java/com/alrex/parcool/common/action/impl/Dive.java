@@ -46,6 +46,7 @@ public class Dive extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		if (player.getVehicle() != null) return false;
 		boolean startInAir = player.getDeltaMovement().y() < 0
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 10
 				&& parkourability.getAdditionalProperties().getNotInWaterTick() > 30
@@ -98,7 +99,22 @@ public class Dive extends Action {
 	}
 
 	@Override
-	public void onStop(PlayerEntity player) {
+	public void onStopInLocalClient(PlayerEntity player) {
+		if (player.isInWaterOrBubble()) {
+			Animation animation = Animation.get(player);
+			Parkourability parkourability = Parkourability.get(player);
+			if (animation != null
+					&& parkourability != null
+					&& parkourability.getAdditionalProperties().getNotLandingTick() >= 5
+					&& player.getDeltaMovement().y() < 0
+			) {
+				animation.setAnimator(new DiveIntoWaterAnimator(parkourability.get(SkyDive.class).isDoing()));
+			}
+		}
+	}
+
+	@Override
+	public void onStopInOtherClient(PlayerEntity player) {
 		if (player.isInWaterOrBubble()) {
 			Animation animation = Animation.get(player);
 			Parkourability parkourability = Parkourability.get(player);

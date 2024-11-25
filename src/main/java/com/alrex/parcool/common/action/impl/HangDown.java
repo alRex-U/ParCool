@@ -8,6 +8,7 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.player.PlayerEntity;
@@ -52,13 +53,12 @@ public class HangDown extends Action {
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		startInfo.putDouble(Math.max(-1, Math.min(1, 3 * player.getLookAngle().multiply(1, 0, 1).normalize().dot(player.getDeltaMovement()))));
 		return (!stamina.isExhausted()
-				&& !player.isShiftKeyDown()
 				&& Math.abs(player.getDeltaMovement().y()) < 0.2
 				&& KeyBindings.getKeyHangDown().isDown()
-				&& parkourability.getActionInfo().can(HangDown.class)
 				&& !parkourability.get(JumpFromBar.class).isDoing()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& WorldUtil.getHangableBars(player) != null
+				&& (KeyBindings.getKeyHangDown().getKey().equals(KeyBindings.getKeySneak().getKey()) || !player.isShiftKeyDown())
 		);
 	}
 
@@ -90,13 +90,20 @@ public class HangDown extends Action {
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		setup(player, startData);
-        player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
+		if (!KeyBindings.getKeyHangDown().getKey().equals(KeyBindings.getKeySneak().getKey())) {
+			parkourability.getCancelMarks().addMarkerCancellingSneak(this::isDoing);
+		}
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get()) {
+			player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
+		}
 	}
 
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
 		setup(player, startData);
-        player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get()) {
+			player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -103,10 +103,10 @@ public class ExaggeratedSideDodgeAnimator extends Animator {
 	}
 
 	@Override
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / Dodge_Max_Tick;
 		if (phase > 1) {
-			return;
+            return;
 		}
 		switch (direction) {
 			case Left: {
@@ -144,7 +144,7 @@ public class ExaggeratedSideDodgeAnimator extends Animator {
 						.end();
 				break;
 		}
-	}
+    }
 
 	@Override
 	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {

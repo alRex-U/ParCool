@@ -20,7 +20,6 @@ public class JumpFromBar extends Action {
 		HangDown hangDown = parkourability.get(HangDown.class);
 		return hangDown.isDoing()
 				&& hangDown.getDoingTick() > 2
-				&& parkourability.getActionInfo().can(JumpFromBar.class)
 				&& KeyRecorder.keyJumpState.isPressed();
 	}
 
@@ -40,6 +39,8 @@ public class JumpFromBar extends Action {
 
 	@Override
 	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+			player.playSound(SoundEvents.HANG_DOWN_JUMP.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new JumpFromBarAnimator());
 	}
