@@ -2,6 +2,7 @@ package com.alrex.parcool.common.info;
 
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -37,6 +38,11 @@ public abstract class ClientSetting {
         public Double get(ParCoolConfig.Client.Doubles item) {
             return item.DefaultValue;
         }
+
+        @Override
+        public IStamina.Type getStaminaType() {
+            return IStamina.Type.Default;
+        }
     }
 
     private static class Remote extends ClientSetting {
@@ -45,6 +51,7 @@ public abstract class ClientSetting {
         private final EnumMap<ParCoolConfig.Client.Booleans, Boolean> booleans = new EnumMap<>(ParCoolConfig.Client.Booleans.class);
         private final EnumMap<ParCoolConfig.Client.Integers, Integer> integers = new EnumMap<>(ParCoolConfig.Client.Integers.class);
         private final EnumMap<ParCoolConfig.Client.Doubles, Double> doubles = new EnumMap<>(ParCoolConfig.Client.Doubles.class);
+        private IStamina.Type staminaType = IStamina.Type.Default;
 
         public Remote() {
             Arrays.fill(actionPossibilities, true);
@@ -84,6 +91,11 @@ public abstract class ClientSetting {
         public Double get(ParCoolConfig.Client.Doubles item) {
             return doubles.get(item);
         }
+
+        @Override
+        public IStamina.Type getStaminaType() {
+            return staminaType;
+        }
     }
 
     public static final ClientSetting UNSYNCED_INSTANCE = new Default();
@@ -97,6 +109,8 @@ public abstract class ClientSetting {
     public abstract Integer get(ParCoolConfig.Client.Integers item);
 
     public abstract Double get(ParCoolConfig.Client.Doubles item);
+
+    public abstract IStamina.Type getStaminaType();
 
     @OnlyIn(Dist.CLIENT)
     public static ClientSetting readFromLocalConfig() {
@@ -114,6 +128,7 @@ public abstract class ClientSetting {
         for (ParCoolConfig.Client.Doubles item : ParCoolConfig.Client.Doubles.values()) {
             instance.doubles.put(item, item.get());
         }
+        instance.staminaType = ParCoolConfig.Client.StaminaType.get();
         return instance;
     }
 
@@ -131,6 +146,7 @@ public abstract class ClientSetting {
         for (ParCoolConfig.Client.Doubles item : ParCoolConfig.Client.Doubles.values()) {
             buffer.putDouble(get(item));
         }
+        buffer.putInt(getStaminaType().ordinal());
     }
 
     public static ClientSetting readFrom(ByteBuffer buffer) {
@@ -148,6 +164,7 @@ public abstract class ClientSetting {
         for (ParCoolConfig.Client.Doubles item : ParCoolConfig.Client.Doubles.values()) {
             instance.doubles.put(item, item.readFromBuffer(buffer));
         }
+        instance.staminaType = IStamina.Type.values()[buffer.getInt()];
         return instance;
     }
 

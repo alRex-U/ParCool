@@ -4,6 +4,7 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.action.impl.*;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.resources.ResourceLocation;
 import tictim.paraglider.api.movement.ParagliderPlayerStates;
@@ -12,7 +13,6 @@ import tictim.paraglider.api.movement.PlayerStateCondition;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class ParCoolPlayerStates {
     public static final Entry FAST_RUN = new Entry(FastRun.class)
@@ -22,13 +22,13 @@ public class ParCoolPlayerStates {
     public static final Entry CLING_TO_CLIFF = new Entry(ClingToCliff.class);
     public static final Entry BREAKFALL = new Entry(BreakfallReady.class)
             .condition(
-                    (p, s, b, f) -> Objects.requireNonNull(Parkourability.get(p)).get(BreakfallReady.class).isDoing() && !p.isFallFlying()
+                    (p, s, b, f) -> !p.isFallFlying()
             );
     public static final Entry DODGE = new Entry(Dodge.class).priority(4).parentID(ParagliderPlayerStates.IDLE, ParagliderPlayerStates.RUNNING);
     public static final Entry CLIMB_UP = new Entry(ClimbUp.class).parentID(CLING_TO_CLIFF.stateID());
     public static final Entry ROLL = new Entry(Roll.class).parentID(BREAKFALL.stateID())
             .condition(
-                    (p, s, b, f) -> Objects.requireNonNull(Parkourability.get(p)).get(Roll.class).isDoing() && !p.isFallFlying()
+                    (p, s, b, f) -> !p.isFallFlying()
             );
     public static final Entry HORIZONTAL_WALL_RUN = new Entry(HorizontalWallRun.class).parentID(ParagliderPlayerStates.MIDAIR);
     public static final Entry VERTICAL_WALL_RUN = new Entry(VerticalWallRun.class).parentID(ParagliderPlayerStates.MIDAIR);
@@ -66,12 +66,17 @@ public class ParCoolPlayerStates {
                     Collections.singletonList(ParagliderPlayerStates.IDLE),
                     -Math.min(15, ActionList.ACTION_REGISTRIES.get(ActionList.getIndexOf(clazz)).getDefaultStaminaConsumption()),
                     0,
-                    (p, s, b, f) -> Objects.requireNonNull(Parkourability.get(p)).get(clazz).isDoing()
+                    (p, s, b, f) -> {
+                        var parkourability = Parkourability.get(p);
+                        if (parkourability == null) return false;
+                        return parkourability.getClientInfo().getStaminaType() == IStamina.Type.Paraglider
+                                && parkourability.get(clazz).isDoing();
+                    }
             );
         }
 
-        public Entry condition(PlayerStateCondition value) {
-            return new Entry(clazz, stateID, parentID, staminaDelta, priority, value);
+        public Entry condition(PlayerStateCondition condition) {
+            return new Entry(clazz, stateID, parentID, staminaDelta, priority, (p, s, b, f) -> this.condition.test(p, s, b, f) && condition.test(p, s, b, f));
         }
 
         public Entry priority(double value) {
