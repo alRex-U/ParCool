@@ -98,7 +98,22 @@ public class Dive extends Action {
 	}
 
 	@Override
-	public void onStop(Player player) {
+	public void onStopInLocalClient(Player player) {
+		if (player.isInWaterOrBubble()) {
+			Animation animation = Animation.get(player);
+			Parkourability parkourability = Parkourability.get(player);
+			if (animation != null
+					&& parkourability != null
+					&& parkourability.getAdditionalProperties().getNotLandingTick() >= 5
+					&& player.getDeltaMovement().y() < 0
+			) {
+				animation.setAnimator(new DiveIntoWaterAnimator(parkourability.get(SkyDive.class).isDoing()));
+			}
+		}
+	}
+
+	@Override
+	public void onStopInOtherClient(Player player) {
 		if (player.isInWaterOrBubble()) {
             Animation animation = Animation.get(player);
             Parkourability parkourability = Parkourability.get(player);
