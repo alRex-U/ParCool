@@ -123,6 +123,7 @@ public class Slide extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	private void spawnSlidingParticle(PlayerEntity player) {
+		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		World level = player.level;
 		Vector3d pos = player.position();
 		BlockState feetBlock = player.level.getBlockState(player.blockPosition().below());

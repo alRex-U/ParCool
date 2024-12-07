@@ -229,6 +229,7 @@ public class HorizontalWallRun extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	public void spawnRunningParticle(PlayerEntity player) {
+		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		if (runningDirection == null || runningWallDirection == null) return;
 		World level = player.level;
 		Vector3d pos = player.position();

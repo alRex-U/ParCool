@@ -148,6 +148,14 @@ public class ParCoolConfig {
 					ConfigGroup.Other, "Enable sounds triggered by Action",
 					"enable_sounds", true
 			),
+			EnableActionParticles(
+					ConfigGroup.Other, "Enable particles triggered by Action",
+					"enable_particles", true
+			),
+			EnableActionParticlesOfJustTimeBreakfall(
+					ConfigGroup.Other, "Enable particles triggered by just-time breakfall",
+					"enable_particles_jt_breakfall", true
+			),
 			VaultKeyPressedNeeded(
 					ConfigGroup.Control, "Make Vault Need Vault Key Pressed",
 					"vault_needs_key_pressed", false
@@ -416,6 +424,7 @@ public class ParCoolConfig {
 		public static final ForgeConfigSpec.EnumValue<Crawl.ControlType> CrawlControl;
 		public static final ForgeConfigSpec.EnumValue<Flipping.ControlType> FlipControl;
 		public static final ForgeConfigSpec.EnumValue<HorizontalWallRun.ControlType> HWallRunControl;
+		public static final ForgeConfigSpec.EnumValue<WallJump.ControlType> WallJumpControl;
 		public static final ForgeConfigSpec.EnumValue<IStamina.Type> StaminaType;
 
 		private static void register(ForgeConfigSpec.Builder builder, ConfigGroup group) {
@@ -456,10 +465,11 @@ public class ParCoolConfig {
 			builder.pop();
 			builder.push("Control");
 			{
-				FastRunControl = builder.comment("Control of FastRun").defineEnum("fast-run_control", FastRun.ControlType.PressKey);
+				FastRunControl = builder.comment("Control of Fast Run").defineEnum("fast-run_control", FastRun.ControlType.PressKey);
 				CrawlControl = builder.comment("Control of Crawl").defineEnum("crawl_control", Crawl.ControlType.PressKey);
 				FlipControl = builder.comment("Control of Flipping").defineEnum("flip_control", Flipping.ControlType.PressRightAndLeft);
 				HWallRunControl = builder.comment("Control of Horizontal Wall Run").defineEnum("h-wall-run_control", HorizontalWallRun.ControlType.PressKey);
+				WallJumpControl = builder.comment("Control of Wall Jump").defineEnum("wall-jump_control", WallJump.ControlType.PressKey);
 				register(builder, ConfigGroup.Control);
 			}
 			builder.pop();
