@@ -803,10 +803,12 @@ public class ParCoolConfig {
 				{
 					register(builder, ConfigGroup.Control);
 				}
+				builder.pop();
 				builder.push("Modifier");
 				{
 					register(builder, ConfigGroup.Modifier);
 				}
+				builder.pop();
 			}
 			builder.pop();
 			BUILT_CONFIG = builder.build();
