@@ -239,11 +239,11 @@ public class ParCoolConfig {
 			),
 			WallRunContinuableTick(
 					ConfigGroup.Modifier, "How long you can do Horizontal Wall Run",
-					"wall-run_continuable_tick", 25, 15, 40
+					"wall-run_continuable_tick", 25, Server.Integers.MaxWallRunContinuableTick.Min, Server.Integers.MaxWallRunContinuableTick.Max
 			),
 			SlidingContinuableTick(
 					ConfigGroup.Modifier, "How long you can do Slide",
-					"sliding_continuable_tick", 15, 10, 30
+					"sliding_continuable_tick", 15, Server.Integers.MaxSlidingContinuableTick.Min, Server.Integers.MaxSlidingContinuableTick.Max
 			),
 			SuccessiveDodgeCoolTime(
 					ConfigGroup.Control, "How long duration of dodge is deal as successive dodge",
@@ -326,15 +326,15 @@ public class ParCoolConfig {
 		public enum Doubles implements Item<Double> {
 			FastRunSpeedModifier(
 					ConfigGroup.Modifier, "FastRun speed modifier",
-					"fast-run_modifier", 2, 0.001, 4
+					"fast-run_modifier", 2, Server.Doubles.MaxFastRunSpeedModifier.Min, Server.Doubles.MaxFastRunSpeedModifier.Max
 			),
 			FastSwimSpeedModifier(
 					ConfigGroup.Modifier, "FastSwim speed modifier",
-					"fast-swim_modifier", 2, 0.001, 4
+					"fast-swim_modifier", 2, Server.Doubles.MaxFastSwimSpeedModifier.Min, Server.Doubles.MaxFastSwimSpeedModifier.Max
 			),
 			DodgeSpeedModifier(
 					ConfigGroup.Modifier, "Dodge speed modifier",
-					"dodge-speed_modifier", 1, 0.5, 1.5
+					"dodge-speed_modifier", 1, Server.Doubles.MaxDodgeSpeedModifier.Min, Server.Doubles.MaxDodgeSpeedModifier.Max
 			);
 			public final ConfigGroup Group;
 			@Nullable
@@ -589,11 +589,11 @@ public class ParCoolConfig {
 			),
 			MaxWallRunContinuableTick(
 					ConfigGroup.Modifier, "How long you can do Horizontal Wall Run",
-					"wall-run_continuable_tick", 40, 15, 40, AdvantageousDirection.Higher
+					"wall-run_continuable_tick", 40, 15, 100, AdvantageousDirection.Higher
 			),
 			MaxSlidingContinuableTick(
 					ConfigGroup.Modifier, "How long you can do Slide",
-					"sliding_continuable_tick", 30, 10, 30, AdvantageousDirection.Higher
+					"sliding_continuable_tick", 30, 10, 60, AdvantageousDirection.Higher
 			);
 			public final ConfigGroup Group;
 			@Nullable
@@ -667,15 +667,15 @@ public class ParCoolConfig {
 		public enum Doubles implements Item<Double> {
 			MaxFastRunSpeedModifier(
 					ConfigGroup.Modifier, "FastRun speed modifier",
-					"max_fast-run_modifier", 2, 0.001, 4, AdvantageousDirection.Higher
+					"max_fast-run_modifier", 2, 0.001, 10, AdvantageousDirection.Higher
 			),
 			MaxFastSwimSpeedModifier(
 					ConfigGroup.Modifier, "FastSwim speed modifier",
-					"max_fast-swim_modifier", 2, 0.001, 4, AdvantageousDirection.Higher
+					"max_fast-swim_modifier", 2, 0.001, 10, AdvantageousDirection.Higher
 			),
 			MaxDodgeSpeedModifier(
 					ConfigGroup.Modifier, "Dodge speed modifier",
-					"max_dodge-speed_modifier", 1, 0.5, 1.5, AdvantageousDirection.Higher
+					"max_dodge-speed_modifier", 1, 0.5, 3, AdvantageousDirection.Higher
 			);
 			public final ConfigGroup Group;
 			@Nullable
