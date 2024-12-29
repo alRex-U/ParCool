@@ -120,6 +120,10 @@ public class ParCoolConfig {
 					ConfigGroup.Control, "Enable double-tapping ctrl for Dodge",
 					"enable_double_tapping_for_dodge", false
 			),
+			EnableWallJumpCooldown(
+					ConfigGroup.Control, "Enable cooldown of wall jump",
+					"enable_wall_jump_cooldown", true
+			),
 			EnableCrawlInAir(
 					ConfigGroup.Control, "Enable Crawl in air",
 					"enable_crawl_in_air", true
@@ -512,7 +516,12 @@ public class ParCoolConfig {
 			AllowInfiniteStamina(
 					ConfigGroup.Stamina, "Permission of infinite stamina",
 					"allow_infinite_stamina", true, true
-			);
+			),
+			AllowDisableWallJumpCooldown(
+					ConfigGroup.Control, "Allow disabling cooldown of wall jump",
+					"allow_disabling_wall_jump_cooldown", true, true
+			),
+			;
 			public final ConfigGroup Group;
 			@Nullable
 			public final String Comment;

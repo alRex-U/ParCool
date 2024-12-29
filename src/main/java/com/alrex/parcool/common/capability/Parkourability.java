@@ -7,6 +7,7 @@ import com.alrex.parcool.common.action.CancelMarks;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
+import com.alrex.parcool.common.info.ServerLimitation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -69,6 +70,10 @@ public class Parkourability {
 
 	public ClientSetting getClientInfo() {
 		return info.getClientSetting();
+	}
+
+	public ServerLimitation getServerLimitation() {
+		return info.getServerLimitation();
 	}
 
 	public List<Action> getList() {

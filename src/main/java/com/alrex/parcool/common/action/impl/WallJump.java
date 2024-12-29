@@ -36,7 +36,13 @@ public class WallJump extends Action {
 		return jump;
 	}
 
-	private final float MAX_COOL_DOWN_TICK = 8;
+	private static final float MAX_COOL_DOWN_TICK = 8;
+
+	private boolean isInCooldown(Parkourability parkourability) {
+		return (parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.EnableWallJumpCooldown)
+				|| !parkourability.getServerLimitation().get(ParCoolConfig.Server.Booleans.AllowDisableWallJumpCooldown))
+				&& getNotDoingTick() <= MAX_COOL_DOWN_TICK;
+	}
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		jump = false;
@@ -80,7 +86,6 @@ public class WallJump extends Action {
 		ControlType control = ParCoolConfig.Client.WallJumpControl.get();
 
 		boolean value = (!stamina.isExhausted()
-				&& getNotDoingTick() > MAX_COOL_DOWN_TICK
 				&& !player.isOnGround()
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
@@ -92,6 +97,7 @@ public class WallJump extends Action {
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(VerticalWallRun.class).isDoing()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 4
+				&& !isInCooldown(parkourability)
 				&& WorldUtil.getWall(player) != null
 		);
 		if (!value) return false;
