@@ -26,6 +26,9 @@ import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
 public class WallJump extends Action {
+	public enum ControlType {
+		PressKey, ReleaseKey
+	}
 
 	private boolean jump = false;
 
@@ -33,8 +36,13 @@ public class WallJump extends Action {
 		return jump;
 	}
 
-	private final float MAX_COOL_DOWN_TICK = 8;
+	private static final float MAX_COOL_DOWN_TICK = 8;
 
+	private boolean isInCooldown(Parkourability parkourability) {
+		return (parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.EnableWallJumpCooldown)
+				|| !parkourability.getServerLimitation().get(ParCoolConfig.Server.Booleans.AllowDisableWallJumpCooldown))
+				&& getNotDoingTick() <= MAX_COOL_DOWN_TICK;
+	}
 	@Override
 	public void onTick(Player player, Parkourability parkourability, IStamina stamina) {
 		jump = false;
@@ -71,13 +79,13 @@ public class WallJump extends Action {
 
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		Vec3 wallDirection = WorldUtil.getWall(player);
+		Vec3 wallDirection = WorldUtil.getWall(player, player.getBbWidth() * 0.65);
 		Vec3 jumpDirection = getJumpDirection(player, wallDirection);
 		if (jumpDirection == null) return false;
 		ClingToCliff cling = parkourability.get(ClingToCliff.class);
+		ControlType control = ParCoolConfig.Client.WallJumpControl.get();
 
 		boolean value = (!stamina.isExhausted()
-				&& getNotDoingTick() > MAX_COOL_DOWN_TICK
 				&& !player.onGround()
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
@@ -85,11 +93,11 @@ public class WallJump extends Action {
 				&& parkourability.getAdditionalProperties().getNotCreativeFlyingTick() > 10
 				&& ((!cling.isDoing() && cling.getNotDoingTick() > 3)
 				|| (cling.isDoing() && cling.getFacingDirection() != ClingToCliff.FacingDirection.ToWall))
-				&& KeyRecorder.keyWallJump.isPressed()
+				&& ((control == ControlType.PressKey && KeyRecorder.keyWallJump.isPressed()) || (control == ControlType.ReleaseKey && KeyRecorder.keyWallJump.isReleased()))
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(VerticalWallRun.class).isDoing()
-                && parkourability.getAdditionalProperties().getNotLandingTick() > 4
-				&& WorldUtil.getWall(player) != null
+				&& parkourability.getAdditionalProperties().getNotLandingTick() > 4
+				&& !isInCooldown(parkourability)
 		);
 		if (!value) return false;
 
@@ -228,18 +236,19 @@ public class WallJump extends Action {
 		super.onWorkingTickInClient(player, parkourability, stamina);
 	}
 
-    @OnlyIn(Dist.CLIENT)
-    private void spawnJumpParticles(Player player, Vec3 wallDirection, Vec3 jumpDirection) {
-        Level level = player.level();
-        Vec3 pos = player.position();
+	@OnlyIn(Dist.CLIENT)
+	private void spawnJumpParticles(Player player, Vec3 wallDirection, Vec3 jumpDirection) {
+		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
+		Level level = player.level;
+		Vec3 pos = player.position();
         BlockPos leanedBlock = new BlockPos(
                 (int) Math.floor(pos.x() + wallDirection.x()),
                 (int) Math.floor(pos.y() + player.getBbHeight() * 0.25),
                 (int) Math.floor(pos.z() + wallDirection.z())
         );
-        if (!level.isLoaded(leanedBlock)) return;
-        float width = player.getBbWidth();
-        BlockState blockstate = level.getBlockState(leanedBlock);
+		if (!level.isLoaded(leanedBlock)) return;
+		float width = player.getBbWidth();
+		BlockState blockstate = level.getBlockState(leanedBlock);
 
         Vec3 horizontalJumpDirection = jumpDirection.multiply(1, 0, 1).normalize();
 

@@ -134,19 +134,20 @@ public class VerticalWallRun extends Action {
 		return StaminaConsumeTiming.OnStart;
 	}
 
-    @OnlyIn(Dist.CLIENT)
-    public void spawnRunningParticle(Player player) {
-        if (wallDirection == null) return;
-        Level level = player.level();
-        Vec3 pos = player.position();
+	@OnlyIn(Dist.CLIENT)
+	public void spawnRunningParticle(Player player) {
+		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
+		if (wallDirection == null) return;
+		Level level = player.level();
+		Vec3 pos = player.position();
         BlockPos leanedBlock = new BlockPos(
                 (int) Math.floor(pos.x() + wallDirection.x()),
                 (int) Math.floor(pos.y() + player.getBbHeight() * 0.25),
                 (int) Math.floor(pos.z() + wallDirection.z())
         );
-        if (!level.isLoaded(leanedBlock)) return;
-        float width = player.getBbWidth();
-        BlockState blockstate = level.getBlockState(leanedBlock);
+		if (!level.isLoaded(leanedBlock)) return;
+		float width = player.getBbWidth();
+		BlockState blockstate = level.getBlockState(leanedBlock);
 
         Vec3 normalizedWallVec = wallDirection.normalize();
         Vec3 orthogonalToWallVec = normalizedWallVec.yRot((float) (Math.PI / 2));
