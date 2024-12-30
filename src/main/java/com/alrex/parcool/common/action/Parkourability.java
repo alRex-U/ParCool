@@ -2,6 +2,7 @@ package com.alrex.parcool.common.action;
 
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
+import com.alrex.parcool.common.info.ServerLimitation;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
@@ -90,6 +91,10 @@ public class Parkourability {
     public ClientSetting getClientInfo() {
         return info.getClientSetting();
 	}
+
+    public ServerLimitation getServerLimitation() {
+        return info.getServerLimitation();
+    }
 
 	public List<Action> getList() {
 		return actions;

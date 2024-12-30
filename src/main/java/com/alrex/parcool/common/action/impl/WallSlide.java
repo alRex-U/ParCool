@@ -8,6 +8,7 @@ import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.attachment.Attachments;
 import com.alrex.parcool.common.damage.DamageSources;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -122,20 +123,21 @@ public class WallSlide extends Action {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
-    private void spawnSlideParticle(Player player) {
-        if (leanedWallDirection == null) return;
-        if (player.getRandom().nextBoolean()) return;
-        Level level = player.level();
-        Vec3 pos = player.position();
+	@OnlyIn(Dist.CLIENT)
+	private void spawnSlideParticle(Player player) {
+		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
+		if (leanedWallDirection == null) return;
+		if (player.getRandom().nextBoolean()) return;
+		Level level = player.level();
+		Vec3 pos = player.position();
         BlockPos leanedBlock = new BlockPos(
                 (int) Math.floor(pos.x() + leanedWallDirection.x()),
                 (int) Math.floor(pos.y() + player.getBbHeight() * 0.25),
                 (int) Math.floor(pos.z() + leanedWallDirection.z())
         );
-        if (!level.isLoaded(leanedBlock)) return;
-        float width = player.getBbWidth();
-        BlockState blockstate = level.getBlockState(leanedBlock);
+		if (!level.isLoaded(leanedBlock)) return;
+		float width = player.getBbWidth();
+		BlockState blockstate = level.getBlockState(leanedBlock);
 
         Vec3 normalizedWallVec = leanedWallDirection.normalize();
         Vec3 orthogonalToWallVec = normalizedWallVec.yRot((float) (Math.PI / 2));

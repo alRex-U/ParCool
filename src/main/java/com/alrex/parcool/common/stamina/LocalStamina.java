@@ -26,7 +26,6 @@ public class LocalStamina {
         instance = null;
     }
 
-
     private LocalStamina(LocalPlayer player) {
         this.player = player;
     }
@@ -36,15 +35,12 @@ public class LocalStamina {
     private StaminaType currentType = null;
     @Nullable
     private IParCoolStaminaHandler handler = null;
-    private int oldValue;
-    private int value;
 
     public boolean isAvailable() {
         return handler != null && currentType != null;
     }
 
     public boolean isInfinite() {
-
         return player.isCreative() || player.isSpectator() || handler instanceof InfiniteStaminaHandler;
     }
 

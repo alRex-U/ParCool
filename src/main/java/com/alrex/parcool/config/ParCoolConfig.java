@@ -78,7 +78,7 @@ public class ParCoolConfig {
             ),
 			EnableFPVAnimation(
 					ConfigGroup.CameraAnimation, "Enable first-person-view animations",
-                    "enable_fov_animation", false
+					"enable_fpv_animation", false
 			),
 			EnableCameraAnimationOfDodge(
 					ConfigGroup.CameraAnimation, "Enable rotation of camera by Dodge",
@@ -116,6 +116,10 @@ public class ParCoolConfig {
 					ConfigGroup.Control, "Enable double-tapping ctrl for Dodge",
 					"enable_double_tapping_for_dodge", false
 			),
+			EnableWallJumpCooldown(
+					ConfigGroup.Control, "Enable cooldown of wall jump",
+					"enable_wall_jump_cooldown", true
+			),
 			EnableCrawlInAir(
 					ConfigGroup.Control, "Enable Crawl in air",
 					"enable_crawl_in_air", true
@@ -143,6 +147,14 @@ public class ParCoolConfig {
 			EnableActionSounds(
 					ConfigGroup.Other, "Enable sounds triggered by Action",
 					"enable_sounds", true
+			),
+			EnableActionParticles(
+					ConfigGroup.Other, "Enable particles triggered by Action",
+					"enable_particles", true
+			),
+			EnableActionParticlesOfJustTimeBreakfall(
+					ConfigGroup.Other, "Enable particles triggered by just-time breakfall",
+					"enable_particles_jt_breakfall", true
 			),
 			VaultKeyPressedNeeded(
 					ConfigGroup.Control, "Make Vault Need Vault Key Pressed",
@@ -235,11 +247,11 @@ public class ParCoolConfig {
 			),
 			WallRunContinuableTick(
 					ConfigGroup.Modifier, "How long you can do Horizontal Wall Run",
-					"wall-run_continuable_tick", 25, 15, 40
+					"wall-run_continuable_tick", 25, Server.Integers.MaxWallRunContinuableTick.Min, Server.Integers.MaxWallRunContinuableTick.Max
 			),
 			SlidingContinuableTick(
 					ConfigGroup.Modifier, "How long you can do Slide",
-					"sliding_continuable_tick", 15, 10, 30
+					"sliding_continuable_tick", 15, Server.Integers.MaxSlidingContinuableTick.Min, Server.Integers.MaxSlidingContinuableTick.Max
 			),
 			SuccessiveDodgeCoolTime(
 					ConfigGroup.Control, "How long duration of dodge is deal as successive dodge",
@@ -322,15 +334,15 @@ public class ParCoolConfig {
 		public enum Doubles implements Item<Double> {
 			FastRunSpeedModifier(
 					ConfigGroup.Modifier, "FastRun speed modifier",
-					"fast-run_modifier", 2, 0.001, 4
+					"fast-run_modifier", 2, Server.Doubles.MaxFastRunSpeedModifier.Min, Server.Doubles.MaxFastRunSpeedModifier.Max
 			),
-            FastSwimSpeedModifier(
-                    ConfigGroup.Modifier, "FastSwim speed modifier",
-                    "fast-swim_modifier", 2, 0.001, 4
-            ),
+			FastSwimSpeedModifier(
+					ConfigGroup.Modifier, "FastSwim speed modifier",
+					"fast-swim_modifier", 2, Server.Doubles.MaxFastSwimSpeedModifier.Min, Server.Doubles.MaxFastSwimSpeedModifier.Max
+			),
 			DodgeSpeedModifier(
 					ConfigGroup.Modifier, "Dodge speed modifier",
-					"dodge-speed_modifier", 1, 0.5, 1.5
+					"dodge-speed_modifier", 1, Server.Doubles.MaxDodgeSpeedModifier.Min, Server.Doubles.MaxDodgeSpeedModifier.Max
 			);
 			public final ConfigGroup Group;
 			@Nullable
@@ -413,6 +425,7 @@ public class ParCoolConfig {
 		public static final ModConfigSpec.EnumValue<Crawl.ControlType> CrawlControl;
 		public static final ModConfigSpec.EnumValue<Flipping.ControlType> FlipControl;
 		public static final ModConfigSpec.EnumValue<HorizontalWallRun.ControlType> HWallRunControl;
+		public static final ModConfigSpec.EnumValue<WallJump.ControlType> WallJumpControl;
 
 		private static void register(ModConfigSpec.Builder builder, ConfigGroup group) {
 			Arrays.stream(Booleans.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
@@ -452,10 +465,11 @@ public class ParCoolConfig {
 			builder.pop();
 			builder.push("Control");
 			{
-				FastRunControl = builder.comment("Control of FastRun").defineEnum("fast-run_control", FastRun.ControlType.PressKey);
-                CrawlControl = builder.comment("Control of Crawl").defineEnum("crawl_control", Crawl.ControlType.PressKey);
-                FlipControl = builder.comment("Control of Flipping").defineEnum("flip_control", Flipping.ControlType.PressRightAndLeft);
-                HWallRunControl = builder.comment("Control of Horizontal Wall Run").defineEnum("h-wall-run_control", HorizontalWallRun.ControlType.PressKey);
+				FastRunControl = builder.comment("Control of Fast Run").defineEnum("fast-run_control", FastRun.ControlType.PressKey);
+				CrawlControl = builder.comment("Control of Crawl").defineEnum("crawl_control", Crawl.ControlType.PressKey);
+				FlipControl = builder.comment("Control of Flipping").defineEnum("flip_control", Flipping.ControlType.PressRightAndLeft);
+				HWallRunControl = builder.comment("Control of Horizontal Wall Run").defineEnum("h-wall-run_control", HorizontalWallRun.ControlType.PressKey);
+				WallJumpControl = builder.comment("Control of Wall Jump").defineEnum("wall-jump_control", WallJump.ControlType.PressKey);
 				register(builder, ConfigGroup.Control);
 			}
 			builder.pop();
@@ -497,8 +511,13 @@ public class ParCoolConfig {
 		public enum Booleans implements Item<Boolean> {
 			AllowInfiniteStamina(
 					ConfigGroup.Stamina, "Permission of infinite stamina",
-                    "allow_infinite_stamina", true, true
-			);
+					"allow_infinite_stamina", true, true
+			),
+			AllowDisableWallJumpCooldown(
+					ConfigGroup.Control, "Allow disabling cooldown of wall jump",
+					"allow_disabling_wall_jump_cooldown", true, true
+			),
+			;
 			public final ConfigGroup Group;
 			@Nullable
 			public final String Comment;
@@ -585,11 +604,11 @@ public class ParCoolConfig {
 			),
 			MaxWallRunContinuableTick(
 					ConfigGroup.Modifier, "How long you can do Horizontal Wall Run",
-                    "wall-run_continuable_tick", 40, 15, 40, AdvantageousDirection.Higher
+					"wall-run_continuable_tick", 40, 15, 100, AdvantageousDirection.Higher
 			),
 			MaxSlidingContinuableTick(
 					ConfigGroup.Modifier, "How long you can do Slide",
-                    "sliding_continuable_tick", 30, 10, 30, AdvantageousDirection.Higher
+					"sliding_continuable_tick", 30, 10, 60, AdvantageousDirection.Higher
 			);
 			public final ConfigGroup Group;
 			@Nullable
@@ -663,15 +682,15 @@ public class ParCoolConfig {
 		public enum Doubles implements Item<Double> {
 			MaxFastRunSpeedModifier(
 					ConfigGroup.Modifier, "FastRun speed modifier",
-                    "max_fast-run_modifier", 2, 0.001, 4, AdvantageousDirection.Higher
-            ),
-            MaxFastSwimSpeedModifier(
-                    ConfigGroup.Modifier, "FastSwim speed modifier",
-                    "max_fast-swim_modifier", 2, 0.001, 4, AdvantageousDirection.Higher
+					"max_fast-run_modifier", 2, 0.001, 10, AdvantageousDirection.Higher
+			),
+			MaxFastSwimSpeedModifier(
+					ConfigGroup.Modifier, "FastSwim speed modifier",
+					"max_fast-swim_modifier", 2, 0.001, 10, AdvantageousDirection.Higher
 			),
 			MaxDodgeSpeedModifier(
 					ConfigGroup.Modifier, "Dodge speed modifier",
-                    "max_dodge-speed_modifier", 1, 0.5, 1.5, AdvantageousDirection.Higher
+					"max_dodge-speed_modifier", 1, 0.5, 3, AdvantageousDirection.Higher
 			);
 			public final ConfigGroup Group;
 			@Nullable
@@ -810,10 +829,12 @@ public class ParCoolConfig {
 				{
 					register(builder, ConfigGroup.Control);
 				}
+				builder.pop();
 				builder.push("Modifier");
 				{
 					register(builder, ConfigGroup.Modifier);
 				}
+				builder.pop();
 			}
 			builder.pop();
 			BUILT_CONFIG = builder.build();
