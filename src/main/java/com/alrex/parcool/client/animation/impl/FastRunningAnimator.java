@@ -6,7 +6,6 @@ import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.FastRun;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.extern.paraglider.ParagliderManager;
 import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
@@ -32,7 +31,6 @@ public class FastRunningAnimator extends Animator {
 	@Override
 	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		limbSwing = transformer.getLimbSwing();
-		if (ParagliderManager.isFallingWithParaglider(player)) return;
 		float phase = (getTick() + transformer.getPartialTick()) / 10;
 		if (phase > 1) phase = 1;
 		float bodyAngleFactor = bodyAngleFactor(phase);

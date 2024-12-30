@@ -4,9 +4,6 @@ import com.alrex.parcool.api.client.gui.ParCoolHUDEvent;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.stamina.HungerStamina;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.extern.epicfight.EpicFightManager;
-import com.alrex.parcool.extern.feathers.FeathersManager;
-import com.alrex.parcool.extern.paraglider.ParagliderManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -40,14 +37,11 @@ public class StaminaHUDController implements IGuiOverlay {
 		AbstractClientPlayer player = Minecraft.getInstance().player;
 		if (player == null) return;
 		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get() ||
-				(IStamina.get(player) instanceof HungerStamina) ||
-				EpicFightManager.isUsingEpicFightStamina(player) ||
-				FeathersManager.isUsingFeathers(player) ||
-				ParagliderManager.isUsingParaglider(player)
+				(IStamina.get(player) instanceof HungerStamina)
 		)
 			return;
 
-		if (MinecraftForge.EVENT_BUS.post(new ParCoolHUDEvent.RenderEvent(gui, poseStack, partialTick, width, height)))
+		if (MinecraftForge.EVENT_BUS.post(new ParCoolHUDEvent.RenderEvent(gui, graphics, partialTick, width, height)))
 			return;
 
 		switch (ParCoolConfig.Client.StaminaHUDType.get()) {

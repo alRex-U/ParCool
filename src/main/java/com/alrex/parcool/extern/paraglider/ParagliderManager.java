@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
 import tictim.paraglider.api.item.Paraglider;
 
@@ -21,6 +22,9 @@ public class ParagliderManager {
 		@Nullable
 		var mod = ModList.get().getModFileById("paraglider");
 		paragliderInstalled = mod != null;
+		if (isParagliderInstalled()) {
+			MinecraftForge.EVENT_BUS.register(EventConsumerForParaglider.class);
+		}
 	}
 
 	@Nullable
@@ -30,7 +34,7 @@ public class ParagliderManager {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static boolean isUsingParaglider(Player player) {
+	public static boolean isUsingParagliderStamina(Player player) {
 		return paragliderInstalled && IStamina.get(player) instanceof ParagliderStamina;
 	}
 

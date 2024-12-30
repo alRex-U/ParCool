@@ -239,7 +239,7 @@ public class WallJump extends Action {
 	@OnlyIn(Dist.CLIENT)
 	private void spawnJumpParticles(Player player, Vec3 wallDirection, Vec3 jumpDirection) {
 		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
-		Level level = player.level;
+		Level level = player.level();
 		Vec3 pos = player.position();
         BlockPos leanedBlock = new BlockPos(
                 (int) Math.floor(pos.x() + wallDirection.x()),

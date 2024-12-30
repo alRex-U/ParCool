@@ -1,9 +1,11 @@
 package com.alrex.parcool.extern.epicfight;
 
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.extern.feathers.EventConsumerForFeathers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -21,6 +23,9 @@ public class EpicFightManager {
         @Nullable
         var mod = ModList.get().getModFileById("epicfight");
         modInstalled = mod != null;
+        if (isEpicFightInstalled()) {
+            MinecraftForge.EVENT_BUS.register(EventConsumerForFeathers.class);
+        }
     }
 
     public static IStamina newEpicFightStaminaFor(Player player) {
