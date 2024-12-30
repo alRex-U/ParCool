@@ -121,6 +121,7 @@ public class CatLeap extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	private void spawnJumpEffect(Player player, Vec3 jumpDirection) {
+		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		Level level = player.level;
 		Vec3 pos = player.position();
 		BlockPos blockpos = new BlockPos(pos.add(0, -0.2, 0));

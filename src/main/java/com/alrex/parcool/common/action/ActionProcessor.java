@@ -42,16 +42,19 @@ public class ActionProcessor {
 
 	@SubscribeEvent
 	public void onTick(TickEvent.PlayerTickEvent event) {
-		if (event.phase == TickEvent.Phase.START) return;
 		Player player = event.player;
-		Parkourability parkourability = Parkourability.get(player);
 		IStamina stamina = IStamina.get(player);
-		if (parkourability == null || stamina == null) return;
+		if (stamina == null) return;
+		if (event.phase == TickEvent.Phase.START) {
+			stamina.tick();
+			return;
+		}
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) return;
 		List<Action> actions = parkourability.getList();
 		boolean needSync = event.side == LogicalSide.CLIENT && player.isLocalPlayer();
 		SyncActionStateMessage.Encoder builder = SyncActionStateMessage.Encoder.reset();
 
-		stamina.tick();
 		parkourability.getAdditionalProperties().onTick(player, parkourability);
 		for (Action action : actions) {
 			StaminaConsumeTiming timing = action.getStaminaConsumeTiming();
