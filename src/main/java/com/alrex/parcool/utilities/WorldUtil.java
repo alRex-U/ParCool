@@ -64,7 +64,10 @@ public class WorldUtil {
 
 	@Nullable
 	public static Vector3d getWall(LivingEntity entity) {
-		double range = entity.getBbWidth() / 2;
+		return getWall(entity, entity.getBbWidth() * 0.5);
+	}
+	@Nullable
+	public static Vector3d getWall(LivingEntity entity, double range) {
 		final double width = entity.getBbWidth() * 0.49;
 		double wallX = 0;
 		double wallZ = 0;

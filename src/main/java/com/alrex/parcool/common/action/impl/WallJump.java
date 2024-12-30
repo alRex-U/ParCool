@@ -79,7 +79,7 @@ public class WallJump extends Action {
 
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		Vector3d wallDirection = WorldUtil.getWall(player);
+		Vector3d wallDirection = WorldUtil.getWall(player, player.getBbWidth() * 0.65);
 		Vector3d jumpDirection = getJumpDirection(player, wallDirection);
 		if (jumpDirection == null) return false;
 		ClingToCliff cling = parkourability.get(ClingToCliff.class);
@@ -98,7 +98,6 @@ public class WallJump extends Action {
 				&& !parkourability.get(VerticalWallRun.class).isDoing()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 4
 				&& !isInCooldown(parkourability)
-				&& WorldUtil.getWall(player) != null
 		);
 		if (!value) return false;
 
