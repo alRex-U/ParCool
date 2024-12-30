@@ -121,6 +121,7 @@ public class Slide extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	private void spawnSlidingParticle(Player player) {
+		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		var level = player.level;
 		var pos = player.position();
 		var feetBlock = player.level.getBlockState(player.blockPosition().below());

@@ -53,7 +53,7 @@ public class HorizontalWallRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
-        Vec3 wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() / 2);
+		Vec3 wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
 		if (wallDirection == null) return;
 		if (runningWallDirection == null) return;
 		if (runningDirection == null) return;
@@ -90,7 +90,7 @@ public class HorizontalWallRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-        Vec3 wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() / 2);
+		Vec3 wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
 		if (wallDirection == null) return false;
 		Vec3 wallVec = wallDirection.normalize();
 		Vec3 lookDirection = VectorUtil.fromYawDegree(player.yBodyRot);
@@ -138,7 +138,7 @@ public class HorizontalWallRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
-        Vec3 wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() / 2);
+		Vec3 wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
 		if (wallDirection == null) return false;
 		return (getDoingTick() < getMaxRunningTick(parkourability.getActionInfo())
 				&& !stamina.isExhausted()
@@ -226,17 +226,18 @@ public class HorizontalWallRun extends Action {
 		return StaminaConsumeTiming.OnWorking;
 	}
 
-    @OnlyIn(Dist.CLIENT)
-    public void spawnRunningParticle(Player player) {
-        if (runningDirection == null || runningWallDirection == null) return;
-        Level level = player.level;
-        Vec3 pos = player.position();
-        BlockPos leanedBlock = new BlockPos(
-                pos.add(runningWallDirection.x(), player.getBbHeight() * 0.25, runningWallDirection.z())
-        );
-        if (!level.isLoaded(leanedBlock)) return;
-        float width = player.getBbWidth();
-        BlockState blockstate = level.getBlockState(leanedBlock);
+	@OnlyIn(Dist.CLIENT)
+	public void spawnRunningParticle(Player player) {
+		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
+		if (runningDirection == null || runningWallDirection == null) return;
+		Level level = player.level;
+		Vec3 pos = player.position();
+		BlockPos leanedBlock = new BlockPos(
+				pos.add(runningWallDirection.x(), player.getBbHeight() * 0.25, runningWallDirection.z())
+		);
+		if (!level.isLoaded(leanedBlock)) return;
+		float width = player.getBbWidth();
+		BlockState blockstate = level.getBlockState(leanedBlock);
 
         Vec3 wallDirection = runningWallDirection.normalize();
         Vec3 orthogonalToWallVec = wallDirection.yRot((float) (Math.PI / 2));

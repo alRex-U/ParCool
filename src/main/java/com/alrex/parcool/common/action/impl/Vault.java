@@ -10,7 +10,6 @@ import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -27,32 +26,20 @@ public class Vault extends Action {
 	public static final int MAX_TICK = 11;
 
 	public enum AnimationType {
-		SpeedVault((byte) 0), KongVault((byte) 1);
-		private final byte code;
-
-		AnimationType(byte code) {
-			this.code = code;
-		}
-
-		public byte getCode() {
-			return code;
-		}
-
-		@Nullable
-		public static AnimationType fromCode(byte code) {
-			switch (code) {
-				case 0:
-					return SpeedVault;
-				case 1:
-					return KongVault;
-			}
-			return null;
-		}
+		SPEED_VAULT_RIGHT, SPEED_VAULT_LEFT, KONG_VAULT
 	}
 
 	//only in client
 	private double stepHeight = 0;
 	private Vec3 stepDirection = null;
+	@Nullable
+	private AnimationType currentAnimation;
+
+	@Nullable
+	public AnimationType getCurrentAnimation() {
+		if (!isDoing()) return null;
+		return currentAnimation;
+	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
@@ -71,29 +58,25 @@ public class Vault extends Action {
 		if (dividedVec.x() < 0.707106) {
 			return false;
 		}
-		AnimationType animationType = null;
-		SpeedVaultAnimator.Type type = SpeedVaultAnimator.Type.Right;
+		AnimationType animationType;
 		switch (ParCoolConfig.Client.VaultAnimationMode.get()) {
 			case KongVault:
-				animationType = AnimationType.KongVault;
+				animationType = AnimationType.KONG_VAULT;
 				break;
 			case SpeedVault:
-				animationType = AnimationType.SpeedVault;
-				type = dividedVec.z() > 0 ? SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
+				animationType = dividedVec.z() > 0 ? AnimationType.SPEED_VAULT_RIGHT : AnimationType.SPEED_VAULT_LEFT;
 				break;
 			default:
 				if (dividedVec.x() > 0.99) {
-					animationType = AnimationType.KongVault;
+					animationType = AnimationType.KONG_VAULT;
 				} else {
-					animationType = AnimationType.SpeedVault;
-					type = dividedVec.z() > 0 ? SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
+					animationType = dividedVec.z() > 0 ? AnimationType.SPEED_VAULT_RIGHT : AnimationType.SPEED_VAULT_LEFT;
 				}
 				break;
 		}
 		double wallHeight = WorldUtil.getWallHeight(player);
-		startInfo.put(animationType.getCode());
-		BufferUtil.wrap(startInfo).putBoolean(type == SpeedVaultAnimator.Type.Right);
 		startInfo
+				.put((byte) animationType.ordinal())
 				.putDouble(step.x())
 				.putDouble(step.y())
 				.putDouble(step.z())
@@ -120,20 +103,21 @@ public class Vault extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
-		AnimationType animationType = AnimationType.fromCode(startData.get());
-		SpeedVaultAnimator.Type speedVaultType = BufferUtil.getBoolean(startData) ?
-				SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
+		currentAnimation = AnimationType.values()[startData.get()];
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.VAULT.get(), 1f, 1f);
 		stepDirection = new Vec3(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		stepHeight = startData.getDouble();
 		Animation animation = Animation.get(player);
-		if (animation != null && animationType != null) {
-			switch (animationType) {
-				case SpeedVault:
-					animation.setAnimator(new SpeedVaultAnimator(speedVaultType));
+		if (animation != null && currentAnimation != null) {
+			switch (currentAnimation) {
+				case SPEED_VAULT_RIGHT:
+					animation.setAnimator(new SpeedVaultAnimator(SpeedVaultAnimator.Type.Right));
 					break;
-				case KongVault:
+				case SPEED_VAULT_LEFT:
+					animation.setAnimator(new SpeedVaultAnimator(SpeedVaultAnimator.Type.Left));
+					break;
+				case KONG_VAULT:
 					animation.setAnimator(new KongVaultAnimator());
 					break;
 			}
@@ -143,18 +127,19 @@ public class Vault extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
-		AnimationType animationType = AnimationType.fromCode(startData.get());
-		SpeedVaultAnimator.Type speedVaultType = BufferUtil.getBoolean(startData) ?
-				SpeedVaultAnimator.Type.Right : SpeedVaultAnimator.Type.Left;
+		currentAnimation = AnimationType.values()[startData.get()];
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			player.playSound(SoundEvents.VAULT.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
-		if (animation != null && animationType != null) {
-			switch (animationType) {
-				case SpeedVault:
-					animation.setAnimator(new SpeedVaultAnimator(speedVaultType));
+		if (animation != null && currentAnimation != null) {
+			switch (currentAnimation) {
+				case SPEED_VAULT_RIGHT:
+					animation.setAnimator(new SpeedVaultAnimator(SpeedVaultAnimator.Type.Right));
 					break;
-				case KongVault:
+				case SPEED_VAULT_LEFT:
+					animation.setAnimator(new SpeedVaultAnimator(SpeedVaultAnimator.Type.Left));
+					break;
+				case KONG_VAULT:
 					animation.setAnimator(new KongVaultAnimator());
 					break;
 			}

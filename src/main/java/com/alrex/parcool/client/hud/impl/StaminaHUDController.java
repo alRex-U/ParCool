@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.hud.impl;
 
+import com.alrex.parcool.api.client.gui.ParCoolHUDEvent;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.stamina.Stamina;
 import com.alrex.parcool.config.ParCoolConfig;
@@ -12,6 +13,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.client.gui.IIngameOverlay;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 
 @OnlyIn(Dist.CLIENT)
@@ -38,6 +40,9 @@ public class StaminaHUDController implements IIngameOverlay {
                 !(IStamina.get(player) instanceof Stamina) ||
                 FeathersManager.isUsingFeathers()
         )
+			return;
+
+		if (MinecraftForge.EVENT_BUS.post(new ParCoolHUDEvent.RenderEvent(gui, poseStack, partialTick, width, height)))
 			return;
 
 		switch (ParCoolConfig.Client.StaminaHUDType.get()) {

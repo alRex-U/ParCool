@@ -51,6 +51,7 @@ public class Dive extends Action {
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 10
 				&& parkourability.getAdditionalProperties().getNotInWaterTick() > 30
 				&& KeyRecorder.keyJumpState.getTickKeyDown() > 10
+				&& !parkourability.get(CatLeap.class).isDoing()
 				&& WorldUtil.existsSpaceBelow(player);
 		if (!(startInAir || (justJumped && WorldUtil.existsDivableSpace(player) && parkourability.get(FastRun.class).canActWithRunning(player)))) {
 			justJumped = false;

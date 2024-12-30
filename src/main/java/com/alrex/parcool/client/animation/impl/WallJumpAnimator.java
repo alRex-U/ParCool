@@ -4,19 +4,20 @@ import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.utilities.Easing;
 import net.minecraft.world.entity.player.Player;
 
 import static java.lang.Math.toRadians;
 
 public class WallJumpAnimator extends Animator {
-	private boolean swingRightArm;
-	private final int maxTick = 14;
+	private final boolean wallRightSide;
+	private final int maxTick = 11;
 
-	public WallJumpAnimator(boolean swingRightArm) {
-		this.swingRightArm = swingRightArm;
+	public WallJumpAnimator(boolean wallIsRightSide) {
+		this.wallRightSide = wallIsRightSide;
 	}
 
-	float getFactor(float phase) {
+	private float getFactor(float phase) {
 		float x = phase - 0.2f;
 		if (phase < 0.2) {
 			return 1 - 25 * x * x;
@@ -26,7 +27,7 @@ public class WallJumpAnimator extends Animator {
 	}
 
 	float getFadeFactor(float phase) {
-		return (float) (1.0 - Math.pow(2 * phase - 1, 4));
+		return (float) (1.0 - Math.pow(2 * phase - 1, 8));
 	}
 
 	@Override
@@ -39,14 +40,48 @@ public class WallJumpAnimator extends Animator {
 		float phase = (getTick() + transformer.getPartialTick()) / maxTick;
 		float factor = getFactor(phase);
 		float fadeFactor = getFadeFactor(phase);
-		int sign = swingRightArm ? 1 : -1;
-		transformer
-				.rotateRightLeg((float) toRadians(sign * factor * 60), 0, 0, fadeFactor)
-				.rotateLeftLeg((float) toRadians(sign * factor * -60), 0, 0, fadeFactor)
-				.rotateRightArm((float) toRadians(swingRightArm ? factor * (-120) : factor * 55), 0, (float) toRadians(-35 * factor), fadeFactor)
-				.rotateLeftArm((float) toRadians(swingRightArm ? factor * 55 : factor * (-120)), 0, (float) toRadians(35 * factor), fadeFactor)
-				.makeArmsNatural()
-				.end();
+		int sign = wallRightSide ? 1 : -1;
+		if (wallRightSide) {
+			transformer
+					.translateRightLeg(
+							0,
+							2.1f * Easing.with(phase).squareOut(0, 0.15f, -1f, 1).sinInOut(0.15f, 1, 1, 0).get(),
+							2f * Easing.with(phase).squareOut(0, 0.15f, -0.9f, 1).sinInOut(0.15f, 1, 1, 0).get()
+					)
+					.translateLeftLeg(
+							-1.1f * factor,
+							0,
+							-2.3f * factor
+					)
+					.translateRightArm(factor, -1.9f * factor, -2.5f * factor)
+					.translateLeftArm(factor, factor, 1.9f * factor)
+					.rotateRightLeg((float) toRadians(75 * factor), 0, 0, fadeFactor)
+					.rotateLeftLeg((float) toRadians(-70 * factor), 0, 0, fadeFactor)
+					.rotateRightArm((float) toRadians(factor * (-120)), 0, (float) toRadians(-35 * factor), fadeFactor)
+					.rotateLeftArm((float) toRadians(factor * 55), 0, (float) toRadians(-35 * factor), fadeFactor)
+					.makeArmsNatural()
+					.end();
+		} else {
+			transformer
+					.translateLeftLeg(
+							0,
+							2.1f * Easing.with(phase).squareOut(0, 0.15f, -1f, 1).sinInOut(0.15f, 1, 1, 0).get(),
+							2f * Easing.with(phase).squareOut(0, 0.15f, -0.9f, 1).sinInOut(0.15f, 1, 1, 0).get()
+					)
+					.translateRightLeg(
+							1.1f * factor,
+							0,
+							-2.3f * factor
+					)
+					.translateLeftArm(-factor, -1.9f * factor, -2.5f * factor)
+					.translateRightArm(-factor, factor, 1.9f * factor)
+					.rotateRightLeg((float) toRadians(-70 * factor), 0, 0, fadeFactor)
+					.rotateLeftLeg((float) toRadians(75 * factor), 0, 0, fadeFactor)
+					.rotateRightArm((float) toRadians(factor * 55), 0, (float) toRadians(-35 * sign * factor), fadeFactor)
+					.rotateLeftArm((float) toRadians(factor * (-120)), 0, (float) toRadians(-35 * sign * factor), fadeFactor)
+					.makeArmsNatural()
+					.end();
+		}
 	}
 
 	@Override
@@ -56,7 +91,7 @@ public class WallJumpAnimator extends Animator {
 		rotator
 				.startBasedCenter()
 				.rotatePitchFrontward(factor * 20)
-				.rotateRollRightward((swingRightArm ? -1 : 1) * 15 * factor)
+				.rotateRollRightward((wallRightSide ? -1 : 1) * 15 * factor)
 				.end();
     }
 }

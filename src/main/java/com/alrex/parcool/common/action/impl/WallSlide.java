@@ -8,6 +8,7 @@ import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.damage.DamageSources;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -125,6 +126,7 @@ public class WallSlide extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	private void spawnSlideParticle(Player player) {
+		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		if (leanedWallDirection == null) return;
 		if (player.getRandom().nextBoolean()) return;
 		Level level = player.level;

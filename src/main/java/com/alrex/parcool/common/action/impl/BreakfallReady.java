@@ -21,17 +21,21 @@ public class BreakfallReady extends Action {
 		if (justTimed && ParCoolConfig.Client.Booleans.EnableJustTimeEffectOfBreakfall.get()) {
 			if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
                 player.playSound(SoundEvents.BREAKFALL_JUST_TIME.get(), 1, 1);
-			Vec3 pos = player.position();
-			Random rand = player.getRandom();
-			for (int i = 0; i < 12; i++) {
-				player.level.addParticle(ParticleTypes.END_ROD,
-						pos.x(),
-						pos.y() + player.getBbHeight() / 2,
-						pos.z(),
-						(rand.nextDouble() - 0.5) * 0.5,
-						(rand.nextDouble() - 0.5) * 0.5,
-						(rand.nextDouble() - 0.5) * 0.5
-				);
+			if (ParCoolConfig.Client.Booleans.EnableActionParticles.get()
+					&& ParCoolConfig.Client.Booleans.EnableActionParticlesOfJustTimeBreakfall.get()
+			) {
+				Vec3 pos = player.position();
+				Random rand = player.getRandom();
+				for (int i = 0; i < 12; i++) {
+					player.level.addParticle(ParticleTypes.END_ROD,
+							pos.x(),
+							pos.y() + player.getBbHeight() / 2,
+							pos.z(),
+							(rand.nextDouble() - 0.5) * 0.5,
+							(rand.nextDouble() - 0.5) * 0.5,
+							(rand.nextDouble() - 0.5) * 0.5
+					);
+				}
 			}
 		} else if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             playSound = true;
