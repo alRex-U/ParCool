@@ -118,14 +118,15 @@ public class Slide extends Action {
 		return StaminaConsumeTiming.None;
 	}
 
-    @OnlyIn(Dist.CLIENT)
-    private void spawnSlidingParticle(Player player) {
-        var level = player.level();
-        var pos = player.position();
-        var feetBlock = player.level().getBlockState(player.blockPosition().below());
-        float width = player.getBbWidth();
-        var direction = getSlidingVector();
-        if (direction == null) return;
+	@OnlyIn(Dist.CLIENT)
+	private void spawnSlidingParticle(Player player) {
+		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
+		var level = player.level();
+		var pos = player.position();
+		var feetBlock = player.level().getBlockState(player.blockPosition().below());
+		float width = player.getBbWidth();
+		var direction = getSlidingVector();
+		if (direction == null) return;
 
         if (feetBlock.getRenderShape() != RenderShape.INVISIBLE) {
             var particlePos = new Vec3(

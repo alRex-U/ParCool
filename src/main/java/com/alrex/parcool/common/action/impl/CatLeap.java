@@ -117,36 +117,37 @@ public class CatLeap extends Action {
 		return StaminaConsumeTiming.OnStart;
 	}
 
-    @OnlyIn(Dist.CLIENT)
-    private void spawnJumpEffect(Player player, Vec3 jumpDirection) {
-        Level level = player.level();
-        Vec3 pos = player.position();
-        var blockPosVec = pos.add(0, -0.2, 0);
-        BlockPos blockpos = new BlockPos(
-                (int) Math.floor(blockPosVec.x()),
-                (int) Math.floor(blockPosVec.y()),
-                (int) Math.floor(blockPosVec.z())
-        );
-        if (!level.isLoaded(blockpos)) return;
-        float width = player.getBbWidth();
-        BlockState blockstate = level.getBlockState(blockpos);
-        if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
-            for (int i = 0; i < 20; i++) {
-                Vec3 particlePos = new Vec3(
-                        pos.x() + (jumpDirection.x() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width,
-                        pos.y() + 0.1D,
-                        pos.z() + (jumpDirection.z() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width
-                );
-                Vec3 particleSpeed = particlePos.subtract(pos).normalize().scale(2.5 + 8 * player.getRandom().nextDouble()).add(0, 1.5, 0);
-                level.addParticle(
-                        new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(blockpos),
-                        particlePos.x(),
-                        particlePos.y(),
-                        particlePos.z(),
-                        particleSpeed.x(),
-                        particleSpeed.y(),
-                        particleSpeed.z()
-                );
+	@OnlyIn(Dist.CLIENT)
+	private void spawnJumpEffect(Player player, Vec3 jumpDirection) {
+		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
+		Level level = player.level();
+		Vec3 pos = player.position();
+		var blockPosVec = pos.add(0, -0.2, 0);
+		BlockPos blockpos = new BlockPos(
+				(int) Math.floor(blockPosVec.x()),
+				(int) Math.floor(blockPosVec.y()),
+				(int) Math.floor(blockPosVec.z())
+		);
+		if (!level.isLoaded(blockpos)) return;
+		float width = player.getBbWidth();
+		BlockState blockstate = level.getBlockState(blockpos);
+		if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
+			for (int i = 0; i < 20; i++) {
+				Vec3 particlePos = new Vec3(
+						pos.x() + (jumpDirection.x() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width,
+						pos.y() + 0.1D,
+						pos.z() + (jumpDirection.z() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width
+				);
+				Vec3 particleSpeed = particlePos.subtract(pos).normalize().scale(2.5 + 8 * player.getRandom().nextDouble()).add(0, 1.5, 0);
+				level.addParticle(
+						new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(blockpos),
+						particlePos.x(),
+						particlePos.y(),
+						particlePos.z(),
+						particleSpeed.x(),
+						particleSpeed.y(),
+						particleSpeed.z()
+				);
 
             }
         }

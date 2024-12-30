@@ -1,6 +1,7 @@
 package com.alrex.parcool.client.hud.impl;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.api.client.gui.ParCoolHUDEvent;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -12,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 import javax.annotation.Nonnull;
 
@@ -38,6 +40,9 @@ public class StaminaHUDController implements LayeredDraw.Layer {
 		AbstractClientPlayer player = Minecraft.getInstance().player;
 		if (player == null) return;
 		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get())
+			return;
+
+		if (NeoForge.EVENT_BUS.post(new ParCoolHUDEvent.RenderEvent(graphics, partialTick)).isCanceled())
 			return;
 
 		switch (ParCoolConfig.Client.StaminaHUDType.get()) {
