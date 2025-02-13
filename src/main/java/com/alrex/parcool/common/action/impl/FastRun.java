@@ -88,6 +88,7 @@ public class FastRun extends Action {
 				&& player.isSprinting()
 				&& !player.isVisuallyCrawling()
 				&& !player.isSwimming()
+				&& !player.isShiftKeyDown()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& !parkourability.get(HangDown.class).isDoing()
