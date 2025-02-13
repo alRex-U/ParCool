@@ -32,6 +32,9 @@ public class StaminaHUDController implements IGuiOverlay {
 		if (player == null || player.isCreative()) return;
 		lightStaminaHUD.onTick(event, player);
 		staminaHUD.onTick(event, player);
+		IStamina stamina = IStamina.get(player);
+		if (stamina == null) return;
+		stamina.updateOldValue();
 	}
 
 	@Override

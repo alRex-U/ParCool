@@ -78,7 +78,6 @@ public class Stamina implements IStamina {
 
 	@Override
 	public void tick() {
-		staminaOld = stamina;
 		if (recoverCoolTime > 0) recoverCoolTime--;
 		if (recoverCoolTime <= 0) {
 			if (player == null) return;
@@ -92,6 +91,11 @@ public class Stamina implements IStamina {
 				recover(Math.min((int) attr.getValue(), parkourability.getActionInfo().getStaminaRecoveryLimit()) / 5);
 			}
 		}
+	}
+
+	@Override
+	public void updateOldValue() {
+		staminaOld = stamina;
 	}
 
 	@Override

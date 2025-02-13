@@ -76,6 +76,9 @@ public interface IStamina {
 
 	public void set(int value);
 
+	public default void updateOldValue() {
+	}
+
 	public default boolean wantToConsumeOnServer() {
 		return false;
 	}
