@@ -31,6 +31,9 @@ public class StaminaHUDController implements IIngameOverlay {
 		if (player == null || player.isCreative()) return;
 		lightStaminaHUD.onTick(event, player);
 		staminaHUD.onTick(event, player);
+		IStamina stamina = IStamina.get(player);
+		if (stamina == null) return;
+		stamina.updateOldValue();
 	}
 
 	public void render(ForgeIngameGui gui, PoseStack poseStack, float partialTick, int width, int height) {
