@@ -96,7 +96,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             loader_version_range   : loader_version_range,
             mod_id                 : mod_id,
             mod_name               : "ParCool",
-            mod_license            : "GPL-3.0",
+            mod_license: mod_license,
             mod_version: mod_version,
             mod_authors            : "alRex_U",
     ]
@@ -104,6 +104,13 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
     expand replaceProperties
     from "src/main/templates"
     into "build/generated/sources/modMetadata"
+}
+jar {
+    manifest {
+        attributes([
+                "Implementation-Version": "${mod_version}",
+        ])
+    }
 }
 sourceSets.main.resources.srcDir generateModMetadata
 neoForge.ideSyncTask generateModMetadata
