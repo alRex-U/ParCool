@@ -139,6 +139,7 @@ public class ChargeJump extends Action {
                             && !cp.input.down
                             && !cp.input.right
                             && !cp.input.left
+                            && (parkourability.get(FastRun.class).getNotDashTick(parkourability.getAdditionalProperties()) < 15)
             ) {
                 chargeTick = JUMP_MAX_CHARGE_TICK + 5;
                 lastChargeTick = chargeTick;
