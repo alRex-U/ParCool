@@ -54,7 +54,7 @@ public class HorizontalWallRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() / 2);
+		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
 		if (wallDirection == null) return;
 		if (runningWallDirection == null) return;
 		if (runningDirection == null) return;
@@ -91,7 +91,7 @@ public class HorizontalWallRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() / 2);
+		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
 		if (wallDirection == null) return false;
 		Vector3d wallVec = wallDirection.normalize();
 		Vector3d lookDirection = VectorUtil.fromYawDegree(player.yBodyRot);
@@ -139,7 +139,7 @@ public class HorizontalWallRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() / 2);
+		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
 		if (wallDirection == null) return false;
 		return (getDoingTick() < getMaxRunningTick(parkourability.getActionInfo())
 				&& !stamina.isExhausted()
@@ -229,6 +229,7 @@ public class HorizontalWallRun extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	public void spawnRunningParticle(PlayerEntity player) {
+		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		if (runningDirection == null || runningWallDirection == null) return;
 		World level = player.level;
 		Vector3d pos = player.position();

@@ -9,6 +9,7 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 public class HorizontalWallRunAnimator extends Animator {
@@ -23,23 +24,53 @@ public class HorizontalWallRunAnimator extends Animator {
 		return !parkourability.get(HorizontalWallRun.class).isDoing();
 	}
 
+	private float limbSwing = 0;
 	@Override
 	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+		limbSwing = transformer.getLimbSwing();
+		float factor = getFactor(getTick() + transformer.getPartialTick());
+		float angle = factor * 15f * (wallIsRightSide ? -1f : 1f);
+		float armSwingPhase = limbSwing * 0.6662f;
+		transformer
+				.rotateAdditionallyHeadPitch(-15 * factor)
+				.rotateAdditionallyHeadRoll(angle);
 		if (wallIsRightSide) {
 			transformer
 					.addRotateLeftArm(0, 0, (float) Math.toRadians(-30))
 					.makeArmsNatural()
-					.rotateRightArm(0, 0, (float) Math.toRadians(60))
+					.rotateRightArm(
+							(float) Math.toRadians(20 - 8d * Math.cos(armSwingPhase)),
+							0,
+							(float) Math.toRadians(110)
+					)
+					.translateRightArm(-1f, 0, 0.8f - 0.5f * MathHelper.cos(armSwingPhase))
+					.addRotateLeftArm(
+							(float) Math.toRadians(-10), 0,
+							(float) -Math.toRadians(35 + 5 * Math.sin(armSwingPhase)), factor
+					)
+					.translateLeftArm(0, 1.0f, 0)
 					.addRotateRightLeg(0, 0, (float) Math.toRadians(17))
 					.addRotateLeftLeg(0, 0, (float) Math.toRadians(25))
+					.rotateAdditionallyHeadYaw(-5f + 8f * MathHelper.cos(armSwingPhase))
 					.end();
 		} else {
 			transformer
 					.addRotateRightArm(0, 0, (float) Math.toRadians(30))
 					.makeArmsNatural()
-					.rotateLeftArm(0, 0, (float) Math.toRadians(-60))
+					.rotateLeftArm(
+							(float) Math.toRadians(20 - 8d * Math.cos(armSwingPhase)),
+							0,
+							(float) Math.toRadians(-110)
+					)
+					.translateLeftArm(1f, 0, 0.8f - 0.5f * MathHelper.cos(armSwingPhase))
+					.addRotateRightArm(
+							(float) Math.toRadians(-10), 0,
+							(float) Math.toRadians(35 + 5 * Math.sin(armSwingPhase)), factor
+					)
+					.translateRightArm(0, 1.0f, 0)
 					.addRotateRightLeg(0, 0, (float) Math.toRadians(-25))
 					.addRotateLeftLeg(0, 0, (float) Math.toRadians(-17))
+					.rotateAdditionallyHeadYaw(5f - 8f * MathHelper.cos(armSwingPhase))
 					.end();
 		}
 	}
@@ -51,10 +82,14 @@ public class HorizontalWallRunAnimator extends Animator {
 	@Override
     public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float factor = getFactor(getTick() + rotator.getPartialTick());
-		float angle = factor * 30 * (wallIsRightSide ? -1 : 1);
-		rotator
+		float sign = wallIsRightSide ? -1 : 1;
+		float angle = factor * 30f * sign;
+		float yOffset = 0.145f * (float) Math.pow(Math.cos(limbSwing * 0.6662), 2.);
+		rotator.translateY(yOffset)
 				.startBasedCenter()
 				.rotateRollRightward(angle)
+				.rotatePitchFrontward(20 * factor)
+				.rotateYawRightward(sign * (-5f + 8f * MathHelper.cos(limbSwing * 0.66662f)))
 				.end();
     }
 

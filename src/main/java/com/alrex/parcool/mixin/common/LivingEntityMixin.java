@@ -1,5 +1,6 @@
 package com.alrex.parcool.mixin.common;
 
+import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.common.action.impl.ChargeJump;
 import com.alrex.parcool.common.action.impl.ClimbPoles;
 import com.alrex.parcool.common.action.impl.ClimbUp;
@@ -16,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeConfig;
+import net.minecraftforge.common.MinecraftForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -54,7 +56,9 @@ public abstract class LivingEntityMixin extends Entity {
 			if (parkourability == null) {
 				return;
 			}
-			if (!parkourability.getActionInfo().can(ClimbPoles.class)) {
+			if (!parkourability.getActionInfo().can(ClimbPoles.class)
+					|| MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStartEvent(player, parkourability.get(ClimbPoles.class)))
+			) {
 				return;
             }
             if (parkourability.get(ClimbUp.class).isDoing()) {

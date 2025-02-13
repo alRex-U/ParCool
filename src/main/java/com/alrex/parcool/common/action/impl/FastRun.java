@@ -26,7 +26,7 @@ public class FastRun extends Action {
 		PressKey, Toggle, Auto
 	}
 
-	private static final String FAST_RUNNING_MODIFIER_NAME = "parcool.modifier.fastrunnning";
+	private static final String FAST_RUNNING_MODIFIER_NAME = "parcool.modifier.fast_run";
 	private static final UUID FAST_RUNNING_MODIFIER_UUID = UUID.randomUUID();
 	private double speedModifier = 0;
 	private boolean toggleStatus = false;
@@ -88,6 +88,7 @@ public class FastRun extends Action {
 				&& player.isSprinting()
 				&& !player.isVisuallyCrawling()
 				&& !player.isSwimming()
+				&& !player.isShiftKeyDown()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& !parkourability.get(HangDown.class).isDoing()

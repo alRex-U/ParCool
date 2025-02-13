@@ -26,6 +26,9 @@ import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
 public class WallJump extends Action {
+	public enum ControlType {
+		PressKey, ReleaseKey
+	}
 
 	private boolean jump = false;
 
@@ -33,7 +36,13 @@ public class WallJump extends Action {
 		return jump;
 	}
 
-	private final float MAX_COOL_DOWN_TICK = 8;
+	private static final float MAX_COOL_DOWN_TICK = 8;
+
+	private boolean isInCooldown(Parkourability parkourability) {
+		return (parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.EnableWallJumpCooldown)
+				|| !parkourability.getServerLimitation().get(ParCoolConfig.Server.Booleans.AllowDisableWallJumpCooldown))
+				&& getNotDoingTick() <= MAX_COOL_DOWN_TICK;
+	}
 	@Override
 	public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		jump = false;
@@ -70,13 +79,13 @@ public class WallJump extends Action {
 
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		Vector3d wallDirection = WorldUtil.getWall(player);
+		Vector3d wallDirection = WorldUtil.getWall(player, player.getBbWidth() * 0.65);
 		Vector3d jumpDirection = getJumpDirection(player, wallDirection);
 		if (jumpDirection == null) return false;
 		ClingToCliff cling = parkourability.get(ClingToCliff.class);
+		ControlType control = ParCoolConfig.Client.WallJumpControl.get();
 
 		boolean value = (!stamina.isExhausted()
-				&& getNotDoingTick() > MAX_COOL_DOWN_TICK
 				&& !player.isOnGround()
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
@@ -84,11 +93,11 @@ public class WallJump extends Action {
 				&& parkourability.getAdditionalProperties().getNotCreativeFlyingTick() > 10
 				&& ((!cling.isDoing() && cling.getNotDoingTick() > 3)
 				|| (cling.isDoing() && cling.getFacingDirection() != ClingToCliff.FacingDirection.ToWall))
-				&& KeyRecorder.keyWallJump.isPressed()
+				&& ((control == ControlType.PressKey && KeyRecorder.keyWallJump.isPressed()) || (control == ControlType.ReleaseKey && KeyRecorder.keyWallJump.isReleased()))
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(VerticalWallRun.class).isDoing()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 4
-				&& WorldUtil.getWall(player) != null
+				&& !isInCooldown(parkourability)
 		);
 		if (!value) return false;
 
@@ -229,6 +238,7 @@ public class WallJump extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	private void spawnJumpParticles(PlayerEntity player, Vector3d wallDirection, Vector3d jumpDirection) {
+		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		World level = player.level;
 		Vector3d pos = player.position();
 		BlockPos leanedBlock = new BlockPos(
