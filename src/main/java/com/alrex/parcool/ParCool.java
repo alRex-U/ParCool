@@ -4,9 +4,13 @@ import com.alrex.parcool.api.Attributes;
 import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.input.KeyBindings;
+import com.alrex.parcool.client.renderer.Renderers;
+import com.alrex.parcool.common.block.Blocks;
+import com.alrex.parcool.common.block.TileEntities;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
+import com.alrex.parcool.common.entity.EntityType;
 import com.alrex.parcool.common.handlers.AddAttributesHandler;
-import com.alrex.parcool.common.item.ItemRegistry;
+import com.alrex.parcool.common.item.Items;
 import com.alrex.parcool.common.potion.PotionRecipeRegistry;
 import com.alrex.parcool.common.potion.Potions;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
@@ -16,6 +20,7 @@ import com.alrex.parcool.proxy.CommonProxy;
 import com.alrex.parcool.proxy.ServerProxy;
 import com.alrex.parcool.server.command.CommandRegistry;
 import com.alrex.parcool.server.limitation.Limitations;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -62,15 +67,22 @@ public class ParCool {
 		eventBus.addListener(this::loaded);
         EventBusForgeRegistry.register(MinecraftForge.EVENT_BUS);
 		eventBus.register(AddAttributesHandler.class);
+
 		Effects.registerAll(eventBus);
 		Potions.registerAll(eventBus);
         Attributes.registerAll(eventBus);
 		SoundEvents.registerAll(eventBus);
+
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.addListener(Limitations::init);
 		MinecraftForge.EVENT_BUS.addListener(Limitations::save);
-		ItemRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+
+		Blocks.register(FMLJavaModLoadingContext.get().getModEventBus());
+		Items.register(FMLJavaModLoadingContext.get().getModEventBus());
+		EntityType.register(FMLJavaModLoadingContext.get().getModEventBus());
+		TileEntities.register(FMLJavaModLoadingContext.get().getModEventBus());
+
 		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ParCoolConfig.Server.BUILT_CONFIG);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.Client.BUILT_CONFIG);
 	}
@@ -86,6 +98,7 @@ public class ParCool {
 	}
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
+		Renderers.register(Minecraft.getInstance().getEntityRenderDispatcher());
 		KeyBindings.register(event);
 		Capabilities.registerClient(CapabilityManager.INSTANCE);
 		EventBusForgeRegistry.registerClient(MinecraftForge.EVENT_BUS);
