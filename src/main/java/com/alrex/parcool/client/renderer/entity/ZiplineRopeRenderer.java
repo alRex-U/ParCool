@@ -4,14 +4,16 @@ import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.LightType;
 
 import javax.annotation.Nonnull;
@@ -39,31 +41,135 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
         BlockPos start = entity.getStartPos();
         BlockPos end = entity.getEndPos();
         if (start == BlockPos.ZERO && end == BlockPos.ZERO) return;
+
+        if (start.getY() > end.getY()) { // start.y should be lower than end.y
+            BlockPos temp = start;
+            start = end;
+            end = temp;
+        }
+
+        Vector3d entityPos = entity.position();
+        Vector3f startPos = new Vector3f(start.getX() + 0.5f, start.getY() + 0.5f, start.getZ() + 0.5f);
+        Vector3f endPos = new Vector3f(end.getX() + 0.5f, end.getY() + 0.5f, end.getZ() + 0.5f);
+        Vector3f startPosOffset = new Vector3f(
+                (float) (startPos.x() - entityPos.x()),
+                (float) (startPos.y() - entityPos.y()),
+                (float) (startPos.z() - entityPos.z())
+        );
+        Vector3f endOffsetFromStart = new Vector3f(
+                endPos.x() - startPos.x(),
+                endPos.y() - startPos.y(),
+                endPos.z() - startPos.z()
+        );
+
         matrixStack.pushPose();
         {
-            /*
-            double lvt_7_1_ = (double)(MathHelper.lerp(partialTick, p_229118_1_.yBodyRot, p_229118_1_.yBodyRotO) * 0.017453292F) + 1.5707963267948966;
-            Vector3d lvt_9_1_ = p_229118_1_.getLeashOffset();
-            double lvt_10_1_ = Math.cos(lvt_7_1_) * lvt_9_1_.z + Math.sin(lvt_7_1_) * lvt_9_1_.x;
-            double lvt_12_1_ = Math.sin(lvt_7_1_) * lvt_9_1_.z - Math.cos(lvt_7_1_) * lvt_9_1_.x;
-             */
-            float yOffset = (float) (start.getY() - end.getY());
-            float ySign = Math.signum(yOffset);
-            yOffset *= ySign;
-            float xOffset = ySign * (float) (start.getX() - end.getX());
-            float zOffset = ySign * (float) (start.getZ() - end.getZ());
-            matrixStack.translate(-xOffset / 2.0, 0.5, -zOffset / 2.0);
+            matrixStack.translate(startPosOffset.x(), startPosOffset.y(), startPosOffset.z());
             IVertexBuilder vertexBuilder = renderTypeBuffer.getBuffer(RenderType.leash());
-            Matrix4f lastPose = matrixStack.last().pose();
-            float widthScale = MathHelper.fastInvSqrt(xOffset * xOffset + zOffset * zOffset) * 0.1F / 2.0F;
-            float lvt_27_1_ = zOffset * widthScale;
-            float lvt_28_1_ = xOffset * widthScale;
-            int blockLightLevel = this.getBlockLightLevel(entity, start.below());
+            Matrix4f transformMatrix = matrixStack.last().pose();
+
+            int startBlockLightLevel = this.getBlockLightLevel(entity, start.below());
+            int endBlockLightLevel = this.getBlockLightLevel(entity, end.below());
             int startSkyBrightness = entity.level.getBrightness(LightType.SKY, start.below());
             int endSkyBrightness = entity.level.getBrightness(LightType.SKY, end.below());
-            MobRenderer.renderSide(vertexBuilder, lastPose, xOffset, yOffset, zOffset, blockLightLevel, blockLightLevel, startSkyBrightness, endSkyBrightness, 0.025F, 0.025F, lvt_27_1_, lvt_28_1_);
-            MobRenderer.renderSide(vertexBuilder, lastPose, xOffset, yOffset, zOffset, blockLightLevel, blockLightLevel, startSkyBrightness, endSkyBrightness, 0.025F, 0.0F, lvt_27_1_, lvt_28_1_);
+
+
+            final int divisionCount = 24;
+            float invLengthSqrtXZ = MathHelper.fastInvSqrt(endOffsetFromStart.x() * endOffsetFromStart.x() + endOffsetFromStart.z() + endOffsetFromStart.z());
+            float unitLengthX = endOffsetFromStart.x() * invLengthSqrtXZ;
+            float unitLengthZ = endOffsetFromStart.z() * invLengthSqrtXZ;
+            for (int i = 0; i < divisionCount; i++) {
+                float colorScale = i % 2 == 0 ? 1f : 0.8f;
+
+                for (int j = 0; j < 2; j++) {
+                    renderLeashSingleBlock(
+                            transformMatrix, vertexBuilder,
+                            endOffsetFromStart,
+                            i, divisionCount,
+                            invLengthSqrtXZ,
+                            unitLengthX, unitLengthZ,
+                            startBlockLightLevel, endBlockLightLevel,
+                            startSkyBrightness, endSkyBrightness,
+                            0.3f * colorScale, 0.5f * colorScale, 0.9f * colorScale,
+                            j % 2 == 0
+                    );
+                }
+            }
         }
         matrixStack.popPose();
+    }
+
+    private void renderLeashSingleBlock(
+            Matrix4f transformMatrix,
+            IVertexBuilder vertexBuilder,
+            Vector3f endOffsetFromStart,
+            int currentCount, int maxCount,
+            float invLengthXZ,
+            float unitLengthX,
+            float unitLengthZ,
+            int startBlockLightLevel, int endBlockLightLevel,
+            int startSkyBrightness, int endSkyBrightness,
+            float r, float g, float b,
+            boolean tiltType
+    ) {
+        for (int i = 0; i < 2; i++) {
+            float phase = (float) (currentCount + i) / maxCount;
+
+            int lightLevel = LightTexture.pack((int) MathHelper.lerp(phase, startBlockLightLevel, endBlockLightLevel), (int) MathHelper.lerp(phase, startSkyBrightness, endSkyBrightness));
+            Vector3f midPoint = new Vector3f(
+                    endOffsetFromStart.x() * phase,
+                    endOffsetFromStart.y() * phase * phase,
+                    endOffsetFromStart.z() * phase
+            );
+
+            final float width = 0.05f;
+            float tilt = 2 * endOffsetFromStart.y() * invLengthXZ * phase;
+            float tiltInv = MathHelper.fastInvSqrt(tilt * tilt + 1);
+            float yOffset = width * tiltInv * (tiltType ? 1 : -1) / 1.41421356f /*sqrt(2)*/;
+            float xBaseOffset = unitLengthX * width * tilt * tiltInv;
+            float zBaseOffset = unitLengthZ * width * tilt * tiltInv;
+            float xOffset = unitLengthZ * width / 1.41421356f;
+            float zOffset = -unitLengthX * width / 1.41421356f;
+
+            if (i == 0) {
+                vertexBuilder
+                        .vertex(transformMatrix,
+                                midPoint.x() + xBaseOffset + xOffset,
+                                midPoint.y() + yOffset,
+                                midPoint.z() + zBaseOffset + zOffset
+                        )
+                        .color(r, g, b, 1f)
+                        .uv2(lightLevel)
+                        .endVertex();
+                vertexBuilder
+                        .vertex(transformMatrix,
+                                midPoint.x() + xBaseOffset - xOffset,
+                                midPoint.y() - yOffset,
+                                midPoint.z() + zBaseOffset - zOffset
+                        )
+                        .color(r, g, b, 1f)
+                        .uv2(lightLevel)
+                        .endVertex();
+            } else {
+                vertexBuilder
+                        .vertex(transformMatrix,
+                                midPoint.x() + xBaseOffset - xOffset,
+                                midPoint.y() - yOffset,
+                                midPoint.z() + zBaseOffset - zOffset
+                        )
+                        .color(r, g, b, 1f)
+                        .uv2(lightLevel)
+                        .endVertex();
+                vertexBuilder
+                        .vertex(transformMatrix,
+                                midPoint.x() + xBaseOffset + xOffset,
+                                midPoint.y() + yOffset,
+                                midPoint.z() + zBaseOffset + zOffset
+                        )
+                        .color(r, g, b, 1f)
+                        .uv2(lightLevel)
+                        .endVertex();
+            }
+        }
     }
 }
