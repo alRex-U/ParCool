@@ -20,6 +20,7 @@ public class KeyRecorder {
 	public static final KeyState keyOpenSettingsState = new KeyState();
 	public static final KeyState keyFastRunning = new KeyState();
 	public static final KeyState keyDodge = new KeyState();
+	public static final KeyState keyRideZipline = new KeyState();
 	public static final KeyState keyBreakfall = new KeyState();
 	public static final KeyState keyWallJump = new KeyState();
 	public static final KeyState keyQuickTurn = new KeyState();
@@ -40,6 +41,7 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyActivateParCool(), keyOpenSettingsState);
 		record(KeyBindings.getKeyFastRunning(), keyFastRunning);
 		record(KeyBindings.getKeyDodge(), keyDodge);
+		record(KeyBindings.getKeyBindRideZipline(), keyRideZipline);
 		record(KeyBindings.getKeyBreakfall(), keyBreakfall);
 		record(KeyBindings.getKeyWallJump(), keyWallJump);
 		record(KeyBindings.getKeyQuickTurn(), keyQuickTurn);

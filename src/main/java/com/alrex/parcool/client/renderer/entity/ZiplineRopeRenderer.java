@@ -1,6 +1,7 @@
 package com.alrex.parcool.client.renderer.entity;
 
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
+import com.alrex.parcool.utilities.ZiplineUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -86,7 +87,6 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
                             transformMatrix, vertexBuilder,
                             endOffsetFromStart,
                             i, divisionCount,
-                            invLengthSqrtXZ,
                             unitLengthX, unitLengthZ,
                             startBlockLightLevel, endBlockLightLevel,
                             startSkyBrightness, endSkyBrightness,
@@ -104,7 +104,6 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
             IVertexBuilder vertexBuilder,
             Vector3f endOffsetFromStart,
             int currentCount, int maxCount,
-            float invLengthXZ,
             float unitLengthX,
             float unitLengthZ,
             int startBlockLightLevel, int endBlockLightLevel,
@@ -116,14 +115,10 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
             float phase = (float) (currentCount + i) / maxCount;
 
             int lightLevel = LightTexture.pack((int) MathHelper.lerp(phase, startBlockLightLevel, endBlockLightLevel), (int) MathHelper.lerp(phase, startSkyBrightness, endSkyBrightness));
-            Vector3f midPoint = new Vector3f(
-                    endOffsetFromStart.x() * phase,
-                    endOffsetFromStart.y() * phase * phase,
-                    endOffsetFromStart.z() * phase
-            );
+            Vector3f midPoint = ZiplineUtil.getMidPoint(endOffsetFromStart, phase);
 
             final float width = 0.05f;
-            float tilt = 2 * endOffsetFromStart.y() * invLengthXZ * phase;
+            float tilt = ZiplineUtil.getSlope(endOffsetFromStart, phase);
             float tiltInv = MathHelper.fastInvSqrt(tilt * tilt + 1);
             float yOffset = width * tiltInv * (tiltType ? 1 : -1) / 1.41421356f /*sqrt(2)*/;
             float xBaseOffset = unitLengthX * width * tilt * tiltInv;

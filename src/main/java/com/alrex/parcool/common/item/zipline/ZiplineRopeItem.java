@@ -2,7 +2,9 @@ package com.alrex.parcool.common.item.zipline;
 
 import com.alrex.parcool.common.block.zipline.ZiplineHookBlock;
 import com.alrex.parcool.common.block.zipline.ZiplineHookTileEntity;
+import com.alrex.parcool.utilities.ZiplineUtil;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -44,6 +46,15 @@ public class ZiplineRopeItem extends Item {
                 BlockPos start = new BlockPos(tag.getInt("Tile_X"), tag.getInt("Tile_Y"), tag.getInt("Tile_Z"));
                 BlockPos end = context.getClickedPos();
                 if (start.equals(end)) return ActionResultType.PASS;
+                if (start.distSqr(end) > ZiplineUtil.MAXIMUM_DISTANCE * ZiplineUtil.MAXIMUM_DISTANCE) {
+                    if (context.getLevel().isClientSide()) {
+                        PlayerEntity player = context.getPlayer();
+                        if (player != null) {
+                            player.displayClientMessage(new StringTextComponent("This point is too far!"), true);
+                        }
+                    }
+                    return ActionResultType.FAIL;
+                }
                 TileEntity startEntity = context.getLevel().getBlockEntity(start);
                 TileEntity endEntity = context.getLevel().getBlockEntity(end);
                 if (startEntity instanceof ZiplineHookTileEntity && endEntity instanceof ZiplineHookTileEntity) {

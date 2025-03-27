@@ -24,6 +24,7 @@ public class KeyBindings {
 	private static final KeyBinding keyBindFlipping = new KeyBinding("key.parcool.Flipping", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
 	private static final KeyBinding keyBindVault = new KeyBinding("key.parcool.Vault", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
 	private static final KeyBinding keyBindDodge = new KeyBinding("key.parcool.Dodge", GLFW.GLFW_KEY_R, "key.categories.parcool");
+	private static final KeyBinding keyBindRideZipline = new KeyBinding("key.parcool.RideZipline", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
 	private static final KeyBinding keyBindWallJump = new KeyBinding("key.parcool.WallJump", GLFW.GLFW_KEY_SPACE, "key.categories.parcool");
 	private static final KeyBinding keyBindHangDown = new KeyBinding("key.parcool.HangDown", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
 	private static final KeyBinding keyBindWallSlide = new KeyBinding("key.parcool.WallSlide", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
@@ -95,6 +96,10 @@ public class KeyBindings {
 		return keyBindDodge;
 	}
 
+	public static KeyBinding getKeyBindRideZipline() {
+		return keyBindRideZipline;
+	}
+
 	public static KeyBinding getKeyWallSlide() {
 		return keyBindWallSlide;
 	}
@@ -123,6 +128,7 @@ public class KeyBindings {
 		ClientRegistry.registerKeyBinding(keyBindBreakfall);
 		ClientRegistry.registerKeyBinding(keyBindFastRunning);
 		ClientRegistry.registerKeyBinding(keyBindDodge);
+		ClientRegistry.registerKeyBinding(keyBindRideZipline);
 		ClientRegistry.registerKeyBinding(keyBindWallSlide);
 		ClientRegistry.registerKeyBinding(keyBindWallJump);
 		ClientRegistry.registerKeyBinding(keyBindVault);

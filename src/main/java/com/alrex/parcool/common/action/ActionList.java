@@ -28,6 +28,7 @@ public class ActionList {
 			new ActionRegistry<>(HorizontalWallRun.class, HorizontalWallRun::new, 2),
 			new ActionRegistry<>(JumpFromBar.class, JumpFromBar::new, 100),
 			new ActionRegistry<>(QuickTurn.class, QuickTurn::new, 0),
+			new ActionRegistry<>(RideZipline.class, RideZipline::new, 2),
 			new ActionRegistry<>(Roll.class, Roll::new, 100),
 			new ActionRegistry<>(SkyDive.class, SkyDive::new, 0),
 			new ActionRegistry<>(Slide.class, Slide::new, 0),
