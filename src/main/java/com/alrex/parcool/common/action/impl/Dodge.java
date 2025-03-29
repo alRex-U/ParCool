@@ -153,9 +153,9 @@ public class Dodge extends Action {
 
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new DodgeAnimator(dodgeDirection));
-		parkourability.getCancelMarks().addMarkerCancellingJump(this::isDoing);
+		parkourability.getBehaviorEnforcer().addMarkerCancellingJump(this::isDoing);
 		if (!parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.CanGetOffStepsWhileDodge)) {
-			parkourability.getCancelMarks().addMarkerCancellingDescendFromEdge(this::isDoing);
+			parkourability.getBehaviorEnforcer().addMarkerCancellingDescendFromEdge(this::isDoing);
 		}
 	}
 

@@ -91,7 +91,7 @@ public class HangDown extends Action {
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		setup(player, startData);
 		if (!KeyBindings.getKeyHangDown().getKey().equals(KeyBindings.getKeySneak().getKey())) {
-			parkourability.getCancelMarks().addMarkerCancellingSneak(this::isDoing);
+			parkourability.getBehaviorEnforcer().addMarkerCancellingSneak(this::isDoing);
 		}
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get()) {
 			player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);

@@ -81,7 +81,7 @@ public class ClingToCliff extends Action {
 		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
 		if (!KeyBindings.getKeyGrabWall().getKey().equals(KeyBindings.getKeySneak().getKey())) {
-			parkourability.getCancelMarks().addMarkerCancellingSneak(this::isDoing);
+			parkourability.getBehaviorEnforcer().addMarkerCancellingSneak(this::isDoing);
 		}
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.CLING_TO_CLIFF.get(), 1f, 1f);

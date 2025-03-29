@@ -32,7 +32,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 	public void onJumpFromGround(CallbackInfo ci) {
 		Parkourability parkourability = Parkourability.get((PlayerEntity) (Object) this);
 		if (parkourability == null) return;
-		if (parkourability.getCancelMarks().cancelJump()) {
+		if (parkourability.getBehaviorEnforcer().cancelJump()) {
 			ci.cancel();
 		}
 	}
@@ -41,7 +41,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 	public void onIsStayingOnGroundSurface(CallbackInfoReturnable<Boolean> cir) {
 		Parkourability parkourability = Parkourability.get((PlayerEntity) (Object) this);
 		if (parkourability == null) return;
-		if (parkourability.getCancelMarks().cancelDescendFromEdge()) {
+		if (parkourability.getBehaviorEnforcer().cancelDescendFromEdge()) {
 			cir.setReturnValue(true);
 		}
 	}

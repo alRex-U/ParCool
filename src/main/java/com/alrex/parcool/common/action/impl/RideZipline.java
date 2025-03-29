@@ -50,7 +50,9 @@ public class RideZipline extends Action {
                 && !player.isInWall()
                 && ridingZipline != null
                 && ridingZipline.isAlive()
-                && 0 <= currentT && currentT <= 1;
+                && 0 <= currentT && currentT <= 1
+                && !player.horizontalCollision
+                && !player.verticalCollision;
     }
 
     @Override
@@ -59,8 +61,8 @@ public class RideZipline extends Action {
             return;
         }
         Zipline zipline = ridingZipline.getZipline();
-        currentT = zipline.getParameter(player.position());
         Vector3d deltaMovement = player.getDeltaMovement();
+        currentT = zipline.getParameter(player.position());
         Vector3d speedScale;
         {
             float yScale = zipline.getSlope(currentT);
@@ -71,10 +73,19 @@ public class RideZipline extends Action {
             speedScale = new Vector3d(xScale, yScale, zScale).normalize();
         }
         speed = deltaMovement.dot(speedScale);
-        Vector3d pos = zipline.getMidPoint(currentT).subtract(0, player.getBbHeight() * 1.11, 0);
-        player.setPos(pos.x(), pos.y(), pos.z());
-        currentPos = pos;
-        player.setDeltaMovement(0, 0, 0);
+
+        parkourability.getBehaviorEnforcer().setMarkerEnforceMovePoint(
+                () -> this.isDoing() && ridingZipline != null && !player.horizontalCollision && !player.verticalCollision,
+                () -> {
+                    Zipline zipline_ = ridingZipline.getZipline();
+
+                    Vector3d movedPos = zipline_.getMidPoint(currentT).subtract(0, player.getBbHeight() * 1.11, 0);
+                    if (currentPos == null) currentPos = movedPos;
+                    Vector3d d = movedPos.subtract(player.position());
+
+                    return movedPos;
+                }
+        );
     }
 
     @Override
@@ -85,22 +96,11 @@ public class RideZipline extends Action {
         double gravity = player.getAttributeValue(ForgeMod.ENTITY_GRAVITY.get());
         float slope = zipline.getSlope(currentT);
         speed -= gravity * slope * (MathHelper.fastInvSqrt(slope * slope + 1));
-
         currentT = (float) zipline.getMovedPositionByParameterApproximately(currentT, (float) speed);
-        Vector3d movedPos = zipline.getMidPoint(currentT).subtract(0, player.getBbHeight() * 1.11, 0);
-        if (currentPos == null) currentPos = movedPos;
-        player.xo = player.xOld = currentPos.x();
-        player.yo = player.yOld = currentPos.y();
-        player.zo = player.zOld = currentPos.z();
-        player.setPos(movedPos.x(), movedPos.y(), movedPos.z());
-        currentPos = movedPos;
-
-        player.setDeltaMovement(0, 0, 0);
-
     }
 
     @Override
-    public void onWorkingTickInServer(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+    public void onWorkingTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
         player.fallDistance = 0;
     }
 
