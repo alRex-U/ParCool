@@ -2,7 +2,7 @@ package com.alrex.parcool.common.item.zipline;
 
 import com.alrex.parcool.common.block.zipline.ZiplineHookBlock;
 import com.alrex.parcool.common.block.zipline.ZiplineHookTileEntity;
-import com.alrex.parcool.utilities.ZiplineUtil;
+import com.alrex.parcool.common.zipline.Zipline;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -46,7 +46,7 @@ public class ZiplineRopeItem extends Item {
                 BlockPos start = new BlockPos(tag.getInt("Tile_X"), tag.getInt("Tile_Y"), tag.getInt("Tile_Z"));
                 BlockPos end = context.getClickedPos();
                 if (start.equals(end)) return ActionResultType.PASS;
-                if (start.distSqr(end) > ZiplineUtil.MAXIMUM_DISTANCE * ZiplineUtil.MAXIMUM_DISTANCE) {
+                if (start.distSqr(end) > Zipline.MAXIMUM_DISTANCE * Zipline.MAXIMUM_DISTANCE) {
                     if (context.getLevel().isClientSide()) {
                         PlayerEntity player = context.getPlayer();
                         if (player != null) {

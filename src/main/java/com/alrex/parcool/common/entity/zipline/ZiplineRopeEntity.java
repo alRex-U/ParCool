@@ -1,5 +1,7 @@
 package com.alrex.parcool.common.entity.zipline;
 
+import com.alrex.parcool.common.zipline.Zipline;
+import com.alrex.parcool.common.zipline.impl.QuadraticCurveZipline;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -14,6 +16,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -42,6 +45,15 @@ public class ZiplineRopeEntity extends Entity {
         noPhysics = true;
         forcedLoading = true;
         size = EntitySize.fixed(Math.max(Math.abs(end.getX() - start.getX()), Math.abs(end.getZ() - start.getZ())) + 0.3f, Math.abs(end.getY() - start.getY()) + 0.3f);
+    }
+
+    public Zipline getZipline() {
+        BlockPos start = getStartPos();
+        BlockPos end = getEndPos();
+        return new QuadraticCurveZipline(
+                new Vector3f(start.getX() + 0.5f, start.getY() + 0.5f, start.getZ() + 0.5f),
+                new Vector3f(end.getX() + 0.5f, end.getY() + 0.5f, end.getZ() + 0.5f)
+        );
     }
 
     @Override

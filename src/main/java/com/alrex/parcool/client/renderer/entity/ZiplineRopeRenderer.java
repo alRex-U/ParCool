@@ -1,12 +1,13 @@
 package com.alrex.parcool.client.renderer.entity;
 
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
-import com.alrex.parcool.utilities.ZiplineUtil;
+import com.alrex.parcool.common.zipline.Zipline;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.culling.ClippingHelper;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
@@ -34,6 +35,11 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
     }
 
     @Override
+    public boolean shouldRender(ZiplineRopeEntity entity, ClippingHelper clippingHelper, double x, double y, double z) {
+        return entity.shouldRender(x, y, z);
+    }
+
+    @Override
     public void render(ZiplineRopeEntity entity, float p_225623_2_, float partialTick, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int p_225623_6_) {
         renderLeash(entity, partialTick, matrixStack, renderTypeBuffer);
     }
@@ -43,25 +49,15 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
         BlockPos end = entity.getEndPos();
         if (start == BlockPos.ZERO && end == BlockPos.ZERO) return;
 
-        if (start.getY() > end.getY()) { // start.y should be lower than end.y
-            BlockPos temp = start;
-            start = end;
-            end = temp;
-        }
-
         Vector3d entityPos = entity.position();
-        Vector3f startPos = new Vector3f(start.getX() + 0.5f, start.getY() + 0.5f, start.getZ() + 0.5f);
-        Vector3f endPos = new Vector3f(end.getX() + 0.5f, end.getY() + 0.5f, end.getZ() + 0.5f);
+        Zipline zipline = entity.getZipline();
+        Vector3f startPos = zipline.getStartPos();
         Vector3f startPosOffset = new Vector3f(
                 (float) (startPos.x() - entityPos.x()),
                 (float) (startPos.y() - entityPos.y()),
                 (float) (startPos.z() - entityPos.z())
         );
-        Vector3f endOffsetFromStart = new Vector3f(
-                endPos.x() - startPos.x(),
-                endPos.y() - startPos.y(),
-                endPos.z() - startPos.z()
-        );
+        Vector3f endOffsetFromStart = zipline.getOffsetToEndFromStart();
 
         matrixStack.pushPose();
         {
@@ -76,7 +72,7 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
 
 
             final int divisionCount = 24;
-            float invLengthSqrtXZ = MathHelper.fastInvSqrt(endOffsetFromStart.x() * endOffsetFromStart.x() + endOffsetFromStart.z() + endOffsetFromStart.z());
+            float invLengthSqrtXZ = MathHelper.fastInvSqrt(endOffsetFromStart.x() * endOffsetFromStart.x() + endOffsetFromStart.z() * endOffsetFromStart.z());
             float unitLengthX = endOffsetFromStart.x() * invLengthSqrtXZ;
             float unitLengthZ = endOffsetFromStart.z() * invLengthSqrtXZ;
             for (int i = 0; i < divisionCount; i++) {
@@ -85,7 +81,7 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
                 for (int j = 0; j < 2; j++) {
                     renderLeashSingleBlock(
                             transformMatrix, vertexBuilder,
-                            endOffsetFromStart,
+                            zipline,
                             i, divisionCount,
                             unitLengthX, unitLengthZ,
                             startBlockLightLevel, endBlockLightLevel,
@@ -102,7 +98,7 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
     private void renderLeashSingleBlock(
             Matrix4f transformMatrix,
             IVertexBuilder vertexBuilder,
-            Vector3f endOffsetFromStart,
+            Zipline zipline,
             int currentCount, int maxCount,
             float unitLengthX,
             float unitLengthZ,
@@ -115,32 +111,34 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
             float phase = (float) (currentCount + i) / maxCount;
 
             int lightLevel = LightTexture.pack((int) MathHelper.lerp(phase, startBlockLightLevel, endBlockLightLevel), (int) MathHelper.lerp(phase, startSkyBrightness, endSkyBrightness));
-            Vector3f midPoint = ZiplineUtil.getMidPoint(endOffsetFromStart, phase);
+            Vector3d midPoint = zipline.getMidPointOffsetFromStart(phase);
 
-            final float width = 0.05f;
-            float tilt = ZiplineUtil.getSlope(endOffsetFromStart, phase);
+            final float width = 0.075f;
+            Vector3f endOffsetFromStart = zipline.getOffsetToEndFromStart();
+            float tilt = zipline.getSlope(phase);
             float tiltInv = MathHelper.fastInvSqrt(tilt * tilt + 1);
-            float yOffset = width * tiltInv * (tiltType ? 1 : -1) / 1.41421356f /*sqrt(2)*/;
-            float xBaseOffset = unitLengthX * width * tilt * tiltInv;
-            float zBaseOffset = unitLengthZ * width * tilt * tiltInv;
-            float xOffset = unitLengthZ * width / 1.41421356f;
-            float zOffset = -unitLengthX * width / 1.41421356f;
+            float yOffset = width * tiltInv / 1.41421356f /*sqrt(2)*/;
+            float xBaseOffset = unitLengthX * width * tilt * tiltInv / 1.41421356f;
+            float zBaseOffset = unitLengthZ * width * tilt * tiltInv / 1.41421356f;
+            float sign = tiltType ? 1 : -1;
+            float xOffset = sign * unitLengthZ * width / 1.41421356f;
+            float zOffset = sign * -unitLengthX * width / 1.41421356f;
 
             if (i == 0) {
                 vertexBuilder
                         .vertex(transformMatrix,
-                                midPoint.x() + xBaseOffset + xOffset,
-                                midPoint.y() + yOffset,
-                                midPoint.z() + zBaseOffset + zOffset
+                                (float) (midPoint.x() + xBaseOffset + xOffset),
+                                (float) (midPoint.y() - yOffset),
+                                (float) (midPoint.z() + zBaseOffset + zOffset)
                         )
                         .color(r, g, b, 1f)
                         .uv2(lightLevel)
                         .endVertex();
                 vertexBuilder
                         .vertex(transformMatrix,
-                                midPoint.x() + xBaseOffset - xOffset,
-                                midPoint.y() - yOffset,
-                                midPoint.z() + zBaseOffset - zOffset
+                                (float) (midPoint.x() - xBaseOffset - xOffset),
+                                (float) (midPoint.y() + yOffset),
+                                (float) (midPoint.z() - zBaseOffset - zOffset)
                         )
                         .color(r, g, b, 1f)
                         .uv2(lightLevel)
@@ -148,18 +146,18 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
             } else {
                 vertexBuilder
                         .vertex(transformMatrix,
-                                midPoint.x() + xBaseOffset - xOffset,
-                                midPoint.y() - yOffset,
-                                midPoint.z() + zBaseOffset - zOffset
+                                (float) (midPoint.x() - xBaseOffset - xOffset),
+                                (float) (midPoint.y() + yOffset),
+                                (float) (midPoint.z() - zBaseOffset - zOffset)
                         )
                         .color(r, g, b, 1f)
                         .uv2(lightLevel)
                         .endVertex();
                 vertexBuilder
                         .vertex(transformMatrix,
-                                midPoint.x() + xBaseOffset + xOffset,
-                                midPoint.y() + yOffset,
-                                midPoint.z() + zBaseOffset + zOffset
+                                (float) (midPoint.x() + xBaseOffset + xOffset),
+                                (float) (midPoint.y() - yOffset),
+                                (float) (midPoint.z() + zBaseOffset + zOffset)
                         )
                         .color(r, g, b, 1f)
                         .uv2(lightLevel)
