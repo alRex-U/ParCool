@@ -95,6 +95,7 @@ public class RideZipline extends Action {
 
         double gravity = player.getAttributeValue(ForgeMod.ENTITY_GRAVITY.get());
         float slope = zipline.getSlope(currentT);
+        speed *= 0.98;
         speed -= gravity * slope * (MathHelper.fastInvSqrt(slope * slope + 1));
         currentT = (float) zipline.getMovedPositionByParameterApproximately(currentT, (float) speed);
     }
