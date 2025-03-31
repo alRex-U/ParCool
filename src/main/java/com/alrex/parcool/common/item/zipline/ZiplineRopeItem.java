@@ -15,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -50,7 +51,7 @@ public class ZiplineRopeItem extends Item {
                     if (context.getLevel().isClientSide()) {
                         PlayerEntity player = context.getPlayer();
                         if (player != null) {
-                            player.displayClientMessage(new StringTextComponent("This point is too far!"), true);
+                            player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.too_far"), true);
                         }
                     }
                     return ActionResultType.FAIL;
@@ -86,6 +87,12 @@ public class ZiplineRopeItem extends Item {
                 tag.putInt("Tile_X", pos.getX());
                 tag.putInt("Tile_Y", pos.getY());
                 tag.putInt("Tile_Z", pos.getZ());
+                if (context.getLevel().isClientSide()) {
+                    PlayerEntity player = context.getPlayer();
+                    if (player != null) {
+                        player.displayClientMessage(new StringTextComponent(pos.toString()), true);
+                    }
+                }
                 return ActionResultType.SUCCESS;
             }
             return ActionResultType.PASS;

@@ -7,6 +7,10 @@ public class VectorUtil {
 		return (Math.atan2(vec.z(), vec.x()) * 180.0 / Math.PI - 90);
 	}
 
+	public static double toYawRadian(Vector3d vec) {
+		return (Math.atan2(vec.z(), vec.x()) - Math.PI / 2.);
+	}
+
 	public static double toPitchDegree(Vector3d vec) {
 		return -(Math.atan2(vec.y(), Math.sqrt(vec.x() * vec.x() + vec.z() * vec.z())) * 180.0 / Math.PI);
 	}
