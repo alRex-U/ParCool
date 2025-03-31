@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.block.zipline;
 
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
+import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -13,8 +14,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEntity {
@@ -22,18 +23,34 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
         super(p_i48289_1_);
     }
 
-    private final TreeSet<BlockPos> connectionPoints = new TreeSet<>();
+    private static class ConnectionInfo {
+        public ConnectionInfo(int color) {
+            this.color = color;
+        }
+
+        private final int color;
+
+        public int getColor() {
+            return color;
+        }
+    }
+
+    private final TreeMap<BlockPos, ConnectionInfo> connections = new TreeMap<>();
 
     //OnlyIn Logical Server
     private final TreeMap<BlockPos, ZiplineRopeEntity> connectionEntities = new TreeMap<>();
 
-    public TreeSet<BlockPos> getConnectionPoints() {
-        return connectionPoints;
+    private Set<BlockPos> getConnectionPoints() {
+        return connections.keySet();
+    }
+
+    private TreeMap<BlockPos, ConnectionInfo> getConnectionInfo() {
+        return connections;
     }
 
     public void removeAllConnection() {
         if (level == null) return;
-        connectionPoints.stream()
+        getConnectionPoints().stream()
                 .filter(level::isLoaded)
                 .map(level::getBlockEntity)
                 .map(it -> it instanceof ZiplineHookTileEntity ? (ZiplineHookTileEntity) it : null)
@@ -58,7 +75,7 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
         if (level != null) {
-            connectionPoints.stream()
+            getConnectionPoints().stream()
                     .filter(level::isLoaded)
                     .map(level::getBlockEntity)
                     .map(it -> it instanceof ZiplineHookTileEntity ? (ZiplineHookTileEntity) it : null)
@@ -71,27 +88,28 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
         }
     }
 
-    public void connectTo(ZiplineHookTileEntity target) {
+    public void connectTo(ZiplineHookTileEntity target, int color) {
         if (this == target) return;
 
         if (level != null && !level.isClientSide()) {
             if (this.getConnectionPoints().stream().anyMatch(target.getBlockPos()::equals)) {
                 return;
             }
-            ZiplineRopeEntity ropeEntity = spawnRope(level, target);
+            ConnectionInfo info = new ConnectionInfo(color);
+            ZiplineRopeEntity ropeEntity = spawnRope(level, target, info);
             if (ropeEntity != null) {
-                this.getConnectionPoints().add(target.getBlockPos());
-                target.getConnectionPoints().add(this.getBlockPos());
+                this.getConnectionInfo().put(target.getBlockPos(), info);
+                target.getConnectionInfo().put(this.getBlockPos(), info);
             }
         }
     }
 
     @Nullable
-    private ZiplineRopeEntity spawnRope(World level, ZiplineHookTileEntity target) {
+    private ZiplineRopeEntity spawnRope(World level, ZiplineHookTileEntity target, ConnectionInfo info) {
         if (level.isClientSide()) return null;
         if (target.connectionEntities.containsKey(this.getBlockPos())) return null;
 
-        ZiplineRopeEntity entity = new ZiplineRopeEntity(level, getBlockPos(), target.getBlockPos());
+        ZiplineRopeEntity entity = new ZiplineRopeEntity(level, getBlockPos(), target.getBlockPos(), info.getColor());
         boolean result = level.addFreshEntity(entity);
         if (result) {
             this.connectionEntities.put(target.getBlockPos(), entity);
@@ -101,21 +119,29 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
     }
 
     private void saveTo(CompoundNBT nbt) {
-        int[] points = new int[connectionPoints.size() * 3];
+        int[] points = new int[getConnectionPoints().size() * 3];
+        int[] colors = new int[getConnectionPoints().size()];
         int i = 0;
-        for (BlockPos connectPoint : connectionPoints) {
+        int j = 0;
+        for (BlockPos connectPoint : getConnectionPoints()) {
             points[i++] = connectPoint.getX();
             points[i++] = connectPoint.getY();
             points[i++] = connectPoint.getZ();
+
+            colors[j++] = getConnectionInfo().getOrDefault(connectPoint, new ConnectionInfo(ZiplineRopeItem.DEFAULT_COLOR)).getColor();
         }
         nbt.putIntArray("Connect_Points", points);
+        nbt.putIntArray("Colors", colors);
     }
 
     private void restoreFrom(CompoundNBT nbt) {
         int[] points = nbt.getIntArray("Connect_Points");
-        connectionPoints.clear();
+        int[] colors = nbt.getIntArray("Colors");
+        getConnectionInfo().clear();
+        int j = 0;
         for (int i = 0; i + 2 < points.length; i += 3) {
-            connectionPoints.add(new BlockPos(points[i], points[i + 1], points[i + 2]));
+            BlockPos pos = new BlockPos(points[i], points[i + 1], points[i + 2]);
+            getConnectionInfo().put(pos, new ConnectionInfo(j < colors.length ? colors[j++] : ZiplineRopeItem.DEFAULT_COLOR));
         }
     }
 
@@ -133,6 +159,7 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
         restoreFrom(nbt);
     }
 
+    @Nonnull
     @Override
     public CompoundNBT getUpdateTag() {
         CompoundNBT nbt = super.getUpdateTag();
@@ -149,8 +176,9 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
     @Override
     public void tick() {
 
-        if (level != null && !level.isClientSide() && connectionEntities.size() < connectionPoints.size()) {
-            List<ZiplineHookTileEntity> tileEntities = connectionPoints.stream()
+        if (level != null && !level.isClientSide() && connectionEntities.size() < getConnectionPoints().size()) {
+            List<ZiplineHookTileEntity> tileEntities = getConnectionPoints()
+                    .stream()
                     .filter(it -> !connectionEntities.containsKey(it))
                     .filter(level::isLoaded)
                     .map(level::getBlockEntity)
@@ -159,7 +187,7 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
                     .collect(Collectors.toList());
             tileEntities.forEach(it -> {
                 if (it.getConnectionPoints().contains(this.getBlockPos())) {
-                    this.spawnRope(level, it);
+                    this.spawnRope(level, it, getConnectionInfo().get(it.getBlockPos()));
                 } else {
                     this.getConnectionPoints().remove(it.getBlockPos());
                 }

@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class ZiplineRopeItem extends Item {
+    public static final int DEFAULT_COLOR = 0x4C7FE6;
     public ZiplineRopeItem(Properties p_i48487_1_) {
         super(p_i48487_1_);
     }
@@ -34,6 +35,10 @@ public class ZiplineRopeItem extends Item {
         if (tag != null && tag.contains("Tile_X") && tag.contains("Tile_Y") && tag.contains("Tile_Z")) {
             lines.add(new StringTextComponent("Position[" + tag.getInt("Tile_X") + "," + tag.getInt("Tile_Y") + "," + tag.getInt("Tile_Z") + "]").withStyle(TextFormatting.YELLOW));
         }
+        int color = getColor(stack);
+        if (color != DEFAULT_COLOR) {
+            lines.add(new StringTextComponent("Color[0x" + Integer.toHexString(color) + "]"));
+        }
     }
 
     @Nonnull
@@ -42,9 +47,11 @@ public class ZiplineRopeItem extends Item {
         ItemStack stack = context.getItemInHand();
         CompoundNBT tag = stack.getTag();
 
-        if (tag != null && tag.contains("Tile_X") && tag.contains("Tile_Y") && tag.contains("Tile_Z")) {
+        if (tag != null && hasBlockPosition(stack)) {
             if (context.getLevel().getBlockState(context.getClickedPos()).getBlock() instanceof ZiplineHookBlock) {
-                BlockPos start = new BlockPos(tag.getInt("Tile_X"), tag.getInt("Tile_Y"), tag.getInt("Tile_Z"));
+                BlockPos start = getBlockPosition(stack);
+                if (start == null) return ActionResultType.FAIL;
+
                 BlockPos end = context.getClickedPos();
                 if (start.equals(end)) return ActionResultType.PASS;
                 if (start.distSqr(end) > Zipline.MAXIMUM_DISTANCE * Zipline.MAXIMUM_DISTANCE) {
@@ -56,37 +63,28 @@ public class ZiplineRopeItem extends Item {
                     }
                     return ActionResultType.FAIL;
                 }
+
                 TileEntity startEntity = context.getLevel().getBlockEntity(start);
                 TileEntity endEntity = context.getLevel().getBlockEntity(end);
                 if (startEntity instanceof ZiplineHookTileEntity && endEntity instanceof ZiplineHookTileEntity) {
                     if (!context.getLevel().isClientSide()) {
                         ZiplineHookTileEntity startZipEntity = (ZiplineHookTileEntity) startEntity;
                         ZiplineHookTileEntity endZipEntity = (ZiplineHookTileEntity) endEntity;
-                        startZipEntity.connectTo(endZipEntity);
+                        startZipEntity.connectTo(endZipEntity, getColor(stack));
                     }
-                    tag.remove("Tile_X");
-                    tag.remove("Tile_Y");
-                    tag.remove("Tile_Z");
+                    removeBlockPosition(stack);
                     return ActionResultType.sidedSuccess(context.getLevel().isClientSide());
                 }
             }
             if (context.isSecondaryUseActive()) {
-                tag.remove("Tile_X");
-                tag.remove("Tile_Y");
-                tag.remove("Tile_Z");
+                removeBlockPosition(stack);
                 return ActionResultType.SUCCESS;
             }
             return ActionResultType.PASS;
         } else {
             BlockPos pos = context.getClickedPos();
             if (context.getLevel().getBlockState(pos).getBlock() instanceof ZiplineHookBlock) {
-                if (tag == null) {
-                    tag = new CompoundNBT();
-                    stack.setTag(tag);
-                }
-                tag.putInt("Tile_X", pos.getX());
-                tag.putInt("Tile_Y", pos.getY());
-                tag.putInt("Tile_Z", pos.getZ());
+                setBlockPosition(stack, pos);
                 if (context.getLevel().isClientSide()) {
                     PlayerEntity player = context.getPlayer();
                     if (player != null) {
@@ -97,5 +95,57 @@ public class ZiplineRopeItem extends Item {
             }
             return ActionResultType.PASS;
         }
+    }
+
+    public static void setBlockPosition(ItemStack stack, BlockPos pos) {
+        CompoundNBT tag = stack.getTag();
+        if (tag == null) {
+            tag = new CompoundNBT();
+            stack.setTag(tag);
+        }
+        tag.putInt("Tile_X", pos.getX());
+        tag.putInt("Tile_Y", pos.getY());
+        tag.putInt("Tile_Z", pos.getZ());
+    }
+
+    public static void removeBlockPosition(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag == null) {
+            return;
+        }
+        tag.remove("Tile_X");
+        tag.remove("Tile_Y");
+        tag.remove("Tile_Z");
+    }
+
+    public static boolean hasBlockPosition(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        return tag != null && tag.contains("Tile_X") && tag.contains("Tile_Y") && tag.contains("Tile_Z");
+    }
+
+    @Nullable
+    public static BlockPos getBlockPosition(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag == null) {
+            return null;
+        }
+        return new BlockPos(tag.getInt("Tile_X"), tag.getInt("Tile_Y"), tag.getInt("Tile_Z"));
+    }
+
+    public static void setColor(ItemStack stack, int color) {
+        CompoundNBT tag = stack.getTag();
+        if (tag == null) {
+            tag = new CompoundNBT();
+            stack.setTag(tag);
+        }
+        tag.putInt("color", color);
+    }
+
+    public static int getColor(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag == null || !tag.contains("color")) {
+            return DEFAULT_COLOR;
+        }
+        return tag.getInt("color");
     }
 }

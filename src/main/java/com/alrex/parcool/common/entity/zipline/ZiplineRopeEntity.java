@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.entity.zipline;
 
+import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.common.zipline.impl.QuadraticCurveZipline;
 import net.minecraft.entity.Entity;
@@ -25,10 +26,12 @@ import javax.annotation.Nonnull;
 public class ZiplineRopeEntity extends Entity {
     private static final DataParameter<BlockPos> DATA_START_POS;
     private static final DataParameter<BlockPos> DATA_END_POS;
+    private static final DataParameter<Integer> DATA_COLOR;
 
     static {
         DATA_START_POS = EntityDataManager.defineId(ZiplineRopeEntity.class, DataSerializers.BLOCK_POS);
         DATA_END_POS = EntityDataManager.defineId(ZiplineRopeEntity.class, DataSerializers.BLOCK_POS);
+        DATA_COLOR = EntityDataManager.defineId(ZiplineRopeEntity.class, DataSerializers.INT);
     }
 
     private EntitySize size;
@@ -37,10 +40,11 @@ public class ZiplineRopeEntity extends Entity {
         super(p_i48580_1_, p_i48580_2_);
     }
 
-    public ZiplineRopeEntity(World world, BlockPos start, BlockPos end) {
+    public ZiplineRopeEntity(World world, BlockPos start, BlockPos end, int color) {
         super(com.alrex.parcool.common.entity.EntityType.ZIPLINE_ROPE.get(), world);
         setStartPos(start);
         setEndPos(end);
+        setColor(color);
         setPos((end.getX() + start.getX()) / 2.0 + 0.5, Math.min(end.getY(), start.getY()), (end.getZ() + start.getZ()) / 2.0 + 0.5);
         noPhysics = true;
         forcedLoading = true;
@@ -120,6 +124,14 @@ public class ZiplineRopeEntity extends Entity {
         getEntityData().set(DATA_END_POS, end);
     }
 
+    public int getColor() {
+        return getEntityData().get(DATA_COLOR);
+    }
+
+    private void setColor(int color) {
+        getEntityData().set(DATA_COLOR, color);
+    }
+
     @Nonnull
     @Override
     public ActionResultType interact(PlayerEntity p_184230_1_, Hand p_184230_2_) {
@@ -130,6 +142,7 @@ public class ZiplineRopeEntity extends Entity {
     protected void defineSynchedData() {
         getEntityData().define(DATA_START_POS, BlockPos.ZERO);
         getEntityData().define(DATA_END_POS, BlockPos.ZERO);
+        getEntityData().define(DATA_COLOR, ZiplineRopeItem.DEFAULT_COLOR);
     }
 
     @Override

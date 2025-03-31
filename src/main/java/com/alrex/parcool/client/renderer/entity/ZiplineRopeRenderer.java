@@ -49,6 +49,11 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
         BlockPos end = entity.getEndPos();
         if (start == BlockPos.ZERO && end == BlockPos.ZERO) return;
 
+        int color = entity.getColor();
+        float r = ((0xFF0000 & color) >> 16) / 255f;
+        float g = ((0x00FF00 & color) >> 8) / 255f;
+        float b = (0x0000FF & color) / 255f;
+
         Vector3d entityPos = entity.position();
         Zipline zipline = entity.getZipline();
         Vector3f startPos = zipline.getStartPos();
@@ -86,7 +91,7 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
                             unitLengthX, unitLengthZ,
                             startBlockLightLevel, endBlockLightLevel,
                             startSkyBrightness, endSkyBrightness,
-                            0.3f * colorScale, 0.5f * colorScale, 0.9f * colorScale,
+                            r * colorScale, g * colorScale, b * colorScale,
                             j % 2 == 0
                     );
                 }

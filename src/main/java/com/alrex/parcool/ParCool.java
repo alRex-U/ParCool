@@ -11,6 +11,7 @@ import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.entity.EntityType;
 import com.alrex.parcool.common.handlers.AddAttributesHandler;
 import com.alrex.parcool.common.item.Items;
+import com.alrex.parcool.common.item.recipe.Recipes;
 import com.alrex.parcool.common.potion.PotionRecipeRegistry;
 import com.alrex.parcool.common.potion.Potions;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
@@ -80,6 +81,7 @@ public class ParCool {
 
 		Blocks.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Items.register(FMLJavaModLoadingContext.get().getModEventBus());
+		Recipes.register(FMLJavaModLoadingContext.get().getModEventBus());
 		EntityType.register(FMLJavaModLoadingContext.get().getModEventBus());
 		TileEntities.register(FMLJavaModLoadingContext.get().getModEventBus());
 
