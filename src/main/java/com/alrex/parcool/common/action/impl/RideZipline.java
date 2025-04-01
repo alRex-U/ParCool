@@ -173,7 +173,9 @@ public class RideZipline extends Action {
                 float zScale = pointsOffset.z() * xzLenInvSqrt;
                 speedScale = new Vector3d(xScale, yScale, zScale).normalize();
             }
-            player.setDeltaMovement(speedScale.scale(speed));
+            player.setDeltaMovement(
+                    speedScale.scale(speed).add(0, KeyBindings.getKeyJump().isDown() ? 0.1 : 0, 0)
+            );
         }
         currentT = 0;
         currentPos = null;

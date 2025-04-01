@@ -57,7 +57,7 @@ public abstract class Zipline {
             Zipline zipline = ziplineEntity.getZipline();
             if (zipline.isPossiblyHangable(grabPos)) {
                 double distSqr = zipline.getSquaredDistanceApproximately(grabPos);
-                double catchRange = player.getBbWidth() * 0.35;
+                double catchRange = player.getBbWidth() * 0.5;
                 if (distSqr < catchRange * catchRange) return ziplineEntity;
             }
         }

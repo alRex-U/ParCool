@@ -159,6 +159,20 @@
       }
     ]
   },
+  "zipline.set": {
+    "subtitle": "parcool.sound.zipline.set.subtitle",
+    "sounds": [
+      "entity/leashknot/place1",
+      "entity/leashknot/place2",
+      "entity/leashknot/place3"
+    ]
+  },
+  "zipline.remove": {
+    "subtitle": "parcool.sound.zipline.remove.subtitle",
+    "sounds": [
+      "minecraft:mob/sheep/shear"
+    ]
+  },
   "parcool.enable": {
     "subtitle": "parcool.sound.enable_parcool.subtitle"
   },

@@ -1,8 +1,10 @@
 package com.alrex.parcool.common.block.zipline;
 
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
+import com.alrex.parcool.common.item.Items;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -12,10 +14,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEntity {
@@ -40,7 +39,7 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
     //OnlyIn Logical Server
     private final TreeMap<BlockPos, ZiplineRopeEntity> connectionEntities = new TreeMap<>();
 
-    private Set<BlockPos> getConnectionPoints() {
+    public Set<BlockPos> getConnectionPoints() {
         return connections.keySet();
     }
 
@@ -48,18 +47,25 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
         return connections;
     }
 
-    public void removeAllConnection() {
-        if (level == null) return;
+    public List<ItemStack> removeAllConnection() {
+        if (level == null) return Collections.EMPTY_LIST;
         getConnectionPoints().stream()
                 .filter(level::isLoaded)
                 .map(level::getBlockEntity)
                 .map(it -> it instanceof ZiplineHookTileEntity ? (ZiplineHookTileEntity) it : null)
                 .filter(Objects::nonNull)
                 .forEach(it -> it.onPairHookRegistrationRemoved(this));
+        List<ItemStack> itemStacks = Collections.EMPTY_LIST;
         if (!level.isClientSide()) {
             connectionEntities.values().forEach(ZiplineRopeEntity::remove);
+            itemStacks = connections.values().stream().map(it -> {
+                ItemStack stack = new ItemStack(Items.ZIPLINE_ROPE::get);
+                ZiplineRopeItem.setColor(stack, it.getColor());
+                return stack;
+            }).collect(Collectors.toList());
         }
         connectionEntities.clear();
+        return itemStacks;
     }
 
     private void onPairHookRegistrationRemoved(ZiplineHookTileEntity removedPair) {
