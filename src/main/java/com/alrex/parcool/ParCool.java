@@ -104,6 +104,7 @@ public class ParCool {
 		KeyBindings.register(event);
 		Capabilities.registerClient(CapabilityManager.INSTANCE);
 		EventBusForgeRegistry.registerClient(MinecraftForge.EVENT_BUS);
+		Items.registerColors();
 	}
 
 	private void registerCommand(final RegisterCommandsEvent event) {

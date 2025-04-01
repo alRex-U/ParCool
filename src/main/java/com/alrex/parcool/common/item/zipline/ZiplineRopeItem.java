@@ -3,6 +3,7 @@ package com.alrex.parcool.common.item.zipline;
 import com.alrex.parcool.common.block.zipline.ZiplineHookBlock;
 import com.alrex.parcool.common.block.zipline.ZiplineHookTileEntity;
 import com.alrex.parcool.common.zipline.Zipline;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -20,10 +21,19 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
 
 public class ZiplineRopeItem extends Item {
     public static final int DEFAULT_COLOR = 0x4C7FE6;
+
+    public static class ItemColor implements IItemColor {
+        @Override
+        public int getColor(@Nonnull ItemStack itemStack, int i) {
+            return i > 0 ? -1 : ZiplineRopeItem.getColor(itemStack);
+        }
+    }
     public ZiplineRopeItem(Properties p_i48487_1_) {
         super(p_i48487_1_);
     }
@@ -35,9 +45,18 @@ public class ZiplineRopeItem extends Item {
         if (tag != null && tag.contains("Tile_X") && tag.contains("Tile_Y") && tag.contains("Tile_Z")) {
             lines.add(new StringTextComponent("Position[" + tag.getInt("Tile_X") + "," + tag.getInt("Tile_Y") + "," + tag.getInt("Tile_Z") + "]").withStyle(TextFormatting.YELLOW));
         }
-        int color = getColor(stack);
-        if (color != DEFAULT_COLOR) {
-            lines.add(new StringTextComponent("Color[0x" + Integer.toHexString(color) + "]"));
+        if (hasCustomColor(stack)) {
+            int color = getColor(stack);
+            DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
+            decimalFormatSymbols.setGroupingSeparator(' ');
+            DecimalFormat format = new DecimalFormat("##0.0", decimalFormatSymbols);
+            float r = 100f * ((color & 0xFF0000) >> 16) / 255f;
+            float g = 100f * ((color & 0x00FF00) >> 8) / 255f;
+            float b = 100f * (color & 0x0000FF) / 255f;
+            lines.add(new TranslationTextComponent("parcool.gui.text.zipline.color").withStyle(TextFormatting.GRAY));
+            lines.add(new StringTextComponent("R : " + format.format(r) + "%").withStyle(TextFormatting.RED));
+            lines.add(new StringTextComponent("G : " + format.format(g) + "%").withStyle(TextFormatting.GREEN));
+            lines.add(new StringTextComponent("B : " + format.format(b) + "%").withStyle(TextFormatting.BLUE));
         }
     }
 
@@ -147,5 +166,13 @@ public class ZiplineRopeItem extends Item {
             return DEFAULT_COLOR;
         }
         return tag.getInt("color");
+    }
+
+    public static boolean hasCustomColor(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag == null) {
+            return false;
+        }
+        return tag.contains("color");
     }
 }

@@ -5,13 +5,16 @@ import com.alrex.parcool.common.item.recipe.Recipes;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.DyeItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import java.util.LinkedList;
 
 public class ZiplineRopeDyeRecipe extends SpecialRecipe {
     public ZiplineRopeDyeRecipe(ResourceLocation p_i48169_1_) {
@@ -28,8 +31,7 @@ public class ZiplineRopeDyeRecipe extends SpecialRecipe {
                 if (ziplineRopeFound) return false;
                 else ziplineRopeFound = true;
             } else if (stack.getItem() instanceof DyeItem) {
-                if (dyeItemFound) return false;
-                else dyeItemFound = true;
+                dyeItemFound = true;
             }
         }
         return ziplineRopeFound && dyeItemFound;
@@ -39,20 +41,37 @@ public class ZiplineRopeDyeRecipe extends SpecialRecipe {
     @Override
     public ItemStack assemble(@Nonnull CraftingInventory craftingInventory) {
         ItemStack ziplineRope = null;
-        DyeItem dyeItem = null;
-        ItemStack dyeItemStack = null;
+        LinkedList<DyeItem> dyeItems = new LinkedList<>();
         for (int i = 0; i < craftingInventory.getContainerSize(); i++) {
             ItemStack stack = craftingInventory.getItem(i);
-            if (stack.getItem() instanceof ZiplineRopeItem) {
+            Item item = stack.getItem();
+            if (item instanceof ZiplineRopeItem) {
                 ziplineRope = stack;
-            } else if (stack.getItem() instanceof DyeItem) {
-                dyeItemStack = stack;
-                dyeItem = (DyeItem) stack.getItem();
+            } else if (item instanceof DyeItem) {
+                dyeItems.add((DyeItem) item);
             }
         }
-        if (ziplineRope == null || dyeItemStack == null) return ItemStack.EMPTY;
+        if (ziplineRope == null || dyeItems.isEmpty()) return ItemStack.EMPTY;
         ziplineRope = ziplineRope.copy();
-        ZiplineRopeItem.setColor(ziplineRope, dyeItem.getDyeColor().getColorValue());
+        int r = 0, g = 0, b = 0;
+        int dyeSize = dyeItems.size();
+        for (DyeItem dyeItem : dyeItems) {
+            int color = dyeItem.getDyeColor().getColorValue();
+            r += (color & 0xFF0000) >> 16;
+            g += (color & 0x00FF00) >> 8;
+            b += (color & 0x0000FF);
+        }
+        if (ZiplineRopeItem.hasCustomColor(ziplineRope)) {
+            dyeSize++;
+            int color = ZiplineRopeItem.getColor(ziplineRope);
+            r += (color & 0xFF0000) >> 16;
+            g += (color & 0x00FF00) >> 8;
+            b += (color & 0x0000FF);
+        }
+        r = MathHelper.clamp(r / dyeSize, 0, 0xFF);
+        g = MathHelper.clamp(g / dyeSize, 0, 0xFF);
+        b = MathHelper.clamp(b / dyeSize, 0, 0xFF);
+        ZiplineRopeItem.setColor(ziplineRope, (r << 16) + (g << 8) + b);
         return ziplineRope;
     }
 
