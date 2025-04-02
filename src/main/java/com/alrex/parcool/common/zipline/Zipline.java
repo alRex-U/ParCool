@@ -4,7 +4,6 @@ import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -13,7 +12,7 @@ import java.util.List;
 public abstract class Zipline {
     public static final double MAXIMUM_DISTANCE = 30.;
 
-    protected Zipline(Vector3f point1, Vector3f point2) {
+    protected Zipline(Vector3d point1, Vector3d point2) {
         if (point1.y() <= point2.y()) {
             this.startPos = point1;
             this.endPos = point2;
@@ -21,27 +20,29 @@ public abstract class Zipline {
             this.startPos = point2;
             this.endPos = point1;
         }
-        endOffsetFromStart = new Vector3f(
-                endPos.x() - startPos.x(),
-                endPos.y() - startPos.y(),
-                endPos.z() - startPos.z()
-        );
+        endOffsetFromStart = endPos.subtract(startPos);
+        horizontalDistance = Math.hypot(endOffsetFromStart.x(), endOffsetFromStart.z());
     }
 
-    private final Vector3f startPos;
-    private final Vector3f endPos;
-    private final Vector3f endOffsetFromStart;
+    private final Vector3d startPos;
+    private final Vector3d endPos;
+    private final Vector3d endOffsetFromStart;
+    private final double horizontalDistance;
 
-    public Vector3f getStartPos() {
+    public Vector3d getStartPos() {
         return startPos;
     }
 
-    public Vector3f getEndPos() {
+    public Vector3d getEndPos() {
         return endPos;
     }
 
-    public Vector3f getOffsetToEndFromStart() {
+    public Vector3d getOffsetToEndFromStart() {
         return endOffsetFromStart;
+    }
+
+    public double getHorizontalDistance() {
+        return horizontalDistance;
     }
 
     @Nullable
@@ -72,7 +73,9 @@ public abstract class Zipline {
     // the x is start.x + (end.x - start.x) * t
     // also same about z
     // y is decided by calculated x and z
-    public abstract Vector3d getMidPoint(float t);
+    public Vector3d getMidPoint(float t) {
+        return getMidPointOffsetFromStart(t).add(getStartPos());
+    }
 
     public abstract Vector3d getMidPointOffsetFromStart(float t);
 

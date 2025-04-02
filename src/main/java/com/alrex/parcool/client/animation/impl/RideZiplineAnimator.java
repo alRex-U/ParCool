@@ -47,7 +47,7 @@ public class RideZiplineAnimator extends Animator {
         ZiplineRopeEntity entity = parkourability.get(RideZipline.class).getRidingZipline();
         if (entity == null) return;
         Zipline zipline = entity.getZipline();
-        Vector3f offset = zipline.getOffsetToEndFromStart();
+        Vector3d offset = zipline.getOffsetToEndFromStart();
         double angleDifference = VectorUtil.toYawRadian(player.getLookAngle()) - VectorUtil.toYawRadian(new Vector3d(offset.x(), 0, offset.z()));
         double angleCos = Math.cos(angleDifference);
         double angleSin = Math.sin(angleDifference);
@@ -73,7 +73,7 @@ public class RideZiplineAnimator extends Animator {
         ZiplineRopeEntity entity = parkourability.get(RideZipline.class).getRidingZipline();
         if (entity == null) return;
         Zipline zipline = entity.getZipline();
-        Vector3f offset = zipline.getOffsetToEndFromStart();
+        Vector3d offset = zipline.getOffsetToEndFromStart();
         Vector3d rotationAxis = new Vector3d(0, 0, 1)
                 .yRot((float) (Math.PI / 2 + VectorUtil.toYawRadian(player.getLookAngle()) - VectorUtil.toYawRadian(new Vector3d(offset.x(), 0, offset.z()))))
                 .normalize();

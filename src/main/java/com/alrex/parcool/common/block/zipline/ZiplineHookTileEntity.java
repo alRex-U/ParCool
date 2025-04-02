@@ -6,6 +6,8 @@ import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -22,19 +24,7 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
         super(p_i48289_1_);
     }
 
-    private static class ConnectionInfo {
-        public ConnectionInfo(int color) {
-            this.color = color;
-        }
-
-        private final int color;
-
-        public int getColor() {
-            return color;
-        }
-    }
-
-    private final TreeMap<BlockPos, ConnectionInfo> connections = new TreeMap<>();
+    private final TreeMap<BlockPos, ZiplineInfo> connections = new TreeMap<>();
 
     //OnlyIn Logical Server
     private final TreeMap<BlockPos, ZiplineRopeEntity> connectionEntities = new TreeMap<>();
@@ -43,7 +33,7 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
         return connections.keySet();
     }
 
-    private TreeMap<BlockPos, ConnectionInfo> getConnectionInfo() {
+    private TreeMap<BlockPos, ZiplineInfo> getConnectionInfo() {
         return connections;
     }
 
@@ -94,28 +84,29 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
         }
     }
 
-    public void connectTo(ZiplineHookTileEntity target, int color) {
-        if (this == target) return;
+    public boolean connectTo(ZiplineHookTileEntity target, ZiplineInfo info) {
+        if (this == target) return false;
 
         if (level != null && !level.isClientSide()) {
             if (this.getConnectionPoints().stream().anyMatch(target.getBlockPos()::equals)) {
-                return;
+                return false;
             }
-            ConnectionInfo info = new ConnectionInfo(color);
             ZiplineRopeEntity ropeEntity = spawnRope(level, target, info);
             if (ropeEntity != null) {
                 this.getConnectionInfo().put(target.getBlockPos(), info);
                 target.getConnectionInfo().put(this.getBlockPos(), info);
+                return true;
             }
         }
+        return false;
     }
 
     @Nullable
-    private ZiplineRopeEntity spawnRope(World level, ZiplineHookTileEntity target, ConnectionInfo info) {
+    private ZiplineRopeEntity spawnRope(World level, ZiplineHookTileEntity target, ZiplineInfo info) {
         if (level.isClientSide()) return null;
         if (target.connectionEntities.containsKey(this.getBlockPos())) return null;
 
-        ZiplineRopeEntity entity = new ZiplineRopeEntity(level, getBlockPos(), target.getBlockPos(), info.getColor());
+        ZiplineRopeEntity entity = new ZiplineRopeEntity(level, getBlockPos(), target.getBlockPos(), info);
         boolean result = level.addFreshEntity(entity);
         if (result) {
             this.connectionEntities.put(target.getBlockPos(), entity);
@@ -125,29 +116,36 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
     }
 
     private void saveTo(CompoundNBT nbt) {
-        int[] points = new int[getConnectionPoints().size() * 3];
-        int[] colors = new int[getConnectionPoints().size()];
-        int i = 0;
-        int j = 0;
-        for (BlockPos connectPoint : getConnectionPoints()) {
-            points[i++] = connectPoint.getX();
-            points[i++] = connectPoint.getY();
-            points[i++] = connectPoint.getZ();
-
-            colors[j++] = getConnectionInfo().getOrDefault(connectPoint, new ConnectionInfo(ZiplineRopeItem.DEFAULT_COLOR)).getColor();
+        ListNBT connections = new ListNBT();
+        for (Map.Entry<BlockPos, ZiplineInfo> infoEntry : getConnectionInfo().entrySet()) {
+            CompoundNBT entryTag = new CompoundNBT();
+            entryTag.putInt("X", infoEntry.getKey().getX());
+            entryTag.putInt("Y", infoEntry.getKey().getY());
+            entryTag.putInt("Z", infoEntry.getKey().getZ());
+            entryTag.put("Info", infoEntry.getValue().save());
+            connections.add(entryTag);
         }
-        nbt.putIntArray("Connect_Points", points);
-        nbt.putIntArray("Colors", colors);
+        nbt.put("Connection", connections);
     }
 
     private void restoreFrom(CompoundNBT nbt) {
-        int[] points = nbt.getIntArray("Connect_Points");
-        int[] colors = nbt.getIntArray("Colors");
+        INBT connections = nbt.get("Connection");
+        if (!(connections instanceof ListNBT)) {
+            return;
+        }
+        ListNBT listConnections = (ListNBT) connections;
         getConnectionInfo().clear();
-        int j = 0;
-        for (int i = 0; i + 2 < points.length; i += 3) {
-            BlockPos pos = new BlockPos(points[i], points[i + 1], points[i + 2]);
-            getConnectionInfo().put(pos, new ConnectionInfo(j < colors.length ? colors[j++] : ZiplineRopeItem.DEFAULT_COLOR));
+
+        for (INBT entry : listConnections) {
+            if (!(entry instanceof CompoundNBT))
+                continue;
+
+            CompoundNBT cTag = (CompoundNBT) entry;
+            if (!(cTag.contains("X") && cTag.contains("Y") && cTag.contains("Z")))
+                continue;
+            BlockPos pos = new BlockPos(cTag.getInt("X"), cTag.getInt("Y"), cTag.getInt("Z"));
+            ZiplineInfo info = ZiplineInfo.load(cTag.get("Info"));
+            getConnectionInfo().put(pos, info);
         }
     }
 

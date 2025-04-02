@@ -3,7 +3,9 @@ package com.alrex.parcool.common.item.zipline;
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.common.block.zipline.ZiplineHookBlock;
 import com.alrex.parcool.common.block.zipline.ZiplineHookTileEntity;
+import com.alrex.parcool.common.block.zipline.ZiplineInfo;
 import com.alrex.parcool.common.zipline.Zipline;
+import com.alrex.parcool.common.zipline.ZiplineType;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -52,18 +54,24 @@ public class ZiplineRopeItem extends Item {
 
         if (tag != null && tag.contains("Tile_X") && tag.contains("Tile_Y") && tag.contains("Tile_Z")) {
             lines.add(new TranslationTextComponent("parcool.gui.text.zipline.bind_pos", tag.getInt("Tile_X") + ", " + tag.getInt("Tile_Y") + ", " + tag.getInt("Tile_Z")).withStyle(TextFormatting.YELLOW));
+        } else {
+            lines.add(new TranslationTextComponent("parcool.gui.text.zipline.not_bound").withStyle(TextFormatting.DARK_GRAY));
         }
+        lines.add(new StringTextComponent(""));
+        lines.add(new TranslationTextComponent("parcool.gui.text.zipline.tightness", getZiplineType(stack).getTranslationName()).withStyle(TextFormatting.GRAY));
         if (hasCustomColor(stack)) {
+            /*
             int color = getColor(stack);
             DecimalFormat format = PERCENT_FORMATTER;
             float r = 100f * ((color & 0xFF0000) >> 16) / 255f;
             float g = 100f * ((color & 0x00FF00) >> 8) / 255f;
             float b = 100f * (color & 0x0000FF) / 255f;
             lines.add(new StringTextComponent(""));
-            lines.add(new TranslationTextComponent("parcool.gui.text.zipline.color").withStyle(TextFormatting.GRAY));
             lines.add(new StringTextComponent("R : " + format.format(r) + "%").withStyle(TextFormatting.RED));
             lines.add(new StringTextComponent("G : " + format.format(g) + "%").withStyle(TextFormatting.GREEN));
             lines.add(new StringTextComponent("B : " + format.format(b) + "%").withStyle(TextFormatting.BLUE));
+             */
+            lines.add(new TranslationTextComponent("parcool.gui.text.zipline.colored").withStyle(TextFormatting.BLUE));
         }
     }
 
@@ -106,7 +114,13 @@ public class ZiplineRopeItem extends Item {
                     if (!context.getLevel().isClientSide()) {
                         ZiplineHookTileEntity startZipEntity = (ZiplineHookTileEntity) startEntity;
                         ZiplineHookTileEntity endZipEntity = (ZiplineHookTileEntity) endEntity;
-                        startZipEntity.connectTo(endZipEntity, getColor(stack));
+                        if (!startZipEntity.connectTo(endZipEntity, new ZiplineInfo(getZiplineType(stack), getColor(stack)))) {
+                            PlayerEntity player = context.getPlayer();
+                            if (player != null) {
+                                player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.already_exist"), true);
+                            }
+                        }
+
                     } else {
                         PlayerEntity player = context.getPlayer();
                         if (player != null) {
@@ -138,6 +152,15 @@ public class ZiplineRopeItem extends Item {
                     PlayerEntity player = context.getPlayer();
                     if (player != null) {
                         player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.set_point", pos.toShortString()), true);
+                    }
+                }
+                return ActionResultType.SUCCESS;
+            } else if (context.isSecondaryUseActive()) {
+                changeZiplineType(stack);
+                if (context.getLevel().isClientSide()) {
+                    PlayerEntity player = context.getPlayer();
+                    if (player != null) {
+                        player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.change_tightness", getZiplineType(stack).getTranslationName()), true);
                     }
                 }
                 return ActionResultType.SUCCESS;
@@ -204,5 +227,31 @@ public class ZiplineRopeItem extends Item {
             return false;
         }
         return tag.contains("color");
+    }
+
+    public static ZiplineType getZiplineType(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag == null || !tag.contains("zipline_type")) {
+            return ZiplineType.STANDARD;
+        }
+        return ZiplineType.values()[tag.getByte("zipline_type") % ZiplineType.values().length];
+    }
+
+    public static void changeZiplineType(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag == null) {
+            tag = new CompoundNBT();
+            stack.setTag(tag);
+        }
+        tag.putByte("zipline_type", (byte) ((getZiplineType(stack).ordinal() + 1) % ZiplineType.values().length));
+    }
+
+    public static void setZiplineType(ItemStack stack, ZiplineType type) {
+        CompoundNBT tag = stack.getTag();
+        if (tag == null) {
+            tag = new CompoundNBT();
+            stack.setTag(tag);
+        }
+        tag.putByte("zipline_type", (byte) type.ordinal());
     }
 }

@@ -8,11 +8,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
+import net.minecraft.pathfinding.PathType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
@@ -21,8 +25,22 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class ZiplineHookBlock extends Block {
+    protected static final VoxelShape SHAPE;
+
+    static {
+        SHAPE = VoxelShapes.or(
+                Block.box(6, 8, 6, 10, 16, 10),
+                Block.box(5, 10, 5, 11, 14, 11)
+        );
+    }
+
     public ZiplineHookBlock(Properties p_i48440_1_) {
         super(p_i48440_1_);
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
+        return SHAPE;
     }
 
     @Override
@@ -36,6 +54,11 @@ public class ZiplineHookBlock extends Block {
             }
         }
         super.onRemove(state, world, pos, p_196243_4_, p_196243_5_);
+    }
+
+    @Override
+    public boolean isPathfindable(BlockState p_196266_1_, IBlockReader p_196266_2_, BlockPos p_196266_3_, PathType p_196266_4_) {
+        return false;
     }
 
     @Override

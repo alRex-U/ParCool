@@ -15,7 +15,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.LightType;
 
 import javax.annotation.Nonnull;
@@ -56,13 +55,9 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
 
         Vector3d entityPos = entity.position();
         Zipline zipline = entity.getZipline();
-        Vector3f startPos = zipline.getStartPos();
-        Vector3f startPosOffset = new Vector3f(
-                (float) (startPos.x() - entityPos.x()),
-                (float) (startPos.y() - entityPos.y()),
-                (float) (startPos.z() - entityPos.z())
-        );
-        Vector3f endOffsetFromStart = zipline.getOffsetToEndFromStart();
+        Vector3d startPos = zipline.getStartPos();
+        Vector3d startPosOffset = startPos.subtract(entityPos);
+        Vector3d endOffsetFromStart = zipline.getOffsetToEndFromStart();
 
         matrixStack.pushPose();
         {
@@ -77,9 +72,9 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
 
 
             final int divisionCount = 24;
-            float invLengthSqrtXZ = MathHelper.fastInvSqrt(endOffsetFromStart.x() * endOffsetFromStart.x() + endOffsetFromStart.z() * endOffsetFromStart.z());
-            float unitLengthX = endOffsetFromStart.x() * invLengthSqrtXZ;
-            float unitLengthZ = endOffsetFromStart.z() * invLengthSqrtXZ;
+            float invLengthSqrtXZ = (float) MathHelper.fastInvSqrt(endOffsetFromStart.x() * endOffsetFromStart.x() + endOffsetFromStart.z() * endOffsetFromStart.z());
+            float unitLengthX = (float) (endOffsetFromStart.x() * invLengthSqrtXZ);
+            float unitLengthZ = (float) (endOffsetFromStart.z() * invLengthSqrtXZ);
             for (int i = 0; i < divisionCount; i++) {
                 float colorScale = i % 2 == 0 ? 1f : 0.8f;
 
@@ -119,7 +114,6 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
             Vector3d midPoint = zipline.getMidPointOffsetFromStart(phase);
 
             final float width = 0.075f;
-            Vector3f endOffsetFromStart = zipline.getOffsetToEndFromStart();
             float tilt = zipline.getSlope(phase);
             float tiltInv = MathHelper.fastInvSqrt(tilt * tilt + 1);
             float yOffset = width * tiltInv / 1.41421356f /*sqrt(2)*/;

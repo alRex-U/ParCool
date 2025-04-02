@@ -1,8 +1,9 @@
 package com.alrex.parcool.common.entity.zipline;
 
+import com.alrex.parcool.common.block.zipline.ZiplineInfo;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
 import com.alrex.parcool.common.zipline.Zipline;
-import com.alrex.parcool.common.zipline.impl.QuadraticCurveZipline;
+import com.alrex.parcool.common.zipline.ZiplineType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -17,7 +18,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -27,11 +27,13 @@ public class ZiplineRopeEntity extends Entity {
     private static final DataParameter<BlockPos> DATA_START_POS;
     private static final DataParameter<BlockPos> DATA_END_POS;
     private static final DataParameter<Integer> DATA_COLOR;
+    private static final DataParameter<Integer> DATA_ZIP_TYPE;
 
     static {
         DATA_START_POS = EntityDataManager.defineId(ZiplineRopeEntity.class, DataSerializers.BLOCK_POS);
         DATA_END_POS = EntityDataManager.defineId(ZiplineRopeEntity.class, DataSerializers.BLOCK_POS);
         DATA_COLOR = EntityDataManager.defineId(ZiplineRopeEntity.class, DataSerializers.INT);
+        DATA_ZIP_TYPE = EntityDataManager.defineId(ZiplineRopeEntity.class, DataSerializers.INT);
     }
 
     private EntitySize size;
@@ -40,24 +42,40 @@ public class ZiplineRopeEntity extends Entity {
         super(p_i48580_1_, p_i48580_2_);
     }
 
-    public ZiplineRopeEntity(World world, BlockPos start, BlockPos end, int color) {
+    public ZiplineRopeEntity(World world, BlockPos start, BlockPos end, ZiplineInfo info) {
         super(com.alrex.parcool.common.entity.EntityType.ZIPLINE_ROPE.get(), world);
         setStartPos(start);
         setEndPos(end);
-        setColor(color);
+        setColor(info.getColor());
+        setZiplineType(info.getType());
         setPos((end.getX() + start.getX()) / 2.0 + 0.5, Math.min(end.getY(), start.getY()), (end.getZ() + start.getZ()) / 2.0 + 0.5);
         noPhysics = true;
         forcedLoading = true;
         size = EntitySize.fixed(Math.max(Math.abs(end.getX() - start.getX()), Math.abs(end.getZ() - start.getZ())) + 0.3f, Math.abs(end.getY() - start.getY()) + 0.3f);
     }
 
+    private BlockPos zipline_start;
+    private BlockPos zipline_end;
+    private ZiplineType zip_type;
+    private Zipline zipline;
     public Zipline getZipline() {
         BlockPos start = getStartPos();
         BlockPos end = getEndPos();
-        return new QuadraticCurveZipline(
-                new Vector3f(start.getX() + 0.5f, start.getY() + 0.5f, start.getZ() + 0.5f),
-                new Vector3f(end.getX() + 0.5f, end.getY() + 0.5f, end.getZ() + 0.5f)
-        );
+        ZiplineType type = getZiplineType();
+        if (zipline == null
+                || !start.equals(zipline_start)
+                || !end.equals(zipline_end)
+                || !type.equals(zip_type)
+        ) {
+            zipline_start = start;
+            zipline_end = end;
+            zip_type = type;
+            zipline = type.getZipline(
+                    new Vector3d(start.getX() + 0.5, start.getY() + 0.5, start.getZ() + 0.5),
+                    new Vector3d(end.getX() + 0.5, end.getY() + 0.5, end.getZ() + 0.5)
+            );
+        }
+        return zipline;
     }
 
     @Override
@@ -132,6 +150,14 @@ public class ZiplineRopeEntity extends Entity {
         getEntityData().set(DATA_COLOR, color);
     }
 
+    public ZiplineType getZiplineType() {
+        return ZiplineType.values()[getEntityData().get(DATA_ZIP_TYPE) % ZiplineType.values().length];
+    }
+
+    private void setZiplineType(ZiplineType type) {
+        getEntityData().set(DATA_ZIP_TYPE, type.ordinal());
+    }
+
     @Nonnull
     @Override
     public ActionResultType interact(PlayerEntity p_184230_1_, Hand p_184230_2_) {
@@ -143,6 +169,7 @@ public class ZiplineRopeEntity extends Entity {
         getEntityData().define(DATA_START_POS, BlockPos.ZERO);
         getEntityData().define(DATA_END_POS, BlockPos.ZERO);
         getEntityData().define(DATA_COLOR, ZiplineRopeItem.DEFAULT_COLOR);
+        getEntityData().define(DATA_ZIP_TYPE, ZiplineType.STANDARD.ordinal());
     }
 
     @Override
