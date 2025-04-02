@@ -38,9 +38,9 @@ public class ZiplineInfo {
             int color = cTag.contains("color") ? cTag.getInt("color") : ZiplineRopeItem.DEFAULT_COLOR;
             ZiplineType type = cTag.contains("type") ?
                     ZiplineType.values()[cTag.getByte("type") % ZiplineType.values().length] :
-                    ZiplineType.QUAD_CURVE;
+                    ZiplineType.LOOSE;
             return new ZiplineInfo(type, color);
         }
-        return new ZiplineInfo(ZiplineType.QUAD_CURVE, ZiplineRopeItem.DEFAULT_COLOR);
+        return new ZiplineInfo(ZiplineType.LOOSE, ZiplineRopeItem.DEFAULT_COLOR);
     }
 }

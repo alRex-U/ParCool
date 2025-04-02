@@ -32,6 +32,8 @@ public class ZiplineRopeDyeRecipe extends SpecialRecipe {
                 else ziplineRopeFound = true;
             } else if (stack.getItem() instanceof DyeItem) {
                 dyeItemFound = true;
+            } else if (!stack.isEmpty()) {
+                return false;
             }
         }
         return ziplineRopeFound && dyeItemFound;
@@ -49,6 +51,8 @@ public class ZiplineRopeDyeRecipe extends SpecialRecipe {
                 ziplineRope = stack;
             } else if (item instanceof DyeItem) {
                 dyeItems.add((DyeItem) item);
+            } else if (!stack.isEmpty()) {
+                return ItemStack.EMPTY;
             }
         }
         if (ziplineRope == null || dyeItems.isEmpty()) return ItemStack.EMPTY;

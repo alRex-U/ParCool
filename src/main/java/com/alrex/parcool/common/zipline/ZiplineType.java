@@ -10,7 +10,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 public enum ZiplineType {
     STRAIGHT("parcool.gui.text.zipline.type.tight"),
     STANDARD("parcool.gui.text.zipline.type.normal"),
-    QUAD_CURVE("parcool.gui.text.zipline.type.loose");
+    LOOSE("parcool.gui.text.zipline.type.loose");
 
     private ZiplineType(String translation) {
         this.translationID = translation;
@@ -30,7 +30,7 @@ public enum ZiplineType {
                 return new StraightZipline(point1, point2);
             else
                 return new QuadraticCurveZipline(point1, point2);
-        } else if (this == QUAD_CURVE) {
+        } else if (this == LOOSE) {
             return new GeneralQuadraticCurveZipline(point1, point2);
         }
         return new StraightZipline(point1, point2);
