@@ -29,8 +29,8 @@ public class ZiplineHookBlock extends Block {
 
     static {
         SHAPE = VoxelShapes.or(
-                Block.box(6, 8, 6, 10, 16, 10),
-                Block.box(5, 10, 5, 11, 14, 11)
+                Block.box(6, 8, 6, 10, 10, 10),
+                Block.box(5, 10, 5, 11, 16, 11)
         );
     }
 

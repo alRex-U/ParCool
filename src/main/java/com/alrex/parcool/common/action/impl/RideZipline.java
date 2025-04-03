@@ -55,6 +55,8 @@ public class RideZipline extends Action {
         ) {
             ZiplineRopeEntity ropeEntity = Zipline.getHangableZipline(player.level, player);
             if (ropeEntity == null) return false;
+            float t = ropeEntity.getZipline().getParameter(player.position());
+            if (t < 0 || t > 1) return false;
             ridingZipline = ropeEntity;
             return true;
         }
