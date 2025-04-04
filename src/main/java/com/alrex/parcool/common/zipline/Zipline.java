@@ -47,19 +47,28 @@ public abstract class Zipline {
 
     @Nullable
     public static ZiplineRopeEntity getHangableZipline(World world, PlayerEntity player) {
+        return getHangableZipline(world, player, null);
+    }
+
+    @Nullable
+    public static ZiplineRopeEntity getHangableZipline(World world, PlayerEntity player, @Nullable ZiplineRopeEntity except) {
         List<ZiplineRopeEntity> entities = world.getEntitiesOfClass(
                 ZiplineRopeEntity.class,
                 player.getBoundingBox().inflate(MAXIMUM_DISTANCE * 0.52)
         );
         Vector3d grabPos = player.position().add(0, player.getBbHeight() * 1.11, 0);
         for (ZiplineRopeEntity ziplineEntity : entities) {
+            if (except == ziplineEntity)
+                continue;
             if (ziplineEntity.getStartPos().equals(BlockPos.ZERO) && ziplineEntity.getEndPos().equals(BlockPos.ZERO))
                 continue;
             Zipline zipline = ziplineEntity.getZipline();
             if (zipline.isPossiblyHangable(grabPos)) {
                 double distSqr = zipline.getSquaredDistanceApproximately(grabPos);
                 double catchRange = player.getBbWidth() * 0.5;
-                if (distSqr < catchRange * catchRange) return ziplineEntity;
+                if (distSqr < catchRange * catchRange) {
+                    return ziplineEntity;
+                }
             }
         }
         return null;

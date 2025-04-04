@@ -16,7 +16,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class Items {
 	private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ParCool.MOD_ID);
 	public static final RegistryObject<Item> PARCOOL_GUIDE = ITEMS.register("parcool_guide", () -> new Item(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<Item> ZIPLINE_HOOK = ITEMS.register("zipline_hook", () -> new BlockItem(Blocks.ZIPLINE_HOOK.get(), new Item.Properties().tab(ParCoolItemGroup.INSTANCE)));
+	public static final RegistryObject<Item> WOODEN_ZIPLINE_HOOK = ITEMS.register("wooden_zipline_hook", () -> new BlockItem(Blocks.WOODEN_ZIPLINE_HOOK.get(), new Item.Properties().tab(ParCoolItemGroup.INSTANCE)));
+	public static final RegistryObject<Item> IRON_ZIPLINE_HOOK = ITEMS.register("iron_zipline_hook", () -> new BlockItem(Blocks.IRON_ZIPLINE_HOOK.get(), new Item.Properties().tab(ParCoolItemGroup.INSTANCE)));
 	public static final RegistryObject<Item> ZIPLINE_ROPE = ITEMS.register("zipline_rope", () -> new ZiplineRopeItem(new Item.Properties().tab(ParCoolItemGroup.INSTANCE)));
 
 	public static void register(IEventBus bus) {

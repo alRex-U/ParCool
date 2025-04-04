@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.entity.zipline;
 
+import com.alrex.parcool.common.block.zipline.ZiplineHookTileEntity;
 import com.alrex.parcool.common.block.zipline.ZiplineInfo;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
 import com.alrex.parcool.common.zipline.Zipline;
@@ -14,6 +15,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -70,10 +72,21 @@ public class ZiplineRopeEntity extends Entity {
             zipline_start = start;
             zipline_end = end;
             zip_type = type;
-            zipline = type.getZipline(
-                    new Vector3d(start.getX() + 0.5, start.getY() + 0.5, start.getZ() + 0.5),
-                    new Vector3d(end.getX() + 0.5, end.getY() + 0.5, end.getZ() + 0.5)
-            );
+            Vector3d startPos;
+            Vector3d endPos;
+            TileEntity startEntity = level.getBlockEntity(start);
+            TileEntity endEntity = level.getBlockEntity(end);
+            if (startEntity instanceof ZiplineHookTileEntity) {
+                startPos = ((ZiplineHookTileEntity) startEntity).getActualZiplinePoint(end);
+            } else {
+                startPos = new Vector3d(start.getX() + 0.5, start.getY() + 0.7, start.getZ() + 0.5);
+            }
+            if (endEntity instanceof ZiplineHookTileEntity) {
+                endPos = ((ZiplineHookTileEntity) endEntity).getActualZiplinePoint(start);
+            } else {
+                endPos = new Vector3d(end.getX() + 0.5, end.getY() + 0.7, end.getZ() + 0.5);
+            }
+            zipline = type.getZipline(startPos, endPos);
         }
         return zipline;
     }

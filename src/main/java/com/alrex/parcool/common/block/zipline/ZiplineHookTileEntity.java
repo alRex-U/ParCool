@@ -3,6 +3,7 @@ package com.alrex.parcool.common.block.zipline;
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import com.alrex.parcool.common.item.Items;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -12,6 +13,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -82,6 +84,17 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
             }
             connectionEntities.clear();
         }
+    }
+
+    public Vector3d getActualZiplinePoint(BlockPos connected) {
+        if (level == null)
+            new Vector3d(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5);
+        BlockState state = level.getBlockState(this.getBlockPos());
+        Block block = state.getBlock();
+        if (block instanceof ZiplineHookBlock) {
+            return ((ZiplineHookBlock) block).getActualZiplinePoint(this.getBlockPos(), state);
+        }
+        return new Vector3d(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5);
     }
 
     public boolean connectTo(ZiplineHookTileEntity target, ZiplineInfo info) {

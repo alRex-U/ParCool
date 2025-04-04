@@ -2,7 +2,7 @@
   "ambientocclusion": false,
   "textures": {
     "particle": "minecraft:block/iron_bars",
-    "hook": "parcool:block/zipline_hook"
+    "hook": "parcool:block/wooden_zipline_hook"
   },
   "elements": [
     {

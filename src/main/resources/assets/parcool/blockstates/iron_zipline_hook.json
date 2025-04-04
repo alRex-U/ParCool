@@ -1,0 +1,54 @@
+{
+  "variants": {
+    "facing=down,orthogonal=false": {
+      "model": "parcool:block/iron_zipline_hook"
+    },
+    "facing=down,orthogonal=true": {
+      "model": "parcool:block/iron_zipline_hook_orthogonal"
+    },
+    "facing=up,orthogonal=false": {
+      "model": "parcool:block/iron_zipline_hook",
+      "x": 180
+    },
+    "facing=up,orthogonal=true": {
+      "model": "parcool:block/iron_zipline_hook_orthogonal",
+      "x": 180
+    },
+    "facing=north,orthogonal=false": {
+      "model": "parcool:block/iron_zipline_hook",
+      "x": 270
+    },
+    "facing=north,orthogonal=true": {
+      "model": "parcool:block/iron_zipline_hook_orthogonal",
+      "x": 270
+    },
+    "facing=south,orthogonal=false": {
+      "model": "parcool:block/iron_zipline_hook",
+      "x": 90
+    },
+    "facing=south,orthogonal=true": {
+      "model": "parcool:block/iron_zipline_hook_orthogonal",
+      "x": 90
+    },
+    "facing=east,orthogonal=false": {
+      "model": "parcool:block/iron_zipline_hook",
+      "x": 90,
+      "y": 270
+    },
+    "facing=east,orthogonal=true": {
+      "model": "parcool:block/iron_zipline_hook_orthogonal",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,orthogonal=false": {
+      "model": "parcool:block/iron_zipline_hook",
+      "x": 90,
+      "y": 90
+    },
+    "facing=west,orthogonal=true": {
+      "model": "parcool:block/iron_zipline_hook_orthogonal",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

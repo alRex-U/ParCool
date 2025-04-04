@@ -14,7 +14,8 @@ public class TileEntities {
             "zipline_hook",
             () -> TileEntityType.Builder.of(
                     () -> new ZiplineHookTileEntity(TileEntities.ZIPLINE_HOOK.get()),
-                    Blocks.ZIPLINE_HOOK.get()
+                    Blocks.WOODEN_ZIPLINE_HOOK.get(),
+                    Blocks.IRON_ZIPLINE_HOOK.get()
             ).build(null)
     );
 

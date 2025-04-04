@@ -4,19 +4,22 @@ import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.common.block.TileEntities;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.DirectionalBlock;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.pathfinding.PathType;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
@@ -24,23 +27,31 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ZiplineHookBlock extends Block {
-    protected static final VoxelShape SHAPE;
-
-    static {
-        SHAPE = VoxelShapes.or(
-                Block.box(6, 8, 6, 10, 10, 10),
-                Block.box(5, 10, 5, 11, 16, 11)
-        );
-    }
+public class ZiplineHookBlock extends DirectionalBlock {
 
     public ZiplineHookBlock(Properties p_i48440_1_) {
         super(p_i48440_1_);
+        registerDefaultState(defaultBlockState().setValue(FACING, Direction.UP));
+    }
+
+    public Vector3d getActualZiplinePoint(BlockPos pos, BlockState state) {
+        return new Vector3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
     }
 
     @Override
-    public VoxelShape getShape(BlockState p_220053_1_, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
-        return SHAPE;
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> stateBuilder) {
+        stateBuilder.add(FACING);
+    }
+
+    @Override
+    public PushReaction getPistonPushReaction(BlockState p_149656_1_) {
+        return PushReaction.DESTROY;
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        Direction direction = context.getClickedFace();
+        return this.defaultBlockState().setValue(FACING, direction);
     }
 
     @Override

@@ -55,8 +55,8 @@ public class RideZipline extends Action {
         ) {
             ZiplineRopeEntity ropeEntity = Zipline.getHangableZipline(player.level, player);
             if (ropeEntity == null) return false;
-            float t = ropeEntity.getZipline().getParameter(player.position());
-            if (t < 0 || t > 1) return false;
+            double t = ropeEntity.getZipline().getParameter(player.position());
+            if (t < 0 || 1 < t) return false;
             ridingZipline = ropeEntity;
             return true;
         }
@@ -79,22 +79,7 @@ public class RideZipline extends Action {
         if (ridingZipline == null) {
             return;
         }
-        Zipline zipline = ridingZipline.getZipline();
-        Vector3d deltaMovement = player.getDeltaMovement();
-        acceleration = 0;
-        currentT = zipline.getParameter(player.position());
-        currentPos = zipline.getMidPoint(currentT);
-        slope = zipline.getSlope(currentT);
-        Vector3d speedScale;
-        {
-            float yScale = (float) slope;
-            Vector3d pointsOffset = zipline.getOffsetToEndFromStart();
-            double xzLenInvSqrt = MathHelper.fastInvSqrt(pointsOffset.x() * pointsOffset.x() + pointsOffset.z() * pointsOffset.z());
-            double xScale = pointsOffset.x() * xzLenInvSqrt;
-            double zScale = pointsOffset.z() * xzLenInvSqrt;
-            speedScale = new Vector3d(xScale, yScale, zScale).normalize();
-        }
-        speed = deltaMovement.dot(speedScale);
+        rideNewZipline(ridingZipline, player.position(), player.getDeltaMovement());
 
         parkourability.getBehaviorEnforcer().setMarkerEnforceMovePoint(
                 () -> this.isDoing() && ridingZipline != null && !player.horizontalCollision && !player.verticalCollision,
@@ -124,6 +109,7 @@ public class RideZipline extends Action {
         double gravity = player.getAttributeValue(ForgeMod.ENTITY_GRAVITY.get());
         slope = zipline.getSlope(currentT);
         speed *= 0.98;
+        if (player.isInWater()) speed *= 0.8;
         speed -= gravity * slope * (MathHelper.fastInvSqrt(slope * slope + 1));
         Vector3d input = new Vector3d(
                 (KeyBindings.getKeyRight().isDown() ? 1. : 0.) + (KeyBindings.getKeyLeft().isDown() ? -1. : 0.),
@@ -140,8 +126,40 @@ public class RideZipline extends Action {
             speed += dot * 0.01;
         }
         currentT = (float) zipline.getMovedPositionByParameterApproximately(currentT, (float) speed);
-        currentPos = zipline.getMidPoint(currentT);
         acceleration = speed - oldSpeed;
+        currentPos = zipline.getMidPoint(currentT);
+    }
+
+    private void rideNewZipline(ZiplineRopeEntity ziplineRopeEntity, Vector3d position, Vector3d deltaMovement) {
+        ridingZipline = ziplineRopeEntity;
+        Zipline zipline = ziplineRopeEntity.getZipline();
+        acceleration = 0;
+        currentT = MathHelper.clamp(zipline.getParameter(position), 0, 1);
+        currentPos = zipline.getMidPoint(currentT);
+        slope = zipline.getSlope(currentT);
+        Vector3d speedScale;
+        {
+            float yScale = (float) slope;
+            Vector3d pointsOffset = zipline.getOffsetToEndFromStart();
+            double xzLenInvSqrt = MathHelper.fastInvSqrt(pointsOffset.x() * pointsOffset.x() + pointsOffset.z() * pointsOffset.z());
+            double xScale = pointsOffset.x() * xzLenInvSqrt;
+            double zScale = pointsOffset.z() * xzLenInvSqrt;
+            speedScale = new Vector3d(xScale, yScale, zScale).normalize();
+        }
+        speed = deltaMovement.dot(speedScale);
+    }
+
+    private static Vector3d getDeltaMovement(Zipline zipline, double speed, float currentT) {
+        Vector3d speedScale;
+        {
+            float yScale = zipline.getSlope(currentT);
+            Vector3d pointsOffset = zipline.getOffsetToEndFromStart();
+            double xzLenInvSqrt = MathHelper.fastInvSqrt(pointsOffset.x() * pointsOffset.x() + pointsOffset.z() * pointsOffset.z());
+            double xScale = pointsOffset.x() * xzLenInvSqrt;
+            double zScale = pointsOffset.z() * xzLenInvSqrt;
+            speedScale = new Vector3d(xScale, yScale, zScale).normalize();
+        }
+        return speedScale.scale(speed);
     }
 
     @Override
@@ -164,18 +182,9 @@ public class RideZipline extends Action {
     @Override
     public void onStopInLocalClient(PlayerEntity player) {
         if (ridingZipline != null) {
-            Zipline zipline = ridingZipline.getZipline();
-            Vector3d speedScale;
-            {
-                float yScale = zipline.getSlope(currentT);
-                Vector3d pointsOffset = zipline.getOffsetToEndFromStart();
-                double xzLenInvSqrt = MathHelper.fastInvSqrt(pointsOffset.x() * pointsOffset.x() + pointsOffset.z() * pointsOffset.z());
-                double xScale = pointsOffset.x() * xzLenInvSqrt;
-                double zScale = pointsOffset.z() * xzLenInvSqrt;
-                speedScale = new Vector3d(xScale, yScale, zScale).normalize();
-            }
             player.setDeltaMovement(
-                    speedScale.scale(speed).add(0, KeyBindings.getKeyJump().isDown() ? 0.1 : 0, 0)
+                    getDeltaMovement(ridingZipline.getZipline(), speed, currentT)
+                            .add(0, KeyBindings.getKeyJump().isDown() ? 0.2 : 0, 0)
             );
         }
         currentT = 0;
@@ -184,6 +193,7 @@ public class RideZipline extends Action {
         speed = 0;
         slope = 0;
     }
+
 
     @Override
     public void onStop(PlayerEntity player) {

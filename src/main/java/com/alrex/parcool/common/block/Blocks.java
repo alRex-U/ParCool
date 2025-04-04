@@ -1,7 +1,8 @@
 package com.alrex.parcool.common.block;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.common.block.zipline.ZiplineHookBlock;
+import com.alrex.parcool.common.block.zipline.IronZiplineHookBlock;
+import com.alrex.parcool.common.block.zipline.WoodenZiplineHookBlock;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -13,9 +14,17 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class Blocks {
     private static final DeferredRegister<Block> REGISTER = DeferredRegister.create(ForgeRegistries.BLOCKS, ParCool.MOD_ID);
-    public static final RegistryObject<Block> ZIPLINE_HOOK = REGISTER.register(
-            "zipline_hook",
-            () -> new ZiplineHookBlock(AbstractBlock.Properties
+    public static final RegistryObject<Block> WOODEN_ZIPLINE_HOOK = REGISTER.register(
+            "wooden_zipline_hook",
+            () -> new WoodenZiplineHookBlock(AbstractBlock.Properties
+                    .of(Material.WOOD)
+                    .strength(1.0f, 3.0f)
+                    .sound(SoundType.WOOD)
+            )
+    );
+    public static final RegistryObject<Block> IRON_ZIPLINE_HOOK = REGISTER.register(
+            "iron_zipline_hook",
+            () -> new IronZiplineHookBlock(AbstractBlock.Properties
                     .of(Material.METAL)
                     .strength(1.0f, 3.0f)
                     .sound(SoundType.CHAIN)
