@@ -160,6 +160,10 @@ public class ParCoolConfig {
 					ConfigGroup.Other, "Enable particles triggered by just-time breakfall",
 					"enable_particles_jt_breakfall", true
 			),
+			Enable3DRenderingForZipline(
+					ConfigGroup.Other, "Enable block like rendering of zipline",
+					"enable_3d_render_zipline", true
+			),
 			VaultKeyPressedNeeded(
 					ConfigGroup.Control, "Make Vault Need Vault Key Pressed",
 					"vault_needs_key_pressed", false
