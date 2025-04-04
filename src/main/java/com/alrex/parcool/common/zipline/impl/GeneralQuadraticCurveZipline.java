@@ -2,18 +2,22 @@ package com.alrex.parcool.common.zipline.impl;
 
 import com.alrex.parcool.common.zipline.Zipline;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 
 public class GeneralQuadraticCurveZipline extends Zipline {
 
-    public GeneralQuadraticCurveZipline(Vector3d point1, Vector3d point2) {
+    public GeneralQuadraticCurveZipline(Vector3d point1, Vector3d point2, double lowestPointOffset) {
         super(point1, point2);
-        double a = 2 * 3.5 * getOffsetToEndFromStart().y() / getHorizontalDistance();
+        double straightDistance = Math.hypot(getHorizontalDistance(), getOffsetToEndFromStart().y());
+        double yOffsetAtVertex = Math.abs(lowestPointOffset);
 
-        tAtVertex = MathHelper.clamp(0.5 * MathHelper.fastInvSqrt(a * a + 1), 0.2, 0.45);
+        tAtVertex = Math.abs(getOffsetToEndFromStart().y()) < 0.005 ?
+                0.5 :
+                (Math.sqrt(yOffsetAtVertex * (yOffsetAtVertex + getOffsetToEndFromStart().y())) - yOffsetAtVertex) / getOffsetToEndFromStart().y();
         distOfXZToVertex = tAtVertex * getHorizontalDistance();
-        getMidPointOffsetFromStart$a = getOffsetToEndFromStart().y() / (1 - 2 * tAtVertex);
+        getMidPointOffsetFromStart$a = Math.abs(tAtVertex - 0.5) < 0.005 ?
+                4 * yOffsetAtVertex :
+                getOffsetToEndFromStart().y() / (1 - 2 * tAtVertex);
         getMovedPositionByParameterApproximately$a = getOffsetToEndFromStart().y() / (getHorizontalDistance() * getHorizontalDistance());
         getDistanceFrom0$offset = getDistance(-distOfXZToVertex, getMovedPositionByParameterApproximately$a);
     }
@@ -67,6 +71,10 @@ public class GeneralQuadraticCurveZipline extends Zipline {
     @Override
     public double getMovedPositionByParameterApproximately(float currentT, float movement) {
         //Movement along a quadratic curve is difficult to calculate mathematically precisely
+        //note : Catenary curve is possible to arc length parameterize
+        // so maybe this can be approximate by that way
+
+
         double xzLength = getHorizontalDistance();
         double a = getMovedPositionByParameterApproximately$a;
 

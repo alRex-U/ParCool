@@ -1,7 +1,6 @@
 package com.alrex.parcool.common.zipline;
 
 import com.alrex.parcool.common.zipline.impl.GeneralQuadraticCurveZipline;
-import com.alrex.parcool.common.zipline.impl.QuadraticCurveZipline;
 import com.alrex.parcool.common.zipline.impl.StraightZipline;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
@@ -10,7 +9,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 public enum ZiplineType {
     STRAIGHT("parcool.gui.text.zipline.type.tight"),
     STANDARD("parcool.gui.text.zipline.type.normal"),
-    LOOSE("parcool.gui.text.zipline.type.loose");
+    LOOSE("parcool.gui.text.zipline.type.loose"),
+    VERY_LOOSE("parcool.gui.text.zipline.type.very_loose");
 
     private ZiplineType(String translation) {
         this.translationID = translation;
@@ -29,9 +29,11 @@ public enum ZiplineType {
             if (Math.abs(point1.y() - point2.y()) < 0.0001)
                 return new StraightZipline(point1, point2);
             else
-                return new QuadraticCurveZipline(point1, point2);
+                return new GeneralQuadraticCurveZipline(point1, point2, 0);
         } else if (this == LOOSE) {
-            return new GeneralQuadraticCurveZipline(point1, point2);
+            return new GeneralQuadraticCurveZipline(point1, point2, 0.35 + 0.035 * point2.distanceTo(point1));
+        } else if (this == VERY_LOOSE) {
+            return new GeneralQuadraticCurveZipline(point1, point2, 0.6 + 0.06 * point2.distanceTo(point1));
         }
         return new StraightZipline(point1, point2);
     }
