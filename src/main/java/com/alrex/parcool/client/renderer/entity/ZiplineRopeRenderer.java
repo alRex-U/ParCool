@@ -1,12 +1,12 @@
 package com.alrex.parcool.client.renderer.entity;
 
+import com.alrex.parcool.client.renderer.RenderTypes;
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.ClippingHelper;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -15,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.LightType;
 
 import javax.annotation.Nonnull;
@@ -62,7 +63,8 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
         matrixStack.pushPose();
         {
             matrixStack.translate(startPosOffset.x(), startPosOffset.y(), startPosOffset.z());
-            IVertexBuilder vertexBuilder = renderTypeBuffer.getBuffer(RenderType.leash());
+            //IVertexBuilder vertexBuilder = renderTypeBuffer.getBuffer(RenderType.leash());
+            IVertexBuilder vertexBuilder = renderTypeBuffer.getBuffer(RenderTypes.ZIPLINE_3D);
             Matrix4f transformMatrix = matrixStack.last().pose();
 
             int startBlockLightLevel = this.getBlockLightLevel(entity, start.below());
@@ -79,15 +81,15 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
                 float colorScale = i % 2 == 0 ? 1f : 0.8f;
 
                 for (int j = 0; j < 2; j++) {
-                    renderLeashSingleBlock(
+                    renderLeashSingleBlock3D(
                             transformMatrix, vertexBuilder,
                             zipline,
                             i, divisionCount,
                             unitLengthX, unitLengthZ,
                             startBlockLightLevel, endBlockLightLevel,
                             startSkyBrightness, endSkyBrightness,
-                            r * colorScale, g * colorScale, b * colorScale,
-                            j % 2 == 0
+                            r * colorScale, g * colorScale, b * colorScale//,
+                            //j % 2 == 0
                     );
                 }
             }
@@ -95,7 +97,7 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
         matrixStack.popPose();
     }
 
-    private void renderLeashSingleBlock(
+    private void renderLeashSingleBlock2D(
             Matrix4f transformMatrix,
             IVertexBuilder vertexBuilder,
             Zipline zipline,
@@ -111,7 +113,8 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
             float phase = (float) (currentCount + i) / maxCount;
 
             int lightLevel = LightTexture.pack((int) MathHelper.lerp(phase, startBlockLightLevel, endBlockLightLevel), (int) MathHelper.lerp(phase, startSkyBrightness, endSkyBrightness));
-            Vector3d midPoint = zipline.getMidPointOffsetFromStart(phase);
+            Vector3d midPointD = zipline.getMidPointOffsetFromStart(phase);
+            Vector3f midPoint = new Vector3f((float) midPointD.x(), (float) midPointD.y(), (float) midPointD.z());
 
             final float width = 0.075f;
             float tilt = zipline.getSlope(phase);
@@ -126,18 +129,18 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
             if (i == 0) {
                 vertexBuilder
                         .vertex(transformMatrix,
-                                (float) (midPoint.x() + xBaseOffset + xOffset),
-                                (float) (midPoint.y() - yOffset),
-                                (float) (midPoint.z() + zBaseOffset + zOffset)
+                                (midPoint.x() + xBaseOffset + xOffset),
+                                (midPoint.y() - yOffset),
+                                (midPoint.z() + zBaseOffset + zOffset)
                         )
                         .color(r, g, b, 1f)
                         .uv2(lightLevel)
                         .endVertex();
                 vertexBuilder
                         .vertex(transformMatrix,
-                                (float) (midPoint.x() - xBaseOffset - xOffset),
-                                (float) (midPoint.y() + yOffset),
-                                (float) (midPoint.z() - zBaseOffset - zOffset)
+                                (midPoint.x() - xBaseOffset - xOffset),
+                                (midPoint.y() + yOffset),
+                                (midPoint.z() - zBaseOffset - zOffset)
                         )
                         .color(r, g, b, 1f)
                         .uv2(lightLevel)
@@ -145,23 +148,91 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
             } else {
                 vertexBuilder
                         .vertex(transformMatrix,
-                                (float) (midPoint.x() - xBaseOffset - xOffset),
-                                (float) (midPoint.y() + yOffset),
-                                (float) (midPoint.z() - zBaseOffset - zOffset)
+                                (midPoint.x() - xBaseOffset - xOffset),
+                                (midPoint.y() + yOffset),
+                                (midPoint.z() - zBaseOffset - zOffset)
                         )
                         .color(r, g, b, 1f)
                         .uv2(lightLevel)
                         .endVertex();
                 vertexBuilder
                         .vertex(transformMatrix,
-                                (float) (midPoint.x() + xBaseOffset + xOffset),
-                                (float) (midPoint.y() - yOffset),
-                                (float) (midPoint.z() + zBaseOffset + zOffset)
+                                (midPoint.x() + xBaseOffset + xOffset),
+                                (midPoint.y() - yOffset),
+                                (midPoint.z() + zBaseOffset + zOffset)
                         )
                         .color(r, g, b, 1f)
                         .uv2(lightLevel)
                         .endVertex();
             }
+        }
+    }
+
+    private void renderLeashSingleBlock3D(
+            Matrix4f transformMatrix,
+            IVertexBuilder vertexBuilder,
+            Zipline zipline,
+            int currentCount, int maxCount,
+            float unitLengthX,
+            float unitLengthZ,
+            int startBlockLightLevel, int endBlockLightLevel,
+            int startSkyBrightness, int endSkyBrightness,
+            float r, float g, float b
+    ) {
+        Vector3f[] vertexList = new Vector3f[8];
+        int[] lightLevelList = new int[2];
+        for (int i = 0; i < 2; i++) {
+            float phase = (float) (currentCount + i) / maxCount;
+
+            lightLevelList[i] = LightTexture.pack((int) MathHelper.lerp(phase, startBlockLightLevel, endBlockLightLevel), (int) MathHelper.lerp(phase, startSkyBrightness, endSkyBrightness));
+            Vector3d midPointD = zipline.getMidPointOffsetFromStart(phase);
+            Vector3f midPoint = new Vector3f((float) midPointD.x(), (float) midPointD.y(), (float) midPointD.z());
+
+            final float width = 0.075f;
+            float tilt = zipline.getSlope(phase);
+            float tiltInv = MathHelper.fastInvSqrt(tilt * tilt + 1);
+            float yOffset = width * tiltInv / 1.41421356f /*sqrt(2)*/;
+            float xBaseOffset = unitLengthX * width * tilt * tiltInv / 1.41421356f;
+            float zBaseOffset = unitLengthZ * width * tilt * tiltInv / 1.41421356f;
+            float xOffset = unitLengthZ * width / 1.41421356f;
+            float zOffset = -unitLengthX * width / 1.41421356f;
+            vertexList[4 * i] = new Vector3f(
+                    (midPoint.x() - xBaseOffset + xOffset),
+                    (midPoint.y() + yOffset),
+                    (midPoint.z() - zBaseOffset + zOffset)
+            );
+            vertexList[4 * i + 1] = new Vector3f(
+                    (midPoint.x() - xBaseOffset - xOffset),
+                    (midPoint.y() + yOffset),
+                    (midPoint.z() - zBaseOffset - zOffset)
+            );
+            vertexList[4 * i + 2] = new Vector3f(
+                    (midPoint.x() + xBaseOffset - xOffset),
+                    (midPoint.y() - yOffset),
+                    (midPoint.z() + zBaseOffset - zOffset)
+            );
+            vertexList[4 * i + 3] = new Vector3f(
+                    (midPoint.x() + xBaseOffset + xOffset),
+                    (midPoint.y() - yOffset),
+                    (midPoint.z() + zBaseOffset + zOffset)
+            );
+        }
+        for (int i = 0; i < 4; i++) {
+            vertexBuilder.vertex(transformMatrix, vertexList[i].x(), vertexList[i].y(), vertexList[i].z()).color(r, g, b, 1f).uv2(lightLevelList[0]).endVertex();
+            vertexBuilder.vertex(transformMatrix, vertexList[(i + 1) % 4].x(), vertexList[(i + 1) % 4].y(), vertexList[(i + 1) % 4].z()).color(r, g, b, 1f).uv2(lightLevelList[0]).endVertex();
+            vertexBuilder.vertex(transformMatrix, vertexList[4 + (i + 1) % 4].x(), vertexList[4 + (i + 1) % 4].y(), vertexList[4 + (i + 1) % 4].z()).color(r, g, b, 1f).uv2(lightLevelList[1]).endVertex();
+            vertexBuilder.vertex(transformMatrix, vertexList[4 + i].x(), vertexList[4 + i].y(), vertexList[4 + i].z()).color(r, g, b, 1f).uv2(lightLevelList[1]).endVertex();
+        }
+        if (currentCount == 0) {
+            vertexBuilder.vertex(transformMatrix, vertexList[3].x(), vertexList[3].y(), vertexList[3].z()).color(r, g, b, 1f).uv2(lightLevelList[0]).endVertex();
+            vertexBuilder.vertex(transformMatrix, vertexList[2].x(), vertexList[2].y(), vertexList[2].z()).color(r, g, b, 1f).uv2(lightLevelList[0]).endVertex();
+            vertexBuilder.vertex(transformMatrix, vertexList[1].x(), vertexList[1].y(), vertexList[1].z()).color(r, g, b, 1f).uv2(lightLevelList[0]).endVertex();
+            vertexBuilder.vertex(transformMatrix, vertexList[0].x(), vertexList[0].y(), vertexList[0].z()).color(r, g, b, 1f).uv2(lightLevelList[0]).endVertex();
+        } else if (currentCount == maxCount - 1) {
+            vertexBuilder.vertex(transformMatrix, vertexList[4].x(), vertexList[4].y(), vertexList[4].z()).color(r, g, b, 1f).uv2(lightLevelList[0]).endVertex();
+            vertexBuilder.vertex(transformMatrix, vertexList[5].x(), vertexList[5].y(), vertexList[5].z()).color(r, g, b, 1f).uv2(lightLevelList[0]).endVertex();
+            vertexBuilder.vertex(transformMatrix, vertexList[6].x(), vertexList[6].y(), vertexList[6].z()).color(r, g, b, 1f).uv2(lightLevelList[0]).endVertex();
+            vertexBuilder.vertex(transformMatrix, vertexList[7].x(), vertexList[7].y(), vertexList[7].z()).color(r, g, b, 1f).uv2(lightLevelList[0]).endVertex();
         }
     }
 }

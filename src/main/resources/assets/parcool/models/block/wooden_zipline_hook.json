@@ -1,4 +1,5 @@
 {
+  "parent": "block/block",
   "ambientocclusion": false,
   "textures": {
     "particle": "minecraft:block/iron_bars",

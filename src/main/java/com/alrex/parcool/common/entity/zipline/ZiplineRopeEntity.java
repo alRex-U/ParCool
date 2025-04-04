@@ -108,7 +108,7 @@ public class ZiplineRopeEntity extends Entity {
         double t = -(xOffset * baseXOffset + yOffset * baseYOffset + zOffset * baseZOffset) / (xOffset * xOffset + yOffset * yOffset + zOffset * zOffset);
         Vector3d mostNearPoint = new Vector3d(xOffset * t + start.getX(), yOffset * t + start.getY(), zOffset * t + start.getZ());
         distanceSqr = mostNearPoint.distanceToSqr(x, y, z);
-        return distanceSqr < 900;
+        return distanceSqr < Zipline.MAXIMUM_DISTANCE * Zipline.MAXIMUM_DISTANCE;
     }
 
     @Nonnull
