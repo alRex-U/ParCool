@@ -32,6 +32,8 @@ public class BehaviorEnforcer {
     private final LinkedList<Marker> jumpCancelMarks = new LinkedList<>();
     private final LinkedList<Marker> descendFromEdgeCancelMarks = new LinkedList<>();
     private final LinkedList<Marker> sneakCancelMarks = new LinkedList<>();
+    private final LinkedList<Marker> sprintCancelMarks = new LinkedList<>();
+    private final LinkedList<Marker> fallFlyingCancelMarks = new LinkedList<>();
     @Nullable
     private Enforcer<Vector3d> movementEnforcer = null;
 
@@ -45,6 +47,14 @@ public class BehaviorEnforcer {
 
     public void addMarkerCancellingDescendFromEdge(Marker marker) {
         descendFromEdgeCancelMarks.add(marker);
+    }
+
+    public void addMarkerCancellingSprint(Marker marker) {
+        sprintCancelMarks.add(marker);
+    }
+
+    public void addMarkerCancellingFallFlying(Marker marker) {
+        fallFlyingCancelMarks.add(marker);
     }
 
     public void setMarkerEnforceMovePoint(Marker marker, Supplier<Vector3d> movementSupplier) {
@@ -64,6 +74,16 @@ public class BehaviorEnforcer {
     public boolean cancelDescendFromEdge() {
         descendFromEdgeCancelMarks.removeIf(it -> !it.remain());
         return !descendFromEdgeCancelMarks.isEmpty();
+    }
+
+    public boolean cancelSprint() {
+        sprintCancelMarks.removeIf(it -> !it.remain());
+        return !sprintCancelMarks.isEmpty();
+    }
+
+    public boolean cancelFallFlying() {
+        fallFlyingCancelMarks.removeIf(it -> !it.remain());
+        return !fallFlyingCancelMarks.isEmpty();
     }
 
     @Nullable

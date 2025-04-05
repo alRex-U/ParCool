@@ -1,6 +1,5 @@
 package com.alrex.parcool.mixin.common;
 
-import com.alrex.parcool.common.action.impl.ClingToCliff;
 import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -23,7 +22,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 	public void onTryToStartFallFlying(CallbackInfoReturnable<Boolean> cir) {
 		PlayerEntity player = (PlayerEntity) (Object) this;
 		Parkourability parkourability = Parkourability.get(player);
-		if (parkourability != null && parkourability.get(ClingToCliff.class).isDoing()) {
+        if (parkourability != null && parkourability.getBehaviorEnforcer().cancelFallFlying()) {
 			cir.setReturnValue(false);
 		}
 	}

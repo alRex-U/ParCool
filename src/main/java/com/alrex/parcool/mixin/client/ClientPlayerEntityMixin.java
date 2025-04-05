@@ -63,4 +63,12 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 		}
 	}
 
+    @Inject(method = "setSprinting", at = @At("HEAD"), cancellable = true)
+    public void onSetSprinting(boolean sprint, CallbackInfo ci) {
+        Parkourability parkourability = Parkourability.get((ClientPlayerEntity) (Object) this);
+        if (parkourability != null && parkourability.getBehaviorEnforcer().cancelSprint()) {
+            ci.cancel();
+        }
+    }
+
 }

@@ -7,6 +7,7 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -19,6 +20,7 @@ public class Blocks {
             () -> new WoodenZiplineHookBlock(AbstractBlock.Properties
                     .of(Material.WOOD)
                     .strength(1.0f, 3.0f)
+                    .harvestTool(ToolType.AXE)
                     .sound(SoundType.WOOD)
             )
     );
@@ -27,6 +29,8 @@ public class Blocks {
             () -> new IronZiplineHookBlock(AbstractBlock.Properties
                     .of(Material.METAL)
                     .strength(1.0f, 3.0f)
+                    .harvestTool(ToolType.PICKAXE)
+                    .noCollission()
                     .sound(SoundType.CHAIN)
             )
     );

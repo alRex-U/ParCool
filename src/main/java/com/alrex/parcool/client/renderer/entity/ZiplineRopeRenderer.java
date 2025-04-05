@@ -72,10 +72,10 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
                     renderTypeBuffer.getBuffer(RenderTypes.ZIPLINE_3D);
             Matrix4f transformMatrix = matrixStack.last().pose();
 
-            int startBlockLightLevel = this.getBlockLightLevel(entity, start.below());
-            int endBlockLightLevel = this.getBlockLightLevel(entity, end.below());
-            int startSkyBrightness = entity.level.getBrightness(LightType.SKY, start.below());
-            int endSkyBrightness = entity.level.getBrightness(LightType.SKY, end.below());
+            int startBlockLightLevel = this.getBlockLightLevel(entity, start);
+            int endBlockLightLevel = this.getBlockLightLevel(entity, end);
+            int startSkyBrightness = entity.level.getBrightness(LightType.SKY, start);
+            int endSkyBrightness = entity.level.getBrightness(LightType.SKY, end);
 
 
             final int divisionCount = 24;

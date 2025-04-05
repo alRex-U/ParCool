@@ -71,6 +71,7 @@ public class ClingToCliff extends Action {
 
     @Override
     public void onStart(PlayerEntity player, Parkourability parkourability) {
+        parkourability.getBehaviorEnforcer().addMarkerCancellingFallFlying(this::isDoing);
         armSwingAmount = 0;
     }
 

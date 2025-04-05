@@ -58,7 +58,7 @@ public class ZiplineRopeItem extends Item {
             lines.add(new TranslationTextComponent("parcool.gui.text.zipline.not_bound").withStyle(TextFormatting.DARK_GRAY));
         }
         lines.add(new StringTextComponent(""));
-        lines.add(new TranslationTextComponent("parcool.gui.text.zipline.tightness", getZiplineType(stack).getTranslationName()).withStyle(TextFormatting.GRAY));
+        lines.add(new TranslationTextComponent("parcool.gui.text.zipline.tension", getZiplineType(stack).getTranslationName()).withStyle(TextFormatting.GRAY));
         if (hasCustomColor(stack)) {
             /*
             int color = getColor(stack);
@@ -119,6 +119,7 @@ public class ZiplineRopeItem extends Item {
                             if (player != null) {
                                 player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.already_exist"), true);
                             }
+                            return ActionResultType.FAIL;
                         }
 
                     } else {
@@ -160,7 +161,7 @@ public class ZiplineRopeItem extends Item {
                 if (context.getLevel().isClientSide()) {
                     PlayerEntity player = context.getPlayer();
                     if (player != null) {
-                        player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.change_tightness", getZiplineType(stack).getTranslationName()), true);
+                        player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.change_tension", getZiplineType(stack).getTranslationName()), true);
                     }
                 }
                 return ActionResultType.SUCCESS;

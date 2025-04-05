@@ -21,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -68,6 +69,13 @@ public class ZiplineHookBlock extends DirectionalBlock {
     }
 
     @Override
+    public boolean canSurvive(BlockState state, IWorldReader world, BlockPos pos) {
+        Direction facing = state.getValue(FACING);
+        BlockPos supportingBlock = pos.relative(facing.getOpposite());
+        return world.getBlockState(supportingBlock).isFaceSturdy(world, supportingBlock, facing);
+    }
+
+    @Override
     public boolean isPathfindable(BlockState p_196266_1_, IBlockReader p_196266_2_, BlockPos p_196266_3_, PathType p_196266_4_) {
         return false;
     }
@@ -82,14 +90,15 @@ public class ZiplineHookBlock extends DirectionalBlock {
                 if (ziplineHookTileEntity.getConnectionPoints().isEmpty()) return ActionResultType.PASS;
 
                 List<ItemStack> itemStacks = ziplineHookTileEntity.removeAllConnection();
+                player.playSound(SoundEvents.ZIPLINE_REMOVE.get(), 1, 1);
                 if (world.isClientSide()) {
-                    player.playSound(SoundEvents.ZIPLINE_REMOVE.get(), 1, 1);
                     return ActionResultType.SUCCESS;
                 } else {
                     itemStacks.forEach((it) -> InventoryHelper.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), it));
                     if (!itemStacks.isEmpty()) {
                         if (stack.isDamageableItem()) {
-                            stack.setDamageValue(stack.getDamageValue() + 1);
+                            stack.hurtAndBreak(1, player, (it) -> {
+                            });
                         }
                     }
                     return ActionResultType.CONSUME;

@@ -11,12 +11,15 @@ import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.ForgeMod;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.Optional;
 
 public class RideZipline extends Action {
     @Nullable
@@ -46,6 +49,9 @@ public class RideZipline extends Action {
         if (KeyBindings.getKeyBindRideZipline().isDown()
                 && !player.isOnGround()
                 && !player.isInWater()
+                && !player.isFallFlying()
+                && !player.isCrouching()
+                && !player.isSwimming()
                 && !parkourability.get(Dive.class).isDoing()
                 && !parkourability.get(Vault.class).isDoing()
                 && !parkourability.get(HangDown.class).isDoing()
@@ -58,6 +64,12 @@ public class RideZipline extends Action {
             double t = ropeEntity.getZipline().getParameter(player.position());
             if (t < 0 || 1 < t) return false;
             ridingZipline = ropeEntity;
+            startInfo.putInt(ridingZipline.getStartPos().getX())
+                    .putInt(ridingZipline.getStartPos().getY())
+                    .putInt(ridingZipline.getStartPos().getZ())
+                    .putInt(ridingZipline.getEndPos().getX())
+                    .putInt(ridingZipline.getEndPos().getY())
+                    .putInt(ridingZipline.getEndPos().getZ());
             return true;
         }
         return false;
@@ -81,13 +93,16 @@ public class RideZipline extends Action {
         }
         rideNewZipline(ridingZipline, player.position(), player.getDeltaMovement());
 
+        player.setSprinting(false);
+
         parkourability.getBehaviorEnforcer().setMarkerEnforceMovePoint(
-                () -> this.isDoing() && ridingZipline != null && !player.horizontalCollision && !player.verticalCollision,
+                this::isDoing,
                 () -> {
                     if (currentPos == null) return null;
                     return currentPos.subtract(0, player.getBbHeight() * 1.11, 0);
                 }
         );
+        parkourability.getBehaviorEnforcer().addMarkerCancellingSprint(this::isDoing);
         Animation animation = Animation.get(player);
         if (animation == null) return;
         animation.setAnimator(new RideZiplineAnimator());
@@ -95,9 +110,25 @@ public class RideZipline extends Action {
 
     @Override
     public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
-        Animation animation = Animation.get(player);
-        if (animation == null) return;
-        animation.setAnimator(new RideZiplineAnimator());
+        BlockPos start = new BlockPos(startData.getInt(), startData.getInt(), startData.getInt());
+        BlockPos end = new BlockPos(startData.getInt(), startData.getInt(), startData.getInt());
+        List<ZiplineRopeEntity> entities = player.level.getEntitiesOfClass(
+                ZiplineRopeEntity.class,
+                player.getBoundingBox().inflate(Zipline.MAXIMUM_DISTANCE * 0.52)
+        );
+        Optional<ZiplineRopeEntity> entity = entities.stream().filter(it -> (it.getStartPos().equals(start) && it.getEndPos().equals(end)) || (it.getEndPos().equals(start) && it.getStartPos().equals(end))).findAny();
+        if (entity.isPresent()) {
+            ridingZipline = entity.get();
+            Animation animation = Animation.get(player);
+            if (animation == null) return;
+            animation.setAnimator(new RideZiplineAnimator());
+        }
+    }
+
+    @Override
+    public void onStart(PlayerEntity player, Parkourability parkourability) {
+        player.setSprinting(false);
+        parkourability.getBehaviorEnforcer().addMarkerCancellingFallFlying(this::isDoing);
     }
 
     @Override
@@ -177,6 +208,7 @@ public class RideZipline extends Action {
     @Override
     public void onWorkingTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
         player.fallDistance = 0;
+        player.setDeltaMovement(Vector3d.ZERO);
     }
 
     @Override
