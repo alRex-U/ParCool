@@ -111,9 +111,16 @@ public class ZiplineRopeItem extends Item {
                 TileEntity startEntity = context.getLevel().getBlockEntity(start);
                 TileEntity endEntity = context.getLevel().getBlockEntity(end);
                 if (startEntity instanceof ZiplineHookTileEntity && endEntity instanceof ZiplineHookTileEntity) {
+                    ZiplineHookTileEntity startZipEntity = (ZiplineHookTileEntity) startEntity;
+                    ZiplineHookTileEntity endZipEntity = (ZiplineHookTileEntity) endEntity;
+                    if (getZiplineType(stack).getZipline(startZipEntity.getActualZiplinePoint(null), endZipEntity.getActualZiplinePoint(null)).conflictsWithSomething(context.getLevel())) {
+                        PlayerEntity player = context.getPlayer();
+                        if (player != null) {
+                            player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.obstacle_detected"), true);
+                        }
+                        return ActionResultType.FAIL;
+                    }
                     if (!context.getLevel().isClientSide()) {
-                        ZiplineHookTileEntity startZipEntity = (ZiplineHookTileEntity) startEntity;
-                        ZiplineHookTileEntity endZipEntity = (ZiplineHookTileEntity) endEntity;
                         if (!startZipEntity.connectTo(endZipEntity, new ZiplineInfo(getZiplineType(stack), getColor(stack)))) {
                             PlayerEntity player = context.getPlayer();
                             if (player != null) {
@@ -121,15 +128,13 @@ public class ZiplineRopeItem extends Item {
                             }
                             return ActionResultType.FAIL;
                         }
-
-                    } else {
-                        PlayerEntity player = context.getPlayer();
-                        if (player != null) {
-                            player.playSound(SoundEvents.ZIPLINE_SET.get(), 1, 1);
-                        }
+                        stack.shrink(1);
+                    }
+                    PlayerEntity player = context.getPlayer();
+                    if (player != null) {
+                        player.playSound(SoundEvents.ZIPLINE_SET.get(), 1, 1);
                     }
                     removeBlockPosition(stack);
-                    stack.shrink(1);
                     return ActionResultType.sidedSuccess(context.getLevel().isClientSide());
                 } else {
                     removeBlockPosition(stack);

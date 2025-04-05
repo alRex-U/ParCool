@@ -4,6 +4,7 @@ import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.common.block.TileEntities;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.DirectionalBlock;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,6 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
@@ -69,10 +71,16 @@ public class ZiplineHookBlock extends DirectionalBlock {
     }
 
     @Override
+    public BlockState updateShape(BlockState state, Direction direction, BlockState state1, IWorld world, BlockPos pos, BlockPos pos1) {
+        Direction facing = state.getValue(FACING);
+        return direction == facing.getOpposite() && !canSurvive(state, world, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction, state1, world, pos, pos1);
+    }
+
+    @Override
     public boolean canSurvive(BlockState state, IWorldReader world, BlockPos pos) {
         Direction facing = state.getValue(FACING);
         BlockPos supportingBlock = pos.relative(facing.getOpposite());
-        return world.getBlockState(supportingBlock).isFaceSturdy(world, supportingBlock, facing);
+        return canSupportCenter(world, supportingBlock, facing);
     }
 
     @Override

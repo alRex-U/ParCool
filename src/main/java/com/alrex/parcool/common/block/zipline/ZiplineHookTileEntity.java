@@ -86,7 +86,7 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
         }
     }
 
-    public Vector3d getActualZiplinePoint(BlockPos connected) {
+    public Vector3d getActualZiplinePoint(@Nullable BlockPos connected) {
         if (level == null)
             new Vector3d(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5);
         BlockState state = level.getBlockState(this.getBlockPos());

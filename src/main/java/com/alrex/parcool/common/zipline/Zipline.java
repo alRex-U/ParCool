@@ -2,6 +2,7 @@ package com.alrex.parcool.common.zipline;
 
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -72,6 +73,21 @@ public abstract class Zipline {
             }
         }
         return null;
+    }
+
+    public boolean conflictsWithSomething(World world) {
+        int count = (int) Math.floor(getHorizontalDistance());
+        for (int i = 1; i < count - 1; i++) {
+            Vector3d midPoint = getMidPoint(((float) i / count));
+            final double d = 0.2;
+            if (!world.noCollision(new AxisAlignedBB(
+                    midPoint.subtract(d, d, d),
+                    midPoint.add(d, d, d)
+            ))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // t is auxiliary variable in this class
