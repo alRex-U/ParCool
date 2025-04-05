@@ -131,6 +131,15 @@ public class ZiplineRopeItem extends Item {
                     removeBlockPosition(stack);
                     stack.shrink(1);
                     return ActionResultType.sidedSuccess(context.getLevel().isClientSide());
+                } else {
+                    removeBlockPosition(stack);
+                    if (context.getLevel().isClientSide()) {
+                        PlayerEntity player = context.getPlayer();
+                        if (player != null) {
+                            player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.point_not_found"), true);
+                        }
+                    }
+                    return ActionResultType.FAIL;
                 }
             }
             // Remove position info
