@@ -3,6 +3,7 @@ package com.alrex.parcool.common.action.impl;
 import com.alrex.parcool.client.animation.impl.RideZiplineAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
@@ -22,6 +23,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class RideZipline extends Action {
+    private static final BehaviorEnforcer.ID ID_FALL_FLY_CANCEL = BehaviorEnforcer.newID();
+    private static final BehaviorEnforcer.ID ID_SPRINT_CANCEL = BehaviorEnforcer.newID();
     @Nullable
     private ZiplineRopeEntity ridingZipline;
     private double speed;
@@ -102,7 +105,7 @@ public class RideZipline extends Action {
                     return currentPos.subtract(0, player.getBbHeight() * 1.11, 0);
                 }
         );
-        parkourability.getBehaviorEnforcer().addMarkerCancellingSprint(this::isDoing);
+        parkourability.getBehaviorEnforcer().addMarkerCancellingSprint(ID_SPRINT_CANCEL, this::isDoing);
         Animation animation = Animation.get(player);
         if (animation == null) return;
         animation.setAnimator(new RideZiplineAnimator());
@@ -128,7 +131,7 @@ public class RideZipline extends Action {
     @Override
     public void onStart(PlayerEntity player, Parkourability parkourability) {
         player.setSprinting(false);
-        parkourability.getBehaviorEnforcer().addMarkerCancellingFallFlying(this::isDoing);
+        parkourability.getBehaviorEnforcer().addMarkerCancellingFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
     }
 
     @Override

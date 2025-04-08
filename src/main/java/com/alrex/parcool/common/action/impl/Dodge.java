@@ -5,6 +5,7 @@ import com.alrex.parcool.client.animation.impl.DodgeAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
@@ -22,6 +23,8 @@ import java.nio.ByteBuffer;
 
 public class Dodge extends Action {
 	public static final int MAX_TICK = 11;
+	private static final BehaviorEnforcer.ID ID_JUMP_CANCEL = BehaviorEnforcer.newID();
+	private static final BehaviorEnforcer.ID ID_DESCEND_EDGE = BehaviorEnforcer.newID();
 
 	private static int getMaxCoolTime(ActionInfo info) {
 		return Math.max(
@@ -153,9 +156,9 @@ public class Dodge extends Action {
 
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new DodgeAnimator(dodgeDirection));
-		parkourability.getBehaviorEnforcer().addMarkerCancellingJump(this::isDoing);
+		parkourability.getBehaviorEnforcer().addMarkerCancellingJump(ID_JUMP_CANCEL, this::isDoing);
 		if (!parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.CanGetOffStepsWhileDodge)) {
-			parkourability.getBehaviorEnforcer().addMarkerCancellingDescendFromEdge(this::isDoing);
+			parkourability.getBehaviorEnforcer().addMarkerCancellingDescendFromEdge(ID_DESCEND_EDGE, this::isDoing);
 		}
 	}
 

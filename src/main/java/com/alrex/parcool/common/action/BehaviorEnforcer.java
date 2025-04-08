@@ -3,10 +3,33 @@ package com.alrex.parcool.common.action;
 import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nullable;
-import java.util.LinkedList;
+import java.util.TreeMap;
 import java.util.function.Supplier;
 
 public class BehaviorEnforcer {
+    public static class ID implements Comparable<ID> {
+        private static int idValue = 0;
+
+        private static ID newID() {
+            return new ID(idValue++);
+        }
+
+        private final int value;
+
+        private ID(int value) {
+            this.value = value;
+        }
+
+        @Override
+        public int compareTo(ID o) {
+            return Integer.compare(this.value, o.value);
+        }
+    }
+
+    public static ID newID() {
+        return ID.newID();
+    }
+
     public interface Marker {
         boolean remain();
     }
@@ -29,32 +52,32 @@ public class BehaviorEnforcer {
         }
     }
 
-    private final LinkedList<Marker> jumpCancelMarks = new LinkedList<>();
-    private final LinkedList<Marker> descendFromEdgeCancelMarks = new LinkedList<>();
-    private final LinkedList<Marker> sneakCancelMarks = new LinkedList<>();
-    private final LinkedList<Marker> sprintCancelMarks = new LinkedList<>();
-    private final LinkedList<Marker> fallFlyingCancelMarks = new LinkedList<>();
+    private final TreeMap<ID, Marker> jumpCancelMarks = new TreeMap<>();
+    private final TreeMap<ID, Marker> descendFromEdgeCancelMarks = new TreeMap<>();
+    private final TreeMap<ID, Marker> sneakCancelMarks = new TreeMap<>();
+    private final TreeMap<ID, Marker> sprintCancelMarks = new TreeMap<>();
+    private final TreeMap<ID, Marker> fallFlyingCancelMarks = new TreeMap<>();
     @Nullable
     private Enforcer<Vector3d> movementEnforcer = null;
 
-    public void addMarkerCancellingJump(Marker marker) {
-        jumpCancelMarks.add(marker);
+    public void addMarkerCancellingJump(ID id, Marker marker) {
+        jumpCancelMarks.put(id, marker);
     }
 
-    public void addMarkerCancellingSneak(Marker marker) {
-        sneakCancelMarks.add(marker);
+    public void addMarkerCancellingSneak(ID id, Marker marker) {
+        sneakCancelMarks.put(id, marker);
     }
 
-    public void addMarkerCancellingDescendFromEdge(Marker marker) {
-        descendFromEdgeCancelMarks.add(marker);
+    public void addMarkerCancellingDescendFromEdge(ID id, Marker marker) {
+        descendFromEdgeCancelMarks.put(id, marker);
     }
 
-    public void addMarkerCancellingSprint(Marker marker) {
-        sprintCancelMarks.add(marker);
+    public void addMarkerCancellingSprint(ID id, Marker marker) {
+        sprintCancelMarks.put(id, marker);
     }
 
-    public void addMarkerCancellingFallFlying(Marker marker) {
-        fallFlyingCancelMarks.add(marker);
+    public void addMarkerCancellingFallFlying(ID id, Marker marker) {
+        fallFlyingCancelMarks.put(id, marker);
     }
 
     public void setMarkerEnforceMovePoint(Marker marker, Supplier<Vector3d> movementSupplier) {
@@ -62,27 +85,27 @@ public class BehaviorEnforcer {
     }
 
     public boolean cancelJump() {
-        jumpCancelMarks.removeIf(it -> !it.remain());
+        jumpCancelMarks.values().removeIf(it -> !it.remain());
         return !jumpCancelMarks.isEmpty();
     }
 
     public boolean cancelSneak() {
-        sneakCancelMarks.removeIf(it -> !it.remain());
+        sneakCancelMarks.values().removeIf(it -> !it.remain());
         return !sneakCancelMarks.isEmpty();
     }
 
     public boolean cancelDescendFromEdge() {
-        descendFromEdgeCancelMarks.removeIf(it -> !it.remain());
+        descendFromEdgeCancelMarks.values().removeIf(it -> !it.remain());
         return !descendFromEdgeCancelMarks.isEmpty();
     }
 
     public boolean cancelSprint() {
-        sprintCancelMarks.removeIf(it -> !it.remain());
+        sprintCancelMarks.values().removeIf(it -> !it.remain());
         return !sprintCancelMarks.isEmpty();
     }
 
     public boolean cancelFallFlying() {
-        fallFlyingCancelMarks.removeIf(it -> !it.remain());
+        fallFlyingCancelMarks.values().removeIf(it -> !it.remain());
         return !fallFlyingCancelMarks.isEmpty();
     }
 

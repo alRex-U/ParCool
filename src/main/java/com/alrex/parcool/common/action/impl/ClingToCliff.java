@@ -4,6 +4,7 @@ import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.ClingToCliffAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
@@ -21,6 +22,8 @@ import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
 public class ClingToCliff extends Action {
+	private static final BehaviorEnforcer.ID ID_SNEAK_CANCEL = BehaviorEnforcer.newID();
+	private static final BehaviorEnforcer.ID ID_FALL_FLY_CANCEL = BehaviorEnforcer.newID();
 	private float armSwingAmount = 0;
 	private FacingDirection facingDirection = FacingDirection.ToWall;
 	@Nullable
@@ -71,7 +74,7 @@ public class ClingToCliff extends Action {
 
     @Override
     public void onStart(PlayerEntity player, Parkourability parkourability) {
-        parkourability.getBehaviorEnforcer().addMarkerCancellingFallFlying(this::isDoing);
+		parkourability.getBehaviorEnforcer().addMarkerCancellingFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
         armSwingAmount = 0;
     }
 
@@ -82,7 +85,7 @@ public class ClingToCliff extends Action {
 		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
 		if (!KeyBindings.getKeyGrabWall().getKey().equals(KeyBindings.getKeySneak().getKey())) {
-			parkourability.getBehaviorEnforcer().addMarkerCancellingSneak(this::isDoing);
+			parkourability.getBehaviorEnforcer().addMarkerCancellingSneak(ID_SNEAK_CANCEL, this::isDoing);
 		}
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.CLING_TO_CLIFF.get(), 1f, 1f);
