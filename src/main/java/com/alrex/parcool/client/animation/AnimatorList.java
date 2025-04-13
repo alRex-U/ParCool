@@ -20,6 +20,7 @@ public class AnimatorList {
 			FastRunningAnimator.class,
 			FastSwimAnimator.class,
 			FlippingAnimator.class,
+			HideInBlockAnimator.class,
 			HorizontalWallRunAnimator.class,
             JumpChargingAnimator.class,
 			JumpFromBarAnimator.class,

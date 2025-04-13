@@ -73,7 +73,7 @@ public class ClingToCliff extends Action {
 	}
 
     @Override
-    public void onStart(PlayerEntity player, Parkourability parkourability) {
+	public void onStart(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
 		parkourability.getBehaviorEnforcer().addMarkerCancellingFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
         armSwingAmount = 0;
     }

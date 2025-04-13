@@ -5,8 +5,6 @@ import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.RideZipline;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
-import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
@@ -44,10 +42,8 @@ public class RideZiplineAnimator extends Animator {
 
     @Override
     public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
-        ZiplineRopeEntity entity = parkourability.get(RideZipline.class).getRidingZipline();
-        if (entity == null) return;
-        Zipline zipline = entity.getZipline();
-        Vector3d offset = zipline.getOffsetToEndFromStart();
+        Vector3d offset = parkourability.get(RideZipline.class).getEndOffsetFromStart();
+        if (offset == null) return;
         double angleDifference = VectorUtil.toYawRadian(player.getLookAngle()) - VectorUtil.toYawRadian(new Vector3d(offset.x(), 0, offset.z()));
         double angleCos = Math.cos(angleDifference);
         double angleSin = Math.sin(angleDifference);
@@ -70,10 +66,8 @@ public class RideZiplineAnimator extends Animator {
 
     @Override
     public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
-        ZiplineRopeEntity entity = parkourability.get(RideZipline.class).getRidingZipline();
-        if (entity == null) return;
-        Zipline zipline = entity.getZipline();
-        Vector3d offset = zipline.getOffsetToEndFromStart();
+        Vector3d offset = parkourability.get(RideZipline.class).getEndOffsetFromStart();
+        if (offset == null) return;
         Vector3d rotationAxis = new Vector3d(0, 0, 1)
                 .yRot((float) (Math.PI / 2 + VectorUtil.toYawRadian(player.getLookAngle()) - VectorUtil.toYawRadian(new Vector3d(offset.x(), 0, offset.z()))))
                 .normalize();

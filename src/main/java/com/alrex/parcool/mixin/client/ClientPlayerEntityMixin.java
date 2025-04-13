@@ -50,14 +50,22 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
 	@Inject(method = "move", at = @At("HEAD"), cancellable = true)
 	public void onMove(MoverType moverType, Vector3d movement, CallbackInfo ci) {
-		if (moverType != MoverType.SELF) return;
 		ClientPlayerEntity player = (ClientPlayerEntity) (Object) this;
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
-		Vector3d enforced = parkourability.getBehaviorEnforcer().getEnforcedMovePoint();
-		if (enforced != null) {
+        Vector3d enforcedPos = parkourability.getBehaviorEnforcer().getEnforcedPosition();
+        if (enforcedPos != null) {
 			ci.cancel();
-			Vector3d dMove = enforced.subtract(player.position());
+            Vector3d dMove = enforcedPos.subtract(player.position());
+            setBoundingBox(getBoundingBox().move(dMove));
+            setLocationFromBoundingbox();
+            return;
+        }
+        if (moverType != MoverType.SELF) return;
+        Vector3d enforcedMovePos = parkourability.getBehaviorEnforcer().getEnforcedMovePoint();
+        if (enforcedMovePos != null) {
+            ci.cancel();
+            Vector3d dMove = enforcedMovePos.subtract(player.position());
 			player.setDeltaMovement(dMove);
 			super.move(moverType, dMove);
 		}

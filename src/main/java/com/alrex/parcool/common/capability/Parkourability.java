@@ -84,4 +84,8 @@ public class Parkourability {
 		getActionInfo().setClientSetting(original.getActionInfo().getClientSetting());
 		getActionInfo().setServerLimitation(original.getActionInfo().getServerLimitation());
 	}
+
+	public boolean isDoingNothing() {
+		return actions.stream().anyMatch(Action::isDoing);
+	}
 }

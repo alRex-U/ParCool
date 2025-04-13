@@ -25,6 +25,7 @@ public class ActionList {
             new ActionRegistry<>(FastSwim.class, FastSwim::new, 3),
 			new ActionRegistry<>(Flipping.class, Flipping::new, 80),
 			new ActionRegistry<>(HangDown.class, HangDown::new, 3),
+            new ActionRegistry<>(HideInBlock.class, HideInBlock::new, 0),
 			new ActionRegistry<>(HorizontalWallRun.class, HorizontalWallRun::new, 2),
 			new ActionRegistry<>(JumpFromBar.class, JumpFromBar::new, 100),
 			new ActionRegistry<>(QuickTurn.class, QuickTurn::new, 0),

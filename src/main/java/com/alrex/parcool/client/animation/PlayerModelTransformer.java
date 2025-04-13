@@ -292,6 +292,18 @@ public class PlayerModelTransformer {
 		return this;
 	}
 
+    public PlayerModelTransformer rotateHeadYaw(float yawDegree) {
+        if (option.isCanceled(AnimationPart.HEAD)) return this;
+        model.head.yRot = (float) Math.toRadians(yawDegree);
+        return this;
+    }
+
+    public PlayerModelTransformer rotateHeadYawRadian(float yawRadian) {
+        if (option.isCanceled(AnimationPart.HEAD)) return this;
+        model.head.yRot = yawRadian;
+        return this;
+    }
+
 	public PlayerModelTransformer rotateAdditionallyHeadYaw(float yawDegree) {
         if (option.isCanceled(AnimationPart.HEAD)) return this;
 		model.head.yRot = (float) Math.toRadians(yawDegree + netHeadYaw);

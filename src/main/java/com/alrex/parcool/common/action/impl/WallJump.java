@@ -145,7 +145,7 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public void onStart(PlayerEntity player, Parkourability parkourability) {
+    public void onStart(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
 		jump = true;
 		player.fallDistance = 0;
 	}

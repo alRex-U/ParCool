@@ -1,6 +1,9 @@
 package com.alrex.parcool.common.action;
 
+import net.minecraft.client.settings.PointOfView;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.TreeMap;
@@ -57,8 +60,11 @@ public class BehaviorEnforcer {
     private final TreeMap<ID, Marker> sneakCancelMarks = new TreeMap<>();
     private final TreeMap<ID, Marker> sprintCancelMarks = new TreeMap<>();
     private final TreeMap<ID, Marker> fallFlyingCancelMarks = new TreeMap<>();
+    private final TreeMap<ID, Marker> showNameCancelMarks = new TreeMap<>();
     @Nullable
     private Enforcer<Vector3d> movementEnforcer = null;
+    @Nullable
+    private Enforcer<Vector3d> positionEnforcer = null;
 
     public void addMarkerCancellingJump(ID id, Marker marker) {
         jumpCancelMarks.put(id, marker);
@@ -80,8 +86,16 @@ public class BehaviorEnforcer {
         fallFlyingCancelMarks.put(id, marker);
     }
 
+    public void addMarkerCancellingShowName(ID id, Marker marker) {
+        showNameCancelMarks.put(id, marker);
+    }
+
     public void setMarkerEnforceMovePoint(Marker marker, Supplier<Vector3d> movementSupplier) {
         movementEnforcer = new Enforcer<>(marker, movementSupplier);
+    }
+
+    public void setMarkerEnforcePosition(Marker marker, Supplier<Vector3d> movementSupplier) {
+        positionEnforcer = new Enforcer<>(marker, movementSupplier);
     }
 
     public boolean cancelJump() {
@@ -109,12 +123,26 @@ public class BehaviorEnforcer {
         return !fallFlyingCancelMarks.isEmpty();
     }
 
+    public boolean cancelShowingName() {
+        showNameCancelMarks.values().removeIf(it -> !it.remain());
+        return !showNameCancelMarks.isEmpty();
+    }
+
     @Nullable
     public Vector3d getEnforcedMovePoint() {
         if (movementEnforcer != null && movementEnforcer.remain()) {
-            return movementEnforcer.behaviorSupplier.get();
+            return movementEnforcer.getBehavior();
         }
         movementEnforcer = null;
+        return null;
+    }
+
+    @Nullable
+    public Vector3d getEnforcedPosition() {
+        if (positionEnforcer != null && positionEnforcer.remain()) {
+            return positionEnforcer.getBehavior();
+        }
+        positionEnforcer = null;
         return null;
     }
 }

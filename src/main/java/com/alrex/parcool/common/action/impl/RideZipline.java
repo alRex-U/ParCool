@@ -10,23 +10,23 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import com.alrex.parcool.common.zipline.Zipline;
+import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.ForgeMod;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
-import java.util.List;
-import java.util.Optional;
 
 public class RideZipline extends Action {
     private static final BehaviorEnforcer.ID ID_FALL_FLY_CANCEL = BehaviorEnforcer.newID();
     private static final BehaviorEnforcer.ID ID_SPRINT_CANCEL = BehaviorEnforcer.newID();
     @Nullable
     private ZiplineRopeEntity ridingZipline;
+    @Nullable
+    private Vector3d endOffsetFromStart;
     private double speed;
     private double acceleration;
     private double slope;
@@ -34,17 +34,17 @@ public class RideZipline extends Action {
     @Nullable
     private Vector3d currentPos;
 
-    @Nullable
-    public ZiplineRopeEntity getRidingZipline() {
-        return ridingZipline;
-    }
-
     public double getAcceleration() {
         return acceleration;
     }
 
     public double getSlope() {
         return slope;
+    }
+
+    @Nullable
+    public Vector3d getEndOffsetFromStart() {
+        return endOffsetFromStart;
     }
 
     @Override
@@ -67,12 +67,7 @@ public class RideZipline extends Action {
             double t = ropeEntity.getZipline().getParameter(player.position());
             if (t < 0 || 1 < t) return false;
             ridingZipline = ropeEntity;
-            startInfo.putInt(ridingZipline.getStartPos().getX())
-                    .putInt(ridingZipline.getStartPos().getY())
-                    .putInt(ridingZipline.getStartPos().getZ())
-                    .putInt(ridingZipline.getEndPos().getX())
-                    .putInt(ridingZipline.getEndPos().getY())
-                    .putInt(ridingZipline.getEndPos().getZ());
+            BufferUtil.wrap(startInfo).putVector3d(ridingZipline.getZipline().getOffsetToEndFromStart());
             return true;
         }
         return false;
@@ -113,23 +108,14 @@ public class RideZipline extends Action {
 
     @Override
     public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
-        BlockPos start = new BlockPos(startData.getInt(), startData.getInt(), startData.getInt());
-        BlockPos end = new BlockPos(startData.getInt(), startData.getInt(), startData.getInt());
-        List<ZiplineRopeEntity> entities = player.level.getEntitiesOfClass(
-                ZiplineRopeEntity.class,
-                player.getBoundingBox().inflate(Zipline.MAXIMUM_DISTANCE * 0.52)
-        );
-        Optional<ZiplineRopeEntity> entity = entities.stream().filter(it -> (it.getStartPos().equals(start) && it.getEndPos().equals(end)) || (it.getEndPos().equals(start) && it.getStartPos().equals(end))).findAny();
-        if (entity.isPresent()) {
-            ridingZipline = entity.get();
-            Animation animation = Animation.get(player);
-            if (animation == null) return;
-            animation.setAnimator(new RideZiplineAnimator());
-        }
+        Animation animation = Animation.get(player);
+        if (animation == null) return;
+        animation.setAnimator(new RideZiplineAnimator());
     }
 
     @Override
-    public void onStart(PlayerEntity player, Parkourability parkourability) {
+    public void onStart(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+        endOffsetFromStart = BufferUtil.getVector3d(startData);
         player.setSprinting(false);
         parkourability.getBehaviorEnforcer().addMarkerCancellingFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
     }
