@@ -116,6 +116,10 @@ public class ParCoolConfig {
 					ConfigGroup.HUD, null,
 					"hide_hud_if_stamina_infinite", true
 			),
+			ShowActionStatusBar(
+					ConfigGroup.HUD, "Stamina HUD shows action charge rate, cool time or etc",
+					"show_action_status_bar", true
+			),
 			EnableDoubleTappingForDodge(
 					ConfigGroup.Control, "Enable double-tapping ctrl for Dodge",
 					"enable_double_tapping_for_dodge", false
