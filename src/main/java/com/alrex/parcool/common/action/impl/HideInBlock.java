@@ -36,6 +36,7 @@ public class HideInBlock extends Action {
     Vector3d enterPoint = null;
     @Nullable
     Vector3d lookDirection = null;
+    boolean hidingBlockChanged = false;
 
     @Nullable
     public Vector3d getLookDirection() {
@@ -68,6 +69,15 @@ public class HideInBlock extends Action {
                     0.5 + (hideArea.getA().getZ() + hideArea.getB().getZ()) / 2.
             );
             if (!player.position().closerThan(hidePoint, 1.8)) return false;
+            {
+                int minX = Math.min(hideArea.getA().getX(), hideArea.getB().getX());
+                int maxX = Math.max(hideArea.getA().getX(), hideArea.getB().getX());
+                int minY = Math.min(hideArea.getA().getY(), hideArea.getB().getY());
+                int maxY = Math.max(hideArea.getA().getY(), hideArea.getB().getY());
+                int minZ = Math.min(hideArea.getA().getZ(), hideArea.getB().getZ());
+                int maxZ = Math.max(hideArea.getA().getZ(), hideArea.getB().getZ());
+                hideArea = new Tuple<>(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ));
+            }
             boolean zLonger = Math.abs(hideArea.getA().getZ() - hideArea.getB().getZ()) > Math.abs(hideArea.getA().getX() - hideArea.getB().getX());
             Vector3d direction = zLonger ?
                     new Vector3d(0, 0, player.getLookAngle().z() > 0 ? 1 : -1) :
@@ -85,6 +95,9 @@ public class HideInBlock extends Action {
 
     @Override
     public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+        if (hidingBlockChanged) {
+            return hidingBlockChanged = false;
+        }
         return player.hurtTime <= 0 && (getDoingTick() < 6 || KeyBindings.getKeyBindHideInBlock().isDown());
     }
 
@@ -183,12 +196,12 @@ public class HideInBlock extends Action {
     private void spawnOnHideParticles(PlayerEntity player) {
         if (hidingArea == null) return;
         World world = player.level;
-        int minX = Math.min(hidingArea.getA().getX(), hidingArea.getB().getX());
-        int maxX = Math.max(hidingArea.getA().getX(), hidingArea.getB().getX());
-        int minY = Math.min(hidingArea.getA().getY(), hidingArea.getB().getY());
-        int maxY = Math.max(hidingArea.getA().getY(), hidingArea.getB().getY());
-        int minZ = Math.min(hidingArea.getA().getZ(), hidingArea.getB().getZ());
-        int maxZ = Math.max(hidingArea.getA().getZ(), hidingArea.getB().getZ());
+        int minX = hidingArea.getA().getX();
+        int minY = hidingArea.getA().getY();
+        int minZ = hidingArea.getA().getZ();
+        int maxX = hidingArea.getB().getX();
+        int maxY = hidingArea.getB().getY();
+        int maxZ = hidingArea.getB().getZ();
         for (int y = minY; y <= maxY; y++) {
             for (int z = minZ; z <= maxZ; z++) {
                 for (int x = minX; x <= maxX; x++) {
@@ -197,6 +210,24 @@ public class HideInBlock extends Action {
                     Minecraft.getInstance().particleEngine.destroy(pos, world.getBlockState(pos));
                 }
             }
+        }
+    }
+
+    private boolean isHidingBlock(BlockPos pos) {
+        if (hidingArea == null) {
+            return false;
+        }
+        BlockPos posA = hidingArea.getA(), posB = hidingArea.getB();
+        return (posA.getX() <= pos.getX() && pos.getX() <= posB.getX()
+                && posA.getY() <= pos.getY() && pos.getY() <= posB.getY()
+                && posA.getZ() <= pos.getZ() && pos.getZ() <= posB.getZ()
+        );
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void notifyBlockChanged(BlockPos pos) {
+        if (isHidingBlock(pos)) {
+            hidingBlockChanged = true;
         }
     }
 
