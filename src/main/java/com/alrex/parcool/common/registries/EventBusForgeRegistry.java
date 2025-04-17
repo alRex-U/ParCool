@@ -14,7 +14,6 @@ public class EventBusForgeRegistry {
 		bus.register(PlayerVisibilityHandler.class);
 		bus.register(PlayerFallHandler.class);
 		bus.register(PlayerCloneHandler.class);
-		bus.register(PlayerEntitySizeHandler.class);
 		bus.register(new ActionProcessor());
 	}
 

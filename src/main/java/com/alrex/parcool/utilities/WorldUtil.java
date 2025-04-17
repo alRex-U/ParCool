@@ -458,7 +458,12 @@ public class WorldUtil {
 		BlockState state = world.getBlockState(base);
 		Block block = state.getBlock();
 		if (!isHideAbleBlock(state)) return null;
-		if (!world.getBlockState(base.above()).isAir()) return null;
+		if (!world.getBlockState(base.above()).isAir()) {
+			if (getHideAbleSpace$isHideAble(world, block, base.above())) {
+				return new Tuple<>(base, base.above());
+			}
+			return null;
+		}
 		double entityWidth = entity.getBbWidth();
 		double entityHeight = entity.getBbHeight();
 		if (entityHeight >= 2 || entityWidth >= 1) return null;
@@ -508,6 +513,9 @@ public class WorldUtil {
 				}
 				if (getHideAbleSpace$isHideAble(world, block, base.east())) return new Tuple<>(base, base.east());
 			}
+		}
+		if (world.getBlockState(base.below()).is(block) && Math.abs(entity.getY() - base.below().getY()) < 0.2) {
+			return new Tuple<>(base.below(), base);
 		}
 		return null;
 	}

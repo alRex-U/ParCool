@@ -16,6 +16,7 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "common.EntityMixin",
     "common.LivingEntityMixin",
     "common.PlayerEntityMixin"
   ]

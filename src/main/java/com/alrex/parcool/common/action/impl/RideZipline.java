@@ -2,6 +2,7 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.client.animation.impl.RideZiplineAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
+import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
@@ -55,6 +56,8 @@ public class RideZipline extends Action {
                 && !player.isFallFlying()
                 && !player.isCrouching()
                 && !player.isSwimming()
+                && !stamina.isExhausted()
+                && (!KeyBindings.getKeyJump().isDown() || getNotDoingTick() > 5)
                 && !parkourability.get(Dive.class).isDoing()
                 && !parkourability.get(Vault.class).isDoing()
                 && !parkourability.get(HangDown.class).isDoing()
@@ -76,7 +79,9 @@ public class RideZipline extends Action {
     @Override
     public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
         return KeyBindings.getKeyBindRideZipline().isDown()
+                && !KeyRecorder.keyJumpState.isPressed()
                 && !player.isInWall()
+                && !stamina.isExhausted()
                 && ridingZipline != null
                 && ridingZipline.isAlive()
                 && 0 <= currentT && currentT <= 1
@@ -205,7 +210,7 @@ public class RideZipline extends Action {
         if (ridingZipline != null) {
             player.setDeltaMovement(
                     getDeltaMovement(ridingZipline.getZipline(), speed, currentT)
-                            .add(0, KeyBindings.getKeyJump().isDown() ? 0.2 : 0, 0)
+                            .add(0, KeyBindings.getKeyJump().isDown() ? 0.25 : 0, 0)
             );
         }
         currentT = 0;
