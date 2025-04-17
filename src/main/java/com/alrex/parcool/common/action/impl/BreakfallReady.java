@@ -16,7 +16,6 @@ import java.util.Random;
 
 public class BreakfallReady extends Action {
 	public void startBreakfall(PlayerEntity player, Parkourability parkourability, IStamina stamina, boolean justTimed) {
-		setDoing(false);
 		boolean playSound = false;
 		if (justTimed && ParCoolConfig.Client.Booleans.EnableJustTimeEffectOfBreakfall.get()) {
 			if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
