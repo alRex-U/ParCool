@@ -5,12 +5,14 @@ import com.alrex.parcool.client.animation.impl.DodgeAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,6 +24,8 @@ import java.nio.ByteBuffer;
 
 public class Dodge extends Action {
 	public static final int MAX_TICK = 11;
+	private static final BehaviorEnforcer.ID ID_JUMP_CANCEL = BehaviorEnforcer.newID();
+	private static final BehaviorEnforcer.ID ID_DESCEND_EDGE = BehaviorEnforcer.newID();
 
 	private static int getMaxCoolTime(ActionInfo info) {
 		return Math.max(
@@ -45,7 +49,49 @@ public class Dodge extends Action {
 	}
 
 	public enum DodgeDirection {
-		Front, Back, Left, Right
+		Front, Back, Left, Right;
+
+		public DodgeDirection inverse() {
+			switch (this) {
+				case Front:
+					return Back;
+				case Back:
+					return Front;
+				case Left:
+					return Right;
+				case Right:
+					return Left;
+			}
+			return Front;
+		}
+
+		public DodgeDirection right() {
+			switch (this) {
+				case Front:
+					return Right;
+				case Right:
+					return Back;
+				case Back:
+					return Left;
+				case Left:
+					return Front;
+			}
+			return Front;
+		}
+
+		public DodgeDirection left() {
+			switch (this) {
+				case Front:
+					return Left;
+				case Left:
+					return Back;
+				case Back:
+					return Right;
+				case Right:
+					return Front;
+			}
+			return Front;
+		}
 	}
 
 	private DodgeDirection dodgeDirection = null;
@@ -93,6 +139,7 @@ public class Dodge extends Action {
 			if (KeyBindings.getKeyRight().isDown()) direction = DodgeDirection.Right;
 		}
 		if (direction == null) return false;
+		direction = AdditionalMods.betterThirdPerson().handleCustomCameraRotationForDodge(direction);
 		startInfo.putInt(direction.ordinal());
 		return (parkourability.getAdditionalProperties().getLandingTick() > 5
 				&& !isInSuccessiveCoolDown(parkourability.getActionInfo())
@@ -153,9 +200,9 @@ public class Dodge extends Action {
 
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new DodgeAnimator(dodgeDirection));
-		parkourability.getCancelMarks().addMarkerCancellingJump(this::isDoing);
+		parkourability.getBehaviorEnforcer().addMarkerCancellingJump(ID_JUMP_CANCEL, this::isDoing);
 		if (!parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.CanGetOffStepsWhileDodge)) {
-			parkourability.getCancelMarks().addMarkerCancellingDescendFromEdge(this::isDoing);
+			parkourability.getBehaviorEnforcer().addMarkerCancellingDescendFromEdge(ID_DESCEND_EDGE, this::isDoing);
 		}
 	}
 

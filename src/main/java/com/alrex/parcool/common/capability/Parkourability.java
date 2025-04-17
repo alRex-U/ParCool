@@ -3,7 +3,7 @@ package com.alrex.parcool.common.capability;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.action.AdditionalProperties;
-import com.alrex.parcool.common.action.CancelMarks;
+import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
@@ -24,7 +24,7 @@ public class Parkourability {
 
 	private final ActionInfo info;
 	private final AdditionalProperties properties = new AdditionalProperties();
-	private final CancelMarks cancelMarks = new CancelMarks();
+	private final BehaviorEnforcer enforcer = new BehaviorEnforcer();
 	private final List<Action> actions = ActionList.constructActionsList();
 	private final HashMap<Class<? extends Action>, Action> actionsMap;
 
@@ -60,8 +60,8 @@ public class Parkourability {
 		return properties;
 	}
 
-	public CancelMarks getCancelMarks() {
-		return cancelMarks;
+	public BehaviorEnforcer getBehaviorEnforcer() {
+		return enforcer;
 	}
 
 	public ActionInfo getActionInfo() {
@@ -83,5 +83,9 @@ public class Parkourability {
 	public void CopyFrom(Parkourability original) {
 		getActionInfo().setClientSetting(original.getActionInfo().getClientSetting());
 		getActionInfo().setServerLimitation(original.getActionInfo().getServerLimitation());
+	}
+
+	public boolean isDoingNothing() {
+		return actions.stream().anyMatch(Action::isDoing);
 	}
 }

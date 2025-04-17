@@ -116,6 +116,10 @@ public class ParCoolConfig {
 					ConfigGroup.HUD, null,
 					"hide_hud_if_stamina_infinite", true
 			),
+			ShowActionStatusBar(
+					ConfigGroup.HUD, "Stamina HUD shows action charge rate, cool time or etc",
+					"show_action_status_bar", true
+			),
 			EnableDoubleTappingForDodge(
 					ConfigGroup.Control, "Enable double-tapping ctrl for Dodge",
 					"enable_double_tapping_for_dodge", false
@@ -159,6 +163,10 @@ public class ParCoolConfig {
 			EnableActionParticlesOfJustTimeBreakfall(
 					ConfigGroup.Other, "Enable particles triggered by just-time breakfall",
 					"enable_particles_jt_breakfall", true
+			),
+			Enable3DRenderingForZipline(
+					ConfigGroup.Other, "Enable block like rendering of zipline",
+					"enable_3d_render_zipline", true
 			),
 			VaultKeyPressedNeeded(
 					ConfigGroup.Control, "Make Vault Need Vault Key Pressed",

@@ -96,6 +96,16 @@ public class PlayerModelRotator {
 		return this;
 	}
 
+	public PlayerModelRotator rotate(float angle, Vector3f axis) {
+		stack.mulPose(axis.rotation(angle));
+		return this;
+	}
+
+	public PlayerModelRotator rotateDegrees(float angleDegree, Vector3f axis) {
+		stack.mulPose(axis.rotationDegrees(angleDegree));
+		return this;
+	}
+
 	public void end() {
 		if (basedCenter) {
 			stack.translate(0, -playerHeight / 2, 0);

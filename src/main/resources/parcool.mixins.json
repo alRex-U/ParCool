@@ -7,6 +7,8 @@
   "minVersion": "0.8",
   "client": [
     "client.ClientPlayerEntityMixin",
+    "client.ClientWorldMixin",
+    "client.GameSettingsMixin",
     "client.PlayerModelMixin",
     "client.PlayerRendererMixin"
   ],
@@ -14,6 +16,7 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "common.EntityMixin",
     "common.LivingEntityMixin",
     "common.PlayerEntityMixin"
   ]

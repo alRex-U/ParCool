@@ -92,15 +92,17 @@ public class ActionProcessor {
 					}
 				} else {
 					bufferOfStarting.clear();
-					boolean start = parkourability.getActionInfo().can(action.getClass())
+					boolean start = !player.isSpectator()
+							&& parkourability.getActionInfo().can(action.getClass())
                             && !MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStartEvent(player, action))
 							&& action.canStart(player, parkourability, stamina, bufferOfStarting);
 					bufferOfStarting.flip();
 					if (start) {
 						action.setDoing(true);
+						action.onStart(player, parkourability, bufferOfStarting);
+						bufferOfStarting.rewind();
 						action.onStartInLocalClient(player, parkourability, stamina, bufferOfStarting);
 						bufferOfStarting.rewind();
-						action.onStart(player, parkourability);
                         MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
 						builder.appendStartData(parkourability, action, bufferOfStarting);
 						if (timing == StaminaConsumeTiming.OnStart)

@@ -5,8 +5,11 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.vector.Vector3d;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -14,6 +17,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
+	@Shadow
+	public abstract void move(MoverType p_213315_1_, Vector3d p_213315_2_);
+
 	public ClientPlayerEntityMixin(ClientWorld p_i50991_1_, GameProfile p_i50991_2_) {
 		super(p_i50991_1_, p_i50991_2_);
 	}
@@ -25,7 +31,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 		Parkourability parkourability = Parkourability.get((PlayerEntity) (Object) this);
 
 		if (parkourability == null) return;
-		if (parkourability.getCancelMarks().cancelSneak()) {
+		if (parkourability.getBehaviorEnforcer().cancelSneak()) {
 			cir.setReturnValue(false);
 		}
 	}
@@ -41,4 +47,36 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 			oldSprinting = player.isSprinting();
 		}
 	}
+
+	@Inject(method = "move", at = @At("HEAD"), cancellable = true)
+	public void onMove(MoverType moverType, Vector3d movement, CallbackInfo ci) {
+		ClientPlayerEntity player = (ClientPlayerEntity) (Object) this;
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) return;
+        Vector3d enforcedPos = parkourability.getBehaviorEnforcer().getEnforcedPosition();
+        if (enforcedPos != null) {
+			ci.cancel();
+            Vector3d dMove = enforcedPos.subtract(player.position());
+            setBoundingBox(getBoundingBox().move(dMove));
+            setLocationFromBoundingbox();
+            return;
+        }
+        if (moverType != MoverType.SELF) return;
+        Vector3d enforcedMovePos = parkourability.getBehaviorEnforcer().getEnforcedMovePoint();
+        if (enforcedMovePos != null) {
+            ci.cancel();
+            Vector3d dMove = enforcedMovePos.subtract(player.position());
+			player.setDeltaMovement(dMove);
+			super.move(moverType, dMove);
+		}
+	}
+
+    @Inject(method = "setSprinting", at = @At("HEAD"), cancellable = true)
+    public void onSetSprinting(boolean sprint, CallbackInfo ci) {
+        Parkourability parkourability = Parkourability.get((ClientPlayerEntity) (Object) this);
+        if (parkourability != null && parkourability.getBehaviorEnforcer().cancelSprint()) {
+            ci.cancel();
+        }
+    }
+
 }

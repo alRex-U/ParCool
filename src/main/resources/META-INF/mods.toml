@@ -29,3 +29,8 @@ mandatory = true
 versionRange = "[1.16.5,1.17)"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.parcool]]
+modId = "betterthirdperson"
+mandatory = false
+versionRange = "[1.9.0,)"

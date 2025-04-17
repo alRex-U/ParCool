@@ -45,7 +45,7 @@ public abstract class Action {
 	@OnlyIn(Dist.CLIENT)
 	public abstract boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina);
 
-	public void onStart(PlayerEntity player, Parkourability parkourability) {
+	public void onStart(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
 	}
 
 	public void onStartInServer(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {

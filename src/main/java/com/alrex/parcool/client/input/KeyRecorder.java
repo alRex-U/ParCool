@@ -20,6 +20,7 @@ public class KeyRecorder {
 	public static final KeyState keyOpenSettingsState = new KeyState();
 	public static final KeyState keyFastRunning = new KeyState();
 	public static final KeyState keyDodge = new KeyState();
+	public static final KeyState keyRideZipline = new KeyState();
 	public static final KeyState keyBreakfall = new KeyState();
 	public static final KeyState keyWallJump = new KeyState();
 	public static final KeyState keyQuickTurn = new KeyState();
@@ -40,6 +41,7 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyActivateParCool(), keyOpenSettingsState);
 		record(KeyBindings.getKeyFastRunning(), keyFastRunning);
 		record(KeyBindings.getKeyDodge(), keyDodge);
+		record(KeyBindings.getKeyBindRideZipline(), keyRideZipline);
 		record(KeyBindings.getKeyBreakfall(), keyBreakfall);
 		record(KeyBindings.getKeyWallJump(), keyWallJump);
 		record(KeyBindings.getKeyQuickTurn(), keyQuickTurn);
@@ -50,6 +52,9 @@ public class KeyRecorder {
 		state.pressed = (keyBinding.isDown() && state.tickKeyDown == 0);
 		state.released = (!keyBinding.isDown() && state.tickNotKeyDown == 0);
 		state.doubleTapped = (keyBinding.isDown() && 0 < state.tickNotKeyDown && state.tickNotKeyDown <= 2);
+		if (state.pressed && state.tickNotKeyDown > 0) {
+			state.previousTickNotKeyDown = state.tickNotKeyDown;
+		}
 		if (keyBinding.isDown()) {
 			state.tickKeyDown++;
 			state.tickNotKeyDown = 0;
@@ -65,6 +70,7 @@ public class KeyRecorder {
 		private boolean doubleTapped = false;
 		private int tickKeyDown = 0;
 		private int tickNotKeyDown = 0;
+		private int previousTickNotKeyDown = Integer.MAX_VALUE;
 
 		public boolean isPressed() {
 			return pressed;
@@ -84,6 +90,10 @@ public class KeyRecorder {
 
 		public int getTickNotKeyDown() {
 			return tickNotKeyDown;
+		}
+
+		public int getPreviousTickNotKeyDown() {
+			return previousTickNotKeyDown;
 		}
 	}
 }

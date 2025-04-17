@@ -24,9 +24,11 @@ public class KeyBindings {
 	private static final KeyBinding keyBindFlipping = new KeyBinding("key.parcool.Flipping", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
 	private static final KeyBinding keyBindVault = new KeyBinding("key.parcool.Vault", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
 	private static final KeyBinding keyBindDodge = new KeyBinding("key.parcool.Dodge", GLFW.GLFW_KEY_R, "key.categories.parcool");
+	private static final KeyBinding keyBindRideZipline = new KeyBinding("key.parcool.RideZipline", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
 	private static final KeyBinding keyBindWallJump = new KeyBinding("key.parcool.WallJump", GLFW.GLFW_KEY_SPACE, "key.categories.parcool");
 	private static final KeyBinding keyBindHangDown = new KeyBinding("key.parcool.HangDown", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
 	private static final KeyBinding keyBindWallSlide = new KeyBinding("key.parcool.WallSlide", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
+	private static final KeyBinding keyBindHideInBlock = new KeyBinding("key.parcool.HideInBlock", GLFW.GLFW_KEY_H, "key.categories.parcool");
 	private static final KeyBinding keyBindHorizontalWallRun = new KeyBinding("key.parcool.HorizontalWallRun", GLFW.GLFW_KEY_R, "key.categories.parcool");
 	private static final KeyBinding keyBindQuickTurn = new KeyBinding("key.parcool.QuickTurn", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
 	private static final KeyBinding keyBindOpenSettings = new KeyBinding("key.parcool.openSetting", KeyConflictContext.UNIVERSAL, KeyModifier.ALT, InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.categories.parcool");
@@ -95,12 +97,20 @@ public class KeyBindings {
 		return keyBindDodge;
 	}
 
+	public static KeyBinding getKeyBindRideZipline() {
+		return keyBindRideZipline;
+	}
+
 	public static KeyBinding getKeyWallSlide() {
 		return keyBindWallSlide;
 	}
 
 	public static KeyBinding getKeyHangDown() {
 		return keyBindHangDown;
+	}
+
+	public static KeyBinding getKeyBindHideInBlock() {
+		return keyBindHideInBlock;
 	}
 
 	public static KeyBinding getKeyHorizontalWallRun() {
@@ -123,10 +133,12 @@ public class KeyBindings {
 		ClientRegistry.registerKeyBinding(keyBindBreakfall);
 		ClientRegistry.registerKeyBinding(keyBindFastRunning);
 		ClientRegistry.registerKeyBinding(keyBindDodge);
+		ClientRegistry.registerKeyBinding(keyBindRideZipline);
 		ClientRegistry.registerKeyBinding(keyBindWallSlide);
 		ClientRegistry.registerKeyBinding(keyBindWallJump);
 		ClientRegistry.registerKeyBinding(keyBindVault);
 		ClientRegistry.registerKeyBinding(keyBindHorizontalWallRun);
+		ClientRegistry.registerKeyBinding(keyBindHideInBlock);
 		ClientRegistry.registerKeyBinding(keyBindOpenSettings);
 		ClientRegistry.registerKeyBinding(keyBindQuickTurn);
 		ClientRegistry.registerKeyBinding(keyBindFlipping);

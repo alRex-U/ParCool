@@ -1,6 +1,5 @@
 package com.alrex.parcool.mixin.common;
 
-import com.alrex.parcool.common.action.impl.ClingToCliff;
 import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -23,7 +22,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 	public void onTryToStartFallFlying(CallbackInfoReturnable<Boolean> cir) {
 		PlayerEntity player = (PlayerEntity) (Object) this;
 		Parkourability parkourability = Parkourability.get(player);
-		if (parkourability != null && parkourability.get(ClingToCliff.class).isDoing()) {
+        if (parkourability != null && parkourability.getBehaviorEnforcer().cancelFallFlying()) {
 			cir.setReturnValue(false);
 		}
 	}
@@ -32,7 +31,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 	public void onJumpFromGround(CallbackInfo ci) {
 		Parkourability parkourability = Parkourability.get((PlayerEntity) (Object) this);
 		if (parkourability == null) return;
-		if (parkourability.getCancelMarks().cancelJump()) {
+		if (parkourability.getBehaviorEnforcer().cancelJump()) {
 			ci.cancel();
 		}
 	}
@@ -41,8 +40,17 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 	public void onIsStayingOnGroundSurface(CallbackInfoReturnable<Boolean> cir) {
 		Parkourability parkourability = Parkourability.get((PlayerEntity) (Object) this);
 		if (parkourability == null) return;
-		if (parkourability.getCancelMarks().cancelDescendFromEdge()) {
+		if (parkourability.getBehaviorEnforcer().cancelDescendFromEdge()) {
 			cir.setReturnValue(true);
 		}
 	}
+
+    @Inject(method = "shouldShowName", at = @At("HEAD"), cancellable = true)
+    public void onShouldShowName(CallbackInfoReturnable<Boolean> cir) {
+        Parkourability parkourability = Parkourability.get((PlayerEntity) (Object) this);
+        if (parkourability == null) return;
+        if (parkourability.getBehaviorEnforcer().cancelShowingName()) {
+            cir.setReturnValue(false);
+        }
+    }
 }
