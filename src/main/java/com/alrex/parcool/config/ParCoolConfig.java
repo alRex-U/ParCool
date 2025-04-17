@@ -140,10 +140,6 @@ public class ParCoolConfig {
 					ConfigGroup.Control, "Enable getting off steps while doing dodge",
 					"can_get_off_steps_while_dodge", false
 			),
-			EnableWallJumpBackward(
-					ConfigGroup.Control, "Enable backward Wall-Jump when facing to wall",
-					"enable_wall_jump_backward", false
-			),
 			EnableRollWhenCreative(
 					ConfigGroup.Control, "Enable Roll when creative mode (experimental)",
 					"enable_roll_creative", false
@@ -241,6 +237,10 @@ public class ParCoolConfig {
 		}
 
 		public enum Integers implements Item<Integer> {
+			AcceptableAngleOfWallJump(
+					ConfigGroup.Control, "acceptable walll angle of wall jump : `0` means you exactly opposite to wall, `180` allow you to wall jump for all angle",
+					"acceptable_angle_wall jump", 110, 0, 180
+			),
 			HorizontalOffsetOfStaminaHUD(
 					ConfigGroup.HUD, "horizontal offset of normal HUD",
 					"offset_h_stamina_hud", 3, 0, 100

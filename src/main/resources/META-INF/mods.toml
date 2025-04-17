@@ -34,3 +34,5 @@ side = "BOTH"
 modId = "betterthirdperson"
 mandatory = false
 versionRange = "[1.9.0,)"
+ordering = "NONE"
+side = "BOTH"
