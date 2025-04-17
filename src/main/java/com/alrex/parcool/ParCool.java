@@ -16,6 +16,7 @@ import com.alrex.parcool.common.potion.PotionRecipeRegistry;
 import com.alrex.parcool.common.potion.Potions;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.proxy.ClientProxy;
 import com.alrex.parcool.proxy.CommonProxy;
 import com.alrex.parcool.proxy.ServerProxy;
@@ -90,6 +91,7 @@ public class ParCool {
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {
+		AdditionalMods.init();
 		PotionRecipeRegistry.register();
 	}
 

@@ -12,6 +12,7 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -48,7 +49,49 @@ public class Dodge extends Action {
 	}
 
 	public enum DodgeDirection {
-		Front, Back, Left, Right
+		Front, Back, Left, Right;
+
+		public DodgeDirection inverse() {
+			switch (this) {
+				case Front:
+					return Back;
+				case Back:
+					return Front;
+				case Left:
+					return Right;
+				case Right:
+					return Left;
+			}
+			return Front;
+		}
+
+		public DodgeDirection right() {
+			switch (this) {
+				case Front:
+					return Right;
+				case Right:
+					return Back;
+				case Back:
+					return Left;
+				case Left:
+					return Front;
+			}
+			return Front;
+		}
+
+		public DodgeDirection left() {
+			switch (this) {
+				case Front:
+					return Left;
+				case Left:
+					return Back;
+				case Back:
+					return Right;
+				case Right:
+					return Front;
+			}
+			return Front;
+		}
 	}
 
 	private DodgeDirection dodgeDirection = null;
@@ -96,6 +139,7 @@ public class Dodge extends Action {
 			if (KeyBindings.getKeyRight().isDown()) direction = DodgeDirection.Right;
 		}
 		if (direction == null) return false;
+		direction = AdditionalMods.betterThirdPerson().handleCustomCameraRotationForDodge(direction);
 		startInfo.putInt(direction.ordinal());
 		return (parkourability.getAdditionalProperties().getLandingTick() > 5
 				&& !isInSuccessiveCoolDown(parkourability.getActionInfo())
