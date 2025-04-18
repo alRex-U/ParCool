@@ -140,6 +140,7 @@ public class Dodge extends Action {
 		}
 		if (direction == null) return false;
 		direction = AdditionalMods.betterThirdPerson().handleCustomCameraRotationForDodge(direction);
+		direction = AdditionalMods.shoulderSurfingManager().handleCustomCameraRotationForDodge(direction);
 		startInfo.putInt(direction.ordinal());
 		return (parkourability.getAdditionalProperties().getLandingTick() > 5
 				&& !isInSuccessiveCoolDown(parkourability.getActionInfo())
