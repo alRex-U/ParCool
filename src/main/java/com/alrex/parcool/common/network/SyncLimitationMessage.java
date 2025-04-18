@@ -5,17 +5,22 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ServerLimitation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
+import org.apache.logging.log4j.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.util.function.Supplier;
 
 public class SyncLimitationMessage {
+	private static final Logger log = LoggerFactory.getLogger(SyncLimitationMessage.class);
 	private final ByteBuffer data = ByteBuffer.allocate(512);
 
 	public void encode(PacketBuffer packet) {
@@ -39,9 +44,14 @@ public class SyncLimitationMessage {
 			if (player == null) return;
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
+			logReceived(player);
             parkourability.getActionInfo().setServerLimitation(ServerLimitation.readFrom(data));
 		});
 		contextSupplier.get().setPacketHandled(true);
+	}
+
+	public void logReceived(PlayerEntity player) {
+		ParCool.LOGGER.log(Level.INFO, "Received Server Limitation of [" + player.getGameProfile().getName() + "]");
 	}
 
     public static void sync(ServerPlayerEntity player) {
