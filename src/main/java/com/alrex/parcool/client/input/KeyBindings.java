@@ -18,6 +18,8 @@ public class KeyBindings {
     private static final KeyMapping keyBindEnable = new KeyMapping("key.parcool.Enable", KeyConflictContext.UNIVERSAL, KeyModifier.CONTROL, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.categories.parcool");
 	private static final KeyMapping keyBindCrawl = new KeyMapping("key.parcool.Crawl", GLFW.GLFW_KEY_C, "key.categories.parcool");
 	private static final KeyMapping keyBindGrabWall = new KeyMapping("key.parcool.ClingToCliff", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
+	private static final KeyMapping keyBindClimbUp = new KeyMapping("key.parcool.ClimbUp", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
+	private static final KeyMapping keyBindReleaseWall = new KeyMapping("key.parcool.ReleaseCliff", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
 	private static final KeyMapping keyBindBreakfall = new KeyMapping("key.parcool.Breakfall", GLFW.GLFW_KEY_R, "key.categories.parcool");
 	private static final KeyMapping keyBindFastRunning = new KeyMapping("key.parcool.FastRun", GLFW.GLFW_KEY_LEFT_CONTROL, "key.categories.parcool");
 	private static final KeyMapping keyBindFlipping = new KeyMapping("key.parcool.Flipping", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
@@ -74,6 +76,15 @@ public class KeyBindings {
 		return keyBindGrabWall;
 	}
 
+	public static KeyMapping getKeyClimbUp() {
+		return keyBindClimbUp;
+	}
+
+	public static KeyMapping getKeyReleaseWall() {
+		return keyBindReleaseWall;
+	}
+
+
 	public static KeyMapping getKeyVault() {
 		return keyBindVault;
 	}
@@ -119,6 +130,8 @@ public class KeyBindings {
         event.register(keyBindEnable);
 		event.register(keyBindCrawl);
 		event.register(keyBindGrabWall);
+		event.register(keyBindClimbUp);
+		event.register(keyBindReleaseWall);
 		event.register(keyBindBreakfall);
 		event.register(keyBindFastRunning);
 		event.register(keyBindDodge);
