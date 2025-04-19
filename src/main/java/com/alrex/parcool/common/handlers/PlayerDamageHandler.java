@@ -1,17 +1,32 @@
 package com.alrex.parcool.common.handlers;
 
-import com.alrex.parcool.common.action.impl.BreakfallReady;
-import com.alrex.parcool.common.action.impl.ChargeJump;
-import com.alrex.parcool.common.action.impl.Roll;
-import com.alrex.parcool.common.action.impl.Tap;
+import com.alrex.parcool.common.action.impl.*;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.network.StartBreakfallMessage;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class PlayerFallHandler {
+public class PlayerDamageHandler {
+	@SubscribeEvent
+	public static void onAttack(LivingAttackEvent event) {
+		LivingEntity entity = event.getEntityLiving();
+		if (entity instanceof PlayerEntity) {
+			PlayerEntity player = (PlayerEntity) entity;
+			Parkourability parkourability = Parkourability.get(player);
+			if (parkourability == null) return;
+			Dodge dodge = parkourability.get(Dodge.class);
+			if (dodge.isDoing()) {
+				if (event.getSource().isBypassArmor()) return;
+				if (dodge.getDoingTick() <= 10) {
+					event.setCanceled(true);
+				}
+			}
+		}
+	}
 	@SubscribeEvent
 	public static void onFall(LivingFallEvent event) {
 		if (event.getEntity() instanceof ServerPlayerEntity) {

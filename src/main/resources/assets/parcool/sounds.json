@@ -44,7 +44,7 @@
     "sounds": [
       {
         "name": "parcool:landing",
-        "volume": 0.55,
+        "volume": 0.40,
         "pitch": 0.7
       }
     ]
@@ -54,7 +54,7 @@
     "sounds": [
       {
         "name": "parcool:landing",
-        "volume": 0.55,
+        "volume": 0.40,
         "pitch": 0.7
       }
     ]

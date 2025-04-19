@@ -12,7 +12,7 @@ public class EventBusForgeRegistry {
 		bus.register(LogoutHandler.class);
 		bus.register(PlayerJumpHandler.class);
 		bus.register(PlayerVisibilityHandler.class);
-		bus.register(PlayerFallHandler.class);
+		bus.register(PlayerDamageHandler.class);
 		bus.register(PlayerCloneHandler.class);
 		bus.register(new ActionProcessor());
 	}
