@@ -529,7 +529,10 @@ public class ParCoolConfig {
 					ConfigGroup.Control, "Allow disabling cooldown of wall jump",
 					"allow_disabling_wall_jump_cooldown", true, true
 			),
-			;
+			DodgeProvideInvulnerableFrame(
+					ConfigGroup.Other, "Enable invulnerable time by Dodge",
+					"enable_dodge_invulnerable_time", true, true
+			);
 			public final ConfigGroup Group;
 			@Nullable
 			public final String Comment;

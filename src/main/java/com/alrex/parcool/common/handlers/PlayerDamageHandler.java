@@ -3,6 +3,7 @@ package com.alrex.parcool.common.handlers;
 import com.alrex.parcool.common.action.impl.*;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.network.StartBreakfallMessage;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -20,6 +21,8 @@ public class PlayerDamageHandler {
 			if (parkourability == null) return;
 			Dodge dodge = parkourability.get(Dodge.class);
 			if (dodge.isDoing()) {
+				if (!parkourability.getServerLimitation().get(ParCoolConfig.Server.Booleans.DodgeProvideInvulnerableFrame))
+					return;
 				if (event.getSource().isBypassArmor()) return;
 				if (dodge.getDoingTick() <= 10) {
 					event.setCanceled(true);
