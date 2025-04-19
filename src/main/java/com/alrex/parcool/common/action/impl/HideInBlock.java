@@ -80,12 +80,19 @@ public class HideInBlock extends Action {
                 int maxZ = Math.max(hideArea.getA().getZ(), hideArea.getB().getZ());
                 hideArea = new Tuple<>(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ));
             }
-            if ((hideArea.getB().getY() - hideArea.getA().getY() + 1) > player.getBbHeight()) return false;
-            boolean zLonger = Math.abs(hideArea.getA().getZ() - hideArea.getB().getZ()) > Math.abs(hideArea.getA().getX() - hideArea.getB().getX());
-            Vector3d direction = zLonger ?
-                    new Vector3d(0, 0, player.getLookAngle().z() > 0 ? 1 : -1) :
-                    new Vector3d(player.getLookAngle().x() > 0 ? 1 : -1, 0, 0);
+            Vector3d direction;
             boolean stand = player.getBbHeight() < (hideArea.getB().getY() - hideArea.getA().getY() + 1);
+            if (stand) {
+                Vector3d lookAngle = player.getLookAngle();
+                direction = Math.abs(lookAngle.x()) > Math.abs(lookAngle.z()) ?
+                        new Vector3d(lookAngle.x() > 0 ? 1 : -1, 0, 0) :
+                        new Vector3d(0, 0, lookAngle.z() > 0 ? 1 : -1);
+            } else {
+                boolean zLonger = Math.abs(hideArea.getA().getZ() - hideArea.getB().getZ()) > Math.abs(hideArea.getA().getX() - hideArea.getB().getX());
+                direction = zLonger ?
+                        new Vector3d(0, 0, player.getLookAngle().z() > 0 ? 1 : -1) :
+                        new Vector3d(player.getLookAngle().x() > 0 ? 1 : -1, 0, 0);
+            }
             BufferUtil.wrap(startInfo)
                     .putBoolean(stand)
                     .putBlockPos(hideArea.getA())
