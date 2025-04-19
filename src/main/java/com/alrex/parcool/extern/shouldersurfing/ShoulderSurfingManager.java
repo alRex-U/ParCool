@@ -16,6 +16,7 @@ public class ShoulderSurfingManager extends ModManager {
     public Dodge.DodgeDirection handleCustomCameraRotationForDodge(Dodge.DodgeDirection direction) {
         if (!isInstalled()) return direction;
         if (!Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
+            if (!ShoulderSurfing.getInstance().isShoulderSurfing()) return direction;
             ClientPlayerEntity player = Minecraft.getInstance().player;
             if (player == null) return direction;
             IShoulderSurfingCamera camera = ShoulderSurfing.getInstance().getCamera();
