@@ -65,7 +65,7 @@ public class ParCoolConfig {
 					"infinite_stamina", false
 			),
 			InfiniteStaminaWhenCreative(
-					ConfigGroup.Stamina, "Infinite Stamina while player is cretive mode",
+					ConfigGroup.Stamina, "Infinite Stamina while player is creative mode",
 					"infinite_stamina_if_creative_mode", true
 			),
 			EnableAnimation(
@@ -180,6 +180,7 @@ public class ParCoolConfig {
 			@Nullable
 			public final String Comment;
 			public final String Path;
+			public final String Translation;
 			public final boolean DefaultValue;
 			@Nullable
 			private ForgeConfigSpec.BooleanValue configInstance = null;
@@ -194,6 +195,7 @@ public class ParCoolConfig {
 				Comment = comment;
 				Path = path;
 				DefaultValue = defaultValue;
+				Translation = "parcool.config.c." + path;
 			}
 
 			@Override
@@ -206,6 +208,7 @@ public class ParCoolConfig {
 				if (Comment != null) {
 					builder.comment(Comment);
 				}
+				builder.translation(Translation);
 				configInstance = builder.define(Path, DefaultValue);
 			}
 
@@ -239,7 +242,7 @@ public class ParCoolConfig {
 		public enum Integers implements Item<Integer> {
 			AcceptableAngleOfWallJump(
 					ConfigGroup.Control, "acceptable walll angle of wall jump : `0` means you exactly opposite to wall, `180` allow you to wall jump for all angle",
-					"acceptable_angle_wall jump", 110, 0, 180
+					"acceptable_angle_wall_jump", 110, 0, 180
 			),
 			HorizontalOffsetOfStaminaHUD(
 					ConfigGroup.HUD, "horizontal offset of normal HUD",
@@ -282,6 +285,7 @@ public class ParCoolConfig {
 			public final String Comment;
 			public final String Path;
 			public final int DefaultValue;
+			public final String Translation;
 			public final int Min;
 			public final int Max;
 			@Nullable
@@ -301,6 +305,7 @@ public class ParCoolConfig {
 				DefaultValue = defaultValue;
 				Min = min;
 				Max = max;
+				Translation = "parcool.config.c." + path;
 			}
 
 			@Override
@@ -312,6 +317,7 @@ public class ParCoolConfig {
 				if (Comment != null) {
 					builder.comment(Comment);
 				}
+				builder.translation(Translation);
 				configInstance = builder.defineInRange(Path, DefaultValue, Min, Max);
 			}
 
@@ -361,6 +367,7 @@ public class ParCoolConfig {
 			public final String Comment;
 			public final String Path;
 			public final double DefaultValue;
+			public final String Translation;
 			public final double Min;
 			public final double Max;
 			@Nullable
@@ -380,6 +387,7 @@ public class ParCoolConfig {
 				DefaultValue = defaultValue;
 				Min = min;
 				Max = max;
+				Translation = "parcool.config.c." + path;
 			}
 
 			@Override
@@ -391,6 +399,7 @@ public class ParCoolConfig {
 				if (Comment != null) {
 					builder.comment(Comment);
 				}
+				builder.translation(Translation);
 				configInstance = builder.defineInRange(Path, DefaultValue, Min, Max);
 			}
 
@@ -497,10 +506,11 @@ public class ParCoolConfig {
 				register(builder, ConfigGroup.Other);
 			}
 			builder.pop();
-			builder.comment("Stamina_Section").push("Stamina");
+			builder.push("Stamina");
 			{
 				StaminaType = builder.defineEnum("used_stamina", IStamina.Type.Default);
 				builder.comment("Caution : Max stamina and stamina recovery config is removed because they became attributes.");
+				register(builder, ConfigGroup.Stamina);
 				builder.push("Consumption");
 				{
 					for (int i = 0; i < ActionList.ACTIONS.size(); i++) {
@@ -512,7 +522,7 @@ public class ParCoolConfig {
 						);
 					}
 				}
-				register(builder, ConfigGroup.Stamina);
+				builder.pop();
 			}
 			builder.pop();
 			BUILT_CONFIG = builder.build();
