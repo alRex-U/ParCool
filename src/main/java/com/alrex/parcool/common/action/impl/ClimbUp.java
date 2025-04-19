@@ -2,6 +2,7 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.ClimbUpAnimator;
+import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
@@ -9,6 +10,8 @@ import com.alrex.parcool.client.animation.Animation;
 
 import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
+
+import net.minecraft.client.KeyMapping;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -24,7 +27,13 @@ public class ClimbUp extends Action {
 		return cling.isDoing()
 				&& cling.getDoingTick() > 2
 				&& cling.getFacingDirection() == ClingToCliff.FacingDirection.ToWall
-				&& KeyRecorder.keyJumpState.isPressed();
+				&& isClimbUpPressed();
+	}
+
+	private boolean isClimbUpPressed() {
+		KeyMapping keyClimbUp = KeyBindings.getKeyClimbUp();
+		return keyClimbUp.isDown()
+		 || (keyClimbUp.isUnbound() && KeyRecorder.keyJumpState.isPressed());
 	}
 
 	@OnlyIn(Dist.CLIENT)
