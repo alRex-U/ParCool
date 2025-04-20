@@ -82,7 +82,7 @@
   "parcool.gui.text.action": "动作",
   "parcool.gui.text.actionName": "动作名称",
   "parcool.gui.text.config": "配置",
-  "parcool.gui.text.limitation": "限制条件",
+  "parcool.gui.text.limitation": "限制规则",
   "parcool.gui.text.globalPermission": "全局权限",
   "parcool.gui.text.individualPermission": "个人权限",
   "parcool.gui.text.zipline.color": "滑索颜色",
