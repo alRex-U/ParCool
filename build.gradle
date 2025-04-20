@@ -20,6 +20,12 @@ tasks.named('wrapper', Wrapper).configure {
 version = "${mc_version}-${mod_version}-NF"
 group = 'com.alrex'
 repositories {
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
     mavenLocal()
 }
 base {
@@ -39,6 +45,9 @@ neoForge {
         client {
             client()
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            dependencies {
+                compileOnly("curse.maven:shoulder-surfing-reloaded-243190:6043496")
+            }
         }
 
         server {

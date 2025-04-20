@@ -38,3 +38,10 @@ type = "required"
 versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.parcool]]
+modId = "shouldersurfing"
+type="optional"
+versionRange = "[1.21-4.3.0,)"
+ordering = "NONE"
+side = "CLIENT"
