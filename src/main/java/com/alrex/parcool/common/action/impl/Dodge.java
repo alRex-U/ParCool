@@ -83,18 +83,27 @@ public class Dodge extends Action {
 		boolean enabledDoubleTap = ParCoolConfig.Client.Booleans.EnableDoubleTappingForDodge.get();
 		DodgeDirection direction = null;
 		if (enabledDoubleTap) {
+			if (ShoulderSurfingCompat.isCameraDecoupled() && KeyRecorder.keyForward.isDoubleTapped()) direction = DodgeDirection.Front;
 			if (KeyRecorder.keyBack.isDoubleTapped()) direction = DodgeDirection.Back;
 			if (KeyRecorder.keyLeft.isDoubleTapped()) direction = DodgeDirection.Left;
 			if (KeyRecorder.keyRight.isDoubleTapped()) direction = DodgeDirection.Right;
 		}
+		var decoupledCameraTrigger = false;
 		if (direction == null && KeyRecorder.keyDodge.isPressed()) {
-			if (KeyBindings.getKeyForward().isDown() || ShoulderSurfingCompat.isCameraDecoupled()) direction = DodgeDirection.Front;
+			if (ShoulderSurfingCompat.isCameraDecoupled()) {
+				direction = DodgeDirection.Back;
+				decoupledCameraTrigger = true;
+			} else if (KeyBindings.getKeyForward().isDown()) direction = DodgeDirection.Front;
 			else if (KeyBindings.getKeyBack().isDown()) direction = DodgeDirection.Back;
 			else if (KeyBindings.getKeyLeft().isDown()) direction = DodgeDirection.Left;
 			else if (KeyBindings.getKeyRight().isDown()) direction = DodgeDirection.Right;
 		}
 		if (direction == null) return false;
+		if (!decoupledCameraTrigger) {
+			direction = ShoulderSurfingCompat.handleCustomCameraRotationForDodge(direction);
+		}
 		startInfo.putInt(direction.ordinal());
+		startInfo.putInt(decoupledCameraTrigger ? 1 : 0);
 		return (parkourability.getAdditionalProperties().getLandingTick() > 5
 				&& !isInSuccessiveCoolDown(parkourability.getActionInfo())
 				&& coolTime <= 0
@@ -123,6 +132,7 @@ public class Dodge extends Action {
 	@Override
     public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		dodgeDirection = DodgeDirection.values()[startData.getInt()];
+		var decoupledCameraTrigger = startData.getInt() == 1;
 		coolTime = getMaxCoolTime(parkourability.getActionInfo());
 		if (successivelyCount < getMaxSuccessiveDodge(parkourability.getActionInfo())) {
 			successivelyCount++;
@@ -133,7 +143,7 @@ public class Dodge extends Action {
 
 		if (!player.onGround()) return;
 		Vec3 dodgeVec;
-		if (ShoulderSurfingCompat.isCameraDecoupled()) {
+		if (!decoupledCameraTrigger && ShoulderSurfingCompat.isCameraDecoupled()) {
 			dodgeVec = EntityUtil.GetCameraLookAngle();
 		} else {
 			dodgeVec = VectorUtil.fromYawDegree(player.getYHeadRot());
