@@ -10,7 +10,9 @@ import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.utilities.EntityUtil;
 import com.alrex.parcool.utilities.VectorUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -86,10 +88,10 @@ public class Dodge extends Action {
 			if (KeyRecorder.keyRight.isDoubleTapped()) direction = DodgeDirection.Right;
 		}
 		if (direction == null && KeyRecorder.keyDodge.isPressed()) {
-			if (KeyBindings.getKeyBack().isDown()) direction = DodgeDirection.Back;
-			if (KeyBindings.getKeyForward().isDown()) direction = DodgeDirection.Front;
-			if (KeyBindings.getKeyLeft().isDown()) direction = DodgeDirection.Left;
-			if (KeyBindings.getKeyRight().isDown()) direction = DodgeDirection.Right;
+			if (KeyBindings.isKeyBackDown()) direction = DodgeDirection.Back;
+			if (KeyBindings.isKeyForwardDown()) direction = DodgeDirection.Front;
+			if (KeyBindings.isKeyLeftDown()) direction = DodgeDirection.Left;
+			if (KeyBindings.isKeyRightDown()) direction = DodgeDirection.Right;
 		}
 		if (direction == null) return false;
 		startInfo.putInt(direction.ordinal());

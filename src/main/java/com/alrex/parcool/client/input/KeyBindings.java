@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -14,6 +15,7 @@ import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public class KeyBindings {
+	private static final Minecraft mc = Minecraft.getInstance();
 	private static final Options settings = Minecraft.getInstance().options;
     private static final KeyMapping keyBindEnable = new KeyMapping("key.parcool.Enable", KeyConflictContext.UNIVERSAL, KeyModifier.CONTROL, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.categories.parcool");
 	private static final KeyMapping keyBindCrawl = new KeyMapping("key.parcool.Crawl", GLFW.GLFW_KEY_C, "key.categories.parcool");
@@ -42,20 +44,36 @@ public class KeyBindings {
 		return settings.keyShift;
 	}
 
-	public static KeyMapping getKeyLeft() {
-		return settings.keyLeft;
+	public static Boolean isAnyMovingKeyDown() {
+		if (mc.player == null) return false;
+		return mc.player.input.left
+			|| mc.player.input.right
+			|| mc.player.input.forwardImpulse != 0
+			|| mc.player.input.leftImpulse != 0;
 	}
 
-	public static KeyMapping getKeyRight() {
-		return settings.keyRight;
+	public static Boolean isLeftAndRightDown() {
+		return isKeyLeftDown() && isKeyRightDown();
 	}
 
-	public static KeyMapping getKeyForward() {
-		return settings.keyUp;
+	public static Boolean isKeyLeftDown() {
+		if (mc.player == null) return false;
+		return mc.player.input.left;
 	}
 
-	public static KeyMapping getKeyBack() {
-		return settings.keyDown;
+	public static Boolean isKeyRightDown() {
+		if (mc.player == null) return false;
+		return mc.player.input.right;
+	}
+
+	public static Boolean isKeyForwardDown() {
+		if (mc.player == null) return false;
+		return mc.player.input.forwardImpulse > 0;
+	}
+
+	public static Boolean isKeyBackDown() {
+		if (mc.player == null) return false;
+		return mc.player.input.forwardImpulse < 0;
 	}
 
     public static KeyMapping getKeyBindEnable() {

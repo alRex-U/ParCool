@@ -7,6 +7,7 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.utilities.EntityUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -27,7 +28,7 @@ public class Roll extends Action {
 	public void onClientTick(Player player, Parkourability parkourability) {
 		if (player.isLocalPlayer()) {
 			if (KeyBindings.getKeyBreakfall().isDown()
-					&& KeyBindings.getKeyForward().isDown()
+					&& EntityUtil.isMoving(player)
 					&& !parkourability.get(Dodge.class).isDoing()
                     && !parkourability.get(Crawl.class).isDoing()
                     && !player.isVisuallyCrawling()

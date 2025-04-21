@@ -8,6 +8,8 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.attachment.Attachments;
 import com.alrex.parcool.common.stamina.LocalStamina;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.utilities.EntityUtil;
+
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.player.Player;
@@ -41,7 +43,7 @@ public class BreakfallReady extends Action {
             playSound = true;
 
         var stamina = LocalStamina.get();
-		if (((KeyBindings.getKeyForward().isDown() || KeyBindings.getKeyBack().isDown() || KeyBindings.getKeyLeft().isDown() || KeyBindings.getKeyRight().isDown())
+		if ((EntityUtil.isMoving(player)
 				&& parkourability.getActionInfo().can(Roll.class))
 				|| !parkourability.getActionInfo().can(Tap.class)
 		) {

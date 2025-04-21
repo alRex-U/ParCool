@@ -8,6 +8,8 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.utilities.EntityUtil;
+
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
@@ -25,18 +27,20 @@ public class Crawl extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
-		return ((ParCoolConfig.Client.CrawlControl.get() == ControlType.PressKey && KeyRecorder.keyCrawlState.isPressed())
-				|| (ParCoolConfig.Client.CrawlControl.get() == ControlType.Toggle && toggleStatus))
-				&& !parkourability.get(Roll.class).isDoing()
-				&& !parkourability.get(Tap.class).isDoing()
-				&& !parkourability.get(ClingToCliff.class).isDoing()
-				&& !parkourability.get(Dive.class).isDoing()
+		return isActionInvoked(player)
+				&& !parkourability.isDoingAny(Roll.class, Tap.class, ClingToCliff.class, Dive.class)
 				&& parkourability.get(Vault.class).getNotDoingTick() >= 8
 				&& player.getVehicle() == null
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
 				&& !player.onClimbable()
 				&& (player.onGround() || ParCoolConfig.Client.Booleans.EnableCrawlInAir.get());
+	}
+
+	private boolean isActionInvoked(Player player) {
+		return ((ParCoolConfig.Client.CrawlControl.get() == ControlType.PressKey && KeyRecorder.keyCrawlState.isPressed())
+				|| (ParCoolConfig.Client.CrawlControl.get() == ControlType.Toggle && toggleStatus))
+				&& (!KeyRecorder.keyDodge.isPressed() || !KeyBindings.isAnyMovingKeyDown());
 	}
 
 	public void onClientTick(Player player, Parkourability parkourability) {
