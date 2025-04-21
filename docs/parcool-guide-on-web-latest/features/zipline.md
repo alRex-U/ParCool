@@ -46,8 +46,6 @@ Did you place hooks? Then next let's craft **Zipline Rope**.
 
 This item is possible to change color freely by being crafted with dye items.
 
-![rope dyeing recipe](../resources/recipes/zipline_rope_dye.png)
-
 #### Changing rope tension
 
 Use the item while sneaking to change rope tension.
