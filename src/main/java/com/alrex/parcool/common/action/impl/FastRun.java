@@ -9,6 +9,7 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.AdditionalProperties;
 import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
+import com.alrex.parcool.common.compat.shoulderSurfing.ShoulderSurfingCompat;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.resources.ResourceLocation;
@@ -107,8 +108,15 @@ public class FastRun extends Action {
 	}
 
 	@Override
+	public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
+		super.onStartInLocalClient(player, parkourability, startData);
+		ShoulderSurfingCompat.forceCoupledCamera();
+	}
+
+	@Override
 	public void onStopInLocalClient(Player player) {
 		Parkourability parkourability = Parkourability.get(player);
+		ShoulderSurfingCompat.releaseCoupledCamera();
 		if (parkourability == null) return;
 		lastDashTick = getDashTick(parkourability.getAdditionalProperties());
 	}
