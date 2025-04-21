@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 /**
  * Compatibility class for the "Should Surfing" mod
  */
-public class ShouldSurfingCompat {
+public class ShoulderSurfingCompat {
     private static Boolean isCameraDecoupled = false;
     private static boolean isLoaded = false;
     private static Object configClient = null;
@@ -22,16 +22,25 @@ public class ShouldSurfingCompat {
         }
     }
 
+    public static Boolean isCameraDecoupled() {
+        if (!isLoaded) return false;
+        return Config.CLIENT.isCameraDecoupled();
+    }
+
     public static void forceCoupledCamera() {
         if (!isLoaded) return;
-        ShouldSurfingCompat.isCameraDecoupled = Config.CLIENT.isCameraDecoupled();
-        if (isCameraDecoupled) Config.CLIENT.toggleCameraCoupling();
+        ShoulderSurfingCompat.isCameraDecoupled = Config.CLIENT.isCameraDecoupled();
+        if (isCameraDecoupled) {
+            Config.CLIENT.toggleCameraCoupling();
+            org.apache.logging.log4j.LogManager.getLogger("ParCool").info("coupling camera");
+        }
     }
 
     public static void releaseCoupledCamera() {
         if (!isLoaded) return;
         if (isCameraDecoupled && !Config.CLIENT.isCameraDecoupled()) {
             Config.CLIENT.toggleCameraCoupling();
+            org.apache.logging.log4j.LogManager.getLogger("ParCool").info("decoupling camera");
             isCameraDecoupled = false;
         }
     }

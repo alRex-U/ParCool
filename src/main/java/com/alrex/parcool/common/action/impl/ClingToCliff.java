@@ -7,7 +7,7 @@ import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-import com.alrex.parcool.common.compat.shoulderSurfing.ShouldSurfingCompat;
+import com.alrex.parcool.common.compat.shoulderSurfing.ShoulderSurfingCompat;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
@@ -78,7 +78,7 @@ public class ClingToCliff extends Action {
 		clingWallDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
 		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
-		ShouldSurfingCompat.forceCoupledCamera();
+		ShoulderSurfingCompat.forceCoupledCamera();
 		if (!KeyBindings.getKeyGrabWall().getKey().equals(KeyBindings.getKeySneak().getKey())) {
 			parkourability.getCancelMarks().addMarkerCancellingSneak(this::isDoing);
 		}
@@ -91,7 +91,7 @@ public class ClingToCliff extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStopInLocalClient(Player player) {
-		ShouldSurfingCompat.releaseCoupledCamera();
+		ShoulderSurfingCompat.releaseCoupledCamera();
 	}
 
 	@Override
