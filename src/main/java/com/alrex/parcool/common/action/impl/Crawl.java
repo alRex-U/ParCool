@@ -8,13 +8,10 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.utilities.EntityUtil;
-
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-
 import java.nio.ByteBuffer;
 
 public class Crawl extends Action {
@@ -40,7 +37,7 @@ public class Crawl extends Action {
 	private boolean isActionInvoked(Player player) {
 		return ((ParCoolConfig.Client.CrawlControl.get() == ControlType.PressKey && KeyRecorder.keyCrawlState.isPressed())
 				|| (ParCoolConfig.Client.CrawlControl.get() == ControlType.Toggle && toggleStatus))
-				&& (!KeyRecorder.keyDodge.isPressed() || !KeyBindings.isAnyMovingKeyDown());
+				&& (!KeyRecorder.keyDodge.isPressed() || player.isCrouching());
 	}
 
 	public void onClientTick(Player player, Parkourability parkourability) {
