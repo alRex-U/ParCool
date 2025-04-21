@@ -29,6 +29,7 @@ import java.nio.ByteBuffer;
 
 public class HideInBlock extends Action {
     private static final BehaviorEnforcer.ID ID_SHOW_NAME = BehaviorEnforcer.newID();
+    private static final BehaviorEnforcer.ID ID_SNEAK = BehaviorEnforcer.newID();
     @Nullable
     Vector3d hidingPoint = null;
     @Nullable
@@ -56,7 +57,7 @@ public class HideInBlock extends Action {
                 || !KeyBindings.getKeyBindHideInBlock().isDown()
                 || getNotDoingTick() < 6
                 || player.hurtTime > 0
-                || player.getPose() != Pose.STANDING
+                || player.getPose() != Pose.CROUCHING
         ) {
             return false;
         }
@@ -110,7 +111,9 @@ public class HideInBlock extends Action {
         if (hidingBlockChanged) {
             return hidingBlockChanged = false;
         }
-        return player.hurtTime <= 0 && player.getPose() == Pose.STANDING && (getDoingTick() < 6 || KeyBindings.getKeyBindHideInBlock().isDown());
+        return player.hurtTime <= 0
+                && player.getPose() == Pose.STANDING
+                && (getDoingTick() < 6 || KeyBindings.getKeyBindHideInBlock().isDown() || KeyBindings.getKeySneak().isDown());
     }
 
     @Override
@@ -128,6 +131,8 @@ public class HideInBlock extends Action {
                     return hidingPoint;
                 }
         );
+        parkourability.getBehaviorEnforcer().addMarkerCancellingSneak(ID_SNEAK, this::isDoing);
+        player.setPose(Pose.STANDING);
         player.noPhysics = true;
         player.playSound(player.level.getBlockState(new BlockPos(hidingPoint.add(0, 0.2, 0))).getSoundType().getBreakSound(), 1, 1);
     }
@@ -165,6 +170,7 @@ public class HideInBlock extends Action {
         player.setDeltaMovement(Vector3d.ZERO);
         player.noPhysics = true;
         player.setSprinting(false);
+        player.setPose(Pose.STANDING);
     }
 
     @Override

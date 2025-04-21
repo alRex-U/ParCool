@@ -5,7 +5,7 @@
 Limitation is a feature for setting limit of players parkour skills.
 
 This document is only for versions newer than v3.2.1.0.
-If you want to see old document, please read [this](../../parcool-gude-on-web-v3.1.0.0/for_developer/limitations.md).
+If you want to see old document, please read [this](../../parcool-guide-on-web-v3.1.0.0/for_developer/limitations.md).
 
 ---
 
@@ -16,6 +16,8 @@ There are three types of limitations.
 1. **Server-wide Limitations**
 2. **Individual Limitations**
 3. **Custom Limitations**
+
+When more than 2 limitations are enabled, most disadvantageous limit is applied for each items.
 
 ## Caution
 
@@ -42,6 +44,9 @@ If your limitation id is `youprojectname:example`
 ```text
 parcool limitations enable yourprojectname:example of <players>
 ```
+
+You have to do nothing such as registration or else before using new Limitation ID.
+Just use names you want.
 
 ---
 
