@@ -15,6 +15,13 @@
       ]
     },
     {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/cling_to_cliff_2.png"
+      ]
+    },
+    {
       "type": "patchouli:text",
       "title": "How to Use",
       "text": "$(list) Press Cling-To-Cliff Key($(k:parcool.ClingToCliff)) by a wall$(br)"
