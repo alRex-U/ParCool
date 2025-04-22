@@ -5,7 +5,14 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "ParCool adds a special animation of jump: Flipping. You can do front-flip and back-flip."
+      "text": "ParCool adds a special animation of jump: $(bold)Flipping$().$(br2) You can do front-flip and back-flip."
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/flipping_2.png"
+      ]
     },
     {
       "type": "patchouli:text",

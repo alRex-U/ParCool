@@ -1,6 +1,6 @@
 {
   "name": "parcool.patchouli.guide.name",
-  "version": "1",
+  "subtitle": "Version 3.4.x.x",
   "landing_text": "parcool.patchouli.guide.landingText",
   "show_progress": "false",
   "pause_game": "true",

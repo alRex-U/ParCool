@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "This mod adds a concept of Stamina to game.$(br2)Stamina is consumed when you do ParCool moves. When you run out of stamina, penalty is imposed on you.$(list)You cannot run.$(list)You cannot do ParCool actions.$(br)Please be careful."
+      "text": "This mod adds a concept of Stamina to game.$(br2)Stamina is consumed when you do ParCool moves. When you run out of stamina, penalty is imposed on you.$(list)Disable to sprint and be slow down$(list)Disable most of ParCool actions$(br)Please be careful."
     }
   ]
 }

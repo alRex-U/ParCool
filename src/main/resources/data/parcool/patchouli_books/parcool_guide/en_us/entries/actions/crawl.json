@@ -5,7 +5,14 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "You can crawl everywhere and go through narrow course.$(br)You should check also $(l:parcool:actions/slide)Slide$()."
+      "text": "You can crawl everywhere and go through narrow course.$(br)Please check also $(l:parcool:actions/slide)Slide$()."
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/crawl.png"
+      ]
     },
     {
       "type": "patchouli:text",

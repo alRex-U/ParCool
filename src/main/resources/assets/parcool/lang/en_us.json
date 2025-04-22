@@ -15,7 +15,7 @@
   "block.parcool.wooden_zipline_hook": "Wooden Zipline Hook",
   "block.parcool.iron_zipline_hook": "Iron Zipline Hook",
   "parcool.patchouli.guide.name": "ParCool Guide",
-  "parcool.patchouli.guide.landingText": "This is $(9)ParCool$()'s Tutorials Book! I recommend reading this first.",
+  "parcool.patchouli.guide.landingText": "This is $(9)ParCool$()'s Tutorials Book!$(br)I recommend reading this first.$(br2) Also more detailed $(l:https://github.com/alRex-U/ParCool/blob/main/docs/parcool-guide-on-web-latest/introduction.md)ParCool Guide$() is available on web!",
   "parcool.patchouli.guide.category.about": "About",
   "parcool.patchouli.guide.entry.aboutParCool": "About",
   "parcool.patchouli.guide.entry.credit": "Credit",
