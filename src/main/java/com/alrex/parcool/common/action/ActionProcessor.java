@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
@@ -10,6 +11,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
@@ -17,6 +20,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import org.apache.logging.log4j.Level;
 
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -54,6 +58,20 @@ public class ActionProcessor {
 		List<Action> actions = parkourability.getList();
 		boolean needSync = event.side == LogicalSide.CLIENT && player.isLocalPlayer();
 		SyncActionStateMessage.Encoder builder = SyncActionStateMessage.Encoder.reset();
+
+		if (needSync && player.tickCount > 100 && player.tickCount % 150 == 0 && parkourability.limitationIsNotSynced()) {
+			if (player instanceof ClientPlayerEntity) {
+				int trialCount = parkourability.getSynchronizeTrialCount();
+				if (trialCount < 5) {
+					parkourability.trySyncLimitation((ClientPlayerEntity) player);
+					player.displayClientMessage(new TranslationTextComponent("parcool.message.error.limitation.not_synced"), false);
+					ParCool.LOGGER.log(Level.WARN, "Detected ParCool Limitation is not synced. Sending synchronization request...");
+				} else if (trialCount == 5) {
+					player.displayClientMessage(new TranslationTextComponent("parcool.message.error.limitation.not_synced").withStyle(TextFormatting.DARK_RED), false);
+					ParCool.LOGGER.log(Level.ERROR, "Failed to synchronize ParCool Limitation. Please report to developer");
+				}
+			}
+		}
 
 		parkourability.getAdditionalProperties().onTick(player, parkourability);
 		for (Action action : actions) {
@@ -148,7 +166,7 @@ public class ActionProcessor {
 			SyncActionStateMessage.sync(player, builder);
 
 			staminaSyncCoolTimeTick++;
-			if (staminaSyncCoolTimeTick > 5 || stamina.wantToConsumeOnServer()) {
+			if (!parkourability.limitationIsNotSynced() && (staminaSyncCoolTimeTick > 3 || stamina.wantToConsumeOnServer())) {
 				staminaSyncCoolTimeTick = 0;
 				SyncStaminaMessage.sync(player);
 			}

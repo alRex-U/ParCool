@@ -5,13 +5,13 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "You can do wall-running horizontally. But if wall is slippery, you cannot do this.$(br)Sometimes misunderstood, but the technique of $(italic)Wall Run$() is vertical one, not horizontal."
+      "text": "You can run horizontally sticking to wall. This should help you to jump to a distance platform.$(br2)Although Sometimes misunderstood, the technique of $(l:actions/wall_run)Wall Run$() is vertical one, not horizontal."
     },
     {
       "type": "patchouli:image",
       "border": "true",
       "images": [
-        "parcool:textures/gui/entries/image_wall_run.png"
+        "parcool:textures/gui/entries/horizontal_wall_run.png"
       ]
     },
     {

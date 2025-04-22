@@ -65,6 +65,14 @@ public class Easing {
 		return this;
 	}
 
+	public Easing noChange(float start, float until, float value) {
+		if (calculated) return this;
+		if (!isInRange(start, until)) return this;
+		result = value;
+		calculated = true;
+		return this;
+	}
+
 	public float get() {
 		if (calculated) {
 			return result;

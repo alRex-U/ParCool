@@ -60,7 +60,7 @@ public class VerticalWallRun extends Action {
 			wall = wall.normalize();
 			if (wall.dot(VectorUtil.fromYawDegree(player.getYHeadRot())) > 0.93) {
 				double height = WorldUtil.getWallHeight(player, wall, player.getBbHeight() * 2.2, 0.2);
-				if (height > 2.3) {
+				if (height > player.getBbHeight() * 1.3) {
 					BlockPos targetBlock = new BlockPos(
 							player.getX() + wall.x(),
 							player.getBoundingBox().minY + player.getBbHeight() * 0.5,

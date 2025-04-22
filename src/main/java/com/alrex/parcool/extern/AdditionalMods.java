@@ -1,12 +1,14 @@
 package com.alrex.parcool.extern;
 
 import com.alrex.parcool.extern.betterthirdperson.BetterThirdPersonManager;
+import com.alrex.parcool.extern.shouldersurfing.ShoulderSurfingManager;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
 
 public enum AdditionalMods {
-    BETTER_THIRD_PERSON(BetterThirdPersonManager::new);
+    BETTER_THIRD_PERSON(BetterThirdPersonManager::new),
+    SHOULDER_SURFING(ShoulderSurfingManager::new);
     private final ModManager manager;
 
     AdditionalMods(Supplier<ModManager> supplier) {
@@ -15,6 +17,10 @@ public enum AdditionalMods {
 
     public static BetterThirdPersonManager betterThirdPerson() {
         return (BetterThirdPersonManager) BETTER_THIRD_PERSON.manager;
+    }
+
+    public static ShoulderSurfingManager shoulderSurfingManager() {
+        return (ShoulderSurfingManager) SHOULDER_SURFING.manager;
     }
 
     public ModManager get() {

@@ -1,9 +1,10 @@
 package com.alrex.parcool.server.limitation;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ServerLimitation;
-import com.alrex.parcool.common.network.SyncLimitationMessage;
+import com.alrex.parcool.common.network.SyncServerInfoMessage;
 import com.alrex.parcool.utilities.ServerUtil;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -83,7 +84,19 @@ public class Limitations {
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability == null) return;
         parkourability.getActionInfo().setServerLimitation(ServerLimitation.get(player));
-        SyncLimitationMessage.sync(player);
+        IStamina stamina = IStamina.get(player);
+        if (stamina == null) {
+            SyncServerInfoMessage.sync(player);
+        } else {
+            SyncServerInfoMessage.syncWithStamina(player, stamina);
+        }
+    }
+
+    public static void updateOnlyLimitation(ServerPlayerEntity player) {
+        Parkourability parkourability = Parkourability.get(player);
+        if (parkourability == null) return;
+        parkourability.getActionInfo().setServerLimitation(ServerLimitation.get(player));
+        SyncServerInfoMessage.sync(player);
     }
 
     public static SortedMap<Limitation.ID, Limitation> load(UUID playerID) {

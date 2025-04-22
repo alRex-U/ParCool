@@ -41,4 +41,18 @@ public abstract class EntityMixin extends CapabilityProvider<Entity> {
             return;
         }
     }
+
+    @Inject(method = "isInWall", at = @At("HEAD"), cancellable = true)
+    public void onIsInWall(CallbackInfoReturnable<Boolean> cir) {
+        if (!(((Object) this) instanceof PlayerEntity)) {
+            return;
+        }
+        PlayerEntity player = (PlayerEntity) (Object) this;
+        Parkourability parkourability = Parkourability.get(player);
+        if (parkourability == null) return;
+        HideInBlock hideInBlock = parkourability.get(HideInBlock.class);
+        if (hideInBlock.isDoing() || hideInBlock.getNotDoingTick() < 2) {
+            cir.setReturnValue(false);
+        }
+    }
 }

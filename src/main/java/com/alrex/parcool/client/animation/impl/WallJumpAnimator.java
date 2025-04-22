@@ -18,12 +18,11 @@ public class WallJumpAnimator extends Animator {
 	}
 
 	private float getFactor(float phase) {
-		float x = phase - 0.2f;
-		if (phase < 0.2) {
-			return 1 - 25 * x * x;
-		} else {
-			return 1 - 1.5625f * x * x;
-		}
+		return Easing.with(phase)
+				.squareOut(0, 0.3f, 0, 1)
+				.linear(0.3f, 0.5f, 1, 1)
+				.sinInOut(0.5f, 1, 1, 0)
+				.get();
 	}
 
 	float getFadeFactor(float phase) {
@@ -40,13 +39,12 @@ public class WallJumpAnimator extends Animator {
 		float phase = (getTick() + transformer.getPartialTick()) / maxTick;
 		float factor = getFactor(phase);
 		float fadeFactor = getFadeFactor(phase);
-		int sign = wallRightSide ? 1 : -1;
 		if (wallRightSide) {
 			transformer
 					.translateRightLeg(
 							0,
-							2.1f * Easing.with(phase).squareOut(0, 0.15f, -1f, 1).sinInOut(0.15f, 1, 1, 0).get(),
-							2f * Easing.with(phase).squareOut(0, 0.15f, -0.9f, 1).sinInOut(0.15f, 1, 1, 0).get()
+							-1.1f * Easing.with(phase).squareOut(0, 0.15f, -1f, 1).sinInOut(0.15f, 1, 1, 0).get(),
+							3.2f * Easing.with(phase).squareOut(0, 0.15f, -0.9f, 1).sinInOut(0.15f, 1, 1, 0).get()
 					)
 					.translateLeftLeg(
 							-1.1f * factor,
@@ -65,8 +63,8 @@ public class WallJumpAnimator extends Animator {
 			transformer
 					.translateLeftLeg(
 							0,
-							2.1f * Easing.with(phase).squareOut(0, 0.15f, -1f, 1).sinInOut(0.15f, 1, 1, 0).get(),
-							2f * Easing.with(phase).squareOut(0, 0.15f, -0.9f, 1).sinInOut(0.15f, 1, 1, 0).get()
+							-1.1f * Easing.with(phase).squareOut(0, 0.15f, -1f, 1).sinInOut(0.15f, 1, 1, 0).get(),
+							3.2f * Easing.with(phase).squareOut(0, 0.15f, -0.9f, 1).sinInOut(0.15f, 1, 1, 0).get()
 					)
 					.translateRightLeg(
 							1.1f * factor,
@@ -77,8 +75,8 @@ public class WallJumpAnimator extends Animator {
 					.translateRightArm(-factor, factor, 1.9f * factor)
 					.rotateRightLeg((float) toRadians(-70 * factor), 0, 0, fadeFactor)
 					.rotateLeftLeg((float) toRadians(75 * factor), 0, 0, fadeFactor)
-					.rotateRightArm((float) toRadians(factor * 55), 0, (float) toRadians(-35 * sign * factor), fadeFactor)
-					.rotateLeftArm((float) toRadians(factor * (-120)), 0, (float) toRadians(-35 * sign * factor), fadeFactor)
+					.rotateRightArm((float) toRadians(factor * 55), 0, (float) toRadians(35 * factor), fadeFactor)
+					.rotateLeftArm((float) toRadians(factor * (-120)), 0, (float) toRadians(35 * factor), fadeFactor)
 					.makeArmsNatural()
 					.end();
 		}

@@ -8,7 +8,11 @@ import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.info.ServerLimitation;
+import com.alrex.parcool.common.network.SyncClientInformationMessage;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
@@ -27,6 +31,7 @@ public class Parkourability {
 	private final BehaviorEnforcer enforcer = new BehaviorEnforcer();
 	private final List<Action> actions = ActionList.constructActionsList();
 	private final HashMap<Class<? extends Action>, Action> actionsMap;
+	private int synchronizeTrialCount = 0;
 
 	public Parkourability() {
 		actionsMap = new HashMap<>((int) (actions.size() * 1.5));
@@ -87,5 +92,21 @@ public class Parkourability {
 
 	public boolean isDoingNothing() {
 		return actions.stream().anyMatch(Action::isDoing);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public void trySyncLimitation(ClientPlayerEntity player) {
+		synchronizeTrialCount++;
+		SyncClientInformationMessage.sync(player, true);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public int getSynchronizeTrialCount() {
+		return synchronizeTrialCount;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public boolean limitationIsNotSynced() {
+		return !getServerLimitation().isSynced();
 	}
 }

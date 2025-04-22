@@ -15,6 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
+import org.apache.logging.log4j.Level;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;
@@ -65,6 +66,7 @@ public class SyncClientInformationMessage {
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
 			if (!player.isLocalPlayer()) {
+				logReceived(player);
                 parkourability.getActionInfo().setClientSetting(ClientSetting.readFrom(data));
 				data.rewind();
 			}
@@ -83,10 +85,15 @@ public class SyncClientInformationMessage {
 			if (requestLimitations) {
 				Limitations.update(player);
 			}
+			logReceived(player);
             parkourability.getActionInfo().setClientSetting(ClientSetting.readFrom(data));
 			data.rewind();
 		});
 		contextSupplier.get().setPacketHandled(true);
+	}
+
+	public void logReceived(PlayerEntity player) {
+		ParCool.LOGGER.log(Level.INFO, "Received Client Information of [" + player.getGameProfile().getName() + "]");
 	}
 
 	@OnlyIn(Dist.CLIENT)

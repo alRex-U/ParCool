@@ -37,9 +37,9 @@ public class HideInBlockAnimator extends Animator {
         if (phase > 1f) phase = 1f;
         float factor = Easing.with(phase).sinInOut(0f, 1f, 0, 1f).get();
         if (standing) {
-            transformer.rotateHeadYawRadian((float) (MathHelper.clamp(transformer.getRawModel().getHead().yRot, -Math.PI / 5., Math.PI / 5.) / 2.))
-                    .rotateRightArm(0, 0, (float) Math.toRadians(10), factor)
-                    .rotateLeftArm(0, 0, (float) Math.toRadians(-10), factor)
+            transformer.rotateHeadYawRadian((float) (MathHelper.clamp(transformer.getRawModel().getHead().yRot, -Math.PI / 4., Math.PI / 4.) / 1.4f))
+                    .rotateRightArm(0, 0, (float) Math.toRadians(6), factor)
+                    .rotateLeftArm(0, 0, (float) Math.toRadians(-6), factor)
                     .makeArmsNatural()
                     .rotateRightLeg(0, 0, 0)
                     .rotateLeftLeg(0, 0, 0);
@@ -63,7 +63,7 @@ public class HideInBlockAnimator extends Animator {
         Vector3d lookVec = parkourability.get(HideInBlock.class).getLookDirection();
         if (lookVec == null) return false;
         if (standing) {
-            float playerYRot = MathHelper.lerp(rotator.getPartialTick(), player.yRotO, player.yRot) / 2f;
+            float playerYRot = 180f + MathHelper.lerp(rotator.getPartialTick(), player.yRotO, player.yRot);
             float yRot = (float) VectorUtil.toYawDegree(lookVec);
             rotator.rotateYawRightward(playerYRot + MathUtil.normalizeDegree((180f + yRot) - playerYRot) * factor);
             return true;

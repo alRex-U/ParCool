@@ -34,3 +34,12 @@ side = "BOTH"
 modId = "betterthirdperson"
 mandatory = false
 versionRange = "[1.9.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.parcool]]
+modId = "shouldersurfing"
+mandatory = false
+versionRange = "[1.16.5-4.10.5,)"
+ordering = "NONE"
+side = "BOTH"

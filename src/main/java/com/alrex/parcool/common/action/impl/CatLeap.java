@@ -64,6 +64,7 @@ public class CatLeap extends Action {
 				&& coolTimeTick <= 0
 				&& readyTick > 0
 				&& parkourability.get(ChargeJump.class).getChargingTick() < ChargeJump.JUMP_MAX_CHARGE_TICK / 2
+				&& !parkourability.get(HideInBlock.class).isDoing()
 				&& !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()
 				&& KeyRecorder.keySneak.isReleased()

@@ -64,8 +64,8 @@ public class WallJump extends Action {
 		Vector3d value;
 		double dotProduct = wall.dot(vec);
 
-		if (dotProduct > 0.35) {
-			if (!ParCoolConfig.Client.Booleans.EnableWallJumpBackward.get()) return null;
+		if (dotProduct > -Math.cos(Math.toRadians(ParCoolConfig.Client.Integers.AcceptableAngleOfWallJump.get()))) {
+			return null;
 		}
 		if (dotProduct > 0) {//To Wall
 			double dot = vec.reverse().dot(wall);

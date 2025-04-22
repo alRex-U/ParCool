@@ -34,6 +34,7 @@ public class Crawl extends Action {
 				&& !parkourability.get(Dive.class).isDoing()
 				&& parkourability.get(Vault.class).getNotDoingTick() >= 8
 				&& player.getVehicle() == null
+				&& player.getPose() == Pose.STANDING
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
 				&& !player.onClimbable()

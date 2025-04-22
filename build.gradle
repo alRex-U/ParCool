@@ -87,13 +87,15 @@ dependencies {
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
     //compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
     compileOnly fg.deobf("curse.maven:BetterThirdPerson-435044:4177083")
+    compileOnly fg.deobf("curse.maven:ShoulderSurfing-243190:6387959")
 
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
     runtimeOnly fg.deobf("curse.maven:pehkui-319596:4461971")
     runtimeOnly fg.deobf("curse.maven:invmove-581854:4346449")
     runtimeOnly fg.deobf("curse.maven:clothconfig-348521:4633366")
     //runtimeOnly fg.deobf("curse.maven:emotecraft-403422:3955902")
-    runtimeOnly fg.deobf("curse.maven:BetterThirdPerson-435044:4177083")
+    //runtimeOnly fg.deobf("curse.maven:BetterThirdPerson-435044:4177083")
+    runtimeOnly fg.deobf("curse.maven:ShoulderSurfing-243190:6387959")
 }
 
 jar {

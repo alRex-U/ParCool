@@ -29,6 +29,7 @@ import java.nio.ByteBuffer;
 
 public class HideInBlock extends Action {
     private static final BehaviorEnforcer.ID ID_SHOW_NAME = BehaviorEnforcer.newID();
+    private static final BehaviorEnforcer.ID ID_SNEAK = BehaviorEnforcer.newID();
     @Nullable
     Vector3d hidingPoint = null;
     @Nullable
@@ -56,7 +57,7 @@ public class HideInBlock extends Action {
                 || !KeyBindings.getKeyBindHideInBlock().isDown()
                 || getNotDoingTick() < 6
                 || player.hurtTime > 0
-                || player.getPose() != Pose.STANDING
+                || player.getPose() != Pose.CROUCHING
         ) {
             return false;
         }
@@ -80,12 +81,19 @@ public class HideInBlock extends Action {
                 int maxZ = Math.max(hideArea.getA().getZ(), hideArea.getB().getZ());
                 hideArea = new Tuple<>(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ));
             }
-            if ((hideArea.getB().getY() - hideArea.getA().getY() + 1) > player.getBbHeight()) return false;
-            boolean zLonger = Math.abs(hideArea.getA().getZ() - hideArea.getB().getZ()) > Math.abs(hideArea.getA().getX() - hideArea.getB().getX());
-            Vector3d direction = zLonger ?
-                    new Vector3d(0, 0, player.getLookAngle().z() > 0 ? 1 : -1) :
-                    new Vector3d(player.getLookAngle().x() > 0 ? 1 : -1, 0, 0);
+            Vector3d direction;
             boolean stand = player.getBbHeight() < (hideArea.getB().getY() - hideArea.getA().getY() + 1);
+            if (stand) {
+                Vector3d lookAngle = player.getLookAngle();
+                direction = Math.abs(lookAngle.x()) > Math.abs(lookAngle.z()) ?
+                        new Vector3d(lookAngle.x() > 0 ? 1 : -1, 0, 0) :
+                        new Vector3d(0, 0, lookAngle.z() > 0 ? 1 : -1);
+            } else {
+                boolean zLonger = Math.abs(hideArea.getA().getZ() - hideArea.getB().getZ()) > Math.abs(hideArea.getA().getX() - hideArea.getB().getX());
+                direction = zLonger ?
+                        new Vector3d(0, 0, player.getLookAngle().z() > 0 ? 1 : -1) :
+                        new Vector3d(player.getLookAngle().x() > 0 ? 1 : -1, 0, 0);
+            }
             BufferUtil.wrap(startInfo)
                     .putBoolean(stand)
                     .putBlockPos(hideArea.getA())
@@ -103,7 +111,9 @@ public class HideInBlock extends Action {
         if (hidingBlockChanged) {
             return hidingBlockChanged = false;
         }
-        return player.hurtTime <= 0 && player.getPose() == Pose.STANDING && (getDoingTick() < 6 || KeyBindings.getKeyBindHideInBlock().isDown());
+        return player.hurtTime <= 0
+                && player.getPose() == Pose.STANDING
+                && (getDoingTick() < 6 || KeyBindings.getKeyBindHideInBlock().isDown() || KeyBindings.getKeySneak().isDown());
     }
 
     @Override
@@ -121,6 +131,8 @@ public class HideInBlock extends Action {
                     return hidingPoint;
                 }
         );
+        parkourability.getBehaviorEnforcer().addMarkerCancellingSneak(ID_SNEAK, this::isDoing);
+        player.setPose(Pose.STANDING);
         player.noPhysics = true;
         player.playSound(player.level.getBlockState(new BlockPos(hidingPoint.add(0, 0.2, 0))).getSoundType().getBreakSound(), 1, 1);
     }
@@ -158,6 +170,7 @@ public class HideInBlock extends Action {
         player.setDeltaMovement(Vector3d.ZERO);
         player.noPhysics = true;
         player.setSprinting(false);
+        player.setPose(Pose.STANDING);
     }
 
     @Override
