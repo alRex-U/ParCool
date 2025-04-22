@@ -7,7 +7,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class LogoutHandler {
+public class LoginLogoutHandler {
 	@SubscribeEvent
 	public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
 		PlayerEntity player = event.getPlayer();
@@ -17,4 +17,9 @@ public class LogoutHandler {
 			Limitations.unload(player.getUUID());
 		}
 	}
+	/*
+	@SubscribeEvent
+	public static void onLogin(PlayerEvent.PlayerLoggedInEvent event){
+	}
+	*/
 }

@@ -9,7 +9,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 public class EventBusForgeRegistry {
 	public static void register(IEventBus bus) {
 		bus.register(AttachCapabilityHandler.class);
-		bus.register(LogoutHandler.class);
+        bus.register(LoginLogoutHandler.class);
 		bus.register(PlayerJumpHandler.class);
 		bus.register(PlayerVisibilityHandler.class);
 		bus.register(PlayerDamageHandler.class);

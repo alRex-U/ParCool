@@ -166,7 +166,7 @@ public class ActionProcessor {
 			SyncActionStateMessage.sync(player, builder);
 
 			staminaSyncCoolTimeTick++;
-			if (staminaSyncCoolTimeTick > 5 || stamina.wantToConsumeOnServer()) {
+			if (!parkourability.limitationIsNotSynced() && (staminaSyncCoolTimeTick > 3 || stamina.wantToConsumeOnServer())) {
 				staminaSyncCoolTimeTick = 0;
 				SyncStaminaMessage.sync(player);
 			}
