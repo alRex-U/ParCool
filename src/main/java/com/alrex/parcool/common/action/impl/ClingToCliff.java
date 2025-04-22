@@ -108,13 +108,13 @@ public class ClingToCliff extends Action {
 	@Override
 	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		armSwingAmount += (float) player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
-		if (KeyBindings.getKeyLeft().isDown() && KeyBindings.getKeyRight().isDown()) {
+		if (KeyBindings.isLeftAndRightDown()) {
 			player.setDeltaMovement(0, 0, 0);
 		} else {
 			if (clingWallDirection != null && facingDirection == FacingDirection.ToWall) {
 				Vector3d vec = clingWallDirection.yRot((float) (Math.PI / 2)).normalize().scale(0.1);
-				if (KeyBindings.getKeyLeft().isDown()) player.setDeltaMovement(vec);
-				else if (KeyBindings.getKeyRight().isDown()) player.setDeltaMovement(vec.reverse());
+				if (KeyBindings.isKeyLeftDown()) player.setDeltaMovement(vec);
+				else if (KeyBindings.isKeyRightDown()) player.setDeltaMovement(vec.reverse());
 				else player.setDeltaMovement(0, 0, 0);
 			} else {
 				player.setDeltaMovement(0, 0, 0);

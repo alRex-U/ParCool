@@ -109,4 +109,15 @@ public class Parkourability {
 	public boolean limitationIsNotSynced() {
 		return !getServerLimitation().isSynced();
 	}
+
+	@SafeVarargs
+	public final Boolean isDoingAny(Class<? extends Action>... actions) {
+		for (Class<? extends Action> action : actions) {
+			if (get(action).isDoing()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

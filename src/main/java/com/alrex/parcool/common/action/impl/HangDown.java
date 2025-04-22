@@ -120,8 +120,8 @@ public class HangDown extends Action {
 			} else {
 				zSpeed = (bodyVec.x() > 0 ? 1 : -1) * speed;
 			}
-			if (KeyBindings.getKeyLeft().isDown()) player.setDeltaMovement(xSpeed, 0, -zSpeed);
-			else if (KeyBindings.getKeyRight().isDown()) player.setDeltaMovement(-xSpeed, 0, zSpeed);
+			if (KeyBindings.isKeyLeftDown()) player.setDeltaMovement(xSpeed, 0, -zSpeed);
+			else if (KeyBindings.isKeyRightDown()) player.setDeltaMovement(-xSpeed, 0, zSpeed);
 			else player.setDeltaMovement(0, 0, 0);
 		} else {
 			if (hangingBarAxis == BarAxis.X) {
@@ -129,8 +129,8 @@ public class HangDown extends Action {
 			} else {
 				zSpeed = (bodyVec.z() > 0 ? 1 : -1) * speed;
 			}
-			if (KeyBindings.getKeyForward().isDown()) player.setDeltaMovement(xSpeed, 0, zSpeed);
-			else if (KeyBindings.getKeyBack().isDown()) player.setDeltaMovement(-xSpeed, 0, -zSpeed);
+			if (KeyBindings.isKeyForwardDown()) player.setDeltaMovement(xSpeed, 0, zSpeed);
+			else if (KeyBindings.isKeyBackDown()) player.setDeltaMovement(-xSpeed, 0, -zSpeed);
 			else player.setDeltaMovement(0, 0, 0);
 		}
 		armSwingAmount += (float) player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();

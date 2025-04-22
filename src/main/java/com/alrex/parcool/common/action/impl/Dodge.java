@@ -133,10 +133,10 @@ public class Dodge extends Action {
 			if (KeyRecorder.keyRight.isDoubleTapped()) direction = DodgeDirection.Right;
 		}
 		if (direction == null && KeyRecorder.keyDodge.isPressed()) {
-			if (KeyBindings.getKeyBack().isDown()) direction = DodgeDirection.Back;
-			if (KeyBindings.getKeyForward().isDown()) direction = DodgeDirection.Front;
-			if (KeyBindings.getKeyLeft().isDown()) direction = DodgeDirection.Left;
-			if (KeyBindings.getKeyRight().isDown()) direction = DodgeDirection.Right;
+			if (KeyBindings.isKeyBackDown()) direction = DodgeDirection.Back;
+			if (KeyBindings.isKeyForwardDown()) direction = DodgeDirection.Front;
+			if (KeyBindings.isKeyLeftDown()) direction = DodgeDirection.Left;
+			if (KeyBindings.isKeyRightDown()) direction = DodgeDirection.Right;
 		}
 		if (direction == null) return false;
 		direction = AdditionalMods.betterThirdPerson().handleCustomCameraRotationForDodge(direction);

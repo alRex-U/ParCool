@@ -26,12 +26,8 @@ public class Crawl extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		return ((ParCoolConfig.Client.CrawlControl.get() == ControlType.PressKey && KeyRecorder.keyCrawlState.isPressed())
-				|| (ParCoolConfig.Client.CrawlControl.get() == ControlType.Toggle && toggleStatus))
-				&& !parkourability.get(Roll.class).isDoing()
-				&& !parkourability.get(Tap.class).isDoing()
-				&& !parkourability.get(ClingToCliff.class).isDoing()
-				&& !parkourability.get(Dive.class).isDoing()
+		return isActionInvoked(player)
+				&& !parkourability.isDoingAny(Roll.class, Tap.class, ClingToCliff.class, Dive.class)
 				&& parkourability.get(Vault.class).getNotDoingTick() >= 8
 				&& player.getVehicle() == null
 				&& player.getPose() == Pose.STANDING
@@ -41,7 +37,13 @@ public class Crawl extends Action {
 				&& (player.isOnGround() || ParCoolConfig.Client.Booleans.EnableCrawlInAir.get());
 	}
 
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	private boolean isActionInvoked(PlayerEntity player) {
+		return ((ParCoolConfig.Client.CrawlControl.get() == ControlType.PressKey && KeyRecorder.keyCrawlState.isPressed())
+				|| (ParCoolConfig.Client.CrawlControl.get() == ControlType.Toggle && toggleStatus))
+				&& (!KeyRecorder.keyDodge.isPressed() || player.isCrouching());
+	}
+
+	public void onClientTick(PlayerEntity player, Parkourability parkourability) {
 		if (player.isLocalPlayer()) {
 			if (ParCoolConfig.Client.CrawlControl.get() == Crawl.ControlType.Toggle) {
 				if (KeyRecorder.keyCrawlState.isPressed())
