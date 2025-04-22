@@ -47,11 +47,12 @@ public class RideZiplineAnimator extends Animator {
         double angleDifference = VectorUtil.toYawRadian(player.getLookAngle()) - VectorUtil.toYawRadian(new Vector3d(offset.x(), 0, offset.z()));
         double angleCos = Math.cos(angleDifference);
         double angleSin = Math.sin(angleDifference);
+        double angleCosAbs = Math.abs(angleCos);
         transformer
                 .translateRightArm(0.6f, -2.2f, 0)
                 .translateLeftArm(-0.6f, -2.2f, 0)
-                .rotateRightArm((float) -Math.PI, 0f, (float) Math.toRadians(10))
-                .rotateLeftArm((float) -Math.PI, 0f, (float) Math.toRadians(-10))
+                .rotateRightArm((float) -Math.PI, 0f, (float) Math.toRadians(MathHelper.lerp(angleCosAbs, 10., 15.)))
+                .rotateLeftArm((float) -Math.PI, 0f, (float) Math.toRadians(MathHelper.lerp(angleCosAbs, -10., -15.)))
                 .rotateRightLeg((float) (-currentAngleRadian * angleCos), 0, (float) (-currentAngleRadian * angleSin))
                 .rotateLeftLeg((float) (-currentAngleRadian * angleCos), 0, (float) (-currentAngleRadian * angleSin))
                 .makeLegsLittleMoving()
