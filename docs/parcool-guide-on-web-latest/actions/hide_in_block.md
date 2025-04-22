@@ -10,6 +10,11 @@ Hiding players get harder to find by enemies. Name is also hidden from other pla
 You can neither break blocks nor use item while hiding, and are gotten out when you take damage or blocks are broken. Be
 careful.
 
+### Hide-able blocks
+
+- Leaves block
+- Hay block
+
 ### 🖱️- How to use -
 
 - Press *Hide-In-Block* key while sneaking near blocks you want to hide in

@@ -142,10 +142,10 @@ public class Dodge extends Action {
 		direction = AdditionalMods.betterThirdPerson().handleCustomCameraRotationForDodge(direction);
 		direction = AdditionalMods.shoulderSurfingManager().handleCustomCameraRotationForDodge(direction);
 		startInfo.putInt(direction.ordinal());
-		return (parkourability.getAdditionalProperties().getLandingTick() > 5
+		return ((parkourability.getAdditionalProperties().getLandingTick() > 5 || parkourability.getAdditionalProperties().getPreviousNotLandingTick() < 2)
+				&& player.isOnGround()
 				&& !isInSuccessiveCoolDown(parkourability.getActionInfo())
 				&& coolTime <= 0
-				&& player.isOnGround()
 				&& !player.isInWaterOrBubble()
 				&& !player.isShiftKeyDown()
 				&& !stamina.isExhausted()
