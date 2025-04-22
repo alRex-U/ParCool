@@ -46,7 +46,49 @@ public class Dodge extends Action {
 	}
 
 	public enum DodgeDirection {
-		Front, Back, Left, Right
+		Front, Back, Left, Right;
+
+		public DodgeDirection inverse() {
+			switch (this) {
+				case Front:
+					return Back;
+				case Back:
+					return Front;
+				case Left:
+					return Right;
+				case Right:
+					return Left;
+			}
+			return Front;
+		}
+
+		public DodgeDirection right() {
+			switch (this) {
+				case Front:
+					return Right;
+				case Right:
+					return Back;
+				case Back:
+					return Left;
+				case Left:
+					return Front;
+			}
+			return Front;
+		}
+
+		public DodgeDirection left() {
+			switch (this) {
+				case Front:
+					return Left;
+				case Left:
+					return Back;
+				case Back:
+					return Right;
+				case Right:
+					return Front;
+			}
+			return Front;
+		}
 	}
 
 	private DodgeDirection dodgeDirection = null;

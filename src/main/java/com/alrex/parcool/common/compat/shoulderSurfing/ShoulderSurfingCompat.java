@@ -1,8 +1,9 @@
 package com.alrex.parcool.common.compat.shoulderSurfing;
 
-import com.github.exopandora.shouldersurfing.config.Config;
 import com.alrex.parcool.common.action.impl.Dodge.DodgeDirection;
+import com.github.exopandora.shouldersurfing.client.ShoulderSurfingImpl;
 import com.github.exopandora.shouldersurfing.config.Config;
+import com.github.exopandora.shouldersurfing.plugin.ShoulderSurfingRegistrar;
 import net.minecraft.client.Minecraft;
 import java.lang.reflect.Field;
 
@@ -10,7 +11,7 @@ import java.lang.reflect.Field;
  * Compatibility class for the "Should Surfing" mod
  */
 public class ShoulderSurfingCompat {
-    private static Boolean isCameraDecoupled = false;
+    private static Minecraft mc = Minecraft.getInstance();
     private static boolean isLoaded = false;
     private static Object configClient = null;
     static {
@@ -19,6 +20,7 @@ public class ShoulderSurfingCompat {
             Class<?> configClass = Class.forName("com.github.exopandora.shouldersurfing.config.Config");
             Field clientField = configClass.getField("CLIENT");
             configClient = clientField.get(null);
+            ShoulderSurfingRegistrar.getInstance().registerCameraCouplingCallback(new ShoulderSurfingDecoupledCamera());
             isLoaded = true;
         } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
             isLoaded = false;
@@ -27,25 +29,7 @@ public class ShoulderSurfingCompat {
 
     public static Boolean isCameraDecoupled() {
         if (!isLoaded) return false;
-        return Config.CLIENT.isCameraDecoupled();
-    }
-
-    public static void forceCoupledCamera() {
-        if (!isLoaded) return;
-        ShoulderSurfingCompat.isCameraDecoupled = Config.CLIENT.isCameraDecoupled();
-        if (isCameraDecoupled) {
-            Config.CLIENT.toggleCameraCoupling();
-            org.apache.logging.log4j.LogManager.getLogger("ParCool").info("coupling camera");
-        }
-    }
-
-    public static void releaseCoupledCamera() {
-        if (!isLoaded) return;
-        if (isCameraDecoupled && !Config.CLIENT.isCameraDecoupled()) {
-            Config.CLIENT.toggleCameraCoupling();
-            org.apache.logging.log4j.LogManager.getLogger("ParCool").info("decoupling camera");
-            isCameraDecoupled = false;
-        }
+        return ShoulderSurfingImpl.getInstance().isCameraDecoupled();
     }
  
      public static DodgeDirection handleCustomCameraRotationForDodge(DodgeDirection direction) {
