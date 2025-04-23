@@ -39,7 +39,7 @@ public class BreakfallReady extends Action {
 		} else if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			playSound = true;
 
-		if (((KeyBindings.getKeyForward().isDown() || KeyBindings.getKeyBack().isDown() || KeyBindings.getKeyLeft().isDown() || KeyBindings.getKeyRight().isDown())
+		if ((KeyBindings.isAnyMovingKeyDown()
 				&& parkourability.getActionInfo().can(Roll.class))
 				|| !parkourability.getActionInfo().can(Tap.class)
 		) {
