@@ -17,6 +17,8 @@
   "key.parcool.Breakfall": "Takla",
   "key.parcool.ClimbPoles": "Direğe Tırmanma",
   "key.parcool.ClingToCliff": "Uçuruma Tırmanmak",
+  "key.parcool.ClimbUp": "Yukarı çık",
+  "key.parcool.ReleaseCliff": "Serbest bırakmak",
   "key.parcool.Crawl": "Sürünmek",
   "key.parcool.Dodge": "Atak Bloklama",
   "key.parcool.FastRun": "Hızlı Koşu",
@@ -67,3 +69,4 @@
   "parcool.command.message.success.setLimitationToDefault": " %d Oyuncunun Limitlerini Normale Çektiniz",
   "parcool.command.message.success.enableLimitation": "Açtınız %d Oyuncunun Bireysel Limitlerini",
   "parcool.command.message.success.disableLimitation": "Kapattınız %d Oyuncunun Bireysel Limitlerini"
+}

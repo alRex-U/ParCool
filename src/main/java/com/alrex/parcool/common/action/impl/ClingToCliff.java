@@ -65,11 +65,19 @@ public class ClingToCliff extends Action {
 	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		return (!stamina.isExhausted()
 				&& parkourability.getActionInfo().can(ClingToCliff.class)
-				&& KeyBindings.getKeyGrabWall().isDown()
+				&& isGrabbing()
 				&& !parkourability.get(HorizontalWallRun.class).isDoing()
 				&& !parkourability.get(ClimbUp.class).isDoing()
 				&& WorldUtil.getGrabbableWall(player) != null
 		);
+
+	}
+
+	private boolean isGrabbing() {
+		return KeyBindings.getKeyGrabWall().isDown()
+			|| (!KeyBindings.getKeyReleaseWall().isUnbound()
+				&& !KeyBindings.getKeyReleaseWall().isDown()
+			);
 	}
 
     @Override

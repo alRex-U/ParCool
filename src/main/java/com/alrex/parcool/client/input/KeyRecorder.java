@@ -35,7 +35,7 @@ public class KeyRecorder {
 		record(KeyBindings.isKeyRightDown(), keyRight);
 		record(KeyBindings.isKeyLeftDown(), keyLeft);
 		record(KeyBindings.getKeySneak(), keySneak);
-		record(KeyBindings.getKeyJump(), keyJumpState);
+		record(KeyBindings.isKeyJumpDown(), keyJumpState);
 		record(KeyBindings.getKeySprint(), keySprintState);
 		record(KeyBindings.getKeyCrawl(), keyCrawlState);
 		record(KeyBindings.getKeyActivateParCool(), keyOpenSettingsState);
