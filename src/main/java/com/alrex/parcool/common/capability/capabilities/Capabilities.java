@@ -15,14 +15,19 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
+import javax.annotation.Nonnull;
+
 public class Capabilities {
 	@CapabilityInject(IStamina.class)
+	@Nonnull
 	public static final Capability<IStamina> STAMINA_CAPABILITY = null;
 	public static final ResourceLocation STAMINA_LOCATION = new ResourceLocation(ParCool.MOD_ID, "capability.stamina");
 	@CapabilityInject(Parkourability.class)
+	@Nonnull
 	public static final Capability<Parkourability> PARKOURABILITY_CAPABILITY = null;
 	public static final ResourceLocation PARKOURABILITY_LOCATION = new ResourceLocation(ParCool.MOD_ID, "capability.parkourability");
 	@CapabilityInject(Animation.class)
+	@Nonnull
 	public static final Capability<Animation> ANIMATION_CAPABILITY = null;
 	public static final ResourceLocation ANIMATION_LOCATION = new ResourceLocation(ParCool.MOD_ID, "capability.animation");
 
