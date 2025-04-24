@@ -17,7 +17,7 @@
   "parcool.patchouli.guide.name": "跑酷指南",
   "parcool.patchouli.guide.landingText": "这是$(9)ParCool$()的教程手册！建议先阅读此书。$(br2)更详细的$(l:https://github.com/alRex-U/ParCool/blob/main/docs/parcool-guide-on-web-latest/introduction.md)ParCool指南$()可在网页版查看！",
   "parcool.patchouli.guide.category.about": "关于",
-  "parcool.patchouli.guide.entry.aboutParCool": "关于跑酷（ParCool）",
+  "parcool.patchouli.guide.entry.aboutParCool": "关于",
   "parcool.patchouli.guide.entry.credit": "鸣谢",
   "itemGroup.ParCool": "跑酷!",
   "key.categories.parcool": "跑酷（ParCool）",
