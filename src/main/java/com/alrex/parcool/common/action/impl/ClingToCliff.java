@@ -3,6 +3,7 @@ package com.alrex.parcool.common.action.impl;
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.ClingToCliffAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
+import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
@@ -22,6 +23,10 @@ import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
 public class ClingToCliff extends Action {
+	public enum ControlType {
+		PressKey, Toggle
+	}
+
 	private static final BehaviorEnforcer.ID ID_SNEAK_CANCEL = BehaviorEnforcer.newID();
 	private static final BehaviorEnforcer.ID ID_FALL_FLY_CANCEL = BehaviorEnforcer.newID();
 	private float armSwingAmount = 0;
@@ -74,10 +79,9 @@ public class ClingToCliff extends Action {
 	}
 
 	private boolean isGrabbing() {
-		return KeyBindings.getKeyGrabWall().isDown()
-			|| (!KeyBindings.getKeyReleaseWall().isUnbound()
-				&& !KeyBindings.getKeyReleaseWall().isDown()
-			);
+		return ParCoolConfig.Client.ClingToCliffControl.get() == ControlType.PressKey
+			? KeyBindings.getKeyGrabWall().isDown()
+			: !KeyRecorder.keyDodge.isPressed();
 	}
 
     @Override

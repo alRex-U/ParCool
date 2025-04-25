@@ -20,8 +20,6 @@ public class KeyBindings {
 	private static final KeyBinding keyBindEnable = new KeyBinding("key.parcool.Enable", KeyConflictContext.UNIVERSAL, KeyModifier.CONTROL, InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.categories.parcool");
 	private static final KeyBinding keyBindCrawl = new KeyBinding("key.parcool.Crawl", GLFW.GLFW_KEY_C, "key.categories.parcool");
 	private static final KeyBinding keyBindGrabWall = new KeyBinding("key.parcool.ClingToCliff", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
-	private static final KeyBinding keyBindClimbUp = new KeyBinding("key.parcool.ClimbUp", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
-	private static final KeyBinding keyBindReleaseWall = new KeyBinding("key.parcool.ReleaseCliff", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
 	private static final KeyBinding keyBindBreakfall = new KeyBinding("key.parcool.Breakfall", GLFW.GLFW_KEY_R, "key.categories.parcool");
 	private static final KeyBinding keyBindFastRunning = new KeyBinding("key.parcool.FastRun", GLFW.GLFW_KEY_LEFT_CONTROL, "key.categories.parcool");
 	private static final KeyBinding keyBindFlipping = new KeyBinding("key.parcool.Flipping", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
@@ -93,14 +91,6 @@ public class KeyBindings {
 		return keyBindGrabWall;
 	}
 
-	public static KeyBinding getKeyClimbUp() {
-		return keyBindClimbUp;
-	}
-
-	public static KeyBinding getKeyReleaseWall() {
-		return keyBindReleaseWall;
-	}
-
 	public static KeyBinding getKeyVault() {
 		return keyBindVault;
 	}
@@ -154,8 +144,6 @@ public class KeyBindings {
 		ClientRegistry.registerKeyBinding(keyBindEnable);
 		ClientRegistry.registerKeyBinding(keyBindCrawl);
 		ClientRegistry.registerKeyBinding(keyBindGrabWall);
-		ClientRegistry.registerKeyBinding(keyBindClimbUp);
-		ClientRegistry.registerKeyBinding(keyBindReleaseWall);
 		ClientRegistry.registerKeyBinding(keyBindBreakfall);
 		ClientRegistry.registerKeyBinding(keyBindFastRunning);
 		ClientRegistry.registerKeyBinding(keyBindDodge);

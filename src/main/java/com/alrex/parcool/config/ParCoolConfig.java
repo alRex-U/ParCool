@@ -446,6 +446,7 @@ public class ParCoolConfig {
 		public static final ForgeConfigSpec.EnumValue<Flipping.ControlType> FlipControl;
 		public static final ForgeConfigSpec.EnumValue<HorizontalWallRun.ControlType> HWallRunControl;
 		public static final ForgeConfigSpec.EnumValue<WallJump.ControlType> WallJumpControl;
+		public static final ForgeConfigSpec.EnumValue<ClingToCliff.ControlType> ClingToCliffControl;
 		public static final ForgeConfigSpec.EnumValue<IStamina.Type> StaminaType;
 
 		private static void register(ForgeConfigSpec.Builder builder, ConfigGroup group) {
@@ -491,6 +492,7 @@ public class ParCoolConfig {
                 FlipControl = builder.comment("Control of Flipping").defineEnum("flip_control", Flipping.ControlType.TapMovementAndJump);
 				HWallRunControl = builder.comment("Control of Horizontal Wall Run").defineEnum("h-wall-run_control", HorizontalWallRun.ControlType.PressKey);
 				WallJumpControl = builder.comment("Control of Wall Jump").defineEnum("wall-jump_control", WallJump.ControlType.PressKey);
+				ClingToCliffControl = builder.comment("Control of Cling To Cliff").defineEnum("cling-to-cliff_control", ClingToCliff.ControlType.PressKey);
 				register(builder, ConfigGroup.Control);
 			}
 			builder.pop();

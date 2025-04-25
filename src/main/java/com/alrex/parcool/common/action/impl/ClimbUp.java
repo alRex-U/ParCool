@@ -2,7 +2,6 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.ClimbUpAnimator;
-import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
@@ -25,12 +24,7 @@ public class ClimbUp extends Action {
 		return cling.isDoing()
 				&& cling.getDoingTick() > 2
 				&& cling.getFacingDirection() == ClingToCliff.FacingDirection.ToWall
-				&& isClimbUpPressed();
-	}
-
-	private boolean isClimbUpPressed() {
-		return KeyBindings.getKeyClimbUp().isDown()
-			|| KeyRecorder.keyJumpState.isPressed();
+				&& KeyRecorder.keyJumpState.isPressed();
 	}
 
 	@OnlyIn(Dist.CLIENT)
