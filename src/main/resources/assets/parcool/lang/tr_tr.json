@@ -67,3 +67,4 @@
   "parcool.command.message.success.setLimitationToDefault": " %d Oyuncunun Limitlerini Normale Çektiniz",
   "parcool.command.message.success.enableLimitation": "Açtınız %d Oyuncunun Bireysel Limitlerini",
   "parcool.command.message.success.disableLimitation": "Kapattınız %d Oyuncunun Bireysel Limitlerini"
+}

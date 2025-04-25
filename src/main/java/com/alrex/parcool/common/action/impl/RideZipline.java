@@ -57,7 +57,7 @@ public class RideZipline extends Action {
                 && !player.isCrouching()
                 && !player.isSwimming()
                 && !stamina.isExhausted()
-                && (!KeyBindings.getKeyJump().isDown() || getNotDoingTick() > 5)
+                && (!KeyBindings.isKeyJumpDown() || getNotDoingTick() > 5)
                 && !parkourability.get(Dive.class).isDoing()
                 && !parkourability.get(Vault.class).isDoing()
                 && !parkourability.get(HangDown.class).isDoing()
@@ -210,7 +210,7 @@ public class RideZipline extends Action {
         if (ridingZipline != null) {
             player.setDeltaMovement(
                     getDeltaMovement(ridingZipline.getZipline(), speed, currentT)
-                            .add(0, KeyBindings.getKeyJump().isDown() ? 0.25 : 0, 0)
+                            .add(0, KeyBindings.isKeyJumpDown() ? 0.25 : 0, 0)
             );
         }
         currentT = 0;

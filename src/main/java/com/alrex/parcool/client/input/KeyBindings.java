@@ -38,8 +38,9 @@ public class KeyBindings {
 		return settings.keySprint;
 	}
 
-	public static KeyBinding getKeyJump() {
-		return settings.keyJump;
+	public static Boolean isKeyJumpDown() {
+		return mc.player != null
+			&& mc.player.input.jumping;
 	}
 
 	public static KeyBinding getKeySneak() {
