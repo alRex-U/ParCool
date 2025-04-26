@@ -63,6 +63,7 @@ public class Flipping extends Action {
 		boolean input = control.isInputDone(justJumped);
 		justJumped = false;
 		return (input
+				&& !player.isInWater()
                 && !player.isShiftKeyDown()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Dive.class).isDoing()
