@@ -30,7 +30,7 @@ public class Roll extends Action {
 	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		if (player.isLocalPlayer()) {
 			if (KeyBindings.getKeyBreakfall().isDown()
-					&& KeyBindings.getKeyForward().isDown()
+					&& KeyBindings.isKeyForwardDown()
 					&& !parkourability.get(Dodge.class).isDoing()
 					&& !parkourability.get(Crawl.class).isDoing()
 					&& !player.isVisuallyCrawling()

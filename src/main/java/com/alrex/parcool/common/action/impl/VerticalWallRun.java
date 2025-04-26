@@ -43,7 +43,7 @@ public class VerticalWallRun extends Action {
 				&& (4 < tickAfterJump && tickAfterJump < 13)
 				&& getNotDoingTick() > 15
 				&& !player.isFallFlying()
-				&& KeyBindings.getKeyJump().isDown()
+				&& KeyBindings.isKeyJumpDown()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(CatLeap.class).isDoing()

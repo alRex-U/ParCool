@@ -57,7 +57,7 @@ public class RideZipline extends Action {
                 && !player.isCrouching()
                 && !player.isSwimming()
                 && !stamina.isExhausted()
-                && (!KeyBindings.getKeyJump().isDown() || getNotDoingTick() > 5)
+                && (!KeyBindings.isKeyJumpDown() || getNotDoingTick() > 5)
                 && !parkourability.get(Dive.class).isDoing()
                 && !parkourability.get(Vault.class).isDoing()
                 && !parkourability.get(HangDown.class).isDoing()
@@ -137,9 +137,9 @@ public class RideZipline extends Action {
         if (player.isInWater()) speed *= 0.8;
         speed -= gravity * slope * (MathHelper.fastInvSqrt(slope * slope + 1));
         Vector3d input = new Vector3d(
-                (KeyBindings.getKeyRight().isDown() ? 1. : 0.) + (KeyBindings.getKeyLeft().isDown() ? -1. : 0.),
+                (KeyBindings.isKeyRightDown() ? 1. : 0.) + (KeyBindings.isKeyLeftDown() ? -1. : 0.),
                 0.,
-                (KeyBindings.getKeyForward().isDown() ? 1. : 0.) + (KeyBindings.getKeyBack().isDown() ? -1. : 0.)
+                (KeyBindings.isKeyForwardDown() ? 1. : 0.) + (KeyBindings.isKeyBackDown() ? -1. : 0.)
         );
         Vector3d offset = zipline.getOffsetToEndFromStart();
         if (input.lengthSqr() > 0.01) {
@@ -210,7 +210,7 @@ public class RideZipline extends Action {
         if (ridingZipline != null) {
             player.setDeltaMovement(
                     getDeltaMovement(ridingZipline.getZipline(), speed, currentT)
-                            .add(0, KeyBindings.getKeyJump().isDown() ? 0.25 : 0, 0)
+                            .add(0, KeyBindings.isKeyJumpDown() ? 0.25 : 0, 0)
             );
         }
         currentT = 0;

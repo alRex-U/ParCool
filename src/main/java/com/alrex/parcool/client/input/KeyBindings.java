@@ -15,7 +15,8 @@ import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public class KeyBindings {
-	private static final GameSettings settings = Minecraft.getInstance().options;
+	private static final Minecraft mc = Minecraft.getInstance();
+	private static final GameSettings settings = mc.options;
 	private static final KeyBinding keyBindEnable = new KeyBinding("key.parcool.Enable", KeyConflictContext.UNIVERSAL, KeyModifier.CONTROL, InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.categories.parcool");
 	private static final KeyBinding keyBindCrawl = new KeyBinding("key.parcool.Crawl", GLFW.GLFW_KEY_C, "key.categories.parcool");
 	private static final KeyBinding keyBindGrabWall = new KeyBinding("key.parcool.ClingToCliff", InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
@@ -37,28 +38,41 @@ public class KeyBindings {
 		return settings.keySprint;
 	}
 
-	public static KeyBinding getKeyJump() {
-		return settings.keyJump;
+	public static Boolean isKeyJumpDown() {
+		return mc.player != null
+			&& mc.player.input.jumping;
 	}
 
 	public static KeyBinding getKeySneak() {
 		return settings.keyShift;
 	}
 
-	public static KeyBinding getKeyLeft() {
-		return settings.keyLeft;
+	public static Boolean isAnyMovingKeyDown() {
+		return mc.player != null
+			&& (mc.player.input.left
+			|| mc.player.input.right
+			|| mc.player.input.forwardImpulse != 0
+			|| mc.player.input.leftImpulse != 0);
 	}
 
-	public static KeyBinding getKeyRight() {
-		return settings.keyRight;
+	public static Boolean isLeftAndRightDown() {
+		return mc.player != null && mc.player.input.left && mc.player.input.right;
 	}
 
-	public static KeyBinding getKeyForward() {
-		return settings.keyUp;
+	public static Boolean isKeyForwardDown() {
+		return mc.player != null && mc.player.input.forwardImpulse > 0;
 	}
 
-	public static KeyBinding getKeyBack() {
-		return settings.keyDown;
+	public static Boolean isKeyLeftDown() {
+		return mc.player != null && mc.player.input.left;
+	}
+
+	public static Boolean isKeyRightDown() {
+		return mc.player != null && mc.player.input.right;
+	}
+
+	public static Boolean isKeyBackDown() {
+		return mc.player != null && mc.player.input.forwardImpulse < 0;
 	}
 
 	public static KeyBinding getKeyBindEnable() {

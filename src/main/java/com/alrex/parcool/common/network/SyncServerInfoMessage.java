@@ -21,7 +21,6 @@ import java.nio.ByteBuffer;
 import java.util.function.Supplier;
 
 public class SyncServerInfoMessage {
-	private static final Logger log = LoggerFactory.getLogger(SyncServerInfoMessage.class);
 	private final ByteBuffer limitationData = ByteBuffer.allocate(512);
 	private int staminaValue;
 	private boolean staminaExhausted;
