@@ -1,9 +1,8 @@
 package com.alrex.parcool.common.compat.shoulderSurfing;
 
 import com.alrex.parcool.common.action.impl.Dodge.DodgeDirection;
-import com.github.exopandora.shouldersurfing.client.ShoulderSurfingImpl;
+import com.github.exopandora.shouldersurfing.api.client.ShoulderSurfing;
 import com.github.exopandora.shouldersurfing.config.Config;
-import com.github.exopandora.shouldersurfing.plugin.ShoulderSurfingRegistrar;
 import net.minecraft.client.Minecraft;
 import java.lang.reflect.Field;
 
@@ -20,7 +19,6 @@ public class ShoulderSurfingCompat {
             Class<?> configClass = Class.forName("com.github.exopandora.shouldersurfing.config.Config");
             Field clientField = configClass.getField("CLIENT");
             configClient = clientField.get(null);
-            ShoulderSurfingRegistrar.getInstance().registerCameraCouplingCallback(new ShoulderSurfingDecoupledCamera());
             isLoaded = true;
         } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
             isLoaded = false;
@@ -29,7 +27,7 @@ public class ShoulderSurfingCompat {
 
     public static Boolean isCameraDecoupled() {
         if (!isLoaded) return false;
-        return ShoulderSurfingImpl.getInstance().isCameraDecoupled();
+        return ShoulderSurfing.getInstance().isCameraDecoupled();
     }
  
      public static DodgeDirection handleCustomCameraRotationForDodge(DodgeDirection direction) {
