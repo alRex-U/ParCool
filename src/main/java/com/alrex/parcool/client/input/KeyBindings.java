@@ -97,7 +97,7 @@ public class KeyBindings {
 		return keyBindDodge;
 	}
 
-	public static KeyBinding getKeyBindRideZipline() {
+	public static KeyBinding getKeyRideZipline() {
 		return keyBindRideZipline;
 	}
 
@@ -109,7 +109,7 @@ public class KeyBindings {
 		return keyBindHangDown;
 	}
 
-	public static KeyBinding getKeyBindHideInBlock() {
+	public static KeyBinding getKeyHideInBlock() {
 		return keyBindHideInBlock;
 	}
 

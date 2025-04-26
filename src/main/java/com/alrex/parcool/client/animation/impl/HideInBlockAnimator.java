@@ -13,18 +13,12 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 
 public class HideInBlockAnimator extends Animator {
-    public static HideInBlockAnimator crouch() {
-        return new HideInBlockAnimator(false);
-    }
-
-    public static HideInBlockAnimator stand() {
-        return new HideInBlockAnimator(true);
-    }
-
     private final boolean standing;
+    private final boolean startFromDiving;
 
-    public HideInBlockAnimator(boolean standing) {
+    public HideInBlockAnimator(boolean standing, boolean startFromDiving) {
         this.standing = standing;
+        this.startFromDiving=startFromDiving;
     }
     @Override
     public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
@@ -33,7 +27,7 @@ public class HideInBlockAnimator extends Animator {
 
     @Override
     public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
-        float phase = (getTick() + transformer.getPartialTick()) / 5f;
+        float phase = (getTick() + transformer.getPartialTick()) / (startFromDiving ? 2f : 5f);
         if (phase > 1f) phase = 1f;
         float factor = Easing.with(phase).sinInOut(0f, 1f, 0, 1f).get();
         if (standing) {
@@ -70,7 +64,7 @@ public class HideInBlockAnimator extends Animator {
         } else {
             float yRot = (float) VectorUtil.toYawDegree(lookVec);
             rotator.rotateYawRightward(180f + yRot)
-                    .rotatePitchFrontward(90f * factor)
+                    .rotatePitchFrontward(startFromDiving?180f-90f*factor:(90f * factor))
                     .translate(0, -0.95f * factor, 0.3f * factor);
             return true;
         }

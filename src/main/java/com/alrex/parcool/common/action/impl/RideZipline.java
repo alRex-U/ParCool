@@ -50,7 +50,7 @@ public class RideZipline extends Action {
 
     @Override
     public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-        if (KeyBindings.getKeyBindRideZipline().isDown()
+        if (KeyBindings.getKeyRideZipline().isDown()
                 && !player.isOnGround()
                 && !player.isInWater()
                 && !player.isFallFlying()
@@ -78,7 +78,7 @@ public class RideZipline extends Action {
 
     @Override
     public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-        return KeyBindings.getKeyBindRideZipline().isDown()
+        return KeyBindings.getKeyRideZipline().isDown()
                 && !KeyRecorder.keyJumpState.isPressed()
                 && !player.isInWall()
                 && !stamina.isExhausted()

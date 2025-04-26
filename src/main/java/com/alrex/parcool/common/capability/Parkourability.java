@@ -91,7 +91,7 @@ public class Parkourability {
 	}
 
 	public boolean isDoingNothing() {
-		return actions.stream().anyMatch(Action::isDoing);
+		return actions.stream().noneMatch(Action::isDoing);
 	}
 
 	@OnlyIn(Dist.CLIENT)

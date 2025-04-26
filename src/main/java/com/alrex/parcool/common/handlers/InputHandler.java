@@ -32,7 +32,7 @@ public class InputHandler {
                 }
             }
             if (parkourability.get(RideZipline.class).isDoing()) {
-                if (event.getKeyBinding().getKey().equals(KeyBindings.getKeyBindRideZipline().getKey())) {
+                if (event.getKeyBinding().getKey().equals(KeyBindings.getKeyRideZipline().getKey())) {
                     event.setSwingHand(false);
                     event.setCanceled(true);
                     return;
