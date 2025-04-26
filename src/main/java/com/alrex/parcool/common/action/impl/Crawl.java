@@ -26,12 +26,13 @@ public class Crawl extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		Pose pose = player.getPose();
 		return isActionInvoked(player)
-				&& disambiguateCommands(player)
+				&& disambiguateCommands(player, pose)
 				&& !parkourability.isDoingAny(Roll.class, Tap.class, ClingToCliff.class, Dive.class)
 				&& parkourability.get(Vault.class).getNotDoingTick() >= 8
 				&& player.getVehicle() == null
-				&& player.getPose() == Pose.STANDING
+				&& (pose == Pose.STANDING || pose == Pose.CROUCHING)
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
 				&& !player.onClimbable()
@@ -43,9 +44,9 @@ public class Crawl extends Action {
 				|| (ParCoolConfig.Client.CrawlControl.get() == ControlType.Toggle && toggleStatus));
 	}
 
-	private boolean disambiguateCommands(PlayerEntity player) {
+	private boolean disambiguateCommands(PlayerEntity player, Pose pose) {
 		// If crawl and dodge are bound to the same key, we'll crawl only when crouching
-		return !KeyRecorder.keyDodge.isPressed() || player.isCrouching();
+		return pose == Pose.CROUCHING || !KeyRecorder.keyDodge.isPressed();
 	}
 
 	public void onClientTick(PlayerEntity player, Parkourability parkourability) {
