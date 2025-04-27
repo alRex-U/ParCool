@@ -55,7 +55,7 @@ public class PlayerDamageHandler {
 				} else {
 					event.setDamageMultiplier(event.getDamageMultiplier() * (justTime ? 0.4f : 0.6f));
 				}
-			}else if (parkourability.get(HideInBlock.class).isStandbyInAir()){
+			} else if (parkourability.get(HideInBlock.class).isStandbyInAir(parkourability)) {
 				Tuple<BlockPos, BlockPos> area= WorldUtil.getHideAbleSpace(player,new BlockPos(player.blockPosition().below()));
 				if (area != null){
 					boolean stand = player.getBbHeight() < (Math.abs(area.getB().getY() - area.getA().getY()) + 1);

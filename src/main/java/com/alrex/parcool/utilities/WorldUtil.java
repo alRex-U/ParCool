@@ -325,7 +325,7 @@ public class WorldUtil {
 		center = center.add(diveDirection.scale(4));
 		AxisAlignedBB verticalWideBox = new AxisAlignedBB(
 				center.x() - wideWidth,
-				center.y() - 9,
+				center.y() - 7,
 				center.z() - wideWidth,
 				center.x() + wideWidth,
 				center.y() + height,

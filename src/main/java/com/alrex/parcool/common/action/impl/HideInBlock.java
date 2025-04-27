@@ -47,8 +47,11 @@ public class HideInBlock extends Action {
         return lookDirection;
     }
 
-    public boolean isStandbyInAir(){
-        return keyPressed;
+    public boolean isStandbyInAir(Parkourability parkourability) {
+        if (!keyPressed) return false;
+        Dive dive = parkourability.get(Dive.class);
+        return (dive.isDoing() || dive.getNotDoingTick() < 2)
+                && (parkourability.getAdditionalProperties().getLandingTick() <= 1);
     }
 
     @Override
@@ -64,14 +67,10 @@ public class HideInBlock extends Action {
         ) {
             return false;
         }
-        Dive dive=parkourability.get(Dive.class);
 
         BlockPos hideBaseBlockPos=null;
         boolean startFromDiving=false;
-        if (isStandbyInAir()
-                && (dive.isDoing() || dive.getNotDoingTick() < 2)
-                && (parkourability.getAdditionalProperties().getLandingTick() <= 1)
-        ){
+        if (isStandbyInAir(parkourability)) {
             hideBaseBlockPos=player.blockPosition().below();
             startFromDiving=true;
         }else if(KeyBindings.getKeyHideInBlock().isDown() && player.getPose() != Pose.CROUCHING){

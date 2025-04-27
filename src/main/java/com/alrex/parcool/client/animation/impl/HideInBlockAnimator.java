@@ -63,6 +63,9 @@ public class HideInBlockAnimator extends Animator {
             return true;
         } else {
             float yRot = (float) VectorUtil.toYawDegree(lookVec);
+            if (startFromDiving) {
+                rotator.translateY((1 - factor) * 0.8f);
+            }
             rotator.rotateYawRightward(180f + yRot)
                     .rotatePitchFrontward(startFromDiving?180f-90f*factor:(90f * factor))
                     .translate(0, -0.95f * factor, 0.3f * factor);
