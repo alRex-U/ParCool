@@ -7,6 +7,7 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.network.SyncActionStateMessage;
 import com.alrex.parcool.common.network.SyncStaminaMessage;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -64,10 +65,12 @@ public class ActionProcessor {
 				int trialCount = parkourability.getSynchronizeTrialCount();
 				if (trialCount < 5) {
 					parkourability.trySyncLimitation((ClientPlayerEntity) player);
-					player.displayClientMessage(new TranslationTextComponent("parcool.message.error.limitation.not_synced"), false);
+					if (ParCoolConfig.Client.Booleans.ShowAutoResynchronizationNotification.get()) {
+						player.displayClientMessage(new TranslationTextComponent("parcool.message.error.limitation.not_synced"), false);
+					}
 					ParCool.LOGGER.log(Level.WARN, "Detected ParCool Limitation is not synced. Sending synchronization request...");
 				} else if (trialCount == 5) {
-					player.displayClientMessage(new TranslationTextComponent("parcool.message.error.limitation.not_synced").withStyle(TextFormatting.DARK_RED), false);
+					player.displayClientMessage(new TranslationTextComponent("parcool.message.error.limitation.fail_sync").withStyle(TextFormatting.DARK_RED), false);
 					ParCool.LOGGER.log(Level.ERROR, "Failed to synchronize ParCool Limitation. Please report to developer");
 				}
 			}

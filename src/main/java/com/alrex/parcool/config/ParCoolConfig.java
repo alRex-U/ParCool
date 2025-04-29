@@ -172,6 +172,10 @@ public class ParCoolConfig {
 					ConfigGroup.Control, "enable players to do actions needing Fast-Running by sprint",
 					"substitute_sprint", false
 			),
+			ShowAutoResynchronizationNotification(
+					ConfigGroup.Other, "Notify if auto resynchronization of Limitation is executed",
+					"notify_limitation_auto_resync", true
+			),
 			ParCoolIsActive(
 					ConfigGroup.Other, "Whether ParCool is active",
 					"parcool_activation", true

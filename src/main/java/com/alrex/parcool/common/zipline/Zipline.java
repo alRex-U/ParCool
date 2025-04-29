@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class Zipline {
-    public static final double MAXIMUM_DISTANCE = 60.;
+    public static final double MAXIMUM_DISTANCE = 72.;
 
     protected Zipline(Vector3d point1, Vector3d point2) {
         if (point1.y() <= point2.y()) {

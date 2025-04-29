@@ -134,6 +134,7 @@
   "parcool.config.c.enable_camera_rotation_dodge": "Enable camera rotation of Dodge",
   "parcool.config.c.enable_wall_jump_cooldown": "Enable cool time of Wall Jump",
   "parcool.config.c.vault_needs_key_pressed": "Pressing key is needed to trigger Vault",
+  "parcool.config.c.notify_limitation_auto_resync": "Notify if auto resynchronization of limitation is executed",
   "parcool.config.c.successive_dodge_cool_time": "Cool time of successive Dodge",
   "parcool.config.c.fast-run_control": "Control of FastRun",
   "parcool.config.c.h-wall-run_control": "Control of Horizontal Wall Run",
