@@ -3,6 +3,7 @@ package com.alrex.parcool.common.action.impl;
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.animation.impl.CatLeapAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
@@ -16,7 +17,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -55,7 +55,7 @@ public class CatLeap extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		Vector3d movement = player.getDeltaMovement();
+		Vec3Wrapper movement = player.getDeltaMovement();
 		if (movement.lengthSqr() < 0.001) return false;
 		movement = movement.multiply(1, 0, 1).normalize();
 		startInfo.putDouble(movement.x()).putDouble(movement.z());
@@ -83,13 +83,13 @@ public class CatLeap extends Action {
 
 	@Override
 	public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
-		Vector3d jumpDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		Vec3Wrapper jumpDirection = new Vec3Wrapper(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.CATLEAP.get(), 1, 1);
 		coolTimeTick = MAX_COOL_TIME_TICK;
 		spawnJumpEffect(player, jumpDirection);
 		player.jumpFromGround();
-		Vector3d motionVec = player.getDeltaMovement();
+		Vec3Wrapper motionVec = player.getDeltaMovement();
 		player.setDeltaMovement(jumpDirection.x(), motionVec.y() * 1.16667, jumpDirection.z());
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new CatLeapAnimator());
@@ -97,7 +97,7 @@ public class CatLeap extends Action {
 
 	@Override
 	public void onStartInOtherClient(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
-		Vector3d jumpDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		Vec3Wrapper jumpDirection = new Vec3Wrapper(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			player.playSound(SoundEvents.CATLEAP.get(), 1, 1);
 		spawnJumpEffect(player, jumpDirection);
@@ -121,22 +121,22 @@ public class CatLeap extends Action {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private void spawnJumpEffect(PlayerWrapper player, Vector3d jumpDirection) {
+	private void spawnJumpEffect(PlayerWrapper player, Vec3Wrapper jumpDirection) {
 		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		World level = player.getLevel();
-		Vector3d pos = player.position();
+		Vec3Wrapper pos = player.position();
 		BlockPos blockpos = new BlockPos(pos.add(0, -0.2, 0));
 		if (!level.isLoaded(blockpos)) return;
 		float width = player.getBbWidth();
 		BlockState blockstate = level.getBlockState(blockpos);
 		if (blockstate.getRenderShape() != BlockRenderType.INVISIBLE) {
 			for (int i = 0; i < 20; i++) {
-				Vector3d particlePos = new Vector3d(
+				Vec3Wrapper particlePos = new Vec3Wrapper(
 						pos.x() + (jumpDirection.x() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width,
 						pos.y() + 0.1D,
 						pos.z() + (jumpDirection.z() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width
 				);
-				Vector3d particleSpeed = particlePos.subtract(pos).normalize().scale(2.5 + 8 * player.getRandom().nextDouble()).add(0, 1.5, 0);
+				Vec3Wrapper particleSpeed = particlePos.subtract(pos).normalize().scale(2.5 + 8 * player.getRandom().nextDouble()).add(0, 1.5, 0);
 				level.addParticle(
 						new BlockParticleData(ParticleTypes.BLOCK, blockstate).setPos(blockpos),
 						particlePos.x(),

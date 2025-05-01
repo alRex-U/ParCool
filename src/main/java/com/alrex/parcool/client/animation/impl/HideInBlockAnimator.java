@@ -1,6 +1,7 @@
 package com.alrex.parcool.client.animation.impl;
 
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
@@ -10,7 +11,6 @@ import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
 
 public class HideInBlockAnimator extends Animator {
     public static HideInBlockAnimator crouch() {
@@ -60,7 +60,7 @@ public class HideInBlockAnimator extends Animator {
         float phase = (getTick() + rotator.getPartialTick()) / 5f;
         if (phase > 1f) phase = 1f;
         float factor = Easing.with(phase).sinInOut(0f, 1f, 0, 1f).get();
-        Vector3d lookVec = parkourability.get(HideInBlock.class).getLookDirection();
+        Vec3Wrapper lookVec = parkourability.get(HideInBlock.class).getLookDirection();
         if (lookVec == null) return false;
         if (standing) {
             float playerYRot = player.getRotatedYRot(rotator);

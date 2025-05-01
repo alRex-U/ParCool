@@ -4,6 +4,7 @@ import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.api.compatibility.EventBusWrapper;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.animation.impl.ChargeJumpAnimator;
 import com.alrex.parcool.client.animation.impl.JumpChargingAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
@@ -14,7 +15,6 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.util.math.vector.Vector3d;
 import java.nio.ByteBuffer;
 
 public class ChargeJump extends Action {
@@ -90,8 +90,8 @@ public class ChargeJump extends Action {
                     notChargeTick++;
                 }
                 if (isCharging()) {
-                    Vector3d targetAngle = VectorUtil.fromYawDegree(player.getYHeadRot());
-                    Vector3d currentAngle = VectorUtil.fromYawDegree(player.getYBodyRot());
+                    Vec3Wrapper targetAngle = VectorUtil.fromYawDegree(player.getYHeadRot());
+                    Vec3Wrapper currentAngle = VectorUtil.fromYawDegree(player.getYBodyRot());
                     double differenceAngle = Math.atan(
                             (currentAngle.x() * targetAngle.z() - targetAngle.x() * currentAngle.z())
                                     / (targetAngle.x() * currentAngle.x() + targetAngle.z() * currentAngle.z())

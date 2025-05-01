@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.block.zipline;
 
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.common.block.BlockStateProperties;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -11,7 +12,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 
 public class IronZiplineHookBlock extends ZiplineHookBlock {
@@ -50,9 +50,9 @@ public class IronZiplineHookBlock extends ZiplineHookBlock {
     }
 
     @Override
-    public Vector3d getActualZiplinePoint(BlockPos pos, BlockState state) {
+    public Vec3Wrapper getActualZiplinePoint(BlockPos pos, BlockState state) {
         Direction direction = state.getValue(FACING);
-        return new Vector3d(
+        return new Vec3Wrapper(
                 pos.getX() + 0.5 - direction.getStepX() * 0.2,
                 pos.getY() + 0.5 - direction.getStepY() * 0.2,
                 pos.getZ() + 0.5 - direction.getStepZ() * 0.2
@@ -74,7 +74,7 @@ public class IronZiplineHookBlock extends ZiplineHookBlock {
         if (player == null)
             orthogonal = false;
         else {
-            Vector3d lookVec = player.getLookAngle();
+            Vec3Wrapper lookVec = player.getLookAngle();
             switch (context.getClickedFace()) {
                 case NORTH:
                 case SOUTH:

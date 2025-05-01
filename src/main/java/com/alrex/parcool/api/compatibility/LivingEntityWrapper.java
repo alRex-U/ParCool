@@ -64,8 +64,8 @@ public class LivingEntityWrapper extends EntityWrapper {
         return entity.getRandom();
     }
     
-    public Vector3d getRotatedBodyAngle(PlayerModelRotator rotator) {
-        return VectorUtil.fromYawDegree(MathUtil.lerp(entity.yBodyRotO, entity.yBodyRot, rotator.getPartialTick()));
+    public Vec3Wrapper getRotatedBodyAngle(PlayerModelRotator rotator) {
+        return new Vec3Wrapper(VectorUtil.fromYawDegree(MathUtil.lerp(entity.yBodyRotO, entity.yBodyRot, rotator.getPartialTick())));
     }
     
     public double getUpdatedYRotDifference() {
@@ -77,8 +77,8 @@ public class LivingEntityWrapper extends EntityWrapper {
 		);
     }
     
-    public Vector3d getVectorYBodyRot() {
-        return VectorUtil.fromYawDegree(entity.yBodyRot);
+    public Vec3Wrapper getVectorYBodyRot() {
+        return new Vec3Wrapper(VectorUtil.fromYawDegree(entity.yBodyRot));
     }
     
     public float getYBodyRot() {

@@ -14,7 +14,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.potion.Effect;
@@ -22,7 +21,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -31,7 +29,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.Clone;
@@ -273,11 +270,11 @@ public class PlayerWrapper extends LivingEntityWrapper {
         player.yBodyRotO = bodyYaw;
     }
     
-    public void setDeltaMovement(Vector3d vec) {
+    public void setDeltaMovement(Vec3Wrapper vec) {
         player.setDeltaMovement(vec);
     }
     
-    public void setPos(Vector3d hidingPoint) {
+    public void setPos(Vec3Wrapper hidingPoint) {
         player.setPos(hidingPoint.x(), hidingPoint.y(), hidingPoint.z());
     }
     
@@ -345,7 +342,7 @@ public class PlayerWrapper extends LivingEntityWrapper {
         player.playSound(soundEvent, i, j);
     }
 
-    public void rotateBodyRot0(Vector3d direction, double d) {
+    public void rotateBodyRot0(Vec3Wrapper direction, double d) {
         player.yBodyRotO = player.yBodyRot = (float) VectorUtil.toYawDegree(direction.yRot((float) d));
     }
 }

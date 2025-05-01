@@ -2,6 +2,7 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
@@ -9,7 +10,6 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.vector.Vector3d;
 
 import java.nio.ByteBuffer;
 import java.util.Random;
@@ -23,7 +23,7 @@ public class BreakfallReady extends Action {
 			if (ParCoolConfig.Client.Booleans.EnableActionParticles.get()
 					&& ParCoolConfig.Client.Booleans.EnableActionParticlesOfJustTimeBreakfall.get()
 			) {
-				Vector3d pos = player.position();
+				Vec3Wrapper pos = player.position();
 				Random rand = player.getRandom();
 				for (int i = 0; i < 12; i++) {
 					player.addParticle(ParticleTypes.END_ROD,

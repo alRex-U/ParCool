@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.animation.impl.WallSlideAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
@@ -16,7 +17,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,14 +25,14 @@ import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
 public class WallSlide extends Action {
-	private Vector3d leanedWallDirection = null;
+	private Vec3Wrapper leanedWallDirection = null;
 	private byte particleSpawnCoolTime = 0;
 	private double startYSpeed = 0;
 	private int damageCount = 0, takenDamageCount = 0;
 	private byte damageCoolTime = 0;
 
 	@Nullable
-	public Vector3d getLeanedWallDirection() {
+	public Vec3Wrapper getLeanedWallDirection() {
 		return leanedWallDirection;
 	}
 
@@ -45,7 +45,7 @@ public class WallSlide extends Action {
 
 	@Override
 	public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
-		Vector3d wall = WorldUtil.getWall(player);
+		Vec3Wrapper wall = WorldUtil.getWall(player);
 		return (wall != null
 				&& !player.isOnGround()
 				&& !parkourability.get(FastRun.class).isDoing()
@@ -125,7 +125,7 @@ public class WallSlide extends Action {
 		if (leanedWallDirection == null) return;
 		if (player.getRandom().nextBoolean()) return;
 		World level = player.getLevel();
-		Vector3d pos = player.position();
+		Vec3Wrapper pos = player.position();
 		BlockPos leanedBlock = new BlockPos(
 				pos.add(leanedWallDirection.x(), player.getBbHeight() * 0.25, leanedWallDirection.z())
 		);
@@ -133,15 +133,15 @@ public class WallSlide extends Action {
 		float width = player.getBbWidth();
 		BlockState blockstate = level.getBlockState(leanedBlock);
 
-		Vector3d normalizedWallVec = leanedWallDirection.normalize();
-		Vector3d orthogonalToWallVec = normalizedWallVec.yRot((float) (Math.PI / 2));
+		Vec3Wrapper normalizedWallVec = leanedWallDirection.normalize();
+		Vec3Wrapper orthogonalToWallVec = normalizedWallVec.yRot((float) (Math.PI / 2));
 		if (blockstate.getRenderShape() != BlockRenderType.INVISIBLE) {
-			Vector3d particlePos = new Vector3d(
+			Vec3Wrapper particlePos = new Vec3Wrapper(
 					pos.x() + (normalizedWallVec.x() * 0.4 + orthogonalToWallVec.x() * (player.getRandom().nextDouble() - 0.5D)) * width,
 					pos.y() + player.getBbHeight() - 0.2D + 0.3 * player.getRandom().nextDouble(),
 					pos.z() + (normalizedWallVec.z() * 0.4 + orthogonalToWallVec.z() * (player.getRandom().nextDouble() - 0.5D)) * width
 			);
-			Vector3d particleSpeed = normalizedWallVec
+			Vec3Wrapper particleSpeed = normalizedWallVec
 					.reverse()
 					.yRot((float) (Math.PI * 0.1 * (player.getRandom().nextDouble() - 0.5)))
 					.scale(0.05)

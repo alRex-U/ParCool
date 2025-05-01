@@ -1,6 +1,8 @@
 package com.alrex.parcool.client.animation.impl;
 
+import com.alrex.parcool.api.compatibility.AxisWrapper;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
@@ -8,8 +10,6 @@ import com.alrex.parcool.common.action.impl.RideZipline;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.event.TickEvent;
 
 public class RideZiplineAnimator extends Animator {
@@ -41,9 +41,9 @@ public class RideZiplineAnimator extends Animator {
 
     @Override
     public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
-        Vector3d offset = parkourability.get(RideZipline.class).getEndOffsetFromStart();
+        Vec3Wrapper offset = parkourability.get(RideZipline.class).getEndOffsetFromStart();
         if (offset == null) return;
-        double angleDifference = VectorUtil.toYawRadian(player.getLookAngle()) - VectorUtil.toYawRadian(new Vector3d(offset.x(), 0, offset.z()));
+        double angleDifference = VectorUtil.toYawRadian(player.getLookAngle()) - VectorUtil.toYawRadian(new Vec3Wrapper(offset.x(), 0, offset.z()));
         double angleCos = Math.cos(angleDifference);
         double angleSin = Math.sin(angleDifference);
         double angleCosAbs = Math.abs(angleCos);
@@ -65,14 +65,14 @@ public class RideZiplineAnimator extends Animator {
 
     @Override
     public void rotatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator) {
-        Vector3d offset = parkourability.get(RideZipline.class).getEndOffsetFromStart();
+        Vec3Wrapper offset = parkourability.get(RideZipline.class).getEndOffsetFromStart();
         if (offset == null) return;
-        Vector3d rotationAxis = new Vector3d(0, 0, 1)
-                .yRot((float) (Math.PI / 2 + VectorUtil.toYawRadian(player.getLookAngle()) - VectorUtil.toYawRadian(new Vector3d(offset.x(), 0, offset.z()))))
+        Vec3Wrapper rotationAxis = new Vec3Wrapper(0, 0, 1)
+                .yRot((float) (Math.PI / 2 + VectorUtil.toYawRadian(player.getLookAngle()) - VectorUtil.toYawRadian(new Vec3Wrapper(offset.x(), 0, offset.z()))))
                 .normalize();
         double angle = MathHelper.lerp(rotator.getPartialTick(), oldAngleRadian, currentAngleRadian);
         rotator.startBasedTop()
-                .rotate((float) angle, new Vector3f((float) rotationAxis.x(), 0f, (float) rotationAxis.z()))
+                .rotate((float) angle, AxisWrapper.createXZ(rotationAxis))
                 .end();
     }
 }

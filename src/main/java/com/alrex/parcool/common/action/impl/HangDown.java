@@ -2,6 +2,7 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.animation.impl.HangAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
@@ -13,7 +14,6 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -80,7 +80,7 @@ public class HangDown extends Action {
 		armSwingAmount = 0;
 		bodySwingAngleFactor = startData.getDouble();
 		hangingBarAxis = WorldUtil.getHangableBars(player);
-		Vector3d bodyVec = VectorUtil.fromYawDegree(player.getYBodyRot());
+		Vec3Wrapper bodyVec = VectorUtil.fromYawDegree(player.getYBodyRot());
 		orthogonalToBar = (hangingBarAxis == BarAxis.X && Math.abs(bodyVec.x()) < Math.abs(bodyVec.z()))
 				|| (hangingBarAxis == BarAxis.Z && Math.abs(bodyVec.z()) < Math.abs(bodyVec.x()));
 		player.setDeltaMovement(0, 0, 0);
@@ -111,7 +111,7 @@ public class HangDown extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onWorkingTickInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
-		Vector3d bodyVec = VectorUtil.fromYawDegree(player.getYBodyRot());
+		Vec3Wrapper bodyVec = VectorUtil.fromYawDegree(player.getYBodyRot());
 		final double speed = 0.1;
 		double xSpeed = 0, zSpeed = 0;
 		if (orthogonalToBar) {
@@ -139,7 +139,7 @@ public class HangDown extends Action {
 	@Override
 	public void onWorkingTickInClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		hangingBarAxis = WorldUtil.getHangableBars(player);
-		Vector3d bodyVec = VectorUtil.fromYawDegree(player.getYBodyRot());
+		Vec3Wrapper bodyVec = VectorUtil.fromYawDegree(player.getYBodyRot());
 		orthogonalToBar =
 				(hangingBarAxis == BarAxis.X && Math.abs(bodyVec.x()) < Math.abs(bodyVec.z()))
 						|| (hangingBarAxis == BarAxis.Z && Math.abs(bodyVec.z()) < Math.abs(bodyVec.x()));
@@ -165,13 +165,13 @@ public class HangDown extends Action {
 	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerWrapper player, Parkourability parkourability) {
 		if (isDoing()) {
 			if (hangingBarAxis == null) return;
-			Vector3d bodyVec = VectorUtil.fromYawDegree(player.getYBodyRot()).normalize();
-			Vector3d lookVec = player.getLookAngle();
-			Vector3d idealLookVec;
+			Vec3Wrapper bodyVec = VectorUtil.fromYawDegree(player.getYBodyRot()).normalize();
+			Vec3Wrapper lookVec = player.getLookAngle();
+			Vec3Wrapper idealLookVec;
 			if (Math.abs(lookVec.x()) > Math.abs(lookVec.z())) {
-				idealLookVec = new Vector3d(lookVec.x() > 0 ? 1 : -1, 0, 0);
+				idealLookVec = new Vec3Wrapper(lookVec.x() > 0 ? 1 : -1, 0, 0);
 			} else {
-				idealLookVec = new Vector3d(0, 0, lookVec.z() > 0 ? 1 : -1);
+				idealLookVec = new Vec3Wrapper(0, 0, lookVec.z() > 0 ? 1 : -1);
 			}
 			double differenceAngle = Math.acos(bodyVec.dot(idealLookVec));
 			differenceAngle /= 4;

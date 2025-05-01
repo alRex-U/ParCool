@@ -1,5 +1,8 @@
 package com.alrex.parcool.client.renderer.entity;
 
+import com.alrex.parcool.api.compatibility.AxisWrapper;
+import com.alrex.parcool.api.compatibility.EntityWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.renderer.RenderTypes;
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import com.alrex.parcool.common.zipline.Zipline;
@@ -16,8 +19,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.LightType;
 
 import javax.annotation.Nonnull;
@@ -50,17 +51,18 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
         BlockPos start = entity.getStartPos();
         BlockPos end = entity.getEndPos();
         if (start == BlockPos.ZERO && end == BlockPos.ZERO) return;
+        EntityWrapper entityWrapper = EntityWrapper.get(entity);
 
         int color = entity.getColor();
         float r = ((0xFF0000 & color) >> 16) / 255f;
         float g = ((0x00FF00 & color) >> 8) / 255f;
         float b = (0x0000FF & color) / 255f;
 
-        Vector3d entityPos = entity.position();
+        Vec3Wrapper entityPos = entityWrapper.position();
         Zipline zipline = entity.getZipline();
-        Vector3d startPos = zipline.getStartPos();
-        Vector3d startPosOffset = startPos.subtract(entityPos);
-        Vector3d endOffsetFromStart = zipline.getOffsetToEndFromStart();
+        Vec3Wrapper startPos = zipline.getStartPos();
+        Vec3Wrapper startPosOffset = startPos.subtract(entityPos);
+        Vec3Wrapper endOffsetFromStart = zipline.getOffsetToEndFromStart();
 
         boolean render3d = ParCoolConfig.Client.Booleans.Enable3DRenderingForZipline.get();
 
@@ -131,8 +133,8 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
             float phase = (float) (currentCount + i) / maxCount;
 
             int lightLevel = LightTexture.pack((int) MathHelper.lerp(phase, startBlockLightLevel, endBlockLightLevel), (int) MathHelper.lerp(phase, startSkyBrightness, endSkyBrightness));
-            Vector3d midPointD = zipline.getMidPointOffsetFromStart(phase);
-            Vector3f midPoint = new Vector3f((float) midPointD.x(), (float) midPointD.y(), (float) midPointD.z());
+            Vec3Wrapper midPointD = zipline.getMidPointOffsetFromStart(phase);
+            AxisWrapper midPoint = AxisWrapper.fromVector(midPointD);
 
             final float width = 0.075f;
             float tilt = zipline.getSlope(phase);
@@ -197,14 +199,14 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
             int startSkyBrightness, int endSkyBrightness,
             float r, float g, float b
     ) {
-        Vector3f[] vertexList = new Vector3f[8];
+        AxisWrapper[] vertexList = new AxisWrapper[8];
         int[] lightLevelList = new int[2];
         for (int i = 0; i < 2; i++) {
             float phase = (float) (currentCount + i) / maxCount;
 
             lightLevelList[i] = LightTexture.pack((int) MathHelper.lerp(phase, startBlockLightLevel, endBlockLightLevel), (int) MathHelper.lerp(phase, startSkyBrightness, endSkyBrightness));
-            Vector3d midPointD = zipline.getMidPointOffsetFromStart(phase);
-            Vector3f midPoint = new Vector3f((float) midPointD.x(), (float) midPointD.y(), (float) midPointD.z());
+            Vec3Wrapper midPointD = zipline.getMidPointOffsetFromStart(phase);
+            AxisWrapper midPoint = AxisWrapper.fromVector(midPointD);
 
             final float width = 0.075f;
             float tilt = zipline.getSlope(phase);
@@ -214,22 +216,22 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
             float zBaseOffset = unitLengthZ * width * tilt * tiltInv / 1.41421356f;
             float xOffset = unitLengthZ * width / 1.41421356f;
             float zOffset = -unitLengthX * width / 1.41421356f;
-            vertexList[4 * i] = new Vector3f(
+            vertexList[4 * i] = new AxisWrapper(
                     (midPoint.x() - xBaseOffset + xOffset),
                     (midPoint.y() + yOffset),
                     (midPoint.z() - zBaseOffset + zOffset)
             );
-            vertexList[4 * i + 1] = new Vector3f(
+            vertexList[4 * i + 1] = new AxisWrapper(
                     (midPoint.x() - xBaseOffset - xOffset),
                     (midPoint.y() + yOffset),
                     (midPoint.z() - zBaseOffset - zOffset)
             );
-            vertexList[4 * i + 2] = new Vector3f(
+            vertexList[4 * i + 2] = new AxisWrapper(
                     (midPoint.x() + xBaseOffset - xOffset),
                     (midPoint.y() - yOffset),
                     (midPoint.z() + zBaseOffset - zOffset)
             );
-            vertexList[4 * i + 3] = new Vector3f(
+            vertexList[4 * i + 3] = new AxisWrapper(
                     (midPoint.x() + xBaseOffset + xOffset),
                     (midPoint.y() - yOffset),
                     (midPoint.z() + zBaseOffset + zOffset)

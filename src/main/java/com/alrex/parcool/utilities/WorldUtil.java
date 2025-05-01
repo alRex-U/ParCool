@@ -2,6 +2,7 @@ package com.alrex.parcool.utilities;
 
 import com.alrex.parcool.api.compatibility.EntityWrapper;
 import com.alrex.parcool.api.compatibility.LivingEntityWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.common.action.impl.HangDown;
 import com.alrex.parcool.common.tags.BlockTags;
 import net.minecraft.block.*;
@@ -10,18 +11,17 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
 public class WorldUtil {
 
-	public static Vector3d getRunnableWall(LivingEntityWrapper entity, double range) {
+	public static Vec3Wrapper getRunnableWall(LivingEntityWrapper entity, double range) {
 		double width = entity.getBbWidth() * 0.4f;
 		double wallX = 0;
 		double wallZ = 0;
-		Vector3d pos = entity.position();
+		Vec3Wrapper pos = entity.position();
 
 		AxisAlignedBB baseBox1 = new AxisAlignedBB(
 				pos.x() - width,
@@ -62,19 +62,19 @@ public class WorldUtil {
 		}
 		if (wallX == 0 && wallZ == 0) return null;
 
-		return new Vector3d(wallX, 0, wallZ);
+		return new Vec3Wrapper(wallX, 0, wallZ);
 	}
 
 	@Nullable
-	public static Vector3d getWall(LivingEntityWrapper entity) {
+	public static Vec3Wrapper getWall(LivingEntityWrapper entity) {
 		return getWall(entity, entity.getBbWidth() * 0.5);
 	}
 	@Nullable
-	public static Vector3d getWall(LivingEntityWrapper entity, double range) {
+	public static Vec3Wrapper getWall(LivingEntityWrapper entity, double range) {
 		final double width = entity.getBbWidth() * 0.49;
 		double wallX = 0;
 		double wallZ = 0;
-		Vector3d pos = entity.position();
+		Vec3Wrapper pos = entity.position();
 
 		AxisAlignedBB baseBox = new AxisAlignedBB(
 				pos.x() - width,
@@ -99,18 +99,18 @@ public class WorldUtil {
 		}
 		if (wallX == 0 && wallZ == 0) return null;
 
-		return new Vector3d(wallX, 0, wallZ);
+		return new Vec3Wrapper(wallX, 0, wallZ);
 	}
 
 	@Nullable
-	public static Vector3d getVaultableStep(LivingEntityWrapper entity) {
+	public static Vec3Wrapper getVaultableStep(LivingEntityWrapper entity) {
 		final double d = entity.getBbWidth() * 0.5;
 		World world = entity.getLevel();
 		double distance = entity.getBbWidth() / 2;
 		double baseLine = Math.min(entity.getBbHeight() * 0.86, getWallHeight(entity));
 		double stepX = 0;
 		double stepZ = 0;
-		Vector3d pos = entity.position();
+		Vec3Wrapper pos = entity.position();
 
 		AxisAlignedBB baseBoxBottom = new AxisAlignedBB(
 				pos.x() - d,
@@ -142,7 +142,7 @@ public class WorldUtil {
 		}
 		if (stepX == 0 && stepZ == 0) return null;
 		if (stepX == 0 || stepZ == 0) {
-			Vector3d result = new Vector3d(stepX, 0, stepZ);
+			Vec3Wrapper result = new Vec3Wrapper(stepX, 0, stepZ);
 			BlockPos target = new BlockPos(entity.position().add(result).add(0, 0.5, 0));
 			if (!world.isLoaded(target)) return null;
 			BlockState state = world.getBlockState(target);
@@ -157,14 +157,14 @@ public class WorldUtil {
 			}
 		}
 
-		return new Vector3d(stepX, 0, stepZ);
+		return new Vec3Wrapper(stepX, 0, stepZ);
 	}
 
-	public static double getWallHeight(LivingEntityWrapper entity, Vector3d direction, double maxHeight, double accuracy) {
+	public static double getWallHeight(LivingEntityWrapper entity, Vec3Wrapper direction, double maxHeight, double accuracy) {
 		final double d = entity.getBbWidth() * 0.49;
 		direction = direction.normalize();
 		World world = entity.getLevel();
-		Vector3d pos = entity.position();
+		Vec3Wrapper pos = entity.position();
 		boolean canReturn = false;
 		for (double height = 0; height < maxHeight; height += accuracy) {
 			AxisAlignedBB box = new AxisAlignedBB(
@@ -187,13 +187,13 @@ public class WorldUtil {
 	}
 
 	public static double getWallHeight(LivingEntityWrapper entity) {
-		Vector3d wall = getWall(entity);
+		Vec3Wrapper wall = getWall(entity);
 		if (wall == null) return 0;
 		World world = entity.getLevel();
 		final double accuracy = entity.getBbHeight() / 18; // normally about 0.1
 		final double d = entity.getBbWidth() * 0.5;
 		int loopNum = (int) Math.round(entity.getBbHeight() / accuracy);
-		Vector3d pos = entity.position();
+		Vec3Wrapper pos = entity.position();
 		boolean canReturn = false;
 		for (int i = 0; i < loopNum; i++) {
 			AxisAlignedBB box = new AxisAlignedBB(
@@ -291,7 +291,7 @@ public class WorldUtil {
 
 	public static boolean existsSpaceBelow(LivingEntityWrapper entity) {
 		World world = entity.getLevel();
-		Vector3d center = entity.position();
+		Vec3Wrapper center = entity.position();
 		if (!world.isLoaded(new BlockPos(center))) return false;
 		double height = entity.getBbHeight() * 1.5;
 		double width = entity.getBbWidth() * 2;
@@ -310,11 +310,11 @@ public class WorldUtil {
 		double width = entity.getBbWidth() * 1.5;
 		double height = entity.getBbHeight() * 1.5;
 		double wideWidth = entity.getBbWidth() * 2;
-		Vector3d center = entity.position();
+		Vec3Wrapper center = entity.position();
 		if (!world.isLoaded(new BlockPos(center))) return false;
-		Vector3d diveDirection = VectorUtil.fromYawDegree(entity.getYHeadRot());
+		Vec3Wrapper diveDirection = VectorUtil.fromYawDegree(entity.getYHeadRot());
 		for (int i = 0; i < 4; i++) {
-			Vector3d centerPoint = center.add(diveDirection.scale(width * i));
+			Vec3Wrapper centerPoint = center.add(diveDirection.scale(width * i));
 			AxisAlignedBB box = new AxisAlignedBB(
 					centerPoint.x() - width,
 					centerPoint.y() + 0.05,
@@ -371,21 +371,21 @@ public class WorldUtil {
 	}
 
 	@Nullable
-	public static Vector3d getGrabbableWall(LivingEntityWrapper entity) {
+	public static Vec3Wrapper getGrabbableWall(LivingEntityWrapper entity) {
 		final double d = entity.getBbWidth() * 0.5;
 		World world = entity.getLevel();
 		double distance = entity.getBbWidth() / 2;
 		double baseLine1 = entity.getEyeHeight() + (entity.getBbHeight() - entity.getEyeHeight()) / 2;
 		double baseLine2 = entity.getBbHeight() + (entity.getBbHeight() - entity.getEyeHeight()) / 2;
-		Vector3d wall1 = getGrabbableWall(entity, distance, baseLine1);
+		Vec3Wrapper wall1 = getGrabbableWall(entity, distance, baseLine1);
 		if (wall1 != null) return wall1;
 		return getGrabbableWall(entity, distance, baseLine2);
 	}
 
-	private static Vector3d getGrabbableWall(LivingEntityWrapper entity, double distance, double baseLine) {
+	private static Vec3Wrapper getGrabbableWall(LivingEntityWrapper entity, double distance, double baseLine) {
 		final double d = entity.getBbWidth() * 0.49;
 		World world = entity.getLevel();
-		Vector3d pos = entity.position();
+		Vec3Wrapper pos = entity.position();
 		AxisAlignedBB baseBoxSide = new AxisAlignedBB(
 				pos.x() - d,
 				pos.y() + baseLine - entity.getBbHeight() / 6,
@@ -439,7 +439,7 @@ public class WorldUtil {
 			if (!entity.isEveryLoaded(blockPos)) return null;
 			slipperiness = entity.getMinSlipperiness(blockPos);
 		}
-		return slipperiness <= 0.9 ? new Vector3d(xDirection, 0, zDirection) : null;
+		return slipperiness <= 0.9 ? new Vec3Wrapper(xDirection, 0, zDirection) : null;
 	}
 
 	public static boolean isHideAbleBlock(BlockState blockState) {
@@ -467,7 +467,7 @@ public class WorldUtil {
 		double entityHeight = entity.getBbHeight();
 		if (entityHeight >= 2 || entityWidth >= 1) return null;
 		if (entityHeight < 1) return new Tuple<>(base, base);
-		Vector3d lookAngle = entity.getLookAngle();
+		Vec3Wrapper lookAngle = entity.getLookAngle();
 		if (Math.abs(lookAngle.z()) > Math.abs(lookAngle.x())) {
 			if (lookAngle.z() > 0) {
 				if (getHideAbleSpace$isHideAble(world, block, base.south())) return new Tuple<>(base, base.south());

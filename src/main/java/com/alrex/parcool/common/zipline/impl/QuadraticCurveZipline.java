@@ -1,20 +1,20 @@
 package com.alrex.parcool.common.zipline.impl;
 
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.common.zipline.Zipline;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3d;
 
 public class QuadraticCurveZipline extends Zipline {
-    public QuadraticCurveZipline(Vector3d point1, Vector3d point2) {
+    public QuadraticCurveZipline(Vec3Wrapper point1, Vec3Wrapper point2) {
         super(point1, point2);
     }
 
     @Override
-    public Vector3d getMidPointOffsetFromStart(float t) {
+    public Vec3Wrapper getMidPointOffsetFromStart(float t) {
         double x = getOffsetToEndFromStart().x() * t;
         double z = getOffsetToEndFromStart().z() * t;
         double y = getOffsetToEndFromStart().y() * t * t;
-        return new Vector3d(x, y, z);
+        return new Vec3Wrapper(x, y, z);
     }
 
     @Override
@@ -23,7 +23,7 @@ public class QuadraticCurveZipline extends Zipline {
     }
 
     @Override
-    public float getParameter(Vector3d position) {
+    public float getParameter(Vec3Wrapper position) {
         double offsetX = getOffsetToEndFromStart().x();
         double offsetZ = getOffsetToEndFromStart().z();
         return (float) (((position.x() - getStartPos().x()) * offsetX + (position.z() - getStartPos().z()) * offsetZ) /
@@ -66,20 +66,20 @@ public class QuadraticCurveZipline extends Zipline {
     }
 
     @Override
-    public double getSquaredDistanceApproximately(Vector3d position) {
+    public double getSquaredDistanceApproximately(Vec3Wrapper position) {
         float t = getParameter(position);
-        Vector3d simplifiedNearestPoint = getMidPoint(t);
+        Vec3Wrapper simplifiedNearestPoint = getMidPoint(t);
         return position.distanceToSqr(simplifiedNearestPoint);
     }
 
     @Override
-    public boolean isPossiblyHangable(Vector3d position) {
+    public boolean isPossiblyHangable(Vec3Wrapper position) {
         return new AxisAlignedBB(getStartPos().x(), getStartPos().y(), getStartPos().z(), getEndPos().x(), getEndPos().y(), getEndPos().z())
                 .inflate(0.5)
                 .contains(position);
     }
 
-    public double getAccurateDistance(Vector3d position) {
+    public double getAccurateDistance(Vec3Wrapper position) {
         /*
         // calculate by minimalize squared distance for t
 

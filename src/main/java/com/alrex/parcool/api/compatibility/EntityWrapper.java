@@ -12,7 +12,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -40,7 +39,7 @@ public class EntityWrapper {
         entity.setDeltaMovement(entity.getDeltaMovement().add(i, d, j));
     }
     
-    public void addToDeltaMovement(Vector3d vec) {
+    public void addToDeltaMovement(Vec3Wrapper vec) {
         entity.setDeltaMovement(entity.getDeltaMovement().add(vec));
     }
 
@@ -69,8 +68,8 @@ public class EntityWrapper {
         return entity.getCapability(cap);
     }
     
-    public Vector3d getDeltaMovement() {
-        return entity.getDeltaMovement();
+    public Vec3Wrapper getDeltaMovement() {
+        return new Vec3Wrapper(entity.getDeltaMovement());
     }
     
     public float getEyeHeight() {
@@ -85,8 +84,8 @@ public class EntityWrapper {
         return entity.level;
     }
     
-    public Vector3d getLookAngle() {
-        return entity.getLookAngle();
+    public Vec3Wrapper getLookAngle() {
+        return new Vec3Wrapper(entity.getLookAngle());
     }
     
     public float getMinSlipperiness(BlockPos ...blockPos) {
@@ -183,8 +182,8 @@ public class EntityWrapper {
         entity.playSound(soundEvent, i, j);
     }
     
-    public Vector3d position() {
-        return entity.position();
+    public Vec3Wrapper position() {
+        return new Vec3Wrapper(entity.position());
     }
     
     public void resetFallDistance() {

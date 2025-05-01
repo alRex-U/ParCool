@@ -2,6 +2,7 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.animation.impl.RollAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
@@ -12,7 +13,6 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -89,7 +89,7 @@ public class Roll extends Action {
 		startRequired = false;
 		Direction direction = Direction.values()[startData.getInt()];
 		double modifier = Math.sqrt(player.getBbWidth());
-		Vector3d vec = VectorUtil.fromYawDegree(player.getYBodyRot()).scale(modifier);
+		Vec3Wrapper vec = VectorUtil.fromYawDegree(player.getYBodyRot()).scale(modifier);
 		switch (direction) {
 			case Back:
 				vec = vec.reverse();

@@ -1,8 +1,8 @@
 package com.alrex.parcool.common.zipline;
 
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.common.zipline.impl.GeneralQuadraticCurveZipline;
 import com.alrex.parcool.common.zipline.impl.StraightZipline;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -22,7 +22,7 @@ public enum ZiplineType {
         return new TranslationTextComponent(translationID);
     }
 
-    public Zipline getZipline(Vector3d point1, Vector3d point2) {
+    public Zipline getZipline(Vec3Wrapper point1, Vec3Wrapper point2) {
         if (this == STRAIGHT) {
             return new StraightZipline(point1, point2);
         } else if (this == STANDARD) {

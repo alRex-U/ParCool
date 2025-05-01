@@ -1,13 +1,13 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
@@ -15,11 +15,11 @@ import java.nio.ByteBuffer;
 public class QuickTurn extends Action {
 	private static final int AnimationTickLength = 4;
 	private boolean turnRightward = false;
-	private Vector3d startAngle = null;
+	private Vec3Wrapper startAngle = null;
 
 	@Override
 	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		Vector3d angle = player.getLookAngle();
+		Vec3Wrapper angle = player.getLookAngle();
 		startInfo
 				.putDouble(angle.x())
 				.putDouble(angle.z());
@@ -38,7 +38,7 @@ public class QuickTurn extends Action {
 	@Override
 	public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		turnRightward = !turnRightward;
-		startAngle = new Vector3d(
+		startAngle = new Vec3Wrapper(
 				startData.getDouble(),
 				0,
 				startData.getDouble()
@@ -50,7 +50,7 @@ public class QuickTurn extends Action {
 		if (isDoing() && startAngle != null) {
 			float renderTick = getDoingTick() + event.renderTickTime;
 			float animationPhase = renderTick / AnimationTickLength;
-			Vector3d rotatedAngle = startAngle.yRot((float) (Math.PI * animationPhase * (turnRightward ? -1 : 1)));
+			Vec3Wrapper rotatedAngle = startAngle.yRot((float) (Math.PI * animationPhase * (turnRightward ? -1 : 1)));
 			player.setYRot(VectorUtil.toYawDegree(rotatedAngle));
 		}
 	}

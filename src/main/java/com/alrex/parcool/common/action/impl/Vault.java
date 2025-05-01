@@ -2,6 +2,7 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.animation.impl.KongVaultAnimator;
 import com.alrex.parcool.client.animation.impl.SpeedVaultAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
@@ -12,7 +13,6 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -31,7 +31,7 @@ public class Vault extends Action {
 
 	//only in client
 	private double stepHeight = 0;
-	private Vector3d stepDirection = null;
+	private Vec3Wrapper stepDirection = null;
 	@Nullable
 	private AnimationType currentAnimation;
 
@@ -44,14 +44,14 @@ public class Vault extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		Vector3d lookVec = player.getLookAngle();
-		lookVec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
-		Vector3d step = WorldUtil.getVaultableStep(player);
+		Vec3Wrapper lookVec = player.getLookAngle();
+		lookVec = new Vec3Wrapper(lookVec.x(), 0, lookVec.z()).normalize();
+		Vec3Wrapper step = WorldUtil.getVaultableStep(player);
 		if (step == null) return false;
 		step = step.normalize();
 		//doing "vec/stepDirection" as complex number(x + z i) to calculate difference of player's direction to steps
-		Vector3d dividedVec =
-				new Vector3d(
+		Vec3Wrapper dividedVec =
+				new Vec3Wrapper(
 						lookVec.x() * step.x() + lookVec.z() * step.z(), 0,
 						-lookVec.x() * step.z() + lookVec.z() * step.x()
 				).normalize();
@@ -106,7 +106,7 @@ public class Vault extends Action {
 		currentAnimation = AnimationType.values()[startData.get()];
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.VAULT.get(), 1f, 1f);
-		stepDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
+		stepDirection = new Vec3Wrapper(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		stepHeight = startData.getDouble();
 		Animation animation = Animation.get(player);
 		if (animation != null && currentAnimation != null) {

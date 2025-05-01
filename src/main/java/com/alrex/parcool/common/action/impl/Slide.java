@@ -2,6 +2,7 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.animation.impl.CrawlAnimator;
 import com.alrex.parcool.client.animation.impl.SlidingAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
@@ -19,7 +20,6 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -29,11 +29,11 @@ import java.nio.ByteBuffer;
 
 public class Slide extends Action {
 	private static final BehaviorEnforcer.ID ID_JUMP_CANCEL = BehaviorEnforcer.newID();
-	private Vector3d slidingVec = null;
+	private Vec3Wrapper slidingVec = null;
 
 	@Override
 	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		Vector3d lookingVec = player.getLookAngle().multiply(1, 0, 1).normalize();
+		Vec3Wrapper lookingVec = player.getLookAngle().multiply(1, 0, 1).normalize();
 		startInfo.putDouble(lookingVec.x()).putDouble(lookingVec.z());
 		return (!stamina.isExhausted()
 				&& KeyRecorder.keyCrawlState.isPressed()
@@ -58,7 +58,7 @@ public class Slide extends Action {
 
 	@Override
 	public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
-		slidingVec = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		slidingVec = new Vec3Wrapper(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.SLIDE.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
@@ -70,7 +70,7 @@ public class Slide extends Action {
 
 	@Override
 	public void onStartInOtherClient(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
-		slidingVec = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		slidingVec = new Vec3Wrapper(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			player.playSound(SoundEvents.SLIDE.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
@@ -87,7 +87,7 @@ public class Slide extends Action {
 			if (attr != null) {
 				speedScale = attr.getValue() * 4.5;
 			}
-			Vector3d vec = slidingVec.scale(speedScale);
+			Vec3Wrapper vec = slidingVec.scale(speedScale);
 			player.setDeltaMovement((player.isOnGround() ? vec : vec.scale(0.6)).add(0, player.getDeltaMovement().y(), 0));
 		}
 	}
@@ -114,7 +114,7 @@ public class Slide extends Action {
 	}
 
 	@Nullable
-	public Vector3d getSlidingVector() {
+	public Vec3Wrapper getSlidingVector() {
 		return slidingVec;
 	}
 
@@ -127,19 +127,19 @@ public class Slide extends Action {
 	private void spawnSlidingParticle(PlayerWrapper player) {
 		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		World level = player.getLevel();
-		Vector3d pos = player.position();
+		Vec3Wrapper pos = player.position();
 		BlockState feetBlock = player.getBelowBlockState();
 		float width = player.getBbWidth();
-		Vector3d direction = getSlidingVector();
+		Vec3Wrapper direction = getSlidingVector();
 		if (direction == null) return;
 
 		if (feetBlock.getRenderShape() != BlockRenderType.INVISIBLE) {
-			Vector3d particlePos = new Vector3d(
+			Vec3Wrapper particlePos = new Vec3Wrapper(
 					pos.x() + (player.getRandom().nextDouble() - 0.5D) * width,
 					pos.y() + 0.01D + 0.2 * player.getRandom().nextDouble(),
 					pos.z() + (player.getRandom().nextDouble() - 0.5D) * width
 			);
-			Vector3d particleSpeed = direction
+			Vec3Wrapper particleSpeed = direction
 					.reverse()
 					.scale(2.5 + 5 * player.getRandom().nextDouble())
 					.add(0, 1.5, 0);

@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.RenderBehaviorEnforcer;
 import com.alrex.parcool.client.animation.impl.HideInBlockAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
@@ -19,7 +20,6 @@ import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -31,17 +31,17 @@ public class HideInBlock extends Action {
     private static final BehaviorEnforcer.ID ID_SHOW_NAME = BehaviorEnforcer.newID();
     private static final BehaviorEnforcer.ID ID_SNEAK = BehaviorEnforcer.newID();
     @Nullable
-    Vector3d hidingPoint = null;
+    Vec3Wrapper hidingPoint = null;
     @Nullable
     Tuple<BlockPos, BlockPos> hidingArea = null;
     @Nullable
-    Vector3d enterPoint = null;
+    Vec3Wrapper enterPoint = null;
     @Nullable
-    Vector3d lookDirection = null;
+    Vec3Wrapper lookDirection = null;
     boolean hidingBlockChanged = false;
 
     @Nullable
-    public Vector3d getLookDirection() {
+    public Vec3Wrapper getLookDirection() {
         return lookDirection;
     }
 
@@ -66,7 +66,7 @@ public class HideInBlock extends Action {
             BlockPos lookingBlock = ((BlockRayTraceResult) result).getBlockPos();
             Tuple<BlockPos, BlockPos> hideArea = WorldUtil.getHideAbleSpace(player, lookingBlock);
             if (hideArea == null) return false;
-            Vector3d hidePoint = new Vector3d(
+            Vec3Wrapper hidePoint = new Vec3Wrapper(
                     0.5 + (hideArea.getA().getX() + hideArea.getB().getX()) / 2.,
                     Math.min(hideArea.getA().getY(), hideArea.getB().getY()),
                     0.5 + (hideArea.getA().getZ() + hideArea.getB().getZ()) / 2.
@@ -81,18 +81,18 @@ public class HideInBlock extends Action {
                 int maxZ = Math.max(hideArea.getA().getZ(), hideArea.getB().getZ());
                 hideArea = new Tuple<>(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ));
             }
-            Vector3d direction;
+            Vec3Wrapper direction;
             boolean stand = player.getBbHeight() < (hideArea.getB().getY() - hideArea.getA().getY() + 1);
             if (stand) {
-                Vector3d lookAngle = player.getLookAngle();
+                Vec3Wrapper lookAngle = player.getLookAngle();
                 direction = Math.abs(lookAngle.x()) > Math.abs(lookAngle.z()) ?
-                        new Vector3d(lookAngle.x() > 0 ? 1 : -1, 0, 0) :
-                        new Vector3d(0, 0, lookAngle.z() > 0 ? 1 : -1);
+                        new Vec3Wrapper(lookAngle.x() > 0 ? 1 : -1, 0, 0) :
+                        new Vec3Wrapper(0, 0, lookAngle.z() > 0 ? 1 : -1);
             } else {
                 boolean zLonger = Math.abs(hideArea.getA().getZ() - hideArea.getB().getZ()) > Math.abs(hideArea.getA().getX() - hideArea.getB().getX());
                 direction = zLonger ?
-                        new Vector3d(0, 0, player.getLookAngle().z() > 0 ? 1 : -1) :
-                        new Vector3d(player.getLookAngle().x() > 0 ? 1 : -1, 0, 0);
+                        new Vec3Wrapper(0, 0, player.getLookAngle().z() > 0 ? 1 : -1) :
+                        new Vec3Wrapper(player.getLookAngle().x() > 0 ? 1 : -1, 0, 0);
             }
             BufferUtil.wrap(startInfo)
                     .putBoolean(stand)
@@ -167,7 +167,7 @@ public class HideInBlock extends Action {
 
     @Override
     public void onWorkingTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
-        player.setDeltaMovement(Vector3d.ZERO);
+        player.setDeltaMovement(Vec3Wrapper.ZERO);
         player.disablePhysics();
         player.setSprinting(false);
         player.setStandingPose();
@@ -175,8 +175,8 @@ public class HideInBlock extends Action {
 
     @Override
     public void onStopInLocalClient(PlayerWrapper player) {
-        final Vector3d hidePos = hidingPoint;
-        final Vector3d entPos = enterPoint;
+        final Vec3Wrapper hidePos = hidingPoint;
+        final Vec3Wrapper entPos = enterPoint;
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability == null) return;
         parkourability.getBehaviorEnforcer().setMarkerEnforcePosition(

@@ -1,21 +1,21 @@
 package com.alrex.parcool.utilities;
 
-import net.minecraft.util.math.vector.Vector3d;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 
 public class VectorUtil {
-	public static double toYawDegree(Vector3d vec) {
+	public static double toYawDegree(Vec3Wrapper vec) {
 		return (Math.atan2(vec.z(), vec.x()) * 180.0 / Math.PI - 90);
 	}
 
-	public static double toYawRadian(Vector3d vec) {
+	public static double toYawRadian(Vec3Wrapper vec) {
 		return (Math.atan2(vec.z(), vec.x()) - Math.PI / 2.);
 	}
 
-	public static double toPitchDegree(Vector3d vec) {
+	public static double toPitchDegree(Vec3Wrapper vec) {
 		return -(Math.atan2(vec.y(), Math.sqrt(vec.x() * vec.x() + vec.z() * vec.z())) * 180.0 / Math.PI);
 	}
 
-	public static Vector3d fromYawDegree(double degree) {
-		return new Vector3d(-Math.sin(Math.toRadians(degree)), 0, Math.cos(Math.toRadians(degree)));
+	public static Vec3Wrapper fromYawDegree(double degree) {
+		return new Vec3Wrapper(-Math.sin(Math.toRadians(degree)), 0, Math.cos(Math.toRadians(degree)));
 	}
 }

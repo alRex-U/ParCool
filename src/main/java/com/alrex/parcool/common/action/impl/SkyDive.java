@@ -2,13 +2,13 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.event.TickEvent;
 
 import java.nio.ByteBuffer;
@@ -31,8 +31,8 @@ public class SkyDive extends Action {
 	public void onWorkingTickInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		if (!player.isLocalPlayer()) return;
 		ClientPlayerWrapper clientPlayer = ClientPlayerWrapper.get(player);
-		Vector3d forwardVec = VectorUtil.fromYawDegree(player.getYHeadRot());
-		Vector3d leftVec = forwardVec.yRot((float) Math.PI / 2).scale(clientPlayer.getLeftImpulse() * 0.0);
+		Vec3Wrapper forwardVec = VectorUtil.fromYawDegree(player.getYHeadRot());
+		Vec3Wrapper leftVec = forwardVec.yRot((float) Math.PI / 2).scale(clientPlayer.getLeftImpulse() * 0.0);
 		forwardVec = forwardVec.scale(clientPlayer.getForwardImpulse() * 0.03);
 		clientPlayer.setDeltaMovement(clientPlayer.getDeltaMovement()
 				.multiply(1, 0.98, 1).add(

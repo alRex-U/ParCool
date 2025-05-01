@@ -2,6 +2,7 @@ package com.alrex.parcool.common.block.zipline;
 
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.common.block.TileEntities;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -21,7 +22,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
@@ -38,8 +38,8 @@ public class ZiplineHookBlock extends DirectionalBlock {
         registerDefaultState(defaultBlockState().setValue(FACING, Direction.UP));
     }
 
-    public Vector3d getActualZiplinePoint(BlockPos pos, BlockState state) {
-        return new Vector3d(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+    public Vec3Wrapper getActualZiplinePoint(BlockPos pos, BlockState state) {
+        return new Vec3Wrapper(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
     }
 
     @Override

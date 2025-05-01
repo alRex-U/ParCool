@@ -1,6 +1,7 @@
 package com.alrex.parcool.client.animation.impl;
 
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
@@ -12,7 +13,6 @@ import com.alrex.parcool.utilities.Easing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.util.HandSide;
-import net.minecraft.util.math.vector.Vector3d;
 
 public class FastRunningAnimator extends Animator {
 	@Override
@@ -141,10 +141,10 @@ public class FastRunningAnimator extends Animator {
 						.rotatePitchFrontward(pitch)
 						.end();
 			} else {
-				Vector3d lookAngle = player.getLookAngle();
-				Vector3d bodyAngle = player.getRotatedBodyAngle(rotator);
-				Vector3d differenceVec =
-						new Vector3d(
+				Vec3Wrapper lookAngle = player.getLookAngle();
+				Vec3Wrapper bodyAngle = player.getRotatedBodyAngle(rotator);
+				Vec3Wrapper differenceVec =
+						new Vec3Wrapper(
 								lookAngle.x() * bodyAngle.x() + lookAngle.z() * bodyAngle.z(), 0,
 								-lookAngle.x() * bodyAngle.z() + lookAngle.z() * bodyAngle.x()
 						).normalize();

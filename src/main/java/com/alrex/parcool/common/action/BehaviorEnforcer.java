@@ -1,11 +1,13 @@
 package com.alrex.parcool.common.action;
 
 import net.minecraft.client.settings.PointOfView;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
+
 import java.util.TreeMap;
 import java.util.function.Supplier;
 
@@ -62,9 +64,9 @@ public class BehaviorEnforcer {
     private final TreeMap<ID, Marker> fallFlyingCancelMarks = new TreeMap<>();
     private final TreeMap<ID, Marker> showNameCancelMarks = new TreeMap<>();
     @Nullable
-    private Enforcer<Vector3d> movementEnforcer = null;
+    private Enforcer<Vec3Wrapper> movementEnforcer = null;
     @Nullable
-    private Enforcer<Vector3d> positionEnforcer = null;
+    private Enforcer<Vec3Wrapper> positionEnforcer = null;
 
     public void addMarkerCancellingJump(ID id, Marker marker) {
         jumpCancelMarks.put(id, marker);
@@ -90,11 +92,11 @@ public class BehaviorEnforcer {
         showNameCancelMarks.put(id, marker);
     }
 
-    public void setMarkerEnforceMovePoint(Marker marker, Supplier<Vector3d> movementSupplier) {
+    public void setMarkerEnforceMovePoint(Marker marker, Supplier<Vec3Wrapper> movementSupplier) {
         movementEnforcer = new Enforcer<>(marker, movementSupplier);
     }
 
-    public void setMarkerEnforcePosition(Marker marker, Supplier<Vector3d> movementSupplier) {
+    public void setMarkerEnforcePosition(Marker marker, Supplier<Vec3Wrapper> movementSupplier) {
         positionEnforcer = new Enforcer<>(marker, movementSupplier);
     }
 
@@ -129,7 +131,7 @@ public class BehaviorEnforcer {
     }
 
     @Nullable
-    public Vector3d getEnforcedMovePoint() {
+    public Vec3Wrapper getEnforcedMovePoint() {
         if (movementEnforcer != null && movementEnforcer.remain()) {
             return movementEnforcer.getBehavior();
         }
@@ -138,7 +140,7 @@ public class BehaviorEnforcer {
     }
 
     @Nullable
-    public Vector3d getEnforcedPosition() {
+    public Vec3Wrapper getEnforcedPosition() {
         if (positionEnforcer != null && positionEnforcer.remain()) {
             return positionEnforcer.getBehavior();
         }

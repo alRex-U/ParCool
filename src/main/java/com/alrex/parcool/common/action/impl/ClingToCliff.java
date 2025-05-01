@@ -2,6 +2,7 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.animation.impl.ClingToCliffAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
@@ -14,7 +15,6 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -32,7 +32,7 @@ public class ClingToCliff extends Action {
 	private float armSwingAmount = 0;
 	private FacingDirection facingDirection = FacingDirection.ToWall;
 	@Nullable
-	private Vector3d clingWallDirection = null;
+	private Vec3Wrapper clingWallDirection = null;
 
 	public float getArmSwingAmount() {
 		return armSwingAmount;
@@ -57,7 +57,7 @@ public class ClingToCliff extends Action {
 				&& (KeyBindings.getKeyGrabWall().getKey().equals(KeyBindings.getKeySneak().getKey()) || !player.isShiftKeyDown())
 		);
 		if (!value) return false;
-		Vector3d wallVec = WorldUtil.getGrabbableWall(player);
+		Vec3Wrapper wallVec = WorldUtil.getGrabbableWall(player);
 		if (wallVec == null) return false;
 		startInfo.putDouble(wallVec.x())
 				.putDouble(wallVec.z());
@@ -93,7 +93,7 @@ public class ClingToCliff extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
-		clingWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		clingWallDirection = new Vec3Wrapper(startData.getDouble(), 0, startData.getDouble());
 		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
 		if (!KeyBindings.getKeyGrabWall().getKey().equals(KeyBindings.getKeySneak().getKey())) {
@@ -107,7 +107,7 @@ public class ClingToCliff extends Action {
 
 	@Override
 	public void onStartInOtherClient(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
-		clingWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		clingWallDirection = new Vec3Wrapper(startData.getDouble(), 0, startData.getDouble());
 		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
@@ -124,7 +124,7 @@ public class ClingToCliff extends Action {
 			player.setDeltaMovement(0, 0, 0);
 		} else {
 			if (clingWallDirection != null && facingDirection == FacingDirection.ToWall) {
-				Vector3d vec = clingWallDirection.yRot((float) (Math.PI / 2)).normalize().scale(0.1);
+				Vec3Wrapper vec = clingWallDirection.yRot((float) (Math.PI / 2)).normalize().scale(0.1);
 				if (KeyBindings.isKeyLeftDown()) player.setDeltaMovement(vec);
 				else if (KeyBindings.isKeyRightDown()) player.setDeltaMovement(vec.reverse());
 				else player.setDeltaMovement(0, 0, 0);
@@ -139,9 +139,9 @@ public class ClingToCliff extends Action {
 		clingWallDirection = WorldUtil.getGrabbableWall(player);
 		if (clingWallDirection == null) return;
 		clingWallDirection = clingWallDirection.normalize();
-		Vector3d lookingAngle = player.getLookAngle().multiply(1, 0, 1).normalize();
-		Vector3d angle =
-				new Vector3d(
+		Vec3Wrapper lookingAngle = player.getLookAngle().multiply(1, 0, 1).normalize();
+		Vec3Wrapper angle =
+				new Vec3Wrapper(
 						clingWallDirection.x() * lookingAngle.x() + clingWallDirection.z() * lookingAngle.z(), 0,
 						-clingWallDirection.x() * lookingAngle.z() + clingWallDirection.z() * lookingAngle.x()
 				).normalize();

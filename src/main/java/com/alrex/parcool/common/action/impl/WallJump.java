@@ -2,6 +2,7 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.animation.impl.BackwardWallJumpAnimator;
 import com.alrex.parcool.client.animation.impl.WallJumpAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
@@ -17,7 +18,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -56,12 +56,12 @@ public class WallJump extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Nullable
-	private Vector3d getJumpDirection(PlayerWrapper player, Vector3d wall) {
+	private Vec3Wrapper getJumpDirection(PlayerWrapper player, Vec3Wrapper wall) {
 		if (wall == null) return null;
 		wall = wall.normalize();
-		Vector3d lookVec = player.getLookAngle();
-		Vector3d vec = new Vector3d(lookVec.x(), 0, lookVec.z()).normalize();
-		Vector3d value;
+		Vec3Wrapper lookVec = player.getLookAngle();
+		Vec3Wrapper vec = new Vec3Wrapper(lookVec.x(), 0, lookVec.z()).normalize();
+		Vec3Wrapper value;
 		double dotProduct = wall.dot(vec);
 
 		if (dotProduct > -Math.cos(Math.toRadians(ParCoolConfig.Client.Integers.AcceptableAngleOfWallJump.get()))) {
@@ -79,8 +79,8 @@ public class WallJump extends Action {
 
 	@Override
 	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		Vector3d wallDirection = WorldUtil.getWall(player, player.getBbWidth() * 0.65);
-		Vector3d jumpDirection = getJumpDirection(player, wallDirection);
+		Vec3Wrapper wallDirection = WorldUtil.getWall(player, player.getBbWidth() * 0.65);
+		Vec3Wrapper jumpDirection = getJumpDirection(player, wallDirection);
 		if (jumpDirection == null) return false;
 		ClingToCliff cling = parkourability.get(ClingToCliff.class);
 		ControlType control = ParCoolConfig.Client.WallJumpControl.get();
@@ -102,14 +102,14 @@ public class WallJump extends Action {
 		if (!value) return false;
 
 		//doing "wallDirection/jumpDirection" as complex number(x + z i) to calculate difference of player's direction to wall
-		Vector3d dividedVec =
-				new Vector3d(
+		Vec3Wrapper dividedVec =
+				new Vec3Wrapper(
 						wallDirection.x() * jumpDirection.x() + wallDirection.z() * jumpDirection.z(), 0,
 						-wallDirection.x() * jumpDirection.z() + wallDirection.z() * jumpDirection.x()
 				).normalize();
-		Vector3d lookVec = player.getLookAngle().multiply(1, 0, 1).normalize();
-		Vector3d lookDividedVec =
-				new Vector3d(
+		Vec3Wrapper lookVec = player.getLookAngle().multiply(1, 0, 1).normalize();
+		Vec3Wrapper lookDividedVec =
+				new Vec3Wrapper(
 						lookVec.x() * wallDirection.x() + lookVec.z() * wallDirection.z(), 0,
 						-lookVec.x() * wallDirection.z() + lookVec.z() * wallDirection.x()
 				).normalize();
@@ -154,10 +154,10 @@ public class WallJump extends Action {
 	public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.WALL_JUMP.get(), 1f, 1f);
-		Vector3d jumpDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
-		Vector3d jumpMotion = jumpDirection.scale(0.59);
-		Vector3d wallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
-		Vector3d motion = player.getDeltaMovement();
+		Vec3Wrapper jumpDirection = new Vec3Wrapper(startData.getDouble(), startData.getDouble(), startData.getDouble());
+		Vec3Wrapper jumpMotion = jumpDirection.scale(0.59);
+		Vec3Wrapper wallDirection = new Vec3Wrapper(startData.getDouble(), 0, startData.getDouble());
+		Vec3Wrapper motion = player.getDeltaMovement();
 
 		BlockPos leanedBlock = new BlockPos(
 				player.getX() + wallDirection.x(),
@@ -201,8 +201,8 @@ public class WallJump extends Action {
 	public void onStartInOtherClient(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			player.playSound(SoundEvents.WALL_JUMP.get(), 1f, 1f);
-		Vector3d jumpDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
-		Vector3d wallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		Vec3Wrapper jumpDirection = new Vec3Wrapper(startData.getDouble(), startData.getDouble(), startData.getDouble());
+		Vec3Wrapper wallDirection = new Vec3Wrapper(startData.getDouble(), 0, startData.getDouble());
 		BlockPos leanedBlock = new BlockPos(
 				player.getX() + wallDirection.x(),
 				player.getBoundingBox().minY + player.getBbHeight() * 0.25,
@@ -237,10 +237,10 @@ public class WallJump extends Action {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private void spawnJumpParticles(PlayerWrapper player, Vector3d wallDirection, Vector3d jumpDirection) {
+	private void spawnJumpParticles(PlayerWrapper player, Vec3Wrapper wallDirection, Vec3Wrapper jumpDirection) {
 		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		World level = player.getLevel();
-		Vector3d pos = player.position();
+		Vec3Wrapper pos = player.position();
 		BlockPos leanedBlock = new BlockPos(
 				pos.add(wallDirection.x(), player.getBbHeight() * 0.25, wallDirection.z())
 		);
@@ -248,30 +248,30 @@ public class WallJump extends Action {
 		float width = player.getBbWidth();
 		BlockState blockstate = level.getBlockState(leanedBlock);
 
-		Vector3d horizontalJumpDirection = jumpDirection.multiply(1, 0, 1).normalize();
+		Vec3Wrapper horizontalJumpDirection = jumpDirection.multiply(1, 0, 1).normalize();
 
 		wallDirection = wallDirection.normalize();
-		Vector3d orthogonalToWallVec = wallDirection.yRot((float) (Math.PI / 2)).normalize();
+		Vec3Wrapper orthogonalToWallVec = wallDirection.yRot((float) (Math.PI / 2)).normalize();
 
 		//doing "Conjugate of (horizontalJumpDirection/-wallDirection)" as complex number(x + z i)
-		Vector3d differenceVec =
-				new Vector3d(
+		Vec3Wrapper differenceVec =
+				new Vec3Wrapper(
 						-wallDirection.x() * horizontalJumpDirection.x() - wallDirection.z() * horizontalJumpDirection.z(), 0,
 						wallDirection.z() * horizontalJumpDirection.x() - wallDirection.x() * horizontalJumpDirection.z()
 				).multiply(1, 0, -1).normalize();
-		Vector3d particleBaseDirection =
-				new Vector3d(
+		Vec3Wrapper particleBaseDirection =
+				new Vec3Wrapper(
 						-wallDirection.x() * differenceVec.x() + wallDirection.z() * differenceVec.z(), 0,
 						-wallDirection.x() * differenceVec.z() - wallDirection.z() * differenceVec.x()
 				);
 		if (blockstate.getRenderShape() != BlockRenderType.INVISIBLE) {
 			for (int i = 0; i < 10; i++) {
-				Vector3d particlePos = new Vector3d(
+				Vec3Wrapper particlePos = new Vec3Wrapper(
 						pos.x() + (wallDirection.x() * 0.4 + orthogonalToWallVec.x() * (player.getRandom().nextDouble() - 0.5D)) * width,
 						pos.y() + 0.1D + 0.3 * player.getRandom().nextDouble(),
 						pos.z() + (wallDirection.z() * 0.4 + orthogonalToWallVec.z() * (player.getRandom().nextDouble() - 0.5D)) * width
 				);
-				Vector3d particleSpeed = particleBaseDirection
+				Vec3Wrapper particleSpeed = particleBaseDirection
 						.yRot((float) (Math.PI * 0.2 * (player.getRandom().nextDouble() - 0.5)))
 						.scale(3 + 9 * player.getRandom().nextDouble())
 						.add(0, -jumpDirection.y() * 3 * player.getRandom().nextDouble(), 0);

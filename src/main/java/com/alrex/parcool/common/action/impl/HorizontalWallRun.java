@@ -2,6 +2,7 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.animation.impl.HorizontalWallRunAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
@@ -21,7 +22,6 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -43,8 +43,8 @@ public class HorizontalWallRun extends Action {
 	}
 
 	private boolean wallIsRightward = false;
-	private Vector3d runningWallDirection = null;
-	private Vector3d runningDirection = null;
+	private Vec3Wrapper runningWallDirection = null;
+	private Vec3Wrapper runningDirection = null;
 
 	@Override
 	public void onClientTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
@@ -54,19 +54,19 @@ public class HorizontalWallRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onWorkingTickInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
-		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
+		Vec3Wrapper wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
 		if (wallDirection == null) return;
 		if (runningWallDirection == null) return;
 		if (runningDirection == null) return;
-		Vector3d lookVec = VectorUtil.fromYawDegree(player.getYBodyRot());
+		Vec3Wrapper lookVec = VectorUtil.fromYawDegree(player.getYBodyRot());
 		double differenceAngle = Math.asin(
-				new Vector3d(
+				new Vec3Wrapper(
 						lookVec.x() * runningDirection.x() + lookVec.z() * runningDirection.z(), 0,
 						-lookVec.x() * runningDirection.z() + lookVec.z() * runningDirection.x()
 				).normalize().z()
 		);
 		bodyYaw = (float) VectorUtil.toYawDegree(lookVec.yRot((float) (differenceAngle / 10)));
-		Vector3d movement = player.getDeltaMovement();
+		Vec3Wrapper movement = player.getDeltaMovement();
 		BlockPos leanedBlock = new BlockPos(
 				player.getX() + runningWallDirection.x(),
 				player.getBoundingBox().minY + player.getBbHeight() * 0.5,
@@ -91,14 +91,14 @@ public class HorizontalWallRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
+		Vec3Wrapper wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
 		if (wallDirection == null) return false;
-		Vector3d wallVec = wallDirection.normalize();
-		Vector3d lookDirection = VectorUtil.fromYawDegree(player.getYBodyRot());
-		lookDirection = new Vector3d(lookDirection.x(), 0, lookDirection.z()).normalize();
+		Vec3Wrapper wallVec = wallDirection.normalize();
+		Vec3Wrapper lookDirection = VectorUtil.fromYawDegree(player.getYBodyRot());
+		lookDirection = new Vec3Wrapper(lookDirection.x(), 0, lookDirection.z()).normalize();
 		//doing "wallDirection/direction" as complex number(x + z i) to calculate difference of player's direction to steps
-		Vector3d dividedVec =
-				new Vector3d(
+		Vec3Wrapper dividedVec =
+				new Vec3Wrapper(
 						wallVec.x() * lookDirection.x() + wallVec.z() * lookDirection.z(), 0,
 						-wallVec.x() * lookDirection.z() + wallVec.z() * lookDirection.x()
 				).normalize();
@@ -106,7 +106,7 @@ public class HorizontalWallRun extends Action {
 			return false;
 		}
 		BufferUtil.wrap(startInfo).putBoolean(dividedVec.z() > 0/*if true, wall is in right side*/);
-		Vector3d runDirection = wallVec.yRot((float) (Math.PI / 2));
+		Vec3Wrapper runDirection = wallVec.yRot((float) (Math.PI / 2));
 		if (runDirection.dot(lookDirection) < 0) {
 			runDirection = runDirection.reverse();
 		}
@@ -140,7 +140,7 @@ public class HorizontalWallRun extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
-		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
+		Vec3Wrapper wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
 		if (wallDirection == null) return false;
 		return (getDoingTick() < getMaxRunningTick(parkourability.getActionInfo())
 				&& !stamina.isExhausted()
@@ -164,8 +164,8 @@ public class HorizontalWallRun extends Action {
 	@Override
 	public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		wallIsRightward = BufferUtil.getBoolean(startData);
-		runningWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
-		runningDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		runningWallDirection = new Vec3Wrapper(startData.getDouble(), 0, startData.getDouble());
+		runningDirection = new Vec3Wrapper(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.HORIZONTAL_WALL_RUN.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
@@ -177,8 +177,8 @@ public class HorizontalWallRun extends Action {
 	@Override
 	public void onStartInOtherClient(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
 		wallIsRightward = BufferUtil.getBoolean(startData);
-		runningWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
-		runningDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+		runningWallDirection = new Vec3Wrapper(startData.getDouble(), 0, startData.getDouble());
+		runningDirection = new Vec3Wrapper(startData.getDouble(), 0, startData.getDouble());
 		Animation animation = Animation.get(player);
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			player.playSound(SoundEvents.HORIZONTAL_WALL_RUN.get(), 1f, 1f);
@@ -192,9 +192,9 @@ public class HorizontalWallRun extends Action {
 	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerWrapper player, Parkourability parkourability) {
 		if (isDoing()) {
 			if (runningDirection == null) return;
-			Vector3d lookVec = VectorUtil.fromYawDegree(player.getYHeadRot());
+			Vec3Wrapper lookVec = VectorUtil.fromYawDegree(player.getYHeadRot());
 			double differenceAngle = Math.asin(
-					new Vector3d(
+					new Vec3Wrapper(
 							lookVec.x() * runningDirection.x() + lookVec.z() * runningDirection.z(), 0,
 							-lookVec.x() * runningDirection.z() + lookVec.z() * runningDirection.x()
 					).normalize().z()
@@ -233,7 +233,7 @@ public class HorizontalWallRun extends Action {
 		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		if (runningDirection == null || runningWallDirection == null) return;
 		World level = player.getLevel();
-		Vector3d pos = player.position();
+		Vec3Wrapper pos = player.position();
 		BlockPos leanedBlock = new BlockPos(
 				pos.add(runningWallDirection.x(), player.getBbHeight() * 0.25, runningWallDirection.z())
 		);
@@ -241,16 +241,16 @@ public class HorizontalWallRun extends Action {
 		float width = player.getBbWidth();
 		BlockState blockstate = level.getBlockState(leanedBlock);
 
-		Vector3d wallDirection = runningWallDirection.normalize();
-		Vector3d orthogonalToWallVec = wallDirection.yRot((float) (Math.PI / 2));
-		Vector3d particleBaseDirection = runningDirection.subtract(wallDirection);
+		Vec3Wrapper wallDirection = runningWallDirection.normalize();
+		Vec3Wrapper orthogonalToWallVec = wallDirection.yRot((float) (Math.PI / 2));
+		Vec3Wrapper particleBaseDirection = runningDirection.subtract(wallDirection);
 		if (blockstate.getRenderShape() != BlockRenderType.INVISIBLE) {
-			Vector3d particlePos = new Vector3d(
+			Vec3Wrapper particlePos = new Vec3Wrapper(
 					pos.x() + (wallDirection.x() * 0.4 + orthogonalToWallVec.x() * (player.getRandom().nextDouble() - 0.5D)) * width,
 					pos.y() + 0.1D + 0.3 * player.getRandom().nextDouble(),
 					pos.z() + (wallDirection.z() * 0.4 + orthogonalToWallVec.z() * (player.getRandom().nextDouble() - 0.5D)) * width
 			);
-			Vector3d particleSpeed = particleBaseDirection
+			Vec3Wrapper particleSpeed = particleBaseDirection
 					.yRot((float) (Math.PI * 0.2 * (player.getRandom().nextDouble() - 0.5)))
 					.scale(3 + 6 * player.getRandom().nextDouble())
 					.add(0, 1.5, 0);

@@ -1,25 +1,25 @@
 package com.alrex.parcool.common.zipline.impl;
 
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.common.zipline.Zipline;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
 
 public class StraightZipline extends Zipline {
-    public StraightZipline(Vector3d point1, Vector3d point2) {
+    public StraightZipline(Vec3Wrapper point1, Vec3Wrapper point2) {
         super(point1, point2);
     }
 
-    public Vector3d getMidPoint(double t) {
+    public Vec3Wrapper getMidPoint(double t) {
         return getMidPointOffsetFromStart(t).add(getStartPos());
     }
 
     @Override
-    public Vector3d getMidPointOffsetFromStart(float t) {
+    public Vec3Wrapper getMidPointOffsetFromStart(float t) {
         return getOffsetToEndFromStart().scale(t);
     }
 
-    public Vector3d getMidPointOffsetFromStart(double t) {
+    public Vec3Wrapper getMidPointOffsetFromStart(double t) {
         return getOffsetToEndFromStart().scale(t);
     }
 
@@ -34,11 +34,11 @@ public class StraightZipline extends Zipline {
     }
 
     @Override
-    public float getParameter(Vector3d position) {
+    public float getParameter(Vec3Wrapper position) {
         return (float) getParameterD(position);
     }
 
-    public double getParameterD(Vector3d position) {
+    public double getParameterD(Vec3Wrapper position) {
         double xOffset = getOffsetToEndFromStart().x();
         double yOffset = getOffsetToEndFromStart().y();
         double zOffset = getOffsetToEndFromStart().z();
@@ -55,14 +55,14 @@ public class StraightZipline extends Zipline {
     }
 
     @Override
-    public double getSquaredDistanceApproximately(Vector3d position) {
+    public double getSquaredDistanceApproximately(Vec3Wrapper position) {
         double t = getParameterD(position);
-        Vector3d mostNearPoint = getMidPoint(t);
+        Vec3Wrapper mostNearPoint = getMidPoint(t);
         return mostNearPoint.distanceToSqr(position);
     }
 
     @Override
-    public boolean isPossiblyHangable(Vector3d position) {
+    public boolean isPossiblyHangable(Vec3Wrapper position) {
         return new AxisAlignedBB(getStartPos().x(), getStartPos().y(), getStartPos().z(), getEndPos().x(), getEndPos().y(), getEndPos().z())
                 .inflate(0.5)
                 .contains(position);

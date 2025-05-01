@@ -1,9 +1,10 @@
 package com.alrex.parcool.client.animation;
 
+import com.alrex.parcool.api.compatibility.AxisWrapper;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.api.unstable.animation.AnimationOption;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.util.math.vector.Vector3f;
 
 public class PlayerModelRotator {
 	private final MatrixStack stack;
@@ -82,26 +83,26 @@ public class PlayerModelRotator {
 	}
 
 	public PlayerModelRotator rotatePitchFrontward(float angleDegree) {
-		stack.mulPose(Vector3f.XN.rotationDegrees(angleDegree));
+		stack.mulPose(AxisWrapper.XN.rotationDegrees(angleDegree));
 		return this;
 	}
 
 	public PlayerModelRotator rotateRollRightward(float angleDegree) {
-		stack.mulPose(Vector3f.ZN.rotationDegrees(angleDegree));
+		stack.mulPose(AxisWrapper.ZN.rotationDegrees(angleDegree));
 		return this;
 	}
 
 	public PlayerModelRotator rotateYawRightward(float angleDegree) {
-		stack.mulPose(Vector3f.YN.rotationDegrees(angleDegree));
+		stack.mulPose(AxisWrapper.YN.rotationDegrees(angleDegree));
 		return this;
 	}
 
-	public PlayerModelRotator rotate(float angle, Vector3f axis) {
+	public PlayerModelRotator rotate(float angle, AxisWrapper axis) {
 		stack.mulPose(axis.rotation(angle));
 		return this;
 	}
 
-	public PlayerModelRotator rotateDegrees(float angleDegree, Vector3f axis) {
+	public PlayerModelRotator rotateDegrees(float angleDegree, AxisWrapper axis) {
 		stack.mulPose(axis.rotationDegrees(angleDegree));
 		return this;
 	}

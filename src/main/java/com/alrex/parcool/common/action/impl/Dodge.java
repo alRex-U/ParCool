@@ -3,6 +3,7 @@ package com.alrex.parcool.common.action.impl;
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.animation.impl.DodgeAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
@@ -16,7 +17,6 @@ import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -180,8 +180,8 @@ public class Dodge extends Action {
 		successivelyCoolTick = getSuccessiveCoolTime(parkourability.getActionInfo());
 
 		if (!player.isOnGround()) return;
-		Vector3d lookVec = VectorUtil.fromYawDegree(player.getYHeadRot());
-		Vector3d dodgeVec = Vector3d.ZERO;
+		Vec3Wrapper lookVec = VectorUtil.fromYawDegree(player.getYHeadRot());
+		Vec3Wrapper dodgeVec = Vec3Wrapper.ZERO;
 		switch (dodgeDirection) {
 			case Front:
 				dodgeVec = lookVec;

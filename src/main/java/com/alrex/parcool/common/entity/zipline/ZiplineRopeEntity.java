@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.entity.zipline;
 
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.common.block.zipline.ZiplineHookTileEntity;
 import com.alrex.parcool.common.block.zipline.ZiplineInfo;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
@@ -20,7 +21,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -73,19 +73,19 @@ public class ZiplineRopeEntity extends Entity {
             zipline_start = start;
             zipline_end = end;
             zip_type = type;
-            Vector3d startPos;
-            Vector3d endPos;
+            Vec3Wrapper startPos;
+            Vec3Wrapper endPos;
             TileEntity startEntity = level.getBlockEntity(start);
             TileEntity endEntity = level.getBlockEntity(end);
             if (startEntity instanceof ZiplineHookTileEntity) {
                 startPos = ((ZiplineHookTileEntity) startEntity).getActualZiplinePoint(end);
             } else {
-                startPos = new Vector3d(start.getX() + 0.5, start.getY() + 0.7, start.getZ() + 0.5);
+                startPos = new Vec3Wrapper(start.getX() + 0.5, start.getY() + 0.7, start.getZ() + 0.5);
             }
             if (endEntity instanceof ZiplineHookTileEntity) {
                 endPos = ((ZiplineHookTileEntity) endEntity).getActualZiplinePoint(start);
             } else {
-                endPos = new Vector3d(end.getX() + 0.5, end.getY() + 0.7, end.getZ() + 0.5);
+                endPos = new Vec3Wrapper(end.getX() + 0.5, end.getY() + 0.7, end.getZ() + 0.5);
             }
             zipline = type.getZipline(startPos, endPos);
         }
@@ -107,7 +107,7 @@ public class ZiplineRopeEntity extends Entity {
         double baseYOffset = start.getY() - y;
         double baseZOffset = start.getZ() - z;
         double t = -(xOffset * baseXOffset + yOffset * baseYOffset + zOffset * baseZOffset) / (xOffset * xOffset + yOffset * yOffset + zOffset * zOffset);
-        Vector3d mostNearPoint = new Vector3d(xOffset * t + start.getX(), yOffset * t + start.getY(), zOffset * t + start.getZ());
+        Vec3Wrapper mostNearPoint = new Vec3Wrapper(xOffset * t + start.getX(), yOffset * t + start.getY(), zOffset * t + start.getZ());
         distanceSqr = mostNearPoint.distanceToSqr(x, y, z);
         return distanceSqr < Zipline.MAXIMUM_DISTANCE * Zipline.MAXIMUM_DISTANCE;
     }
