@@ -165,8 +165,12 @@ public class ParCoolConfig {
 					"enable_3d_render_zipline", true
 			),
 			VaultKeyPressedNeeded(
-					ConfigGroup.Control, "Make Vault Need Vault Key Pressed",
+					ConfigGroup.Control, "Make Vault need Vault Key Pressed",
 					"vault_needs_key_pressed", false
+			),
+			HideInBlockSneakNeeded(
+					ConfigGroup.Control, "Make HideInBlock need player sneaking",
+					"hideinblock_needs_sneaking", true
 			),
 			SubstituteSprintForFastRun(
 					ConfigGroup.Control, "enable players to do actions needing Fast-Running by sprint",

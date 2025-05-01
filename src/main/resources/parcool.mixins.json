@@ -9,6 +9,7 @@
     "client.ClientPlayerEntityMixin",
     "client.ClientWorldMixin",
     "client.GameSettingsMixin",
+    "client.LivingRendererMixin",
     "client.PlayerModelMixin",
     "client.PlayerRendererMixin"
   ],

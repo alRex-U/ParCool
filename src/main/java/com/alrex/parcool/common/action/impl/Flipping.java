@@ -68,6 +68,7 @@ public class Flipping extends Action {
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Dive.class).isDoing()
 				&& !parkourability.get(ChargeJump.class).isDoing()
+				&& !parkourability.get(HideInBlock.class).isDoing()
 				&& !parkourability.getBehaviorEnforcer().cancelJump()
 				&& !stamina.isExhausted()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() <= 1

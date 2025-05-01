@@ -126,7 +126,7 @@ public abstract class LivingEntityMixin extends Entity {
 			if (!stacked && world.isLoaded(pos.below()) && world.getBlockState(pos.below()).getBlock() instanceof RotatedPillarBlock)
 				stacked = true;
 			return !state.isCollisionShapeFullBlock(world, pos) && state.getValue(RotatedPillarBlock.AXIS).isVertical();
-		} else if (block instanceof DirectionalBlock) {
+		} else if (block instanceof EndRodBlock) {
 			Direction direction = state.getValue(DirectionalBlock.FACING);
 			return !state.isCollisionShapeFullBlock(world, pos) && (direction == Direction.UP || direction == Direction.DOWN);
 		}

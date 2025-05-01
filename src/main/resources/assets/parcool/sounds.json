@@ -4,7 +4,7 @@
     "sounds": [
       {
         "name": "parcool:grabbing",
-        "volume": 1.25,
+        "volume": 0.7,
         "pitch": 0.6
       }
     ]
@@ -14,7 +14,7 @@
     "sounds": [
       {
         "name": "parcool:wallrun_and_running",
-        "volume": 1.5,
+        "volume": 0.85,
         "pitch": 0.6
       }
     ]
@@ -24,7 +24,7 @@
     "sounds": [
       {
         "name": "parcool:wallrun_and_running",
-        "volume": 1.5,
+        "volume": 0.85,
         "pitch": 0.7
       }
     ]
@@ -34,7 +34,7 @@
     "sounds": [
       {
         "name": "minecraft:random/anvil_land",
-        "volume": 0.75,
+        "volume": 0.65,
         "pitch": 2
       }
     ]
@@ -94,7 +94,7 @@
     "sounds": [
       {
         "name": "parcool:grabbing",
-        "volume": 1.0,
+        "volume": 0.85,
         "pitch": 0.6
       }
     ]
@@ -114,7 +114,7 @@
     "sounds": [
       {
         "name": "parcool:grabbing",
-        "volume": 0.9,
+        "volume": 0.75,
         "pitch": 0.6
       }
     ]
@@ -134,17 +134,17 @@
     "sounds": [
       {
         "name": "parcool:sliding_1",
-        "volume": 0.5,
+        "volume": 0.35,
         "pitch": 0.6
       },
       {
         "name": "parcool:sliding_2",
-        "volume": 0.5,
+        "volume": 0.35,
         "pitch": 0.6
       },
       {
         "name": "parcool:sliding_3",
-        "volume": 0.5,
+        "volume": 0.35,
         "pitch": 0.6
       }
     ]
@@ -154,7 +154,7 @@
     "sounds": [
       {
         "name": "parcool:roll_and_dodge",
-        "volume": 0.5,
+        "volume": 0.35,
         "pitch": 1
       }
     ]

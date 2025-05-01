@@ -32,7 +32,7 @@ public abstract class EntityMixin extends CapabilityProvider<Entity> {
         Tuple<BlockPos, BlockPos> area = ability.getHidingArea();
         if (ability.isDoing() && area != null) {
             int areaHeight = area.getB().getY() - area.getA().getY() + 1;
-            float eyeHeight = player.getEyeHeight(Pose.STANDING);
+            float eyeHeight = player.getDimensions(Pose.STANDING).height * 0.85f;
             if (areaHeight < eyeHeight) {
                 cir.setReturnValue(eyeHeight);
             } else {

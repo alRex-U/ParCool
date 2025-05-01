@@ -71,6 +71,7 @@
   "parcool.action.Flipping": "Flipping",
   "parcool.action.HangDown": "Hang Down",
   "parcool.action.HorizontalWallRun": "Horizontal Wall-Run",
+  "parcool.action.HideInBlock": "Hide In Block",
   "parcool.action.JumpFromBar": "Hang-Down Jump",
   "parcool.action.QuickTurn": "QuickTurn",
   "parcool.action.RideZipline": "Ride Zipline",

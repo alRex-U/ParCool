@@ -9,6 +9,7 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.client.Minecraft;
@@ -73,7 +74,7 @@ public class HideInBlock extends Action {
         if (isStandbyInAir(parkourability)) {
             hideBaseBlockPos=player.blockPosition().below();
             startFromDiving=true;
-        }else if(KeyBindings.getKeyHideInBlock().isDown() && player.getPose() != Pose.CROUCHING){
+        } else if (KeyBindings.getKeyHideInBlock().isDown() && (!ParCoolConfig.Client.Booleans.HideInBlockSneakNeeded.get() || player.getPose() == Pose.CROUCHING)) {
             RayTraceResult result = Minecraft.getInstance().hitResult;
             if (result instanceof BlockRayTraceResult && parkourability.isDoingNothing()) {
                 hideBaseBlockPos = ((BlockRayTraceResult) result).getBlockPos();
