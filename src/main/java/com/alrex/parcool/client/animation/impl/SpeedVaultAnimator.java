@@ -9,15 +9,16 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.EasingFunctions;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 import static com.alrex.parcool.utilities.MathUtil.lerp;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
+
 public class SpeedVaultAnimator extends Animator {
 
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(PlayerWrapper player, Parkourability parkourability) {
 		return getTick() >= Vault.MAX_TICK;
 	}
 
@@ -31,7 +32,7 @@ public class SpeedVaultAnimator extends Animator {
 	}
 
 	@Override
-    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / Vault.MAX_TICK;
 		float factor = getFactor(getTick() + rotator.getPartialTick());
 		float forwardFactor = (float) Math.sin(phase * 2 * Math.PI) + 0.5f;
@@ -48,7 +49,7 @@ public class SpeedVaultAnimator extends Animator {
     }
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float phase = (getTick() + transformer.getPartialTick()) / Vault.MAX_TICK;
 		float animFactor = new Easing(phase)
 				.sinInOut(0, 0.25f, 0, 1)
@@ -107,7 +108,7 @@ public class SpeedVaultAnimator extends Animator {
 	}
 
 	@Override
-	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
+	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerWrapper clientPlayer, Parkourability parkourability) {
 		if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
 				!ParCoolConfig.Client.Booleans.EnableCameraAnimationOfVault.get()) return;
 		float factor = getFactor((float) (getTick() + event.getRenderPartialTicks()));

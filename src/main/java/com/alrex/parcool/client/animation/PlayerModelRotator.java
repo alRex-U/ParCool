@@ -1,13 +1,13 @@
 package com.alrex.parcool.client.animation;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.api.unstable.animation.AnimationOption;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3f;
 
 public class PlayerModelRotator {
 	private final MatrixStack stack;
-	private final PlayerEntity player;
+	private final PlayerWrapper player;
 	private final float partial;
 	private AnimationOption option = new AnimationOption();
 	private double playerHeight = 1.8;
@@ -32,7 +32,7 @@ public class PlayerModelRotator {
 	private boolean basedCenter = false;
 	private boolean basedTop = false;
 
-	public PlayerModelRotator(MatrixStack stack, PlayerEntity player, float partial, float xRot, float yRot, float zRot) {
+	public PlayerModelRotator(MatrixStack stack, PlayerWrapper player, float partial, float xRot, float yRot, float zRot) {
 		this.stack = stack;
 		this.player = player;
 		this.partial = partial;

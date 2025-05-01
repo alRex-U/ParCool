@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.impl.RideZiplineAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
@@ -13,7 +14,6 @@ import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.ForgeMod;
@@ -49,7 +49,7 @@ public class RideZipline extends Action {
     }
 
     @Override
-    public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+    public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
         if (KeyBindings.getKeyBindRideZipline().isDown()
                 && !player.isOnGround()
                 && !player.isInWater()
@@ -65,7 +65,7 @@ public class RideZipline extends Action {
                 && !parkourability.get(HorizontalWallRun.class).isDoing()
                 && !parkourability.get(VerticalWallRun.class).isDoing()
         ) {
-            ZiplineRopeEntity ropeEntity = Zipline.getHangableZipline(player.level, player);
+            ZiplineRopeEntity ropeEntity = Zipline.getHangableZipline(player.getLevel(), player);
             if (ropeEntity == null) return false;
             double t = ropeEntity.getZipline().getParameter(player.position());
             if (t < 0 || 1 < t) return false;
@@ -77,7 +77,7 @@ public class RideZipline extends Action {
     }
 
     @Override
-    public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+    public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
         return KeyBindings.getKeyBindRideZipline().isDown()
                 && !KeyRecorder.keyJumpState.isPressed()
                 && !player.isInWall()
@@ -85,12 +85,11 @@ public class RideZipline extends Action {
                 && ridingZipline != null
                 && ridingZipline.isAlive()
                 && 0 <= currentT && currentT <= 1
-                && !player.horizontalCollision
-                && !player.verticalCollision;
+                && !player.hasSomeCollision();
     }
 
     @Override
-    public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+    public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
         if (ridingZipline == null) {
             return;
         }
@@ -112,21 +111,21 @@ public class RideZipline extends Action {
     }
 
     @Override
-    public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+    public void onStartInOtherClient(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
         Animation animation = Animation.get(player);
         if (animation == null) return;
         animation.setAnimator(new RideZiplineAnimator());
     }
 
     @Override
-    public void onStart(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+    public void onStart(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
         endOffsetFromStart = BufferUtil.getVector3d(startData);
         player.setSprinting(false);
         parkourability.getBehaviorEnforcer().addMarkerCancellingFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
     }
 
     @Override
-    public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+    public void onWorkingTickInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
         if (ridingZipline == null) return;
         double oldSpeed = speed;
         Zipline zipline = ridingZipline.getZipline();
@@ -200,13 +199,13 @@ public class RideZipline extends Action {
     }
 
     @Override
-    public void onWorkingTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-        player.fallDistance = 0;
+    public void onWorkingTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
+        player.resetFallDistance();
         player.setDeltaMovement(Vector3d.ZERO);
     }
 
     @Override
-    public void onStopInLocalClient(PlayerEntity player) {
+    public void onStopInLocalClient(PlayerWrapper player) {
         if (ridingZipline != null) {
             player.setDeltaMovement(
                     getDeltaMovement(ridingZipline.getZipline(), speed, currentT)
@@ -222,7 +221,7 @@ public class RideZipline extends Action {
 
 
     @Override
-    public void onStop(PlayerEntity player) {
+    public void onStop(PlayerWrapper player) {
         ridingZipline = null;
     }
 

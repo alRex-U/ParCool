@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.item.zipline;
 
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.block.zipline.ZiplineHookBlock;
 import com.alrex.parcool.common.block.zipline.ZiplineHookTileEntity;
 import com.alrex.parcool.common.block.zipline.ZiplineInfo;
@@ -8,7 +9,6 @@ import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.common.zipline.ZiplineType;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -92,7 +92,7 @@ public class ZiplineRopeItem extends Item {
                 if (start.equals(end)) return ActionResultType.PASS;
                 if (start.distSqr(end) > Zipline.MAXIMUM_DISTANCE * Zipline.MAXIMUM_DISTANCE) {
                     if (context.getLevel().isClientSide()) {
-                        PlayerEntity player = context.getPlayer();
+                        PlayerWrapper player = PlayerWrapper.get(context);
                         if (player != null) {
                             player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.too_far"), true);
                         }
@@ -100,7 +100,7 @@ public class ZiplineRopeItem extends Item {
                     return ActionResultType.FAIL;
                 } else if (Math.abs(end.getY() - start.getY()) * MathHelper.fastInvSqrt(Math.pow(end.getX() - start.getX(), 2) + Math.pow(end.getZ() - start.getZ(), 2)) > 1.) {
                     if (context.getLevel().isClientSide()) {
-                        PlayerEntity player = context.getPlayer();
+                        PlayerWrapper player = PlayerWrapper.get(context);
                         if (player != null) {
                             player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.too_steep"), true);
                         }
@@ -114,7 +114,7 @@ public class ZiplineRopeItem extends Item {
                     ZiplineHookTileEntity startZipEntity = (ZiplineHookTileEntity) startEntity;
                     ZiplineHookTileEntity endZipEntity = (ZiplineHookTileEntity) endEntity;
                     if (getZiplineType(stack).getZipline(startZipEntity.getActualZiplinePoint(null), endZipEntity.getActualZiplinePoint(null)).conflictsWithSomething(context.getLevel())) {
-                        PlayerEntity player = context.getPlayer();
+                        PlayerWrapper player = PlayerWrapper.get(context);
                         if (player != null) {
                             player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.obstacle_detected"), true);
                         }
@@ -122,7 +122,7 @@ public class ZiplineRopeItem extends Item {
                     }
                     if (!context.getLevel().isClientSide()) {
                         if (!startZipEntity.connectTo(endZipEntity, new ZiplineInfo(getZiplineType(stack), getColor(stack)))) {
-                            PlayerEntity player = context.getPlayer();
+                            PlayerWrapper player = PlayerWrapper.get(context);
                             if (player != null) {
                                 player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.already_exist"), true);
                             }
@@ -130,7 +130,7 @@ public class ZiplineRopeItem extends Item {
                         }
                         stack.shrink(1);
                     }
-                    PlayerEntity player = context.getPlayer();
+                    PlayerWrapper player = PlayerWrapper.get(context);
                     if (player != null) {
                         player.playSound(SoundEvents.ZIPLINE_SET.get(), 1, 1);
                     }
@@ -139,7 +139,7 @@ public class ZiplineRopeItem extends Item {
                 } else {
                     removeBlockPosition(stack);
                     if (context.getLevel().isClientSide()) {
-                        PlayerEntity player = context.getPlayer();
+                        PlayerWrapper player = PlayerWrapper.get(context);
                         if (player != null) {
                             player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.point_not_found"), true);
                         }
@@ -150,7 +150,7 @@ public class ZiplineRopeItem extends Item {
             // Remove position info
             if (context.isSecondaryUseActive()) {
                 if (context.getLevel().isClientSide()) {
-                    PlayerEntity player = context.getPlayer();
+                    PlayerWrapper player = PlayerWrapper.get(context);
                     if (player != null) {
                         player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.reset_point"), true);
                     }
@@ -164,7 +164,7 @@ public class ZiplineRopeItem extends Item {
             if (context.getLevel().getBlockState(pos).getBlock() instanceof ZiplineHookBlock) {
                 setBlockPosition(stack, pos);
                 if (context.getLevel().isClientSide()) {
-                    PlayerEntity player = context.getPlayer();
+                    PlayerWrapper player = PlayerWrapper.get(context);
                     if (player != null) {
                         player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.set_point", pos.toShortString()), true);
                     }
@@ -173,7 +173,7 @@ public class ZiplineRopeItem extends Item {
             } else if (context.isSecondaryUseActive()) {
                 changeZiplineType(stack);
                 if (context.getLevel().isClientSide()) {
-                    PlayerEntity player = context.getPlayer();
+                    PlayerWrapper player = PlayerWrapper.get(context);
                     if (player != null) {
                         player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.change_tension", getZiplineType(stack).getTranslationName()), true);
                     }

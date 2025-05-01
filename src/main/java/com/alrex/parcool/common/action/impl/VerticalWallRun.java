@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.impl.VerticalWallRunAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
@@ -13,7 +14,6 @@ import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
@@ -30,12 +30,12 @@ public class VerticalWallRun extends Action {
 	private Vector3d wallDirection = null;
 
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		playerYSpeed = player.getDeltaMovement().y();
 	}
 
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		int tickAfterJump = parkourability.getAdditionalProperties().getTickAfterLastJump();
 		Vector3d lookVec = player.getLookAngle();
 		boolean able = !stamina.isExhausted()
@@ -66,8 +66,8 @@ public class VerticalWallRun extends Action {
 							player.getBoundingBox().minY + player.getBbHeight() * 0.5,
 							player.getZ() + wall.z()
 					);
-					if (!player.level.isLoaded(targetBlock)) return false;
-					float slipperiness = player.level.getBlockState(targetBlock).getSlipperiness(player.level, targetBlock, player);
+					if (!player.isEveryLoaded(targetBlock)) return false;
+					float slipperiness = player.getSlipperiness(targetBlock);
 					startInfo.putDouble(height);
 					startInfo.putFloat(slipperiness);
 					startInfo.putDouble(wall.x());
@@ -81,7 +81,7 @@ public class VerticalWallRun extends Action {
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		Vector3d wall = WorldUtil.getWall(player);
 		if (wall == null) return false;
 		wall = wall.normalize();
@@ -91,7 +91,7 @@ public class VerticalWallRun extends Action {
 	}
 
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		double height = startData.getDouble();
 		float slipperiness = startData.getFloat();
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
@@ -105,7 +105,7 @@ public class VerticalWallRun extends Action {
 	}
 
 	@Override
-	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+	public void onStartInOtherClient(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
 		startData.position(8 + 4); // skip (double * 1) and (float * 1)
 		wallDirection = new Vector3d(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
@@ -117,15 +117,15 @@ public class VerticalWallRun extends Action {
 	}
 
 	@Override
-	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerWrapper player, Parkourability parkourability) {
 		if (wallDirection != null && isDoing()) {
-			player.setYHeadRot((float) VectorUtil.toYawDegree(wallDirection));
-            player.yBodyRotO = player.yBodyRot = player.getYHeadRot();
+			player.setYHeadRot((float)VectorUtil.toYawDegree(wallDirection));
+            player.setAllYBodyRot(player.getYHeadRot());
 		}
 	}
 
 	@Override
-	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		spawnRunningParticle(player);
 	}
 
@@ -135,10 +135,10 @@ public class VerticalWallRun extends Action {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void spawnRunningParticle(PlayerEntity player) {
+	public void spawnRunningParticle(PlayerWrapper player) {
 		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		if (wallDirection == null) return;
-		World level = player.level;
+		World level = player.getLevel();
 		Vector3d pos = player.position();
 		BlockPos leanedBlock = new BlockPos(
 				pos.add(wallDirection.x(), player.getBbHeight() * 0.25, wallDirection.z())

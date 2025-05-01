@@ -1,5 +1,6 @@
 package com.alrex.parcool.mixin.client;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.config.ParCoolConfig;
@@ -8,7 +9,6 @@ import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -50,9 +50,9 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends BipedMode
 
 	@Inject(method = "Lnet/minecraft/client/renderer/entity/model/PlayerModel;setupAnim(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At("HEAD"), cancellable = true)
 	protected void onSetupAnimHead(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo info) {
-		if (!(entity instanceof PlayerEntity)) return;
+		PlayerWrapper player = PlayerWrapper.getOrDefault(entity);
+		if (player == null) return;
 		PlayerModel model = (PlayerModel) (Object) this;
-		PlayerEntity player = (PlayerEntity) entity;
 		if (player.isLocalPlayer()
 				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()
 				&& !ParCoolConfig.Client.Booleans.EnableFPVAnimation.get()
@@ -83,8 +83,8 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends BipedMode
 
 	@Inject(method = "Lnet/minecraft/client/renderer/entity/model/PlayerModel;setupAnim(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At("TAIL"))
 	protected void onSetupAnimTail(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo info) {
-		if (!(entity instanceof PlayerEntity)) return;
-		PlayerEntity player = (PlayerEntity) entity;
+		PlayerWrapper player = PlayerWrapper.getOrDefault(entity);
+		if (player == null) return;
 		if (player.isLocalPlayer()
 				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()
 				&& !ParCoolConfig.Client.Booleans.EnableFPVAnimation.get()

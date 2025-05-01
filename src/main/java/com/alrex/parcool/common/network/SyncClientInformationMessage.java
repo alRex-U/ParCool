@@ -1,15 +1,14 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
+import com.alrex.parcool.api.compatibility.MinecraftServerWrapper;
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.ServerPlayerWrapper;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.server.limitation.Limitations;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.LogicalSide;
@@ -48,14 +47,12 @@ public class SyncClientInformationMessage {
 	@OnlyIn(Dist.CLIENT)
 	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
-			PlayerEntity player;
+			PlayerWrapper player;
 			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-				World world = Minecraft.getInstance().level;
-				if (world == null) return;
-				player = world.getPlayerByUUID(playerID);
+				player = MinecraftServerWrapper.getPlayer(playerID);
 				if (player == null) return;
 			} else {
-				ServerPlayerEntity serverPlayer = contextSupplier.get().getSender();
+				ServerPlayerWrapper serverPlayer = ServerPlayerWrapper.get(contextSupplier);
 				player = serverPlayer;
 				if (player == null) return;
 				ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
@@ -76,7 +73,7 @@ public class SyncClientInformationMessage {
 
 	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
 		contextSupplier.get().enqueueWork(() -> {
-			ServerPlayerEntity player = contextSupplier.get().getSender();
+			ServerPlayerWrapper player = ServerPlayerWrapper.get(contextSupplier);
 			if (player == null) return;
 			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 
@@ -92,12 +89,12 @@ public class SyncClientInformationMessage {
 		contextSupplier.get().setPacketHandled(true);
 	}
 
-	public void logReceived(PlayerEntity player) {
-		ParCool.LOGGER.log(Level.INFO, "Received Client Information of [" + player.getGameProfile().getName() + "]");
+	public void logReceived(PlayerWrapper player) {
+		ParCool.LOGGER.log(Level.INFO, "Received Client Information of [" + player.getName() + "]");
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void sync(ClientPlayerEntity player, boolean requestSendLimitation) {
+	public static void sync(ClientPlayerWrapper player, boolean requestSendLimitation) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 		SyncClientInformationMessage message = new SyncClientInformationMessage();

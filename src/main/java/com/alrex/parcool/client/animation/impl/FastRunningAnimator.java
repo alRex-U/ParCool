@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.animation.impl;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
@@ -8,17 +9,14 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.BipedModelUtil;
 import com.alrex.parcool.utilities.Easing;
-import com.alrex.parcool.utilities.MathUtil;
-import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.vector.Vector3d;
 
 public class FastRunningAnimator extends Animator {
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(PlayerWrapper player, Parkourability parkourability) {
 		return !parkourability.get(FastRun.class).isDoing();
 	}
 
@@ -30,7 +28,7 @@ public class FastRunningAnimator extends Animator {
 
 	private float limbSwing = 0;
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		limbSwing = transformer.getLimbSwing();
 		float phase = (getTick() + transformer.getPartialTick()) / 10;
 		if (phase > 1) phase = 1;
@@ -128,7 +126,7 @@ public class FastRunningAnimator extends Animator {
 	}
 
 	@Override
-    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float tick = getTick() + rotator.getPartialTick();
 		float phase = tick / 10;
 		if (phase > 1) phase = 1;
@@ -144,7 +142,7 @@ public class FastRunningAnimator extends Animator {
 						.end();
 			} else {
 				Vector3d lookAngle = player.getLookAngle();
-				Vector3d bodyAngle = VectorUtil.fromYawDegree(MathUtil.lerp(player.yBodyRotO, player.yBodyRot, rotator.getPartialTick()));
+				Vector3d bodyAngle = player.getRotatedBodyAngle(rotator);
 				Vector3d differenceVec =
 						new Vector3d(
 								lookAngle.x() * bodyAngle.x() + lookAngle.z() * bodyAngle.z(), 0,

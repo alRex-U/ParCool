@@ -1,19 +1,19 @@
 package com.alrex.parcool.client.animation.impl;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.Crawl;
 import com.alrex.parcool.common.capability.Parkourability;
-import net.minecraft.entity.player.PlayerEntity;
 
 public class CrawlAnimator extends Animator {
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(PlayerWrapper player, Parkourability parkourability) {
 		return !parkourability.get(Crawl.class).isDoing();
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float factor = (float) Math.sin(transformer.getLimbSwing() / 10 * Math.PI);
 		float leftZFactor = (float) Math.cos(transformer.getLimbSwing() / 10 * Math.PI);
 		float rightZFactor = -leftZFactor;

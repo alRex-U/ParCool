@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.block.zipline;
 
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.block.TileEntities;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -89,7 +90,8 @@ public class ZiplineHookBlock extends DirectionalBlock {
     }
 
     @Override
-    public ActionResultType use(BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult blockRayTraceResult) {
+    public ActionResultType use(BlockState blockState, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult blockRayTraceResult) {
+        PlayerWrapper player = PlayerWrapper.get(playerEntity);
         ItemStack stack = player.getItemInHand(hand);
         if (stack.getItem() instanceof ShearsItem) {
             TileEntity tileEntity = world.getBlockEntity(pos);
@@ -103,11 +105,8 @@ public class ZiplineHookBlock extends DirectionalBlock {
                     return ActionResultType.SUCCESS;
                 } else {
                     itemStacks.forEach((it) -> InventoryHelper.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), it));
-                    if (!itemStacks.isEmpty()) {
-                        if (stack.isDamageableItem()) {
-                            stack.hurtAndBreak(1, player, (it) -> {
-                            });
-                        }
+                    if (!itemStacks.isEmpty() && stack.isDamageableItem()) {
+                        player.hurtAndBreakStack(1, stack);
                     }
                     return ActionResultType.CONSUME;
                 }
@@ -127,5 +126,4 @@ public class ZiplineHookBlock extends DirectionalBlock {
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new ZiplineHookTileEntity(TileEntities.ZIPLINE_HOOK.get());
     }
-
 }

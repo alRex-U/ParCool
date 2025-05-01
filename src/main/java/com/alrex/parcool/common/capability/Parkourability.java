@@ -1,5 +1,7 @@
 package com.alrex.parcool.common.capability;
 
+import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
 import com.alrex.parcool.common.action.AdditionalProperties;
@@ -9,8 +11,6 @@ import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.info.ServerLimitation;
 import com.alrex.parcool.common.network.SyncClientInformationMessage;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class Parkourability {
 	@Nullable
-	public static Parkourability get(PlayerEntity player) {
+	public static Parkourability get(PlayerWrapper player) {
 		LazyOptional<Parkourability> optional = player.getCapability(Capabilities.PARKOURABILITY_CAPABILITY);
 		return optional.orElse(null);
 	}
@@ -95,7 +95,7 @@ public class Parkourability {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void trySyncLimitation(ClientPlayerEntity player) {
+	public void trySyncLimitation(ClientPlayerWrapper player) {
 		synchronizeTrialCount++;
 		SyncClientInformationMessage.sync(player, true);
 	}

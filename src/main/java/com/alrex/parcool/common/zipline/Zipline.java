@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.zipline;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
@@ -47,12 +47,12 @@ public abstract class Zipline {
     }
 
     @Nullable
-    public static ZiplineRopeEntity getHangableZipline(World world, PlayerEntity player) {
+    public static ZiplineRopeEntity getHangableZipline(World world, PlayerWrapper player) {
         return getHangableZipline(world, player, null);
     }
 
     @Nullable
-    public static ZiplineRopeEntity getHangableZipline(World world, PlayerEntity player, @Nullable ZiplineRopeEntity except) {
+    public static ZiplineRopeEntity getHangableZipline(World world, PlayerWrapper player, @Nullable ZiplineRopeEntity except) {
         List<ZiplineRopeEntity> entities = world.getEntitiesOfClass(
                 ZiplineRopeEntity.class,
                 player.getBoundingBox().inflate(MAXIMUM_DISTANCE * 0.52)

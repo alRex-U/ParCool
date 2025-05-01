@@ -1,5 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.impl.RollAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
@@ -10,8 +12,6 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,7 +27,7 @@ public class Roll extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onClientTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		if (player.isLocalPlayer()) {
 			if (KeyBindings.getKeyBreakfall().isDown()
 					&& KeyBindings.isKeyForwardDown()
@@ -55,14 +55,15 @@ public class Roll extends Action {
 	}
 
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		ClientPlayerEntity clientPlayer = (ClientPlayerEntity) player;
+	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		ClientPlayerWrapper clientPlayer = ClientPlayerWrapper.get(player);
 		Direction rollDirection = Direction.Front;
-		if (clientPlayer.input.leftImpulse < -0.5) {
+		double leftImpulse = clientPlayer.getLeftImpulse();
+		if (leftImpulse < -0.5) {
 			rollDirection = Direction.Right;
-		} else if (clientPlayer.input.leftImpulse > 0.5) {
+		} else if (leftImpulse > 0.5) {
 			rollDirection = Direction.Left;
-		} else if (clientPlayer.input.forwardImpulse < -0.5) {
+		} else if (clientPlayer.getForwardImpulse() < -0.5) {
 			rollDirection = Direction.Back;
 		}
 		startInfo.putInt(rollDirection.ordinal());
@@ -71,12 +72,12 @@ public class Roll extends Action {
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		return getDoingTick() < getRollMaxTick();
 	}
 
 	@Override
-	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+	public void onStartInOtherClient(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
 		startRequired = false;
 		Direction direction = Direction.values()[startData.getInt()];
 		Animation animation = Animation.get(player);
@@ -84,11 +85,11 @@ public class Roll extends Action {
 	}
 
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		startRequired = false;
 		Direction direction = Direction.values()[startData.getInt()];
 		double modifier = Math.sqrt(player.getBbWidth());
-		Vector3d vec = VectorUtil.fromYawDegree(player.yBodyRot).scale(modifier);
+		Vector3d vec = VectorUtil.fromYawDegree(player.getYBodyRot()).scale(modifier);
 		switch (direction) {
 			case Back:
 				vec = vec.reverse();
@@ -106,7 +107,7 @@ public class Roll extends Action {
 		parkourability.getBehaviorEnforcer().addMarkerCancellingJump(ID_JUMP_CANCEL, this::isDoing);
 	}
 
-	public void startRoll(PlayerEntity player) {
+	public void startRoll(PlayerWrapper player) {
 		startRequired = true;
 	}
 

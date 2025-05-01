@@ -1,12 +1,12 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.event.TickEvent;
 
@@ -18,7 +18,7 @@ public class QuickTurn extends Action {
 	private Vector3d startAngle = null;
 
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		Vector3d angle = player.getLookAngle();
 		startInfo
 				.putDouble(angle.x())
@@ -31,12 +31,12 @@ public class QuickTurn extends Action {
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		return getDoingTick() < AnimationTickLength;
 	}
 
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		turnRightward = !turnRightward;
 		startAngle = new Vector3d(
 				startData.getDouble(),
@@ -46,12 +46,12 @@ public class QuickTurn extends Action {
 	}
 
 	@Override
-	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerWrapper player, Parkourability parkourability) {
 		if (isDoing() && startAngle != null) {
 			float renderTick = getDoingTick() + event.renderTickTime;
 			float animationPhase = renderTick / AnimationTickLength;
 			Vector3d rotatedAngle = startAngle.yRot((float) (Math.PI * animationPhase * (turnRightward ? -1 : 1)));
-			player.yRot = (float) VectorUtil.toYawDegree(rotatedAngle);
+			player.setYRot(VectorUtil.toYawDegree(rotatedAngle));
 		}
 	}
 

@@ -1,16 +1,16 @@
 package com.alrex.parcool.common.capability.stamina;
 
 import com.alrex.parcool.api.Effects;
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
+import com.alrex.parcool.api.compatibility.ServerPlayerWrapper;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 
 public class HungerStamina implements IStamina {
-    private final PlayerEntity player;
+    private final PlayerWrapper player;
     private float consumedBuffer = 0;
 
-    public HungerStamina(PlayerEntity player) {
+    public HungerStamina(PlayerWrapper player) {
         this.player = player;
     }
 
@@ -21,7 +21,7 @@ public class HungerStamina implements IStamina {
 
     @Override
     public int get() {
-        return player.getFoodData().getFoodLevel();
+        return player.getFoodLevel();
     }
 
     @Override
@@ -34,7 +34,7 @@ public class HungerStamina implements IStamina {
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability == null) return;
         if (isExhausted()
-                || parkourability.getActionInfo().isStaminaInfinite(player.isSpectator() || player.isCreative())
+                || parkourability.getActionInfo().isStaminaInfinite(player.isImmortal())
                 || player.hasEffect(Effects.INEXHAUSTIBLE.get())
         ) return;
         consumedBuffer += value / 150f;
@@ -73,7 +73,7 @@ public class HungerStamina implements IStamina {
         return neededValue;
     }
 
-    public static void consumeOnServer(ServerPlayerEntity player, int value) {
+    public static void consumeOnServer(ServerPlayerWrapper player, int value) {
         player.causeFoodExhaustion(value / 10000f);
     }
 }

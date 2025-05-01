@@ -1,21 +1,21 @@
 package com.alrex.parcool.client.animation.impl;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.ClingToCliff;
 import com.alrex.parcool.common.capability.Parkourability;
-import net.minecraft.entity.player.PlayerEntity;
 
 public class ClingToCliffAnimator extends Animator {
 	private final float Lean_Angle = 20;
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(PlayerWrapper player, Parkourability parkourability) {
 		return !parkourability.get(ClingToCliff.class).isDoing();
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		switch (parkourability.get(ClingToCliff.class).getFacingDirection()) {
 			case ToWall:
 				double zAngle = 10 + 20 * Math.sin(24 * parkourability.get(ClingToCliff.class).getArmSwingAmount());
@@ -59,7 +59,7 @@ public class ClingToCliffAnimator extends Animator {
 	}
 
 	@Override
-    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator) {
 		ClingToCliff cling = parkourability.get(ClingToCliff.class);
 		switch (cling.getFacingDirection()) {
 			case RightAgainstWall:

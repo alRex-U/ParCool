@@ -1,27 +1,25 @@
 package com.alrex.parcool.client.animation.impl;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.FastSwim;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.BipedModelUtil;
-import com.alrex.parcool.utilities.MathUtil;
-import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.vector.Vector3d;
 
 public class FastSwimAnimator extends Animator {
     @Override
-    public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+    public boolean shouldRemoved(PlayerWrapper player, Parkourability parkourability) {
         return !parkourability.get(FastSwim.class).isDoing();
     }
 
     @Override
-    public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+    public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
         float animationFactor = (getTick() + transformer.getPartialTick()) / 10;
         if (animationFactor > 1) animationFactor = 1;
         float tick = getTick() + transformer.getPartialTick();
@@ -84,13 +82,13 @@ public class FastSwimAnimator extends Animator {
     }
 
     @Override
-    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator) {
         if (player.isLocalPlayer() && Minecraft.getInstance().screen != null) {
             return;
         }
         float tick = getTick() + rotator.getPartialTick();
         Vector3d lookAngle = player.getLookAngle();
-        Vector3d bodyAngle = VectorUtil.fromYawDegree(MathUtil.lerp(player.yBodyRotO, player.yBodyRot, rotator.getPartialTick()));
+        Vector3d bodyAngle = player.getRotatedBodyAngle(rotator);
         Vector3d differenceVec =
                 new Vector3d(
                         lookAngle.x() * bodyAngle.x() + lookAngle.z() * bodyAngle.z(), 0,

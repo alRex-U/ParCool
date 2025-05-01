@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.animation.impl;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
@@ -9,10 +10,7 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.EasingFunctions;
 import com.alrex.parcool.utilities.MathUtil;
-import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 import static java.lang.Math.toRadians;
@@ -37,24 +35,19 @@ public class KongVaultAnimator extends Animator {
 	private float yRotDifferenceOld = 0;
 
 	@Override
-	public void tick(PlayerEntity player) {
+	public void tick(PlayerWrapper player) {
 		super.tick(player);
 		yRotDifferenceOld = yRotDifference;
-		Vector3d currentAngle = VectorUtil.fromYawDegree(player.yBodyRot);
-		Vector3d oldAngle = VectorUtil.fromYawDegree(player.yBodyRotO);
-		yRotDifference = (float) Math.atan(
-				(oldAngle.x() * currentAngle.z() - currentAngle.x() * oldAngle.z())
-						/ (currentAngle.x() * oldAngle.x() + currentAngle.z() * oldAngle.z())
-		);
+		yRotDifference = (float) player.getUpdatedYRotDifference();
 	}
 
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(PlayerWrapper player, Parkourability parkourability) {
 		return getTick() >= Vault.MAX_TICK;
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float phase = (getTick() + transformer.getPartialTick()) / Vault.MAX_TICK;
 		float armFactor = getArmFactor(phase);
 		float factor = getFactor(phase);
@@ -105,7 +98,7 @@ public class KongVaultAnimator extends Animator {
 	}
 
 	@Override
-    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / Vault.MAX_TICK;
 		float factor = getFactor(phase);
 		float yFactor = new Easing(phase)
@@ -120,7 +113,7 @@ public class KongVaultAnimator extends Animator {
     }
 
 	@Override
-	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
+	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerWrapper clientPlayer, Parkourability parkourability) {
 		if (!Minecraft.getInstance().options.getCameraType().isFirstPerson() ||
 				!ParCoolConfig.Client.Booleans.EnableCameraAnimationOfVault.get()
 		) return;

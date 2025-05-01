@@ -1,18 +1,18 @@
 package com.alrex.parcool.client.animation.impl;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.EasingFunctions;
 import com.alrex.parcool.utilities.MathUtil;
-import net.minecraft.entity.player.PlayerEntity;
 
 public class JumpFromBarAnimator extends Animator {
 	private final int MAX_TICK = 8;
 
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(PlayerWrapper player, Parkourability parkourability) {
 		return getTick() >= MAX_TICK;
 	}
 
@@ -28,7 +28,7 @@ public class JumpFromBarAnimator extends Animator {
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float tick = getTick() + transformer.getPartialTick();
 		float phase = tick / MAX_TICK;
 		float factor = getFactor(phase);
@@ -59,7 +59,7 @@ public class JumpFromBarAnimator extends Animator {
 	}
 
 	@Override
-    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float tick = getTick() + rotator.getPartialTick();
 		float phase = tick / MAX_TICK;
 		float factor = getBodyAngleFactor(phase);

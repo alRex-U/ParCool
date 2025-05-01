@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.impl.DiveAnimationHostAnimator;
 import com.alrex.parcool.client.animation.impl.DiveIntoWaterAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
@@ -10,7 +11,6 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -29,13 +29,13 @@ public class Dive extends Action {
 	}
 
 	@Override
-	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		playerYSpeedOld = playerYSpeed;
 		playerYSpeed = player.getDeltaMovement().y();
 	}
 
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onClientTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		if (isDoing() && (playerYSpeed < 0 || fallingTick > 0)) {
 			fallingTick++;
 		} else {
@@ -45,7 +45,7 @@ public class Dive extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		if (player.getVehicle() != null) return false;
 		boolean startInAir = player.getDeltaMovement().y() < 0
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 10
@@ -71,19 +71,19 @@ public class Dive extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		return !(player.isFallFlying()
-				|| player.abilities.flying
+				|| player.isFlying()
 				|| player.isInWaterOrBubble()
 				|| player.isInLava()
 				|| player.isSwimming()
 				|| player.isOnGround()
-				|| (fallingTick > 5 && player.fallDistance < 0.1)
+				|| (fallingTick > 5 && player.getFallDistance() < 0.1)
 				|| stamina.isExhausted()
 		);
 	}
 
-	public void onJump(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onJump(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		if (!player.isLocalPlayer()) return;
 		initialYVelocityOfLastJump = player.getDeltaMovement().y();
 		justJumped = true;
@@ -91,7 +91,7 @@ public class Dive extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		double initialYSpeed = startData.getDouble();
 		playerYSpeedOld = playerYSpeed = initialYSpeed;
 		Animation animation = Animation.get(player);
@@ -101,7 +101,7 @@ public class Dive extends Action {
 	}
 
 	@Override
-	public void onStopInLocalClient(PlayerEntity player) {
+	public void onStopInLocalClient(PlayerWrapper player) {
 		if (player.isInWaterOrBubble()) {
 			Animation animation = Animation.get(player);
 			Parkourability parkourability = Parkourability.get(player);
@@ -116,7 +116,7 @@ public class Dive extends Action {
 	}
 
 	@Override
-	public void onStopInOtherClient(PlayerEntity player) {
+	public void onStopInOtherClient(PlayerWrapper player) {
 		if (player.isInWaterOrBubble()) {
 			Animation animation = Animation.get(player);
 			Parkourability parkourability = Parkourability.get(player);
@@ -149,7 +149,7 @@ public class Dive extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+	public void onStartInOtherClient(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
 		double initialYSpeed = startData.getDouble();
 		playerYSpeedOld = playerYSpeed = initialYVelocityOfLastJump = initialYSpeed;
 		Animation animation = Animation.get(player);

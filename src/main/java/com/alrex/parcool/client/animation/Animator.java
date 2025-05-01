@@ -1,14 +1,14 @@
 package com.alrex.parcool.client.animation;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.capability.Parkourability;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.event.TickEvent;
 
 public abstract class Animator {
 	private int tick = 0;
 
-	public void tick(PlayerEntity player) {
+	public void tick(PlayerWrapper player) {
 		tick++;
 	}
 
@@ -16,13 +16,13 @@ public abstract class Animator {
 		return tick;
 	}
 
-	public abstract boolean shouldRemoved(PlayerEntity player, Parkourability parkourability);
+	public abstract boolean shouldRemoved(PlayerWrapper player, Parkourability parkourability);
 
 	/**
 	 * @return You should return true if you want to cancel vanilla animation to control all about rendering
 	 */
 	public boolean animatePre(
-			PlayerEntity player,
+			PlayerWrapper player,
 			Parkourability parkourability,
 			PlayerModelTransformer transformer
 	) {
@@ -34,14 +34,14 @@ public abstract class Animator {
 	 * You can utilize this to use partially vanilla animation
 	 */
 	public void animatePost(
-			PlayerEntity player,
+			PlayerWrapper player,
 			Parkourability parkourability,
 			PlayerModelTransformer transformer
 	) {
 	}
 
 	public boolean rotatePre(
-			PlayerEntity player,
+			PlayerWrapper player,
 			Parkourability parkourability,
 			PlayerModelRotator rotator
 	) {
@@ -49,7 +49,7 @@ public abstract class Animator {
 	}
 
 	public void rotatePost(
-			PlayerEntity player,
+			PlayerWrapper player,
 			Parkourability parkourability,
 			PlayerModelRotator rotator
 	) {
@@ -57,14 +57,14 @@ public abstract class Animator {
 
 	public void onCameraSetUp(
 			EntityViewRenderEvent.CameraSetup event,
-			PlayerEntity clientPlayer,
+			PlayerWrapper clientPlayer,
 			Parkourability parkourability
 	) {
 	}
 
 	public void onRenderTick(
 			TickEvent.RenderTickEvent event,
-			PlayerEntity player,
+			PlayerWrapper player,
 			Parkourability parkourability
 	) {
 	}

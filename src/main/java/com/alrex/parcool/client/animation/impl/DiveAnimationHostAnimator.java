@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.animation.impl;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
@@ -10,7 +11,6 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.EasingFunctions;
 import com.alrex.parcool.utilities.MathUtil;
-import net.minecraft.entity.player.PlayerEntity;
 
 import javax.annotation.Nullable;
 
@@ -27,7 +27,7 @@ public class DiveAnimationHostAnimator extends Animator {
 	final static int MaxTransitionTick = 6;
 
 	@Override
-	public void tick(PlayerEntity player) {
+	public void tick(PlayerWrapper player) {
 		super.tick(player);
 		diveAnimator.tick(player);
 		if (skyDiveAnimator != null) skyDiveAnimator.tick(player);
@@ -41,7 +41,7 @@ public class DiveAnimationHostAnimator extends Animator {
 	}
 
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(PlayerWrapper player, Parkourability parkourability) {
 		return !parkourability.get(Dive.class).isDoing();
 	}
 
@@ -56,7 +56,7 @@ public class DiveAnimationHostAnimator extends Animator {
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		if (fromInAir && getTick() < MaxTransitionStartedInAirTick) { // transition when started in air
 			float phase = (getTick() + transformer.getPartialTick()) / MaxTransitionStartedInAirTick;
 			diveAnimator.animatePost(
@@ -100,7 +100,7 @@ public class DiveAnimationHostAnimator extends Animator {
 	}
 
 	@Override
-    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator) {
 		if (fromInAir && getTick() < MaxTransitionStartedInAirTick) { // transition when started in air
 			float factor = new Easing((getTick() + rotator.getPartialTick()) / MaxTransitionStartedInAirTick)
 					.squareOut(0, 1, 0, 1)
@@ -159,12 +159,12 @@ public class DiveAnimationHostAnimator extends Animator {
 		}
 
 		@Override
-		public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+		public boolean shouldRemoved(PlayerWrapper player, Parkourability parkourability) {
 			return false;
 		}
 
 		@Override
-		public void tick(PlayerEntity player) {
+		public void tick(PlayerWrapper player) {
 			super.tick(player);
 			forwardAngleCountOld = forwardAngleCount;
 			rightAngleCountOld = rightAngleCount;
@@ -197,11 +197,11 @@ public class DiveAnimationHostAnimator extends Animator {
 		}
 
 		@Override
-		public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+		public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
 			animatePost(player, parkourability, transformer, 1);
 		}
 
-		public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer, float factor) {
+		public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer, float factor) {
 			float forwardAngleFactor = getForwardAngleFactor(transformer.getPartialTick());
 			float rightAngleFactor = getRightAngleFactor(transformer.getPartialTick());
 			transformer.
@@ -251,7 +251,7 @@ public class DiveAnimationHostAnimator extends Animator {
 		}
 
 		@Override
-        public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+        public void rotatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator) {
 			float forwardAngleFactor = getForwardAngleFactor(rotator.getPartialTick());
 			float rightAngleFactor = getRightAngleFactor(rotator.getPartialTick());
 			float basePitchAngle;
@@ -288,16 +288,16 @@ public class DiveAnimationHostAnimator extends Animator {
 		}
 
 		@Override
-		public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+		public boolean shouldRemoved(PlayerWrapper player, Parkourability parkourability) {
 			return false;
 		}
 
 		@Override
-		public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+		public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
 			animatePost(player, parkourability, transformer, 1);
 		}
 
-		void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer, float factor) {
+		void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer, float factor) {
 			double ySpeed = parkourability.get(Dive.class).getPlayerYSpeed(transformer.getPartialTick());
 			float bodyFactor = getFactor(ySpeed);
 			transformer
@@ -311,11 +311,11 @@ public class DiveAnimationHostAnimator extends Animator {
 		}
 
 		@Override
-        public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+        public void rotatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator) {
 			rotate(player, parkourability, rotator, 1, 0);
         }
 
-		public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator, float factor, float transitionBaseAngle) {
+		public void rotate(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator, float factor, float transitionBaseAngle) {
 			double ySpeed = parkourability.get(Dive.class).getPlayerYSpeed(rotator.getPartialTick());
 			float angleFactor = getFactor(ySpeed);
 			pitchAngle = 180 * angleFactor;

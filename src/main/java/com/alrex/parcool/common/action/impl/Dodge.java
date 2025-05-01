@@ -1,6 +1,8 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.impl.DodgeAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
@@ -14,8 +16,6 @@ import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -101,7 +101,7 @@ public class Dodge extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onClientTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		if (coolTime > 0) coolTime--;
 		if (successivelyCoolTick > 0) {
 			successivelyCoolTick--;
@@ -124,7 +124,7 @@ public class Dodge extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		boolean enabledDoubleTap = ParCoolConfig.Client.Booleans.EnableDoubleTappingForDodge.get();
 		DodgeDirection direction = null;
 		if (enabledDoubleTap) {
@@ -157,19 +157,19 @@ public class Dodge extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		return !(parkourability.get(Roll.class).isDoing()
 				|| parkourability.get(ClingToCliff.class).isDoing()
 				|| getDoingTick() >= MAX_TICK
 				|| player.isInWaterOrBubble()
 				|| player.isFallFlying()
-				|| player.abilities.flying
+				|| player.isFlying()
 		);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		dodgeDirection = DodgeDirection.values()[startData.getInt()];
 		coolTime = getMaxCoolTime(parkourability.getActionInfo());
 		if (successivelyCount < getMaxSuccessiveDodge(parkourability.getActionInfo())) {
@@ -209,7 +209,7 @@ public class Dodge extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+	public void onStartInOtherClient(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
 		dodgeDirection = DodgeDirection.values()[startData.getInt()];
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			player.playSound(SoundEvents.DODGE.get(), 1f, 1f);
@@ -239,12 +239,12 @@ public class Dodge extends Action {
 	}
 
 	@Override
-	public boolean wantsToShowStatusBar(ClientPlayerEntity player, Parkourability parkourability) {
+	public boolean wantsToShowStatusBar(ClientPlayerWrapper player, Parkourability parkourability) {
 		return coolTime > 0 || isInSuccessiveCoolDown(parkourability.getActionInfo());
 	}
 
 	@Override
-	public float getStatusValue(ClientPlayerEntity player, Parkourability parkourability) {
+	public float getStatusValue(ClientPlayerWrapper player, Parkourability parkourability) {
 		ActionInfo info = parkourability.getActionInfo();
 		int maxCoolTime = getMaxCoolTime(info);
 		int successiveMaxCoolTime = getSuccessiveCoolTime(info);

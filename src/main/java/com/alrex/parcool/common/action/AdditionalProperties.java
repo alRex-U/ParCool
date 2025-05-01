@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.action;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.capability.Parkourability;
-import net.minecraft.entity.player.PlayerEntity;
 
 public class AdditionalProperties {
 	private int sprintingTick = 0;
@@ -22,7 +22,7 @@ public class AdditionalProperties {
 		tickAfterLastJump = 0;
 	}
 
-	public void onTick(PlayerEntity player, Parkourability parkourability) {
+	public void onTick(PlayerWrapper player, Parkourability parkourability) {
 		tickAfterLastJump++;
 		if (player.isSprinting()) {
 			notSprintingTick = 0;
@@ -50,7 +50,7 @@ public class AdditionalProperties {
 			notLandingTick++;
 			landingTick = 0;
 		}
-		if (player.abilities.flying) {
+		if (player.isFlying()) {
 			notCreativeFlyingTick = 0;
 		} else {
 			notCreativeFlyingTick++;

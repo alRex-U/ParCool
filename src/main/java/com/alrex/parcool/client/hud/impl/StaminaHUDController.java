@@ -1,12 +1,11 @@
 package com.alrex.parcool.client.hud.impl;
 
 import com.alrex.parcool.api.client.gui.ParCoolHUDEvent;
+import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.stamina.Stamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -24,7 +23,7 @@ public class StaminaHUDController {
 	}
 
 	public void onTick(TickEvent.ClientTickEvent event) {
-		ClientPlayerEntity player = Minecraft.getInstance().player;
+		ClientPlayerWrapper player = ClientPlayerWrapper.get();
 		if (player == null || player.isCreative()) return;
 		lightStaminaHUD.onTick(event, player);
 		staminaHUD.onTick(event, player);
@@ -34,7 +33,7 @@ public class StaminaHUDController {
 	}
 
 	public void render(RenderGameOverlayEvent.Post event, MatrixStack stack) {
-		ClientPlayerEntity player = Minecraft.getInstance().player;
+		ClientPlayerWrapper player = ClientPlayerWrapper.get();
 		if (player == null) return;
 		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get() ||
 				!(IStamina.get(player) instanceof Stamina))

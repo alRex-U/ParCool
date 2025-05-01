@@ -1,6 +1,8 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.impl.CatLeapAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
@@ -11,8 +13,6 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
@@ -30,14 +30,14 @@ public class CatLeap extends Action {
     private static final int MAX_COOL_TIME_TICK = 30;
 
 	@Override
-	public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		if (coolTimeTick > 0) {
 			coolTimeTick--;
 		}
 	}
 
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onClientTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		if (player.isLocalPlayer()) {
 			if (KeyRecorder.keySneak.isPressed() && parkourability.get(FastRun.class).getNotDashTick(parkourability.getAdditionalProperties()) < 10) {
 				ready = true;
@@ -54,7 +54,7 @@ public class CatLeap extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		Vector3d movement = player.getDeltaMovement();
 		if (movement.lengthSqr() < 0.001) return false;
 		movement = movement.multiply(1, 0, 1).normalize();
@@ -73,7 +73,7 @@ public class CatLeap extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		return !((getDoingTick() > 1 && player.isOnGround())
 				|| player.isFallFlying()
 				|| player.isInWaterOrBubble()
@@ -82,7 +82,7 @@ public class CatLeap extends Action {
 	}
 
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		Vector3d jumpDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.CATLEAP.get(), 1, 1);
@@ -96,7 +96,7 @@ public class CatLeap extends Action {
 	}
 
 	@Override
-	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+	public void onStartInOtherClient(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
 		Vector3d jumpDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			player.playSound(SoundEvents.CATLEAP.get(), 1, 1);
@@ -106,12 +106,12 @@ public class CatLeap extends Action {
 	}
 
 	@Override
-	public boolean wantsToShowStatusBar(ClientPlayerEntity player, Parkourability parkourability) {
+	public boolean wantsToShowStatusBar(ClientPlayerWrapper player, Parkourability parkourability) {
 		return coolTimeTick > 0;
 	}
 
 	@Override
-	public float getStatusValue(ClientPlayerEntity player, Parkourability parkourability) {
+	public float getStatusValue(ClientPlayerWrapper player, Parkourability parkourability) {
 		return coolTimeTick / (float) MAX_COOL_TIME_TICK;
 	}
 
@@ -121,9 +121,9 @@ public class CatLeap extends Action {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private void spawnJumpEffect(PlayerEntity player, Vector3d jumpDirection) {
+	private void spawnJumpEffect(PlayerWrapper player, Vector3d jumpDirection) {
 		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
-		World level = player.level;
+		World level = player.getLevel();
 		Vector3d pos = player.position();
 		BlockPos blockpos = new BlockPos(pos.add(0, -0.2, 0));
 		if (!level.isLoaded(blockpos)) return;

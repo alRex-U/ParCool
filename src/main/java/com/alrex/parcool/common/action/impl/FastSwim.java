@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.impl.FastSwimAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
@@ -12,7 +13,6 @@ import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.ForgeMod;
 
 import java.nio.ByteBuffer;
@@ -32,12 +32,12 @@ public class FastSwim extends Action {
     }
 
     @Override
-    public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+    public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
         return canContinue(player, parkourability, stamina);
     }
 
     @Override
-    public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+    public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
         return (!stamina.isExhausted()
                 && player.isInWaterOrBubble()
                 && player.getVehicle() == null
@@ -52,7 +52,7 @@ public class FastSwim extends Action {
     }
 
     @Override
-    public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+    public void onClientTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
         if (player.isLocalPlayer()) {
             if (ParCoolConfig.Client.FastRunControl.get() == FastRun.ControlType.Toggle
                     && parkourability.getAdditionalProperties().getSprintingTick() > 3
@@ -68,7 +68,7 @@ public class FastSwim extends Action {
     }
 
     @Override
-    public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+    public void onWorkingTickInClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
         Animation animation = Animation.get(player);
         if (animation != null && !animation.hasAnimator()) {
             animation.setAnimator(new FastSwimAnimator());
@@ -76,12 +76,12 @@ public class FastSwim extends Action {
     }
 
     @Override
-    public void onStartInServer(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+    public void onStartInServer(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
         speedModifier = parkourability.get(FastSwim.class).getSpeedModifier(parkourability.getActionInfo());
     }
 
     @Override
-    public void onServerTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+    public void onServerTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
         ModifiableAttributeInstance attr = player.getAttribute(ForgeMod.SWIM_SPEED.get());
         if (attr == null) return;
         if (attr.getModifier(FAST_SWIM_MODIFIER_UUID) != null) attr.removeModifier(FAST_SWIM_MODIFIER_UUID);

@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.RenderBehaviorEnforcer;
 import com.alrex.parcool.client.animation.impl.HideInBlockAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
@@ -14,7 +15,6 @@ import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -46,9 +46,9 @@ public class HideInBlock extends Action {
     }
 
     @Override
-    public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+    public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
         if (player.isSprinting()
-                || player.noPhysics
+                || player.hasNoPhysics()
                 || !player.isOnGround()
                 || player.isInWater()
                 || player.isPassenger()
@@ -56,7 +56,7 @@ public class HideInBlock extends Action {
                 || parkourability.isDoingNothing()
                 || !KeyBindings.getKeyBindHideInBlock().isDown()
                 || getNotDoingTick() < 6
-                || player.hurtTime > 0
+                || player.hasHurtTime()
                 || player.getPose() != Pose.CROUCHING
         ) {
             return false;
@@ -107,17 +107,17 @@ public class HideInBlock extends Action {
     }
 
     @Override
-    public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+    public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
         if (hidingBlockChanged) {
             return hidingBlockChanged = false;
         }
-        return player.hurtTime <= 0
+        return !player.hasHurtTime()
                 && player.getPose() == Pose.STANDING
                 && (getDoingTick() < 6 || KeyBindings.getKeyBindHideInBlock().isDown() || KeyBindings.getKeySneak().isDown());
     }
 
     @Override
-    public void onStart(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+    public void onStart(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
         boolean _stand = BufferUtil.getBoolean(startData);
         hidingArea = new Tuple<>(BufferUtil.getBlockPos(startData), BufferUtil.getBlockPos(startData));
         hidingPoint = BufferUtil.getVector3d(startData);
@@ -132,13 +132,13 @@ public class HideInBlock extends Action {
                 }
         );
         parkourability.getBehaviorEnforcer().addMarkerCancellingSneak(ID_SNEAK, this::isDoing);
-        player.setPose(Pose.STANDING);
-        player.noPhysics = true;
-        player.playSound(player.level.getBlockState(new BlockPos(hidingPoint.add(0, 0.2, 0))).getSoundType().getBreakSound(), 1, 1);
+        player.setStandingPose();
+        player.disablePhysics();
+        player.playSound(player.getBlockState(new BlockPos(hidingPoint.add(0, 0.2, 0))).getSoundType().getBreakSound(), 1, 1);
     }
 
     @Override
-    public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+    public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
         boolean stand = BufferUtil.getBoolean(startData);
         RenderBehaviorEnforcer.serMarkerEnforceCameraType(this::isDoing, () -> PointOfView.THIRD_PERSON_BACK);
         parkourability.getBehaviorEnforcer().addMarkerCancellingShowName(ID_SHOW_NAME, this::isDoing);
@@ -149,7 +149,7 @@ public class HideInBlock extends Action {
     }
 
     @Override
-    public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+    public void onStartInOtherClient(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
         boolean stand = BufferUtil.getBoolean(startData);
         Animation animation = Animation.get(player);
         parkourability.getBehaviorEnforcer().addMarkerCancellingShowName(ID_SHOW_NAME, this::isDoing);
@@ -160,21 +160,21 @@ public class HideInBlock extends Action {
 
 
     @Override
-    public void onWorkingTickInServer(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+    public void onWorkingTickInServer(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
         if (hidingPoint == null) return;
-        player.setPos(hidingPoint.x(), hidingPoint.y(), hidingPoint.z());
+        player.setPos(hidingPoint);
     }
 
     @Override
-    public void onWorkingTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+    public void onWorkingTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
         player.setDeltaMovement(Vector3d.ZERO);
-        player.noPhysics = true;
+        player.disablePhysics();
         player.setSprinting(false);
-        player.setPose(Pose.STANDING);
+        player.setStandingPose();
     }
 
     @Override
-    public void onStopInLocalClient(PlayerEntity player) {
+    public void onStopInLocalClient(PlayerWrapper player) {
         final Vector3d hidePos = hidingPoint;
         final Vector3d entPos = enterPoint;
         Parkourability parkourability = Parkourability.get(player);
@@ -188,35 +188,35 @@ public class HideInBlock extends Action {
                 }
         );
         spawnOnHideParticles(player);
-        player.playSound(player.level.getBlockState(new BlockPos(hidingPoint.add(0, 0.2, 0))).getSoundType().getBreakSound(), 1, 1);
+        player.playSound(player.getBlockState(new BlockPos(hidingPoint.add(0, 0.2, 0))).getSoundType().getBreakSound(), 1, 1);
     }
 
     @Override
-    public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+    public void onTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
         if (!isDoing() && getNotDoingTick() <= 1) {
-            player.noPhysics = true;
+            player.disablePhysics();;
         }
     }
 
     @Override
-    public void onStopInOtherClient(PlayerEntity player) {
+    public void onStopInOtherClient(PlayerWrapper player) {
         spawnOnHideParticles(player);
-        player.playSound(player.level.getBlockState(new BlockPos(hidingPoint.add(0, 0.2, 0))).getSoundType().getBreakSound(), 1, 1);
+        player.playSound(player.getBlockState(new BlockPos(hidingPoint.add(0, 0.2, 0))).getSoundType().getBreakSound(), 1, 1);
     }
 
     @Override
-    public void onStop(PlayerEntity player) {
+    public void onStop(PlayerWrapper player) {
         hidingPoint = null;
         enterPoint = null;
         hidingArea = null;
         lookDirection = null;
-        player.noPhysics = false;
+        player.enablePhysics();
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void spawnOnHideParticles(PlayerEntity player) {
+    private void spawnOnHideParticles(PlayerWrapper player) {
         if (hidingArea == null) return;
-        World world = player.level;
+        World world = player.getLevel();
         int minX = hidingArea.getA().getX();
         int minY = hidingArea.getA().getY();
         int minZ = hidingArea.getA().getZ();

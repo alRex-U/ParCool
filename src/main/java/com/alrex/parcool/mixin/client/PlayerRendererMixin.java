@@ -1,5 +1,6 @@
 package com.alrex.parcool.mixin.client;
 
+import com.alrex.parcool.api.compatibility.AbstractClientPlayerWrapper;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.common.capability.Animation;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -26,25 +27,27 @@ public abstract class PlayerRendererMixin extends LivingRenderer<AbstractClientP
 
 	@Inject(method = "setupRotations(Lnet/minecraft/client/entity/player/AbstractClientPlayerEntity;Lcom/mojang/blaze3d/matrix/MatrixStack;FFF)V", at = @At("TAIL"))
 	protected void onSetupRotationsTail(AbstractClientPlayerEntity player, MatrixStack stack, float xRot, float yRot, float zRot, CallbackInfo ci) {
+		AbstractClientPlayerWrapper playerWrapper = AbstractClientPlayerWrapper.get(player);
 		// arg names may be incorrect
-		Animation animation = Animation.get(player);
+		Animation animation = Animation.get(playerWrapper);
 		if (animation == null) {
 			return;
 		}
 		if (parCool$rotator != null) {
-			animation.rotatePost(player, parCool$rotator);
+			animation.rotatePost(playerWrapper, parCool$rotator);
 			parCool$rotator = null;
 		}
 	}
 
 	@Inject(method = "setupRotations(Lnet/minecraft/client/entity/player/AbstractClientPlayerEntity;Lcom/mojang/blaze3d/matrix/MatrixStack;FFF)V", at = @At("HEAD"), cancellable = true)
 	protected void onSetupRotationsHead(AbstractClientPlayerEntity player, MatrixStack stack, float xRot, float yRot, float zRot, CallbackInfo ci) {
-		Animation animation = Animation.get(player);
+		AbstractClientPlayerWrapper playerWrapper = AbstractClientPlayerWrapper.get(player);
+		Animation animation = Animation.get(playerWrapper);
 		if (animation == null) {
 			return;
 		}
-		parCool$rotator = new PlayerModelRotator(stack, player, Minecraft.getInstance().getFrameTime(), xRot, yRot, zRot);
-		if (animation.rotatePre(player, parCool$rotator)) {
+		parCool$rotator = new PlayerModelRotator(stack, playerWrapper, Minecraft.getInstance().getFrameTime(), xRot, yRot, zRot);
+		if (animation.rotatePre(playerWrapper, parCool$rotator)) {
 			parCool$rotator = null;
 			ci.cancel();
 		}

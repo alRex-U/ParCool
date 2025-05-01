@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.animation.impl;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
@@ -8,7 +9,6 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 
@@ -27,12 +27,12 @@ public class HideInBlockAnimator extends Animator {
         this.standing = standing;
     }
     @Override
-    public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+    public boolean shouldRemoved(PlayerWrapper player, Parkourability parkourability) {
         return !parkourability.get(HideInBlock.class).isDoing();
     }
 
     @Override
-    public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+    public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
         float phase = (getTick() + transformer.getPartialTick()) / 5f;
         if (phase > 1f) phase = 1f;
         float factor = Easing.with(phase).sinInOut(0f, 1f, 0, 1f).get();
@@ -56,14 +56,14 @@ public class HideInBlockAnimator extends Animator {
     }
 
     @Override
-    public boolean rotatePre(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public boolean rotatePre(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator) {
         float phase = (getTick() + rotator.getPartialTick()) / 5f;
         if (phase > 1f) phase = 1f;
         float factor = Easing.with(phase).sinInOut(0f, 1f, 0, 1f).get();
         Vector3d lookVec = parkourability.get(HideInBlock.class).getLookDirection();
         if (lookVec == null) return false;
         if (standing) {
-            float playerYRot = 180f + MathHelper.lerp(rotator.getPartialTick(), player.yRotO, player.yRot);
+            float playerYRot = player.getRotatedYRot(rotator);
             float yRot = (float) VectorUtil.toYawDegree(lookVec);
             rotator.rotateYawRightward(playerYRot + MathUtil.normalizeDegree((180f + yRot) - playerYRot) * factor);
             return true;

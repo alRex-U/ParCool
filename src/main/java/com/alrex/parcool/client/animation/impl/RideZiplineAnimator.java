@@ -1,16 +1,15 @@
 package com.alrex.parcool.client.animation.impl;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.RideZipline;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.TickEvent;
 
 public class RideZiplineAnimator extends Animator {
@@ -18,7 +17,7 @@ public class RideZiplineAnimator extends Animator {
     private double currentAngleRadian = 0;
 
     @Override
-    public void tick(PlayerEntity player) {
+    public void tick(PlayerWrapper player) {
         super.tick(player);
 
         Parkourability parkourability = Parkourability.get(player);
@@ -28,7 +27,7 @@ public class RideZiplineAnimator extends Animator {
         oldAngleRadian = currentAngleRadian;
         double acceleration = action.getAcceleration();
         double slope = action.getSlope();
-        double gravity = player.getAttributeValue(ForgeMod.ENTITY_GRAVITY.get());
+        double gravity = player.getGravity();
         double invSqrt = MathHelper.fastInvSqrt(slope * slope + 1);
         double xz = -acceleration * invSqrt;
         double y = gravity + acceleration * slope * invSqrt;
@@ -36,12 +35,12 @@ public class RideZiplineAnimator extends Animator {
     }
 
     @Override
-    public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+    public boolean shouldRemoved(PlayerWrapper player, Parkourability parkourability) {
         return !parkourability.get(RideZipline.class).isDoing();
     }
 
     @Override
-    public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+    public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
         Vector3d offset = parkourability.get(RideZipline.class).getEndOffsetFromStart();
         if (offset == null) return;
         double angleDifference = VectorUtil.toYawRadian(player.getLookAngle()) - VectorUtil.toYawRadian(new Vector3d(offset.x(), 0, offset.z()));
@@ -60,13 +59,12 @@ public class RideZiplineAnimator extends Animator {
     }
 
     @Override
-    public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
-        player.yBodyRot = player.yRot;
-        player.yBodyRotO = player.yRotO;
+    public void onRenderTick(TickEvent.RenderTickEvent event, PlayerWrapper player, Parkourability parkourability) {
+        player.updateBodyRot();
     }
 
     @Override
-    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator) {
         Vector3d offset = parkourability.get(RideZipline.class).getEndOffsetFromStart();
         if (offset == null) return;
         Vector3d rotationAxis = new Vector3d(0, 0, 1)

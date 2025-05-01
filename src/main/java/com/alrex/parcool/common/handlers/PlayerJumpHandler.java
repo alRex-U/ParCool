@@ -1,19 +1,19 @@
 package com.alrex.parcool.common.handlers;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.action.impl.ChargeJump;
 import com.alrex.parcool.common.action.impl.Dive;
 import com.alrex.parcool.common.action.impl.Flipping;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class PlayerJumpHandler {
 	@SubscribeEvent
 	public static void onJump(LivingEvent.LivingJumpEvent event) {
-		if (!(event.getEntity() instanceof PlayerEntity)) return;
-		PlayerEntity player = (PlayerEntity) event.getEntity();
+		PlayerWrapper player = PlayerWrapper.getFromEntityOrDefault(event);
+		if (player == null) return;
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 		parkourability.getAdditionalProperties().onJump();

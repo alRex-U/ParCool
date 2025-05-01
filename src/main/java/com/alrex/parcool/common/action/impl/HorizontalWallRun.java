@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.impl.HorizontalWallRunAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
@@ -17,7 +18,6 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
@@ -47,18 +47,18 @@ public class HorizontalWallRun extends Action {
 	private Vector3d runningDirection = null;
 
 	@Override
-	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onClientTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		if (coolTime > 0) coolTime--;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
 		if (wallDirection == null) return;
 		if (runningWallDirection == null) return;
 		if (runningDirection == null) return;
-		Vector3d lookVec = VectorUtil.fromYawDegree(player.yBodyRot);
+		Vector3d lookVec = VectorUtil.fromYawDegree(player.getYBodyRot());
 		double differenceAngle = Math.asin(
 				new Vector3d(
 						lookVec.x() * runningDirection.x() + lookVec.z() * runningDirection.z(), 0,
@@ -72,8 +72,8 @@ public class HorizontalWallRun extends Action {
 				player.getBoundingBox().minY + player.getBbHeight() * 0.5,
 				player.getZ() + runningWallDirection.z()
 		);
-		if (!player.level.isLoaded(leanedBlock)) return;
-		float slipperiness = player.level.getBlockState(leanedBlock).getSlipperiness(player.level, leanedBlock, player);
+		if (!player.isEveryLoaded(leanedBlock)) return;
+		float slipperiness = player.getSlipperiness(leanedBlock);
 		if (slipperiness <= 0.8) {
 			double speedScale = 0.2;
 			ModifiableAttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
@@ -90,11 +90,11 @@ public class HorizontalWallRun extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
 		if (wallDirection == null) return false;
 		Vector3d wallVec = wallDirection.normalize();
-		Vector3d lookDirection = VectorUtil.fromYawDegree(player.yBodyRot);
+		Vector3d lookDirection = VectorUtil.fromYawDegree(player.getYBodyRot());
 		lookDirection = new Vector3d(lookDirection.x(), 0, lookDirection.z()).normalize();
 		//doing "wallDirection/direction" as complex number(x + z i) to calculate difference of player's direction to steps
 		Vector3d dividedVec =
@@ -139,7 +139,7 @@ public class HorizontalWallRun extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		Vector3d wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
 		if (wallDirection == null) return false;
 		return (getDoingTick() < getMaxRunningTick(parkourability.getActionInfo())
@@ -157,12 +157,12 @@ public class HorizontalWallRun extends Action {
 	}
 
 	@Override
-	public void onStop(PlayerEntity player) {
+	public void onStop(PlayerWrapper player) {
 		coolTime = 10;
 	}
 
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		wallIsRightward = BufferUtil.getBoolean(startData);
 		runningWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		runningDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
@@ -175,7 +175,7 @@ public class HorizontalWallRun extends Action {
 	}
 
 	@Override
-	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+	public void onStartInOtherClient(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
 		wallIsRightward = BufferUtil.getBoolean(startData);
 		runningWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		runningDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
@@ -189,7 +189,7 @@ public class HorizontalWallRun extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerWrapper player, Parkourability parkourability) {
 		if (isDoing()) {
 			if (runningDirection == null) return;
 			Vector3d lookVec = VectorUtil.fromYawDegree(player.getYHeadRot());
@@ -200,16 +200,16 @@ public class HorizontalWallRun extends Action {
 					).normalize().z()
 			);
 			if (Math.abs(differenceAngle) > Math.PI / 4) {
-				player.yRot = ((float) VectorUtil.toYawDegree(
+				player.setYRot((float) VectorUtil.toYawDegree(
 						runningDirection.yRot((float) (-Math.signum(differenceAngle) * Math.PI / 4))
 				));
 			}
-			player.yBodyRotO = player.yBodyRot = bodyYaw;
+			player.setAllYBodyRot(bodyYaw);
 		}
 	}
 
 	@Override
-	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		spawnRunningParticle(player);
 	}
 
@@ -229,10 +229,10 @@ public class HorizontalWallRun extends Action {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void spawnRunningParticle(PlayerEntity player) {
+	public void spawnRunningParticle(PlayerWrapper player) {
 		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		if (runningDirection == null || runningWallDirection == null) return;
-		World level = player.level;
+		World level = player.getLevel();
 		Vector3d pos = player.position();
 		BlockPos leanedBlock = new BlockPos(
 				pos.add(runningWallDirection.x(), player.getBbHeight() * 0.25, runningWallDirection.z())

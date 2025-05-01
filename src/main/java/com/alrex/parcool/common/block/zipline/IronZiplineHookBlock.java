@@ -1,9 +1,9 @@
 package com.alrex.parcool.common.block.zipline;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.block.BlockStateProperties;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
@@ -70,7 +70,7 @@ public class IronZiplineHookBlock extends ZiplineHookBlock {
         BlockState state = super.getStateForPlacement(context);
 
         boolean orthogonal;
-        PlayerEntity player = context.getPlayer();
+        PlayerWrapper player = PlayerWrapper.get(context);
         if (player == null)
             orthogonal = false;
         else {

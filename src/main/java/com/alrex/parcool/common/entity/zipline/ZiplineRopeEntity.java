@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.entity.zipline;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.block.zipline.ZiplineHookTileEntity;
 import com.alrex.parcool.common.block.zipline.ZiplineInfo;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
@@ -174,7 +175,7 @@ public class ZiplineRopeEntity extends Entity {
     @Nonnull
     @Override
     public ActionResultType interact(PlayerEntity p_184230_1_, Hand p_184230_2_) {
-        return ActionResultType.sidedSuccess(p_184230_1_.level.isClientSide());
+        return ActionResultType.sidedSuccess(PlayerWrapper.get(p_184230_1_).isLevelClientSide());
     }
 
     @Override

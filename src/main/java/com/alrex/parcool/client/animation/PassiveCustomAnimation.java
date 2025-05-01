@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.animation;
 
+import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.impl.ClingToCliff;
 import com.alrex.parcool.common.action.impl.Dive;
@@ -8,7 +9,6 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.EasingFunctions;
 import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -22,9 +22,9 @@ public class PassiveCustomAnimation {
 	private int flyingAnimationLevel = 0;
 	private static final int flyingMaxLevel = 20;
 
-	public void tick(PlayerEntity player, Parkourability parkourability) {
+	public void tick(PlayerWrapper player, Parkourability parkourability) {
 		flyingAnimationLevelOld = flyingAnimationLevel;
-		if (KeyBindings.isKeyForwardDown() && player.abilities.flying) {
+		if (KeyBindings.isKeyForwardDown() && player.isFlying()) {
 			flyingAnimationLevel++;
 			if (flyingAnimationLevel > flyingMaxLevel) {
 				flyingAnimationLevel = flyingMaxLevel;
@@ -36,8 +36,8 @@ public class PassiveCustomAnimation {
 			}
 		}
 		if (!player.isOnGround()
-				&& player.fallDistance > 1
-				&& !player.abilities.flying
+				&& player.getFallDistance() > 1f
+				&& !player.isFlying()
 				&& !player.isFallFlying()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 		) {
@@ -53,7 +53,7 @@ public class PassiveCustomAnimation {
 		*/
 	}
 
-	public void animate(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animate(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		if (fallingAnimationTick >= FallingStartLine
 				&& ParCoolConfig.Client.Booleans.EnableFallingAnimation.get()
 				&& !parkourability.get(Dive.class).isDoing()
@@ -62,7 +62,7 @@ public class PassiveCustomAnimation {
 		}
 	}
 
-	public void rotate(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+	public void rotate(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator) {
 	}
 
 	private void animateFalling(Parkourability parkourability, PlayerModelTransformer transformer) {
@@ -78,7 +78,7 @@ public class PassiveCustomAnimation {
 				.end();
 	}
 
-	private void animateCreativeFlying(PlayerEntity player, PlayerModelTransformer transformer) {
+	private void animateCreativeFlying(PlayerWrapper player, PlayerModelTransformer transformer) {
 		float angle = getAngleCreativeFlying(player, transformer.getPartialTick());
 		float factor = getFactorCreativeFlying(transformer.getPartialTick());
 		if (flyingAnimationLevel > 0) {
@@ -100,15 +100,15 @@ public class PassiveCustomAnimation {
 		}
 	}
 
-	private void rotateCreativeFlying(PlayerEntity player, PlayerModelRotator rotator) {
+	private void rotateCreativeFlying(PlayerWrapper player, PlayerModelRotator rotator) {
 		rotator
 				.startBasedCenter()
 				.rotatePitchFrontward(getAngleCreativeFlying(player, rotator.getPartialTick()))
 				.end();
 	}
 
-	private void spawnSweatParticle(PlayerEntity player) {
-		World level = player.level;
+	private void spawnSweatParticle(PlayerWrapper player) {
+		World level = player.getLevel();
 		Random rand = player.getRandom();
 		Vector3d particleSpeed = player.getDeltaMovement().scale(0.6);
 		level.addParticle(
@@ -121,7 +121,7 @@ public class PassiveCustomAnimation {
 				particleSpeed.z()
 		);
 	}
-	private float getAngleCreativeFlying(PlayerEntity player, float partial) {
+	private float getAngleCreativeFlying(PlayerWrapper player, float partial) {
 		float xRot = (float) VectorUtil.toPitchDegree(player.getDeltaMovement());
 		return (xRot + 90) * getFactorCreativeFlying(partial);
 	}

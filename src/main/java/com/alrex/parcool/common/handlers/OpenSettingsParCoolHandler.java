@@ -1,11 +1,11 @@
 package com.alrex.parcool.common.handlers;
 
+import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.client.gui.SettingActionLimitationScreen;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -19,7 +19,7 @@ public class OpenSettingsParCoolHandler {
 		if (event.phase == TickEvent.Phase.END) return;
 
 		if (KeyRecorder.keyOpenSettingsState.isPressed()) {
-			ClientPlayerEntity player = Minecraft.getInstance().player;
+			ClientPlayerWrapper player = ClientPlayerWrapper.get();
 			if (player == null) return;
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
