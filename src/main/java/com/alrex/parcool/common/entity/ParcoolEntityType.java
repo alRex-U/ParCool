@@ -3,14 +3,15 @@ package com.alrex.parcool.common.entity;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class EntityType {
-    private static final DeferredRegister<net.minecraft.entity.EntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.ENTITIES, ParCool.MOD_ID);
-    public static final RegistryObject<net.minecraft.entity.EntityType<ZiplineRopeEntity>> ZIPLINE_ROPE
+public class ParcoolEntityType {
+    private static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.ENTITIES, ParCool.MOD_ID);
+    public static final RegistryObject<EntityType<ZiplineRopeEntity>> ZIPLINE_ROPE
             = REGISTER.register("zipline_rope", () -> net.minecraft.entity.EntityType.Builder
             .of((net.minecraft.entity.EntityType.IFactory<ZiplineRopeEntity>) ZiplineRopeEntity::new, EntityClassification.MISC)
             .noSave()

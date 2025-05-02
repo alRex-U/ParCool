@@ -1,6 +1,9 @@
 package com.alrex.parcool.common.block.zipline;
 
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.api.compatibility.BlockEntityWrapper;
+import com.alrex.parcool.api.compatibility.ContainersWrapper;
+import com.alrex.parcool.api.compatibility.InteractionResultWrapper;
 import com.alrex.parcool.api.compatibility.LevelWrapper;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.api.compatibility.Vec3Wrapper;
@@ -11,7 +14,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.DirectionalBlock;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
@@ -27,7 +29,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
@@ -63,11 +64,11 @@ public class ZiplineHookBlock extends DirectionalBlock {
     public void onRemove(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState p_196243_4_, boolean p_196243_5_) {
         LevelWrapper level = LevelWrapper.get(world);
         if (!level.isClientSide()) {
-            TileEntity tileEntity = level.getBlockEntity(pos);
-            if (tileEntity instanceof ZiplineHookTileEntity) {
-                ZiplineHookTileEntity ziplineHookTileEntity = (ZiplineHookTileEntity) tileEntity;
+            BlockEntityWrapper tileEntity = level.getBlockEntity(pos);
+            ZiplineHookTileEntity ziplineHookTileEntity = tileEntity.cast(ZiplineHookTileEntity.class);
+            if (ziplineHookTileEntity != null) {
                 List<ItemStack> itemStacks = ziplineHookTileEntity.removeAllConnection();
-                itemStacks.forEach((it) -> InventoryHelper.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), it));
+                itemStacks.forEach((it) -> ContainersWrapper.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), it));
             }
         }
         super.onRemove(state, world, pos, p_196243_4_, p_196243_5_);
@@ -97,26 +98,23 @@ public class ZiplineHookBlock extends DirectionalBlock {
         PlayerWrapper player = PlayerWrapper.get(playerEntity);
         ItemStack stack = player.getItemInHand(hand);
         if (stack.getItem() instanceof ShearsItem) {
-            TileEntity tileEntity = level.getBlockEntity(pos);
-            if (tileEntity instanceof ZiplineHookTileEntity) {
-                ZiplineHookTileEntity ziplineHookTileEntity = (ZiplineHookTileEntity) tileEntity;
-                if (ziplineHookTileEntity.getConnectionPoints().isEmpty()) return ActionResultType.PASS;
+            BlockEntityWrapper tileEntity = level.getBlockEntity(pos);
+            ZiplineHookTileEntity ziplineHookTileEntity = tileEntity.cast(ZiplineHookTileEntity.class);
+            if (ziplineHookTileEntity != null) {
+                if (ziplineHookTileEntity.getConnectionPoints().isEmpty()) return InteractionResultWrapper.PASS;
 
                 List<ItemStack> itemStacks = ziplineHookTileEntity.removeAllConnection();
                 player.playSound(SoundEvents.ZIPLINE_REMOVE.get(), 1, 1);
-                if (world.isClientSide()) {
-                    return ActionResultType.SUCCESS;
-                } else {
-                    itemStacks.forEach((it) -> InventoryHelper.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), it));
-                    if (!itemStacks.isEmpty() && stack.isDamageableItem()) {
-                        player.hurtAndBreakStack(1, stack);
-                    }
-                    return ActionResultType.CONSUME;
+                if (world.isClientSide()) return InteractionResultWrapper.SUCCESS;
+                itemStacks.forEach((it) -> ContainersWrapper.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), it));
+                if (!itemStacks.isEmpty() && stack.isDamageableItem()) {
+                    player.hurtAndBreakStack(1, stack);
                 }
+                return InteractionResultWrapper.CONSUME;
             }
         }
 
-        return ActionResultType.PASS;
+        return InteractionResultWrapper.PASS;
     }
 
     @Override

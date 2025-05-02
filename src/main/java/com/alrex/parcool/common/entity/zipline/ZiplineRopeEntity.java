@@ -46,7 +46,7 @@ public class ZiplineRopeEntity extends Entity {
     }
 
     public ZiplineRopeEntity(World world, BlockPos start, BlockPos end, ZiplineInfo info) {
-        super(com.alrex.parcool.common.entity.EntityType.ZIPLINE_ROPE.get(), world);
+        super(com.alrex.parcool.common.entity.ParcoolEntityType.ZIPLINE_ROPE.get(), world);
         setStartPos(start);
         setEndPos(end);
         setColor(info.getColor());

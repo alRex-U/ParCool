@@ -8,10 +8,7 @@ import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.IParticleData;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -50,8 +47,8 @@ public final class LevelWrapper {
       return level.isClientSide();
    }
 
-   public TileEntity getBlockEntity(BlockPos pos) {
-      return level.getBlockEntity(pos);
+   public BlockEntityWrapper getBlockEntity(BlockPos pos) {
+      return new BlockEntityWrapper(level.getBlockEntity(pos));
    }
 
    public static LevelWrapper get() {
@@ -68,5 +65,9 @@ public final class LevelWrapper {
 
    public List<ZiplineRopeEntity> getEntitiesOfClass(Class<ZiplineRopeEntity> class1, AxisAlignedBB inflate) {
       return level.getEntitiesOfClass(class1, inflate);
+   }
+
+   public World getInstance() {
+      return level;
    }
 }
