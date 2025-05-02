@@ -1,5 +1,6 @@
 package com.alrex.parcool.api.compatibility;
 
+import java.lang.ref.WeakReference;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
@@ -18,11 +19,11 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class EntityWrapper {
 
-    private Entity entity;
+    private final WeakReference<Entity> entityRef;
     protected static final WeakCache<Entity, EntityWrapper> cache = new WeakCache<>();
 
     protected EntityWrapper(Entity entity) {
-        this.entity = entity;
+        this.entityRef = new WeakReference<>(entity);
     }
 
     // Static get methods
@@ -32,19 +33,20 @@ public class EntityWrapper {
 
     // add methods grouped together
     public void addParticle(BasicParticleType endRod, double x, double d, double z, double e, double f, double g) {
-        entity.level.addParticle(endRod, x, d, z, e, f, g);
+        entityRef.get().level.addParticle(endRod, x, d, z, e, f, g);
     }
     
     public void addToDeltaMovement(int i, double d, int j) {
-        entity.setDeltaMovement(entity.getDeltaMovement().add(i, d, j));
+        entityRef.get().setDeltaMovement(entityRef.get().getDeltaMovement().add(i, d, j));
     }
     
     public void addToDeltaMovement(Vec3Wrapper vec) {
-        entity.setDeltaMovement(entity.getDeltaMovement().add(vec));
+        entityRef.get().setDeltaMovement(entityRef.get().getDeltaMovement().add(vec));
     }
 
     // get methods grouped together
     public BlockPos getAdjustedBlockPos(int xDirection, double minY, int zDirection) {
+        Entity entity = entityRef.get();
         return new BlockPos(
             entity.getX() + xDirection,
             entity.getBoundingBox().minY + minY,
@@ -53,46 +55,47 @@ public class EntityWrapper {
     }
     
     public float getBbHeight() {
-        return entity.getBbHeight();
+        return entityRef.get().getBbHeight();
     }
     
     public float getBbWidth() {
-        return entity.getBbWidth();
+        return entityRef.get().getBbWidth();
     }
     
     public BlockState getBlockState(BlockPos pos) {
-        return entity.level.getBlockState(pos);
+        return entityRef.get().level.getBlockState(pos);
     }
 
     @Nullable
     public <T> T getCapability(@Nonnull final Capability<T> cap) {
-        LazyOptional<T> optional = entity.getCapability(cap);
+        LazyOptional<T> optional = entityRef.get().getCapability(cap);
         if (!optional.isPresent()) return null;
 		return optional.orElse(null);
     }
  
     public Vec3Wrapper getDeltaMovement() {
-        return new Vec3Wrapper(entity.getDeltaMovement());
+        return new Vec3Wrapper(entityRef.get().getDeltaMovement());
     }
     
     public float getEyeHeight() {
-        return entity.getEyeHeight();
+        return entityRef.get().getEyeHeight();
     }
     
     public float getFallDistance() {
-        return entity.fallDistance;
+        return entityRef.get().fallDistance;
     }
     
     public LevelWrapper getLevel() {
-        return LevelWrapper.get(entity.level);
+        return LevelWrapper.get(entityRef.get().level);
     }
     
     public Vec3Wrapper getLookAngle() {
-        return new Vec3Wrapper(entity.getLookAngle());
+        return new Vec3Wrapper(entityRef.get().getLookAngle());
     }
     
     public float getMinSlipperiness(BlockPos ...blockPos) {
         float minSlipperiness = 1;
+        Entity entity = entityRef.get();
         for (BlockPos pos : blockPos) {
             if (entity.level.isLoaded(pos)) {
                 float candidateSlipperiness = entity.level.getBlockState(pos).getSlipperiness(entity.level, pos, entity);
@@ -103,49 +106,49 @@ public class EntityWrapper {
     }
     
     public float getRotatedYRot(PlayerModelRotator rotator) {
-        return 180f + MathHelper.lerp(rotator.getPartialTick(), entity.yRotO, entity.yRot);
+        return 180f + MathHelper.lerp(rotator.getPartialTick(), entityRef.get().yRotO, entityRef.get().yRot);
     }
     
     public int getTickCount() {
-        return entity.tickCount;
+        return entityRef.get().tickCount;
     }
     
     public UUID getUUID() {
-        return entity.getUUID();
+        return entityRef.get().getUUID();
     }
     
     public float getViewXRot(float renderPartialTicks) {
-        return entity.getViewXRot(renderPartialTicks);
+        return entityRef.get().getViewXRot(renderPartialTicks);
     }
     
     public float getYHeadRot() {
-        return entity.getYHeadRot();
+        return entityRef.get().getYHeadRot();
     }
     
     public float getYRot() {
-        return entity.yRot;
+        return entityRef.get().yRot;
     }
     
     public double getX() {
-        return entity.getX();
+        return entityRef.get().getX();
     }
     
     public double getY() {
-        return entity.getY();
+        return entityRef.get().getY();
     }
     
     public double getZ() {
-        return entity.getZ();
+        return entityRef.get().getZ();
     }
     
     public Entity getInstance() {
-        return entity;
+        return entityRef.get();
     }
 
     // is methods grouped together
     public boolean isEveryLoaded(BlockPos ...blockPos) {
         for (BlockPos pos : blockPos) {
-            if (!entity.level.isLoaded(pos)) {
+            if (!entityRef.get().level.isLoaded(pos)) {
                 return false;
             }
         }
@@ -153,51 +156,52 @@ public class EntityWrapper {
     }
     
     public boolean isInLava() {
-        return entity.isInLava();
+        return entityRef.get().isInLava();
     }
     
     public boolean isInWaterOrBubble() {
-        return entity.isInWaterOrBubble();
+        return entityRef.get().isInWaterOrBubble();
     }
     
     public boolean isOnGround() {
-        return entity.isOnGround();
+        return entityRef.get().isOnGround();
     }
     
     public boolean isVisuallyCrawling() {
-        return entity.isVisuallyCrawling();
+        return entityRef.get().isVisuallyCrawling();
     }
     
     public boolean isVisuallySwimming() {
-        return entity.isVisuallySwimming();
+        return entityRef.get().isVisuallySwimming();
     }
 
     // Other methods
     public void multiplyDeltaMovement(double d, int i, double e) {
+        Entity entity = entityRef.get();
         entity.setDeltaMovement(entity.getDeltaMovement().multiply(d, i, e));
     }
     
     public boolean noCollision(AxisAlignedBB bb) {
-        return entity.level.noCollision(bb);
+        return entityRef.get().level.noCollision(bb);
     }
     
     public void playSound(SoundEvent soundEvent, float i, float j) {
-        entity.playSound(soundEvent, i, j);
+        entityRef.get().playSound(soundEvent, i, j);
     }
     
     public Vec3Wrapper position() {
-        return new Vec3Wrapper(entity.position());
+        return new Vec3Wrapper(entityRef.get().position());
     }
     
     public void resetFallDistance() {
-        entity.fallDistance = 0;
+        entityRef.get().fallDistance = 0;
     }
     
     public void setDeltaMovement(double x, double i, double z) {
-        entity.setDeltaMovement(x, i, z);
+        entityRef.get().setDeltaMovement(x, i, z);
     }
     
     public void setYBodyRot(float f) {
-        entity.setYBodyRot(f);
+        entityRef.get().setYBodyRot(f);
     }
 }

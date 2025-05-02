@@ -1,5 +1,6 @@
 package com.alrex.parcool.api.compatibility;
 
+import java.lang.ref.WeakReference;
 import java.util.Random;
 import javax.annotation.Nonnull;
 
@@ -19,49 +20,51 @@ import net.minecraftforge.common.ForgeMod;
 
 public class LivingEntityWrapper extends EntityWrapper {
 
-    private LivingEntity entity;
+    private WeakReference<LivingEntity> entityRef;
     private static final WeakCache<LivingEntity, LivingEntityWrapper> cache = new WeakCache<>();
 
     protected LivingEntityWrapper(LivingEntity entity) {
         super(entity);
-        this.entity = entity;
+        this.entityRef = new WeakReference<>(entity);
     }
     
     // All get methods grouped together
     @Override
     public LivingEntity getInstance() {
-        return entity;
+        return entityRef.get();
     }
     
     public ModifiableAttributeInstance getAttribute(Attribute attribute) {
-        return entity.getAttribute(attribute);
+        return entityRef.get().getAttribute(attribute);
     }
     
     public double getAttributeValue(Attribute attribute) {
-        return entity.getAttributeValue(attribute);
+        return entityRef.get().getAttributeValue(attribute);
     }
     
     public AxisAlignedBB getBoundingBox() {
-        return entity.getBoundingBox();
+        return entityRef.get().getBoundingBox();
     }
     
     public double getGravity() {
-        return entity.getAttributeValue(ForgeMod.ENTITY_GRAVITY.get());
+        return entityRef.get().getAttributeValue(ForgeMod.ENTITY_GRAVITY.get());
     }
     
     public HandSide getMainArm() {
-        return entity.getMainArm();
+        return entityRef.get().getMainArm();
     }
     
     public Random getRandom() {
-        return entity.getRandom();
+        return entityRef.get().getRandom();
     }
     
     public Vec3Wrapper getRotatedBodyAngle(PlayerModelRotator rotator) {
+        LivingEntity entity = entityRef.get();
         return new Vec3Wrapper(VectorUtil.fromYawDegree(MathUtil.lerp(entity.yBodyRotO, entity.yBodyRot, rotator.getPartialTick())));
     }
     
     public double getUpdatedYRotDifference() {
+        LivingEntity entity = entityRef.get();
         Vec3Wrapper currentAngle = VectorUtil.fromYawDegree(entity.yBodyRot);
 		Vec3Wrapper oldAngle = VectorUtil.fromYawDegree(entity.yBodyRotO);
 		return Math.atan(
@@ -71,11 +74,11 @@ public class LivingEntityWrapper extends EntityWrapper {
     }
     
     public Vec3Wrapper getVectorYBodyRot() {
-        return new Vec3Wrapper(VectorUtil.fromYawDegree(entity.yBodyRot));
+        return new Vec3Wrapper(VectorUtil.fromYawDegree(entityRef.get().yBodyRot));
     }
     
     public float getYBodyRot() {
-        return entity.yBodyRot;
+        return entityRef.get().yBodyRot;
     }
 
     // Static get methods
@@ -89,23 +92,24 @@ public class LivingEntityWrapper extends EntityWrapper {
     
     // Has/is boolean methods
     public boolean hasEffect(Effect effect) {
-        return entity.hasEffect(effect);
+        return entityRef.get().hasEffect(effect);
     }
     
     public boolean isFallFlying() {
-        return entity.isFallFlying();
+        return entityRef.get().isFallFlying();
     }
     
     public boolean isSpectator() {
-        return entity.isSpectator();
+        return entityRef.get().isSpectator();
     }
     
     public boolean isSwingingMainHand() {
-        return entity.swingingArm == Hand.MAIN_HAND;
+        return entityRef.get().swingingArm == Hand.MAIN_HAND;
     }
 
     // Update methods
     public void updateBodyRot() {
+        LivingEntity entity = entityRef.get();
         entity.yBodyRot = entity.yRot;
         entity.yBodyRotO = entity.yRotO;
     }

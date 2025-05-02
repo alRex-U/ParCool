@@ -1,5 +1,6 @@
 package com.alrex.parcool.api.compatibility;
 
+import java.lang.ref.WeakReference;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -30,62 +31,64 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PlayerWrapper extends LivingEntityWrapper {
 
-    private PlayerEntity player;
+    private WeakReference<PlayerEntity> playerRef;
     protected static final WeakCache<PlayerEntity, PlayerWrapper> cache = new WeakCache<>();
 
     public PlayerWrapper(PlayerEntity player) {
         super(player);
-        this.player = player;
+        this.playerRef = new WeakReference<PlayerEntity>(player);
     }
 
     // All get methods grouped together
     @Override
     public PlayerEntity getInstance() {
-        return player;
+        return playerRef.get();
     }
 
     public BlockState getBelowBlockState() {
+        PlayerEntity player = playerRef.get();
         return player.level.getBlockState(player.blockPosition().below());
     }
     
     public float getEyeHeight() {
-        return player.getEyeHeight(Pose.STANDING);
+        return playerRef.get().getEyeHeight(Pose.STANDING);
     }
     
     public float getFallDistance() {
-        return player.fallDistance;
+        return playerRef.get().fallDistance;
     }
     
     public int getFoodLevel() {
-        return player.getFoodData().getFoodLevel();
+        return playerRef.get().getFoodData().getFoodLevel();
     }
 
     public ItemStack getItemInHand(Hand hand) {
-        return player.getItemInHand(hand);
+        return playerRef.get().getItemInHand(hand);
     }
     
     public String getName() {
-        return player.getGameProfile().getName();
+        return playerRef.get().getGameProfile().getName();
     }
     
     public Pose getPose() {
-        return player.getPose();
+        return playerRef.get().getPose();
     }
     
     public float getSlipperiness(BlockPos leanedBlock) {
+        PlayerEntity player = playerRef.get();
         return player.level.getBlockState(leanedBlock).getSlipperiness(player.level, leanedBlock, player);
     }
     
     public int getTickCount() {
-        return player.tickCount;
+        return playerRef.get().tickCount;
     }
     
     public Object getVehicle() {
-        return player.getVehicle();
+        return playerRef.get().getVehicle();
     }
 
     public Iterable<PlayerWrapper> getPlayersOnSameLevel() {
-        return MinecraftServerWrapper.getPlayers(player.level.players());
+        return MinecraftServerWrapper.getPlayers(playerRef.get().level.players());
     }
 
     // All static get methods grouped together
@@ -176,71 +179,73 @@ public class PlayerWrapper extends LivingEntityWrapper {
     // All has/is boolean methods grouped
     
     public boolean hasHurtTime() {
-        return player.hurtTime > 0;
+        return playerRef.get().hurtTime > 0;
     }
     
     public boolean hasNoPhysics() {
-        return player.noPhysics;
+        return playerRef.get().noPhysics;
     }
     
     public boolean hasSomeCollision() {
+        PlayerEntity player = playerRef.get();
         return player.horizontalCollision || player.verticalCollision;
     }
     
     public boolean isCreative() {
-        return player.isCreative();
+        return playerRef.get().isCreative();
     }
     
     public boolean isCrouching() {
-        return player.isCrouching();
+        return playerRef.get().isCrouching();
     }
     
     public boolean isFallFlying() {
-        return player.isFallFlying();
+        return playerRef.get().isFallFlying();
     }
     
     public boolean isFlying() {
-        return player.abilities.flying;
+        return playerRef.get().abilities.flying;
     }
     
     public boolean isImmortal() {
+        PlayerEntity player = playerRef.get();
         return player.isSpectator() || player.isCreative();
     }
     
     public boolean isInWall() {
-        return player.isInWall();
+        return playerRef.get().isInWall();
     }
     
     public boolean isInWater() {
-        return player.isInWater();
+        return playerRef.get().isInWater();
     }
     
     public boolean isLevelClientSide() {
-        return player.level.isClientSide;
+        return playerRef.get().level.isClientSide;
     }
     
     public boolean isLocalPlayer() {
-        return player.isLocalPlayer();
+        return playerRef.get().isLocalPlayer();
     }
     
     public boolean isOnGround() {
-        return player.isOnGround();
+        return playerRef.get().isOnGround();
     }
     
     public boolean isPassenger() {
-        return player.isPassenger();
+        return playerRef.get().isPassenger();
     }
     
     public boolean isShiftKeyDown() {
-        return player.isShiftKeyDown();
+        return playerRef.get().isShiftKeyDown();
     }
     
     public boolean isSprinting() {
-        return player.isSprinting();
+        return playerRef.get().isSprinting();
     }
     
     public boolean isSwimming() {
-        return player.isSwimming();
+        return playerRef.get().isSwimming();
     }
     
     public static boolean is(LivingEntityWrapper entity) {
@@ -248,42 +253,43 @@ public class PlayerWrapper extends LivingEntityWrapper {
     }
     
     public boolean onClimbable() {
-        return player.onClimbable();
+        return playerRef.get().onClimbable();
     }
 
     // All set methods grouped
     public void setAllYBodyRot(float bodyYaw) {
+        PlayerEntity player = playerRef.get();
         player.yBodyRot = bodyYaw;
         player.yBodyRotO = bodyYaw;
     }
     
     public void setDeltaMovement(Vec3Wrapper vec) {
-        player.setDeltaMovement(vec);
+        playerRef.get().setDeltaMovement(vec);
     }
     
     public void setPos(Vec3Wrapper hidingPoint) {
-        player.setPos(hidingPoint.x(), hidingPoint.y(), hidingPoint.z());
+        playerRef.get().setPos(hidingPoint.x(), hidingPoint.y(), hidingPoint.z());
     }
     
     public void setSprinting(boolean b) {
-        player.setSprinting(true);
+        playerRef.get().setSprinting(true);
     }
     
     public void setStandingPose() {
-        player.setPose(Pose.STANDING);
+        playerRef.get().setPose(Pose.STANDING);
     }
     
     public void setSwimming() {
-        player.setSprinting(false);
-        player.setPose(Pose.SWIMMING);
+        playerRef.get().setSprinting(false);
+        playerRef.get().setPose(Pose.SWIMMING);
     }
     
     public void setYHeadRot(float yawDegree) {
-        player.yHeadRot = yawDegree;
+        playerRef.get().yHeadRot = yawDegree;
     }
     
     public void setYRot(double yawDegree) {
-        player.yRot = (float)yawDegree;
+        playerRef.get().yRot = (float)yawDegree;
     }
 
     // All hurt methods grouped
@@ -294,23 +300,24 @@ public class PlayerWrapper extends LivingEntityWrapper {
     }
     
     public <T> void hurtAndBreakStack(int quantity, ItemStack stack, Consumer<PlayerWrapper> consumer) {
-        stack.hurtAndBreak(quantity, player, (it) -> consumer.accept(get(it)));
+        stack.hurtAndBreak(quantity, playerRef.get(), (it) -> consumer.accept(get(it)));
     }
 
     // Remaining methods
     public void displayClientMessage(IFormattableTextComponent translationTextComponent, boolean b) {
-        player.displayClientMessage(translationTextComponent, b);
+        playerRef.get().displayClientMessage(translationTextComponent, b);
     }
 
     public void disablePhysics() {
-        player.noPhysics = true;
+        playerRef.get().noPhysics = true;
     }
 
     public void enablePhysics() {
-        player.noPhysics = false;
+        playerRef.get().noPhysics = false;
     }
 
     public void forceDamage(DamageSource source, float f) {
+        PlayerEntity player = playerRef.get();
         int invulnerableTime = player.invulnerableTime; // bypass invulnerableTime
         player.invulnerableTime = 0;
         player.hurt(source, f);
@@ -318,14 +325,15 @@ public class PlayerWrapper extends LivingEntityWrapper {
     }
 
     public void jumpFromGround() {
-        player.jumpFromGround();
+        playerRef.get().jumpFromGround();
     }
 
     public void multiplyFallDistance(float multiplier) {
-        player.fallDistance *= multiplier;
+        playerRef.get().fallDistance *= multiplier;
     }
 
     public void rotateBodyRot0(Vec3Wrapper direction, double d) {
+        PlayerEntity player = playerRef.get();
         player.yBodyRotO = player.yBodyRot = (float) VectorUtil.toYawDegree(direction.yRot((float) d));
     }
 }

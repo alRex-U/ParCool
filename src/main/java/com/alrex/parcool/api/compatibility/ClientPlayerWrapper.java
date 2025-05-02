@@ -1,5 +1,7 @@
 package com.alrex.parcool.api.compatibility;
 
+import java.lang.ref.WeakReference;
+
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -9,12 +11,12 @@ import net.minecraft.entity.player.PlayerEntity;
 
 public class ClientPlayerWrapper extends AbstractClientPlayerWrapper {
     private static final Minecraft mc = Minecraft.getInstance();
-    private ClientPlayerEntity player;
+    private WeakReference<ClientPlayerEntity> playerRef;
     private static final WeakCache<ClientPlayerEntity, ClientPlayerWrapper> cache = new WeakCache<>();
 
     public ClientPlayerWrapper(ClientPlayerEntity player) {
         super(player);
-        this.player = player;
+        this.playerRef = new WeakReference<>(player);
     }
 
     // All static get methods grouped together
@@ -63,27 +65,28 @@ public class ClientPlayerWrapper extends AbstractClientPlayerWrapper {
     // All get methods grouped together
     @Override
     public ClientPlayerEntity getInstance() {
-        return player;
+        return playerRef.get();
     }
 
     public double getLeftImpulse() {
-        return player.input.leftImpulse;
+        return playerRef.get().input.leftImpulse;
     }
 
     public double getForwardImpulse() {
-        return player.input.forwardImpulse;
+        return playerRef.get().input.forwardImpulse;
     }
     
     public long getGameTime() {
-        return player.level.getGameTime();
+        return playerRef.get().level.getGameTime();
     }
 
     // All is/has methods grouped together
     public boolean isSprinting() {
-        return player.isSprinting();
+        return playerRef.get().isSprinting();
     }
 
     public boolean isAnyMoveKeyDown() {
+        ClientPlayerEntity player = playerRef.get();
         return player.input.up
                 || player.input.down
                 || player.input.left
@@ -91,6 +94,6 @@ public class ClientPlayerWrapper extends AbstractClientPlayerWrapper {
     }
     
     public boolean hasForwardImpulse() {
-        return player.input.hasForwardImpulse();
+        return playerRef.get().input.hasForwardImpulse();
     }
 }

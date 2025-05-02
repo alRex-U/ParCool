@@ -1,15 +1,17 @@
 package com.alrex.parcool.api.compatibility;
 
+import java.lang.ref.WeakReference;
+
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 
 public class AbstractClientPlayerWrapper extends PlayerWrapper {
-    private AbstractClientPlayerEntity player;
+    private WeakReference<AbstractClientPlayerEntity> player;
     private static final WeakCache<AbstractClientPlayerEntity, AbstractClientPlayerWrapper> cache = new WeakCache<>();
 
     protected AbstractClientPlayerWrapper(AbstractClientPlayerEntity player) {
         super(player);
-        this.player = player;
+        this.player = new WeakReference<>(player);
     }
 
     public static AbstractClientPlayerWrapper get(AbstractClientPlayerEntity player) {
@@ -21,6 +23,6 @@ public class AbstractClientPlayerWrapper extends PlayerWrapper {
     }
 
     public AbstractClientPlayerEntity getInstance() {
-        return this.player;
+        return this.player.get();
     }
 }

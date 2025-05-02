@@ -1,5 +1,6 @@
 package com.alrex.parcool.api.compatibility;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,12 +15,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public final class LevelWrapper {
-   private World level;
+   private WeakReference<World> level;
    private static final WeakCache<World, LevelWrapper> cache = new WeakCache<>();
    private static final Minecraft mc = Minecraft.getInstance();
 
    public LevelWrapper(World level) {
-      this.level = level;
+      this.level = new WeakReference<>(level);
    }
 
    public static LevelWrapper get(World level) {
@@ -27,28 +28,28 @@ public final class LevelWrapper {
    }
 
    public PlayerEntity getPlayerByUUID(UUID playerID) {
-      return level.getPlayerByUUID(playerID);
+      return level.get().getPlayerByUUID(playerID);
    }
 
    public void addParticle(IParticleData drippingWater, double d, double e, double f, double x, double g,
          double z) {
-      level.addParticle(drippingWater, d, e, f, x, g, z);
+      level.get().addParticle(drippingWater, d, e, f, x, g, z);
    }
 
    public boolean isLoaded(BlockPos blockpos) {
-      return level.isLoaded(blockpos);
+      return level.get().isLoaded(blockpos);
    }
 
    public BlockState getBlockState(BlockPos blockpos) {
-      return level.getBlockState(blockpos);
+      return level.get().getBlockState(blockpos);
    }
 
    public boolean isClientSide() {
-      return level.isClientSide();
+      return level.get().isClientSide();
    }
 
    public BlockEntityWrapper getBlockEntity(BlockPos pos) {
-      return new BlockEntityWrapper(level.getBlockEntity(pos));
+      return new BlockEntityWrapper(level.get().getBlockEntity(pos));
    }
 
    public static LevelWrapper get() {
@@ -56,18 +57,18 @@ public final class LevelWrapper {
    }
 
    public boolean isCollisionShapeFullBlock(BlockState state, BlockPos pos) {
-      return state.isCollisionShapeFullBlock(level, pos);
+      return state.isCollisionShapeFullBlock(level.get(), pos);
    }
 
    public boolean noCollision(AxisAlignedBB expandTowards) {
-      return level.noCollision(expandTowards);
+      return level.get().noCollision(expandTowards);
    }
 
    public List<ZiplineRopeEntity> getEntitiesOfClass(Class<ZiplineRopeEntity> class1, AxisAlignedBB inflate) {
-      return level.getEntitiesOfClass(class1, inflate);
+      return level.get().getEntitiesOfClass(class1, inflate);
    }
 
    public World getInstance() {
-      return level;
+      return level.get();
    }
 }
