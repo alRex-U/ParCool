@@ -13,7 +13,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -84,8 +83,8 @@ public class EntityWrapper {
         return entity.fallDistance;
     }
     
-    public World getLevel() {
-        return entity.level;
+    public LevelWrapper getLevel() {
+        return LevelWrapper.get(entity.level);
     }
     
     public Vec3Wrapper getLookAngle() {

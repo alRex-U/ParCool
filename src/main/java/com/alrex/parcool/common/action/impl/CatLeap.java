@@ -2,6 +2,7 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
+import com.alrex.parcool.api.compatibility.LevelWrapper;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.animation.impl.CatLeapAnimator;
@@ -17,7 +18,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -123,7 +123,7 @@ public class CatLeap extends Action {
 	@OnlyIn(Dist.CLIENT)
 	private void spawnJumpEffect(PlayerWrapper player, Vec3Wrapper jumpDirection) {
 		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
-		World level = player.getLevel();
+		LevelWrapper level = player.getLevel();
 		Vec3Wrapper pos = player.position();
 		BlockPos blockpos = new BlockPos(pos.add(0, -0.2, 0));
 		if (!level.isLoaded(blockpos)) return;

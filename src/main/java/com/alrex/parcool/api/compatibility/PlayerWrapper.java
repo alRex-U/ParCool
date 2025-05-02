@@ -15,13 +15,10 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.potion.Effect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.CapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
@@ -133,7 +130,7 @@ public class PlayerWrapper extends LivingEntityWrapper {
     }
     
     @Nullable
-    public static PlayerWrapper get(World world, UUID playerID) {
+    public static PlayerWrapper get(LevelWrapper world, UUID playerID) {
         PlayerEntity playerEntity = world.getPlayerByUUID(playerID);
         if (playerEntity == null) return null;
         return PlayerWrapper.get(playerEntity);

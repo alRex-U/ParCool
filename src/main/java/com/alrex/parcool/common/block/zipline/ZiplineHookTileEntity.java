@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.block.zipline;
 
+import com.alrex.parcool.api.compatibility.LevelWrapper;
 import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import com.alrex.parcool.common.item.Items;
@@ -116,7 +117,8 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
 
     @Nullable
     private ZiplineRopeEntity spawnRope(World level, ZiplineHookTileEntity target, ZiplineInfo info) {
-        if (level.isClientSide()) return null;
+        LevelWrapper levelWrapper = LevelWrapper.get(level);
+        if (levelWrapper.isClientSide()) return null;
         if (target.connectionEntities.containsKey(this.getBlockPos())) return null;
 
         ZiplineRopeEntity entity = new ZiplineRopeEntity(level, getBlockPos(), target.getBlockPos(), info);

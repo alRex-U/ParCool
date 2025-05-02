@@ -2,12 +2,11 @@ package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.compatibility.EventBusWrapper;
+import com.alrex.parcool.api.compatibility.LevelWrapper;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Parkourability;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.LogicalSide;
@@ -87,7 +86,7 @@ public class SyncActionStateMessage {
 			PlayerWrapper player;
 			boolean clientSide;
 			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-				World world = Minecraft.getInstance().level;
+				LevelWrapper world = LevelWrapper.get();
 				if (world == null) return;
 				player = PlayerWrapper.get(world, senderUUID);
 				if (player == null || player.isLocalPlayer()) return;

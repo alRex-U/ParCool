@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.animation;
 
+import com.alrex.parcool.api.compatibility.LevelWrapper;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.input.KeyBindings;
@@ -11,7 +12,6 @@ import com.alrex.parcool.utilities.EasingFunctions;
 import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.world.World;
 
 import java.util.Random;
 
@@ -108,7 +108,7 @@ public class PassiveCustomAnimation {
 	}
 
 	private void spawnSweatParticle(PlayerWrapper player) {
-		World level = player.getLevel();
+		LevelWrapper level = player.getLevel();
 		Random rand = player.getRandom();
 		Vec3Wrapper particleSpeed = player.getDeltaMovement().scale(0.6);
 		level.addParticle(

@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.zipline;
 
+import com.alrex.parcool.api.compatibility.LevelWrapper;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
@@ -47,13 +48,13 @@ public abstract class Zipline {
     }
 
     @Nullable
-    public static ZiplineRopeEntity getHangableZipline(World world, PlayerWrapper player) {
-        return getHangableZipline(world, player, null);
+    public static ZiplineRopeEntity getHangableZipline(LevelWrapper level, PlayerWrapper player) {
+        return getHangableZipline(level, player, null);
     }
 
     @Nullable
-    public static ZiplineRopeEntity getHangableZipline(World world, PlayerWrapper player, @Nullable ZiplineRopeEntity except) {
-        List<ZiplineRopeEntity> entities = world.getEntitiesOfClass(
+    public static ZiplineRopeEntity getHangableZipline(LevelWrapper level, PlayerWrapper player, @Nullable ZiplineRopeEntity except) {
+        List<ZiplineRopeEntity> entities = level.getEntitiesOfClass(
                 ZiplineRopeEntity.class,
                 player.getBoundingBox().inflate(MAXIMUM_DISTANCE * 0.52)
         );

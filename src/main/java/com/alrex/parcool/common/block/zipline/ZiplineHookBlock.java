@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.block.zipline;
 
 import com.alrex.parcool.api.SoundEvents;
+import com.alrex.parcool.api.compatibility.LevelWrapper;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.common.block.TileEntities;
@@ -60,8 +61,9 @@ public class ZiplineHookBlock extends DirectionalBlock {
 
     @Override
     public void onRemove(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState p_196243_4_, boolean p_196243_5_) {
-        if (!world.isClientSide()) {
-            TileEntity tileEntity = world.getBlockEntity(pos);
+        LevelWrapper level = LevelWrapper.get(world);
+        if (!level.isClientSide()) {
+            TileEntity tileEntity = level.getBlockEntity(pos);
             if (tileEntity instanceof ZiplineHookTileEntity) {
                 ZiplineHookTileEntity ziplineHookTileEntity = (ZiplineHookTileEntity) tileEntity;
                 List<ItemStack> itemStacks = ziplineHookTileEntity.removeAllConnection();
@@ -91,10 +93,11 @@ public class ZiplineHookBlock extends DirectionalBlock {
 
     @Override
     public ActionResultType use(BlockState blockState, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult blockRayTraceResult) {
+        LevelWrapper level = LevelWrapper.get(world);
         PlayerWrapper player = PlayerWrapper.get(playerEntity);
         ItemStack stack = player.getItemInHand(hand);
         if (stack.getItem() instanceof ShearsItem) {
-            TileEntity tileEntity = world.getBlockEntity(pos);
+            TileEntity tileEntity = level.getBlockEntity(pos);
             if (tileEntity instanceof ZiplineHookTileEntity) {
                 ZiplineHookTileEntity ziplineHookTileEntity = (ZiplineHookTileEntity) tileEntity;
                 if (ziplineHookTileEntity.getConnectionPoints().isEmpty()) return ActionResultType.PASS;

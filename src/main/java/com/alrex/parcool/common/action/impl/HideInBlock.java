@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.compatibility.LevelWrapper;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.RenderBehaviorEnforcer;
@@ -20,7 +21,6 @@ import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -216,7 +216,7 @@ public class HideInBlock extends Action {
     @OnlyIn(Dist.CLIENT)
     private void spawnOnHideParticles(PlayerWrapper player) {
         if (hidingArea == null) return;
-        World world = player.getLevel();
+        LevelWrapper world = player.getLevel();
         int minX = hidingArea.getA().getX();
         int minY = hidingArea.getA().getY();
         int minZ = hidingArea.getA().getZ();

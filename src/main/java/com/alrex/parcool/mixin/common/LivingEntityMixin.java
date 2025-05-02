@@ -1,6 +1,7 @@
 package com.alrex.parcool.mixin.common;
 
 import com.alrex.parcool.api.compatibility.EventBusWrapper;
+import com.alrex.parcool.api.compatibility.LevelWrapper;
 import com.alrex.parcool.api.compatibility.LivingEntityWrapper;
 import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.action.impl.ChargeJump;
@@ -76,7 +77,7 @@ public abstract class LivingEntityMixin extends Entity {
 	}
 
 	@Unique
-	public boolean parCool$isLivingOnCustomLadder(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull LivingEntityWrapper entity) {
+	public boolean parCool$isLivingOnCustomLadder(@Nonnull BlockState state, @Nonnull LevelWrapper world, @Nonnull BlockPos pos, @Nonnull LivingEntityWrapper entity) {
 		boolean isSpectator = PlayerWrapper.is(entity) && entity.isSpectator();
 		if (isSpectator) return false;
 		if (!ForgeConfig.SERVER.fullBoundingBoxLadders.get()) {
@@ -105,7 +106,7 @@ public abstract class LivingEntityMixin extends Entity {
 	}
 
 	@Unique
-	private boolean parCool$isCustomLadder(BlockState state, World world, BlockPos pos, LivingEntityWrapper entity) {
+	private boolean parCool$isCustomLadder(BlockState state, LevelWrapper level, BlockPos pos, LivingEntityWrapper entity) {
 		Block block = state.getBlockState().getBlock();
 		if (block instanceof FourWayBlock) {
 			int zCount = 0;
@@ -114,19 +115,19 @@ public abstract class LivingEntityMixin extends Entity {
 			if (state.getValue(FourWayBlock.SOUTH)) zCount++;
 			if (state.getValue(FourWayBlock.EAST)) xCount++;
 			if (state.getValue(FourWayBlock.WEST)) xCount++;
-			boolean stacked = world.isLoaded(pos.above()) && world.getBlockState(pos.above()).getBlock() instanceof FourWayBlock;
-			if (!stacked && world.isLoaded(pos.below()) && world.getBlockState(pos.below()).getBlock() instanceof FourWayBlock)
+			boolean stacked = level.isLoaded(pos.above()) && level.getBlockState(pos.above()).getBlock() instanceof FourWayBlock;
+			if (!stacked && level.isLoaded(pos.below()) && level.getBlockState(pos.below()).getBlock() instanceof FourWayBlock)
 				stacked = true;
 
 			return ((zCount + xCount <= 1) || (zCount == 1 && xCount == 1)) && stacked;
 		} else if (block instanceof RotatedPillarBlock) {
-			boolean stacked = world.isLoaded(pos.above()) && world.getBlockState(pos.above()).getBlock() instanceof RotatedPillarBlock;
-			if (!stacked && world.isLoaded(pos.below()) && world.getBlockState(pos.below()).getBlock() instanceof RotatedPillarBlock)
+			boolean stacked = level.isLoaded(pos.above()) && level.getBlockState(pos.above()).getBlock() instanceof RotatedPillarBlock;
+			if (!stacked && level.isLoaded(pos.below()) && level.getBlockState(pos.below()).getBlock() instanceof RotatedPillarBlock)
 				stacked = true;
-			return !state.isCollisionShapeFullBlock(world, pos) && state.getValue(RotatedPillarBlock.AXIS).isVertical();
+			return !level.isCollisionShapeFullBlock(state, pos) && state.getValue(RotatedPillarBlock.AXIS).isVertical();
 		} else if (block instanceof DirectionalBlock) {
 			Direction direction = state.getValue(DirectionalBlock.FACING);
-			return !state.isCollisionShapeFullBlock(world, pos) && (direction == Direction.UP || direction == Direction.DOWN);
+			return !level.isCollisionShapeFullBlock(state, pos) && (direction == Direction.UP || direction == Direction.DOWN);
 		}
 		return false;
 	}

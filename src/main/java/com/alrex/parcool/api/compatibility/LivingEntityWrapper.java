@@ -15,7 +15,6 @@ import net.minecraft.potion.Effect;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.ForgeMod;
 
 public class LivingEntityWrapper extends EntityWrapper {
@@ -63,8 +62,8 @@ public class LivingEntityWrapper extends EntityWrapper {
     }
     
     public double getUpdatedYRotDifference() {
-        Vector3d currentAngle = VectorUtil.fromYawDegree(entity.yBodyRot);
-		Vector3d oldAngle = VectorUtil.fromYawDegree(entity.yBodyRotO);
+        Vec3Wrapper currentAngle = VectorUtil.fromYawDegree(entity.yBodyRot);
+		Vec3Wrapper oldAngle = VectorUtil.fromYawDegree(entity.yBodyRotO);
 		return Math.atan(
 				(oldAngle.x() * currentAngle.z() - currentAngle.x() * oldAngle.z())
 						/ (currentAngle.x() * oldAngle.x() + currentAngle.z() * oldAngle.z())
