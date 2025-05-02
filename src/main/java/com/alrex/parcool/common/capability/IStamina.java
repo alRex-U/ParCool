@@ -5,8 +5,6 @@ import com.alrex.parcool.api.compatibility.ServerPlayerWrapper;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.capability.stamina.HungerStamina;
 import com.alrex.parcool.common.capability.stamina.Stamina;
-import net.minecraftforge.common.util.LazyOptional;
-
 import javax.annotation.Nullable;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -48,8 +46,7 @@ public interface IStamina {
 	}
 	@Nullable
 	public static IStamina get(PlayerWrapper player) {
-		LazyOptional<IStamina> optional = player.getCapability(Capabilities.STAMINA_CAPABILITY);
-		return optional.orElse(null);
+		return player.getCapability(Capabilities.STAMINA_CAPABILITY);
 	}
 
 	public int getActualMaxStamina();

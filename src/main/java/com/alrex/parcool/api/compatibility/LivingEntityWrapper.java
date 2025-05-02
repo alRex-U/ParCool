@@ -17,8 +17,6 @@ import net.minecraft.util.HandSide;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class LivingEntityWrapper extends EntityWrapper {
 
@@ -46,10 +44,6 @@ public class LivingEntityWrapper extends EntityWrapper {
     
     public AxisAlignedBB getBoundingBox() {
         return entity.getBoundingBox();
-    }
-    
-    public <T> LazyOptional<T> getCapability(@Nonnull final Capability<T> cap) {
-        return entity.getCapability(cap);
     }
     
     public double getGravity() {

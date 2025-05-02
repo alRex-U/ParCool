@@ -3,6 +3,7 @@ package com.alrex.parcool.api.compatibility;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import net.minecraft.block.BlockState;
@@ -63,11 +64,14 @@ public class EntityWrapper {
     public BlockState getBlockState(BlockPos pos) {
         return entity.level.getBlockState(pos);
     }
-    
-    public <T> LazyOptional<T> getCapability(@Nonnull final Capability<T> cap) {
-        return entity.getCapability(cap);
+
+    @Nullable
+    public <T> T getCapability(@Nonnull final Capability<T> cap) {
+        LazyOptional<T> optional = entity.getCapability(cap);
+        if (!optional.isPresent()) return null;
+		return optional.orElse(null);
     }
-    
+ 
     public Vec3Wrapper getDeltaMovement() {
         return new Vec3Wrapper(entity.getDeltaMovement());
     }

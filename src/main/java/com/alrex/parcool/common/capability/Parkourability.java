@@ -13,7 +13,6 @@ import com.alrex.parcool.common.info.ServerLimitation;
 import com.alrex.parcool.common.network.SyncClientInformationMessage;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -22,8 +21,7 @@ import java.util.List;
 public class Parkourability {
 	@Nullable
 	public static Parkourability get(PlayerWrapper player) {
-		LazyOptional<Parkourability> optional = player.getCapability(Capabilities.PARKOURABILITY_CAPABILITY);
-		return optional.orElse(null);
+		return player.getCapability(Capabilities.PARKOURABILITY_CAPABILITY);
 	}
 
 	private final ActionInfo info;

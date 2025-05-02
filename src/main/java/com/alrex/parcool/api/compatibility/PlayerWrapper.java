@@ -4,7 +4,6 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.alrex.parcool.utilities.VectorUtil;
@@ -23,9 +22,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -88,10 +85,6 @@ public class PlayerWrapper extends LivingEntityWrapper {
     
     public Object getVehicle() {
         return player.getVehicle();
-    }
-
-    public <T> LazyOptional<T> getCapability(@Nonnull final Capability<T> cap) {
-        return player.getCapability(cap);
     }
 
     public Iterable<PlayerWrapper> getPlayersOnSameLevel() {
@@ -184,9 +177,6 @@ public class PlayerWrapper extends LivingEntityWrapper {
     }
     
     // All has/is boolean methods grouped
-    public boolean hasEffect(Effect effect) {
-        return player.hasEffect(effect);
-    }
     
     public boolean hasHurtTime() {
         return player.hurtTime > 0;
@@ -336,10 +326,6 @@ public class PlayerWrapper extends LivingEntityWrapper {
 
     public void multiplyFallDistance(float multiplier) {
         player.fallDistance *= multiplier;
-    }
-
-    public void playSound(SoundEvent soundEvent, float i, float j) {
-        player.playSound(soundEvent, i, j);
     }
 
     public void rotateBodyRot0(Vec3Wrapper direction, double d) {

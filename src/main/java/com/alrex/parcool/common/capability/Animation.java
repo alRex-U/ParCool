@@ -17,15 +17,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class Animation {
 	public static Animation get(PlayerWrapper player) {
-		LazyOptional<Animation> optional = player.getCapability(Capabilities.ANIMATION_CAPABILITY);
-		if (!optional.isPresent()) return null;
-		return optional.orElseThrow(IllegalStateException::new);
+		Animation animation = player.getCapability(Capabilities.ANIMATION_CAPABILITY);
+		if (animation == null) throw new IllegalStateException();
+		return animation;
 	}
 
 	private Animator animator = null;
