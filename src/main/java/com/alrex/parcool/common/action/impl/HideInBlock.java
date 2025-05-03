@@ -65,6 +65,7 @@ public class HideInBlock extends Action {
                 || player.isVisuallySwimming()
                 || getNotDoingTick() < 6
                 || player.hurtTime > 0
+                || parkourability.get(Crawl.class).isDoing()
         ) {
             return false;
         }
