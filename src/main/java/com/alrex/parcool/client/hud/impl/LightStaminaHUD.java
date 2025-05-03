@@ -4,11 +4,11 @@ import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
@@ -27,12 +27,12 @@ public class LightStaminaHUD extends AbstractGui {
 	private float oldStatusValue = 0f;
 	private boolean showStatus = false;
 
-	public void onTick(TickEvent.ClientTickEvent event, ClientPlayerEntity player) {
+	public void onTick(TickEvent.ClientTickEvent event, ClientPlayerWrapper player) {
 		IStamina stamina = IStamina.get(player);
 		Parkourability parkourability = Parkourability.get(player);
 		if (stamina == null || parkourability == null) return;
 		changingSign = (int) Math.signum(stamina.get() - stamina.getOldValue());
-		final long gameTime = player.level.getGameTime();
+		final long gameTime = player.getGameTime();
 		if (changingSign != lastChangingSign) {
 			lastChangingSign = changingSign;
 			changingTimeTick = 0;
@@ -72,7 +72,7 @@ public class LightStaminaHUD extends AbstractGui {
 	}
 
 	public void render(RenderGameOverlayEvent.Post event, MatrixStack stack) {
-		ClientPlayerEntity player = Minecraft.getInstance().player;
+		ClientPlayerWrapper player = ClientPlayerWrapper.get();
 		if (player == null || player.isCreative()) return;
 
 		IStamina stamina = IStamina.get(player);
@@ -83,7 +83,7 @@ public class LightStaminaHUD extends AbstractGui {
 		final boolean exhausted = stamina.isExhausted();
 
 		if (!showStatus) {
-			long gameTime = player.level.getGameTime();
+			long gameTime = player.getGameTime();
 			if (gameTime - lastStaminaChangedTick > 40) return;
 		}
 		float staminaScale = (float) stamina.get() / stamina.getActualMaxStamina();

@@ -6,16 +6,16 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
 import com.alrex.parcool.config.ParCoolConfig;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.vector.Vector3d;
 
 import java.nio.ByteBuffer;
 import java.util.Random;
 
 public class BreakfallReady extends Action {
-	public void startBreakfall(PlayerEntity player, Parkourability parkourability, IStamina stamina, boolean justTimed) {
+	public void startBreakfall(PlayerWrapper player, Parkourability parkourability, IStamina stamina, boolean justTimed) {
 		boolean playSound = false;
 		if (justTimed && ParCoolConfig.Client.Booleans.EnableJustTimeEffectOfBreakfall.get()) {
 			if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
@@ -23,10 +23,10 @@ public class BreakfallReady extends Action {
 			if (ParCoolConfig.Client.Booleans.EnableActionParticles.get()
 					&& ParCoolConfig.Client.Booleans.EnableActionParticlesOfJustTimeBreakfall.get()
 			) {
-				Vector3d pos = player.position();
+				Vec3Wrapper pos = player.position();
 				Random rand = player.getRandom();
 				for (int i = 0; i < 12; i++) {
-					player.level.addParticle(ParticleTypes.END_ROD,
+					player.addParticle(ParticleTypes.END_ROD,
 							pos.x(),
 							pos.y() + player.getBbHeight() / 2,
 							pos.z(),
@@ -54,12 +54,12 @@ public class BreakfallReady extends Action {
 	}
 
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		return canContinue(player, parkourability, stamina);
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		return (KeyBindings.getKeyBreakfall().isDown()
 				&& !stamina.isExhausted()
 				&& !parkourability.get(Crawl.class).isDoing()

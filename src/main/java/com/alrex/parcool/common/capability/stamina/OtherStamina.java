@@ -1,20 +1,21 @@
 package com.alrex.parcool.common.capability.stamina;
 
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.ServerPlayerWrapper;
+
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 
 import java.util.UUID;
 
 public class OtherStamina implements IStamina {
     private static final String EXHAUSTED_SPEED_MODIFIER_NAME = "parcool.modifier.exhausted.speed";
     private static final UUID EXHAUSTED_SPEED_MODIFIER_UUID = UUID.randomUUID();
-    private final PlayerEntity player;
+    private final PlayerWrapper player;
 
-    public OtherStamina(PlayerEntity player) {
+    public OtherStamina(PlayerWrapper player) {
         this.player = player;
     }
 
@@ -61,7 +62,7 @@ public class OtherStamina implements IStamina {
 
     @Override
     public void tick() {
-        if (player instanceof ServerPlayerEntity) {
+        if (ServerPlayerWrapper.is(player)) {
             ModifiableAttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
             if (attr == null) return;
             if (attr.getModifier(EXHAUSTED_SPEED_MODIFIER_UUID) != null)

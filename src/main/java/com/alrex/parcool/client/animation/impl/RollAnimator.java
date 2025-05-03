@@ -5,11 +5,11 @@ import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.Roll;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.PlayerWrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.event.TickEvent;
 
@@ -25,12 +25,12 @@ public class RollAnimator extends Animator {
 	}
 
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(PlayerWrapper player, Parkourability parkourability) {
 		return !parkourability.get(Roll.class).isDoing();
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		switch (direction) {
 			case Front:
 			case Back: {
@@ -45,7 +45,7 @@ public class RollAnimator extends Animator {
 		}
 	}
 
-	void animatePostFrontBack(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	void animatePostFrontBack(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		Roll roll = parkourability.get(Roll.class);
 		float phase = (getTick() + transformer.getPartialTick()) / roll.getRollMaxTick();
 		if (phase > 1) return;
@@ -71,7 +71,7 @@ public class RollAnimator extends Animator {
 				.end();
 	}
 
-	void animatePostLeftRight(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	void animatePostLeftRight(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		Roll roll = parkourability.get(Roll.class);
 		float phase = (getTick() + transformer.getPartialTick()) / roll.getRollMaxTick();
 		if (phase > 1) {
@@ -196,7 +196,7 @@ public class RollAnimator extends Animator {
 	}
 
 	@Override
-    public void rotatePost(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator) {
 		switch (direction) {
 			case Front:
 			case Back: {
@@ -211,7 +211,7 @@ public class RollAnimator extends Animator {
 		}
     }
 
-	private void rotateFrontBack(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+	private void rotateFrontBack(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator) {
 		Roll roll = parkourability.get(Roll.class);
 		float phase = (getTick() + rotator.getPartialTick()) / roll.getRollMaxTick();
 		if (phase > 1) return;
@@ -237,7 +237,7 @@ public class RollAnimator extends Animator {
 				.end();
 	}
 
-	private void rotateLeftRight(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
+	private void rotateLeftRight(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator) {
 		float phase = (getTick() + rotator.getPartialTick()) / parkourability.get(Roll.class).getRollMaxTick();
 		if (phase > 1) {
 			return;
@@ -284,7 +284,7 @@ public class RollAnimator extends Animator {
 	}
 
 	@Override
-	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
+	public void onCameraSetUp(EntityViewRenderEvent.CameraSetup event, PlayerWrapper clientPlayer, Parkourability parkourability) {
 		switch (direction) {
 			case Front:
 			case Back: {
@@ -299,7 +299,7 @@ public class RollAnimator extends Animator {
 		}
 	}
 
-	void onCameraSetUpFrontBack(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
+	void onCameraSetUpFrontBack(EntityViewRenderEvent.CameraSetup event, PlayerWrapper clientPlayer, Parkourability parkourability) {
 		Roll roll = parkourability.get(Roll.class);
 		float sign = direction == Roll.Direction.Front ? 1 : -1;
 		if (roll.isDoing() &&
@@ -312,7 +312,7 @@ public class RollAnimator extends Animator {
 		}
 	}
 
-	void onCameraSetUpLeftRight(EntityViewRenderEvent.CameraSetup event, PlayerEntity clientPlayer, Parkourability parkourability) {
+	void onCameraSetUpLeftRight(EntityViewRenderEvent.CameraSetup event, PlayerWrapper clientPlayer, Parkourability parkourability) {
 		float phase = (float) ((getTick() + event.getRenderPartialTicks()) / parkourability.get(Roll.class).getRollMaxTick());
 		if (phase > 1) {
 			return;
@@ -333,7 +333,7 @@ public class RollAnimator extends Animator {
 	}
 
 	@Override
-	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerWrapper player, Parkourability parkourability) {
 		switch (direction) {
 			case Right: {
 				player.setYBodyRot(player.getYHeadRot() - 5);

@@ -10,17 +10,16 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.BlockStateWrapper;
+import com.alrex.parcool.compatibility.LevelWrapper;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -29,11 +28,11 @@ import java.nio.ByteBuffer;
 
 public class Slide extends Action {
 	private static final BehaviorEnforcer.ID ID_JUMP_CANCEL = BehaviorEnforcer.newID();
-	private Vector3d slidingVec = null;
+	private Vec3Wrapper slidingVec = null;
 
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		Vector3d lookingVec = player.getLookAngle().multiply(1, 0, 1).normalize();
+	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+		Vec3Wrapper lookingVec = player.getLookAngle().multiply(1, 0, 1).normalize();
 		startInfo.putDouble(lookingVec.x()).putDouble(lookingVec.z());
 		return (!stamina.isExhausted()
 				&& KeyRecorder.keyCrawlState.isPressed()
@@ -47,7 +46,7 @@ public class Slide extends Action {
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
         int maxSlidingTick = Math.min(
                 parkourability.getActionInfo().getClientSetting().get(ParCoolConfig.Client.Integers.SlidingContinuableTick),
                 parkourability.getActionInfo().getServerLimitation().get(ParCoolConfig.Server.Integers.MaxSlidingContinuableTick)
@@ -57,8 +56,8 @@ public class Slide extends Action {
 	}
 
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
-		slidingVec = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+	public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+		slidingVec = new Vec3Wrapper(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.SLIDE.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
@@ -69,8 +68,8 @@ public class Slide extends Action {
 	}
 
 	@Override
-	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
-		slidingVec = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+	public void onStartInOtherClient(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
+		slidingVec = new Vec3Wrapper(startData.getDouble(), 0, startData.getDouble());
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
 			player.playSound(SoundEvents.SLIDE.get(), 1f, 1f);
 		Animation animation = Animation.get(player);
@@ -80,25 +79,25 @@ public class Slide extends Action {
 	}
 
 	@Override
-	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		if (slidingVec != null) {
 			ModifiableAttributeInstance attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
 			double speedScale = 0.45;
 			if (attr != null) {
 				speedScale = attr.getValue() * 4.5;
 			}
-			Vector3d vec = slidingVec.scale(speedScale);
+			Vec3Wrapper vec = slidingVec.scale(speedScale);
 			player.setDeltaMovement((player.isOnGround() ? vec : vec.scale(0.6)).add(0, player.getDeltaMovement().y(), 0));
 		}
 	}
 
 	@Override
-	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		spawnSlidingParticle(player);
 	}
 
 	@Override
-	public void onStopInLocalClient(PlayerEntity player) {
+	public void onStopInLocalClient(PlayerWrapper player) {
 		Animation animation = Animation.get(player);
 		if (animation != null && !animation.hasAnimator()) {
 			animation.setAnimator(new CrawlAnimator());
@@ -106,7 +105,7 @@ public class Slide extends Action {
 	}
 
 	@Override
-	public void onStopInOtherClient(PlayerEntity player) {
+	public void onStopInOtherClient(PlayerWrapper player) {
 		Animation animation = Animation.get(player);
 		if (animation != null && !animation.hasAnimator()) {
 			animation.setAnimator(new CrawlAnimator());
@@ -114,7 +113,7 @@ public class Slide extends Action {
 	}
 
 	@Nullable
-	public Vector3d getSlidingVector() {
+	public Vec3Wrapper getSlidingVector() {
 		return slidingVec;
 	}
 
@@ -124,27 +123,27 @@ public class Slide extends Action {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private void spawnSlidingParticle(PlayerEntity player) {
+	private void spawnSlidingParticle(PlayerWrapper player) {
 		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
-		World level = player.level;
-		Vector3d pos = player.position();
-		BlockState feetBlock = player.level.getBlockState(player.blockPosition().below());
+		LevelWrapper level = player.getLevel();
+		Vec3Wrapper pos = player.position();
+		BlockStateWrapper feetBlock = player.getBelowBlockState();
 		float width = player.getBbWidth();
-		Vector3d direction = getSlidingVector();
+		Vec3Wrapper direction = getSlidingVector();
 		if (direction == null) return;
 
 		if (feetBlock.getRenderShape() != BlockRenderType.INVISIBLE) {
-			Vector3d particlePos = new Vector3d(
+			Vec3Wrapper particlePos = new Vec3Wrapper(
 					pos.x() + (player.getRandom().nextDouble() - 0.5D) * width,
 					pos.y() + 0.01D + 0.2 * player.getRandom().nextDouble(),
 					pos.z() + (player.getRandom().nextDouble() - 0.5D) * width
 			);
-			Vector3d particleSpeed = direction
+			Vec3Wrapper particleSpeed = direction
 					.reverse()
 					.scale(2.5 + 5 * player.getRandom().nextDouble())
 					.add(0, 1.5, 0);
 			level.addParticle(
-					new BlockParticleData(ParticleTypes.BLOCK, feetBlock).setPos(new BlockPos(player.position().add(0, -0.5, 0))),
+					feetBlock.getBlockParticleData(ParticleTypes.BLOCK, new BlockPos(player.position().add(0, -0.5, 0))),
 					particlePos.x(),
 					particlePos.y(),
 					particlePos.z(),

@@ -5,20 +5,20 @@ import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.Slide;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
 import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
 
 public class SlidingAnimator extends Animator {
 	private static final int MAX_TRANSITION_TICK = 5;
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(PlayerWrapper player, Parkourability parkourability) {
 		return !parkourability.get(Slide.class).isDoing();
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		float animFactor = (getTick() + transformer.getPartialTick()) / MAX_TRANSITION_TICK;
 		if (animFactor > 1) animFactor = 1;
 		animFactor = new Easing(animFactor)
@@ -50,8 +50,8 @@ public class SlidingAnimator extends Animator {
 	}
 
 	@Override
-	public boolean rotatePre(PlayerEntity player, Parkourability parkourability, PlayerModelRotator rotator) {
-		Vector3d vec = parkourability.get(Slide.class).getSlidingVector();
+	public boolean rotatePre(PlayerWrapper player, Parkourability parkourability, PlayerModelRotator rotator) {
+		Vec3Wrapper vec = parkourability.get(Slide.class).getSlidingVector();
 		if (vec == null) return false;
 		float animFactor = (getTick() + rotator.getPartialTick()) / MAX_TRANSITION_TICK;
 		float yRot = (float) VectorUtil.toYawDegree(vec);

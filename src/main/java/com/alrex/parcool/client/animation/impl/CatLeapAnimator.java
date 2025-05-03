@@ -4,21 +4,21 @@ import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.CatLeap;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.PlayerWrapper;
 import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.EasingFunctions;
-import net.minecraft.entity.player.PlayerEntity;
 
 import static com.alrex.parcool.utilities.MathUtil.lerp;
 
 public class CatLeapAnimator extends Animator {
 
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(PlayerWrapper player, Parkourability parkourability) {
 		return !parkourability.get(CatLeap.class).isDoing() || getTick() > 20;
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
+	public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
 		CatLeap catLeap = parkourability.get(CatLeap.class);
 
 		float phase = (catLeap.getDoingTick() + transformer.getPartialTick()) / 20f;

@@ -4,25 +4,25 @@ import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.WallSlide;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
 import com.alrex.parcool.utilities.VectorUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
 
 public class WallSlideAnimator extends Animator {
 	@Override
-	public boolean shouldRemoved(PlayerEntity player, Parkourability parkourability) {
+	public boolean shouldRemoved(PlayerWrapper player, Parkourability parkourability) {
 		return !parkourability.get(WallSlide.class).isDoing();
 	}
 
 	@Override
-	public void animatePost(PlayerEntity player, Parkourability parkourability, PlayerModelTransformer transformer) {
-		Vector3d wall = parkourability.get(WallSlide.class).getLeanedWallDirection();
+	public void animatePost(PlayerWrapper player, Parkourability parkourability, PlayerModelTransformer transformer) {
+		Vec3Wrapper wall = parkourability.get(WallSlide.class).getLeanedWallDirection();
 		if (wall == null) return;
-		Vector3d bodyVec = VectorUtil.fromYawDegree(player.yBodyRot);
-		Vector3d vec = new Vector3d(bodyVec.x(), 0, bodyVec.z()).normalize();
+		Vec3Wrapper bodyVec = player.getVectorYBodyRot();
+		Vec3Wrapper vec = new Vec3Wrapper(bodyVec.x(), 0, bodyVec.z()).normalize();
 
-		Vector3d dividedVec =
-				new Vector3d(
+		Vec3Wrapper dividedVec =
+				new Vec3Wrapper(
 						vec.x() * wall.x() + vec.z() * wall.z(), 0,
 						-vec.x() * wall.z() + vec.z() * wall.x()
 				).normalize();

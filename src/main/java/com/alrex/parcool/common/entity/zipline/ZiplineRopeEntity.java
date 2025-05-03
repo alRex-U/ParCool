@@ -2,9 +2,14 @@ package com.alrex.parcool.common.entity.zipline;
 
 import com.alrex.parcool.common.block.zipline.ZiplineHookTileEntity;
 import com.alrex.parcool.common.block.zipline.ZiplineInfo;
+import com.alrex.parcool.common.entity.ParcoolEntityType;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.common.zipline.ZiplineType;
+import com.alrex.parcool.compatibility.LevelWrapper;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -19,7 +24,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -30,6 +34,7 @@ public class ZiplineRopeEntity extends Entity {
     private static final DataParameter<BlockPos> DATA_END_POS;
     private static final DataParameter<Integer> DATA_COLOR;
     private static final DataParameter<Integer> DATA_ZIP_TYPE;
+    private Object levelWrapper;
 
     static {
         DATA_START_POS = EntityDataManager.defineId(ZiplineRopeEntity.class, DataSerializers.BLOCK_POS);
@@ -40,12 +45,28 @@ public class ZiplineRopeEntity extends Entity {
 
     private EntitySize size;
 
-    public ZiplineRopeEntity(EntityType<?> p_i48580_1_, World p_i48580_2_) {
-        super(p_i48580_1_, p_i48580_2_);
+    public ZiplineRopeEntity(EntityType<?> entityType, World level) {
+        super(entityType, level);
+        setLevelWrapper();
+    }
+
+    public ZiplineRopeEntity(EntityType<?> entityType, LevelWrapper level) {
+        super(entityType, level.getInstance());
+        levelWrapper = level;
+    }
+
+    private void setLevelWrapper() {
+        levelWrapper = level == null ? null : LevelWrapper.get(level);
+    }
+
+    @Override
+    public void setLevel(World level) {
+        super.setLevel(level);
+        setLevelWrapper();
     }
 
     public ZiplineRopeEntity(World world, BlockPos start, BlockPos end, ZiplineInfo info) {
-        super(com.alrex.parcool.common.entity.EntityType.ZIPLINE_ROPE.get(), world);
+        super(ParcoolEntityType.ZIPLINE_ROPE.get(), world);
         setStartPos(start);
         setEndPos(end);
         setColor(info.getColor());
@@ -54,6 +75,11 @@ public class ZiplineRopeEntity extends Entity {
         noPhysics = true;
         forcedLoading = true;
         size = EntitySize.fixed(Math.max(Math.abs(end.getX() - start.getX()), Math.abs(end.getZ() - start.getZ())) + 0.3f, Math.abs(end.getY() - start.getY()) + 0.3f);
+        setLevelWrapper();
+    }
+
+    public ZiplineRopeEntity(LevelWrapper level, BlockPos start, BlockPos end, ZiplineInfo info) {
+        this(level.getInstance(), start, end, info);
     }
 
     private BlockPos zipline_start;
@@ -72,19 +98,19 @@ public class ZiplineRopeEntity extends Entity {
             zipline_start = start;
             zipline_end = end;
             zip_type = type;
-            Vector3d startPos;
-            Vector3d endPos;
+            Vec3Wrapper startPos;
+            Vec3Wrapper endPos;
             TileEntity startEntity = level.getBlockEntity(start);
             TileEntity endEntity = level.getBlockEntity(end);
             if (startEntity instanceof ZiplineHookTileEntity) {
                 startPos = ((ZiplineHookTileEntity) startEntity).getActualZiplinePoint(end);
             } else {
-                startPos = new Vector3d(start.getX() + 0.5, start.getY() + 0.7, start.getZ() + 0.5);
+                startPos = new Vec3Wrapper(start.getX() + 0.5, start.getY() + 0.7, start.getZ() + 0.5);
             }
             if (endEntity instanceof ZiplineHookTileEntity) {
                 endPos = ((ZiplineHookTileEntity) endEntity).getActualZiplinePoint(start);
             } else {
-                endPos = new Vector3d(end.getX() + 0.5, end.getY() + 0.7, end.getZ() + 0.5);
+                endPos = new Vec3Wrapper(end.getX() + 0.5, end.getY() + 0.7, end.getZ() + 0.5);
             }
             zipline = type.getZipline(startPos, endPos);
         }
@@ -106,7 +132,7 @@ public class ZiplineRopeEntity extends Entity {
         double baseYOffset = start.getY() - y;
         double baseZOffset = start.getZ() - z;
         double t = -(xOffset * baseXOffset + yOffset * baseYOffset + zOffset * baseZOffset) / (xOffset * xOffset + yOffset * yOffset + zOffset * zOffset);
-        Vector3d mostNearPoint = new Vector3d(xOffset * t + start.getX(), yOffset * t + start.getY(), zOffset * t + start.getZ());
+        Vec3Wrapper mostNearPoint = new Vec3Wrapper(xOffset * t + start.getX(), yOffset * t + start.getY(), zOffset * t + start.getZ());
         distanceSqr = mostNearPoint.distanceToSqr(x, y, z);
         return distanceSqr < Zipline.MAXIMUM_DISTANCE * Zipline.MAXIMUM_DISTANCE;
     }
@@ -174,7 +200,7 @@ public class ZiplineRopeEntity extends Entity {
     @Nonnull
     @Override
     public ActionResultType interact(PlayerEntity p_184230_1_, Hand p_184230_2_) {
-        return ActionResultType.sidedSuccess(p_184230_1_.level.isClientSide());
+        return ActionResultType.sidedSuccess(PlayerWrapper.get(p_184230_1_).isLevelClientSide());
     }
 
     @Override

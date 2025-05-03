@@ -3,11 +3,12 @@ package com.alrex.parcool.common.network;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.stamina.OtherStamina;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import com.alrex.parcool.compatibility.LevelWrapper;
+import com.alrex.parcool.compatibility.NetworkContextWrapper;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.ServerPlayerWrapper;
+
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.LogicalSide;
@@ -49,9 +50,10 @@ public class SyncStaminaMessage {
 
 	@OnlyIn(Dist.DEDICATED_SERVER)
 	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
-			ServerPlayerEntity player;
-			player = contextSupplier.get().getSender();
+		Supplier<NetworkContextWrapper> supplier = NetworkContextWrapper.getSupplier(contextSupplier);
+		supplier.get().enqueueWork(() -> {
+			ServerPlayerWrapper player;
+			player = ServerPlayerWrapper.get(supplier);
 			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 			if (player == null) return;
 			IStamina stamina = IStamina.get(player);
@@ -65,21 +67,22 @@ public class SyncStaminaMessage {
 			stamina.set(this.stamina);
 			stamina.setExhaustion(exhausted);
 		});
-		contextSupplier.get().setPacketHandled(true);
+		supplier.get().setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
-			ServerPlayerEntity serverPlayer = null;
-			PlayerEntity player;
-			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-				World world = Minecraft.getInstance().level;
+		Supplier<NetworkContextWrapper> supplier = NetworkContextWrapper.getSupplier(contextSupplier);
+		supplier.get().enqueueWork(() -> {
+			ServerPlayerWrapper serverPlayer = null;
+			PlayerWrapper player;
+			if (supplier.get().getReceptionSide() == LogicalSide.CLIENT) {
+				LevelWrapper world = LevelWrapper.get();
 				if (world == null) return;
-				player = world.getPlayerByUUID(playerID);
+				player = PlayerWrapper.get(world, playerID);
 				if (player == null || player.isLocalPlayer()) return;
 			} else {
-				player = serverPlayer = contextSupplier.get().getSender();
+				player = serverPlayer = ServerPlayerWrapper.get(supplier);
 				ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 				if (player == null) return;
 			}
@@ -94,11 +97,11 @@ public class SyncStaminaMessage {
 			stamina.set(this.stamina);
 			stamina.setExhaustion(exhausted);
 		});
-		contextSupplier.get().setPacketHandled(true);
+		supplier.get().setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void sync(PlayerEntity player) {
+	public static void sync(PlayerWrapper player) {
 		IStamina stamina = IStamina.get(player);
 		if (stamina == null || !player.isLocalPlayer()) return;
 

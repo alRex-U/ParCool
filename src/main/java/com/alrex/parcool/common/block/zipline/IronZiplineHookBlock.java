@@ -1,9 +1,12 @@
 package com.alrex.parcool.common.block.zipline;
 
 import com.alrex.parcool.common.block.BlockStateProperties;
+import com.alrex.parcool.compatibility.BlockStateWrapper;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
@@ -11,7 +14,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 
 public class IronZiplineHookBlock extends ZiplineHookBlock {
@@ -50,9 +52,9 @@ public class IronZiplineHookBlock extends ZiplineHookBlock {
     }
 
     @Override
-    public Vector3d getActualZiplinePoint(BlockPos pos, BlockState state) {
+    public Vec3Wrapper getActualZiplinePoint(BlockPos pos, BlockStateWrapper state) {
         Direction direction = state.getValue(FACING);
-        return new Vector3d(
+        return new Vec3Wrapper(
                 pos.getX() + 0.5 - direction.getStepX() * 0.2,
                 pos.getY() + 0.5 - direction.getStepY() * 0.2,
                 pos.getZ() + 0.5 - direction.getStepZ() * 0.2
@@ -70,11 +72,11 @@ public class IronZiplineHookBlock extends ZiplineHookBlock {
         BlockState state = super.getStateForPlacement(context);
 
         boolean orthogonal;
-        PlayerEntity player = context.getPlayer();
+        PlayerWrapper player = PlayerWrapper.get(context);
         if (player == null)
             orthogonal = false;
         else {
-            Vector3d lookVec = player.getLookAngle();
+            Vec3Wrapper lookVec = player.getLookAngle();
             switch (context.getClickedFace()) {
                 case NORTH:
                 case SOUTH:

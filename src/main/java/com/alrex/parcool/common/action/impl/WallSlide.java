@@ -8,16 +8,15 @@ import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.damage.DamageSources;
+import com.alrex.parcool.compatibility.BlockStateWrapper;
+import com.alrex.parcool.compatibility.LevelWrapper;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -25,32 +24,32 @@ import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
 public class WallSlide extends Action {
-	private Vector3d leanedWallDirection = null;
+	private Vec3Wrapper leanedWallDirection = null;
 	private byte particleSpawnCoolTime = 0;
 	private double startYSpeed = 0;
 	private int damageCount = 0, takenDamageCount = 0;
 	private byte damageCoolTime = 0;
 
 	@Nullable
-	public Vector3d getLeanedWallDirection() {
+	public Vec3Wrapper getLeanedWallDirection() {
 		return leanedWallDirection;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		startInfo.putDouble(Math.abs(player.getDeltaMovement().y()));
 		return canContinue(player, parkourability, stamina);
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		Vector3d wall = WorldUtil.getWall(player);
+	public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
+		Vec3Wrapper wall = WorldUtil.getWall(player);
 		return (wall != null
 				&& !player.isOnGround()
 				&& !parkourability.get(FastRun.class).isDoing()
 				&& !parkourability.get(Dodge.class).isDoing()
-				&& !player.abilities.flying
+				&& !player.isFlying()
 				&& player.getDeltaMovement().y() <= 0
 				&& KeyBindings.getKeyWallSlide().isDown()
 				&& !stamina.isExhausted()
@@ -61,12 +60,12 @@ public class WallSlide extends Action {
 	}
 
 	@Override
-    public void onStart(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+    public void onStart(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
 		particleSpawnCoolTime = 0;
 	}
 
 	@Override
-	public void onStartInServer(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+	public void onStartInServer(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
 		startYSpeed = startData.getDouble();
 		damageCount = (int) (5.5 * (startYSpeed - 1.) / player.getBbHeight());
 		takenDamageCount = 0;
@@ -75,7 +74,7 @@ public class WallSlide extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		Animation animation = Animation.get(player);
 		if (animation != null && !animation.hasAnimator()) {
 			animation.setAnimator(new WallSlideAnimator());
@@ -93,7 +92,7 @@ public class WallSlide extends Action {
 	}
 
 	@Override
-	public void onWorkingTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		leanedWallDirection = WorldUtil.getWall(player);
 		if (leanedWallDirection != null) {
 			BlockPos leanedBlock = new BlockPos(
@@ -101,56 +100,53 @@ public class WallSlide extends Action {
 					player.getBoundingBox().minY + player.getBbHeight() * 0.75,
 					player.getZ() + leanedWallDirection.z()
 			);
-			if (!player.level.isLoaded(leanedBlock)) return;
-			float slipperiness = player.level.getBlockState(leanedBlock).getSlipperiness(player.level, leanedBlock, player);
+			if (!player.isEveryLoaded(leanedBlock)) return;
+			float slipperiness = player.getSlipperiness(leanedBlock);
 			slipperiness = (float) Math.sqrt(slipperiness);
-			player.fallDistance *= slipperiness;
+			player.multiplyFallDistance(slipperiness);
 			player.setDeltaMovement(player.getDeltaMovement().multiply(0.8, slipperiness, 0.8));
 		}
 	}
 
 	@Override
-	public void onWorkingTickInServer(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInServer(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		if (damageCoolTime <= 0 && damageCount > takenDamageCount++) {
-			int invulnerableTime = player.invulnerableTime; // bypass invulnerableTime
 			damageCoolTime = 1;
-			player.invulnerableTime = 0;
-			player.hurt(DamageSources.WALL_SLIDE, 0.3f);
-			player.invulnerableTime = invulnerableTime;
+			player.forceDamage(DamageSources.WALL_SLIDE, 0.3f);
 		} else {
 			damageCoolTime--;
 		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private void spawnSlideParticle(PlayerEntity player) {
+	private void spawnSlideParticle(PlayerWrapper player) {
 		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		if (leanedWallDirection == null) return;
 		if (player.getRandom().nextBoolean()) return;
-		World level = player.level;
-		Vector3d pos = player.position();
+		LevelWrapper level = player.getLevel();
+		Vec3Wrapper pos = player.position();
 		BlockPos leanedBlock = new BlockPos(
 				pos.add(leanedWallDirection.x(), player.getBbHeight() * 0.25, leanedWallDirection.z())
 		);
 		if (!level.isLoaded(leanedBlock)) return;
 		float width = player.getBbWidth();
-		BlockState blockstate = level.getBlockState(leanedBlock);
+		BlockStateWrapper blockstate = level.getBlockState(leanedBlock);
 
-		Vector3d normalizedWallVec = leanedWallDirection.normalize();
-		Vector3d orthogonalToWallVec = normalizedWallVec.yRot((float) (Math.PI / 2));
+		Vec3Wrapper normalizedWallVec = leanedWallDirection.normalize();
+		Vec3Wrapper orthogonalToWallVec = normalizedWallVec.yRot((float) (Math.PI / 2));
 		if (blockstate.getRenderShape() != BlockRenderType.INVISIBLE) {
-			Vector3d particlePos = new Vector3d(
+			Vec3Wrapper particlePos = new Vec3Wrapper(
 					pos.x() + (normalizedWallVec.x() * 0.4 + orthogonalToWallVec.x() * (player.getRandom().nextDouble() - 0.5D)) * width,
 					pos.y() + player.getBbHeight() - 0.2D + 0.3 * player.getRandom().nextDouble(),
 					pos.z() + (normalizedWallVec.z() * 0.4 + orthogonalToWallVec.z() * (player.getRandom().nextDouble() - 0.5D)) * width
 			);
-			Vector3d particleSpeed = normalizedWallVec
+			Vec3Wrapper particleSpeed = normalizedWallVec
 					.reverse()
 					.yRot((float) (Math.PI * 0.1 * (player.getRandom().nextDouble() - 0.5)))
 					.scale(0.05)
 					.add(0, -0.5 - player.getRandom().nextDouble(), 0);
 			level.addParticle(
-					new BlockParticleData(ParticleTypes.BLOCK, blockstate).setPos(leanedBlock),
+					blockstate.getBlockParticleData(ParticleTypes.BLOCK, leanedBlock),
 					particlePos.x(),
 					particlePos.y(),
 					particlePos.z(),

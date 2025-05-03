@@ -1,6 +1,8 @@
 package com.alrex.parcool.mixin.common;
 
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,7 +22,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
 	@Inject(method = "tryToStartFallFlying", at = @At("HEAD"), cancellable = true)
 	public void onTryToStartFallFlying(CallbackInfoReturnable<Boolean> cir) {
-		PlayerEntity player = (PlayerEntity) (Object) this;
+		PlayerWrapper player = PlayerWrapper.get(this);
 		Parkourability parkourability = Parkourability.get(player);
         if (parkourability != null && parkourability.getBehaviorEnforcer().cancelFallFlying()) {
 			cir.setReturnValue(false);
@@ -29,7 +31,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
 	@Inject(method = "jumpFromGround", at = @At("HEAD"), cancellable = true)
 	public void onJumpFromGround(CallbackInfo ci) {
-		Parkourability parkourability = Parkourability.get((PlayerEntity) (Object) this);
+		Parkourability parkourability = Parkourability.get(PlayerWrapper.get(this));
 		if (parkourability == null) return;
 		if (parkourability.getBehaviorEnforcer().cancelJump()) {
 			ci.cancel();
@@ -38,7 +40,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
 	@Inject(method = "isStayingOnGroundSurface", at = @At("HEAD"), cancellable = true)
 	public void onIsStayingOnGroundSurface(CallbackInfoReturnable<Boolean> cir) {
-		Parkourability parkourability = Parkourability.get((PlayerEntity) (Object) this);
+		Parkourability parkourability = Parkourability.get(PlayerWrapper.get(this));
 		if (parkourability == null) return;
 		if (parkourability.getBehaviorEnforcer().cancelDescendFromEdge()) {
 			cir.setReturnValue(true);
@@ -47,7 +49,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
     @Inject(method = "shouldShowName", at = @At("HEAD"), cancellable = true)
     public void onShouldShowName(CallbackInfoReturnable<Boolean> cir) {
-        Parkourability parkourability = Parkourability.get((PlayerEntity) (Object) this);
+        Parkourability parkourability = Parkourability.get(PlayerWrapper.get(this));
         if (parkourability == null) return;
         if (parkourability.getBehaviorEnforcer().cancelShowingName()) {
             cir.setReturnValue(false);

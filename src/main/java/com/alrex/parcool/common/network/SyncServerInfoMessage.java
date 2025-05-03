@@ -4,19 +4,17 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ServerLimitation;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import com.alrex.parcool.compatibility.ClientPlayerWrapper;
+import com.alrex.parcool.compatibility.NetworkContextWrapper;
+import com.alrex.parcool.compatibility.PlayerPacketDistributor;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.ServerPlayerWrapper;
+
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.logging.log4j.Level;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.nio.ByteBuffer;
 import java.util.function.Supplier;
 
@@ -49,8 +47,9 @@ public class SyncServerInfoMessage {
 
 	@OnlyIn(Dist.CLIENT)
 	public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
-			ClientPlayerEntity player = Minecraft.getInstance().player;
+		Supplier<NetworkContextWrapper> supplier = NetworkContextWrapper.getSupplier(contextSupplier);
+		supplier.get().enqueueWork(() -> {
+			ClientPlayerWrapper player = ClientPlayerWrapper.get();
 			if (player == null) return;
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
@@ -63,24 +62,24 @@ public class SyncServerInfoMessage {
 				stamina.setExhaustion(staminaExhausted);
 			}
 		});
-		contextSupplier.get().setPacketHandled(true);
+		supplier.get().setPacketHandled(true);
 	}
 
-	public void logReceived(PlayerEntity player) {
-		ParCool.LOGGER.log(Level.INFO, "Received Server Limitation of [" + player.getGameProfile().getName() + "]");
+	public void logReceived(PlayerWrapper player) {
+		ParCool.LOGGER.log(Level.INFO, "Received Server Limitation of [" + player.getName() + "]");
 	}
 
-    public static void sync(ServerPlayerEntity player) {
+    public static void sync(ServerPlayerWrapper player) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 		SyncServerInfoMessage msg = new SyncServerInfoMessage();
 		parkourability.getActionInfo().getServerLimitation().writeTo(msg.limitationData);
 		msg.limitationData.flip();
 		msg.staminaNeedSync = false;
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), msg);
+		ParCool.CHANNEL_INSTANCE.send(PlayerPacketDistributor.with(player), msg);
 	}
 
-	public static void syncWithStamina(ServerPlayerEntity player, IStamina stamina) {
+	public static void syncWithStamina(ServerPlayerWrapper player, IStamina stamina) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 		SyncServerInfoMessage msg = new SyncServerInfoMessage();
@@ -91,6 +90,6 @@ public class SyncServerInfoMessage {
 			msg.staminaExhausted = stamina.isExhausted();
 			msg.staminaValue = stamina.get();
 		}
-		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), msg);
+		ParCool.CHANNEL_INSTANCE.send(PlayerPacketDistributor.with(player), msg);
 	}
 }

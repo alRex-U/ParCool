@@ -5,9 +5,9 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.capability.stamina.OtherStamina;
+import com.alrex.parcool.compatibility.PlayerWrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -16,7 +16,6 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -24,8 +23,8 @@ public class AttachCapabilityHandler {
 
 	@SubscribeEvent
 	public static void onAttachCapability(AttachCapabilitiesEvent<Entity> event) {
-		if (!(event.getObject() instanceof PlayerEntity)) return;
-		PlayerEntity player = (PlayerEntity) event.getObject();
+		PlayerWrapper player = PlayerWrapper.getOrDefault(event);
+		if (player == null) return;
 		//Parkourability
 		{
 			Parkourability instance = new Parkourability();

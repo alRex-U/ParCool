@@ -5,20 +5,16 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ServerLimitation;
 import com.alrex.parcool.common.network.SyncServerInfoMessage;
+import com.alrex.parcool.compatibility.ServerPlayerWrapper;
+import com.alrex.parcool.compatibility.ServerEventWrapper;
+import com.alrex.parcool.utilities.JsonWriterUtil;
 import com.alrex.parcool.utilities.ServerUtil;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import org.apache.commons.io.FileUtils;
-
 import javax.annotation.Nullable;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public class Limitations {
@@ -80,7 +76,7 @@ public class Limitations {
         return getLimitationMapOf(playerID).get(id);
     }
 
-    public static void update(ServerPlayerEntity player) {
+    public static void update(ServerPlayerWrapper player) {
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability == null) return;
         parkourability.getActionInfo().setServerLimitation(ServerLimitation.get(player));
@@ -92,7 +88,7 @@ public class Limitations {
         }
     }
 
-    public static void updateOnlyLimitation(ServerPlayerEntity player) {
+    public static void updateOnlyLimitation(ServerPlayerWrapper player) {
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability == null) return;
         parkourability.getActionInfo().setServerLimitation(ServerLimitation.get(player));
@@ -178,28 +174,12 @@ public class Limitations {
             if (!limitationFile.getParentFile().exists()) {
                 limitationFile.getParentFile().mkdirs();
             }
-            try (JsonWriter writer =
-                         new JsonWriter(
-                                 new OutputStreamWriter(
-                                         new BufferedOutputStream(
-                                                 Files.newOutputStream(limitationFile.toPath(), StandardOpenOption.CREATE, StandardOpenOption.WRITE)
-                                         ),
-                                         StandardCharsets.UTF_8
-                                 )
-                         )
-            ) {
-                limitation.saveTo(writer);
-            } catch (IOException e) {
-                ParCool.LOGGER.error(
-                        "IOException during saving limitation : "
-                                + e.getMessage()
-                );
-            }
+            JsonWriterUtil.Save(limitation, limitationFile);
         }
         ParCool.LOGGER.info("Limitation of " + playerID + " was unloaded");
     }
 
-    public static void init(FMLServerAboutToStartEvent event) {
+    public static void init(ServerEventWrapper event) {
         GlobalLimitation.readFromServerConfig();
         Path configPath = ServerUtil.getServerConfigPath(event.getServer());
         LimitationFolderRootPath = configPath.resolve("parcool").resolve("limitations");
@@ -209,7 +189,7 @@ public class Limitations {
         }
     }
 
-    public static void save(FMLServerStoppingEvent event) {
+    public static void save(ServerEventWrapper event) {
         Path configPath = ServerUtil.getServerConfigPath(event.getServer());
         Path limitationRootPath = configPath.resolve("parcool").resolve("limitations");
         for (Map.Entry<UUID, SortedMap<Limitation.ID, Limitation>> limitationEntry : Loaded.entrySet()) {
@@ -220,23 +200,7 @@ public class Limitations {
                 if (!limitationFile.getParentFile().exists()) {
                     limitationFile.getParentFile().mkdirs();
                 }
-                try (JsonWriter writer =
-                             new JsonWriter(
-                                     new OutputStreamWriter(
-                                             new BufferedOutputStream(
-                                                     Files.newOutputStream(limitationFile.toPath(), StandardOpenOption.CREATE, StandardOpenOption.WRITE)
-                                             ),
-                                             StandardCharsets.UTF_8
-                                     )
-                             )
-                ) {
-                    limitation.saveTo(writer);
-                } catch (IOException e) {
-                    ParCool.LOGGER.error(
-                            "IOException during saving limitation : "
-                                    + e.getMessage()
-                    );
-                }
+                JsonWriterUtil.Save(limitation, limitationFile);
             }
         }
     }

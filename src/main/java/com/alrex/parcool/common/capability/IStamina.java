@@ -3,9 +3,8 @@ package com.alrex.parcool.common.capability;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.capability.stamina.HungerStamina;
 import com.alrex.parcool.common.capability.stamina.Stamina;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraftforge.common.util.LazyOptional;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.ServerPlayerWrapper;
 
 import javax.annotation.Nullable;
 import java.util.function.BiConsumer;
@@ -16,22 +15,22 @@ public interface IStamina {
 		Default(Stamina.class, Stamina::new, null),
 		Hunger(HungerStamina.class, HungerStamina::new, HungerStamina::consumeOnServer);
 
-		Type(Class<? extends IStamina> clazz, Function<PlayerEntity, IStamina> constructor, BiConsumer<ServerPlayerEntity, Integer> serverStaminaHandler) {
+		Type(Class<? extends IStamina> clazz, Function<PlayerWrapper, IStamina> constructor, BiConsumer<ServerPlayerWrapper, Integer> serverStaminaHandler) {
 			this.constructor = constructor;
 			this.clazz = clazz;
 			this.serverStaminaHandler = serverStaminaHandler;
 		}
 
-		private final Function<PlayerEntity, IStamina> constructor;
+		private final Function<PlayerWrapper, IStamina> constructor;
 		private final Class<? extends IStamina> clazz;
 		@Nullable
-		private final BiConsumer<ServerPlayerEntity, Integer> serverStaminaHandler;
+		private final BiConsumer<ServerPlayerWrapper, Integer> serverStaminaHandler;
 
-		public IStamina newInstance(PlayerEntity player) {
+		public IStamina newInstance(PlayerWrapper player) {
 			return constructor.apply(player);
 		}
 
-		public void handleConsumeOnServer(ServerPlayerEntity player, int value) {
+		public void handleConsumeOnServer(ServerPlayerWrapper player, int value) {
 			if (this.serverStaminaHandler != null) {
 				serverStaminaHandler.accept(player, value);
 			}
@@ -47,9 +46,8 @@ public interface IStamina {
 		}
 	}
 	@Nullable
-	public static IStamina get(PlayerEntity player) {
-		LazyOptional<IStamina> optional = player.getCapability(Capabilities.STAMINA_CAPABILITY);
-		return optional.orElse(null);
+	public static IStamina get(PlayerWrapper player) {
+		return player.getCapability(Capabilities.STAMINA_CAPABILITY);
 	}
 
 	public int getActualMaxStamina();

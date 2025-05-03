@@ -4,10 +4,9 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.network.SyncClientInformationMessage;
+import com.alrex.parcool.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -89,7 +88,7 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
 
     @Override
     protected void save() {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+        ClientPlayerWrapper player = ClientPlayerWrapper.get();
         if (player == null) return;
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability == null) return;

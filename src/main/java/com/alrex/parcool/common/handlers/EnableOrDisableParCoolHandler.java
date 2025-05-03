@@ -6,9 +6,8 @@ import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.network.SyncClientInformationMessage;
+import com.alrex.parcool.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.config.ParCoolConfig;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,7 +23,7 @@ public class EnableOrDisableParCoolHandler {
         if (KeyBindings.getKeyBindEnable().consumeClick()) {
             ParCoolConfig.Client.Booleans.ParCoolIsActive.set(!ParCoolConfig.Client.Booleans.ParCoolIsActive.get());
             boolean currentStatus = ParCool.isActive();
-            ClientPlayerEntity player = Minecraft.getInstance().player;
+            ClientPlayerWrapper player = ClientPlayerWrapper.get();
             if (player == null) return;
             Parkourability parkourability = Parkourability.get(player);
             if (parkourability == null) return;

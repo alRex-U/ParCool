@@ -2,19 +2,19 @@ package com.alrex.parcool.client.animation;
 
 import com.alrex.parcool.api.unstable.animation.AnimationOption;
 import com.alrex.parcool.api.unstable.animation.AnimationPart;
+import com.alrex.parcool.compatibility.PlayerWrapper;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelHelper;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
 /**
  * Using Radians
  */
 public class PlayerModelTransformer {
-	private final PlayerEntity player;
+	private final PlayerWrapper player;
 	private final PlayerModel model;
 	private final float partial;
 	private final float ageInTicks;
@@ -49,7 +49,7 @@ public class PlayerModelTransformer {
 	}
 
 	public PlayerModelTransformer(
-			PlayerEntity player,
+			PlayerWrapper player,
 			PlayerModel model,
 			boolean slim,
 			float ageInTicks,

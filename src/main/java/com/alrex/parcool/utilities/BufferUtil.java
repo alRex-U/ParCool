@@ -1,10 +1,11 @@
 package com.alrex.parcool.utilities;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
 
 import java.nio.ByteBuffer;
+
+import com.alrex.parcool.compatibility.Vec3Wrapper;
 
 public class BufferUtil {
 	ByteBuffer buffer;
@@ -35,7 +36,7 @@ public class BufferUtil {
 		return this;
 	}
 
-	public BufferUtil putVector3d(Vector3d vec) {
+	public BufferUtil putVector3d(Vec3Wrapper vec) {
 		buffer.putDouble(vec.x()).putDouble(vec.y()).putDouble(vec.z());
 		return this;
 	}
@@ -48,8 +49,8 @@ public class BufferUtil {
 		return new Vector3i(buffer.getInt(), buffer.getInt(), buffer.getInt());
 	}
 
-	public static Vector3d getVector3d(ByteBuffer buffer) {
-		return new Vector3d(buffer.getDouble(), buffer.getDouble(), buffer.getDouble());
+	public static Vec3Wrapper getVector3d(ByteBuffer buffer) {
+		return new Vec3Wrapper(buffer.getDouble(), buffer.getDouble(), buffer.getDouble());
 	}
 
 

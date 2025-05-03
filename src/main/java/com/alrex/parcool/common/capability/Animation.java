@@ -8,24 +8,23 @@ import com.alrex.parcool.client.animation.PassiveCustomAnimation;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
+import com.alrex.parcool.compatibility.AbstractClientPlayerWrapper;
+import com.alrex.parcool.compatibility.ClientPlayerWrapper;
+import com.alrex.parcool.compatibility.PlayerWrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class Animation {
-	public static Animation get(PlayerEntity player) {
-		LazyOptional<Animation> optional = player.getCapability(Capabilities.ANIMATION_CAPABILITY);
-		if (!optional.isPresent()) return null;
-		return optional.orElseThrow(IllegalStateException::new);
+	public static Animation get(PlayerWrapper player) {
+		Animation animation = player.getCapability(Capabilities.ANIMATION_CAPABILITY);
+		if (animation == null) throw new IllegalStateException();
+		return animation;
 	}
 
 	private Animator animator = null;
@@ -38,7 +37,7 @@ public class Animation {
 		this.animator = animator;
 	}
 
-	public boolean animatePre(PlayerEntity player, PlayerModelTransformer modelTransformer) {
+	public boolean animatePre(PlayerWrapper player, PlayerModelTransformer modelTransformer) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return false;
 		if (animator != null && animator.shouldRemoved(player, parkourability)) animator = null;
@@ -48,7 +47,7 @@ public class Animation {
 		return animator.animatePre(player, parkourability, modelTransformer);
 	}
 
-	public void animatePost(PlayerEntity player, PlayerModelTransformer modelTransformer) {
+	public void animatePost(PlayerWrapper player, PlayerModelTransformer modelTransformer) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 		if (animator == null) {
@@ -59,7 +58,7 @@ public class Animation {
 		animator.animatePost(player, parkourability, modelTransformer);
 	}
 
-	public boolean rotatePre(AbstractClientPlayerEntity player, PlayerModelRotator rotator) {
+	public boolean rotatePre(AbstractClientPlayerWrapper player, PlayerModelRotator rotator) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return false;
 		if (animator != null && animator.shouldRemoved(player, parkourability)) animator = null;
@@ -68,7 +67,7 @@ public class Animation {
 		return animator.rotatePre(player, parkourability, rotator);
 	}
 
-	public void rotatePost(AbstractClientPlayerEntity player, PlayerModelRotator rotator) {
+public void rotatePost(AbstractClientPlayerWrapper player, PlayerModelRotator rotator) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 		if (animator == null) {
@@ -79,7 +78,7 @@ public class Animation {
 		animator.rotatePost(player, parkourability, rotator);
 	}
 
-    public void cameraSetup(EntityViewRenderEvent.CameraSetup event, ClientPlayerEntity player, Parkourability parkourability) {
+    public void cameraSetup(EntityViewRenderEvent.CameraSetup event, ClientPlayerWrapper player, Parkourability parkourability) {
 		if (animator == null) return;
 		if (player.isLocalPlayer()
 				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()
@@ -89,7 +88,7 @@ public class Animation {
 		animator.onCameraSetUp(event, player, parkourability);
 	}
 
-    public void tick(AbstractClientPlayerEntity player, Parkourability parkourability) {
+    public void tick(AbstractClientPlayerWrapper player, Parkourability parkourability) {
 		passiveAnimation.tick(player, parkourability);
 		if (animator != null) {
             animator.tick(player);
@@ -101,7 +100,7 @@ public class Animation {
         }
 	}
 
-	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerWrapper player, Parkourability parkourability) {
 		if (animator != null) {
 			animator.onRenderTick(event, player, parkourability);
 		}

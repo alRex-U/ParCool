@@ -1,16 +1,16 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Parkourability;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
+import com.alrex.parcool.compatibility.EventBusWrapper;
+import com.alrex.parcool.compatibility.LevelWrapper;
+import com.alrex.parcool.compatibility.NetworkContextWrapper;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -45,10 +45,9 @@ public class SyncActionStateMessage {
 
 	@OnlyIn(Dist.DEDICATED_SERVER)
 	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
-			PlayerEntity player;
-
-			player = contextSupplier.get().getSender();
+		Supplier<NetworkContextWrapper> supplier = NetworkContextWrapper.getSupplier(contextSupplier);
+		supplier.get().enqueueWork(() -> {
+			PlayerWrapper player = PlayerWrapper.get(supplier);
 			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 			if (player == null) return;
 
@@ -67,13 +66,13 @@ public class SyncActionStateMessage {
 						action.onStart(player, parkourability, startData);
 						startData.rewind();
 						action.onStartInServer(player, parkourability, item.getBuffer());
-						MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
+						EventBusWrapper.startEvent(player, action);
 						break;
 					case Finish:
 						action.setDoing(false);
 						action.onStopInServer(player);
 						action.onStop(player);
-						MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.StopEvent(player, action));
+						EventBusWrapper.stopEvent(player, action);
 						break;
 					case Normal:
 						action.restoreSynchronizedState(item.getBuffer());
@@ -81,22 +80,23 @@ public class SyncActionStateMessage {
 				}
 			}
 		});
-		contextSupplier.get().setPacketHandled(true);
+		supplier.get().setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
-			PlayerEntity player;
+		Supplier<NetworkContextWrapper> supplier = NetworkContextWrapper.getSupplier(contextSupplier);
+		supplier.get().enqueueWork(() -> {
+			PlayerWrapper player;
 			boolean clientSide;
-			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-				World world = Minecraft.getInstance().level;
+			if (supplier.get().getReceptionSide() == LogicalSide.CLIENT) {
+				LevelWrapper world = LevelWrapper.get();
 				if (world == null) return;
-				player = world.getPlayerByUUID(senderUUID);
+				player = PlayerWrapper.get(world, senderUUID);
 				if (player == null || player.isLocalPlayer()) return;
 				clientSide = true;
 			} else {
-				player = contextSupplier.get().getSender();
+				player = PlayerWrapper.get(supplier);
 				ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 				if (player == null) return;
 				clientSide = false;
@@ -121,7 +121,7 @@ public class SyncActionStateMessage {
 						} else {
 							action.onStartInServer(player, parkourability, startData);
 						}
-						MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
+						EventBusWrapper.startEvent(player, action);
 						break;
 					case Finish:
 						action.setDoing(false);
@@ -131,7 +131,7 @@ public class SyncActionStateMessage {
 							action.onStopInServer(player);
 						}
 						action.onStop(player);
-						MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.StopEvent(player, action));
+						EventBusWrapper.stopEvent(player, action);
 						break;
 					case Normal:
 						action.restoreSynchronizedState(item.getBuffer());
@@ -139,11 +139,11 @@ public class SyncActionStateMessage {
 				}
 			}
 		});
-		contextSupplier.get().setPacketHandled(true);
+		supplier.get().setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void sync(PlayerEntity player, Encoder builder) {
+	public static void sync(PlayerWrapper player, Encoder builder) {
 		ByteBuffer buffer1 = builder.build();
 		if (buffer1.limit() == 0) return;
 		SyncActionStateMessage message = new SyncActionStateMessage();

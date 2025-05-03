@@ -1,7 +1,8 @@
 package com.alrex.parcool.api;
 
 import com.alrex.parcool.common.capability.IStamina;
-import net.minecraft.entity.player.PlayerEntity;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -9,11 +10,9 @@ import javax.annotation.Nullable;
 
 public class Stamina {
 	@Nullable
-	public static Stamina get(PlayerEntity player) {
+	public static Stamina get(PlayerWrapper player) {
 		IStamina instance = IStamina.get(player);
-		if (instance == null) {
-			return null;
-		}
+		if (instance == null) return null;
 		return new Stamina(instance);
 	}
 

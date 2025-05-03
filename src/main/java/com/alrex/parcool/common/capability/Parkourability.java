@@ -9,11 +9,11 @@ import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.info.ServerLimitation;
 import com.alrex.parcool.common.network.SyncClientInformationMessage;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import com.alrex.parcool.compatibility.ClientPlayerWrapper;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -21,9 +21,8 @@ import java.util.List;
 
 public class Parkourability {
 	@Nullable
-	public static Parkourability get(PlayerEntity player) {
-		LazyOptional<Parkourability> optional = player.getCapability(Capabilities.PARKOURABILITY_CAPABILITY);
-		return optional.orElse(null);
+	public static Parkourability get(PlayerWrapper player) {
+		return player.getCapability(Capabilities.PARKOURABILITY_CAPABILITY);
 	}
 
 	private final ActionInfo info;
@@ -95,7 +94,7 @@ public class Parkourability {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void trySyncLimitation(ClientPlayerEntity player) {
+	public void trySyncLimitation(ClientPlayerWrapper player) {
 		synchronizeTrialCount++;
 		SyncClientInformationMessage.sync(player, true);
 	}

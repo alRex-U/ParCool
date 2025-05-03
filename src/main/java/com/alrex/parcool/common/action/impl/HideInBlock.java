@@ -9,18 +9,18 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.LevelWrapper;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -31,24 +31,24 @@ public class HideInBlock extends Action {
     private static final BehaviorEnforcer.ID ID_SHOW_NAME = BehaviorEnforcer.newID();
     private static final BehaviorEnforcer.ID ID_SNEAK = BehaviorEnforcer.newID();
     @Nullable
-    Vector3d hidingPoint = null;
+    Vec3Wrapper hidingPoint = null;
     @Nullable
     Tuple<BlockPos, BlockPos> hidingArea = null;
     @Nullable
-    Vector3d enterPoint = null;
+    Vec3Wrapper enterPoint = null;
     @Nullable
-    Vector3d lookDirection = null;
+    Vec3Wrapper lookDirection = null;
     boolean hidingBlockChanged = false;
 
     @Nullable
-    public Vector3d getLookDirection() {
+    public Vec3Wrapper getLookDirection() {
         return lookDirection;
     }
 
     @Override
-    public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+    public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
         if (player.isSprinting()
-                || player.noPhysics
+                || player.hasNoPhysics()
                 || !player.isOnGround()
                 || player.isInWater()
                 || player.isPassenger()
@@ -56,7 +56,7 @@ public class HideInBlock extends Action {
                 || parkourability.isDoingNothing()
                 || !KeyBindings.getKeyBindHideInBlock().isDown()
                 || getNotDoingTick() < 6
-                || player.hurtTime > 0
+                || player.hasHurtTime()
                 || player.getPose() != Pose.CROUCHING
         ) {
             return false;
@@ -66,7 +66,7 @@ public class HideInBlock extends Action {
             BlockPos lookingBlock = ((BlockRayTraceResult) result).getBlockPos();
             Tuple<BlockPos, BlockPos> hideArea = WorldUtil.getHideAbleSpace(player, lookingBlock);
             if (hideArea == null) return false;
-            Vector3d hidePoint = new Vector3d(
+            Vec3Wrapper hidePoint = new Vec3Wrapper(
                     0.5 + (hideArea.getA().getX() + hideArea.getB().getX()) / 2.,
                     Math.min(hideArea.getA().getY(), hideArea.getB().getY()),
                     0.5 + (hideArea.getA().getZ() + hideArea.getB().getZ()) / 2.
@@ -81,18 +81,18 @@ public class HideInBlock extends Action {
                 int maxZ = Math.max(hideArea.getA().getZ(), hideArea.getB().getZ());
                 hideArea = new Tuple<>(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ));
             }
-            Vector3d direction;
+            Vec3Wrapper direction;
             boolean stand = player.getBbHeight() < (hideArea.getB().getY() - hideArea.getA().getY() + 1);
             if (stand) {
-                Vector3d lookAngle = player.getLookAngle();
+                Vec3Wrapper lookAngle = player.getLookAngle();
                 direction = Math.abs(lookAngle.x()) > Math.abs(lookAngle.z()) ?
-                        new Vector3d(lookAngle.x() > 0 ? 1 : -1, 0, 0) :
-                        new Vector3d(0, 0, lookAngle.z() > 0 ? 1 : -1);
+                        new Vec3Wrapper(lookAngle.x() > 0 ? 1 : -1, 0, 0) :
+                        new Vec3Wrapper(0, 0, lookAngle.z() > 0 ? 1 : -1);
             } else {
                 boolean zLonger = Math.abs(hideArea.getA().getZ() - hideArea.getB().getZ()) > Math.abs(hideArea.getA().getX() - hideArea.getB().getX());
                 direction = zLonger ?
-                        new Vector3d(0, 0, player.getLookAngle().z() > 0 ? 1 : -1) :
-                        new Vector3d(player.getLookAngle().x() > 0 ? 1 : -1, 0, 0);
+                        new Vec3Wrapper(0, 0, player.getLookAngle().z() > 0 ? 1 : -1) :
+                        new Vec3Wrapper(player.getLookAngle().x() > 0 ? 1 : -1, 0, 0);
             }
             BufferUtil.wrap(startInfo)
                     .putBoolean(stand)
@@ -107,17 +107,17 @@ public class HideInBlock extends Action {
     }
 
     @Override
-    public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+    public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
         if (hidingBlockChanged) {
             return hidingBlockChanged = false;
         }
-        return player.hurtTime <= 0
+        return !player.hasHurtTime()
                 && player.getPose() == Pose.STANDING
                 && (getDoingTick() < 6 || KeyBindings.getKeyBindHideInBlock().isDown() || KeyBindings.getKeySneak().isDown());
     }
 
     @Override
-    public void onStart(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+    public void onStart(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
         boolean _stand = BufferUtil.getBoolean(startData);
         hidingArea = new Tuple<>(BufferUtil.getBlockPos(startData), BufferUtil.getBlockPos(startData));
         hidingPoint = BufferUtil.getVector3d(startData);
@@ -132,13 +132,13 @@ public class HideInBlock extends Action {
                 }
         );
         parkourability.getBehaviorEnforcer().addMarkerCancellingSneak(ID_SNEAK, this::isDoing);
-        player.setPose(Pose.STANDING);
-        player.noPhysics = true;
-        player.playSound(player.level.getBlockState(new BlockPos(hidingPoint.add(0, 0.2, 0))).getSoundType().getBreakSound(), 1, 1);
+        player.setStandingPose();
+        player.disablePhysics();
+        player.playSound(player.getBlockState(new BlockPos(hidingPoint.add(0, 0.2, 0))).getSoundType().getBreakSound(), 1, 1);
     }
 
     @Override
-    public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+    public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
         boolean stand = BufferUtil.getBoolean(startData);
         RenderBehaviorEnforcer.serMarkerEnforceCameraType(this::isDoing, () -> PointOfView.THIRD_PERSON_BACK);
         parkourability.getBehaviorEnforcer().addMarkerCancellingShowName(ID_SHOW_NAME, this::isDoing);
@@ -149,7 +149,7 @@ public class HideInBlock extends Action {
     }
 
     @Override
-    public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+    public void onStartInOtherClient(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
         boolean stand = BufferUtil.getBoolean(startData);
         Animation animation = Animation.get(player);
         parkourability.getBehaviorEnforcer().addMarkerCancellingShowName(ID_SHOW_NAME, this::isDoing);
@@ -160,23 +160,23 @@ public class HideInBlock extends Action {
 
 
     @Override
-    public void onWorkingTickInServer(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+    public void onWorkingTickInServer(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
         if (hidingPoint == null) return;
-        player.setPos(hidingPoint.x(), hidingPoint.y(), hidingPoint.z());
+        player.setPos(hidingPoint);
     }
 
     @Override
-    public void onWorkingTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-        player.setDeltaMovement(Vector3d.ZERO);
-        player.noPhysics = true;
+    public void onWorkingTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
+        player.setDeltaMovement(Vec3Wrapper.ZERO);
+        player.disablePhysics();
         player.setSprinting(false);
-        player.setPose(Pose.STANDING);
+        player.setStandingPose();
     }
 
     @Override
-    public void onStopInLocalClient(PlayerEntity player) {
-        final Vector3d hidePos = hidingPoint;
-        final Vector3d entPos = enterPoint;
+    public void onStopInLocalClient(PlayerWrapper player) {
+        final Vec3Wrapper hidePos = hidingPoint;
+        final Vec3Wrapper entPos = enterPoint;
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability == null) return;
         parkourability.getBehaviorEnforcer().setMarkerEnforcePosition(
@@ -188,35 +188,35 @@ public class HideInBlock extends Action {
                 }
         );
         spawnOnHideParticles(player);
-        player.playSound(player.level.getBlockState(new BlockPos(hidingPoint.add(0, 0.2, 0))).getSoundType().getBreakSound(), 1, 1);
+        player.playSound(player.getBlockState(new BlockPos(hidingPoint.add(0, 0.2, 0))).getSoundType().getBreakSound(), 1, 1);
     }
 
     @Override
-    public void onTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+    public void onTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
         if (!isDoing() && getNotDoingTick() <= 1) {
-            player.noPhysics = true;
+            player.disablePhysics();;
         }
     }
 
     @Override
-    public void onStopInOtherClient(PlayerEntity player) {
+    public void onStopInOtherClient(PlayerWrapper player) {
         spawnOnHideParticles(player);
-        player.playSound(player.level.getBlockState(new BlockPos(hidingPoint.add(0, 0.2, 0))).getSoundType().getBreakSound(), 1, 1);
+        player.playSound(player.getBlockState(new BlockPos(hidingPoint.add(0, 0.2, 0))).getSoundType().getBreakSound(), 1, 1);
     }
 
     @Override
-    public void onStop(PlayerEntity player) {
+    public void onStop(PlayerWrapper player) {
         hidingPoint = null;
         enterPoint = null;
         hidingArea = null;
         lookDirection = null;
-        player.noPhysics = false;
+        player.enablePhysics();
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void spawnOnHideParticles(PlayerEntity player) {
+    private void spawnOnHideParticles(PlayerWrapper player) {
         if (hidingArea == null) return;
-        World world = player.level;
+        LevelWrapper world = player.getLevel();
         int minX = hidingArea.getA().getX();
         int minY = hidingArea.getA().getY();
         int minZ = hidingArea.getA().getZ();
@@ -228,7 +228,7 @@ public class HideInBlock extends Action {
                 for (int x = minX; x <= maxX; x++) {
                     BlockPos pos = new BlockPos(x, y, z);
                     if (!world.isLoaded(pos)) break;
-                    Minecraft.getInstance().particleEngine.destroy(pos, world.getBlockState(pos));
+                    world.getBlockState(pos).destroyParticle(pos);
                 }
             }
         }

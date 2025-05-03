@@ -10,11 +10,11 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -32,15 +32,15 @@ public class ClingToCliff extends Action {
 	private float armSwingAmount = 0;
 	private FacingDirection facingDirection = FacingDirection.ToWall;
 	@Nullable
-	private Vector3d clingWallDirection = null;
+	private Vec3Wrapper clingWallDirection = null;
 
 	public float getArmSwingAmount() {
 		return armSwingAmount;
 	}
 
 	@Override
-	public void onWorkingTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		player.fallDistance = 0;
+	public void onWorkingTick(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
+		player.resetFallDistance();
 	}
 
 	public FacingDirection getFacingDirection() {
@@ -49,7 +49,7 @@ public class ClingToCliff extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		boolean value = (!stamina.isExhausted()
 				&& player.getDeltaMovement().y() < 0.2
 				&& !parkourability.get(HorizontalWallRun.class).isDoing()
@@ -57,7 +57,7 @@ public class ClingToCliff extends Action {
 				&& (KeyBindings.getKeyGrabWall().getKey().equals(KeyBindings.getKeySneak().getKey()) || !player.isShiftKeyDown())
 		);
 		if (!value) return false;
-		Vector3d wallVec = WorldUtil.getGrabbableWall(player);
+		Vec3Wrapper wallVec = WorldUtil.getGrabbableWall(player);
 		if (wallVec == null) return false;
 		startInfo.putDouble(wallVec.x())
 				.putDouble(wallVec.z());
@@ -67,7 +67,7 @@ public class ClingToCliff extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		return (!stamina.isExhausted()
 				&& parkourability.getActionInfo().can(ClingToCliff.class)
 				&& isGrabbing()
@@ -85,15 +85,15 @@ public class ClingToCliff extends Action {
 	}
 
     @Override
-	public void onStart(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+	public void onStart(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
 		parkourability.getBehaviorEnforcer().addMarkerCancellingFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
         armSwingAmount = 0;
     }
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
-		clingWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+	public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+		clingWallDirection = new Vec3Wrapper(startData.getDouble(), 0, startData.getDouble());
 		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
 		if (!KeyBindings.getKeyGrabWall().getKey().equals(KeyBindings.getKeySneak().getKey())) {
@@ -106,8 +106,8 @@ public class ClingToCliff extends Action {
 	}
 
 	@Override
-	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
-		clingWallDirection = new Vector3d(startData.getDouble(), 0, startData.getDouble());
+	public void onStartInOtherClient(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
+		clingWallDirection = new Vec3Wrapper(startData.getDouble(), 0, startData.getDouble());
 		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
@@ -118,13 +118,13 @@ public class ClingToCliff extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		armSwingAmount += (float) player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
 		if (KeyBindings.isLeftAndRightDown()) {
 			player.setDeltaMovement(0, 0, 0);
 		} else {
 			if (clingWallDirection != null && facingDirection == FacingDirection.ToWall) {
-				Vector3d vec = clingWallDirection.yRot((float) (Math.PI / 2)).normalize().scale(0.1);
+				Vec3Wrapper vec = clingWallDirection.yRot((float) (Math.PI / 2)).normalize().scale(0.1);
 				if (KeyBindings.isKeyLeftDown()) player.setDeltaMovement(vec);
 				else if (KeyBindings.isKeyRightDown()) player.setDeltaMovement(vec.reverse());
 				else player.setDeltaMovement(0, 0, 0);
@@ -135,13 +135,13 @@ public class ClingToCliff extends Action {
 	}
 
 	@Override
-	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		clingWallDirection = WorldUtil.getGrabbableWall(player);
 		if (clingWallDirection == null) return;
 		clingWallDirection = clingWallDirection.normalize();
-		Vector3d lookingAngle = player.getLookAngle().multiply(1, 0, 1).normalize();
-		Vector3d angle =
-				new Vector3d(
+		Vec3Wrapper lookingAngle = player.getLookAngle().multiply(1, 0, 1).normalize();
+		Vec3Wrapper angle =
+				new Vec3Wrapper(
 						clingWallDirection.x() * lookingAngle.x() + clingWallDirection.z() * lookingAngle.z(), 0,
 						-clingWallDirection.x() * lookingAngle.z() + clingWallDirection.z() * lookingAngle.x()
 				).normalize();
@@ -166,17 +166,17 @@ public class ClingToCliff extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerWrapper player, Parkourability parkourability) {
 		if (isDoing() && clingWallDirection != null) {
 			switch (facingDirection) {
 				case ToWall:
 					player.setYBodyRot((float) VectorUtil.toYawDegree(clingWallDirection));
 					break;
 				case RightAgainstWall:
-					player.yBodyRotO = player.yBodyRot = (float) VectorUtil.toYawDegree(clingWallDirection.yRot((float) (-Math.PI / 2)));
+					player.rotateBodyRot0(clingWallDirection, -Math.PI / 2);
 					break;
 				case LeftAgainstWall:
-					player.yBodyRotO = player.yBodyRot = (float) VectorUtil.toYawDegree(clingWallDirection.yRot((float) (Math.PI / 2)));
+					player.rotateBodyRot0(clingWallDirection, Math.PI / 2);
 			}
 		}
 	}

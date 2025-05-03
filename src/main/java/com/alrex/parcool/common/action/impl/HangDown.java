@@ -9,11 +9,11 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -52,7 +52,7 @@ public class HangDown extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		startInfo.putDouble(Math.max(-1, Math.min(1, 3 * player.getLookAngle().multiply(1, 0, 1).normalize().dot(player.getDeltaMovement()))));
 		return (!stamina.isExhausted()
 				&& Math.abs(player.getDeltaMovement().y()) < 0.2
@@ -66,7 +66,7 @@ public class HangDown extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		return (!stamina.isExhausted()
 				&& KeyBindings.getKeyHangDown().isDown()
 				&& parkourability.getActionInfo().can(HangDown.class)
@@ -76,11 +76,11 @@ public class HangDown extends Action {
 		);
 	}
 
-	private void setup(PlayerEntity player, ByteBuffer startData) {
+	private void setup(PlayerWrapper player, ByteBuffer startData) {
 		armSwingAmount = 0;
 		bodySwingAngleFactor = startData.getDouble();
 		hangingBarAxis = WorldUtil.getHangableBars(player);
-		Vector3d bodyVec = VectorUtil.fromYawDegree(player.yBodyRot);
+		Vec3Wrapper bodyVec = VectorUtil.fromYawDegree(player.getYBodyRot());
 		orthogonalToBar = (hangingBarAxis == BarAxis.X && Math.abs(bodyVec.x()) < Math.abs(bodyVec.z()))
 				|| (hangingBarAxis == BarAxis.Z && Math.abs(bodyVec.z()) < Math.abs(bodyVec.x()));
 		player.setDeltaMovement(0, 0, 0);
@@ -90,7 +90,7 @@ public class HangDown extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
+	public void onStartInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		setup(player, startData);
 		if (!KeyBindings.getKeyHangDown().getKey().equals(KeyBindings.getKeySneak().getKey())) {
 			parkourability.getBehaviorEnforcer().addMarkerCancellingSneak(ID_SNEAK_CANCEL, this::isDoing);
@@ -101,7 +101,7 @@ public class HangDown extends Action {
 	}
 
 	@Override
-	public void onStartInOtherClient(PlayerEntity player, Parkourability parkourability, ByteBuffer startData) {
+	public void onStartInOtherClient(PlayerWrapper player, Parkourability parkourability, ByteBuffer startData) {
 		setup(player, startData);
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get()) {
 			player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
@@ -110,8 +110,8 @@ public class HangDown extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
-		Vector3d bodyVec = VectorUtil.fromYawDegree(player.yBodyRot);
+	public void onWorkingTickInLocalClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
+		Vec3Wrapper bodyVec = VectorUtil.fromYawDegree(player.getYBodyRot());
 		final double speed = 0.1;
 		double xSpeed = 0, zSpeed = 0;
 		if (orthogonalToBar) {
@@ -137,9 +137,9 @@ public class HangDown extends Action {
 	}
 
 	@Override
-	public void onWorkingTickInClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public void onWorkingTickInClient(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		hangingBarAxis = WorldUtil.getHangableBars(player);
-		Vector3d bodyVec = VectorUtil.fromYawDegree(player.yBodyRot);
+		Vec3Wrapper bodyVec = VectorUtil.fromYawDegree(player.getYBodyRot());
 		orthogonalToBar =
 				(hangingBarAxis == BarAxis.X && Math.abs(bodyVec.x()) < Math.abs(bodyVec.z()))
 						|| (hangingBarAxis == BarAxis.Z && Math.abs(bodyVec.z()) < Math.abs(bodyVec.x()));
@@ -162,16 +162,16 @@ public class HangDown extends Action {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerEntity player, Parkourability parkourability) {
+	public void onRenderTick(TickEvent.RenderTickEvent event, PlayerWrapper player, Parkourability parkourability) {
 		if (isDoing()) {
 			if (hangingBarAxis == null) return;
-			Vector3d bodyVec = VectorUtil.fromYawDegree(player.yBodyRot).normalize();
-			Vector3d lookVec = player.getLookAngle();
-			Vector3d idealLookVec;
+			Vec3Wrapper bodyVec = VectorUtil.fromYawDegree(player.getYBodyRot()).normalize();
+			Vec3Wrapper lookVec = player.getLookAngle();
+			Vec3Wrapper idealLookVec;
 			if (Math.abs(lookVec.x()) > Math.abs(lookVec.z())) {
-				idealLookVec = new Vector3d(lookVec.x() > 0 ? 1 : -1, 0, 0);
+				idealLookVec = new Vec3Wrapper(lookVec.x() > 0 ? 1 : -1, 0, 0);
 			} else {
-				idealLookVec = new Vector3d(0, 0, lookVec.z() > 0 ? 1 : -1);
+				idealLookVec = new Vec3Wrapper(0, 0, lookVec.z() > 0 ? 1 : -1);
 			}
 			double differenceAngle = Math.acos(bodyVec.dot(idealLookVec));
 			differenceAngle /= 4;

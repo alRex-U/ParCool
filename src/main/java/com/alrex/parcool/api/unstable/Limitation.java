@@ -2,31 +2,24 @@ package com.alrex.parcool.api.unstable;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.compatibility.MinecraftServerWrapper;
+import com.alrex.parcool.compatibility.ServerPlayerWrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.server.limitation.Limitations;
-import com.google.gson.stream.JsonWriter;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
-
-import java.io.BufferedOutputStream;
+import com.alrex.parcool.utilities.JsonWriterUtil;
 import java.io.File;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 
 public abstract class Limitation {
-    public static Limitation get(ServerPlayerEntity player, ID limitationID) {
+    public static Limitation get(ServerPlayerWrapper player, ID limitationID) {
         return new NormalLimitation(player, Limitations.createLimitationOf(player.getUUID(), limitationID.convert()));
     }
 
-    public static Limitation getIndividual(ServerPlayerEntity player) {
+    public static Limitation getIndividual(ServerPlayerWrapper player) {
         return new NormalLimitation(player, Limitations.createLimitationOf(player.getUUID(), Limitations.INDIVIDUAL_ID));
     }
 
-    public static Limitation getGlobal(MinecraftServer server) {
+    public static Limitation getGlobal(MinecraftServerWrapper server) {
         return new GlobalLimitation(server);
     }
 
@@ -131,12 +124,12 @@ public abstract class Limitation {
 
     private static class NormalLimitation extends Limitation {
 
-        private NormalLimitation(ServerPlayerEntity player, com.alrex.parcool.server.limitation.Limitation instance) {
+        private NormalLimitation(ServerPlayerWrapper player, com.alrex.parcool.server.limitation.Limitation instance) {
             super(instance);
             this.player = player;
         }
 
-        private final ServerPlayerEntity player;
+        private final ServerPlayerWrapper player;
 
         @Override
         public void apply() {
@@ -162,37 +155,22 @@ public abstract class Limitation {
             if (!limitationFile.getParentFile().exists()) {
                 limitationFile.getParentFile().mkdirs();
             }
-            try (JsonWriter writer =
-                         new JsonWriter(
-                                 new OutputStreamWriter(
-                                         new BufferedOutputStream(
-                                                 Files.newOutputStream(limitationFile.toPath(), StandardOpenOption.CREATE, StandardOpenOption.WRITE)
-                                         ),
-                                         StandardCharsets.UTF_8
-                                 )
-                         )
-            ) {
-                instance.saveTo(writer);
-            } catch (IOException e) {
-                ParCool.LOGGER.error(
-                        "IOException during saving limitation : "
-                                + e.getMessage()
-                );
-            }
+            
+            JsonWriterUtil.Save(instance, limitationFile);
         }
     }
 
     private static class GlobalLimitation extends Limitation {
-        private final MinecraftServer server;
+        private final MinecraftServerWrapper server;
 
-        private GlobalLimitation(MinecraftServer server) {
+        private GlobalLimitation(MinecraftServerWrapper server) {
             super(Limitations.getGlobalLimitation());
             this.server = server;
         }
 
         @Override
         public void apply() {
-            for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
+            for (ServerPlayerWrapper player : server.getServerPlayers()) {
                 Limitations.updateOnlyLimitation(player);
             }
         }

@@ -3,6 +3,10 @@ package com.alrex.parcool.common.block.zipline;
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import com.alrex.parcool.common.item.Items;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
+import com.alrex.parcool.compatibility.BlockStateWrapper;
+import com.alrex.parcool.compatibility.LevelWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -13,7 +17,6 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -22,8 +25,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEntity {
-    public ZiplineHookTileEntity(TileEntityType<?> p_i48289_1_) {
-        super(p_i48289_1_);
+    private LevelWrapper levelWrapper;
+
+    public ZiplineHookTileEntity(TileEntityType<?> entityType) {
+        super(entityType);
+        setLevelWrapper();
+    }
+
+    private void setLevelWrapper() {
+        levelWrapper = level == null ? null : LevelWrapper.get(level);
+    }
+
+    @Override
+    public void setLevelAndPosition(World level, BlockPos position) {
+        super.setLevelAndPosition(level, position);
+        setLevelWrapper();
     }
 
     private final TreeMap<BlockPos, ZiplineInfo> connections = new TreeMap<>();
@@ -40,15 +56,15 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
     }
 
     public List<ItemStack> removeAllConnection() {
-        if (level == null) return Collections.EMPTY_LIST;
+        if (levelWrapper == null) return Collections.EMPTY_LIST;
         getConnectionPoints().stream()
-                .filter(level::isLoaded)
-                .map(level::getBlockEntity)
-                .map(it -> it instanceof ZiplineHookTileEntity ? (ZiplineHookTileEntity) it : null)
+                .filter(levelWrapper::isLoaded)
+                .map(levelWrapper::getBlockEntity)
+                .map(it -> it.is(ZiplineHookTileEntity.class) ? (ZiplineHookTileEntity) it.getInstance() : null)
                 .filter(Objects::nonNull)
                 .forEach(it -> it.onPairHookRegistrationRemoved(this));
         List<ItemStack> itemStacks = Collections.EMPTY_LIST;
-        if (!level.isClientSide()) {
+        if (!levelWrapper.isClientSide()) {
             connectionEntities.values().forEach(ZiplineRopeEntity::remove);
             itemStacks = connections.values().stream().map(it -> {
                 ItemStack stack = new ItemStack(Items.ZIPLINE_ROPE::get);
@@ -72,39 +88,39 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
     @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
-        if (level != null) {
+        if (levelWrapper != null) {
             getConnectionPoints().stream()
-                    .filter(level::isLoaded)
-                    .map(level::getBlockEntity)
-                    .map(it -> it instanceof ZiplineHookTileEntity ? (ZiplineHookTileEntity) it : null)
+                    .filter(levelWrapper::isLoaded)
+                    .map(levelWrapper::getBlockEntity)
+                    .map(it -> it.is(ZiplineHookTileEntity.class) ? (ZiplineHookTileEntity) it.getInstance() : null)
                     .filter(Objects::nonNull)
                     .forEach(it -> it.onPairHookUnloaded(this));
-            if (!level.isClientSide()) {
+            if (!levelWrapper.isClientSide()) {
                 connectionEntities.values().forEach(ZiplineRopeEntity::remove);
             }
             connectionEntities.clear();
         }
     }
 
-    public Vector3d getActualZiplinePoint(@Nullable BlockPos connected) {
-        if (level == null)
-            new Vector3d(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5);
-        BlockState state = level.getBlockState(this.getBlockPos());
+    public Vec3Wrapper getActualZiplinePoint(@Nullable BlockPos connected) {
+        if (levelWrapper == null)
+            new Vec3Wrapper(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5);
+        BlockStateWrapper state = levelWrapper.getBlockState(this.getBlockPos());
         Block block = state.getBlock();
         if (block instanceof ZiplineHookBlock) {
             return ((ZiplineHookBlock) block).getActualZiplinePoint(this.getBlockPos(), state);
         }
-        return new Vector3d(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5);
+        return new Vec3Wrapper(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5);
     }
 
     public boolean connectTo(ZiplineHookTileEntity target, ZiplineInfo info) {
         if (this == target) return false;
 
-        if (level != null && !level.isClientSide()) {
+        if (levelWrapper != null && !levelWrapper.isClientSide()) {
             if (this.getConnectionPoints().stream().anyMatch(target.getBlockPos()::equals)) {
                 return false;
             }
-            ZiplineRopeEntity ropeEntity = spawnRope(level, target, info);
+            ZiplineRopeEntity ropeEntity = spawnRope(levelWrapper, target, info);
             if (ropeEntity != null) {
                 this.getConnectionInfo().put(target.getBlockPos(), info);
                 target.getConnectionInfo().put(this.getBlockPos(), info);
@@ -115,12 +131,12 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
     }
 
     @Nullable
-    private ZiplineRopeEntity spawnRope(World level, ZiplineHookTileEntity target, ZiplineInfo info) {
-        if (level.isClientSide()) return null;
+    private ZiplineRopeEntity spawnRope(LevelWrapper levelWrapper, ZiplineHookTileEntity target, ZiplineInfo info) {
+        if (levelWrapper.isClientSide()) return null;
         if (target.connectionEntities.containsKey(this.getBlockPos())) return null;
 
-        ZiplineRopeEntity entity = new ZiplineRopeEntity(level, getBlockPos(), target.getBlockPos(), info);
-        boolean result = level.addFreshEntity(entity);
+        ZiplineRopeEntity entity = new ZiplineRopeEntity(levelWrapper, getBlockPos(), target.getBlockPos(), info);
+        boolean result = levelWrapper.addFreshEntity(entity);
         if (result) {
             this.connectionEntities.put(target.getBlockPos(), entity);
             target.connectionEntities.put(this.getBlockPos(), entity);
@@ -193,18 +209,18 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
     @Override
     public void tick() {
 
-        if (level != null && !level.isClientSide() && connectionEntities.size() < getConnectionPoints().size()) {
+        if (levelWrapper != null && !levelWrapper.isClientSide() && connectionEntities.size() < getConnectionPoints().size()) {
             List<ZiplineHookTileEntity> tileEntities = getConnectionPoints()
                     .stream()
                     .filter(it -> !connectionEntities.containsKey(it))
-                    .filter(level::isLoaded)
-                    .map(level::getBlockEntity)
-                    .map(it -> it instanceof ZiplineHookTileEntity ? (ZiplineHookTileEntity) it : null)
+                    .filter(levelWrapper::isLoaded)
+                    .map(levelWrapper::getBlockEntity)
+                    .map(it -> it.is(ZiplineHookTileEntity.class) ? (ZiplineHookTileEntity) it.getInstance() : null)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
             tileEntities.forEach(it -> {
                 if (it.getConnectionPoints().contains(this.getBlockPos())) {
-                    this.spawnRope(level, it, getConnectionInfo().get(it.getBlockPos()));
+                    this.spawnRope(levelWrapper, it, getConnectionInfo().get(it.getBlockPos()));
                 } else {
                     this.getConnectionPoints().remove(it.getBlockPos());
                 }

@@ -5,12 +5,12 @@ import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -34,7 +34,7 @@ public class StaminaHUD extends AbstractGui {
 	private float oldStatusValue = 0f;
 	private boolean showStatus = false;
 
-	public void onTick(TickEvent.ClientTickEvent event, ClientPlayerEntity player) {
+	public void onTick(TickEvent.ClientTickEvent event, ClientPlayerWrapper player) {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 		if (++renderGageTick >= 5) {
@@ -64,7 +64,7 @@ public class StaminaHUD extends AbstractGui {
 	}
 
 	public void render(RenderGameOverlayEvent.Post event, MatrixStack stack) {
-		ClientPlayerEntity player = Minecraft.getInstance().player;
+		ClientPlayerWrapper player = ClientPlayerWrapper.get();
 		if (player == null) return;
 		if (player.isCreative()) return;
 

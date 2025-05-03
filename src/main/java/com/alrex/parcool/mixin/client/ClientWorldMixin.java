@@ -2,9 +2,9 @@ package com.alrex.parcool.mixin.client;
 
 import com.alrex.parcool.common.action.impl.HideInBlock;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.ClientPlayerWrapper;
+
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.RegistryKey;
@@ -27,7 +27,7 @@ public abstract class ClientWorldMixin extends World {
 
     @Inject(method = "setBlocksDirty", at = @At("TAIL"))
     public void onSetBlocksDirty(BlockPos pos, BlockState oldState, BlockState newState, CallbackInfo ci) {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+        ClientPlayerWrapper player = ClientPlayerWrapper.get();
         if (player == null) return;
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability == null) return;

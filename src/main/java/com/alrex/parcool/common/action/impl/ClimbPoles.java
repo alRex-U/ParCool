@@ -4,18 +4,18 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import net.minecraft.entity.player.PlayerEntity;
+import com.alrex.parcool.compatibility.PlayerWrapper;
 
 import java.nio.ByteBuffer;
 
 public class ClimbPoles extends Action {
 	@Override
-	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
+	public boolean canStart(PlayerWrapper player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		return false;
 	}
 
 	@Override
-	public boolean canContinue(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
+	public boolean canContinue(PlayerWrapper player, Parkourability parkourability, IStamina stamina) {
 		return false;
 	}
 

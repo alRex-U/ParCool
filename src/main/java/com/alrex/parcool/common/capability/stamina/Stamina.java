@@ -4,13 +4,14 @@ import com.alrex.parcool.api.Attributes;
 import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
 
 import javax.annotation.Nullable;
 
 public class Stamina implements IStamina {
-	public Stamina(@Nullable PlayerEntity player) {
+	public Stamina(@Nullable PlayerWrapper player) {
 		this.player = player;
 		if (player != null && player.isLocalPlayer()) {
             set(Integer.MAX_VALUE);
@@ -22,7 +23,7 @@ public class Stamina implements IStamina {
 	}
 
 	@Nullable
-	private final PlayerEntity player;
+	private final PlayerWrapper player;
 
 	private int stamina = 0;
 	private int staminaOld = 0;
@@ -54,7 +55,7 @@ public class Stamina implements IStamina {
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
 		if (exhausted
-				|| parkourability.getActionInfo().isStaminaInfinite(player.isSpectator() || player.isCreative())
+				|| parkourability.getActionInfo().isStaminaInfinite(player.isImmortal())
                 || player.hasEffect(Effects.INEXHAUSTIBLE.get())
 		) return;
 		recoverCoolTime = 30;

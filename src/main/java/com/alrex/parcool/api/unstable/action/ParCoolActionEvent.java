@@ -1,15 +1,16 @@
 package com.alrex.parcool.api.unstable.action;
 
 import com.alrex.parcool.common.action.Action;
-import net.minecraft.entity.player.PlayerEntity;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
 public class ParCoolActionEvent extends Event {
-    private final PlayerEntity player;
+    private final PlayerWrapper player;
     private final Action action;
 
-    public PlayerEntity getPlayer() {
+    public PlayerWrapper getPlayer() {
         return player;
     }
 
@@ -17,7 +18,7 @@ public class ParCoolActionEvent extends Event {
         return action;
     }
 
-    public ParCoolActionEvent(PlayerEntity player, Action action) {
+    public ParCoolActionEvent(PlayerWrapper player, Action action) {
         this.player = player;
         this.action = action;
     }
@@ -30,7 +31,7 @@ public class ParCoolActionEvent extends Event {
             return true;
         }
 
-        public TryToStartEvent(PlayerEntity player, Action action) {
+        public TryToStartEvent(PlayerWrapper player, Action action) {
             super(player, action);
         }
     }
@@ -43,19 +44,19 @@ public class ParCoolActionEvent extends Event {
             return true;
         }
 
-        public TryToContinueEvent(PlayerEntity player, Action action) {
+        public TryToContinueEvent(PlayerWrapper player, Action action) {
             super(player, action);
         }
     }
 
     public static class StartEvent extends ParCoolActionEvent {
-        public StartEvent(PlayerEntity player, Action action) {
+        public StartEvent(PlayerWrapper player, Action action) {
             super(player, action);
         }
     }
 
     public static class StopEvent extends ParCoolActionEvent {
-        public StopEvent(PlayerEntity player, Action action) {
+        public StopEvent(PlayerWrapper player, Action action) {
             super(player, action);
         }
     }

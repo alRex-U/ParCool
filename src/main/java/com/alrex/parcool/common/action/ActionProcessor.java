@@ -1,22 +1,21 @@
 package com.alrex.parcool.common.action;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.network.SyncActionStateMessage;
 import com.alrex.parcool.common.network.SyncStaminaMessage;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import com.alrex.parcool.compatibility.AbstractClientPlayerWrapper;
+import com.alrex.parcool.compatibility.ClientPlayerWrapper;
+import com.alrex.parcool.compatibility.EventBusWrapper;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -36,7 +35,7 @@ public class ActionProcessor {
 	public void onTickInClient(TickEvent.PlayerTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) return;
 		if (event.side != LogicalSide.CLIENT) return;
-        AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) event.player;
+        AbstractClientPlayerWrapper player = AbstractClientPlayerWrapper.get(event);
 		Animation animation = Animation.get(player);
 		if (animation == null) return;
 		Parkourability parkourability = Parkourability.get(player);
@@ -46,7 +45,7 @@ public class ActionProcessor {
 
 	@SubscribeEvent
 	public void onTick(TickEvent.PlayerTickEvent event) {
-		PlayerEntity player = event.player;
+		PlayerWrapper player = PlayerWrapper.get(event);
 		IStamina stamina = IStamina.get(player);
 		if (stamina == null) return;
 		if (event.phase == TickEvent.Phase.START) {
@@ -59,11 +58,13 @@ public class ActionProcessor {
 		boolean needSync = event.side == LogicalSide.CLIENT && player.isLocalPlayer();
 		SyncActionStateMessage.Encoder builder = SyncActionStateMessage.Encoder.reset();
 
-		if (needSync && player.tickCount > 100 && player.tickCount % 150 == 0 && parkourability.limitationIsNotSynced()) {
-			if (player instanceof ClientPlayerEntity) {
+		int tickCount = player.getTickCount();
+		if (needSync && tickCount > 100 && tickCount % 150 == 0 && parkourability.limitationIsNotSynced()) {
+			ClientPlayerWrapper clientPlayer = ClientPlayerWrapper.getOrDefault(player);
+			if (clientPlayer != null) {
 				int trialCount = parkourability.getSynchronizeTrialCount();
 				if (trialCount < 5) {
-					parkourability.trySyncLimitation((ClientPlayerEntity) player);
+					parkourability.trySyncLimitation(clientPlayer);
 					player.displayClientMessage(new TranslationTextComponent("parcool.message.error.limitation.not_synced"), false);
 					ParCool.LOGGER.log(Level.WARN, "Detected ParCool Limitation is not synced. Sending synchronization request...");
 				} else if (trialCount == 5) {
@@ -99,20 +100,21 @@ public class ActionProcessor {
 			if (player.isLocalPlayer()) {
 				if (action.isDoing()) {
 					boolean canContinue = parkourability.getActionInfo().can(action.getClass())
-							&& !MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.TryToContinueEvent(player, action))
+							&& !EventBusWrapper.tryToContinueEvent(player, action)
 							&& action.canContinue(player, parkourability, stamina);
 					if (!canContinue) {
 						action.setDoing(false);
 						action.onStopInLocalClient(player);
 						action.onStop(player);
-                        MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.StopEvent(player, action));
+						EventBusWrapper.stopEvent(player, action);
 						builder.appendFinishMsg(parkourability, action);
 					}
 				} else {
+					ParCool.LOGGER.info("Action {} is not doing", action.getClass().getSimpleName());
 					bufferOfStarting.clear();
 					boolean start = !player.isSpectator()
 							&& parkourability.getActionInfo().can(action.getClass())
-                            && !MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStartEvent(player, action))
+                            && !EventBusWrapper.tryToStartEvent(player, action)
 							&& action.canStart(player, parkourability, stamina, bufferOfStarting);
 					bufferOfStarting.flip();
 					if (start) {
@@ -121,7 +123,7 @@ public class ActionProcessor {
 						bufferOfStarting.rewind();
 						action.onStartInLocalClient(player, parkourability, stamina, bufferOfStarting);
 						bufferOfStarting.rewind();
-                        MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
+						EventBusWrapper.startEvent(player, action);
 						builder.appendStartData(parkourability, action, bufferOfStarting);
 						if (timing == StaminaConsumeTiming.OnStart)
 							stamina.consume(parkourability.getActionInfo().getStaminaConsumptionOf(action.getClass()));
@@ -179,9 +181,9 @@ public class ActionProcessor {
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public void onRenderTick(TickEvent.RenderTickEvent event) {
-		PlayerEntity clientPlayer = Minecraft.getInstance().player;
+		PlayerWrapper clientPlayer = ClientPlayerWrapper.get();
 		if (clientPlayer == null) return;
-		for (PlayerEntity player : clientPlayer.level.players()) {
+		for (PlayerWrapper player : clientPlayer.getPlayersOnSameLevel()) {
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
 			List<Action> actions = parkourability.getList();
@@ -197,7 +199,7 @@ public class ActionProcessor {
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public void onViewRender(EntityViewRenderEvent.CameraSetup event) {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+        ClientPlayerWrapper player = ClientPlayerWrapper.get();
 		if (player == null) return;
 		Parkourability parkourability = Parkourability.get(player);
 		if (parkourability == null) return;
