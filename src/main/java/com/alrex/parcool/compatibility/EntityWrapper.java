@@ -7,13 +7,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.alrex.parcool.client.animation.PlayerModelRotator;
+import com.alrex.parcool.utilities.MathUtil;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -62,8 +62,8 @@ public class EntityWrapper {
         return entityRef.get().getBbWidth();
     }
     
-    public BlockState getBlockState(BlockPos pos) {
-        return entityRef.get().level.getBlockState(pos);
+    public BlockStateWrapper getBlockState(BlockPos pos) {
+        return new BlockStateWrapper(entityRef.get().level.getBlockState(pos));
     }
 
     @Nullable
@@ -96,9 +96,10 @@ public class EntityWrapper {
     public float getMinSlipperiness(BlockPos ...blockPos) {
         float minSlipperiness = 1;
         Entity entity = entityRef.get();
+        LevelWrapper level = getLevel();
         for (BlockPos pos : blockPos) {
-            if (entity.level.isLoaded(pos)) {
-                float candidateSlipperiness = entity.level.getBlockState(pos).getSlipperiness(entity.level, pos, entity);
+            if (level.isLoaded(pos)) {
+                float candidateSlipperiness = level.getBlockState(pos).getFriction(entity.level, pos, entity);
                 minSlipperiness = Math.min(minSlipperiness, candidateSlipperiness);
             }
         }
@@ -106,7 +107,7 @@ public class EntityWrapper {
     }
     
     public float getRotatedYRot(PlayerModelRotator rotator) {
-        return 180f + MathHelper.lerp(rotator.getPartialTick(), entityRef.get().yRotO, entityRef.get().yRot);
+        return 180f + MathUtil.lerp(rotator.getPartialTick(), entityRef.get().yRotO, entityRef.get().yRot);
     }
     
     public int getTickCount() {
@@ -181,7 +182,7 @@ public class EntityWrapper {
         entity.setDeltaMovement(entity.getDeltaMovement().multiply(d, i, e));
     }
     
-    public boolean noCollision(AxisAlignedBB bb) {
+    public boolean noCollision(AABBWrapper bb) {
         return entityRef.get().level.noCollision(bb);
     }
     

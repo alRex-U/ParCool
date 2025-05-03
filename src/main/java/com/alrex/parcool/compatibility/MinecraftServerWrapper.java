@@ -66,8 +66,8 @@ public class MinecraftServerWrapper {
         };  
     }
     
-    public static <T extends PlayerEntity> Iterable<PlayerWrapper> getPlayers(Iterable<T> iterable) {
-        Iterator<T> iterator = iterable.iterator();
+    public static Iterable<PlayerWrapper> getPlayers(Iterable<? extends PlayerEntity> iterable) {
+        Iterator<? extends PlayerEntity> iterator = iterable.iterator();
         return new Iterable<PlayerWrapper>() {
             @Override
             public Iterator<PlayerWrapper> iterator() {

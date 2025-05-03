@@ -1,6 +1,5 @@
 package com.alrex.parcool.compatibility;
 
-import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.util.math.vector.Vector3d;
 
 public class Vec3Wrapper extends Vector3d {
@@ -62,5 +61,17 @@ public class Vec3Wrapper extends Vector3d {
     @Override
     public Vec3Wrapper reverse() {
         return new Vec3Wrapper(super.reverse());
+    }
+
+    public double getX() {
+        return super.x();
+    }
+
+    public double getY() {
+        return super.y();
+    }
+
+    public double getZ() {
+        return super.z();
     }
 }

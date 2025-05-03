@@ -42,8 +42,8 @@ public class LivingEntityWrapper extends EntityWrapper {
         return entityRef.get().getAttributeValue(attribute);
     }
     
-    public AxisAlignedBB getBoundingBox() {
-        return entityRef.get().getBoundingBox();
+    public AABBWrapper getBoundingBox() {
+        return AABBWrapper.get(entityRef.get().getBoundingBox());
     }
     
     public double getGravity() {

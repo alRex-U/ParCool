@@ -228,7 +228,7 @@ public class HideInBlock extends Action {
                 for (int x = minX; x <= maxX; x++) {
                     BlockPos pos = new BlockPos(x, y, z);
                     if (!world.isLoaded(pos)) break;
-                    Minecraft.getInstance().particleEngine.destroy(pos, world.getBlockState(pos));
+                    world.getBlockState(pos).destroyParticle(pos);
                 }
             }
         }

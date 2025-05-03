@@ -2,9 +2,11 @@ package com.alrex.parcool.common.entity.zipline;
 
 import com.alrex.parcool.common.block.zipline.ZiplineHookTileEntity;
 import com.alrex.parcool.common.block.zipline.ZiplineInfo;
+import com.alrex.parcool.common.entity.ParcoolEntityType;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.common.zipline.ZiplineType;
+import com.alrex.parcool.compatibility.LevelWrapper;
 import com.alrex.parcool.compatibility.PlayerWrapper;
 import com.alrex.parcool.compatibility.Vec3Wrapper;
 
@@ -32,6 +34,7 @@ public class ZiplineRopeEntity extends Entity {
     private static final DataParameter<BlockPos> DATA_END_POS;
     private static final DataParameter<Integer> DATA_COLOR;
     private static final DataParameter<Integer> DATA_ZIP_TYPE;
+    private Object levelWrapper;
 
     static {
         DATA_START_POS = EntityDataManager.defineId(ZiplineRopeEntity.class, DataSerializers.BLOCK_POS);
@@ -42,12 +45,28 @@ public class ZiplineRopeEntity extends Entity {
 
     private EntitySize size;
 
-    public ZiplineRopeEntity(EntityType<?> p_i48580_1_, World p_i48580_2_) {
-        super(p_i48580_1_, p_i48580_2_);
+    public ZiplineRopeEntity(EntityType<?> entityType, World level) {
+        super(entityType, level);
+        setLevelWrapper();
+    }
+
+    public ZiplineRopeEntity(EntityType<?> entityType, LevelWrapper level) {
+        super(entityType, level.getInstance());
+        levelWrapper = level;
+    }
+
+    private void setLevelWrapper() {
+        levelWrapper = level == null ? null : LevelWrapper.get(level);
+    }
+
+    @Override
+    public void setLevel(World level) {
+        super.setLevel(level);
+        setLevelWrapper();
     }
 
     public ZiplineRopeEntity(World world, BlockPos start, BlockPos end, ZiplineInfo info) {
-        super(com.alrex.parcool.common.entity.ParcoolEntityType.ZIPLINE_ROPE.get(), world);
+        super(ParcoolEntityType.ZIPLINE_ROPE.get(), world);
         setStartPos(start);
         setEndPos(end);
         setColor(info.getColor());
@@ -56,6 +75,11 @@ public class ZiplineRopeEntity extends Entity {
         noPhysics = true;
         forcedLoading = true;
         size = EntitySize.fixed(Math.max(Math.abs(end.getX() - start.getX()), Math.abs(end.getZ() - start.getZ())) + 0.3f, Math.abs(end.getY() - start.getY()) + 0.3f);
+        setLevelWrapper();
+    }
+
+    public ZiplineRopeEntity(LevelWrapper level, BlockPos start, BlockPos end, ZiplineInfo info) {
+        this(level.getInstance(), start, end, info);
     }
 
     private BlockPos zipline_start;

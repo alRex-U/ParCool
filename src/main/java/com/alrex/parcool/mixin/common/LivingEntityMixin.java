@@ -4,6 +4,7 @@ import com.alrex.parcool.common.action.impl.ChargeJump;
 import com.alrex.parcool.common.action.impl.ClimbPoles;
 import com.alrex.parcool.common.action.impl.ClimbUp;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.BlockStateWrapper;
 import com.alrex.parcool.compatibility.EventBusWrapper;
 import com.alrex.parcool.compatibility.LevelWrapper;
 import com.alrex.parcool.compatibility.LivingEntityWrapper;
@@ -78,8 +79,9 @@ public abstract class LivingEntityMixin extends Entity {
 	}
 
 	@Unique
-	public boolean parCool$isLivingOnCustomLadder(@Nonnull BlockState state, @Nonnull LevelWrapper world, @Nonnull BlockPos pos, @Nonnull LivingEntityWrapper entity) {
+	public boolean parCool$isLivingOnCustomLadder(@Nonnull BlockState stateBase, @Nonnull LevelWrapper world, @Nonnull BlockPos pos, @Nonnull LivingEntityWrapper entity) {
 		boolean isSpectator = PlayerWrapper.is(entity) && entity.isSpectator();
+		BlockStateWrapper state = BlockStateWrapper.get(stateBase);
 		if (isSpectator) return false;
 		if (!ForgeConfig.SERVER.fullBoundingBoxLadders.get()) {
 			return parCool$isCustomLadder(state, world, pos, entity);
@@ -107,7 +109,7 @@ public abstract class LivingEntityMixin extends Entity {
 	}
 
 	@Unique
-	private boolean parCool$isCustomLadder(BlockState state, LevelWrapper level, BlockPos pos, LivingEntityWrapper entity) {
+	private boolean parCool$isCustomLadder(BlockStateWrapper state, LevelWrapper level, BlockPos pos, LivingEntityWrapper entity) {
 		Block block = state.getBlockState().getBlock();
 		if (block instanceof FourWayBlock) {
 			int zCount = 0;

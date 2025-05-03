@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.block.zipline;
 
 import com.alrex.parcool.common.block.BlockStateProperties;
+import com.alrex.parcool.compatibility.BlockStateWrapper;
 import com.alrex.parcool.compatibility.PlayerWrapper;
 import com.alrex.parcool.compatibility.Vec3Wrapper;
 
@@ -51,7 +52,7 @@ public class IronZiplineHookBlock extends ZiplineHookBlock {
     }
 
     @Override
-    public Vec3Wrapper getActualZiplinePoint(BlockPos pos, BlockState state) {
+    public Vec3Wrapper getActualZiplinePoint(BlockPos pos, BlockStateWrapper state) {
         Direction direction = state.getValue(FACING);
         return new Vec3Wrapper(
                 pos.getX() + 0.5 - direction.getStepX() * 0.2,

@@ -6,11 +6,10 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ServerLimitation;
 import com.alrex.parcool.common.network.SyncServerInfoMessage;
 import com.alrex.parcool.compatibility.ServerPlayerWrapper;
+import com.alrex.parcool.compatibility.ServerEventWrapper;
 import com.alrex.parcool.utilities.JsonWriterUtil;
 import com.alrex.parcool.utilities.ServerUtil;
 import com.google.gson.stream.JsonReader;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import org.apache.commons.io.FileUtils;
 import javax.annotation.Nullable;
 import java.io.*;
@@ -180,7 +179,7 @@ public class Limitations {
         ParCool.LOGGER.info("Limitation of " + playerID + " was unloaded");
     }
 
-    public static void init(FMLServerAboutToStartEvent event) {
+    public static void init(ServerEventWrapper event) {
         GlobalLimitation.readFromServerConfig();
         Path configPath = ServerUtil.getServerConfigPath(event.getServer());
         LimitationFolderRootPath = configPath.resolve("parcool").resolve("limitations");
@@ -190,7 +189,7 @@ public class Limitations {
         }
     }
 
-    public static void save(FMLServerStoppingEvent event) {
+    public static void save(ServerEventWrapper event) {
         Path configPath = ServerUtil.getServerConfigPath(event.getServer());
         Path limitationRootPath = configPath.resolve("parcool").resolve("limitations");
         for (Map.Entry<UUID, SortedMap<Limitation.ID, Limitation>> limitationEntry : Loaded.entrySet()) {

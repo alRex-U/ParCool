@@ -9,6 +9,7 @@ import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
+import com.alrex.parcool.compatibility.BlockStateWrapper;
 import com.alrex.parcool.compatibility.LevelWrapper;
 import com.alrex.parcool.compatibility.PlayerWrapper;
 import com.alrex.parcool.compatibility.Vec3Wrapper;
@@ -17,10 +18,8 @@ import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
@@ -239,7 +238,7 @@ public class HorizontalWallRun extends Action {
 		);
 		if (!level.isLoaded(leanedBlock)) return;
 		float width = player.getBbWidth();
-		BlockState blockstate = level.getBlockState(leanedBlock);
+		BlockStateWrapper blockstate = level.getBlockState(leanedBlock);
 
 		Vec3Wrapper wallDirection = runningWallDirection.normalize();
 		Vec3Wrapper orthogonalToWallVec = wallDirection.yRot((float) (Math.PI / 2));
@@ -255,7 +254,7 @@ public class HorizontalWallRun extends Action {
 					.scale(3 + 6 * player.getRandom().nextDouble())
 					.add(0, 1.5, 0);
 			level.addParticle(
-					new BlockParticleData(ParticleTypes.BLOCK, blockstate).setPos(leanedBlock),
+					blockstate.getBlockParticleData(ParticleTypes.BLOCK, leanedBlock),
 					particlePos.x(),
 					particlePos.y(),
 					particlePos.z(),

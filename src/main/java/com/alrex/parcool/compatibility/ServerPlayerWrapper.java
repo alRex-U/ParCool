@@ -28,7 +28,7 @@ public class ServerPlayerWrapper extends PlayerWrapper {
         return cache.get(player, () -> new ServerPlayerWrapper(player));
     }
 
-    public static ServerPlayerWrapper get(Supplier<Context> contextSupplier) {
+    public static ServerPlayerWrapper get(Supplier<NetworkContextWrapper> contextSupplier) {
         return new ServerPlayerWrapper(contextSupplier.get().getSender());
     }
     

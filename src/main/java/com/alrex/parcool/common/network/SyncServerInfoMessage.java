@@ -5,6 +5,7 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ServerLimitation;
 import com.alrex.parcool.compatibility.ClientPlayerWrapper;
+import com.alrex.parcool.compatibility.NetworkContextWrapper;
 import com.alrex.parcool.compatibility.PlayerPacketDistributor;
 import com.alrex.parcool.compatibility.PlayerWrapper;
 import com.alrex.parcool.compatibility.ServerPlayerWrapper;
@@ -46,7 +47,8 @@ public class SyncServerInfoMessage {
 
 	@OnlyIn(Dist.CLIENT)
 	public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
+		Supplier<NetworkContextWrapper> supplier = NetworkContextWrapper.getSupplier(contextSupplier);
+		supplier.get().enqueueWork(() -> {
 			ClientPlayerWrapper player = ClientPlayerWrapper.get();
 			if (player == null) return;
 			Parkourability parkourability = Parkourability.get(player);
@@ -60,7 +62,7 @@ public class SyncServerInfoMessage {
 				stamina.setExhaustion(staminaExhausted);
 			}
 		});
-		contextSupplier.get().setPacketHandled(true);
+		supplier.get().setPacketHandled(true);
 	}
 
 	public void logReceived(PlayerWrapper player) {

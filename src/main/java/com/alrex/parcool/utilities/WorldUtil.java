@@ -2,16 +2,16 @@ package com.alrex.parcool.utilities;
 
 import com.alrex.parcool.common.action.impl.HangDown;
 import com.alrex.parcool.common.tags.BlockTags;
+import com.alrex.parcool.compatibility.AABBWrapper;
+import com.alrex.parcool.compatibility.BlockStateWrapper;
 import com.alrex.parcool.compatibility.EntityWrapper;
 import com.alrex.parcool.compatibility.LevelWrapper;
 import com.alrex.parcool.compatibility.LivingEntityWrapper;
 import com.alrex.parcool.compatibility.Vec3Wrapper;
-
 import net.minecraft.block.*;
 import net.minecraft.state.properties.Half;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
@@ -24,7 +24,7 @@ public class WorldUtil {
 		double wallZ = 0;
 		Vec3Wrapper pos = entity.position();
 
-		AxisAlignedBB baseBox1 = new AxisAlignedBB(
+		AABBWrapper baseBox1 = new AABBWrapper(
 				pos.x() - width,
 				pos.y(),
 				pos.z() - width,
@@ -32,7 +32,7 @@ public class WorldUtil {
 				pos.y() + entity.getBbHeight() / 1.63,
 				pos.z() + width
 		);
-		AxisAlignedBB baseBox2 = new AxisAlignedBB(
+		AABBWrapper baseBox2 = new AABBWrapper(
 				pos.x() - width,
 				pos.y() + entity.getBbHeight() / 1.63,
 				pos.z() - width,
@@ -77,7 +77,7 @@ public class WorldUtil {
 		double wallZ = 0;
 		Vec3Wrapper pos = entity.position();
 
-		AxisAlignedBB baseBox = new AxisAlignedBB(
+		AABBWrapper baseBox = new AABBWrapper(
 				pos.x() - width,
 				pos.y(),
 				pos.z() - width,
@@ -113,7 +113,7 @@ public class WorldUtil {
 		double stepZ = 0;
 		Vec3Wrapper pos = entity.position();
 
-		AxisAlignedBB baseBoxBottom = new AxisAlignedBB(
+		AABBWrapper baseBoxBottom = new AABBWrapper(
 				pos.x() - d,
 				pos.y(),
 				pos.z() - d,
@@ -121,7 +121,7 @@ public class WorldUtil {
 				pos.y() + baseLine,
 				pos.z() + d
 		);
-		AxisAlignedBB baseBoxTop = new AxisAlignedBB(
+		AABBWrapper baseBoxTop = new AABBWrapper(
 				pos.x() - d,
 				pos.y() + baseLine,
 				pos.z() - d,
@@ -146,7 +146,7 @@ public class WorldUtil {
 			Vec3Wrapper result = new Vec3Wrapper(stepX, 0, stepZ);
 			BlockPos target = new BlockPos(entity.position().add(result).add(0, 0.5, 0));
 			if (!world.isLoaded(target)) return null;
-			BlockState state = world.getBlockState(target);
+			BlockStateWrapper state = world.getBlockState(target);
 			if (state.getBlock() instanceof StairsBlock) {
 				Half half = state.getValue(StairsBlock.HALF);
 				if (half != Half.BOTTOM) return result;
@@ -168,7 +168,7 @@ public class WorldUtil {
 		Vec3Wrapper pos = entity.position();
 		boolean canReturn = false;
 		for (double height = 0; height < maxHeight; height += accuracy) {
-			AxisAlignedBB box = new AxisAlignedBB(
+			AABBWrapper box = new AABBWrapper(
 					pos.x() + d + (direction.x() > 0 ? 1 : 0),
 					pos.y() + height,
 					pos.z() + d + (direction.z() > 0 ? 1 : 0),
@@ -197,7 +197,7 @@ public class WorldUtil {
 		Vec3Wrapper pos = entity.position();
 		boolean canReturn = false;
 		for (int i = 0; i < loopNum; i++) {
-			AxisAlignedBB box = new AxisAlignedBB(
+			AABBWrapper box = new AABBWrapper(
 					pos.x() + d + (wall.x() > 0 ? 1 : 0),
 					pos.y() + accuracy * i,
 					pos.z() + d + (wall.z() > 0 ? 1 : 0),
@@ -222,7 +222,7 @@ public class WorldUtil {
 		double x = entity.getX();
 		double y = entity.getY();
 		double z = entity.getZ();
-		AxisAlignedBB bb = new AxisAlignedBB(
+		AABBWrapper bb = new AABBWrapper(
 				x - bbWidth,
 				y + entity.getBbHeight(),
 				z - bbWidth,
@@ -237,7 +237,7 @@ public class WorldUtil {
 				z
 		);
 		if (!entity.isEveryLoaded(pos)) return null;
-		BlockState state = entity.getBlockState(pos);
+		BlockStateWrapper state = entity.getBlockState(pos);
 		Block block = state.getBlock();
 		HangDown.BarAxis axis = null;
 		if (block instanceof RotatedPillarBlock) {
@@ -296,7 +296,7 @@ public class WorldUtil {
 		if (!world.isLoaded(new BlockPos(center))) return false;
 		double height = entity.getBbHeight() * 1.5;
 		double width = entity.getBbWidth() * 2;
-		AxisAlignedBB boundingBox = new AxisAlignedBB(
+		AABBWrapper boundingBox = new AABBWrapper(
 				center.x() - width,
 				center.y() - 9,
 				center.z() - width,
@@ -316,7 +316,7 @@ public class WorldUtil {
 		Vec3Wrapper diveDirection = VectorUtil.fromYawDegree(entity.getYHeadRot());
 		for (int i = 0; i < 4; i++) {
 			Vec3Wrapper centerPoint = center.add(diveDirection.scale(width * i));
-			AxisAlignedBB box = new AxisAlignedBB(
+			AABBWrapper box = new AABBWrapper(
 					centerPoint.x() - width,
 					centerPoint.y() + 0.05,
 					centerPoint.z() - width,
@@ -327,7 +327,7 @@ public class WorldUtil {
 			if (!world.noCollision(box)) return false;
 		}
 		center = center.add(diveDirection.scale(4));
-		AxisAlignedBB verticalWideBox = new AxisAlignedBB(
+		AABBWrapper verticalWideBox = new AABBWrapper(
 				center.x() - wideWidth,
 				center.y() - 9,
 				center.z() - wideWidth,
@@ -340,7 +340,7 @@ public class WorldUtil {
 
 		// check if water pool exists
 		if (!world.isLoaded(centerBlockPos)) return false;
-		verticalWideBox = new AxisAlignedBB(
+		verticalWideBox = new AABBWrapper(
 				center.x() - wideWidth,
 				center.y() - 2.9,
 				center.z() - wideWidth,
@@ -362,7 +362,7 @@ public class WorldUtil {
 		if (waterLevel == -1) return false;
 		boolean filledWithWater = true;
 		for (; i < waterLevel + 3; i++) {
-			BlockState state = world.getBlockState(centerBlockPos.below(i));
+			BlockStateWrapper state = world.getBlockState(centerBlockPos.below(i));
 			if (state.getBlock() != Blocks.WATER) {
 				filledWithWater = false;
 				break;
@@ -387,7 +387,7 @@ public class WorldUtil {
 		final double d = entity.getBbWidth() * 0.49;
 		LevelWrapper world = entity.getLevel();
 		Vec3Wrapper pos = entity.position();
-		AxisAlignedBB baseBoxSide = new AxisAlignedBB(
+		AABBWrapper baseBoxSide = new AABBWrapper(
 				pos.x() - d,
 				pos.y() + baseLine - entity.getBbHeight() / 6,
 				pos.z() - d,
@@ -395,7 +395,7 @@ public class WorldUtil {
 				pos.y() + baseLine,
 				pos.z() + d
 		);
-		AxisAlignedBB baseBoxTop = new AxisAlignedBB(
+		AABBWrapper baseBoxTop = new AABBWrapper(
 				pos.x() - d,
 				pos.y() + baseLine,
 				pos.z() - d,
@@ -443,22 +443,18 @@ public class WorldUtil {
 		return slipperiness <= 0.9 ? new Vec3Wrapper(xDirection, 0, zDirection) : null;
 	}
 
-	public static boolean isHideAbleBlock(BlockState blockState) {
-		return blockState.getBlock().getTags().contains(BlockTags.HIDE_ABLE);
-	}
-
 	private static boolean getHideAbleSpace$isHideAble(LevelWrapper world, Block block, BlockPos pos) {
-		return world.isLoaded(pos) && world.getBlockState(pos).is(block) && world.getBlockState(pos.above()).isAir();
+		return world.isLoaded(pos) && world.getBlockState(pos).is(block) && world.isAir(pos.above());
 	}
 
 	@Nullable
 	public static Tuple<BlockPos, BlockPos> getHideAbleSpace(EntityWrapper entity, BlockPos base) {
 		LevelWrapper world = entity.getLevel();
 		if (!world.isLoaded(base)) return null;
-		BlockState state = world.getBlockState(base);
+		BlockStateWrapper state = world.getBlockState(base);
 		Block block = state.getBlock();
-		if (!isHideAbleBlock(state)) return null;
-		if (!world.getBlockState(base.above()).isAir()) {
+		if (!state.isHideAbleBlock()) return null;
+		if (!world.isAir(base.above())) {
 			if (getHideAbleSpace$isHideAble(world, block, base.above())) {
 				return new Tuple<>(base, base.above());
 			}

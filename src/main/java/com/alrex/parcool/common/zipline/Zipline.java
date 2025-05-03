@@ -1,11 +1,10 @@
 package com.alrex.parcool.common.zipline;
 
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
+import com.alrex.parcool.compatibility.AABBWrapper;
 import com.alrex.parcool.compatibility.LevelWrapper;
 import com.alrex.parcool.compatibility.PlayerWrapper;
 import com.alrex.parcool.compatibility.Vec3Wrapper;
-
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -82,7 +81,7 @@ public abstract class Zipline {
         for (int i = 1; i < count - 1; i++) {
             Vec3Wrapper midPoint = getMidPoint(((float) i / count));
             final double d = 0.2;
-            if (!world.noCollision(new AxisAlignedBB(
+            if (!world.noCollision(new AABBWrapper(
                     midPoint.subtract(d, d, d),
                     midPoint.add(d, d, d)
             ))) {

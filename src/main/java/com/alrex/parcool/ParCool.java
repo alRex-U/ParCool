@@ -15,6 +15,7 @@ import com.alrex.parcool.common.item.recipe.Recipes;
 import com.alrex.parcool.common.potion.PotionRecipeRegistry;
 import com.alrex.parcool.common.potion.Potions;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
+import com.alrex.parcool.compatibility.ServerEventWrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.proxy.ClientProxy;
@@ -77,8 +78,8 @@ public class ParCool {
 
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
 		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.addListener(Limitations::init);
-		MinecraftForge.EVENT_BUS.addListener(Limitations::save);
+		MinecraftForge.EVENT_BUS.addListener((event) -> Limitations.init(new ServerEventWrapper(event)));
+		MinecraftForge.EVENT_BUS.addListener((event) -> Limitations.save(new ServerEventWrapper(event)));
 
 		Blocks.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Items.register(FMLJavaModLoadingContext.get().getModEventBus());

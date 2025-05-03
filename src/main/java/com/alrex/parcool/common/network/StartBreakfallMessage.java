@@ -5,6 +5,7 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.compatibility.ChannelInstanceWrapper;
 import com.alrex.parcool.compatibility.ClientPlayerWrapper;
+import com.alrex.parcool.compatibility.NetworkContextWrapper;
 import com.alrex.parcool.compatibility.PlayerWrapper;
 import com.alrex.parcool.compatibility.ServerPlayerWrapper;
 
@@ -40,8 +41,9 @@ public class StartBreakfallMessage {
 
 	@OnlyIn(Dist.CLIENT)
 	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
-			if (contextSupplier.get().getNetworkManager().getDirection() == PacketDirection.CLIENTBOUND) {
+		Supplier<NetworkContextWrapper> supplier = NetworkContextWrapper.getSupplier(contextSupplier);
+		supplier.get().enqueueWork(() -> {
+			if (supplier.get().getDirection() == PacketDirection.CLIENTBOUND) {
 				PlayerWrapper player = ClientPlayerWrapper.get();
 				if (player == null) return;
 				if (!playerID.equals(player.getUUID())) return;
@@ -54,7 +56,7 @@ public class StartBreakfallMessage {
 				parkourability.get(BreakfallReady.class).startBreakfall(player, parkourability, stamina, justTimed);
 			}
 		});
-		contextSupplier.get().setPacketHandled(true);
+		supplier.get().setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.DEDICATED_SERVER)

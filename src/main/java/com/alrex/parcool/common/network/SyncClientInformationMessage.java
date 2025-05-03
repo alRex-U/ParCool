@@ -5,6 +5,7 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.compatibility.MinecraftServerWrapper;
+import com.alrex.parcool.compatibility.NetworkContextWrapper;
 import com.alrex.parcool.compatibility.PlayerWrapper;
 import com.alrex.parcool.compatibility.ServerPlayerWrapper;
 import com.alrex.parcool.server.limitation.Limitations;
@@ -46,13 +47,14 @@ public class SyncClientInformationMessage {
 
 	@OnlyIn(Dist.CLIENT)
 	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
+		Supplier<NetworkContextWrapper> supplier = NetworkContextWrapper.getSupplier(contextSupplier);
+		supplier.get().enqueueWork(() -> {
 			PlayerWrapper player;
-			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+			if (supplier.get().getReceptionSide() == LogicalSide.CLIENT) {
 				player = MinecraftServerWrapper.getPlayer(playerID);
 				if (player == null) return;
 			} else {
-				ServerPlayerWrapper serverPlayer = ServerPlayerWrapper.get(contextSupplier);
+				ServerPlayerWrapper serverPlayer = ServerPlayerWrapper.get(supplier);
 				player = serverPlayer;
 				if (player == null) return;
 				ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
@@ -68,12 +70,13 @@ public class SyncClientInformationMessage {
 				data.rewind();
 			}
 		});
-		contextSupplier.get().setPacketHandled(true);
+		supplier.get().setPacketHandled(true);
 	}
 
 	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
-			ServerPlayerWrapper player = ServerPlayerWrapper.get(contextSupplier);
+		Supplier<NetworkContextWrapper> supplier = NetworkContextWrapper.getSupplier(contextSupplier);
+		supplier.get().enqueueWork(() -> {
+			ServerPlayerWrapper player = ServerPlayerWrapper.get(supplier);
 			if (player == null) return;
 			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 
@@ -86,7 +89,7 @@ public class SyncClientInformationMessage {
             parkourability.getActionInfo().setClientSetting(ClientSetting.readFrom(data));
 			data.rewind();
 		});
-		contextSupplier.get().setPacketHandled(true);
+		supplier.get().setPacketHandled(true);
 	}
 
 	public void logReceived(PlayerWrapper player) {

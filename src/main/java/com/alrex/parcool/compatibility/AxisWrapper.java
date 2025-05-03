@@ -35,7 +35,7 @@ public final class AxisWrapper {
    }
 
    public static AxisWrapper fromVector(Vec3Wrapper midPointD) {
-      return new AxisWrapper(midPointD.x(), midPointD.y(), midPointD.z());
+      return new AxisWrapper(midPointD.getX(), midPointD.getY(), midPointD.getZ());
    }
 
    public float x() {

@@ -3,6 +3,7 @@ package com.alrex.parcool.common.block.zipline;
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.common.block.TileEntities;
 import com.alrex.parcool.compatibility.BlockEntityWrapper;
+import com.alrex.parcool.compatibility.BlockStateWrapper;
 import com.alrex.parcool.compatibility.ContainersWrapper;
 import com.alrex.parcool.compatibility.InteractionResultWrapper;
 import com.alrex.parcool.compatibility.LevelWrapper;
@@ -41,7 +42,7 @@ public class ZiplineHookBlock extends DirectionalBlock {
         registerDefaultState(defaultBlockState().setValue(FACING, Direction.UP));
     }
 
-    public Vec3Wrapper getActualZiplinePoint(BlockPos pos, BlockState state) {
+    public Vec3Wrapper getActualZiplinePoint(BlockPos pos, BlockStateWrapper state) {
         return new Vec3Wrapper(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
     }
 

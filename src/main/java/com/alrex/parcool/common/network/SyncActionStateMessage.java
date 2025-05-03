@@ -5,6 +5,7 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.compatibility.EventBusWrapper;
 import com.alrex.parcool.compatibility.LevelWrapper;
+import com.alrex.parcool.compatibility.NetworkContextWrapper;
 import com.alrex.parcool.compatibility.PlayerWrapper;
 
 import net.minecraft.network.PacketBuffer;
@@ -44,8 +45,9 @@ public class SyncActionStateMessage {
 
 	@OnlyIn(Dist.DEDICATED_SERVER)
 	public void handleServer(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
-			PlayerWrapper player = PlayerWrapper.get(contextSupplier);
+		Supplier<NetworkContextWrapper> supplier = NetworkContextWrapper.getSupplier(contextSupplier);
+		supplier.get().enqueueWork(() -> {
+			PlayerWrapper player = PlayerWrapper.get(supplier);
 			ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 			if (player == null) return;
 
@@ -78,22 +80,23 @@ public class SyncActionStateMessage {
 				}
 			}
 		});
-		contextSupplier.get().setPacketHandled(true);
+		supplier.get().setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public void handleClient(Supplier<NetworkEvent.Context> contextSupplier) {
-		contextSupplier.get().enqueueWork(() -> {
+		Supplier<NetworkContextWrapper> supplier = NetworkContextWrapper.getSupplier(contextSupplier);
+		supplier.get().enqueueWork(() -> {
 			PlayerWrapper player;
 			boolean clientSide;
-			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
+			if (supplier.get().getReceptionSide() == LogicalSide.CLIENT) {
 				LevelWrapper world = LevelWrapper.get();
 				if (world == null) return;
 				player = PlayerWrapper.get(world, senderUUID);
 				if (player == null || player.isLocalPlayer()) return;
 				clientSide = true;
 			} else {
-				player = PlayerWrapper.get(contextSupplier);
+				player = PlayerWrapper.get(supplier);
 				ParCool.CHANNEL_INSTANCE.send(PacketDistributor.ALL.noArg(), this);
 				if (player == null) return;
 				clientSide = false;
@@ -136,7 +139,7 @@ public class SyncActionStateMessage {
 				}
 			}
 		});
-		contextSupplier.get().setPacketHandled(true);
+		supplier.get().setPacketHandled(true);
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -12,8 +12,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ParcoolEntityType {
     private static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.ENTITIES, ParCool.MOD_ID);
     public static final RegistryObject<EntityType<ZiplineRopeEntity>> ZIPLINE_ROPE
-            = REGISTER.register("zipline_rope", () -> net.minecraft.entity.EntityType.Builder
-            .of((net.minecraft.entity.EntityType.IFactory<ZiplineRopeEntity>) ZiplineRopeEntity::new, EntityClassification.MISC)
+            = REGISTER.register("zipline_rope", () -> EntityType.Builder
+            .of((EntityType.IFactory<ZiplineRopeEntity>) ZiplineRopeEntity::new, EntityClassification.MISC)
             .noSave()
             .clientTrackingRange(32)
             .updateInterval(Integer.MAX_VALUE)

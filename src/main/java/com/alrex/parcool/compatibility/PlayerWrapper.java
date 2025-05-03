@@ -45,9 +45,9 @@ public class PlayerWrapper extends LivingEntityWrapper {
         return playerRef.get();
     }
 
-    public BlockState getBelowBlockState() {
+    public BlockStateWrapper getBelowBlockState() {
         PlayerEntity player = playerRef.get();
-        return player.level.getBlockState(player.blockPosition().below());
+        return new BlockStateWrapper(player.level.getBlockState(player.blockPosition().below()));
     }
     
     public float getEyeHeight() {
@@ -75,8 +75,8 @@ public class PlayerWrapper extends LivingEntityWrapper {
     }
     
     public float getSlipperiness(BlockPos leanedBlock) {
-        PlayerEntity player = playerRef.get();
-        return player.level.getBlockState(leanedBlock).getSlipperiness(player.level, leanedBlock, player);
+        LevelWrapper level = getLevel();
+        return level.getSlipperiness(leanedBlock, playerRef.get());
     }
     
     public int getTickCount() {
@@ -128,7 +128,7 @@ public class PlayerWrapper extends LivingEntityWrapper {
         return get((PlayerEntity)(Object)entityMixin);
     }
     
-    public static PlayerWrapper get(Supplier<Context> contextSupplier) {
+    public static PlayerWrapper get(Supplier<NetworkContextWrapper> contextSupplier) {
         return get(contextSupplier.get().getSender());
     }
     

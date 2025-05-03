@@ -2,8 +2,7 @@ package com.alrex.parcool.compatibility;
 
 import java.util.Map;
 import java.util.WeakHashMap;
-
-import com.google.common.base.Supplier;
+import java.util.function.Supplier;
 
 public class WeakCache<K, V> {
     private final Map<Class<?>, WeakHashMap<K, V>> cache = new WeakHashMap<>();
