@@ -525,7 +525,7 @@ public class ControlLimitationCommand {
         Limitation.ID limitation = LimitationIDArgumentType.getLimitationID(context, ARGS_NAME_LIMITATION_ID);
         if (Limitation.delete(limitation)) {
             for (ServerPlayer player : context.getSource().getServer().getPlayerList().getPlayers()) {
-                Limitations.update(player);
+                Limitations.updateOnlyLimitation(player);
             }
             context.getSource().sendSuccess(new TranslatableComponent("parcool.command.message.success.deleteLimitation", limitation.toString()), true);
         } else {

@@ -4,7 +4,7 @@ import com.alrex.parcool.api.client.gui.ParCoolHUDEvent;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.stamina.Stamina;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.extern.feathers.FeathersManager;
+import com.alrex.parcool.extern.AdditionalMods;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -41,7 +41,7 @@ public class StaminaHUDController implements IIngameOverlay {
         if (player == null) return;
 		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get() ||
                 !(IStamina.get(player) instanceof Stamina) ||
-                FeathersManager.isUsingFeathers()
+                AdditionalMods.feathers().isUsingFeathers()
         )
 			return;
 

@@ -2,6 +2,7 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.client.animation.impl.TapAnimator;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
@@ -13,6 +14,7 @@ import java.nio.ByteBuffer;
 ;
 
 public class Tap extends Action {
+    private static final BehaviorEnforcer.ID ID_JUMP_CANCEL = BehaviorEnforcer.newID();
 	private boolean startRequired = false;
 
 	@Override
@@ -30,7 +32,7 @@ public class Tap extends Action {
 		startRequired = false;
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new TapAnimator());
-        parkourability.getCancelMarks().addMarkerCancellingJump(this::isDoing);
+        parkourability.getBehaviorEnforcer().addMarkerCancellingJump(ID_JUMP_CANCEL, this::isDoing);
 	}
 
 	@Override

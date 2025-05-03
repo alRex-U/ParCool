@@ -6,7 +6,10 @@
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.8",
   "client": [
+    "client.ClientWorldMixin",
+    "client.LivingRendererMixin",
     "client.LocalPlayerMixin",
+    "client.OptionsMixin",
     "client.PlayerModelMixin",
     "client.PlayerRendererMixin"
   ],
@@ -14,6 +17,7 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "common.EntityMixin",
     "common.LivingEntityMixin",
     "common.PlayerMixin"
   ]

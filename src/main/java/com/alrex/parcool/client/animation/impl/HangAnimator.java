@@ -21,6 +21,9 @@ public class HangAnimator extends Animator {
 		HangDown.BarAxis axis = hangDown.getHangingBarAxis();
 		if (axis == null) return;
 		boolean orthogonal = hangDown.isOrthogonalToBar();
+        transformer
+                .translateRightArm(0.3f, -2.0f, 0)
+                .translateLeftArm(-0.3f, -2.0f, 0);
 		if (orthogonal) {
 			float zAngle = (float) Math.toRadians(10 + 20 * Math.sin(24 * hangDown.getArmSwingAmount()));
 			transformer

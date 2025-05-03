@@ -5,13 +5,18 @@ import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.input.KeyBindings;
+import com.alrex.parcool.client.renderer.Renderers;
+import com.alrex.parcool.common.block.Blocks;
+import com.alrex.parcool.common.block.TileEntities;
+import com.alrex.parcool.common.entity.EntityTypes;
 import com.alrex.parcool.common.handlers.AddAttributesHandler;
-import com.alrex.parcool.common.item.ItemRegistry;
+import com.alrex.parcool.common.item.Items;
+import com.alrex.parcool.common.item.recipe.Recipes;
 import com.alrex.parcool.common.potion.PotionRecipeRegistry;
 import com.alrex.parcool.common.potion.Potions;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.extern.feathers.FeathersManager;
+import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.proxy.ClientProxy;
 import com.alrex.parcool.proxy.CommonProxy;
 import com.alrex.parcool.proxy.ServerProxy;
@@ -37,7 +42,7 @@ import org.apache.logging.log4j.Logger;
 @Mod(ParCool.MOD_ID)
 public class ParCool {
 	public static final String MOD_ID = "parcool";
-	private static final String PROTOCOL_VERSION = "3.3.1.0";
+    private static final String PROTOCOL_VERSION = "3.4.0.0";
 	public static final SimpleChannel CHANNEL_INSTANCE = NetworkRegistry.newSimpleChannel(
 			new ResourceLocation(ParCool.MOD_ID, "message"),
 			() -> PROTOCOL_VERSION,
@@ -62,21 +67,29 @@ public class ParCool {
 		eventBus.addListener(this::loaded);
         EventBusForgeRegistry.register(MinecraftForge.EVENT_BUS);
 		eventBus.register(AddAttributesHandler.class);
+
 		Effects.registerAll(eventBus);
 		Potions.registerAll(eventBus);
 		Attributes.registerAll(eventBus);
 		SoundEvents.registerAll(eventBus);
+
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommand);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.addListener(Limitations::init);
 		MinecraftForge.EVENT_BUS.addListener(Limitations::save);
-		ItemRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+
+        Blocks.register(FMLJavaModLoadingContext.get().getModEventBus());
+        Items.register(FMLJavaModLoadingContext.get().getModEventBus());
+        Recipes.register(FMLJavaModLoadingContext.get().getModEventBus());
+        EntityTypes.register(FMLJavaModLoadingContext.get().getModEventBus());
+        TileEntities.register(FMLJavaModLoadingContext.get().getModEventBus());
+
 		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ParCoolConfig.Server.BUILT_CONFIG);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.Client.BUILT_CONFIG);
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {
-		FeathersManager.init();
+        AdditionalMods.init();
 		PotionRecipeRegistry.register();
 	}
 
@@ -86,8 +99,10 @@ public class ParCool {
 	}
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
+        Renderers.register();
 		KeyBindings.register(event);
 		EventBusForgeRegistry.registerClient(MinecraftForge.EVENT_BUS);
+        Items.registerColors();
 		HUDRegistry.getInstance().onSetup(event);
 	}
 

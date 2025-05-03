@@ -5,13 +5,13 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "You can jump vertically using a wall, to get over it. But if wall is slippery, you cannot do this. Don't mistake this for $(l:parcool:actions/horizontal_wall_run)Horizontal Wall Run$()."
+      "text": "$(bold)Wall Run$() is a technique to jump vertically using a wall, to get over it.$(br)Don't mistake this for $(l:actions/horizontal_wall_run)Horizontal Wall Run$().$(br)$(br)Please note that you fail wall running if the wall is made of slippery material like ice block."
     },
     {
       "type": "patchouli:image",
       "border": "true",
       "images": [
-        "parcool:textures/gui/entries/image_v_wall_run.png"
+        "parcool:textures/gui/entries/vertical_wall_run.png"
       ]
     },
     {

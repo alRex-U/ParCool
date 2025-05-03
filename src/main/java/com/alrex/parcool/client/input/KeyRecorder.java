@@ -20,37 +20,44 @@ public class KeyRecorder {
 	public static final KeyState keyOpenSettingsState = new KeyState();
 	public static final KeyState keyFastRunning = new KeyState();
 	public static final KeyState keyDodge = new KeyState();
+    public static final KeyState keyRideZipline = new KeyState();
 	public static final KeyState keyBreakfall = new KeyState();
 	public static final KeyState keyWallJump = new KeyState();
 	public static final KeyState keyQuickTurn = new KeyState();
 	public static final KeyState keyFlipping = new KeyState();
+    public static final KeyState keyBindGrabWall = new KeyState();
 
 	@SubscribeEvent
 	public static void onClientTick(TickEvent.ClientTickEvent event) {
 		if (event.phase != TickEvent.Phase.START) return;
 
-		record(KeyBindings.getKeyForward(), keyForward);
-		record(KeyBindings.getKeyBack(), keyBack);
-		record(KeyBindings.getKeyRight(), keyRight);
-		record(KeyBindings.getKeyLeft(), keyLeft);
+        record(KeyBindings.isKeyForwardDown(), keyForward);
+        record(KeyBindings.isKeyBackDown(), keyBack);
+        record(KeyBindings.isKeyRightDown(), keyRight);
+        record(KeyBindings.isKeyLeftDown(), keyLeft);
 		record(KeyBindings.getKeySneak(), keySneak);
-		record(KeyBindings.getKeyJump(), keyJumpState);
+        record(KeyBindings.isKeyJumpDown(), keyJumpState);
 		record(KeyBindings.getKeySprint(), keySprintState);
 		record(KeyBindings.getKeyCrawl(), keyCrawlState);
 		record(KeyBindings.getKeyActivateParCool(), keyOpenSettingsState);
 		record(KeyBindings.getKeyFastRunning(), keyFastRunning);
 		record(KeyBindings.getKeyDodge(), keyDodge);
+        record(KeyBindings.getKeyRideZipline(), keyRideZipline);
 		record(KeyBindings.getKeyBreakfall(), keyBreakfall);
 		record(KeyBindings.getKeyWallJump(), keyWallJump);
 		record(KeyBindings.getKeyQuickTurn(), keyQuickTurn);
 		record(KeyBindings.getKeyFlipping(), keyFlipping);
+        record(KeyBindings.getKeyGrabWall(), keyBindGrabWall);
 	}
 
-	private static void record(KeyMapping keyBinding, KeyState state) {
-		state.pressed = (keyBinding.isDown() && state.tickKeyDown == 0);
-		state.released = (!keyBinding.isDown() && state.tickNotKeyDown == 0);
-		state.doubleTapped = (keyBinding.isDown() && 0 < state.tickNotKeyDown && state.tickNotKeyDown <= 2);
-		if (keyBinding.isDown()) {
+    private static void record(Boolean isDown, KeyState state) {
+        state.pressed = (isDown && state.tickKeyDown == 0);
+        state.released = (!isDown && state.tickNotKeyDown == 0);
+        state.doubleTapped = (isDown && 0 < state.tickNotKeyDown && state.tickNotKeyDown <= 2);
+        if (state.pressed && state.tickNotKeyDown > 0) {
+            state.previousTickNotKeyDown = state.tickNotKeyDown;
+        }
+        if (isDown) {
 			state.tickKeyDown++;
 			state.tickNotKeyDown = 0;
 		} else {
@@ -59,12 +66,17 @@ public class KeyRecorder {
 		}
 	}
 
+    private static void record(KeyMapping keyBinding, KeyState state) {
+        record(keyBinding.isDown(), state);
+    }
+
 	public static class KeyState {
 		private boolean pressed = false;
 		private boolean released = false;
 		private boolean doubleTapped = false;
 		private int tickKeyDown = 0;
 		private int tickNotKeyDown = 0;
+        private int previousTickNotKeyDown = Integer.MAX_VALUE;
 
 		public boolean isPressed() {
 			return pressed;
@@ -85,5 +97,9 @@ public class KeyRecorder {
 		public int getTickNotKeyDown() {
 			return tickNotKeyDown;
 		}
+
+        public int getPreviousTickNotKeyDown() {
+            return previousTickNotKeyDown;
+        }
 	}
 }

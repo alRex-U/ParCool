@@ -1,8 +1,11 @@
 package com.alrex.parcool.utilities;
 
 import com.alrex.parcool.common.action.impl.HangDown;
+import com.alrex.parcool.common.tags.BlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -163,7 +166,7 @@ public class WorldUtil {
 	public static double getWallHeight(LivingEntity entity, Vec3 direction, double maxHeight, double accuracy) {
         final double d = entity.getBbWidth() * 0.49;
 		direction = direction.normalize();
-		Level world = entity.level;
+        Level level = entity.level;
 		Vec3 pos = entity.position();
 		boolean canReturn = false;
 		for (double height = 0; height < maxHeight; height += accuracy) {
@@ -175,7 +178,7 @@ public class WorldUtil {
                     pos.y() + height + accuracy,
                     pos.z() - d + (direction.z() < 0 ? -1 : 0)
 			);
-			if (!world.noCollision(entity, box)) {
+            if (!level.noCollision(entity, box)) {
 				canReturn = true;
 			} else {
 				if (canReturn) {
@@ -189,7 +192,7 @@ public class WorldUtil {
 	public static double getWallHeight(LivingEntity entity) {
 		Vec3 wall = getWall(entity);
 		if (wall == null) return 0;
-		Level world = entity.level;
+        Level level = entity.level;
 		final double accuracy = entity.getBbHeight() / 18; // normally about 0.1
 		final double d = entity.getBbWidth() * 0.5;
 		int loopNum = (int) Math.round(entity.getBbHeight() / accuracy);
@@ -205,7 +208,7 @@ public class WorldUtil {
                     pos.z() - d + (wall.z() < 0 ? -1 : 0)
 			);
 
-			if (!world.noCollision(entity, box)) {
+            if (!level.noCollision(entity, box)) {
 				canReturn = true;
 			} else {
 				if (canReturn) return accuracy * i;
@@ -325,7 +328,7 @@ public class WorldUtil {
 		center = center.add(diveDirection.scale(4));
 		AABB verticalWideBox = new AABB(
 				center.x() - wideWidth,
-				center.y() - 9,
+                center.y() - 7,
 				center.z() - wideWidth,
 				center.x() + wideWidth,
 				center.y() + height,
@@ -370,7 +373,7 @@ public class WorldUtil {
 	@Nullable
 	public static Vec3 getGrabbableWall(LivingEntity entity) {
 		final double d = entity.getBbWidth() * 0.5;
-		Level world = entity.level;
+        Level level = entity.level;
 		double distance = entity.getBbWidth() / 2;
 		double baseLine1 = entity.getEyeHeight() + (entity.getBbHeight() - entity.getEyeHeight()) / 2;
 		double baseLine2 = entity.getBbHeight() + (entity.getBbHeight() - entity.getEyeHeight()) / 2;
@@ -442,4 +445,81 @@ public class WorldUtil {
 		}
 		return slipperiness <= 0.9 ? new Vec3(xDirection, 0, zDirection) : null;
 	}
+
+    public static boolean isHideAbleBlock(BlockState blockState) {
+        return blockState.getTags().anyMatch(it -> it.equals(BlockTags.HIDE_ABLE));
+    }
+
+    private static boolean getHideAbleSpace$isHideAble(Level world, Block block, BlockPos pos) {
+        return world.isLoaded(pos) && world.getBlockState(pos).is(block) && world.getBlockState(pos.above()).isAir();
+    }
+
+    @Nullable
+    public static Tuple<BlockPos, BlockPos> getHideAbleSpace(Entity entity, BlockPos base) {
+        var world = entity.level;
+        if (!world.isLoaded(base)) return null;
+        BlockState state = world.getBlockState(base);
+        Block block = state.getBlock();
+        if (!isHideAbleBlock(state)) return null;
+        if (!world.getBlockState(base.above()).isAir()) {
+            if (getHideAbleSpace$isHideAble(world, block, base.above())) {
+                return new Tuple<>(base, base.above());
+            }
+            return null;
+        }
+        double entityWidth = entity.getBbWidth();
+        double entityHeight = entity.getBbHeight();
+        if (entityHeight >= 2 || entityWidth >= 1) return null;
+        if (entityHeight < 1) return new Tuple<>(base, base);
+        var lookAngle = entity.getLookAngle();
+        if (Math.abs(lookAngle.z()) > Math.abs(lookAngle.x())) {
+            if (lookAngle.z() > 0) {
+                if (getHideAbleSpace$isHideAble(world, block, base.south())) return new Tuple<>(base, base.south());
+                if (lookAngle.x() > 0) {
+                    if (getHideAbleSpace$isHideAble(world, block, base.east())) return new Tuple<>(base, base.east());
+                    if (getHideAbleSpace$isHideAble(world, block, base.west())) return new Tuple<>(base, base.west());
+                } else {
+                    if (getHideAbleSpace$isHideAble(world, block, base.west())) return new Tuple<>(base, base.west());
+                    if (getHideAbleSpace$isHideAble(world, block, base.east())) return new Tuple<>(base, base.east());
+                }
+                if (getHideAbleSpace$isHideAble(world, block, base.north())) return new Tuple<>(base, base.north());
+            } else {
+                if (getHideAbleSpace$isHideAble(world, block, base.north())) return new Tuple<>(base, base.north());
+                if (lookAngle.x() > 0) {
+                    if (getHideAbleSpace$isHideAble(world, block, base.east())) return new Tuple<>(base, base.east());
+                    if (getHideAbleSpace$isHideAble(world, block, base.west())) return new Tuple<>(base, base.west());
+                } else {
+                    if (getHideAbleSpace$isHideAble(world, block, base.west())) return new Tuple<>(base, base.west());
+                    if (getHideAbleSpace$isHideAble(world, block, base.east())) return new Tuple<>(base, base.east());
+                }
+                if (getHideAbleSpace$isHideAble(world, block, base.south())) return new Tuple<>(base, base.south());
+            }
+        } else {
+            if (lookAngle.x() > 0) {
+                if (getHideAbleSpace$isHideAble(world, block, base.east())) return new Tuple<>(base, base.east());
+                if (lookAngle.z() > 0) {
+                    if (getHideAbleSpace$isHideAble(world, block, base.south())) return new Tuple<>(base, base.south());
+                    if (getHideAbleSpace$isHideAble(world, block, base.north())) return new Tuple<>(base, base.north());
+                } else {
+                    if (getHideAbleSpace$isHideAble(world, block, base.north())) return new Tuple<>(base, base.north());
+                    if (getHideAbleSpace$isHideAble(world, block, base.south())) return new Tuple<>(base, base.south());
+                }
+                if (getHideAbleSpace$isHideAble(world, block, base.west())) return new Tuple<>(base, base.west());
+            } else {
+                if (getHideAbleSpace$isHideAble(world, block, base.west())) return new Tuple<>(base, base.west());
+                if (lookAngle.z() > 0) {
+                    if (getHideAbleSpace$isHideAble(world, block, base.south())) return new Tuple<>(base, base.south());
+                    if (getHideAbleSpace$isHideAble(world, block, base.north())) return new Tuple<>(base, base.north());
+                } else {
+                    if (getHideAbleSpace$isHideAble(world, block, base.north())) return new Tuple<>(base, base.north());
+                    if (getHideAbleSpace$isHideAble(world, block, base.south())) return new Tuple<>(base, base.south());
+                }
+                if (getHideAbleSpace$isHideAble(world, block, base.east())) return new Tuple<>(base, base.east());
+            }
+        }
+        if (world.getBlockState(base.below()).is(block) && Math.abs(entity.getY() - base.below().getY()) < 0.2) {
+            return new Tuple<>(base.below(), base);
+        }
+        return null;
+    }
 }

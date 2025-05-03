@@ -64,8 +64,8 @@ public class WallJump extends Action {
 		Vec3 value;
 		double dotProduct = wall.dot(vec);
 
-		if (dotProduct > 0.35) {
-			if (!ParCoolConfig.Client.Booleans.EnableWallJumpBackward.get()) return null;
+        if (dotProduct > -Math.cos(Math.toRadians(ParCoolConfig.Client.Integers.AcceptableAngleOfWallJump.get()))) {
+            return null;
 		}
 		if (dotProduct > 0) {//To Wall
 			double dot = vec.reverse().dot(wall);
@@ -96,6 +96,7 @@ public class WallJump extends Action {
 				&& ((control == ControlType.PressKey && KeyRecorder.keyWallJump.isPressed()) || (control == ControlType.ReleaseKey && KeyRecorder.keyWallJump.isReleased()))
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(VerticalWallRun.class).isDoing()
+                && !parkourability.get(RideZipline.class).isDoing()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 4
 				&& !isInCooldown(parkourability)
 		);
@@ -145,7 +146,7 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public void onStart(Player player, Parkourability parkourability) {
+    public void onStart(Player player, Parkourability parkourability, ByteBuffer startData) {
 		jump = true;
 		player.fallDistance = 0;
 	}
