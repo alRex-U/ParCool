@@ -1,7 +1,7 @@
 package com.alrex.parcool.extern.shouldersurfing;
 
-import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.common.action.impl.Dodge;
+import com.alrex.parcool.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.extern.ModManager;
 import com.alrex.parcool.utilities.MathUtil;
 import com.github.exopandora.shouldersurfing.api.client.IShoulderSurfingCamera;

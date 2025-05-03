@@ -1,4 +1,4 @@
-package com.alrex.parcool.api.compatibility;
+package com.alrex.parcool.compatibility;
 
 import java.util.Iterator;
 import java.util.UUID;

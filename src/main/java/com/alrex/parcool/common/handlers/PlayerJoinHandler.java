@@ -1,10 +1,11 @@
 package com.alrex.parcool.common.handlers;
 
-import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.network.SyncClientInformationMessage;
+import com.alrex.parcool.compatibility.ClientPlayerWrapper;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+
 import net.minecraft.entity.Entity;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

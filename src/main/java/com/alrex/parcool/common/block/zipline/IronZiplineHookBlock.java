@@ -1,8 +1,9 @@
 package com.alrex.parcool.common.block.zipline;
 
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
-import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.common.block.BlockStateProperties;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;

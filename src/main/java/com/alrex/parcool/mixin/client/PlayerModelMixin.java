@@ -1,8 +1,8 @@
 package com.alrex.parcool.mixin.client;
 
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.capability.Animation;
+import com.alrex.parcool.compatibility.PlayerWrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;

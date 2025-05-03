@@ -1,11 +1,11 @@
 package com.alrex.parcool.client.renderer.entity;
 
-import com.alrex.parcool.api.compatibility.AxisWrapper;
-import com.alrex.parcool.api.compatibility.EntityWrapper;
-import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.renderer.RenderTypes;
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import com.alrex.parcool.common.zipline.Zipline;
+import com.alrex.parcool.compatibility.AxisWrapper;
+import com.alrex.parcool.compatibility.EntityWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;

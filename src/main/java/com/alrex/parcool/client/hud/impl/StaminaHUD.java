@@ -1,11 +1,11 @@
 package com.alrex.parcool.client.hud.impl;
 
 
-import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;

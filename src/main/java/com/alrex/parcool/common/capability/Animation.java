@@ -1,8 +1,5 @@
 package com.alrex.parcool.common.capability;
 
-import com.alrex.parcool.api.compatibility.AbstractClientPlayerWrapper;
-import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.api.unstable.animation.AnimationOption;
 import com.alrex.parcool.api.unstable.animation.AnimationPart;
 import com.alrex.parcool.api.unstable.animation.ParCoolAnimationInfoEvent;
@@ -11,6 +8,9 @@ import com.alrex.parcool.client.animation.PassiveCustomAnimation;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
+import com.alrex.parcool.compatibility.AbstractClientPlayerWrapper;
+import com.alrex.parcool.compatibility.ClientPlayerWrapper;
+import com.alrex.parcool.compatibility.PlayerWrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;

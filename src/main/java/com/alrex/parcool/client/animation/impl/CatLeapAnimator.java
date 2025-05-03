@@ -4,12 +4,11 @@ import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.CatLeap;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.PlayerWrapper;
 import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.EasingFunctions;
 
 import static com.alrex.parcool.utilities.MathUtil.lerp;
-
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
 
 public class CatLeapAnimator extends Animator {
 

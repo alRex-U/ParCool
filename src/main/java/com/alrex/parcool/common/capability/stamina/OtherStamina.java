@@ -1,8 +1,9 @@
 package com.alrex.parcool.common.capability.stamina;
 
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
-import com.alrex.parcool.api.compatibility.ServerPlayerWrapper;
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.ServerPlayerWrapper;
+
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;

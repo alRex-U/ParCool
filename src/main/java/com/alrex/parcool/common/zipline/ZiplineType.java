@@ -1,8 +1,9 @@
 package com.alrex.parcool.common.zipline;
 
-import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.common.zipline.impl.GeneralQuadraticCurveZipline;
 import com.alrex.parcool.common.zipline.impl.StraightZipline;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
+
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 

@@ -1,4 +1,4 @@
-package com.alrex.parcool.api.compatibility;
+package com.alrex.parcool.compatibility;
 
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;

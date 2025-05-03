@@ -1,10 +1,10 @@
 package com.alrex.parcool.common.capability.stamina;
 
 import com.alrex.parcool.api.Effects;
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
-import com.alrex.parcool.api.compatibility.ServerPlayerWrapper;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.ServerPlayerWrapper;
 
 public class HungerStamina implements IStamina {
     private final PlayerWrapper player;

@@ -1,8 +1,8 @@
 package com.alrex.parcool.mixin.client;
 
-import com.alrex.parcool.api.compatibility.AbstractClientPlayerWrapper;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.common.capability.Animation;
+import com.alrex.parcool.compatibility.AbstractClientPlayerWrapper;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;

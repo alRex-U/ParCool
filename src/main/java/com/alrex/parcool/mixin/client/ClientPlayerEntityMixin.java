@@ -1,8 +1,8 @@
 package com.alrex.parcool.mixin.client;
 
-import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
-import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.ClientPlayerWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;

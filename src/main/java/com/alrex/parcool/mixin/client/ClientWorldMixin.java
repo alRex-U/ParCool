@@ -1,8 +1,9 @@
 package com.alrex.parcool.mixin.client;
 
-import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.common.action.impl.HideInBlock;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.ClientPlayerWrapper;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.profiler.IProfiler;

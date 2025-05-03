@@ -1,8 +1,9 @@
 package com.alrex.parcool.mixin.common;
 
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.action.impl.HideInBlock;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Tuple;

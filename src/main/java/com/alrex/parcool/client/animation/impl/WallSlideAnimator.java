@@ -1,11 +1,11 @@
 package com.alrex.parcool.client.animation.impl;
 
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
-import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.WallSlide;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
 import com.alrex.parcool.utilities.VectorUtil;
 
 public class WallSlideAnimator extends Animator {

@@ -1,7 +1,8 @@
 package com.alrex.parcool.client.animation;
 
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.event.TickEvent;
 

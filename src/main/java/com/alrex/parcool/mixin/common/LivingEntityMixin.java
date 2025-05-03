@@ -1,13 +1,14 @@
 package com.alrex.parcool.mixin.common;
 
-import com.alrex.parcool.api.compatibility.EventBusWrapper;
-import com.alrex.parcool.api.compatibility.LevelWrapper;
-import com.alrex.parcool.api.compatibility.LivingEntityWrapper;
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.action.impl.ChargeJump;
 import com.alrex.parcool.common.action.impl.ClimbPoles;
 import com.alrex.parcool.common.action.impl.ClimbUp;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.EventBusWrapper;
+import com.alrex.parcool.compatibility.LevelWrapper;
+import com.alrex.parcool.compatibility.LivingEntityWrapper;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;

@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.action;
 
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.PlayerWrapper;
 
 public class AdditionalProperties {
 	private int sprintingTick = 0;

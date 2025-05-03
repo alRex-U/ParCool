@@ -1,10 +1,11 @@
 package com.alrex.parcool.common.capability;
 
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
-import com.alrex.parcool.api.compatibility.ServerPlayerWrapper;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.capability.stamina.HungerStamina;
 import com.alrex.parcool.common.capability.stamina.Stamina;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.ServerPlayerWrapper;
+
 import javax.annotation.Nullable;
 import java.util.function.BiConsumer;
 import java.util.function.Function;

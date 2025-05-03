@@ -1,7 +1,8 @@
 package com.alrex.parcool.api.unstable.animation;
 
-import com.alrex.parcool.api.compatibility.AbstractClientPlayerWrapper;
 import com.alrex.parcool.client.animation.Animator;
+import com.alrex.parcool.compatibility.AbstractClientPlayerWrapper;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.Event;

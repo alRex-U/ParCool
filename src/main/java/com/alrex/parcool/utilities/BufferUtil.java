@@ -5,7 +5,7 @@ import net.minecraft.util.math.vector.Vector3i;
 
 import java.nio.ByteBuffer;
 
-import com.alrex.parcool.api.compatibility.Vec3Wrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
 
 public class BufferUtil {
 	ByteBuffer buffer;

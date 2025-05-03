@@ -1,7 +1,8 @@
 package com.alrex.parcool.common.zipline.impl;
 
-import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.common.zipline.Zipline;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
+
 import net.minecraft.util.math.AxisAlignedBB;
 
 public class GeneralQuadraticCurveZipline extends Zipline {

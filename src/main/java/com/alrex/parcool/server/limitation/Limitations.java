@@ -1,11 +1,11 @@
 package com.alrex.parcool.server.limitation;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.api.compatibility.ServerPlayerWrapper;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ServerLimitation;
 import com.alrex.parcool.common.network.SyncServerInfoMessage;
+import com.alrex.parcool.compatibility.ServerPlayerWrapper;
 import com.alrex.parcool.utilities.JsonWriterUtil;
 import com.alrex.parcool.utilities.ServerUtil;
 import com.google.gson.stream.JsonReader;

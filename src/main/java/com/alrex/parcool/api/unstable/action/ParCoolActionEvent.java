@@ -1,7 +1,8 @@
 package com.alrex.parcool.api.unstable.action;
 
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 

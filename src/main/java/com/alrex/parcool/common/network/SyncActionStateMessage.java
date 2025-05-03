@@ -1,11 +1,12 @@
 package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.api.compatibility.EventBusWrapper;
-import com.alrex.parcool.api.compatibility.LevelWrapper;
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.EventBusWrapper;
+import com.alrex.parcool.compatibility.LevelWrapper;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

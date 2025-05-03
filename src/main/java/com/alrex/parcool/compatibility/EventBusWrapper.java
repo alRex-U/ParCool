@@ -1,4 +1,4 @@
-package com.alrex.parcool.api.compatibility;
+package com.alrex.parcool.compatibility;
 
 import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.common.action.Action;

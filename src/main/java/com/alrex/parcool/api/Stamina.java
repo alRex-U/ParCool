@@ -1,7 +1,8 @@
 package com.alrex.parcool.api;
 
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

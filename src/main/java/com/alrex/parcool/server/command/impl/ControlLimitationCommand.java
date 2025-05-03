@@ -1,10 +1,10 @@
 package com.alrex.parcool.server.command.impl;
 
-import com.alrex.parcool.api.compatibility.MinecraftServerWrapper;
-import com.alrex.parcool.api.compatibility.ServerPlayerWrapper;
 import com.alrex.parcool.api.unstable.Limitation;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.ActionList;
+import com.alrex.parcool.compatibility.MinecraftServerWrapper;
+import com.alrex.parcool.compatibility.ServerPlayerWrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.server.command.args.ActionArgumentType;
 import com.alrex.parcool.server.command.args.LimitationIDArgumentType;

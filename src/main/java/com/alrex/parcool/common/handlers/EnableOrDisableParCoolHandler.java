@@ -2,11 +2,11 @@ package com.alrex.parcool.common.handlers;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.SoundEvents;
-import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.network.SyncClientInformationMessage;
+import com.alrex.parcool.compatibility.ClientPlayerWrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;

@@ -1,11 +1,12 @@
 package com.alrex.parcool.utilities;
 
-import com.alrex.parcool.api.compatibility.EntityWrapper;
-import com.alrex.parcool.api.compatibility.LevelWrapper;
-import com.alrex.parcool.api.compatibility.LivingEntityWrapper;
-import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.common.action.impl.HangDown;
 import com.alrex.parcool.common.tags.BlockTags;
+import com.alrex.parcool.compatibility.EntityWrapper;
+import com.alrex.parcool.compatibility.LevelWrapper;
+import com.alrex.parcool.compatibility.LivingEntityWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
+
 import net.minecraft.block.*;
 import net.minecraft.state.properties.Half;
 import net.minecraft.util.Direction;

@@ -1,12 +1,13 @@
 package com.alrex.parcool.common.network;
 
-import com.alrex.parcool.api.compatibility.ChannelInstanceWrapper;
-import com.alrex.parcool.api.compatibility.ClientPlayerWrapper;
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
-import com.alrex.parcool.api.compatibility.ServerPlayerWrapper;
 import com.alrex.parcool.common.action.impl.BreakfallReady;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.compatibility.ChannelInstanceWrapper;
+import com.alrex.parcool.compatibility.ClientPlayerWrapper;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.ServerPlayerWrapper;
+
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketDirection;
 import net.minecraftforge.api.distmarker.Dist;

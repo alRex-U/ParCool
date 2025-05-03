@@ -1,6 +1,6 @@
 package com.alrex.parcool.utilities;
 
-import com.alrex.parcool.api.compatibility.Vec3Wrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
 
 public class VectorUtil {
 	public static double toYawDegree(Vec3Wrapper vec) {

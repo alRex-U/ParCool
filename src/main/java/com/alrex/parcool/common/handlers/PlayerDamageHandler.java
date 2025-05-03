@@ -1,10 +1,10 @@
 package com.alrex.parcool.common.handlers;
 
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
-import com.alrex.parcool.api.compatibility.ServerPlayerWrapper;
 import com.alrex.parcool.common.action.impl.*;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.network.StartBreakfallMessage;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.ServerPlayerWrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;

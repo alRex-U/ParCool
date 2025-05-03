@@ -1,9 +1,9 @@
 package com.alrex.parcool.client.animation;
 
-import com.alrex.parcool.api.compatibility.AxisWrapper;
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
-import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.api.unstable.animation.AnimationOption;
+import com.alrex.parcool.compatibility.AxisWrapper;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class PlayerModelRotator {

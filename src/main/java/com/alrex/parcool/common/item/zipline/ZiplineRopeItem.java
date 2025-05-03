@@ -1,12 +1,13 @@
 package com.alrex.parcool.common.item.zipline;
 
 import com.alrex.parcool.api.SoundEvents;
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
 import com.alrex.parcool.common.block.zipline.ZiplineHookBlock;
 import com.alrex.parcool.common.block.zipline.ZiplineHookTileEntity;
 import com.alrex.parcool.common.block.zipline.ZiplineInfo;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.common.zipline.ZiplineType;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;

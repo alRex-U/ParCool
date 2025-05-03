@@ -6,7 +6,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
-import com.alrex.parcool.api.compatibility.Vec3Wrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
 
 import java.util.TreeMap;
 import java.util.function.Supplier;

@@ -1,4 +1,4 @@
-package com.alrex.parcool.api.compatibility;
+package com.alrex.parcool.compatibility;
 
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.util.math.vector.Vector3d;

@@ -1,9 +1,9 @@
 package com.alrex.parcool.api.unstable;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.api.compatibility.MinecraftServerWrapper;
-import com.alrex.parcool.api.compatibility.ServerPlayerWrapper;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.compatibility.MinecraftServerWrapper;
+import com.alrex.parcool.compatibility.ServerPlayerWrapper;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.server.limitation.Limitations;
 import com.alrex.parcool.utilities.JsonWriterUtil;

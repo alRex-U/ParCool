@@ -1,13 +1,14 @@
 package com.alrex.parcool.common.block.zipline;
 
 import com.alrex.parcool.api.SoundEvents;
-import com.alrex.parcool.api.compatibility.BlockEntityWrapper;
-import com.alrex.parcool.api.compatibility.ContainersWrapper;
-import com.alrex.parcool.api.compatibility.InteractionResultWrapper;
-import com.alrex.parcool.api.compatibility.LevelWrapper;
-import com.alrex.parcool.api.compatibility.PlayerWrapper;
-import com.alrex.parcool.api.compatibility.Vec3Wrapper;
 import com.alrex.parcool.common.block.TileEntities;
+import com.alrex.parcool.compatibility.BlockEntityWrapper;
+import com.alrex.parcool.compatibility.ContainersWrapper;
+import com.alrex.parcool.compatibility.InteractionResultWrapper;
+import com.alrex.parcool.compatibility.LevelWrapper;
+import com.alrex.parcool.compatibility.PlayerWrapper;
+import com.alrex.parcool.compatibility.Vec3Wrapper;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
