@@ -4,7 +4,9 @@ import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.ClingToCliffAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
+import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.config.ParCoolConfig;
@@ -20,6 +22,12 @@ import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
 public class ClingToCliff extends Action {
+    public enum ControlType {
+        PressKey, Toggle
+    }
+
+    private static final BehaviorEnforcer.ID ID_SNEAK_CANCEL = BehaviorEnforcer.newID();
+    private static final BehaviorEnforcer.ID ID_FALL_FLY_CANCEL = BehaviorEnforcer.newID();
 	private float armSwingAmount = 0;
 	private FacingDirection facingDirection = FacingDirection.ToWall;
 	@Nullable
@@ -59,15 +67,23 @@ public class ClingToCliff extends Action {
 	@Override
 	public boolean canContinue(Player player, Parkourability parkourability) {
 		return (parkourability.getActionInfo().can(ClingToCliff.class)
-				&& KeyBindings.getKeyGrabWall().isDown()
+                && isGrabbing()
 				&& !parkourability.get(HorizontalWallRun.class).isDoing()
 				&& !parkourability.get(ClimbUp.class).isDoing()
 				&& WorldUtil.getGrabbableWall(player) != null
 		);
+
+    }
+
+    private boolean isGrabbing() {
+        return ParCoolConfig.Client.ClingToCliffControl.get() == ControlType.PressKey
+                ? KeyBindings.getKeyGrabWall().isDown()
+                : !KeyRecorder.keyBindGrabWall.isPressed();
 	}
 
     @Override
-    public void onStart(Player player, Parkourability parkourability) {
+    public void onStart(Player player, Parkourability parkourability, ByteBuffer startData) {
+        parkourability.getBehaviorEnforcer().addMarkerCancellingFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
         armSwingAmount = 0;
     }
 
@@ -78,7 +94,7 @@ public class ClingToCliff extends Action {
 		facingDirection = FacingDirection.ToWall;
 		armSwingAmount = 0;
 		if (!KeyBindings.getKeyGrabWall().getKey().equals(KeyBindings.getKeySneak().getKey())) {
-			parkourability.getCancelMarks().addMarkerCancellingSneak(this::isDoing);
+            parkourability.getBehaviorEnforcer().addMarkerCancellingSneak(ID_SNEAK_CANCEL, this::isDoing);
 		}
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.CLING_TO_CLIFF.get(), 1f, 1f);
@@ -101,13 +117,13 @@ public class ClingToCliff extends Action {
 	@Override
 	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability) {
         armSwingAmount += (float) player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();
-		if (KeyBindings.getKeyLeft().isDown() && KeyBindings.getKeyRight().isDown()) {
+        if (KeyBindings.isLeftAndRightDown()) {
 			player.setDeltaMovement(0, 0, 0);
 		} else {
 			if (clingWallDirection != null && facingDirection == FacingDirection.ToWall) {
 				Vec3 vec = clingWallDirection.yRot((float) (Math.PI / 2)).normalize().scale(0.1);
-				if (KeyBindings.getKeyLeft().isDown()) player.setDeltaMovement(vec);
-				else if (KeyBindings.getKeyRight().isDown()) player.setDeltaMovement(vec.reverse());
+                if (KeyBindings.isKeyLeftDown()) player.setDeltaMovement(vec);
+                else if (KeyBindings.isKeyRightDown()) player.setDeltaMovement(vec.reverse());
 				else player.setDeltaMovement(0, 0, 0);
 			} else {
 				player.setDeltaMovement(0, 0, 0);

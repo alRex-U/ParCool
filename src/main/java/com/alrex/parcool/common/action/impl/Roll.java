@@ -4,6 +4,7 @@ import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.RollAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.config.ParCoolConfig;
@@ -19,6 +20,7 @@ import java.nio.ByteBuffer;
 public class Roll extends Action {
 	private int creativeCoolTime = 0;
 	private boolean startRequired = false;
+    private static final BehaviorEnforcer.ID ID_JUMP_CANCEL = BehaviorEnforcer.newID();
 
 	public enum Direction {Front, Back, Left, Right}
 
@@ -27,7 +29,7 @@ public class Roll extends Action {
 	public void onClientTick(Player player, Parkourability parkourability) {
 		if (player.isLocalPlayer()) {
 			if (KeyBindings.getKeyBreakfall().isDown()
-					&& KeyBindings.getKeyForward().isDown()
+                    && KeyBindings.isKeyForwardDown()
 					&& !parkourability.get(Dodge.class).isDoing()
                     && !parkourability.get(Crawl.class).isDoing()
                     && !player.isVisuallyCrawling()
@@ -100,7 +102,7 @@ public class Roll extends Action {
 		player.setDeltaMovement(vec.x(), 0, vec.z());
 		Animation animation = Animation.get(player);
 		if (animation != null) animation.setAnimator(new RollAnimator(direction));
-        parkourability.getCancelMarks().addMarkerCancellingJump(this::isDoing);
+        parkourability.getBehaviorEnforcer().addMarkerCancellingJump(ID_JUMP_CANCEL, this::isDoing);
 	}
 
 	public void startRoll(Player player) {

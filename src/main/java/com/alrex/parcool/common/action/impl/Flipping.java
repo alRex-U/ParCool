@@ -22,16 +22,16 @@ public class Flipping extends Action {
         public boolean isInputDone(boolean justJumped) {
 			switch (this) {
                 case PressRightAndLeft:
-                    return KeyBindings.getKeyRight().isDown()
+					return KeyBindings.isKeyRightDown()
                             && KeyRecorder.keyRight.getTickKeyDown() < 3
-                            && KeyBindings.getKeyLeft().isDown()
+							&& KeyBindings.isKeyLeftDown()
                             && KeyRecorder.keyLeft.getTickKeyDown() < 3;
                 case PressFlippingKey:
                     return KeyRecorder.keyFlipping.isPressed();
                 case TapMovementAndJump:
                     return justJumped && (
-                            (KeyBindings.getKeyForward().isDown() && KeyRecorder.keyForward.getTickKeyDown() < 4)
-                                    || (KeyBindings.getKeyBack().isDown() && KeyRecorder.keyBack.getTickKeyDown() < 4)
+							(KeyBindings.isKeyForwardDown() && KeyRecorder.keyForward.getTickKeyDown() < 4)
+									|| (KeyBindings.isKeyBackDown() && KeyRecorder.keyBack.getTickKeyDown() < 4)
                     );
             }
             return false;
@@ -50,23 +50,25 @@ public class Flipping extends Action {
 	@Override
     public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
         Direction fDirection;
-		if (KeyBindings.getKeyBack().isDown()) {
+		if (KeyBindings.isKeyBackDown()) {
             fDirection = Direction.Back;
 		} else {
             fDirection = Direction.Front;
 		}
-        ControlType control = ParCoolConfig.Client.FlipControl.get();
-        startInfo
-                .putInt(control.ordinal())
-                .putInt(fDirection.ordinal());
-        boolean input = control.isInputDone(justJumped);
-        justJumped = false;
-        return (input
+		ControlType control = ParCoolConfig.Client.FlipControl.get();
+		startInfo
+				.putInt(control.ordinal())
+				.putInt(fDirection.ordinal());
+		boolean input = control.isInputDone(justJumped);
+		justJumped = false;
+		return (input
+				&& !player.isInWater()
                 && !player.isShiftKeyDown()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Dive.class).isDoing()
 				&& !parkourability.get(ChargeJump.class).isDoing()
-				&& !parkourability.getCancelMarks().cancelJump()
+				&& !parkourability.get(HideInBlock.class).isDoing()
+				&& !parkourability.getBehaviorEnforcer().cancelJump()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() <= 1
 		);
 	}

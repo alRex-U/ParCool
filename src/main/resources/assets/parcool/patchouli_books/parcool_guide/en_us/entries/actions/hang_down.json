@@ -5,13 +5,13 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "You can hang down with some blocks like chains or end rods.$(br)You can also move and jump forward by pressing jump key."
+      "text": "You can hang on some blocks like chains or end rods.$(br2)It's also possible to move and jump forward by pressing jump key."
     },
     {
       "type": "patchouli:image",
       "border": "true",
       "images": [
-        "parcool:textures/gui/entries/image_hang_down.png"
+        "parcool:textures/gui/entries/hang_down.png"
       ]
     },
     {

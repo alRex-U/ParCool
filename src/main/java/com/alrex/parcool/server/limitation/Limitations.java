@@ -88,6 +88,13 @@ public class Limitations {
         PacketDistributor.sendToPlayer(player, new LimitationPayload(parkourability.getActionInfo().getServerLimitation()));
     }
 
+    public static void updateOnlyLimitation(ServerPlayer player) {
+        Parkourability parkourability = Parkourability.get(player);
+        if (parkourability == null) return;
+        parkourability.getActionInfo().setServerLimitation(ServerLimitation.get(player));
+        PacketDistributor.sendToPlayer(player, new LimitationPayload(parkourability.getActionInfo().getServerLimitation()));
+    }
+
     public static SortedMap<Limitation.ID, Limitation> load(UUID playerID) {
         if (LimitationFolderRootPath == null) {
             throw new IllegalStateException(

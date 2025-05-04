@@ -1,13 +1,17 @@
 package com.alrex.parcool.common.action;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.common.attachment.Attachments;
 import com.alrex.parcool.common.network.payload.ActionStatePayload;
 import com.alrex.parcool.common.stamina.LocalStamina;
+import com.alrex.parcool.config.ParCoolConfig;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -17,6 +21,7 @@ import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.apache.logging.log4j.Level;
 
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
@@ -52,6 +57,22 @@ public class ActionProcessor {
 			if (stamina == null || !stamina.isAvailable()) return;
 		}
 		LinkedList<ActionStatePayload.Entry> syncStates = new LinkedList<>();
+
+		if (needSync && player.tickCount > 100 && player.tickCount % 150 == 0 && parkourability.limitationIsNotSynced()) {
+			if (player instanceof LocalPlayer) {
+				int trialCount = parkourability.getSynchronizeTrialCount();
+				if (trialCount < 5) {
+					parkourability.trySyncLimitation((LocalPlayer) player, parkourability);
+					if (ParCoolConfig.Client.Booleans.ShowAutoResynchronizationNotification.get()) {
+						player.displayClientMessage(Component.translatable("parcool.message.error.limitation.not_synced"), false);
+					}
+					ParCool.LOGGER.log(Level.WARN, "Detected ParCool Limitation is not synced. Sending synchronization request...");
+				} else if (trialCount == 5) {
+					player.displayClientMessage(Component.translatable("parcool.message.error.limitation.fail_sync").withStyle(ChatFormatting.DARK_RED), false);
+					ParCool.LOGGER.log(Level.ERROR, "Failed to synchronize ParCool Limitation. Please report to developer");
+				}
+			}
+		}
 
 		parkourability.getAdditionalProperties().onTick(player, parkourability);
 		for (Action action : actions) {
@@ -95,16 +116,18 @@ public class ActionProcessor {
 					}
 				} else {
 					bufferOfStarting.clear();
-					boolean start = parkourability.getActionInfo().can(action.getClass())
+					boolean start = !player.isSpectator()
+							&& parkourability.getActionInfo().can(action.getClass())
 							&& !player.getData(Attachments.STAMINA).isExhausted()
 							&& !NeoForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStartEvent(player, action)).isCanceled()
 							&& action.canStart(player, parkourability, bufferOfStarting);
 					bufferOfStarting.flip();
 					if (start) {
 						action.setDoing(true);
+						action.onStart(player, parkourability, bufferOfStarting);
+						bufferOfStarting.rewind();
 						action.onStartInLocalClient(player, parkourability, bufferOfStarting);
 						bufferOfStarting.rewind();
-						action.onStart(player, parkourability);
 						NeoForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
 						var data = new byte[bufferOfStarting.remaining()];
 						bufferOfStarting.get(data);
@@ -175,7 +198,7 @@ public class ActionProcessor {
 		if (needSync) {
 			PacketDistributor.sendToServer(new ActionStatePayload(player.getUUID(), syncStates));
 			var stamina = LocalStamina.get();
-			if (stamina != null) {
+			if (!parkourability.limitationIsNotSynced() && stamina != null) {
 				staminaSyncCoolTimeTick++;
 				if (staminaSyncCoolTimeTick > 5) {
 					staminaSyncCoolTimeTick = 0;

@@ -13,10 +13,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.CrossCollisionBlock;
-import net.minecraft.world.level.block.DirectionalBlock;
-import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.NeoForge;
@@ -25,6 +22,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nonnull;
@@ -42,10 +40,9 @@ public abstract class LivingEntityMixin extends Entity {
 			cir.setReturnValue(false);
 		} else {
 			LivingEntity entity = (LivingEntity) (Object) this;
-			if (!(entity instanceof Player)) {
+			if (!(entity instanceof Player player)) {
 				return;
 			}
-			Player player = (Player) entity;
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) {
 				return;
@@ -119,11 +116,22 @@ public abstract class LivingEntityMixin extends Entity {
 			boolean stacked = world.isLoaded(pos.above()) && world.getBlockState(pos.above()).getBlock() instanceof RotatedPillarBlock;
 			if (!stacked && world.isLoaded(pos.below()) && world.getBlockState(pos.below()).getBlock() instanceof RotatedPillarBlock)
 				stacked = true;
-			return !state.isCollisionShapeFullBlock(world, pos) && state.getValue(RotatedPillarBlock.AXIS).isVertical();
-		} else if (block instanceof DirectionalBlock) {
+			return !state.isCollisionShapeFullBlock(world, pos) && stacked && state.getValue(RotatedPillarBlock.AXIS).isVertical();
+		} else if (block instanceof EndRodBlock) {
 			Direction direction = state.getValue(DirectionalBlock.FACING);
 			return !state.isCollisionShapeFullBlock(world, pos) && (direction == Direction.UP || direction == Direction.DOWN);
 		}
 		return false;
+	}
+
+	@Inject(method = "setSprinting", at = @At("HEAD"), cancellable = true)
+	public void onSetSprinting(boolean sprint, CallbackInfo ci) {
+		if (!((Object) this instanceof Player player)) return;
+		if (player.isLocalPlayer()) {
+			Parkourability parkourability = Parkourability.get(player);
+			if (parkourability != null && parkourability.getBehaviorEnforcer().cancelSprint()) {
+				ci.cancel();
+			}
+		}
 	}
 }

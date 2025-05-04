@@ -23,7 +23,7 @@ public class PassiveCustomAnimation {
 
 	public void tick(Player player, Parkourability parkourability) {
 		flyingAnimationLevelOld = flyingAnimationLevel;
-		if (KeyBindings.getKeyForward().isDown() && player.getAbilities().flying) {
+        if (KeyBindings.isKeyForwardDown() && player.getAbilities().flying) {
 			flyingAnimationLevel++;
 			if (flyingAnimationLevel > flyingMaxLevel) {
 				flyingAnimationLevel = flyingMaxLevel;

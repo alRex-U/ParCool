@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "parcool:block/wooden_zipline_hook"
+    },
+    "facing=up": {
+      "model": "parcool:block/wooden_zipline_hook",
+      "x": 180
+    },
+    "facing=south": {
+      "model": "parcool:block/wooden_zipline_hook",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "parcool:block/wooden_zipline_hook",
+      "x": 90,
+      "y": 270
+    },
+    "facing=north": {
+      "model": "parcool:block/wooden_zipline_hook",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west": {
+      "model": "parcool:block/wooden_zipline_hook",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

@@ -112,6 +112,10 @@ public class ParCoolConfig {
 					ConfigGroup.HUD, null,
 					"hide_hud_if_stamina_infinite", true
 			),
+            ShowActionStatusBar(
+                    ConfigGroup.HUD, "Stamina HUD shows action charge rate, cool time or etc",
+                    "show_action_status_bar", true
+            ),
 			EnableDoubleTappingForDodge(
 					ConfigGroup.Control, "Enable double-tapping ctrl for Dodge",
 					"enable_double_tapping_for_dodge", false
@@ -131,10 +135,6 @@ public class ParCoolConfig {
             CanGetOffStepsWhileDodge(
                     ConfigGroup.Control, "Enable getting off steps while doing dodge",
                     "can_get_off_steps_while_dodge", false
-            ),
-			EnableWallJumpBackward(
-					ConfigGroup.Control, "Enable backward Wall-Jump when facing to wall",
-					"enable_wall_jump_backward", false
 			),
 			EnableRollWhenCreative(
 					ConfigGroup.Control, "Enable Roll when creative mode (experimental)",
@@ -156,14 +156,26 @@ public class ParCoolConfig {
 					ConfigGroup.Other, "Enable particles triggered by just-time breakfall",
 					"enable_particles_jt_breakfall", true
 			),
+            Enable3DRenderingForZipline(
+                    ConfigGroup.Other, "Enable block like rendering of zipline",
+                    "enable_3d_render_zipline", true
+            ),
 			VaultKeyPressedNeeded(
-					ConfigGroup.Control, "Make Vault Need Vault Key Pressed",
+                    ConfigGroup.Control, "Make Vault need Vault Key Pressed",
 					"vault_needs_key_pressed", false
 			),
+            HideInBlockSneakNeeded(
+                    ConfigGroup.Control, "Make HideInBlock need player sneaking",
+                    "hideinblock_needs_sneaking", true
+            ),
 			SubstituteSprintForFastRun(
 					ConfigGroup.Control, "enable players to do actions needing Fast-Running by sprint",
 					"substitute_sprint", false
 			),
+            ShowAutoResynchronizationNotification(
+                    ConfigGroup.Other, "Notify if auto resynchronization of Limitation is executed",
+                    "notify_limitation_auto_resync", true
+            ),
 			ParCoolIsActive(
 					ConfigGroup.Other, "Whether ParCool is active",
 					"parcool_activation", true
@@ -172,6 +184,7 @@ public class ParCoolConfig {
 			@Nullable
 			public final String Comment;
 			public final String Path;
+            public final String Translation;
 			public final boolean DefaultValue;
 			@Nullable
 			private ModConfigSpec.BooleanValue configInstance = null;
@@ -186,6 +199,7 @@ public class ParCoolConfig {
 				Comment = comment;
 				Path = path;
 				DefaultValue = defaultValue;
+                Translation = "parcool.config.c." + path;
 			}
 
 			@Override
@@ -198,6 +212,7 @@ public class ParCoolConfig {
 				if (Comment != null) {
 					builder.comment(Comment);
 				}
+                builder.translation(Translation);
 				configInstance = builder.define(Path, DefaultValue);
 			}
 
@@ -229,6 +244,10 @@ public class ParCoolConfig {
 		}
 
 		public enum Integers implements Item<Integer> {
+            AcceptableAngleOfWallJump(
+                    ConfigGroup.Control, "acceptable walll angle of wall jump : `0` means you exactly opposite to wall, `180` allow you to wall jump for all angle",
+                    "acceptable_angle_wall_jump", 110, 0, 180
+            ),
             HorizontalOffsetOfStaminaHUD(
                     ConfigGroup.HUD, "horizontal offset of normal HUD",
                     "offset_h_stamina_hud", 3, 0, 100
@@ -270,6 +289,7 @@ public class ParCoolConfig {
 			public final String Comment;
 			public final String Path;
 			public final int DefaultValue;
+            public final String Translation;
 			public final int Min;
 			public final int Max;
 			@Nullable
@@ -289,6 +309,7 @@ public class ParCoolConfig {
 				DefaultValue = defaultValue;
 				Min = min;
 				Max = max;
+                Translation = "parcool.config.c." + path;
 			}
 
 			@Override
@@ -300,6 +321,7 @@ public class ParCoolConfig {
 				if (Comment != null) {
 					builder.comment(Comment);
 				}
+                builder.translation(Translation);
 				configInstance = builder.defineInRange(Path, DefaultValue, Min, Max);
 			}
 
@@ -349,6 +371,7 @@ public class ParCoolConfig {
 			public final String Comment;
 			public final String Path;
 			public final double DefaultValue;
+            public final String Translation;
 			public final double Min;
 			public final double Max;
 			@Nullable
@@ -368,6 +391,7 @@ public class ParCoolConfig {
 				DefaultValue = defaultValue;
 				Min = min;
 				Max = max;
+                Translation = "parcool.config.c." + path;
 			}
 
 			@Override
@@ -379,6 +403,7 @@ public class ParCoolConfig {
 				if (Comment != null) {
 					builder.comment(Comment);
 				}
+                builder.translation(Translation);
 				configInstance = builder.defineInRange(Path, DefaultValue, Min, Max);
 			}
 
@@ -412,11 +437,11 @@ public class ParCoolConfig {
 			}
 		}
 
-		private static final ModConfigSpec.BooleanValue[] actionPossibilities = new ModConfigSpec.BooleanValue[Actions.LIST.size()];
-		private static final ModConfigSpec.BooleanValue[] animatorPossibilities = new ModConfigSpec.BooleanValue[AnimatorList.ANIMATORS.size()];
-		private static final ModConfigSpec.IntValue[] staminaConsumptions = new ModConfigSpec.IntValue[Actions.LIST.size()];
+        private static final ModConfigSpec.BooleanValue[] actionPossibilities = new ModConfigSpec.BooleanValue[Actions.LIST.size()];
+        private static final ModConfigSpec.BooleanValue[] animatorPossibilities = new ModConfigSpec.BooleanValue[AnimatorList.ANIMATORS.size()];
+        private static final ModConfigSpec.IntValue[] staminaConsumptions = new ModConfigSpec.IntValue[Actions.LIST.size()];
 		public static final ModConfigSpec.EnumValue<HUDType> StaminaHUDType;
-		public static final ModConfigSpec.EnumValue<StaminaType> StaminaType;
+        public static final ModConfigSpec.EnumValue<StaminaType> StaminaType;
 		public static final ModConfigSpec.EnumValue<Vault.TypeSelectionMode> VaultAnimationMode;
 		public static final ModConfigSpec.EnumValue<Position.Horizontal> AlignHorizontalStaminaHUD;
 		public static final ModConfigSpec.EnumValue<Position.Vertical> AlignVerticalStaminaHUD;
@@ -426,6 +451,7 @@ public class ParCoolConfig {
 		public static final ModConfigSpec.EnumValue<Flipping.ControlType> FlipControl;
 		public static final ModConfigSpec.EnumValue<HorizontalWallRun.ControlType> HWallRunControl;
 		public static final ModConfigSpec.EnumValue<WallJump.ControlType> WallJumpControl;
+        public static final ModConfigSpec.EnumValue<ClingToCliff.ControlType> ClingToCliffControl;
 
 		private static void register(ModConfigSpec.Builder builder, ConfigGroup group) {
 			Arrays.stream(Booleans.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
@@ -467,9 +493,10 @@ public class ParCoolConfig {
 			{
 				FastRunControl = builder.comment("Control of Fast Run").defineEnum("fast-run_control", FastRun.ControlType.PressKey);
 				CrawlControl = builder.comment("Control of Crawl").defineEnum("crawl_control", Crawl.ControlType.PressKey);
-				FlipControl = builder.comment("Control of Flipping").defineEnum("flip_control", Flipping.ControlType.PressRightAndLeft);
+                FlipControl = builder.comment("Control of Flipping").defineEnum("flip_control", Flipping.ControlType.TapMovementAndJump);
 				HWallRunControl = builder.comment("Control of Horizontal Wall Run").defineEnum("h-wall-run_control", HorizontalWallRun.ControlType.PressKey);
 				WallJumpControl = builder.comment("Control of Wall Jump").defineEnum("wall-jump_control", WallJump.ControlType.PressKey);
+                ClingToCliffControl = builder.comment("Control of Cling To Cliff").defineEnum("cling-to-cliff_control", ClingToCliff.ControlType.PressKey);
 				register(builder, ConfigGroup.Control);
 			}
 			builder.pop();
@@ -488,7 +515,8 @@ public class ParCoolConfig {
 			builder.push("Stamina");
 			{
                 builder.comment("Caution : Max stamina and stamina recovery config is removed because they became attributes.");
-				StaminaType = builder.defineEnum("used_stamina", com.alrex.parcool.common.stamina.StaminaType.PARCOOL);
+                StaminaType = builder.defineEnum("used_stamina", com.alrex.parcool.common.stamina.StaminaType.PARCOOL);
+                register(builder, ConfigGroup.Stamina);
 				builder.push("Consumption");
 				{
 					for (int i = 0; i < Actions.LIST.size(); i++) {
@@ -500,7 +528,7 @@ public class ParCoolConfig {
 						);
 					}
 				}
-				register(builder, ConfigGroup.Stamina);
+                builder.pop();
 			}
 			builder.pop();
 			BUILT_CONFIG = builder.build();
@@ -517,7 +545,10 @@ public class ParCoolConfig {
 					ConfigGroup.Control, "Allow disabling cooldown of wall jump",
 					"allow_disabling_wall_jump_cooldown", true, true
 			),
-			;
+            DodgeProvideInvulnerableFrame(
+                    ConfigGroup.Other, "Enable invulnerable time by Dodge",
+                    "enable_dodge_invulnerable_time", true, true
+            );
 			public final ConfigGroup Group;
 			@Nullable
 			public final String Comment;

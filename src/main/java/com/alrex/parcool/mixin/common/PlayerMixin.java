@@ -1,7 +1,6 @@
 package com.alrex.parcool.mixin.common;
 
 import com.alrex.parcool.common.action.Parkourability;
-import com.alrex.parcool.common.action.impl.ClingToCliff;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -19,11 +18,11 @@ public abstract class PlayerMixin extends LivingEntity {
         super(p_i48577_1_, p_i48577_2_);
 	}
     @Inject(method = "tryToStartFallFlying", at = @At("HEAD"), cancellable = true)
-	public void onTryToStartFallFlying(CallbackInfoReturnable<Boolean> cir) {
-		Player player = (Player) (Object) this;
-		Parkourability parkourability = Parkourability.get(player);
-		if (parkourability != null && parkourability.get(ClingToCliff.class).isDoing()) {
-			cir.setReturnValue(false);
+    public void onTryToStartFallFlying(CallbackInfoReturnable<Boolean> cir) {
+        var player = (Player) (Object) this;
+        Parkourability parkourability = Parkourability.get(player);
+        if (parkourability != null && parkourability.getBehaviorEnforcer().cancelFallFlying()) {
+            cir.setReturnValue(false);
         }
     }
 
@@ -31,7 +30,7 @@ public abstract class PlayerMixin extends LivingEntity {
     public void onJumpFromGround(CallbackInfo ci) {
         Parkourability parkourability = Parkourability.get((Player) (Object) this);
         if (parkourability == null) return;
-        if (parkourability.getCancelMarks().cancelJump()) {
+        if (parkourability.getBehaviorEnforcer().cancelJump()) {
             ci.cancel();
         }
     }
@@ -40,8 +39,8 @@ public abstract class PlayerMixin extends LivingEntity {
     public void onIsStayingOnGroundSurface(CallbackInfoReturnable<Boolean> cir) {
         Parkourability parkourability = Parkourability.get((Player) (Object) this);
         if (parkourability == null) return;
-        if (parkourability.getCancelMarks().cancelDescendFromEdge()) {
+        if (parkourability.getBehaviorEnforcer().cancelDescendFromEdge()) {
             cir.setReturnValue(true);
-		}
-	}
+        }
+    }
 }

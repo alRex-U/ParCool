@@ -8,7 +8,6 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.attachment.Attachments;
 import com.alrex.parcool.common.stamina.LocalStamina;
 import com.alrex.parcool.config.ParCoolConfig;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -19,8 +18,7 @@ import java.nio.ByteBuffer;
 
 public class BreakfallReady extends Action {
 	@OnlyIn(Dist.CLIENT)
-    public void startBreakfall(LocalPlayer player, Parkourability parkourability, boolean justTimed) {
-		setDoing(false);
+	public void startBreakfall(Player player, Parkourability parkourability, boolean justTimed) {
         boolean playSound = false;
 		if (justTimed && ParCoolConfig.Client.Booleans.EnableJustTimeEffectOfBreakfall.get()) {
 			if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
@@ -45,7 +43,7 @@ public class BreakfallReady extends Action {
             playSound = true;
 
         var stamina = LocalStamina.get();
-		if (((KeyBindings.getKeyForward().isDown() || KeyBindings.getKeyBack().isDown() || KeyBindings.getKeyLeft().isDown() || KeyBindings.getKeyRight().isDown())
+		if ((KeyBindings.isAnyMovingKeyDown()
 				&& parkourability.getActionInfo().can(Roll.class))
 				|| !parkourability.getActionInfo().can(Tap.class)
 		) {

@@ -150,7 +150,7 @@ public abstract class Limitation {
 
         @Override
         public void apply() {
-            Limitations.update(player);
+            Limitations.updateOnlyLimitation(player);
         }
 
         @Override
@@ -203,7 +203,7 @@ public abstract class Limitation {
         @Override
         public void apply() {
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                Limitations.update(player);
+                Limitations.updateOnlyLimitation(player);
             }
         }
 

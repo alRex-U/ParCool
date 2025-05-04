@@ -69,8 +69,10 @@ public record ActionStatePayload(UUID playerID, List<Entry> states) implements C
                 switch (state.type()) {
                     case Start:
                         action.setDoing(true);
-                        action.onStartInOtherClient(player, parkourability, state.getDataAsBuffer());
-                        action.onStart(player, parkourability);
+                        var buf = state.getDataAsBuffer();
+                        action.onStart(player, parkourability, buf);
+                        buf.rewind();
+                        action.onStartInOtherClient(player, parkourability, buf);
                         NeoForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
                         break;
                     case Finish:
@@ -100,8 +102,10 @@ public record ActionStatePayload(UUID playerID, List<Entry> states) implements C
                 switch (state.type()) {
                     case Start:
                         action.setDoing(true);
-                        action.onStartInServer(player, parkourability, state.getDataAsBuffer());
-                        action.onStart(player, parkourability);
+                        var buf = state.getDataAsBuffer();
+                        action.onStart(player, parkourability, buf);
+                        buf.rewind();
+                        action.onStartInServer(player, parkourability, buf);
                         NeoForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
                         break;
                     case Finish:
