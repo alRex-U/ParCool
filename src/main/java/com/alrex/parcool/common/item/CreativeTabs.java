@@ -18,7 +18,7 @@ public class CreativeTabs {
     private static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ParCool.MOD_ID);
     public static final RegistryObject<CreativeModeTab> ITEMS = TABS.register("items", () -> CreativeModeTab.builder()
             .icon(() -> new ItemStack(Items.PARCOOL_GUIDE.get()))
-            .title(Component.literal(ParCool.MOD_ID))
+            .title(Component.translatable("itemGroup.ParCool"))
             .hideTitle()
             .displayItems((params, output) -> {
                 output.accept(Items.IRON_ZIPLINE_HOOK.get());
