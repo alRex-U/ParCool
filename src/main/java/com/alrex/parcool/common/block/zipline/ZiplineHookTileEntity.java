@@ -51,13 +51,14 @@ public class ZiplineHookTileEntity extends BlockEntity {
         List<ItemStack> itemStacks = Collections.EMPTY_LIST;
         if (!level.isClientSide()) {
             connectionEntities.values().forEach((it) -> it.remove(Entity.RemovalReason.DISCARDED));
-            itemStacks = connections.values().stream().map(it -> {
+            itemStacks = getConnectionInfo().values().stream().map(it -> {
                 ItemStack stack = new ItemStack(Items.ZIPLINE_ROPE::get);
                 ZiplineRopeItem.setColor(stack, it.getColor());
                 return stack;
             }).collect(Collectors.toList());
         }
         connectionEntities.clear();
+        getConnectionInfo().clear();
         return itemStacks;
     }
 

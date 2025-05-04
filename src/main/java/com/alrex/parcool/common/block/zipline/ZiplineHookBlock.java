@@ -101,7 +101,9 @@ public class ZiplineHookBlock extends DirectionalBlock implements EntityBlock {
                 if (ziplineHookTileEntity.getConnectionPoints().isEmpty()) return InteractionResult.PASS;
 
                 List<ItemStack> itemStacks = ziplineHookTileEntity.removeAllConnection();
-                player.playSound(SoundEvents.ZIPLINE_REMOVE.get(), 1, 1);
+                if (!itemStacks.isEmpty()) {
+                    player.playSound(SoundEvents.ZIPLINE_REMOVE.get(), 1, 1);
+                }
                 if (world.isClientSide()) {
                     return InteractionResult.SUCCESS;
                 } else {
