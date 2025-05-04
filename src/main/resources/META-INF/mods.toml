@@ -1,5 +1,5 @@
 modLoader = "javafml" #mandatory
-loaderVersion = "[39,)"
+loaderVersion = "[40,)"
 license = "GNU LESSER GENERAL PUBLIC LICENSE Version 3"
 issueTrackerURL = "https://github.com/alRex-U/ParCool/issues" #optional
 [[mods]] #mandatory
@@ -18,7 +18,7 @@ description = '''
 [[dependencies.parcool]] #optional
 modId = "forge" #mandatory
 mandatory = true #mandatory
-versionRange = "[39,)" #mandatory
+versionRange = "[40,)" #mandatory
 ordering = "NONE"
 side = "BOTH"
 

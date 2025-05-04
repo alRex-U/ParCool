@@ -3,7 +3,7 @@
   "package": "com.alrex.parcool.mixin",
   "plugin": "com.alrex.parcool.mixin.ParCoolMixinPlugin",
   "refmap": "parcool.refmap.json",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
     "client.ClientWorldMixin",
