@@ -26,20 +26,31 @@ public class Crawl extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-		return ((ParCoolConfig.Client.CrawlControl.get() == ControlType.PressKey && KeyRecorder.keyCrawlState.isPressed())
-				|| (ParCoolConfig.Client.CrawlControl.get() == ControlType.Toggle && toggleStatus))
-				&& !parkourability.get(Roll.class).isDoing()
-				&& !parkourability.get(Tap.class).isDoing()
-				&& !parkourability.get(ClingToCliff.class).isDoing()
-				&& !parkourability.get(Dive.class).isDoing()
+        Pose pose = player.getPose();
+        return isActionInvoked(player)
+                && disambiguateCommands(player, pose)
+                && !parkourability.isDoingAny(Roll.class, Tap.class, ClingToCliff.class, Dive.class)
 				&& parkourability.get(Vault.class).getNotDoingTick() >= 8
+                && !parkourability.get(HideInBlock.class).isDoing()
 				&& player.getVehicle() == null
+                && (pose == Pose.STANDING || pose == Pose.CROUCHING)
 				&& !player.isInWaterOrBubble()
 				&& !player.isFallFlying()
 				&& !player.onClimbable()
 				&& (player.isOnGround() || ParCoolConfig.Client.Booleans.EnableCrawlInAir.get());
 	}
 
+    private boolean isActionInvoked(Player player) {
+        return ((ParCoolConfig.Client.CrawlControl.get() == ControlType.PressKey && KeyRecorder.keyCrawlState.isPressed())
+                || (ParCoolConfig.Client.CrawlControl.get() == ControlType.Toggle && toggleStatus));
+    }
+
+    private boolean disambiguateCommands(Player player, Pose pose) {
+        // If crawl and dodge are bound to the same key, we'll crawl only when crouching
+        return pose == Pose.CROUCHING || !KeyRecorder.keyDodge.isPressed();
+    }
+
+    @Override
 	public void onClientTick(Player player, Parkourability parkourability, IStamina stamina) {
 		if (player.isLocalPlayer()) {
 			if (ParCoolConfig.Client.CrawlControl.get() == Crawl.ControlType.Toggle) {
@@ -93,4 +104,9 @@ public class Crawl extends Action {
 		player.setSprinting(false);
 		player.setPose(Pose.SWIMMING);
 	}
+
+    @Override
+    public void onStop(Player player) {
+        player.setPose(Pose.STANDING);
+    }
 }

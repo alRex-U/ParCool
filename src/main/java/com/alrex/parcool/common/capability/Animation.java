@@ -39,8 +39,10 @@ public class Animation {
 	}
 
 	public boolean animatePre(Player player, PlayerModelTransformer modelTransformer) {
-		if (animator == null) return false;
 		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) return false;
+		if (animator != null && animator.shouldRemoved(player, parkourability)) animator = null;
+		if (animator == null) return false;
         modelTransformer.setOption(option);
         if (option.isAnimationCanceled()) return false;
 		return animator.animatePre(player, parkourability, modelTransformer);
@@ -59,7 +61,9 @@ public class Animation {
 
 	public boolean rotatePre(AbstractClientPlayer player, PlayerModelRotator rotator) {
 		Parkourability parkourability = Parkourability.get(player);
-		if (parkourability == null || animator == null) return false;
+		if (parkourability == null) return false;
+		if (animator != null && animator.shouldRemoved(player, parkourability)) animator = null;
+		if (animator == null) return false;
         if (option.isAnimationCanceled() || option.isCanceled(AnimationPart.ROTATION)) return false;
 		return animator.rotatePre(player, parkourability, rotator);
 	}
@@ -89,7 +93,6 @@ public class Animation {
 		passiveAnimation.tick(player, parkourability);
 		if (animator != null) {
             animator.tick(player);
-			if (animator.shouldRemoved(player, parkourability)) animator = null;
 		}
         {
 			ParCoolAnimationInfoEvent animationEvent = new ParCoolAnimationInfoEvent(player, animator);

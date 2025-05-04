@@ -4,6 +4,7 @@ import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.HangAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
@@ -21,6 +22,7 @@ import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
 public class HangDown extends Action {
+    private static final BehaviorEnforcer.ID ID_SNEAK_CANCEL = BehaviorEnforcer.newID();
 	public enum BarAxis {
 		X, Z
 	}
@@ -91,7 +93,7 @@ public class HangDown extends Action {
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		setup(player, startData);
 		if (!KeyBindings.getKeyHangDown().getKey().equals(KeyBindings.getKeySneak().getKey())) {
-			parkourability.getCancelMarks().addMarkerCancellingSneak(this::isDoing);
+            parkourability.getBehaviorEnforcer().addMarkerCancellingSneak(ID_SNEAK_CANCEL, this::isDoing);
 		}
 		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get()) {
 			player.playSound(SoundEvents.HANG_DOWN.get(), 1.0f, 1.0f);
@@ -118,8 +120,8 @@ public class HangDown extends Action {
 			} else {
 				zSpeed = (bodyVec.x > 0 ? 1 : -1) * speed;
 			}
-			if (KeyBindings.getKeyLeft().isDown()) player.setDeltaMovement(xSpeed, 0, -zSpeed);
-			else if (KeyBindings.getKeyRight().isDown()) player.setDeltaMovement(-xSpeed, 0, zSpeed);
+            if (KeyBindings.isKeyLeftDown()) player.setDeltaMovement(xSpeed, 0, -zSpeed);
+            else if (KeyBindings.isKeyRightDown()) player.setDeltaMovement(-xSpeed, 0, zSpeed);
 			else player.setDeltaMovement(0, 0, 0);
 		} else {
 			if (hangingBarAxis == BarAxis.X) {
@@ -127,8 +129,8 @@ public class HangDown extends Action {
 			} else {
 				zSpeed = (bodyVec.z > 0 ? 1 : -1) * speed;
 			}
-			if (KeyBindings.getKeyForward().isDown()) player.setDeltaMovement(xSpeed, 0, zSpeed);
-			else if (KeyBindings.getKeyBack().isDown()) player.setDeltaMovement(-xSpeed, 0, -zSpeed);
+            if (KeyBindings.isKeyForwardDown()) player.setDeltaMovement(xSpeed, 0, zSpeed);
+            else if (KeyBindings.isKeyBackDown()) player.setDeltaMovement(-xSpeed, 0, -zSpeed);
 			else player.setDeltaMovement(0, 0, 0);
 		}
 		armSwingAmount += (float) player.getDeltaMovement().multiply(1, 0, 1).lengthSqr();

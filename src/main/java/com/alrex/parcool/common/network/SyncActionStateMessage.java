@@ -64,8 +64,10 @@ public class SyncActionStateMessage {
 				switch (item.getType()) {
 					case Start:
 						action.setDoing(true);
+                        ByteBuffer startData = item.getBuffer();
+                        action.onStart(player, parkourability, startData);
+                        startData.rewind();
 						action.onStartInServer(player, parkourability, item.getBuffer());
-						action.onStart(player, parkourability);
 						MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
 						break;
 					case Finish:
@@ -89,9 +91,9 @@ public class SyncActionStateMessage {
 			Player player;
 			boolean clientSide;
 			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-				Level world = Minecraft.getInstance().level;
-				if (world == null) return;
-				player = world.getPlayerByUUID(senderUUID);
+                Level level = Minecraft.getInstance().level;
+                if (level == null) return;
+                player = level.getPlayerByUUID(senderUUID);
 				if (player == null || player.isLocalPlayer()) return;
 				clientSide = true;
 			} else {
@@ -112,12 +114,14 @@ public class SyncActionStateMessage {
 				switch (item.getType()) {
 					case Start:
 						action.setDoing(true);
+                        ByteBuffer startData = item.getBuffer();
+                        action.onStart(player, parkourability, startData);
+                        startData.rewind();
 						if (clientSide) {
-							action.onStartInOtherClient(player, parkourability, item.getBuffer());
+                            action.onStartInOtherClient(player, parkourability, startData);
 						} else {
-							action.onStartInServer(player, parkourability, item.getBuffer());
+                            action.onStartInServer(player, parkourability, startData);
 						}
-						action.onStart(player, parkourability);
 						MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
 						break;
 					case Finish:

@@ -5,12 +5,12 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "You can kick walls to more jump. But be careful, you cannot gain height if want to kick icy blocks!"
+      "text": "Wall Jump, is a skill to jump more by kicking wall. You need to have your back to the wall.$(br)However, you cannot gain height when kicking icy blocks!"
     },
     {
       "type": "patchouli:text",
       "title": "How to Use",
-      "text": "$(list)Press Wall Jump key($(k:parcool.WallJump)) by walls in air"
+      "text": "$(list)Press Wall-Jump key($(k:parcool.WallJump)) by walls in air"
     }
   ]
 }

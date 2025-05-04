@@ -14,7 +14,8 @@ import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public class KeyBindings {
-	private static final Options settings = Minecraft.getInstance().options;
+	private static final Minecraft mc = Minecraft.getInstance();
+	private static final Options settings = mc.options;
 	private static final KeyMapping keyBindEnable = new KeyMapping("key.parcool.Enable", KeyConflictContext.UNIVERSAL, KeyModifier.CONTROL, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.categories.parcool");
 	private static final KeyMapping keyBindCrawl = new KeyMapping("key.parcool.Crawl", GLFW.GLFW_KEY_C, "key.categories.parcool");
 	private static final KeyMapping keyBindGrabWall = new KeyMapping("key.parcool.ClingToCliff", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
@@ -23,9 +24,11 @@ public class KeyBindings {
 	private static final KeyMapping keyBindFlipping = new KeyMapping("key.parcool.Flipping", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
 	private static final KeyMapping keyBindVault = new KeyMapping("key.parcool.Vault", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
 	private static final KeyMapping keyBindDodge = new KeyMapping("key.parcool.Dodge", GLFW.GLFW_KEY_R, "key.categories.parcool");
+	private static final KeyMapping keyBindRideZipline = new KeyMapping("key.parcool.RideZipline", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
 	private static final KeyMapping keyBindWallJump = new KeyMapping("key.parcool.WallJump", GLFW.GLFW_KEY_SPACE, "key.categories.parcool");
 	private static final KeyMapping keyBindHangDown = new KeyMapping("key.parcool.HangDown", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
 	private static final KeyMapping keyBindWallSlide = new KeyMapping("key.parcool.WallSlide", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
+	private static final KeyMapping keyBindHideInBlock = new KeyMapping("key.parcool.HideInBlock", GLFW.GLFW_KEY_C, "key.categories.parcool");
 	private static final KeyMapping keyBindHorizontalWallRun = new KeyMapping("key.parcool.HorizontalWallRun", GLFW.GLFW_KEY_R, "key.categories.parcool");
 	private static final KeyMapping keyBindQuickTurn = new KeyMapping("key.parcool.QuickTurn", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
 	private static final KeyMapping keyBindOpenSettings = new KeyMapping("key.parcool.openSetting", KeyConflictContext.UNIVERSAL, KeyModifier.ALT, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.categories.parcool");
@@ -34,28 +37,41 @@ public class KeyBindings {
 		return settings.keySprint;
 	}
 
-	public static KeyMapping getKeyJump() {
-		return settings.keyJump;
+	public static Boolean isKeyJumpDown() {
+		return mc.player != null
+				&& mc.player.input.jumping;
 	}
 
 	public static KeyMapping getKeySneak() {
 		return settings.keyShift;
 	}
 
-	public static KeyMapping getKeyLeft() {
-		return settings.keyLeft;
+	public static Boolean isAnyMovingKeyDown() {
+		return mc.player != null
+				&& (mc.player.input.left
+				|| mc.player.input.right
+				|| mc.player.input.forwardImpulse != 0
+				|| mc.player.input.leftImpulse != 0);
 	}
 
-	public static KeyMapping getKeyRight() {
-		return settings.keyRight;
+	public static Boolean isLeftAndRightDown() {
+		return mc.player != null && mc.player.input.left && mc.player.input.right;
 	}
 
-	public static KeyMapping getKeyForward() {
-		return settings.keyUp;
+	public static Boolean isKeyForwardDown() {
+		return mc.player != null && mc.player.input.forwardImpulse > 0;
 	}
 
-	public static KeyMapping getKeyBack() {
-		return settings.keyDown;
+	public static Boolean isKeyLeftDown() {
+		return mc.player != null && mc.player.input.left;
+	}
+
+	public static Boolean isKeyRightDown() {
+		return mc.player != null && mc.player.input.right;
+	}
+
+	public static Boolean isKeyBackDown() {
+		return mc.player != null && mc.player.input.forwardImpulse < 0;
 	}
 
 	public static KeyMapping getKeyBindEnable() {
@@ -94,12 +110,20 @@ public class KeyBindings {
 		return keyBindDodge;
 	}
 
+	public static KeyMapping getKeyRideZipline() {
+		return keyBindRideZipline;
+	}
+
 	public static KeyMapping getKeyWallSlide() {
 		return keyBindWallSlide;
 	}
 
 	public static KeyMapping getKeyHangDown() {
 		return keyBindHangDown;
+	}
+
+	public static KeyMapping getKeyHideInBlock() {
+		return keyBindHideInBlock;
 	}
 
 	public static KeyMapping getKeyHorizontalWallRun() {
@@ -122,10 +146,12 @@ public class KeyBindings {
 		event.register(keyBindBreakfall);
 		event.register(keyBindFastRunning);
 		event.register(keyBindDodge);
+		event.register(keyBindRideZipline);
 		event.register(keyBindWallSlide);
 		event.register(keyBindWallJump);
 		event.register(keyBindVault);
 		event.register(keyBindHorizontalWallRun);
+		event.register(keyBindHideInBlock);
 		event.register(keyBindOpenSettings);
 		event.register(keyBindQuickTurn);
 		event.register(keyBindFlipping);

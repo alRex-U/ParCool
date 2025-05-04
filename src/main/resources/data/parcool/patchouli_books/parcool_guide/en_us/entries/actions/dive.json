@@ -11,7 +11,7 @@
       "type": "patchouli:image",
       "border": "true",
       "images": [
-        "parcool:textures/gui/entries/image_dive.png"
+        "parcool:textures/gui/entries/dive.png"
       ]
     },
     {

@@ -4,6 +4,7 @@ import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.stamina.Stamina;
+import com.alrex.parcool.extern.AdditionalMods;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -20,8 +21,8 @@ public class EpicFightStamina implements IStamina {
 
     @Override
     public int getActualMaxStamina() {
-        if (EpicFightManager.isBattleMode(player)) {
-            PlayerPatch<?> patch = EpicFightManager.getPlayerPatch(player);
+        if (AdditionalMods.epicFight().isBattleMode(player)) {
+            PlayerPatch<?> patch = AdditionalMods.epicFight().getPlayerPatch(player);
             if (patch == null) return 0;
             return (int) patch.getMaxStamina();
         } else {
@@ -31,8 +32,8 @@ public class EpicFightStamina implements IStamina {
 
     @Override
     public int get() {
-        if (EpicFightManager.isBattleMode(player)) {
-            PlayerPatch<?> patch = EpicFightManager.getPlayerPatch(player);
+        if (AdditionalMods.epicFight().isBattleMode(player)) {
+            PlayerPatch<?> patch = AdditionalMods.epicFight().getPlayerPatch(player);
             if (patch == null) return 0;
             return (int) patch.getStamina();
         } else {
@@ -42,7 +43,7 @@ public class EpicFightStamina implements IStamina {
 
     @Override
     public int getOldValue() {
-        if (EpicFightManager.isBattleMode(player)) {
+        if (AdditionalMods.epicFight().isBattleMode(player)) {
             return get();
         } else {
             return parcoolStamina.getOldValue();
@@ -57,7 +58,7 @@ public class EpicFightStamina implements IStamina {
                 || parkourability.getActionInfo().isStaminaInfinite(player.isSpectator() || player.isCreative())
                 || player.hasEffect(Effects.INEXHAUSTIBLE.get())
         ) return;
-        if (EpicFightManager.isBattleMode(player)) {
+        if (AdditionalMods.epicFight().isBattleMode(player)) {
             consumeBuffer += value / 15f;
         } else {
             parcoolStamina.consume(value);
@@ -66,7 +67,7 @@ public class EpicFightStamina implements IStamina {
 
     @Override
     public void recover(int value) {
-        if (!EpicFightManager.isBattleMode(player)) {
+        if (!AdditionalMods.epicFight().isBattleMode(player)) {
             parcoolStamina.recover(value);
         }
     }
@@ -78,7 +79,7 @@ public class EpicFightStamina implements IStamina {
         if (parkourability.getActionInfo().isStaminaInfinite(player.isSpectator() || player.isCreative())
                 || player.hasEffect(Effects.INEXHAUSTIBLE.get())
         ) return false;
-        if (!EpicFightManager.isBattleMode(player)) {
+        if (!AdditionalMods.epicFight().isBattleMode(player)) {
             return parcoolStamina.isExhausted();
         }
         return false;
@@ -86,28 +87,28 @@ public class EpicFightStamina implements IStamina {
 
     @Override
     public void setExhaustion(boolean value) {
-        if (!EpicFightManager.isBattleMode(player)) {
+        if (!AdditionalMods.epicFight().isBattleMode(player)) {
             parcoolStamina.setExhaustion(value);
         }
     }
 
     @Override
     public void tick() {
-        if (!EpicFightManager.isBattleMode(player)) {
+        if (!AdditionalMods.epicFight().isBattleMode(player)) {
             parcoolStamina.tick();
         }
     }
 
     @Override
     public void set(int value) {
-        if (!EpicFightManager.isBattleMode(player)) {
+        if (!AdditionalMods.epicFight().isBattleMode(player)) {
             parcoolStamina.set(value);
         }
     }
 
     @Override
     public boolean wantToConsumeOnServer() {
-        return EpicFightManager.isBattleMode(player) && consumeBuffer != 0f;
+        return AdditionalMods.epicFight().isBattleMode(player) && consumeBuffer != 0f;
     }
 
     @Override
@@ -118,7 +119,7 @@ public class EpicFightStamina implements IStamina {
     }
 
     public static void consumeOnServer(ServerPlayer player, int value) {
-        PlayerPatch<?> patch = EpicFightManager.getPlayerPatch(player);
+        PlayerPatch<?> patch = AdditionalMods.epicFight().getPlayerPatch(player);
         if (patch == null) return;
         patch.setStamina(patch.getStamina() - value / 10000f);
     }

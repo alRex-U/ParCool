@@ -1,19 +1,18 @@
 buildscript {
     repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://repo.spongepowered.org/maven' }
-        maven { url = "https://maven.blamejared.com/" }
-        mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.+', changing: true
         classpath 'org.spongepowered:mixingradle:0.7.+'
     }
 }
-apply plugin: 'net.minecraftforge.gradle'
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+}
 apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
 
 compileJava.options.encoding("UTF-8")
 compileTestJava.options.encoding("UTF-8")
@@ -24,18 +23,21 @@ mixin {
 }
 
 //Version Format (MajorMOD.MajorAPI.Minor.Patch)
-var version_code = "${major_mod}.${major_api}.${minor}.${patch}"
-version = "${mc_version}-${version_code}"
+var mod_version_code = "${major_mod}.${major_api}.${minor}.${patch}"
+version = "${mc_version}-${mod_version_code}"
 group = 'com.alrex'
-archivesBaseName = 'ParCool'
+base {
+    archivesBaseName = 'ParCool'
+}
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
     mappings channel: 'official', version: mc_version
+    copyIdeResources = true
 
-    //accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
         client {
@@ -82,16 +84,23 @@ repositories {
 }
 dependencies {
     // Specify the version of Minecraft to use.
-    minecraft "net.minecraftforge:forge:${forge_version}"
+    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
-    compileOnly fg.deobf("curse.maven:epic-fight-mod-405076:${epicfight_version}")
-    runtimeOnly fg.deobf("curse.maven:epic-fight-mod-405076:${epicfight_version}")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
+
     //compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
     runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))
+
+    compileOnly fg.deobf("curse.maven:BetterThirdPerson-435044:4177088")
+    compileOnly fg.deobf("curse.maven:ShoulderSurfing-243190:6387974")
+    runtimeOnly fg.deobf("curse.maven:ShoulderSurfing-243190:6387974")
+
     compileOnly fg.deobf("curse.maven:feathers-699933:4573576")
     runtimeOnly fg.deobf("curse.maven:feathers-699933:4573576")
+
+    compileOnly fg.deobf("curse.maven:epic-fight-mod-405076:${epicfight_version}")
+    runtimeOnly fg.deobf("curse.maven:epic-fight-mod-405076:${epicfight_version}")
 }
 
 jar {
@@ -99,18 +108,17 @@ jar {
         attributes([
                 "Specification-Title"     : "ParCool!",
                 "Specification-Vendor"    : "alRex",
-                "Specification-Version" : "${version_code}",
+                "Specification-Version" : "${mod_version_code}",
                 "Implementation-Title"    : project.name,
-                "Implementation-Version": "${version_code}",
+                "Implementation-Version": "${mod_version_code}",
                 "Implementation-Vendor"   : "alRex",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
                 "TweakClass"              : "org.spongepowered.asm.launch.MixinTweaker",
                 "MixinConfigs"            : "parcool.mixins.json"
         ])
     }
+    finalizedBy('reobfJar')
 }
-
-jar.finalizedBy('reobfJar')
 
 publishing {
     publications {

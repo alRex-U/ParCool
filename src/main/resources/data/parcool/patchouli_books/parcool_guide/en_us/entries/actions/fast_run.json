@@ -5,7 +5,14 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Now you are an parkour player! so you can run faster than before. Some other actions need using this.$(br)If you think this feature is annoying, modifying configs can help you."
+      "text": "Now you are an parkour player! so you can run faster than before. This is a basis of ParCool. Some other actions need using this."
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/fast_run.png"
+      ]
     },
     {
       "type": "patchouli:text",

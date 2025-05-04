@@ -8,9 +8,16 @@
       "text": "$(bold)Slide$() is an action derived from $(l:parcool:actions/crawl)Crawl$(). You can go through narrow space quickly."
     },
     {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/slide.png"
+      ]
+    },
+    {
       "type": "patchouli:text",
       "title": "How to Use",
-      "text": "$(list)do Crawl while doing Fast Running"
+      "text": "$(list)do Crawl while doing $(l:parcool:actions/fast_run)Fast Run$()"
     }
   ]
 }

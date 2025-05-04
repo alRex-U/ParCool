@@ -3,9 +3,8 @@ package com.alrex.parcool.common.capability;
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.capability.stamina.HungerStamina;
 import com.alrex.parcool.common.capability.stamina.Stamina;
-import com.alrex.parcool.extern.epicfight.EpicFightManager;
+import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.extern.epicfight.EpicFightStamina;
-import com.alrex.parcool.extern.feathers.FeathersManager;
 import com.alrex.parcool.extern.feathers.FeathersStamina;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -16,11 +15,11 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public interface IStamina {
-	public enum Type {
+	enum Type {
 		Default(Stamina.class, Stamina::new, null),
 		Hunger(HungerStamina.class, HungerStamina::new, HungerStamina::consumeOnServer),
-		Feathers(FeathersStamina.class, FeathersManager::newFeathersStaminaFor, null),
-		EpicFight(EpicFightStamina.class, EpicFightManager::newFeathersStaminaFor, EpicFightStamina::consumeOnServer);
+		Feathers(FeathersStamina.class, AdditionalMods.feathers()::newFeathersStaminaFor, null),
+		EpicFight(EpicFightStamina.class, AdditionalMods.epicFight()::newFeathersStaminaFor, EpicFightStamina::consumeOnServer);
 
 		Type(Class<? extends IStamina> clazz, Function<Player, IStamina> constructor, BiConsumer<ServerPlayer, Integer> serverStaminaHandler) {
 			this.constructor = constructor;

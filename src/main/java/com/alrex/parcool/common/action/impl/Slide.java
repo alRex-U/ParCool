@@ -5,6 +5,7 @@ import com.alrex.parcool.client.animation.impl.CrawlAnimator;
 import com.alrex.parcool.client.animation.impl.SlidingAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
@@ -25,6 +26,7 @@ import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
 public class Slide extends Action {
+	private static final BehaviorEnforcer.ID ID_JUMP_CANCEL = BehaviorEnforcer.newID();
 	private Vec3 slidingVec = null;
 
 	@Override
@@ -61,7 +63,7 @@ public class Slide extends Action {
 		if (animation != null) {
 			animation.setAnimator(new SlidingAnimator());
 		}
-		parkourability.getCancelMarks().addMarkerCancellingJump(this::isDoing);
+		parkourability.getBehaviorEnforcer().addMarkerCancellingJump(ID_JUMP_CANCEL, this::isDoing);
 	}
 
 	@Override
