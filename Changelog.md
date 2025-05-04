@@ -1,5 +1,57 @@
 # Changelogs
 
+## ver-3.4.0.0
+
+### New Features
+
+- Zipline Facility
+- Action : Ride Zipline
+- Action : Hide In Block
+- Auto-detection for desynchronization of Limitations
+- Supports [Shoulder Surfing Reloaded](https://www.curseforge.com/minecraft/mc-mods/shoulder-surfing-reloaded) Mod for
+  bugfixes
+- Supports [Better Third Person](https://www.curseforge.com/minecraft/mc-mods/better-third-person) Mod for bugfixes
+
+### Modified
+
+- Stamina
+    - Saved and restored when player re-login
+- Charge Jump
+    - Disabled to charge when player tap sneaking repeatedly
+- Dodge
+    - Provide invulnerable time
+    - Able to be triggered soon after get off small steps
+- Hang Down
+    - Animation Modified
+- Wall Jump
+    - Modifiable sensitivity to trigger
+
+### Translation
+
+- Translation keys are added for client config entries
+- Chinese (zh_cn) (Modified)
+    - by *CatalystGinger*
+- Traditional Chinese (zh_tw) (Added)
+    - by *notlin4* and *CatalystGinger*
+- Turkish (tr_tr) (Modified)
+    - by *FurkenSenpainiz*
+- Brazilian Portuguese (pt_br) (Added)
+    - by *Sulvosson*
+- Spanish (es_es) (Modified)
+    - by *ElTormakzXD*
+- Spanish (es_ve) (Added)
+    - by *ElTormakzXD*
+
+### Bugfix
+
+- #237
+    - by *Vaso64*
+- #212
+- Internal BehaviorEnforcer's list get too large in server
+- FastRun works even when sneaking
+
+---
+
 ## ver-3.3.0.1
 
 ### Translation

@@ -19,7 +19,7 @@ import net.minecraftforge.event.TickEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class StaminaHUD {
-	public static final ResourceLocation STAMINA = new ResourceLocation("parcool", "textures/gui/stamina_bar.png");
+	public static final ResourceLocation STAMINA = ResourceLocation.fromNamespaceAndPath("parcool", "textures/gui/stamina_bar.png");
 
 	public StaminaHUD() {
 	}

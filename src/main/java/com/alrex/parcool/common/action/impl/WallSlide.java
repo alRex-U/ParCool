@@ -62,10 +62,10 @@ public class WallSlide extends Action {
 		);
 	}
 
-    @Override
-    public void onStart(Player player, Parkourability parkourability) {
-        particleSpawnCoolTime = 0;
-    }
+	@Override
+	public void onStart(Player player, Parkourability parkourability, ByteBuffer startData) {
+		particleSpawnCoolTime = 0;
+	}
 
     @Override
     public void onStartInServer(Player player, Parkourability parkourability, ByteBuffer startData) {

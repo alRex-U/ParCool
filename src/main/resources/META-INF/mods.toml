@@ -30,9 +30,37 @@ versionRange = "[1.20,1.21)"
 ordering = "NONE"
 side = "BOTH"
 
-#[[dependencies.parcool]]
-#modId = "feathers"
-#mandatory = false
-#versionRange = "[0.1,)"
-#ordering = "BEFORE"
-#side = "BOTH"
+[[dependencies.parcool]]
+modId = "feathers"
+mandatory = false
+versionRange = "[0.1,)"
+ordering = "BEFORE"
+side = "BOTH"
+
+[[dependencies.parcool]]
+modId = "paraglider"
+mandatory = false
+versionRange = "[20.1.1,)"
+ordering = "BEFORE"
+side = "BOTH"
+
+[[dependencies.parcool]]
+modId = "betterthirdperson"
+mandatory = false
+versionRange = "[1.9.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.parcool]]
+modId = "shouldersurfing"
+mandatory = false
+versionRange = "[1.20.1-4.10.5,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.parcool]]
+modId = "epicfight"
+mandatory = false
+versionRange = "[20.7.4,)"
+ordering = "NONE"
+side = "BOTH"

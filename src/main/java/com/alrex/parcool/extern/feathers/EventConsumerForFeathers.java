@@ -1,6 +1,7 @@
 package com.alrex.parcool.extern.feathers;
 
 import com.alrex.parcool.api.client.gui.ParCoolHUDEvent;
+import com.alrex.parcool.extern.AdditionalMods;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -12,7 +13,7 @@ public class EventConsumerForFeathers {
     public static void onHUDRender(ParCoolHUDEvent.RenderEvent event) {
         var player = Minecraft.getInstance().player;
         if (player == null) return;
-        if (FeathersManager.isUsingFeathers(player)) {
+        if (AdditionalMods.feathers().isUsingFeathers(player)) {
             event.setCanceled(true);
         }
     }

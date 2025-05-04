@@ -24,7 +24,7 @@ This project is always ready to accept your contribution.
 ### For Developers
 
 This mod provides some features for mod developers, server-hosts and mod-packers.
-Please read [ParCool Guide](docs/parcool-gude-on-web-v3.1.0.0/Introduction.md).
+Please read [ParCool Guide](docs/parcool-guide-on-web-v3.1.0.0/Introduction.md).
 
 *ParCool* is licensed with  
 **GNU LESSER GENERAL PUBLIC LICENSE Version 3**.

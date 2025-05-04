@@ -4,6 +4,7 @@ import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.client.animation.impl.ChargeJumpAnimator;
 import com.alrex.parcool.client.animation.impl.JumpChargingAnimator;
+import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.capability.Animation;
@@ -82,7 +83,7 @@ public class ChargeJump extends Action {
                     && !parkourability.get(Crawl.class).isDoing()
                     && !MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStartEvent(player, this))
             ) {
-                if (cp.isShiftKeyDown()) {
+                if (cp.isShiftKeyDown() && KeyRecorder.keySneak.getPreviousTickNotKeyDown() > 5) {
                     chargeTick++;
                     if (chargeTick > JUMP_MAX_CHARGE_TICK) chargeTick = JUMP_MAX_CHARGE_TICK;
                     lastChargeTick = chargeTick;

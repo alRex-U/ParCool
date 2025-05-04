@@ -3,6 +3,8 @@ package com.alrex.parcool.client.animation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.world.entity.player.Player;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class PlayerModelRotator {
 	private final PoseStack stack;
@@ -87,6 +89,11 @@ public class PlayerModelRotator {
 
 	public PlayerModelRotator rotateYawRightward(float angleDegree) {
 		stack.mulPose(Axis.YN.rotationDegrees(angleDegree));
+		return this;
+	}
+
+	public PlayerModelRotator rotate(float angle, Vector3f axis) {
+		stack.mulPose((new Quaternionf()).rotationAxis(angle, axis));
 		return this;
 	}
 

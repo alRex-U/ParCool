@@ -49,9 +49,9 @@ public class SyncClientInformationMessage {
 		contextSupplier.get().enqueueWork(() -> {
 			Player player;
 			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-				Level world = Minecraft.getInstance().level;
-				if (world == null) return;
-				player = world.getPlayerByUUID(playerID);
+                Level level = Minecraft.getInstance().level;
+                if (level == null) return;
+                player = level.getPlayerByUUID(playerID);
 				if (player == null) return;
 			} else {
 				ServerPlayer serverPlayer = contextSupplier.get().getSender();
@@ -65,7 +65,8 @@ public class SyncClientInformationMessage {
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
 			if (!player.isLocalPlayer()) {
-				parkourability.getActionInfo().setClientSetting(ClientSetting.readFrom(data));
+                logReceived(player);
+                parkourability.getActionInfo().setClientSetting(ClientSetting.readFrom(data));
 				data.rewind();
 			}
 		});
@@ -83,11 +84,16 @@ public class SyncClientInformationMessage {
 			if (requestLimitations) {
 				Limitations.update(player);
 			}
-			parkourability.getActionInfo().setClientSetting(ClientSetting.readFrom(data));
+            logReceived(player);
+            parkourability.getActionInfo().setClientSetting(ClientSetting.readFrom(data));
 			data.rewind();
 		});
 		contextSupplier.get().setPacketHandled(true);
 	}
+
+    public void logReceived(Player player) {
+        ParCool.LOGGER.log(org.apache.logging.log4j.Level.INFO, "Received Client Information of [" + player.getGameProfile().getName() + "]");
+    }
 
 	@OnlyIn(Dist.CLIENT)
 	public static void sync(LocalPlayer player, boolean requestSendLimitation) {

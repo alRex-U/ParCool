@@ -51,16 +51,18 @@ public class LightStaminaHUD {
 		oldStatusValue = statusValue;
 		boolean oldShowStatus = showStatus;
 		showStatus = false;
-		for (Action a : parkourability.getList()) {
-			if (a.wantsToShowStatusBar(player, parkourability)) {
-				showStatus = true;
-				statusValue = a.getStatusValue(player, parkourability);
-				if (statusValue > 1f) {
-					statusValue = 1f;
-				} else if (statusValue < 0f) {
-					statusValue = 0f;
-				}
-				break;
+        if (ParCoolConfig.Client.Booleans.ShowActionStatusBar.get()) {
+            for (Action a : parkourability.getList()) {
+                if (a.wantsToShowStatusBar(player, parkourability)) {
+                    showStatus = true;
+                    statusValue = a.getStatusValue(player, parkourability);
+                    if (statusValue > 1f) {
+                        statusValue = 1f;
+                    } else if (statusValue < 0f) {
+                        statusValue = 0f;
+                    }
+                    break;
+                }
 			}
 		}
 		if (!oldShowStatus && showStatus) {

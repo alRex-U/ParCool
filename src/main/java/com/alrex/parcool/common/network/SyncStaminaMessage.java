@@ -74,9 +74,9 @@ public class SyncStaminaMessage {
             ServerPlayer serverPlayer = null;
 			Player player;
 			if (contextSupplier.get().getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-				Level world = Minecraft.getInstance().level;
-				if (world == null) return;
-				player = world.getPlayerByUUID(playerID);
+				Level level = Minecraft.getInstance().level;
+				if (level == null) return;
+				player = level.getPlayerByUUID(playerID);
 				if (player == null || player.isLocalPlayer()) return;
 			} else {
                 player = serverPlayer = contextSupplier.get().getSender();

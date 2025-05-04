@@ -1,14 +1,18 @@
 package com.alrex.parcool.common.action;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.network.SyncActionStateMessage;
 import com.alrex.parcool.common.network.SyncStaminaMessage;
+import com.alrex.parcool.config.ParCoolConfig;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -17,6 +21,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import org.apache.logging.log4j.Level;
 
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -55,6 +60,22 @@ public class ActionProcessor {
 		boolean needSync = event.side == LogicalSide.CLIENT && player.isLocalPlayer();
 		SyncActionStateMessage.Encoder builder = SyncActionStateMessage.Encoder.reset();
 
+        if (needSync && player.tickCount > 100 && player.tickCount % 150 == 0 && parkourability.limitationIsNotSynced()) {
+            if (player instanceof LocalPlayer) {
+                int trialCount = parkourability.getSynchronizeTrialCount();
+                if (trialCount < 5) {
+                    parkourability.trySyncLimitation((LocalPlayer) player);
+                    if (ParCoolConfig.Client.Booleans.ShowAutoResynchronizationNotification.get()) {
+                        player.displayClientMessage(Component.translatable("parcool.message.error.limitation.not_synced"), false);
+                    }
+                    ParCool.LOGGER.log(Level.WARN, "Detected ParCool Limitation is not synced. Sending synchronization request...");
+                } else if (trialCount == 5) {
+                    player.displayClientMessage(Component.translatable("parcool.message.error.limitation.fail_sync").withStyle(ChatFormatting.DARK_RED), false);
+                    ParCool.LOGGER.log(Level.ERROR, "Failed to synchronize ParCool Limitation. Please report to developer");
+                }
+            }
+        }
+
 		parkourability.getAdditionalProperties().onTick(player, parkourability);
 		for (Action action : actions) {
 			StaminaConsumeTiming timing = action.getStaminaConsumeTiming();
@@ -92,15 +113,17 @@ public class ActionProcessor {
 					}
 				} else {
 					bufferOfStarting.clear();
-					boolean start = parkourability.getActionInfo().can(action.getClass())
+                    boolean start = !player.isSpectator()
+                            && parkourability.getActionInfo().can(action.getClass())
                             && !MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStartEvent(player, action))
 							&& action.canStart(player, parkourability, stamina, bufferOfStarting);
 					bufferOfStarting.flip();
 					if (start) {
 						action.setDoing(true);
+                        action.onStart(player, parkourability, bufferOfStarting);
+                        bufferOfStarting.rewind();
 						action.onStartInLocalClient(player, parkourability, stamina, bufferOfStarting);
 						bufferOfStarting.rewind();
-						action.onStart(player, parkourability);
                         MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
 						builder.appendStartData(parkourability, action, bufferOfStarting);
 						if (timing == StaminaConsumeTiming.OnStart)
@@ -146,7 +169,7 @@ public class ActionProcessor {
 			SyncActionStateMessage.sync(player, builder);
 
             staminaSyncCoolTimeTick++;
-            if (staminaSyncCoolTimeTick > 5 || stamina.wantToConsumeOnServer()) {
+            if (!parkourability.limitationIsNotSynced() && (staminaSyncCoolTimeTick > 3 || stamina.wantToConsumeOnServer())) {
                 staminaSyncCoolTimeTick = 0;
                 SyncStaminaMessage.sync(player);
             }

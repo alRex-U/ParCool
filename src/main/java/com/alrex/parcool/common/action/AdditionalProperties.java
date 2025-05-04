@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Player;
 public class AdditionalProperties {
 	private int sprintingTick = 0;
 	private int notLandingTick = 0;
+	private int previousNotLandingTick = Integer.MAX_VALUE;
 	private int landingTick = 0;
 	private int lastSprintingTick = 0;
 	private int notSprintingTick = 0;
@@ -40,6 +41,9 @@ public class AdditionalProperties {
             notSneakingTick++;
         }
 		if (player.onGround()) {
+			if (notLandingTick > 0) {
+				previousNotLandingTick = notLandingTick;
+			}
 			notLandingTick = 0;
 			landingTick++;
 		} else {
@@ -66,6 +70,10 @@ public class AdditionalProperties {
 
 	public int getNotLandingTick() {
 		return notLandingTick;
+	}
+
+	public int getPreviousNotLandingTick() {
+		return previousNotLandingTick;
 	}
 
 	public int getLastSprintingTick() {
