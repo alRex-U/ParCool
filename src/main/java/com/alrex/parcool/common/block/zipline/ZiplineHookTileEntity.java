@@ -50,13 +50,14 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
         List<ItemStack> itemStacks = Collections.EMPTY_LIST;
         if (!level.isClientSide()) {
             connectionEntities.values().forEach(ZiplineRopeEntity::remove);
-            itemStacks = connections.values().stream().map(it -> {
+            itemStacks = getConnectionInfo().values().stream().map(it -> {
                 ItemStack stack = new ItemStack(Items.ZIPLINE_ROPE::get);
                 ZiplineRopeItem.setColor(stack, it.getColor());
                 return stack;
             }).collect(Collectors.toList());
         }
         connectionEntities.clear();
+        getConnectionInfo().clear();
         return itemStacks;
     }
 
