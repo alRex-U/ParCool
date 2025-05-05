@@ -12,6 +12,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.neoforged.api.distmarker.Dist;
@@ -20,7 +21,15 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class StaminaHUD {
-	public static final ResourceLocation STAMINA = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "textures/gui/stamina_bar.png");
+	public static final ResourceLocation STAMINA_CHARGING = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_charging");
+	public static final ResourceLocation STAMINA_DEPLETED = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_depleted");
+	public static final ResourceLocation STAMINA_EMPTY_CHARGE = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_empty");
+	public static final ResourceLocation STAMINA_EMPTY = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_empty_no_charge");
+	public static final ResourceLocation[] STAMINA_FULL = new ResourceLocation[]{
+			ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_full_1"),
+			ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_full_2"),
+			ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_full_3")
+	};
 
 	public StaminaHUD() {
 	}
@@ -35,7 +44,6 @@ public class StaminaHUD {
 
 	public void onTick(ClientTickEvent.Post event, LocalPlayer player) {
         Parkourability parkourability = Parkourability.get(player);
-        if (parkourability == null) return;
 		if (++renderGageTick >= 5) {
 			renderGageTick = 0;
 			if (++renderGageType > 2) {
@@ -91,13 +99,13 @@ public class StaminaHUD {
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
 
-		graphics.blit(STAMINA, pos.getA(), pos.getB(), 0, 0, 93, 17, 128, 128);
+		graphics.blitSprite(RenderType::guiTextured, STAMINA_EMPTY, 93, 17, 0, 0, pos.getA(), pos.getB(), 93, 17);
 		if (!stamina.isExhausted(player)) {
-            graphics.blit(STAMINA, pos.getA(), pos.getB(), 0, 102, (int) Math.ceil(92 * statusScale), 17, 128, 128);
-			graphics.blit(STAMINA, pos.getA(), pos.getB(), 0, 85, Math.round(16 + 69 * shadowScale) + 1, 12, 128, 128);
-			graphics.blit(STAMINA, pos.getA(), pos.getB(), 0, 17 * (renderGageType + 1), Math.round(16 + 69 * staminaScale) + 1, 12, 128, 128);
+			graphics.blitSprite(RenderType::guiTextured, STAMINA_EMPTY_CHARGE, 93, 17, 0, 0, pos.getA(), pos.getB(), (int) Math.ceil(92 * statusScale), 17);
+			graphics.blitSprite(RenderType::guiTextured, STAMINA_CHARGING, 93, 17, 0, 0, pos.getA(), pos.getB(), Math.round(16 + 69 * shadowScale) + 1, 12);
+			graphics.blitSprite(RenderType::guiTextured, STAMINA_FULL[renderGageType], 93, 17, 0, 0, pos.getA(), pos.getB(), Math.round(16 + 69 * staminaScale) + 1, 12);
 		} else {
-			graphics.blit(STAMINA, pos.getA(), pos.getB(), 0, 68, Math.round(16 + 69 * staminaScale) + 1, 17, 128, 128);
+			graphics.blitSprite(RenderType::guiTextured, STAMINA_DEPLETED, 93, 17, 0, 0, pos.getA(), pos.getB(), Math.round(16 + 69 * staminaScale) + 1, 17);
 		}
 		shadowScale = staminaScale - (staminaScale - shadowScale) / 1.1f;
 	}

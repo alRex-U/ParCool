@@ -2,6 +2,7 @@ package com.alrex.parcool.client.animation;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.world.entity.player.Player;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -12,6 +13,7 @@ public class PlayerModelRotator {
 	private final float partial;
 	private double playerHeight = 1.8;
 	private final float givenYRot;
+	private final PlayerRenderState state;
 
 
     public float getYRot() {
@@ -25,8 +27,9 @@ public class PlayerModelRotator {
 	private boolean basedCenter = false;
 	private boolean basedTop = false;
 
-	public PlayerModelRotator(PoseStack stack, Player player, float partial, float yRot) {
+	public PlayerModelRotator(PoseStack stack, Player player, PlayerRenderState state, float partial, float yRot) {
 		this.stack = stack;
+		this.state = state;
 		this.player = player;
 		this.partial = partial;
         this.givenYRot = yRot;

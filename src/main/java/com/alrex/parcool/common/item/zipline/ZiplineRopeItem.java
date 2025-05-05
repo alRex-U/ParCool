@@ -134,7 +134,7 @@ public class ZiplineRopeItem extends Item {
                         player.playSound(SoundEvents.ZIPLINE_SET.get(), 1, 1);
                     }
                     removeBlockPosition(stack);
-                    return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
+                    return InteractionResult.SUCCESS;
                 } else {
                     removeBlockPosition(stack);
                     if (context.getLevel().isClientSide()) {

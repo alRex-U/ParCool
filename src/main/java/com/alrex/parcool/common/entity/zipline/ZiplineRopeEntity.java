@@ -11,12 +11,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
@@ -168,18 +167,17 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
         getEntityData().set(DATA_ZIP_TYPE, type.ordinal());
     }
 
-    @Nonnull
-    @Override
-    public InteractionResult interact(Player player, InteractionHand p_19979_) {
-        return InteractionResult.sidedSuccess(player.level().isClientSide());
-    }
-
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(DATA_START_POS, BlockPos.ZERO);
         builder.define(DATA_END_POS, BlockPos.ZERO);
         builder.define(DATA_COLOR, ZiplineRopeItem.DEFAULT_COLOR);
         builder.define(DATA_ZIP_TYPE, ZiplineType.STANDARD.ordinal());
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource damageSource, float v) {
+        return false;
     }
 
     @Override

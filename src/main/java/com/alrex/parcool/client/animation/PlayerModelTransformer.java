@@ -3,11 +3,13 @@ package com.alrex.parcool.client.animation;
 import com.alrex.parcool.api.unstable.animation.AnimationOption;
 import com.alrex.parcool.api.unstable.animation.AnimationPart;
 import com.alrex.parcool.utilities.MathUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.AnimationUtils;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 
 /**
@@ -16,54 +18,54 @@ import net.minecraft.world.entity.player.Player;
 public class PlayerModelTransformer {
 	private final Player player;
 	private final PlayerModel model;
-	private final float ageInTicks;
-	private final float limbSwing;
-	private final float limbSwingAmount;
-	private final float netHeadYaw;
-	private final float headPitch;
+	private final boolean slim;
+	private final PlayerRenderState state;
+	private final HumanoidModel.ArmPose rightArmPose;
+	private final HumanoidModel.ArmPose leftArmPose;
+
     private AnimationOption option = new AnimationOption();
 
 	public float getPartialTick() {
-		return Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
+		return state.partialTick;
 	}
 
-	public float getHeadPitch() {
-		return headPitch;
-	}
-
-	public float getNetHeadYaw() {
-		return netHeadYaw;
+	public HumanoidModel.ArmPose getArmPose(HumanoidArm arm) {
+		if (arm == HumanoidArm.RIGHT) {
+			return rightArmPose;
+		}
+		return leftArmPose;
 	}
 
 	public float getLimbSwing() {
-		return limbSwing;
+		return state.walkAnimationPos;
 	}
 
 	public float getLimbSwingAmount() {
-		return limbSwingAmount;
+		return state.walkAnimationSpeed;
 	}
 
 	public PlayerModel getRawModel() {
 		return model;
 	}
 
+	public PlayerRenderState getState() {
+		return state;
+	}
+
 	public PlayerModelTransformer(
 			Player player,
 			PlayerModel model,
 			boolean slim,
-			float ageInTicks,
-			float limbSwing,
-			float limbSwingAmount,
-			float netHeadYaw,
-			float headPitch
+			PlayerRenderState state,
+			HumanoidModel.ArmPose rightArmPose,
+			HumanoidModel.ArmPose leftArmPose
 	) {
 		this.player = player;
 		this.model = model;
-		this.ageInTicks = ageInTicks;
-		this.limbSwing = limbSwing;
-		this.limbSwingAmount = limbSwingAmount;
-		this.netHeadYaw = netHeadYaw;
-		this.headPitch = headPitch;
+		this.slim = slim;
+		this.state = state;
+		this.rightArmPose = rightArmPose;
+		this.leftArmPose = leftArmPose;
 	}
 
     public void setOption(AnimationOption option) {
@@ -237,50 +239,50 @@ public class PlayerModelTransformer {
 	public PlayerModelTransformer makeArmsNatural() {
         if (option.isCanceled(AnimationPart.RIGHT_ARM)) return this;
         if (option.isCanceled(AnimationPart.LEFT_ARM)) return this;
-		AnimationUtils.bobArms(model.rightArm, model.leftArm, ageInTicks);
+		AnimationUtils.bobArms(model.rightArm, model.leftArm, state.ageInTicks);
 		return this;
 	}
 
 	public PlayerModelTransformer makeLegsMoveDynamically(float factor) {
         if (option.isCanceled(AnimationPart.RIGHT_LEG)) return this;
         if (option.isCanceled(AnimationPart.LEFT_LEG)) return this;
-		model.rightLeg.zRot += Mth.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
-		model.leftLeg.zRot -= Mth.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
-		model.rightLeg.xRot += Mth.sin(ageInTicks * 0.56F) * 0.8F * factor;
-		model.leftLeg.xRot -= Mth.sin(ageInTicks * 0.56F) * 0.8F * factor;
+		model.rightLeg.zRot += Mth.cos(state.ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
+		model.leftLeg.zRot -= Mth.cos(state.ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
+		model.rightLeg.xRot += Mth.sin(state.ageInTicks * 0.56F) * 0.8F * factor;
+		model.leftLeg.xRot -= Mth.sin(state.ageInTicks * 0.56F) * 0.8F * factor;
 		return this;
 	}
 
 	public PlayerModelTransformer makeArmsMoveDynamically(float factor) {
         if (option.isCanceled(AnimationPart.RIGHT_ARM)) return this;
         if (option.isCanceled(AnimationPart.LEFT_ARM)) return this;
-		model.rightArm.zRot += Mth.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
-		model.leftArm.zRot -= Mth.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
-		model.rightArm.xRot += Mth.sin(ageInTicks * 0.56F) * 0.8F * factor;
-		model.leftArm.xRot -= Mth.sin(ageInTicks * 0.56F) * 0.8F * factor;
+		model.rightArm.zRot += Mth.cos(state.ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
+		model.leftArm.zRot -= Mth.cos(state.ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
+		model.rightArm.xRot += Mth.sin(state.ageInTicks * 0.56F) * 0.8F * factor;
+		model.leftArm.xRot -= Mth.sin(state.ageInTicks * 0.56F) * 0.8F * factor;
 		return this;
 	}
 
 	public PlayerModelTransformer makeLegsLittleMoving() {
         if (option.isCanceled(AnimationPart.RIGHT_LEG)) return this;
         if (option.isCanceled(AnimationPart.LEFT_LEG)) return this;
-		AnimationUtils.bobArms(model.rightLeg, model.leftLeg, ageInTicks);
+		AnimationUtils.bobArms(model.rightLeg, model.leftLeg, state.ageInTicks);
 		return this;
 	}
 
 	public PlayerModelTransformer makeLegsShakingDynamically(float factor) {
         if (option.isCanceled(AnimationPart.RIGHT_LEG)) return this;
         if (option.isCanceled(AnimationPart.LEFT_LEG)) return this;
-		model.rightLeg.zRot += Mth.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
-		model.leftLeg.zRot += Mth.cos(ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
-		model.rightLeg.xRot += Mth.sin(ageInTicks * 0.56F) * 0.2F * factor;
-		model.leftLeg.xRot -= Mth.sin(ageInTicks * 0.56F) * 0.2F * factor;
+		model.rightLeg.zRot += Mth.cos(state.ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
+		model.leftLeg.zRot += Mth.cos(state.ageInTicks * 0.56F) * 0.8F * factor + 0.05F;
+		model.rightLeg.xRot += Mth.sin(state.ageInTicks * 0.56F) * 0.2F * factor;
+		model.leftLeg.xRot -= Mth.sin(state.ageInTicks * 0.56F) * 0.2F * factor;
 		return this;
 	}
 
 	public PlayerModelTransformer rotateAdditionallyHeadPitch(float pitchDegree) {
         if (option.isCanceled(AnimationPart.HEAD)) return this;
-		model.head.xRot = (float) Math.toRadians(pitchDegree + headPitch);
+		model.head.xRot = (float) Math.toRadians(pitchDegree + state.xRot);
 		return this;
 	}
 
@@ -304,13 +306,13 @@ public class PlayerModelTransformer {
 
 	public PlayerModelTransformer rotateAdditionallyHeadYaw(float yawDegree) {
         if (option.isCanceled(AnimationPart.HEAD)) return this;
-		model.head.yRot = (float) Math.toRadians(yawDegree + netHeadYaw);
+		model.head.yRot = (float) Math.toRadians(yawDegree + state.yRot);
 		return this;
 	}
 
     public PlayerModelTransformer rotateAdditionallyHeadRoll(float rollDegree) {
         if (option.isCanceled(AnimationPart.HEAD)) return this;
-        model.head.zRot = (float) Math.toRadians(rollDegree + netHeadYaw);
+		model.head.zRot = (float) Math.toRadians(rollDegree + model.head.zRot);
         return this;
     }
 
@@ -357,15 +359,6 @@ public class PlayerModelTransformer {
     public void end() {
     }
 
-	public void copyFromBodyToWear() {
-		model.rightSleeve.copyFrom(model.rightArm);
-		model.leftSleeve.copyFrom(model.leftArm);
-		model.rightPants.copyFrom(model.rightLeg);
-		model.leftPants.copyFrom(model.leftLeg);
-		model.jacket.copyFrom(model.body);
-		model.hat.copyFrom(model.head);
-	}
-
 	private void setRotations(ModelPart renderer, float angleX, float angleY, float angleZ) {
 		renderer.xRot = angleX;
 		renderer.yRot = angleY;
@@ -374,38 +367,30 @@ public class PlayerModelTransformer {
 
 	public void reset() {
 		resetModel(model.head);
-		resetModel(model.hat);
-		resetModel(model.jacket);
 		resetModel(model.body);
 		{
 			resetModel(model.rightArm);
             model.rightArm.x = -5.0F;
             model.rightArm.y = 2.0F;
 			model.rightArm.z = 0.0F;
-			model.rightSleeve.copyFrom(model.rightArm);
 		}
 		{
 			resetModel(model.leftArm);
             model.leftArm.x = 5.0F;
             model.leftArm.y = 2.0F;
 			model.leftArm.z = 0.0F;
-			model.leftSleeve.copyFrom(model.leftArm);
 		}
 		{
 			resetModel(model.leftLeg);
 			model.leftLeg.x = 1.9F;
 			model.leftLeg.y = 12.0F;
 			model.leftLeg.z = 0.0F;
-
-			model.leftPants.copyFrom(model.leftLeg);
 		}
 		{
 			resetModel(model.rightLeg);
 			model.rightLeg.x = -1.9F;
 			model.rightLeg.y = 12.0F;
 			model.rightLeg.z = 0.0F;
-
-			model.rightPants.copyFrom(model.rightLeg);
 		}
 	}
 

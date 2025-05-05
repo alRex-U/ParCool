@@ -74,10 +74,10 @@ public class ChargeJump extends Action {
                     && !cp.isVisuallyCrawling()
                     && !cp.isSprinting()
                     && !cp.isInWaterOrBubble()
-                    && !cp.input.up
-                    && !cp.input.down
-                    && !cp.input.right
-                    && !cp.input.left
+                    && !cp.input.keyPresses.forward()
+                    && !cp.input.keyPresses.backward()
+                    && !cp.input.keyPresses.right()
+                    && !cp.input.keyPresses.left()
                     && !parkourability.get(Crawl.class).isDoing()
                     && !NeoForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStartEvent(player, this)).isCanceled()
             ) {
@@ -134,10 +134,10 @@ public class ChargeJump extends Action {
             if (
                     parkourability.getActionInfo().can(ChargeJump.class)
                             && coolTimeTick <= 0
-                            && !cp.input.up
-                            && !cp.input.down
-                            && !cp.input.right
-                            && !cp.input.left
+                            && !cp.input.keyPresses.forward()
+                            && !cp.input.keyPresses.backward()
+                            && !cp.input.keyPresses.right()
+                            && !cp.input.keyPresses.left()
                             && (parkourability.get(FastRun.class).getNotDashTick(parkourability.getAdditionalProperties()) < 15)
             ) {
                 chargeTick = JUMP_MAX_CHARGE_TICK + 5;

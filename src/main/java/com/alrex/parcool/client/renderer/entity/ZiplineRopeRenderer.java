@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
@@ -22,17 +21,10 @@ import org.joml.Vector3f;
 import javax.annotation.Nonnull;
 
 
-public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
-    private static final ResourceLocation TEXTURE_LOCATION = ResourceLocation.parse("textures/entity/arrow");
+public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity, ZiplineRopeRenderState> {
 
     public ZiplineRopeRenderer(EntityRendererProvider.Context p_i46179_1_) {
         super(p_i46179_1_);
-    }
-
-    @Nonnull
-    @Override
-    public ResourceLocation getTextureLocation(@Nonnull ZiplineRopeEntity ziplineRopeEntity) {
-        return TEXTURE_LOCATION;
     }
 
     @Override
@@ -40,24 +32,43 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
         return entity.shouldRender(x, y, z);
     }
 
-
+    @Nonnull
     @Override
-    public void render(@Nonnull ZiplineRopeEntity entity, float p_225623_2_, float partialTick, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource multiBufferSource, int p_225623_6_) {
-        renderRope(entity, partialTick, matrixStack, multiBufferSource);
+    public ZiplineRopeRenderState createRenderState() {
+        return new ZiplineRopeRenderState();
     }
 
-    private void renderRope(ZiplineRopeEntity entity, float partialTick, PoseStack matrixStack, MultiBufferSource multiBufferSource) {
-        BlockPos start = entity.getStartPos();
-        BlockPos end = entity.getEndPos();
+    @Override
+    public void extractRenderState(@Nonnull ZiplineRopeEntity entity, @Nonnull ZiplineRopeRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.color = entity.getColor();
+        state.startPos = entity.getStartPos();
+        state.endPos = entity.getEndPos();
+        state.zipline = entity.getZipline();
+        if (state.startPos == BlockPos.ZERO && state.endPos == BlockPos.ZERO) return;
+        state.startBlockLightLevel = this.getBlockLightLevel(entity, state.startPos);
+        state.endBlockLightLevel = this.getBlockLightLevel(entity, state.endPos);
+        state.startSkyBrightness = entity.level().getBrightness(LightLayer.SKY, state.startPos);
+        state.endSkyBrightness = entity.level().getBrightness(LightLayer.SKY, state.endPos);
+    }
+
+    @Override
+    public void render(@Nonnull ZiplineRopeRenderState renderState, @Nonnull PoseStack poseStack, @Nonnull MultiBufferSource bufferSource, int packedLight) {
+        renderRope(renderState, poseStack, bufferSource, packedLight);
+    }
+
+    private void renderRope(ZiplineRopeRenderState renderState, PoseStack matrixStack, MultiBufferSource bufferSource, int packedLight) {
+        BlockPos start = renderState.startPos;
+        BlockPos end = renderState.endPos;
         if (start == BlockPos.ZERO && end == BlockPos.ZERO) return;
 
-        int color = entity.getColor();
+        int color = renderState.color;
         float r = ((0xFF0000 & color) >> 16) / 255f;
         float g = ((0x00FF00 & color) >> 8) / 255f;
         float b = (0x0000FF & color) / 255f;
 
-        Vec3 entityPos = entity.position();
-        Zipline zipline = entity.getZipline();
+        Vec3 entityPos = new Vec3(renderState.x, renderState.y, renderState.z);
+        Zipline zipline = renderState.zipline;
         Vec3 startPos = zipline.getStartPos();
         Vec3 startPosOffset = startPos.subtract(entityPos);
         Vec3 endOffsetFromStart = zipline.getOffsetToEndFromStart();
@@ -68,18 +79,12 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
         {
             matrixStack.translate(startPosOffset.x(), startPosOffset.y(), startPosOffset.z());
             var vertexConsumer = render3d ?
-                    multiBufferSource.getBuffer(RenderTypes.ZIPLINE_3D) :
-                    multiBufferSource.getBuffer(RenderTypes.ZIPLINE_2D);
+                    bufferSource.getBuffer(RenderTypes.ZIPLINE_3D) :
+                    bufferSource.getBuffer(RenderTypes.ZIPLINE_2D);
             Matrix4f transformMatrix = matrixStack.last().pose();
 
-            int startBlockLightLevel = this.getBlockLightLevel(entity, start);
-            int endBlockLightLevel = this.getBlockLightLevel(entity, end);
-            int startSkyBrightness = entity.level().getBrightness(LightLayer.SKY, start);
-            int endSkyBrightness = entity.level().getBrightness(LightLayer.SKY, end);
-
-
             final int divisionCount = 24;
-            float invLengthSqrtXZ = (float) Mth.fastInvSqrt(endOffsetFromStart.x() * endOffsetFromStart.x() + endOffsetFromStart.z() * endOffsetFromStart.z());
+            float invLengthSqrtXZ = (float) Mth.invSqrt(endOffsetFromStart.x() * endOffsetFromStart.x() + endOffsetFromStart.z() * endOffsetFromStart.z());
             float unitLengthX = (float) (endOffsetFromStart.x() * invLengthSqrtXZ);
             float unitLengthZ = (float) (endOffsetFromStart.z() * invLengthSqrtXZ);
             for (int i = 0; i < divisionCount; i++) {
@@ -92,8 +97,8 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
                                 zipline,
                                 i, divisionCount,
                                 unitLengthX, unitLengthZ,
-                                startBlockLightLevel, endBlockLightLevel,
-                                startSkyBrightness, endSkyBrightness,
+                                renderState.startBlockLightLevel, renderState.endBlockLightLevel,
+                                renderState.startSkyBrightness, renderState.endSkyBrightness,
                                 r * colorScale, g * colorScale, b * colorScale//,
                                 //j % 2 == 0
                         );
@@ -103,8 +108,8 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
                                 zipline,
                                 i, divisionCount,
                                 unitLengthX, unitLengthZ,
-                                startBlockLightLevel, endBlockLightLevel,
-                                startSkyBrightness, endSkyBrightness,
+                                renderState.startBlockLightLevel, renderState.endBlockLightLevel,
+                                renderState.startSkyBrightness, renderState.endSkyBrightness,
                                 r * colorScale, g * colorScale, b * colorScale,
                                 j % 2 == 0
                         );

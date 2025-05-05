@@ -4,7 +4,7 @@ import com.alrex.parcool.common.item.Items;
 import com.alrex.parcool.common.item.recipe.Recipes;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
@@ -64,32 +64,28 @@ public class ZiplineRopeDyeRecipe extends CustomRecipe {
         int dyeSize = dyeItems.size();
         for (DyeItem dyeItem : dyeItems) {
             int color = dyeItem.getDyeColor().getTextureDiffuseColor();
-            r += FastColor.ARGB32.red(color);
-            g += FastColor.ARGB32.green(color);
-            b += FastColor.ARGB32.blue(color);
+            r += ARGB.red(color);
+            g += ARGB.green(color);
+            b += ARGB.blue(color);
         }
         if (ZiplineRopeItem.hasCustomColor(ziplineRope)) {
             dyeSize++;
             int color = ZiplineRopeItem.getColor(ziplineRope);
-            r += FastColor.ARGB32.red(color);
-            g += FastColor.ARGB32.green(color);
-            b += FastColor.ARGB32.blue(color);
+            r += ARGB.red(color);
+            g += ARGB.green(color);
+            b += ARGB.blue(color);
         }
         r = Mth.clamp(r / dyeSize, 0, 0xFF);
         g = Mth.clamp(g / dyeSize, 0, 0xFF);
         b = Mth.clamp(b / dyeSize, 0, 0xFF);
-        ZiplineRopeItem.setColor(ziplineRope, FastColor.ARGB32.color(r, g, b));
+        ZiplineRopeItem.setColor(ziplineRope, ARGB.color(r, g, b));
         return ziplineRope;
     }
 
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width * height >= 2;
-    }
 
     @Nonnull
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends CustomRecipe> getSerializer() {
         return Recipes.ZIPLINE_ROPE_DYE.get();
     }
 }

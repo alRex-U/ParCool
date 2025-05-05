@@ -15,6 +15,7 @@ public class Potions {
 			POTIONS.register(
 					"poor_energy_drink",
 					() -> new Potion(
+							"poor_energy_drink",
                             new MobEffectInstance(com.alrex.parcool.api.Effects.INEXHAUSTIBLE, 2400/*2 min*/),
 							new MobEffectInstance(MobEffects.HUNGER, 100),
 							new MobEffectInstance(MobEffects.POISON, 100)
@@ -24,6 +25,7 @@ public class Potions {
 			POTIONS.register(
 					"energy_drink",
 					() -> new Potion(
+							"energy_drink",
                             new MobEffectInstance(com.alrex.parcool.api.Effects.INEXHAUSTIBLE, 9600/*8 min*/)
 					)
 			);

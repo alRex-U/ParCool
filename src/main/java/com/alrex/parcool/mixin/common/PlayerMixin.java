@@ -8,7 +8,6 @@ import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Player.class)
@@ -23,15 +22,6 @@ public abstract class PlayerMixin extends LivingEntity {
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability != null && parkourability.getBehaviorEnforcer().cancelFallFlying()) {
             cir.setReturnValue(false);
-        }
-    }
-
-    @Inject(method = "jumpFromGround", at = @At("HEAD"), cancellable = true)
-    public void onJumpFromGround(CallbackInfo ci) {
-        Parkourability parkourability = Parkourability.get((Player) (Object) this);
-        if (parkourability == null) return;
-        if (parkourability.getBehaviorEnforcer().cancelJump()) {
-            ci.cancel();
         }
     }
 

@@ -1,19 +1,53 @@
 package com.alrex.parcool.client.hud.impl;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.attachment.Attachments;
 import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 
 public class LightStaminaHUD {
+	public static final ResourceLocation STAMINA_CHARGED_MAX = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_charged_max");
+	public static final ResourceLocation STAMINA_CHARGED_FULL = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_charged_full");
+	public static final ResourceLocation STAMINA_CHARGED_HALF = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_charged_half");
+	public static final ResourceLocation STAMINA_CHARGED_EMPTY = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_charged_empty");
+	public static final ResourceLocation STAMINA_DEPLETED_FULL = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_depleted_full");
+	public static final ResourceLocation STAMINA_DEPLETED_HALF = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_depleted_half");
+	public static final ResourceLocation STAMINA_DEPLETED_EMPTY = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_depleted_empty");
+	public static final ResourceLocation STAMINA_INFINITE_FULL = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_infinite_full");
+	public static final ResourceLocation STAMINA_INFINITE_HALF = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_infinite_half");
+	public static final ResourceLocation STAMINA_INFINITE_EMPTY = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_infinite_empty");
+	public static final ResourceLocation STAMINA_NORMAL_FULL = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_normal_full");
+	public static final ResourceLocation STAMINA_NORMAL_HALF = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_normal_half");
+	public static final ResourceLocation STAMINA_NORMAL_EMPTY = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_normal_empty");
+
+	private enum Type {
+		NORMAL(new ResourceLocation[]{STAMINA_NORMAL_EMPTY, STAMINA_NORMAL_HALF, STAMINA_NORMAL_FULL, STAMINA_CHARGED_MAX}),
+		DEPLETED(new ResourceLocation[]{STAMINA_DEPLETED_EMPTY, STAMINA_DEPLETED_HALF, STAMINA_DEPLETED_FULL, STAMINA_CHARGED_MAX}),
+		INFINITE(new ResourceLocation[]{STAMINA_INFINITE_EMPTY, STAMINA_INFINITE_HALF, STAMINA_INFINITE_FULL, STAMINA_CHARGED_MAX}),
+		CHARGED(new ResourceLocation[]{STAMINA_CHARGED_EMPTY, STAMINA_CHARGED_HALF, STAMINA_CHARGED_FULL, STAMINA_CHARGED_MAX});
+		private ResourceLocation[] list;
+
+		Type(ResourceLocation[] list) {
+			this.list = list;
+		}
+
+		private ResourceLocation getTexture(Size size) {
+			return list[size.ordinal()];
+		}
+	}
+
+	private enum Size {EMPTY, HALF, FULL, MAX}
+
 	private long lastStaminaChangedTick = 0;
 	//1-> recovering, -1->consuming, 0->no changing
 	private int lastChangingSign = 0;
@@ -95,7 +129,6 @@ public class LightStaminaHUD {
         staminaScale *= 10f;
 		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick.getGameTimeDeltaPartialTick(true)) * 10f : 0f;
 
-        RenderSystem.setShaderTexture(0, StaminaHUD.STAMINA);
 		final int width = graphics.guiWidth();
 		final int height = graphics.guiHeight();
         int baseX = width / 2 + 91 + ParCoolConfig.Client.Integers.HorizontalOffsetOfLightStaminaHUD.get();
@@ -103,32 +136,35 @@ public class LightStaminaHUD {
 		for (int i = 0; i < 10; i++) {
 			int x = baseX - i * 8 - 9;
 			int offsetY = 0;
-            int textureX;
+			Type type;
+			Size size;
             if (inexhaustible) {
                 if (showStatus) {
                     if (statusScale > i + 0.9f) {
-                        textureX = 90;
+						type = Type.CHARGED;
                     } else {
-                        textureX = 0;
+						type = Type.NORMAL;
                     }
                 } else {
-                    textureX = 54;
+					type = Type.INFINITE;
                 }
             } else {
                 if (exhausted) {
-                    textureX = 27;
+					type = Type.DEPLETED;
                 } else if (statusScale > i + 0.9f) {
-                    textureX = 90;
+					type = Type.CHARGED;
                 } else {
-                    textureX = 0;
+					type = Type.NORMAL;
                 }
             }
 			if (justBecameMax) {
-				textureX = 81;
-            } else if (staminaScale < i) {//empty
-				textureX += 18;
-			} else if (staminaScale < i + 0.5f) {//not full
-				textureX += 9;
+				size = Size.MAX;
+			} else if (staminaScale < i) {
+				size = Size.EMPTY;
+			} else if (staminaScale < i + 0.5f) {
+				size = Size.HALF;
+			} else {
+				size = Size.FULL;
 			}
 			if (justBecameMax) {
 				offsetY = -1;
@@ -140,7 +176,7 @@ public class LightStaminaHUD {
 				offsetY = randomOffset;
 			}
 
-			graphics.blit(StaminaHUD.STAMINA, x, baseY + offsetY, textureX, 119, 9, 9, 128, 128);
+			graphics.blitSprite(RenderType::guiTextured, type.getTexture(size), 9, 9, 0, 0, x, baseY + offsetY, 9, 9);
 		}
 		Minecraft.getInstance().gui.rightHeight += 10;
 	}

@@ -34,6 +34,16 @@ public abstract class LivingEntityMixin extends Entity {
 		super(p_i48580_1_, p_i48580_2_);
 	}
 
+	@Inject(method = "jumpFromGround", at = @At("HEAD"), cancellable = true)
+	public void onJumpFromGround(CallbackInfo ci) {
+		if (!((Object) this instanceof Player player)) return;
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) return;
+		if (parkourability.getBehaviorEnforcer().cancelJump()) {
+			ci.cancel();
+		}
+	}
+
 	@Inject(method = "Lnet/minecraft/world/entity/LivingEntity;onClimbable()Z", at = @At("HEAD"), cancellable = true)
 	public void onClimbable(CallbackInfoReturnable<Boolean> cir) {
 		if (this.isSpectator()) {
