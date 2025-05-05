@@ -254,8 +254,8 @@ public class WorldUtil {
 					axis = HangDown.BarAxis.Z;
 					break;
 			}
-		} else if (block instanceof DirectionalBlock) {
-			if (state.isCollisionShapeFullBlock(entity.getCommandSenderWorld(), pos)) {
+		} else if (block instanceof EndRodBlock) {
+			if (state.isCollisionShapeFullBlock(entity.level(), pos)) {
 				return null;
 			}
 			Direction direction = state.getValue(DirectionalBlock.FACING);
