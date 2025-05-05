@@ -249,7 +249,7 @@ public class WorldUtil {
 					axis = HangDown.BarAxis.Z;
 					break;
 			}
-		} else if (block instanceof DirectionalBlock) {
+		} else if (block instanceof EndRodBlock) {
 			if (state.isCollisionShapeFullBlock(entity.level, pos)) {
 				return null;
 			}
