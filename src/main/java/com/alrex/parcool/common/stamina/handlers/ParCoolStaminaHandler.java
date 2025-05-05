@@ -1,8 +1,8 @@
 package com.alrex.parcool.common.stamina.handlers;
 
 import com.alrex.parcool.api.Attributes;
-import com.alrex.parcool.common.action.Parkourability;
-import com.alrex.parcool.common.attachment.stamina.ReadonlyStamina;
+import com.alrex.parcool.common.attachment.common.Parkourability;
+import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import com.alrex.parcool.common.stamina.IParCoolStaminaHandler;
 import net.minecraft.client.player.LocalPlayer;
 import net.neoforged.api.distmarker.Dist;

@@ -2,13 +2,13 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
-import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.ChargeJumpAnimator;
 import com.alrex.parcool.client.animation.impl.JumpChargingAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
+import com.alrex.parcool.common.attachment.client.Animation;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.player.LocalPlayer;

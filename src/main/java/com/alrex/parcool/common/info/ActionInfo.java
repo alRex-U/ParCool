@@ -1,8 +1,7 @@
 package com.alrex.parcool.common.info;
 
-import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.stamina.LocalStamina;
+import com.alrex.parcool.common.attachment.client.LocalStamina;
 import com.alrex.parcool.common.stamina.StaminaType;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.player.LocalPlayer;
@@ -67,10 +66,8 @@ public class ActionInfo {
 	}
 
     @OnlyIn(Dist.CLIENT)
-    public boolean isStaminaInfinite() {
-        var stamina = LocalStamina.get();
-        if (stamina == null) return false;
-        return stamina.isInfinite();
+    public boolean isStaminaInfinite(LocalStamina stamina, LocalPlayer player) {
+        return stamina.isInfinite(player);
 	}
 
 	public boolean isInfiniteStaminaPermitted() {
@@ -78,9 +75,7 @@ public class ActionInfo {
 	}
 
     @OnlyIn(Dist.CLIENT)
-    public void updateStaminaType() {
-        var stamina = LocalStamina.get();
-        if (stamina == null) return;
-        stamina.changeType(getStaminaType());
+    public void updateStaminaType(LocalStamina stamina, LocalPlayer player) {
+        stamina.changeType(player, getStaminaType());
     }
 }

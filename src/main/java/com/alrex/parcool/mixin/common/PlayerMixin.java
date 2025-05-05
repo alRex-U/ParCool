@@ -1,6 +1,6 @@
 package com.alrex.parcool.mixin.common;
 
-import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;

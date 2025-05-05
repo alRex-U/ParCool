@@ -1,11 +1,10 @@
 package com.alrex.parcool.extern.shouldersurfing;
 
 import com.alrex.parcool.common.action.impl.ClingToCliff;
-import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.github.exopandora.shouldersurfing.api.callback.ICameraCouplingCallback;
 import com.github.exopandora.shouldersurfing.api.plugin.IShoulderSurfingPlugin;
 import com.github.exopandora.shouldersurfing.api.plugin.IShoulderSurfingRegistrar;
-
 import net.minecraft.client.Minecraft;
 
 /**

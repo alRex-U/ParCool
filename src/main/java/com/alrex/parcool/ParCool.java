@@ -7,6 +7,7 @@ import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.renderer.Renderers;
 import com.alrex.parcool.common.attachment.Attachments;
+import com.alrex.parcool.common.attachment.ClientAttachments;
 import com.alrex.parcool.common.block.Blocks;
 import com.alrex.parcool.common.block.TileEntities;
 import com.alrex.parcool.common.entity.EntityTypes;
@@ -50,6 +51,7 @@ public class ParCool {
             eventBus.addListener(KeyBindings::register);
 			eventBus.addListener(Renderers::register);
 			eventBus.addListener(Items::registerColors);
+			ClientAttachments.registerAll(eventBus);
         }
         eventBus.addListener(this::setup);
 		eventBus.addListener(this::loaded);

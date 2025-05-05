@@ -1,6 +1,6 @@
 package com.alrex.parcool.mixin.client;
 
-import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

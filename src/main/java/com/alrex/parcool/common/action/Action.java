@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action;
 
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;

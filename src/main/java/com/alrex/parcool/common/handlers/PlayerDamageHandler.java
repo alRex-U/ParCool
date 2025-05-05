@@ -1,8 +1,8 @@
 package com.alrex.parcool.common.handlers;
 
 import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.impl.*;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.network.payload.StartBreakfallEventPayload;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.WorldUtil;
@@ -64,7 +64,7 @@ public class PlayerDamageHandler {
                         && parkourability.getActionInfo().can(HideInBlock.class)
                         && !NeoForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStartEvent(player, hideInBlock)).isCanceled()
                 ) {
-                    Tuple<BlockPos, BlockPos> area = WorldUtil.getHideAbleSpace(player, new BlockPos(player.blockPosition().below()));
+                    Tuple<BlockPos, BlockPos> area = WorldUtil.getHideAbleSpace(player, player.blockPosition().below());
                     if (area != null) {
                         boolean stand = player.getBbHeight() < (Math.abs(area.getB().getY() - area.getA().getY()) + 1);
                         if (!stand) {

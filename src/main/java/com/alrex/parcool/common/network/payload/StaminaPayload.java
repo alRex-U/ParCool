@@ -2,7 +2,7 @@ package com.alrex.parcool.common.network.payload;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.attachment.Attachments;
-import com.alrex.parcool.common.attachment.stamina.ReadonlyStamina;
+import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

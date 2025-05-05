@@ -1,11 +1,11 @@
 package com.alrex.parcool.common.handlers;
 
 import com.alrex.parcool.client.input.KeyBindings;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.impl.ClingToCliff;
 import com.alrex.parcool.common.action.impl.HideInBlock;
 import com.alrex.parcool.common.action.impl.RideZipline;
 import com.alrex.parcool.common.action.impl.WallSlide;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.neoforged.bus.api.SubscribeEvent;

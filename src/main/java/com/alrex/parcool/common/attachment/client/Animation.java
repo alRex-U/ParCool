@@ -1,9 +1,14 @@
-package com.alrex.parcool.client.animation;
+package com.alrex.parcool.common.attachment.client;
 
 import com.alrex.parcool.api.unstable.animation.AnimationOption;
 import com.alrex.parcool.api.unstable.animation.AnimationPart;
 import com.alrex.parcool.api.unstable.animation.ParCoolAnimationInfoEvent;
-import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.client.animation.Animator;
+import com.alrex.parcool.client.animation.PassiveCustomAnimation;
+import com.alrex.parcool.client.animation.PlayerModelRotator;
+import com.alrex.parcool.client.animation.PlayerModelTransformer;
+import com.alrex.parcool.common.attachment.ClientAttachments;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -15,32 +20,11 @@ import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
-import javax.annotation.Nullable;
-import java.util.TreeMap;
-import java.util.UUID;
-
 @OnlyIn(Dist.CLIENT)
 public class Animation {
-	public static class Registry {
-		private static final TreeMap<UUID, Animation> map = new TreeMap<>();
 
-		@Nullable
-		private static Animation get(UUID id) {
-			return map.get(id);
-		}
-
-		public static void setup(UUID id) {
-			map.putIfAbsent(id, new Animation());
-		}
-
-		public static void unload(UUID id) {
-			map.remove(id);
-		}
-	}
-
-	@Nullable
 	public static Animation get(Player player) {
-		return Registry.get(player.getUUID());
+		return player.getData(ClientAttachments.ANIMATION);
 	}
 
 	private Animator animator = null;

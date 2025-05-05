@@ -3,8 +3,8 @@ package com.alrex.parcool.client.animation.impl;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.impl.ClingToCliff;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import net.minecraft.world.entity.player.Player;
 
 ;

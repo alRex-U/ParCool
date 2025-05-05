@@ -1,7 +1,7 @@
 package com.alrex.parcool.mixin.client;
 
 
-import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -52,14 +52,6 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
         var player = (LocalPlayer) (Object) this;
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability == null) return;
-        var enforcedPos = parkourability.getBehaviorEnforcer().getEnforcedPosition();
-        if (enforcedPos != null) {
-            ci.cancel();
-            var dMove = enforcedPos.subtract(player.position());
-            setBoundingBox(getBoundingBox().move(dMove));
-            setPos(player.getX() + dMove.x, player.getY() + dMove.y, player.getZ() + dMove.z);
-            return;
-        }
         if (type != MoverType.SELF) return;
         var enforcedMovePos = parkourability.getBehaviorEnforcer().getEnforcedMovePoint();
         if (enforcedMovePos != null) {

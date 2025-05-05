@@ -1,9 +1,11 @@
 package com.alrex.parcool.common.network.payload;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.attachment.client.LocalStamina;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.info.ServerLimitation;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -30,9 +32,10 @@ public record LimitationPayload(ServerLimitation limitation) implements CustomPa
         context.enqueueWork(() -> {
             var player = context.player();
             Parkourability parkourability = Parkourability.get(player);
-            if (parkourability == null) return;
             parkourability.getActionInfo().setServerLimitation(payload.limitation());
-            parkourability.getActionInfo().updateStaminaType();
+            if (player instanceof LocalPlayer localPlayer) {
+                parkourability.getActionInfo().updateStaminaType(LocalStamina.get(localPlayer), localPlayer);
+            }
         });
     }
 

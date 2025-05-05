@@ -1,7 +1,8 @@
 package com.alrex.parcool.common.attachment;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.common.attachment.stamina.ReadonlyStamina;
+import com.alrex.parcool.common.attachment.common.Parkourability;
+import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -17,6 +18,10 @@ public class Attachments {
                     .builder(ReadonlyStamina::createDefault)
                     .serialize(ReadonlyStamina.CODEC)
                     .build()
+    );
+    public static final Supplier<AttachmentType<Parkourability>> PARKOURABILITY = ATTACHMENT_TYPES.register(
+            "parkourability",
+            () -> AttachmentType.builder(Parkourability::new).build()
     );
 
     public static void registerAll(IEventBus bus) {

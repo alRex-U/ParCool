@@ -3,11 +3,12 @@ package com.alrex.parcool.common.action.impl;
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.attachment.Attachments;
-import com.alrex.parcool.common.stamina.LocalStamina;
+import com.alrex.parcool.common.attachment.client.LocalStamina;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -19,6 +20,7 @@ import java.nio.ByteBuffer;
 public class BreakfallReady extends Action {
 	@OnlyIn(Dist.CLIENT)
 	public void startBreakfall(Player player, Parkourability parkourability, boolean justTimed) {
+		if (!(player instanceof LocalPlayer localPlayer)) return;
         boolean playSound = false;
 		if (justTimed && ParCoolConfig.Client.Booleans.EnableJustTimeEffectOfBreakfall.get()) {
 			if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
@@ -42,18 +44,16 @@ public class BreakfallReady extends Action {
 		} else if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             playSound = true;
 
-        var stamina = LocalStamina.get();
+		var stamina = LocalStamina.get(localPlayer);
 		if ((KeyBindings.isAnyMovingKeyDown()
 				&& parkourability.getActionInfo().can(Roll.class))
 				|| !parkourability.getActionInfo().can(Tap.class)
 		) {
-            if (stamina != null)
-                stamina.consume((int) ((justTimed ? 0.25f : 1) * parkourability.getActionInfo().getStaminaConsumptionOf(Roll.class)));
+			stamina.consume(localPlayer, (int) ((justTimed ? 0.25f : 1) * parkourability.getActionInfo().getStaminaConsumptionOf(Roll.class)));
             if (playSound) player.playSound(SoundEvents.ROLL.get(), 1, 1);
 			parkourability.get(Roll.class).startRoll(player);
 		} else {
-            if (stamina != null)
-                stamina.consume((int) ((justTimed ? 0.25f : 1) * parkourability.getActionInfo().getStaminaConsumptionOf(Tap.class)));
+			stamina.consume(localPlayer, (int) ((justTimed ? 0.25f : 1) * parkourability.getActionInfo().getStaminaConsumptionOf(Tap.class)));
             if (playSound) player.playSound(SoundEvents.SAFETY_TAP.get(), 1, 1);
 			parkourability.get(Tap.class).startTap(player);
 		}

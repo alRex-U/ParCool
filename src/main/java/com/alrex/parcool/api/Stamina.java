@@ -2,50 +2,46 @@ package com.alrex.parcool.api;
 
 
 import com.alrex.parcool.common.attachment.Attachments;
-import com.alrex.parcool.common.attachment.stamina.ReadonlyStamina;
-import com.alrex.parcool.common.stamina.LocalStamina;
+import com.alrex.parcool.common.attachment.client.LocalStamina;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 public class Stamina {
     public static Stamina get(Player player) {
-		return new Stamina(player.getData(Attachments.STAMINA), player.isLocalPlayer());
+		return new Stamina(player);
 	}
 
-	private final ReadonlyStamina staminaInstance;
-	private final boolean isLocalPlayer;
+	private final Player player;
 
-	private Stamina(ReadonlyStamina staminaInstance, boolean local) {
-		this.staminaInstance = staminaInstance;
-		isLocalPlayer = local;
+	private Stamina(Player player) {
+		this.player = player;
 	}
 
 	public int getMaxValue() {
-		return staminaInstance.max();
+		return player.getData(Attachments.STAMINA).max();
 	}
 
 	public int getValue() {
-		return staminaInstance.value();
+		return player.getData(Attachments.STAMINA).value();
 	}
 
 	public boolean isExhausted() {
-		return staminaInstance.isExhausted();
+		return player.getData(Attachments.STAMINA).isExhausted();
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public void consume(int value) {
-		if (!isLocalPlayer) return;
-		var stamina = LocalStamina.get();
-		if (stamina == null) return;
-		stamina.consume(value);
+		if (!(player instanceof LocalPlayer localPlayer)) return;
+		var stamina = LocalStamina.get(localPlayer);
+		stamina.consume(localPlayer, value);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public void recover(int value) {
-		if (!isLocalPlayer) return;
-		var stamina = LocalStamina.get();
-		if (stamina == null) return;
-		stamina.recover(value);
+		if (!(player instanceof LocalPlayer localPlayer)) return;
+		var stamina = LocalStamina.get(localPlayer);
+		stamina.recover(localPlayer, value);
 	}
 }

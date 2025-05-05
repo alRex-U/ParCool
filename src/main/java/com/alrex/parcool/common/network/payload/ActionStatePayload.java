@@ -4,7 +4,7 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.Actions;
-import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;

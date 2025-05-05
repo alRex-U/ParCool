@@ -1,13 +1,13 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.client.RenderBehaviorEnforcer;
-import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.HideInBlockAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.BehaviorEnforcer;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
+import com.alrex.parcool.common.attachment.client.Animation;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
@@ -63,7 +63,6 @@ public class HideInBlock extends Action {
                 || player.isPassenger()
                 || player.isVisuallySwimming()
                 || getNotDoingTick() < 6
-                || player.hurtTime > 0
                 || parkourability.get(Crawl.class).isDoing()
         ) {
             return false;
@@ -79,6 +78,9 @@ public class HideInBlock extends Action {
             if (result instanceof BlockHitResult && parkourability.isDoingNothing()) {
                 hideBaseBlockPos = ((BlockHitResult) result).getBlockPos();
             }
+        }
+        if (!startFromDiving && player.hurtTime > 0) {
+            return false;
         }
 
         if (hideBaseBlockPos != null) {
@@ -182,7 +184,6 @@ public class HideInBlock extends Action {
         parkourability.getBehaviorEnforcer().addMarkerCancellingShowName(ID_SHOW_NAME, this::isDoing);
         spawnOnHideParticles(player);
         Animation animation = Animation.get(player);
-        if (animation == null) return;
         animation.setAnimator(new HideInBlockAnimator(stand, startedFromDiving));
     }
 
@@ -192,7 +193,6 @@ public class HideInBlock extends Action {
         parkourability.getBehaviorEnforcer().addMarkerCancellingShowName(ID_SHOW_NAME, this::isDoing);
         spawnOnHideParticles(player);
         Animation animation = Animation.get(player);
-        if (animation == null) return;
         animation.setAnimator(new HideInBlockAnimator(stand, startedFromDiving));
     }
 
@@ -216,7 +216,6 @@ public class HideInBlock extends Action {
         final Vec3 hidePos = hidingPoint;
         final Vec3 entPos = enterPoint;
         Parkourability parkourability = Parkourability.get(player);
-        if (parkourability == null) return;
         parkourability.getBehaviorEnforcer().setMarkerEnforcePosition(
                 () -> this.getNotDoingTick() <= 1,
                 () -> {

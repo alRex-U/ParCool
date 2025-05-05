@@ -1,7 +1,7 @@
 package com.alrex.parcool.server.limitation;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.info.ServerLimitation;
 import com.alrex.parcool.common.network.payload.LimitationPayload;
 import com.google.gson.stream.JsonReader;

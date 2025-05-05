@@ -1,9 +1,9 @@
 package com.alrex.parcool.client.animation;
 
 import com.alrex.parcool.client.input.KeyBindings;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.impl.ClingToCliff;
 import com.alrex.parcool.common.action.impl.Dive;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.EasingFunctions;
 import com.alrex.parcool.utilities.MathUtil;

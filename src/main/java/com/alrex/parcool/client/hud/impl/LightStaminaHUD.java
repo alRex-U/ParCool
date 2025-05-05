@@ -2,8 +2,8 @@ package com.alrex.parcool.client.hud.impl;
 
 import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.Parkourability;
-import com.alrex.parcool.common.stamina.LocalStamina;
+import com.alrex.parcool.common.attachment.Attachments;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -28,10 +28,10 @@ public class LightStaminaHUD {
 	private int oldValue = 0;
 
 	public void onTick(ClientTickEvent.Post event, LocalPlayer player) {
-		LocalStamina stamina = LocalStamina.get();
         Parkourability parkourability = Parkourability.get(player);
-        if (stamina == null || parkourability == null) return;
-		int newValue = stamina.getValue();
+		if (parkourability == null) return;
+		var stamina = player.getData(Attachments.STAMINA);
+		int newValue = stamina.value();
 		changingSign = (int) Math.signum(newValue - oldValue);
 		final long gameTime = player.getCommandSenderWorld().getGameTime();
 		if (changingSign != lastChangingSign) {
@@ -48,7 +48,7 @@ public class LightStaminaHUD {
 		if (newValue != oldValue || stamina.isExhausted()) {
 			lastStaminaChangedTick = gameTime;
 		}
-		justBecameMax = oldValue < newValue && newValue == stamina.getMax();
+		justBecameMax = oldValue < newValue && newValue == stamina.max();
 
         oldStatusValue = statusValue;
         boolean oldShowStatus = showStatus;
@@ -77,9 +77,9 @@ public class LightStaminaHUD {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null || player.isCreative()) return;
 
-		LocalStamina stamina = LocalStamina.get();
 		Parkourability parkourability = Parkourability.get(player);
-		if (stamina == null || parkourability == null) return;
+		if (parkourability == null) return;
+		var stamina = player.getData(Attachments.STAMINA);
 
 		final boolean inexhaustible = player.hasEffect(Effects.INEXHAUSTIBLE);
         final boolean exhausted = stamina.isExhausted();
@@ -88,7 +88,7 @@ public class LightStaminaHUD {
             long gameTime = player.level().getGameTime();
             if (gameTime - lastStaminaChangedTick > 40) return;
         }
-		float staminaScale = (float) stamina.getValue() / stamina.getMax();
+		float staminaScale = (float) stamina.value() / stamina.max();
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
 

@@ -2,11 +2,12 @@ package com.alrex.parcool.common.action;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
-import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.common.attachment.Attachments;
-import com.alrex.parcool.common.attachment.stamina.ReadonlyStamina;
+import com.alrex.parcool.common.attachment.client.Animation;
+import com.alrex.parcool.common.attachment.client.LocalStamina;
+import com.alrex.parcool.common.attachment.common.Parkourability;
+import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import com.alrex.parcool.common.network.payload.ActionStatePayload;
-import com.alrex.parcool.common.stamina.LocalStamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -62,12 +63,11 @@ public class ActionProcessor {
 	public void onTick(PlayerTickEvent.Pre event) {
 		Player player = event.getEntity();
 		Parkourability parkourability = Parkourability.get(player);
-		if (parkourability == null) return;
 		List<Action> actions = parkourability.getList();
 		boolean needSync = player.level().isClientSide() && player.isLocalPlayer();
 		if (needSync) {
-			var stamina = LocalStamina.get();
-			if (stamina == null || !stamina.isAvailable()) return;
+			var stamina = LocalStamina.get((LocalPlayer) player);
+			if (!stamina.isAvailable()) return;
 		}
 		LinkedList<ActionStatePayload.Entry> syncStates = new LinkedList<>();
 
@@ -149,11 +149,9 @@ public class ActionProcessor {
 								ActionStatePayload.Entry.Type.Start,
 								data
 						));
-						if (timing == StaminaConsumeTiming.OnStart) {
-							var stamina = LocalStamina.get();
-							if (stamina != null) {
-								stamina.consume(parkourability.getActionInfo().getStaminaConsumptionOf(action.getClass()));
-							}
+						if (timing == StaminaConsumeTiming.OnStart && player instanceof LocalPlayer localPlayer) {
+							var stamina = LocalStamina.get(localPlayer);
+							stamina.consume(localPlayer, parkourability.getActionInfo().getStaminaConsumptionOf(action.getClass()));
 						}
 					}
 				}
@@ -165,11 +163,9 @@ public class ActionProcessor {
 					action.onWorkingTickInClient(player, parkourability);
 					if (player.isLocalPlayer()) {
 						action.onWorkingTickInLocalClient(player, parkourability);
-						if (timing == StaminaConsumeTiming.OnWorking) {
-							var stamina = LocalStamina.get();
-							if (stamina != null) {
-								stamina.consume(parkourability.getActionInfo().getStaminaConsumptionOf(action.getClass()));
-							}
+						if (timing == StaminaConsumeTiming.OnWorking && player instanceof LocalPlayer localPlayer) {
+							var stamina = LocalStamina.get(localPlayer);
+							stamina.consume(localPlayer, parkourability.getActionInfo().getStaminaConsumptionOf(action.getClass()));
 						}
 					}
 				} else {
@@ -210,14 +206,14 @@ public class ActionProcessor {
 		}
 		if (needSync) {
 			PacketDistributor.sendToServer(new ActionStatePayload(player.getUUID(), syncStates));
-			var stamina = LocalStamina.get();
-			if (!parkourability.limitationIsNotSynced() && stamina != null) {
+			if (!parkourability.limitationIsNotSynced() && player instanceof LocalPlayer localPlayer) {
+				var stamina = LocalStamina.get(localPlayer);
 				staminaSyncCoolTimeTick++;
 				if (staminaSyncCoolTimeTick > 5) {
 					staminaSyncCoolTimeTick = 0;
-					stamina.sync((LocalPlayer) player);
+					stamina.sync(localPlayer);
 				}
-				stamina.onTick();
+				stamina.onTick(localPlayer);
 			}
 		}
 		if (!player.level().isClientSide()) {

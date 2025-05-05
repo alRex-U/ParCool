@@ -1,7 +1,6 @@
-package com.alrex.parcool.common.attachment.stamina;
+package com.alrex.parcool.common.attachment.common;
 
 import com.alrex.parcool.api.Attributes;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.network.payload.StaminaPayload;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

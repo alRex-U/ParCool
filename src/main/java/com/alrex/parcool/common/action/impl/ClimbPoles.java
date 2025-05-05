@@ -2,8 +2,7 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
-
-import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import net.minecraft.world.entity.player.Player;
 
 import java.nio.ByteBuffer;

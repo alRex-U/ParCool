@@ -1,6 +1,6 @@
 package com.alrex.parcool.client.animation;
 
-import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;

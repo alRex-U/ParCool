@@ -1,10 +1,10 @@
 package com.alrex.parcool.mixin.common;
 
 import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.impl.ChargeJump;
 import com.alrex.parcool.common.action.impl.ClimbPoles;
 import com.alrex.parcool.common.action.impl.ClimbUp;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
