@@ -7,7 +7,7 @@
   ],
   "key": {
     "n": "minecraft:iron_nugget",
-    "L": "minecraft:logs",
+    "L": "#minecraft:logs",
     "h": "minecraft:tripwire_hook"
   },
   "result": {
