@@ -123,7 +123,7 @@ public class HorizontalWallRun extends Action {
 				&& !parkourability.get(Dodge.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
                 && !parkourability.get(ClingToCliff.class).isDoing()
-                && !player.isInWaterOrBubble()
+				&& !player.isInWater()
                 && Math.abs(player.getDeltaMovement().y()) < 0.5
 				&& coolTime == 0
 				&& !player.onGround()

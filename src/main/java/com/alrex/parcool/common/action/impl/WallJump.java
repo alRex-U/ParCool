@@ -85,7 +85,7 @@ public class WallJump extends Action {
 		ControlType control = ParCoolConfig.Client.WallJumpControl.get();
 
 		boolean value = (!player.onGround()
-				&& !player.isInWaterOrBubble()
+				&& !player.isInWater()
 				&& !player.isFallFlying()
 				&& !player.getAbilities().flying
 				&& parkourability.getAdditionalProperties().getNotCreativeFlyingTick() > 10

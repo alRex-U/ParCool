@@ -37,7 +37,7 @@ public class Slide extends Action {
 				&& !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()
 				&& parkourability.get(Crawl.class).isDoing()
-				&& !player.isInWaterOrBubble()
+				&& !player.isInWater()
 				&& parkourability.get(FastRun.class).getDashTick(parkourability.getAdditionalProperties()) > 5
 		);
 	}

@@ -19,6 +19,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -26,7 +27,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.List;
+import java.util.function.Consumer;
 
 public class ZiplineRopeItem extends Item {
 
@@ -44,16 +45,16 @@ public class ZiplineRopeItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nonnull TooltipContext context, @Nonnull List<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         var posComponent = stack.getComponents().get(DataComponents.ZIPLINE_POSITION.get());
 
         if (posComponent != null) {
-            lines.add(Component.translatable("parcool.gui.text.zipline.bind_pos", posComponent.pos().getX() + ", " + posComponent.pos().getY() + ", " + posComponent.pos().getZ()).withStyle(ChatFormatting.YELLOW));
+            tooltipAdder.accept(Component.translatable("parcool.gui.text.zipline.bind_pos", posComponent.pos().getX() + ", " + posComponent.pos().getY() + ", " + posComponent.pos().getZ()).withStyle(ChatFormatting.YELLOW));
         } else {
-            lines.add(Component.translatable("parcool.gui.text.zipline.not_bound").withStyle(ChatFormatting.DARK_GRAY));
+            tooltipAdder.accept(Component.translatable("parcool.gui.text.zipline.not_bound").withStyle(ChatFormatting.DARK_GRAY));
         }
-        lines.add(Component.empty());
-        lines.add(Component.translatable("parcool.gui.text.zipline.tension", getZiplineType(stack).getTranslationName()).withStyle(ChatFormatting.GRAY));
+        tooltipAdder.accept(Component.empty());
+        tooltipAdder.accept(Component.translatable("parcool.gui.text.zipline.tension", getZiplineType(stack).getTranslationName()).withStyle(ChatFormatting.GRAY));
     }
 
     @Nonnull
@@ -182,7 +183,7 @@ public class ZiplineRopeItem extends Item {
 
     public static void setColor(ItemStack stack, int color) {
         if (color != DEFAULT_COLOR) {
-            stack.set(net.minecraft.core.component.DataComponents.DYED_COLOR, new DyedItemColor(color, true));
+            stack.set(net.minecraft.core.component.DataComponents.DYED_COLOR, new DyedItemColor(color));
         }else {
             stack.remove(net.minecraft.core.component.DataComponents.DYED_COLOR);
         }

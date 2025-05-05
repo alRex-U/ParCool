@@ -280,10 +280,10 @@ public class WorldUtil {
 		} else if (block instanceof WallBlock) {
 			int zCount = 0;
 			int xCount = 0;
-			if (state.getValue(WallBlock.NORTH_WALL) != WallSide.NONE) zCount++;
-			if (state.getValue(WallBlock.SOUTH_WALL) != WallSide.NONE) zCount++;
-			if (state.getValue(WallBlock.EAST_WALL) != WallSide.NONE) xCount++;
-			if (state.getValue(WallBlock.WEST_WALL) != WallSide.NONE) xCount++;
+			if (state.getValue(WallBlock.NORTH) != WallSide.NONE) zCount++;
+			if (state.getValue(WallBlock.SOUTH) != WallSide.NONE) zCount++;
+			if (state.getValue(WallBlock.EAST) != WallSide.NONE) xCount++;
+			if (state.getValue(WallBlock.WEST) != WallSide.NONE) xCount++;
 			if (zCount > 0 && xCount == 0) axis = HangDown.BarAxis.Z;
 			if (xCount > 0 && zCount == 0) axis = HangDown.BarAxis.X;
 		}

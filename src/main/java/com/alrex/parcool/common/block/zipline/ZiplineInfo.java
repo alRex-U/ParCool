@@ -34,10 +34,9 @@ public class ZiplineInfo {
 
     public static ZiplineInfo load(@Nullable Tag tag) {
         if (tag instanceof CompoundTag cTag) {
-            int color = cTag.contains("color") ? cTag.getInt("color") : ZiplineRopeItem.DEFAULT_COLOR;
-            ZiplineType type = cTag.contains("type") ?
-                    ZiplineType.values()[cTag.getByte("type") % ZiplineType.values().length] :
-                    ZiplineType.LOOSE;
+            int color = cTag.getInt("color").orElse(ZiplineRopeItem.DEFAULT_COLOR);
+            ZiplineType type = ZiplineType.values()[cTag.getByte("type").orElse((byte) ZiplineType.LOOSE.ordinal()) % ZiplineType.values().length];
+
             return new ZiplineInfo(type, color);
         }
         return new ZiplineInfo(ZiplineType.LOOSE, ZiplineRopeItem.DEFAULT_COLOR);

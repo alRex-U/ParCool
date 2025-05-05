@@ -182,8 +182,8 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
 
     @Override
     public void readAdditionalSaveData(@Nonnull CompoundTag compoundNBT) {
-        setStartPos(new BlockPos(compoundNBT.getInt("Tile1_X"), compoundNBT.getInt("Tile1_Y"), compoundNBT.getInt("Tile1_Z")));
-        setEndPos(new BlockPos(compoundNBT.getInt("Tile2_X"), compoundNBT.getInt("Tile2_Y"), compoundNBT.getInt("Tile2_Z")));
+        setStartPos(new BlockPos(compoundNBT.getInt("Tile1_X").get(), compoundNBT.getInt("Tile1_Y").get(), compoundNBT.getInt("Tile1_Z").get()));
+        setEndPos(new BlockPos(compoundNBT.getInt("Tile2_X").get(), compoundNBT.getInt("Tile2_Y").get(), compoundNBT.getInt("Tile2_Z").get()));
     }
 
     @Override

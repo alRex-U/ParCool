@@ -74,7 +74,7 @@ public class CatLeap extends Action {
     public boolean canContinue(Player player, Parkourability parkourability) {
 		return !((getDoingTick() > 1 && player.onGround())
 				|| player.isFallFlying()
-				|| player.isInWaterOrBubble()
+				|| player.isInWater()
 				|| player.isInLava()
 		);
 	}

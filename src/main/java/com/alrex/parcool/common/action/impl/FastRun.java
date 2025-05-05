@@ -78,7 +78,7 @@ public class FastRun extends Action {
 
 	@Override
 	public boolean canContinue(Player player, Parkourability parkourability) {
-		return (!player.isInWaterOrBubble()
+		return (!player.isInWater()
 				&& player.getVehicle() == null
 				&& !player.isFallFlying()
 				&& player.isSprinting()

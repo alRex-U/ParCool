@@ -78,8 +78,8 @@ configurations {
 }
 
 dependencies {
-    compileOnly "curse.maven:ShoulderSurfing-243190:6496699"
-    compileOnly "curse.maven:BetterThirdPerson-435044:5965876"
+    compileOnly "curse.maven:ShoulderSurfing-243190:6485016"
+    compileOnly "curse.maven:BetterThirdPerson-435044:6455836"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

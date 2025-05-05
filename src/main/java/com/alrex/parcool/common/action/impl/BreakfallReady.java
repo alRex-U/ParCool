@@ -69,7 +69,7 @@ public class BreakfallReady extends Action {
 		return (KeyBindings.getKeyBreakfall().isDown()
                 && !player.getData(Attachments.STAMINA).isExhausted()
 				&& !parkourability.get(Crawl.class).isDoing()
-				&& !player.isInWaterOrBubble()
+				&& !player.isInWater()
 				&& (!player.onGround() || parkourability.getAdditionalProperties().getLandingTick() < 3)
 		);
 	}

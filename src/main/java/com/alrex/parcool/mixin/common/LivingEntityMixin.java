@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.NeoForgeConfig;
+import net.neoforged.neoforge.common.config.NeoForgeServerConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -82,7 +82,7 @@ public abstract class LivingEntityMixin extends Entity {
 	public boolean parCool$isLivingOnCustomLadder(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull LivingEntity entity) {
 		boolean isSpectator = (entity instanceof Player && entity.isSpectator());
 		if (isSpectator) return false;
-		if (!NeoForgeConfig.SERVER.fullBoundingBoxLadders.get()) {
+		if (!NeoForgeServerConfig.INSTANCE.fullBoundingBoxLadders.get()) {
 			return parCool$isCustomLadder(state, world, pos, entity);
 		} else {
 			AABB bb = entity.getBoundingBox();

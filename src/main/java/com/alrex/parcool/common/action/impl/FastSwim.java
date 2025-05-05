@@ -37,7 +37,7 @@ public class FastSwim extends Action {
 
     @Override
     public boolean canContinue(Player player, Parkourability parkourability) {
-        return (player.isInWaterOrBubble()
+        return (player.isInWater()
                 && player.getVehicle() == null
                 && !player.isFallFlying()
                 && player.isSprinting()
@@ -54,7 +54,7 @@ public class FastSwim extends Action {
         if (player.isLocalPlayer()) {
             if (ParCoolConfig.Client.FastRunControl.get() == FastRun.ControlType.Toggle
                     && parkourability.getAdditionalProperties().getSprintingTick() > 3
-                    && player.isInWaterOrBubble()
+                    && player.isInWater()
                     && player.isSwimming()
             ) {
                 if (KeyRecorder.keyFastRunning.isPressed())

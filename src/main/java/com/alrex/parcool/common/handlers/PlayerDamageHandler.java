@@ -49,7 +49,7 @@ public class PlayerDamageHandler {
                     || parkourability.getActionInfo().can(Roll.class))
             ) {
                 boolean justTime = parkourability.get(BreakfallReady.class).getDoingTick() < 5;
-                float distance = event.getDistance();
+                double distance = event.getDistance();
                 if (distance > 2) {
                     PacketDistributor.sendToPlayer(player, new StartBreakfallEventPayload(justTime));
                 }

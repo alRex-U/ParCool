@@ -78,9 +78,7 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity, Zipli
         matrixStack.pushPose();
         {
             matrixStack.translate(startPosOffset.x(), startPosOffset.y(), startPosOffset.z());
-            var vertexConsumer = render3d ?
-                    bufferSource.getBuffer(RenderTypes.ZIPLINE_3D) :
-                    bufferSource.getBuffer(RenderTypes.ZIPLINE_2D);
+            var vertexConsumer = bufferSource.getBuffer(RenderTypes.ZIPLINE);
             Matrix4f transformMatrix = matrixStack.last().pose();
 
             final int divisionCount = 24;

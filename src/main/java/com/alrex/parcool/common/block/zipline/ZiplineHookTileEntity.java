@@ -162,11 +162,15 @@ public class ZiplineHookTileEntity extends BlockEntity {
             if (!(entry instanceof CompoundTag cTag))
                 continue;
 
-            if (!(cTag.contains("X") && cTag.contains("Y") && cTag.contains("Z")))
-                continue;
-            BlockPos pos = new BlockPos(cTag.getInt("X"), cTag.getInt("Y"), cTag.getInt("Z"));
-            ZiplineInfo info = ZiplineInfo.load(cTag.get("Info"));
-            getConnectionInfo().put(pos, info);
+            var x = cTag.getInt("X");
+            var y = cTag.getInt("Y");
+            var z = cTag.getInt("Z");
+
+            x.ifPresent(x_ -> y.ifPresent(y_ -> z.ifPresent(z_ -> {
+                BlockPos pos = new BlockPos(x_, y_, z_);
+                ZiplineInfo info = ZiplineInfo.load(cTag.get("Info"));
+                getConnectionInfo().put(pos, info);
+            })));
         }
     }
 
