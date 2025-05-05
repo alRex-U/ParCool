@@ -11,7 +11,7 @@ public class RenderTypes {
 
     static {
         ZIPLINE_2D = RenderType.create(
-                "zipline3d",
+                "zipline2d",
                 DefaultVertexFormat.POSITION_COLOR_LIGHTMAP,
                 VertexFormat.Mode.QUADS, 256,
                 false, false,
