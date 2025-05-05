@@ -111,7 +111,6 @@ jar {
                 "Implementation-Version": "${mod_version}",
         ])
     }
-    finalizedBy('reobfJar')
 }
 sourceSets.main.resources.srcDir generateModMetadata
 neoForge.ideSyncTask generateModMetadata
