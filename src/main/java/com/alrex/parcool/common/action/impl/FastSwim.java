@@ -1,13 +1,13 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.FastSwimAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
+import com.alrex.parcool.common.attachment.client.Animation;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.resources.ResourceLocation;

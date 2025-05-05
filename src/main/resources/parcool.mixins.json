@@ -4,7 +4,10 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "client.ClientPacketListenerMixin",
+    "client.ClientWorldMixin",
+    "client.LivingRendererMixin",
     "client.LocalPlayerMixin",
+    "client.OptionsMixin",
     "client.PlayerModelMixin",
     "client.PlayerRendererMixin"
   ],
@@ -12,6 +15,7 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "common.EntityMixin",
     "common.LivingEntityMixin",
     "common.PlayerMixin"
   ]

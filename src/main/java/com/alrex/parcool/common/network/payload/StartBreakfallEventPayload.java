@@ -1,10 +1,9 @@
 package com.alrex.parcool.common.network.payload;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.impl.BreakfallReady;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -33,9 +32,7 @@ public record StartBreakfallEventPayload(boolean justTimed) implements CustomPac
         context.enqueueWork(() -> {
             Player player = context.player();
             Parkourability parkourability = Parkourability.get(player);
-            if (parkourability == null) return;
-
-            parkourability.get(BreakfallReady.class).startBreakfall((LocalPlayer) player, parkourability, payload.justTimed());
+            parkourability.get(BreakfallReady.class).startBreakfall(player, parkourability, payload.justTimed());
         });
     }
 

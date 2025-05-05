@@ -5,10 +5,13 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "$(bold)Breakfalls$() are skills to protect us from impact of landing.$(br)By this mod, you can do $(bold)Roll$() and $(bold)Safety Tap$()."
+      "text": "$(bold)Breakfalls$() are skills to protect us from impact of landing.$(br2) 2 types of breakfall are implemented : $(bold)Roll$() and $(bold)Safety Tap$()."
     },
     {
-      "type": "patchouli:empty"
+      "type": "patchouli:image",
+      "images": [
+        "parcool:textures/gui/entries/breakfall_tap.png"
+      ]
     },
     {
       "type": "patchouli:text",
@@ -18,7 +21,7 @@
     {
       "type": "patchouli:text",
       "title": "How to Use",
-      "text": "$(list)Land while you press forward or backward movement key and Breakfall Key$(br)(Normally it’s mapped to R)"
+      "text": "$(list)Land while you press forward or backward movement key and Breakfall($(k:parcool.Breakfall)) Key"
     },
     {
       "type": "patchouli:text",

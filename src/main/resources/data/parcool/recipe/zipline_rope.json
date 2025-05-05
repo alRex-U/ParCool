@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "wCS",
+    "SnS",
+    "SCw"
+  ],
+  "key": {
+    "n": {
+      "item": "minecraft:iron_nugget"
+    },
+    "C": {
+      "item": "minecraft:chain"
+    },
+    "S": {
+      "item": "minecraft:string"
+    },
+    "w": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "parcool:zipline_rope",
+    "count": 2
+  }
+}

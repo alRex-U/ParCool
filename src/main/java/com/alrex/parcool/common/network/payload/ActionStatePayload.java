@@ -4,7 +4,7 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.Actions;
-import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -69,8 +69,10 @@ public record ActionStatePayload(UUID playerID, List<Entry> states) implements C
                 switch (state.type()) {
                     case Start:
                         action.setDoing(true);
-                        action.onStartInOtherClient(player, parkourability, state.getDataAsBuffer());
-                        action.onStart(player, parkourability);
+                        var buf = state.getDataAsBuffer();
+                        action.onStart(player, parkourability, buf);
+                        buf.rewind();
+                        action.onStartInOtherClient(player, parkourability, buf);
                         NeoForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
                         break;
                     case Finish:
@@ -100,8 +102,10 @@ public record ActionStatePayload(UUID playerID, List<Entry> states) implements C
                 switch (state.type()) {
                     case Start:
                         action.setDoing(true);
-                        action.onStartInServer(player, parkourability, state.getDataAsBuffer());
-                        action.onStart(player, parkourability);
+                        var buf = state.getDataAsBuffer();
+                        action.onStart(player, parkourability, buf);
+                        buf.rewind();
+                        action.onStartInServer(player, parkourability, buf);
                         NeoForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
                         break;
                     case Finish:

@@ -27,6 +27,8 @@ public class SoundEvents {
     private static final SoundEvent DODGE_SOUND = SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "action.dodge"));
     private static final SoundEvent PARCOOL_ENABLE_SOUND = SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "parcool.enable"));
     private static final SoundEvent PARCOOL_DISABLE_SOUND = SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "parcool.disable"));
+    private static final SoundEvent ZIPLINE_SET_SOUND = SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "zipline.set"));
+    private static final SoundEvent ZIPLINE_REMOVE_SOUND = SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "zipline.remove"));
 
     public static final DeferredHolder<SoundEvent, SoundEvent> VAULT = SOUNDS.register("action.vault", () -> VAULT_SOUND);
     public static final DeferredHolder<SoundEvent, SoundEvent> VERTICAL_WALL_RUN = SOUNDS.register("action.v_wall_run", () -> VERTICAL_WALL_RUN_SOUND);
@@ -45,6 +47,8 @@ public class SoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> DODGE = SOUNDS.register("action.dodge", () -> DODGE_SOUND);
     public static final DeferredHolder<SoundEvent, SoundEvent> PARCOOL_ENABLE = SOUNDS.register("action.enable", () -> PARCOOL_ENABLE_SOUND);
     public static final DeferredHolder<SoundEvent, SoundEvent> PARCOOL_DISABLE = SOUNDS.register("action.disable", () -> PARCOOL_DISABLE_SOUND);
+    public static final DeferredHolder<SoundEvent, SoundEvent> ZIPLINE_SET = SOUNDS.register("zipline.set", () -> ZIPLINE_SET_SOUND);
+    public static final DeferredHolder<SoundEvent, SoundEvent> ZIPLINE_REMOVE = SOUNDS.register("zipline.remove", () -> ZIPLINE_REMOVE_SOUND);
 
     public static void registerAll(IEventBus modBus) {
         SOUNDS.register(modBus);

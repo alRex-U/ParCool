@@ -1,12 +1,12 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
-import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.VerticalWallRunAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
+import com.alrex.parcool.common.attachment.client.Animation;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
@@ -41,7 +41,7 @@ public class VerticalWallRun extends Action {
 				&& (4 < tickAfterJump && tickAfterJump < 13)
 				&& getNotDoingTick() > 15
 				&& !player.isFallFlying()
-				&& KeyBindings.getKeyJump().isDown()
+                && KeyBindings.isKeyJumpDown()
 				&& !parkourability.get(ClingToCliff.class).isDoing()
 				&& !parkourability.get(Crawl.class).isDoing()
                 && !parkourability.get(CatLeap.class).isDoing()
@@ -58,7 +58,7 @@ public class VerticalWallRun extends Action {
 			wall = wall.normalize();
 			if (wall.dot(VectorUtil.fromYawDegree(player.getYHeadRot())) > 0.93) {
 				double height = WorldUtil.getWallHeight(player, wall, player.getBbHeight() * 2.2, 0.2);
-				if (height > 2.3) {
+                if (height > player.getBbHeight() * 1.3) {
 					BlockPos targetBlock = new BlockPos(
 							(int) (player.getX() + wall.x()),
 							(int) (player.getBoundingBox().minY + player.getBbHeight() * 0.5),

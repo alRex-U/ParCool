@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "parcool:item/zipline_rope_base",
+    "layer1": "parcool:item/zipline_rope_overlay"
+  }
+}

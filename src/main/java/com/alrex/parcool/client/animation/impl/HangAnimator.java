@@ -3,8 +3,8 @@ package com.alrex.parcool.client.animation.impl;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.impl.HangDown;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -21,6 +21,9 @@ public class HangAnimator extends Animator {
 		HangDown.BarAxis axis = hangDown.getHangingBarAxis();
 		if (axis == null) return;
 		boolean orthogonal = hangDown.isOrthogonalToBar();
+        transformer
+                .translateRightArm(0.3f, -2.0f, 0)
+                .translateLeftArm(-0.3f, -2.0f, 0);
 		if (orthogonal) {
 			float zAngle = (float) Math.toRadians(10 + 20 * Math.sin(24 * hangDown.getArmSwingAmount()));
 			transformer

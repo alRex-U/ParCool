@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action;
 
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
@@ -43,7 +44,7 @@ public abstract class Action {
 	@OnlyIn(Dist.CLIENT)
 	public abstract boolean canContinue(Player player, Parkourability parkourability);
 
-	public void onStart(Player player, Parkourability parkourability) {
+    public void onStart(Player player, Parkourability parkourability, ByteBuffer startData) {
 	}
 
 	public void onStartInServer(Player player, Parkourability parkourability, ByteBuffer startData) {

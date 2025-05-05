@@ -1,6 +1,5 @@
 package com.alrex.parcool.mixin.client;
 
-import com.alrex.parcool.common.handlers.LoginLogoutHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -22,7 +21,6 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
     @Inject(method = "Lnet/minecraft/client/multiplayer/ClientPacketListener;handlePlayerInfoRemove(Lnet/minecraft/network/protocol/game/ClientboundPlayerInfoRemovePacket;)V", at = @At("HEAD"))
     public void onHandlePlayerInfoRemove(ClientboundPlayerInfoRemovePacket packet, CallbackInfo ci) {
         for (var uuid : packet.profileIds()) {
-            LoginLogoutHandler.onLogoutInClient(uuid);
         }
     }
 
@@ -31,7 +29,6 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
         if (!packet.actions().contains(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER))
             return;
         for (var entry : packet.newEntries()) {
-            LoginLogoutHandler.onLoginInClient(entry.profileId());
         }
     }
 }

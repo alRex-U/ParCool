@@ -1,13 +1,22 @@
 package com.alrex.parcool.common.action;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
-import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.common.attachment.Attachments;
+import com.alrex.parcool.common.attachment.client.Animation;
+import com.alrex.parcool.common.attachment.client.LocalStamina;
+import com.alrex.parcool.common.attachment.common.Parkourability;
+import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import com.alrex.parcool.common.network.payload.ActionStatePayload;
-import com.alrex.parcool.common.stamina.LocalStamina;
+import com.alrex.parcool.config.ParCoolConfig;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -17,12 +26,22 @@ import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.apache.logging.log4j.Level;
 
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
 public class ActionProcessor {
+	private static final ResourceLocation STAMINA_DEPLETED_SLOWNESS_MODIFIER_ID =
+			ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "exhausted.speed");
+
+	private static final AttributeModifier STAMINA_DEPLETED_SLOWNESS_MODIFIER = new AttributeModifier(
+			STAMINA_DEPLETED_SLOWNESS_MODIFIER_ID,
+			-0.05,
+			AttributeModifier.Operation.ADD_VALUE
+	);
+
 	private final ByteBuffer bufferOfPostState = ByteBuffer.allocate(128);
 	private final ByteBuffer bufferOfPreState = ByteBuffer.allocate(128);
 	private final ByteBuffer bufferOfStarting = ByteBuffer.allocate(128);
@@ -44,14 +63,29 @@ public class ActionProcessor {
 	public void onTick(PlayerTickEvent.Pre event) {
 		Player player = event.getEntity();
 		Parkourability parkourability = Parkourability.get(player);
-		if (parkourability == null) return;
 		List<Action> actions = parkourability.getList();
 		boolean needSync = player.level().isClientSide() && player.isLocalPlayer();
 		if (needSync) {
-			var stamina = LocalStamina.get();
-			if (stamina == null || !stamina.isAvailable()) return;
+			var stamina = LocalStamina.get((LocalPlayer) player);
+			if (!stamina.isAvailable()) return;
 		}
 		LinkedList<ActionStatePayload.Entry> syncStates = new LinkedList<>();
+
+		if (needSync && player.tickCount > 100 && player.tickCount % 150 == 0 && parkourability.limitationIsNotSynced()) {
+			if (player instanceof LocalPlayer) {
+				int trialCount = parkourability.getSynchronizeTrialCount();
+				if (trialCount < 5) {
+					parkourability.trySyncLimitation((LocalPlayer) player, parkourability);
+					if (ParCoolConfig.Client.Booleans.ShowAutoResynchronizationNotification.get()) {
+						player.displayClientMessage(Component.translatable("parcool.message.error.limitation.not_synced"), false);
+					}
+					ParCool.LOGGER.log(Level.WARN, "Detected ParCool Limitation is not synced. Sending synchronization request...");
+				} else if (trialCount == 5) {
+					player.displayClientMessage(Component.translatable("parcool.message.error.limitation.fail_sync").withStyle(ChatFormatting.DARK_RED), false);
+					ParCool.LOGGER.log(Level.ERROR, "Failed to synchronize ParCool Limitation. Please report to developer");
+				}
+			}
+		}
 
 		parkourability.getAdditionalProperties().onTick(player, parkourability);
 		for (Action action : actions) {
@@ -95,16 +129,18 @@ public class ActionProcessor {
 					}
 				} else {
 					bufferOfStarting.clear();
-					boolean start = parkourability.getActionInfo().can(action.getClass())
+					boolean start = !player.isSpectator()
+							&& parkourability.getActionInfo().can(action.getClass())
 							&& !player.getData(Attachments.STAMINA).isExhausted()
 							&& !NeoForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStartEvent(player, action)).isCanceled()
 							&& action.canStart(player, parkourability, bufferOfStarting);
 					bufferOfStarting.flip();
 					if (start) {
 						action.setDoing(true);
+						action.onStart(player, parkourability, bufferOfStarting);
+						bufferOfStarting.rewind();
 						action.onStartInLocalClient(player, parkourability, bufferOfStarting);
 						bufferOfStarting.rewind();
-						action.onStart(player, parkourability);
 						NeoForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
 						var data = new byte[bufferOfStarting.remaining()];
 						bufferOfStarting.get(data);
@@ -113,11 +149,9 @@ public class ActionProcessor {
 								ActionStatePayload.Entry.Type.Start,
 								data
 						));
-						if (timing == StaminaConsumeTiming.OnStart) {
-							var stamina = LocalStamina.get();
-							if (stamina != null) {
-								stamina.consume(parkourability.getActionInfo().getStaminaConsumptionOf(action.getClass()));
-							}
+						if (timing == StaminaConsumeTiming.OnStart && player instanceof LocalPlayer localPlayer) {
+							var stamina = LocalStamina.get(localPlayer);
+							stamina.consume(localPlayer, parkourability.getActionInfo().getStaminaConsumptionOf(action.getClass()));
 						}
 					}
 				}
@@ -129,11 +163,9 @@ public class ActionProcessor {
 					action.onWorkingTickInClient(player, parkourability);
 					if (player.isLocalPlayer()) {
 						action.onWorkingTickInLocalClient(player, parkourability);
-						if (timing == StaminaConsumeTiming.OnWorking) {
-							var stamina = LocalStamina.get();
-							if (stamina != null) {
-								stamina.consume(parkourability.getActionInfo().getStaminaConsumptionOf(action.getClass()));
-							}
+						if (timing == StaminaConsumeTiming.OnWorking && player instanceof LocalPlayer localPlayer) {
+							var stamina = LocalStamina.get(localPlayer);
+							stamina.consume(localPlayer, parkourability.getActionInfo().getStaminaConsumptionOf(action.getClass()));
 						}
 					}
 				} else {
@@ -174,17 +206,28 @@ public class ActionProcessor {
 		}
 		if (needSync) {
 			PacketDistributor.sendToServer(new ActionStatePayload(player.getUUID(), syncStates));
-			var stamina = LocalStamina.get();
-			if (stamina != null) {
+			if (!parkourability.limitationIsNotSynced() && player instanceof LocalPlayer localPlayer) {
+				var stamina = LocalStamina.get(localPlayer);
 				staminaSyncCoolTimeTick++;
 				if (staminaSyncCoolTimeTick > 5) {
 					staminaSyncCoolTimeTick = 0;
-					stamina.sync((LocalPlayer) player);
+					stamina.sync(localPlayer);
 				}
-				if (stamina.isExhausted()) {
+				stamina.onTick(localPlayer);
+			}
+		}
+		if (!player.level().isClientSide()) {
+			var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
+			if (attr != null) {
+				ReadonlyStamina readonlyStamina = player.getData(Attachments.STAMINA);
+				if (readonlyStamina.isExhausted()) {
 					player.setSprinting(false);
+					if (!attr.hasModifier(STAMINA_DEPLETED_SLOWNESS_MODIFIER_ID)) {
+						attr.addTransientModifier(STAMINA_DEPLETED_SLOWNESS_MODIFIER);
+					}
+				} else {
+					attr.removeModifier(STAMINA_DEPLETED_SLOWNESS_MODIFIER_ID);
 				}
-				stamina.onTick();
 			}
 		}
 	}

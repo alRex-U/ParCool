@@ -1,6 +1,6 @@
 package com.alrex.parcool.client.gui;
 
-import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.network.payload.ClientInformationPayload;
@@ -23,6 +23,7 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
             new EnumConfigSet<>(ParCoolConfig.Client.CrawlControl),
             new EnumConfigSet<>(ParCoolConfig.Client.FlipControl),
             new EnumConfigSet<>(ParCoolConfig.Client.HWallRunControl),
+            new EnumConfigSet<>(ParCoolConfig.Client.ClingToCliffControl),
             new EnumConfigSet<>(ParCoolConfig.Client.VaultAnimationMode),
             new EnumConfigSet<>(ParCoolConfig.Client.GUIColorTheme),
             new EnumConfigSet<>(ParCoolConfig.Client.StaminaHUDType),

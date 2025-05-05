@@ -2,7 +2,7 @@ package com.alrex.parcool.client.gui;
 
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.Actions;
-import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.network.payload.ClientInformationPayload;

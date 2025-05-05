@@ -1,6 +1,6 @@
 package com.alrex.parcool.common.stamina;
 
-import com.alrex.parcool.common.attachment.stamina.ReadonlyStamina;
+import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;

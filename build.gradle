@@ -1,7 +1,5 @@
 buildscript {
     repositories {
-        maven { url = 'https://maven.blamejared.com' }
-        maven { url = 'https://www.cursemaven.com' }
     }
 }
 
@@ -21,6 +19,7 @@ version = "${mc_version}-${mod_version}-NF"
 group = 'com.alrex'
 repositories {
     mavenLocal()
+    maven { url = 'https://www.cursemaven.com' }
 }
 base {
     archivesName = "ParCool"
@@ -84,7 +83,8 @@ configurations {
 }
 
 dependencies {
-
+    compileOnly "curse.maven:ShoulderSurfing-243190:6496668"
+    compileOnly "curse.maven:BetterThirdPerson-435044:5833474"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

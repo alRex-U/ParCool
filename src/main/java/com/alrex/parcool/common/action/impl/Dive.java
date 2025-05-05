@@ -1,13 +1,13 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.DiveAnimationHostAnimator;
 import com.alrex.parcool.client.animation.impl.DiveIntoWaterAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.attachment.Attachments;
+import com.alrex.parcool.common.attachment.client.Animation;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.util.Mth;
@@ -52,6 +52,7 @@ public class Dive extends Action {
 				&& parkourability.getAdditionalProperties().getNotInWaterTick() > 30
 				&& KeyRecorder.keyJumpState.getTickKeyDown() > 10
 				&& !parkourability.get(CatLeap.class).isDoing()
+                && !parkourability.get(RideZipline.class).isDoing()
 				&& WorldUtil.existsSpaceBelow(player);
 		if (!(startInAir || (justJumped && WorldUtil.existsDivableSpace(player) && parkourability.get(FastRun.class).canActWithRunning(player)))) {
 			justJumped = false;

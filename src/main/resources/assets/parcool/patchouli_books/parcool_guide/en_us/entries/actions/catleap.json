@@ -1,11 +1,11 @@
 {
-  "name": "CatLeap",
+  "name": "Catleap",
   "icon": "minecraft:cat_spawn_egg",
   "category": "parcool:category_actions",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "$(bold)CatLeap$() is a skill used to jump and cling to top of walls,fence or etc.$(br)This is said to be one of basic skills of parkour.$(br)Traceurs absorb an impact of landing with movement of legs.$(br2)In this mod, this is implemented as a long jump. Please careful with the cool time."
+      "text": "$(bold)Catleap$() is a skill used to jump and cling to top of walls,fence or etc.$(br)This is said to be one of basic skills of parkour.$(br)Traceurs absorb an impact of landing with movement of legs.$(br2)In this mod, this is implemented as a long jump. Please careful with the cool time."
     },
     {
       "type": "patchouli:text",

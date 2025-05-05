@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.network.payload;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.server.limitation.Limitations;
 import io.netty.buffer.ByteBuf;

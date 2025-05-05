@@ -1,12 +1,12 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
-import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.CatLeapAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
+import com.alrex.parcool.common.attachment.client.Animation;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -62,6 +62,7 @@ public class CatLeap extends Action {
 				&& coolTimeTick <= 0
 				&& readyTick > 0
 				&& parkourability.get(ChargeJump.class).getChargingTick() < ChargeJump.JUMP_MAX_CHARGE_TICK / 2
+                && !parkourability.get(HideInBlock.class).isDoing()
                 && !parkourability.get(Roll.class).isDoing()
                 && !parkourability.get(Tap.class).isDoing()
 				&& KeyRecorder.keySneak.isReleased()

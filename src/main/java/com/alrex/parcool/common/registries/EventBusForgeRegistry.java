@@ -12,7 +12,8 @@ public class EventBusForgeRegistry {
         bus.register(ParCoolBrewingRecipe.class);
         bus.register(PlayerJumpHandler.class);
         bus.register(LoginLogoutHandler.class);
-        bus.register(PlayerFallHandler.class);
+        bus.register(PlayerVisibilityHandler.class);
+        bus.register(PlayerDamageHandler.class);
         bus.register(PlayerCloneHandler.class);
 		bus.register(new ActionProcessor());
 	}
@@ -23,5 +24,6 @@ public class EventBusForgeRegistry {
         bus.register(EnableOrDisableParCoolHandler.class);
         bus.register(PlayerJoinHandler.class);
         bus.register(HUDManager.getInstance());
+        bus.register(InputHandler.class);
 	}
 }

@@ -38,3 +38,19 @@ type = "required"
 versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.parcool]]
+modId = "shouldersurfing"
+type = "optional"
+# This version range declares a minimum of the current minecraft version up to but not including the next major version
+versionRange = "[1.21.1-4.11.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.parcool]]
+modId = "betterthirdperson"
+type = "optional"
+# This version range declares a minimum of the current minecraft version up to but not including the next major version
+versionRange = "[1.9.0,)"
+ordering = "NONE"
+side = "BOTH"

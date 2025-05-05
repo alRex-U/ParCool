@@ -2,7 +2,7 @@ package com.alrex.parcool.common.handlers;
 
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.input.KeyBindings;
-import com.alrex.parcool.common.action.Parkourability;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.network.payload.ClientInformationPayload;
 import com.alrex.parcool.config.ParCoolConfig;

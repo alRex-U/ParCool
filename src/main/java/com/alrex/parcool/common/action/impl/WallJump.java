@@ -1,13 +1,13 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
-import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.BackwardWallJumpAnimator;
 import com.alrex.parcool.client.animation.impl.WallJumpAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
+import com.alrex.parcool.common.attachment.client.Animation;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.core.BlockPos;
@@ -63,8 +63,8 @@ public class WallJump extends Action {
 		Vec3 value;
 		double dotProduct = wall.dot(vec);
 
-		if (dotProduct > 0.35) {
-			if (!ParCoolConfig.Client.Booleans.EnableWallJumpBackward.get()) return null;
+        if (dotProduct > -Math.cos(Math.toRadians(ParCoolConfig.Client.Integers.AcceptableAngleOfWallJump.get()))) {
+            return null;
 		}
 		if (dotProduct > 0) {//To Wall
 			double dot = vec.reverse().dot(wall);
@@ -94,6 +94,7 @@ public class WallJump extends Action {
 				&& ((control == ControlType.PressKey && KeyRecorder.keyWallJump.isPressed()) || (control == ControlType.ReleaseKey && KeyRecorder.keyWallJump.isReleased()))
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(VerticalWallRun.class).isDoing()
+                && !parkourability.get(RideZipline.class).isDoing()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 4
 				&& !isInCooldown(parkourability)
 		);
@@ -143,7 +144,7 @@ public class WallJump extends Action {
 	}
 
 	@Override
-	public void onStart(Player player, Parkourability parkourability) {
+    public void onStart(Player player, Parkourability parkourability, ByteBuffer startData) {
 		jump = true;
 		player.fallDistance = 0;
 	}

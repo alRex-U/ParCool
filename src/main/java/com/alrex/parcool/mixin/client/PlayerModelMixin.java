@@ -1,7 +1,7 @@
 package com.alrex.parcool.mixin.client;
 
-import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
+import com.alrex.parcool.common.attachment.client.Animation;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;

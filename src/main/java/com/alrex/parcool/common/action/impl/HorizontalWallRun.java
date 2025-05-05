@@ -1,13 +1,13 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.SoundEvents;
-import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.HorizontalWallRunAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.attachment.Attachments;
+import com.alrex.parcool.common.attachment.client.Animation;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.BufferUtil;
@@ -122,6 +122,7 @@ public class HorizontalWallRun extends Action {
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Dodge.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
+                && !parkourability.get(ClingToCliff.class).isDoing()
                 && !player.isInWaterOrBubble()
                 && Math.abs(player.getDeltaMovement().y()) < 0.5
 				&& coolTime == 0

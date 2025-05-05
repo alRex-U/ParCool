@@ -1,12 +1,12 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.client.animation.impl.WallSlideAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.action.Parkourability;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.attachment.Attachments;
+import com.alrex.parcool.common.attachment.client.Animation;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.damage.DamageSources;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.WorldUtil;
@@ -62,7 +62,7 @@ public class WallSlide extends Action {
 	}
 
     @Override
-    public void onStart(Player player, Parkourability parkourability) {
+    public void onStart(Player player, Parkourability parkourability, ByteBuffer startData) {
         particleSpawnCoolTime = 0;
     }
 
