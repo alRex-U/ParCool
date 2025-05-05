@@ -103,8 +103,8 @@ dependencies {
 
     compileOnly fg.deobf("curse.maven:BetterThirdPerson-435044:4596768")
 
-    compileOnly fg.deobf("curse.maven:ShoulderSurfing-243190:6387980")
-    runtimeOnly fg.deobf("curse.maven:ShoulderSurfing-243190:6387980")
+    compileOnly fg.deobf("curse.maven:ShoulderSurfing-243190:6496631")
+    runtimeOnly fg.deobf("curse.maven:ShoulderSurfing-243190:6496631")
 }
 
 jar {
