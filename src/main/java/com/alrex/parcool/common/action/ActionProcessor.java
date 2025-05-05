@@ -4,6 +4,7 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.client.animation.Animation;
 import com.alrex.parcool.common.attachment.Attachments;
+import com.alrex.parcool.common.attachment.stamina.ReadonlyStamina;
 import com.alrex.parcool.common.network.payload.ActionStatePayload;
 import com.alrex.parcool.common.stamina.LocalStamina;
 import com.alrex.parcool.config.ParCoolConfig;
@@ -12,6 +13,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -28,6 +32,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ActionProcessor {
+	private static final ResourceLocation STAMINA_DEPLETED_SLOWNESS_MODIFIER_ID =
+			ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "exhausted.speed");
+
+	private static final AttributeModifier STAMINA_DEPLETED_SLOWNESS_MODIFIER = new AttributeModifier(
+			STAMINA_DEPLETED_SLOWNESS_MODIFIER_ID,
+			-0.05,
+			AttributeModifier.Operation.ADD_VALUE
+	);
+
 	private final ByteBuffer bufferOfPostState = ByteBuffer.allocate(128);
 	private final ByteBuffer bufferOfPreState = ByteBuffer.allocate(128);
 	private final ByteBuffer bufferOfStarting = ByteBuffer.allocate(128);
@@ -204,10 +217,21 @@ public class ActionProcessor {
 					staminaSyncCoolTimeTick = 0;
 					stamina.sync((LocalPlayer) player);
 				}
-				if (stamina.isExhausted()) {
-					player.setSprinting(false);
-				}
 				stamina.onTick();
+			}
+		}
+		if (!player.level().isClientSide()) {
+			var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
+			if (attr != null) {
+				ReadonlyStamina readonlyStamina = player.getData(Attachments.STAMINA);
+				if (readonlyStamina.isExhausted()) {
+					player.setSprinting(false);
+					if (!attr.hasModifier(STAMINA_DEPLETED_SLOWNESS_MODIFIER_ID)) {
+						attr.addTransientModifier(STAMINA_DEPLETED_SLOWNESS_MODIFIER);
+					}
+				} else {
+					attr.removeModifier(STAMINA_DEPLETED_SLOWNESS_MODIFIER_ID);
+				}
 			}
 		}
 	}

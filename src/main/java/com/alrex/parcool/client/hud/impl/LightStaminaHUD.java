@@ -70,6 +70,7 @@ public class LightStaminaHUD {
         if (!oldShowStatus && showStatus) {
             oldStatusValue = statusValue;
         }
+		oldValue = newValue;
 	}
 
 	public void render(GuiGraphics graphics, DeltaTracker partialTick) {

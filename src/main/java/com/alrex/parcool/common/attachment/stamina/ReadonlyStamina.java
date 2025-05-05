@@ -19,19 +19,24 @@ public record ReadonlyStamina(boolean isExhausted, int value, int max) {
     }
 
     public ReadonlyStamina consumed(int value) {
+        if (isExhausted()) return this;
         int newValue = this.value() - value;
+        boolean exhausted = false;
         if (newValue < 0) {
             newValue = 0;
+            exhausted = true;
         }
-        return new ReadonlyStamina(isExhausted(), newValue, max());
+        return new ReadonlyStamina(exhausted, newValue, max());
     }
 
     public ReadonlyStamina recovered(int value) {
         int newValue = this.value() + value;
+        boolean exhausted = isExhausted();
         if (newValue > max) {
             newValue = max;
+            exhausted = false;
         }
-        return new ReadonlyStamina(isExhausted(), newValue, max());
+        return new ReadonlyStamina(exhausted, newValue, max());
     }
 
     @OnlyIn(Dist.CLIENT)
