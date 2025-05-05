@@ -93,8 +93,8 @@ dependencies {
     runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))
 
     compileOnly fg.deobf("curse.maven:BetterThirdPerson-435044:4177088")
-    compileOnly fg.deobf("curse.maven:ShoulderSurfing-243190:6387974")
-    runtimeOnly fg.deobf("curse.maven:ShoulderSurfing-243190:6387974")
+    compileOnly fg.deobf("curse.maven:ShoulderSurfing-243190:6496608")
+    runtimeOnly fg.deobf("curse.maven:ShoulderSurfing-243190:6496608")
 
     compileOnly fg.deobf("curse.maven:feathers-699933:4573576")
     runtimeOnly fg.deobf("curse.maven:feathers-699933:4573576")
