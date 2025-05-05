@@ -202,7 +202,11 @@ public class ZiplineRopeItem extends Item {
     }
 
     public static void setColor(ItemStack stack, int color) {
-        stack.set(DataComponents.ZIPLINE_COLOR, new ZiplineColorComponent(color));
+        if (color != DEFAULT_COLOR){
+            stack.set(DataComponents.ZIPLINE_COLOR, new ZiplineColorComponent(color));
+        }else {
+            stack.remove(DataComponents.ZIPLINE_COLOR);
+        }
     }
 
     public static int getColor(ItemStack stack) {
