@@ -52,12 +52,6 @@ neoForge {
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
-        data {
-            data()
-
-            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-        }
-
         configureEach {
             systemProperty 'forge.logging.markers', 'REGISTRIES'
 
@@ -84,8 +78,8 @@ configurations {
 }
 
 dependencies {
-    compileOnly "curse.maven:ShoulderSurfing-243190:5948017"
-    compileOnly "curse.maven:BetterThirdPerson-435044:5859634"
+    compileOnly "curse.maven:ShoulderSurfing-243190:6496699"
+    compileOnly "curse.maven:BetterThirdPerson-435044:5965876"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

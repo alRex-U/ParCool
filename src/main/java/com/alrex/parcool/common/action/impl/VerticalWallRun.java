@@ -161,7 +161,7 @@ public class VerticalWallRun extends Action {
                     .scale(2 + 4 * player.getRandom().nextDouble())
                     .add(0, 0.5, 0);
             level.addParticle(
-                    new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(leanedBlock),
+					new BlockParticleOption(ParticleTypes.BLOCK, blockstate),
                     particlePos.x(),
                     particlePos.y(),
                     particlePos.z(),

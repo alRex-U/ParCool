@@ -254,7 +254,7 @@ public class HorizontalWallRun extends Action {
                     .scale(3 + 6 * player.getRandom().nextDouble())
                     .add(0, 1.5, 0);
             level.addParticle(
-                    new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(leanedBlock),
+					new BlockParticleOption(ParticleTypes.BLOCK, blockstate),
                     particlePos.x(),
                     particlePos.y(),
                     particlePos.z(),

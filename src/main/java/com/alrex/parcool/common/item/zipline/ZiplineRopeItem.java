@@ -5,13 +5,11 @@ import com.alrex.parcool.common.block.zipline.ZiplineHookBlock;
 import com.alrex.parcool.common.block.zipline.ZiplineHookTileEntity;
 import com.alrex.parcool.common.block.zipline.ZiplineInfo;
 import com.alrex.parcool.common.item.DataComponents;
-import com.alrex.parcool.common.item.component.ZiplineColorComponent;
 import com.alrex.parcool.common.item.component.ZiplinePositionComponent;
 import com.alrex.parcool.common.item.component.ZiplineTensionComponent;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.common.zipline.ZiplineType;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -20,6 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -30,12 +29,6 @@ import java.text.DecimalFormatSymbols;
 import java.util.List;
 
 public class ZiplineRopeItem extends Item {
-    public static class RopeColor implements ItemColor {
-        @Override
-        public int getColor(@Nonnull ItemStack itemStack, int i) {
-            return i > 0 ? -1 : ZiplineRopeItem.getColor(itemStack);
-        }
-    }
 
     public ZiplineRopeItem(Properties p_i48487_1_) {
         super(p_i48487_1_);
@@ -61,20 +54,6 @@ public class ZiplineRopeItem extends Item {
         }
         lines.add(Component.empty());
         lines.add(Component.translatable("parcool.gui.text.zipline.tension", getZiplineType(stack).getTranslationName()).withStyle(ChatFormatting.GRAY));
-        if (hasCustomColor(stack)) {
-            /*
-            int color = getColor(stack);
-            DecimalFormat format = PERCENT_FORMATTER;
-            float r = 100f * ((color & 0xFF0000) >> 16) / 255f;
-            float g = 100f * ((color & 0x00FF00) >> 8) / 255f;
-            float b = 100f * (color & 0x0000FF) / 255f;
-            lines.add(new StringTextComponent(""));
-            lines.add(new StringTextComponent("R : " + format.format(r) + "%").withStyle(TextFormatting.RED));
-            lines.add(new StringTextComponent("G : " + format.format(g) + "%").withStyle(TextFormatting.GREEN));
-            lines.add(new StringTextComponent("B : " + format.format(b) + "%").withStyle(TextFormatting.BLUE));
-             */
-            lines.add(Component.translatable("parcool.gui.text.zipline.colored").withStyle(ChatFormatting.BLUE));
-        }
     }
 
     @Nonnull
@@ -203,20 +182,20 @@ public class ZiplineRopeItem extends Item {
 
     public static void setColor(ItemStack stack, int color) {
         if (color != DEFAULT_COLOR) {
-            stack.set(DataComponents.ZIPLINE_COLOR, new ZiplineColorComponent(color));
+            stack.set(net.minecraft.core.component.DataComponents.DYED_COLOR, new DyedItemColor(color, true));
         }else {
-            stack.remove(DataComponents.ZIPLINE_COLOR);
+            stack.remove(net.minecraft.core.component.DataComponents.DYED_COLOR);
         }
     }
 
     public static int getColor(ItemStack stack) {
-        var colorComp = stack.get(DataComponents.ZIPLINE_COLOR);
-        return colorComp == null ? DEFAULT_COLOR : colorComp.color();
+        var colorComp = stack.get(net.minecraft.core.component.DataComponents.DYED_COLOR);
+        return colorComp == null ? DEFAULT_COLOR : colorComp.rgb();
     }
 
     public static boolean hasCustomColor(ItemStack stack) {
-        var colorComp = stack.get(DataComponents.ZIPLINE_COLOR);
-        return colorComp != null && colorComp.color() != DEFAULT_COLOR;
+        var colorComp = stack.get(net.minecraft.core.component.DataComponents.DYED_COLOR);
+        return colorComp != null && colorComp.rgb() != DEFAULT_COLOR;
     }
 
     public static ZiplineType getZiplineType(ItemStack stack) {

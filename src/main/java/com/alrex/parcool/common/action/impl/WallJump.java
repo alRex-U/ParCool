@@ -277,7 +277,7 @@ public class WallJump extends Action {
                         .scale(3 + 9 * player.getRandom().nextDouble())
                         .add(0, -jumpDirection.y() * 3 * player.getRandom().nextDouble(), 0);
                 level.addParticle(
-                        new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(leanedBlock),
+						new BlockParticleOption(ParticleTypes.BLOCK, blockstate),
                         particlePos.x(),
                         particlePos.y(),
                         particlePos.z(),

@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "parcool:item/zipline_rope",
+    "tints": [
+      {
+        "type": "minecraft:dye",
+        "default": -11763738
+      }
+    ]
+  }
+}

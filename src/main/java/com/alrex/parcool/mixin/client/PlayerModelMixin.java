@@ -8,7 +8,6 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,9 +22,6 @@ public abstract class PlayerModelMixin extends HumanoidModel<PlayerRenderState> 
 	@Shadow
 	@Final
 	private boolean slim;
-
-	@Shadow
-	protected abstract ArmPose getArmPose(PlayerRenderState renderState, HumanoidArm arm);
 
 	@Unique
     private PlayerModelTransformer parCool$transformer = null;
@@ -51,8 +47,8 @@ public abstract class PlayerModelMixin extends HumanoidModel<PlayerRenderState> 
 				model,
 				slim,
 				renderState,
-				getArmPose(renderState, HumanoidArm.RIGHT),
-				getArmPose(renderState, HumanoidArm.LEFT)
+				renderState.rightArmPose,
+				renderState.leftArmPose
 		);
         parCool$transformer.reset();
 

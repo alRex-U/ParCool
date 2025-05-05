@@ -1,17 +1,19 @@
 package com.alrex.parcool.common.item;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 public class CreativeTabs {
     private static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ParCool.MOD_ID);
@@ -24,10 +26,10 @@ public class CreativeTabs {
                 output.accept(Items.WOODEN_ZIPLINE_HOOK.get());
                 output.accept(Items.ZIPLINE_ROPE.get());
                 Arrays.stream(DyeColor.values())
-                        .map(color -> {
+                        .map(DyeItem::byColor)
+                        .map(dye -> {
                             var coloredRope = new ItemStack(Items.ZIPLINE_ROPE.get());
-                            ZiplineRopeItem.setColor(coloredRope, color.getTextureDiffuseColor());
-                            return coloredRope;
+                            return DyedItemColor.applyDyes(coloredRope, Collections.singletonList(dye));
                         })
                         .forEach(output::accept);
             })

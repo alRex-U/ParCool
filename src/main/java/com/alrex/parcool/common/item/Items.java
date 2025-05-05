@@ -3,15 +3,11 @@ package com.alrex.parcool.common.item;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.block.Blocks;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -25,9 +21,4 @@ public class Items {
 	public static void registerAll(IEventBus modBus) {
 		ITEMS.register(modBus);
 	}
-
-    @OnlyIn(Dist.CLIENT)
-    public static void registerColors(FMLClientSetupEvent event) {
-        Minecraft.getInstance().getItemColors().register(new ZiplineRopeItem.RopeColor(), ZIPLINE_ROPE::get);
-    }
 }

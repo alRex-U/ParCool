@@ -153,7 +153,7 @@ public class WallSlide extends Action {
                     .scale(0.05)
                     .add(0, -0.5 - player.getRandom().nextDouble(), 0);
             level.addParticle(
-                    new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(leanedBlock),
+					new BlockParticleOption(ParticleTypes.BLOCK, blockstate),
                     particlePos.x(),
                     particlePos.y(),
                     particlePos.z(),

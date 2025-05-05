@@ -15,7 +15,6 @@ import com.alrex.parcool.common.handlers.AddAttributesHandler;
 import com.alrex.parcool.common.item.CreativeTabs;
 import com.alrex.parcool.common.item.DataComponents;
 import com.alrex.parcool.common.item.Items;
-import com.alrex.parcool.common.item.recipe.Recipes;
 import com.alrex.parcool.common.network.NetworkRegistries;
 import com.alrex.parcool.common.potion.Potions;
 import com.alrex.parcool.common.registries.EventBusForgeRegistry;
@@ -50,7 +49,6 @@ public class ParCool {
             EventBusForgeRegistry.registerClient(NeoForge.EVENT_BUS);
             eventBus.addListener(KeyBindings::register);
 			eventBus.addListener(Renderers::register);
-			eventBus.addListener(Items::registerColors);
 			ClientAttachments.registerAll(eventBus);
         }
         eventBus.addListener(this::setup);
@@ -66,7 +64,6 @@ public class ParCool {
 		Blocks.registerAll(eventBus);
 		Items.registerAll(eventBus);
 		CreativeTabs.registerAll(eventBus);
-		Recipes.registerAll(eventBus);
 		EntityTypes.registerAll(eventBus);
 		TileEntities.registerAll(eventBus);
 		DataComponents.registerAll(eventBus);

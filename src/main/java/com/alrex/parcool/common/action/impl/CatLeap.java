@@ -141,7 +141,7 @@ public class CatLeap extends Action {
 				);
 				Vec3 particleSpeed = particlePos.subtract(pos).normalize().scale(2.5 + 8 * player.getRandom().nextDouble()).add(0, 1.5, 0);
 				level.addParticle(
-						new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(blockpos),
+						new BlockParticleOption(ParticleTypes.BLOCK, blockstate),
 						particlePos.x(),
 						particlePos.y(),
 						particlePos.z(),

@@ -10,7 +10,6 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.attachment.client.Animation;
 import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Pose;
@@ -142,13 +141,7 @@ public class Slide extends Action {
                     .add(0, 1.5, 0);
             var blockPos = player.position().add(0, -0.5, 0);
             level.addParticle(
-                    new BlockParticleOption(ParticleTypes.BLOCK, feetBlock).setPos(
-                            new BlockPos(
-                                    (int) Math.floor(blockPos.x()),
-                                    (int) Math.floor(blockPos.y()),
-                                    (int) Math.floor(blockPos.z())
-                            )
-                    ),
+					new BlockParticleOption(ParticleTypes.BLOCK, feetBlock),
                     particlePos.x(),
                     particlePos.y(),
                     particlePos.z(),
