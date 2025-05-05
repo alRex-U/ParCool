@@ -225,7 +225,8 @@ public class ZiplineRopeItem extends Item {
             tag = new CompoundNBT();
             stack.setTag(tag);
         }
-        tag.putInt("color", color);
+        if (color != DEFAULT_COLOR) tag.putInt("color", color);
+        else tag.remove("color");
     }
 
     public static int getColor(ItemStack stack) {
