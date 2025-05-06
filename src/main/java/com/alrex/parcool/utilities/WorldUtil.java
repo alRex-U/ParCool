@@ -249,7 +249,7 @@ public class WorldUtil {
 					axis = HangDown.BarAxis.Z;
 					break;
 			}
-		} else if (block instanceof DirectionalBlock) {
+		} else if (block instanceof EndRodBlock) {
 			if (state.isCollisionShapeFullBlock(entity.level, pos)) {
 				return null;
 			}
@@ -325,7 +325,7 @@ public class WorldUtil {
 		center = center.add(diveDirection.scale(4));
 		AxisAlignedBB verticalWideBox = new AxisAlignedBB(
 				center.x() - wideWidth,
-				center.y() - 9,
+				center.y() - 7,
 				center.z() - wideWidth,
 				center.x() + wideWidth,
 				center.y() + height,

@@ -44,13 +44,4 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 			cir.setReturnValue(true);
 		}
 	}
-
-    @Inject(method = "shouldShowName", at = @At("HEAD"), cancellable = true)
-    public void onShouldShowName(CallbackInfoReturnable<Boolean> cir) {
-        Parkourability parkourability = Parkourability.get((PlayerEntity) (Object) this);
-        if (parkourability == null) return;
-        if (parkourability.getBehaviorEnforcer().cancelShowingName()) {
-            cir.setReturnValue(false);
-        }
-    }
 }

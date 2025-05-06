@@ -31,6 +31,7 @@ public class Crawl extends Action {
 				&& disambiguateCommands(player, pose)
 				&& !parkourability.isDoingAny(Roll.class, Tap.class, ClingToCliff.class, Dive.class)
 				&& parkourability.get(Vault.class).getNotDoingTick() >= 8
+				&& !parkourability.get(HideInBlock.class).isDoing()
 				&& player.getVehicle() == null
 				&& (pose == Pose.STANDING || pose == Pose.CROUCHING)
 				&& !player.isInWaterOrBubble()
@@ -49,7 +50,8 @@ public class Crawl extends Action {
 		return pose == Pose.CROUCHING || !KeyRecorder.keyDodge.isPressed();
 	}
 
-	public void onClientTick(PlayerEntity player, Parkourability parkourability) {
+	@Override
+	public void onClientTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		if (player.isLocalPlayer()) {
 			if (ParCoolConfig.Client.CrawlControl.get() == Crawl.ControlType.Toggle) {
 				if (KeyRecorder.keyCrawlState.isPressed())
@@ -101,5 +103,10 @@ public class Crawl extends Action {
 	public void onWorkingTick(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
 		player.setSprinting(false);
 		player.setPose(Pose.SWIMMING);
+	}
+
+	@Override
+	public void onStop(PlayerEntity player) {
+		player.setPose(Pose.STANDING);
 	}
 }

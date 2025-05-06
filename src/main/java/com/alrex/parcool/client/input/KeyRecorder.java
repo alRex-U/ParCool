@@ -42,7 +42,7 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyActivateParCool(), keyOpenSettingsState);
 		record(KeyBindings.getKeyFastRunning(), keyFastRunning);
 		record(KeyBindings.getKeyDodge(), keyDodge);
-		record(KeyBindings.getKeyBindRideZipline(), keyRideZipline);
+		record(KeyBindings.getKeyRideZipline(), keyRideZipline);
 		record(KeyBindings.getKeyBreakfall(), keyBreakfall);
 		record(KeyBindings.getKeyWallJump(), keyWallJump);
 		record(KeyBindings.getKeyQuickTurn(), keyQuickTurn);

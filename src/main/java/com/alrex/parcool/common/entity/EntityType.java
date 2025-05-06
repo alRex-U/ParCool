@@ -2,6 +2,7 @@ package com.alrex.parcool.common.entity;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
+import com.alrex.parcool.common.zipline.Zipline;
 import net.minecraft.entity.EntityClassification;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
@@ -14,7 +15,7 @@ public class EntityType {
             = REGISTER.register("zipline_rope", () -> net.minecraft.entity.EntityType.Builder
             .of((net.minecraft.entity.EntityType.IFactory<ZiplineRopeEntity>) ZiplineRopeEntity::new, EntityClassification.MISC)
             .noSave()
-            .clientTrackingRange(32)
+            .clientTrackingRange((int) (Zipline.MAXIMUM_DISTANCE / 1.9))
             .updateInterval(Integer.MAX_VALUE)
             .noSummon()
             .build("zipline_rope")

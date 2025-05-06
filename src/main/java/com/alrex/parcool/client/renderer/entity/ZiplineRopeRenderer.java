@@ -8,7 +8,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.ClippingHelper;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -68,8 +67,8 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
         {
             matrixStack.translate(startPosOffset.x(), startPosOffset.y(), startPosOffset.z());
             IVertexBuilder vertexBuilder = render3d ?
-                    renderTypeBuffer.getBuffer(RenderType.leash()) :
-                    renderTypeBuffer.getBuffer(RenderTypes.ZIPLINE_3D);
+                    renderTypeBuffer.getBuffer(RenderTypes.ZIPLINE_3D) :
+                    renderTypeBuffer.getBuffer(RenderTypes.ZIPLINE_2D);
             Matrix4f transformMatrix = matrixStack.last().pose();
 
             int startBlockLightLevel = this.getBlockLightLevel(entity, start);

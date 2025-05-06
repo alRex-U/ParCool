@@ -1,12 +1,17 @@
 package com.alrex.parcool.common.handlers;
 
+import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.common.action.impl.*;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.network.StartBreakfallMessage;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.Tuple;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -51,6 +56,24 @@ public class PlayerDamageHandler {
 					event.setCanceled(true);
 				} else {
 					event.setDamageMultiplier(event.getDamageMultiplier() * (justTime ? 0.4f : 0.6f));
+				}
+			} else {
+				HideInBlock hideInBlock = parkourability.get(HideInBlock.class);
+				if (hideInBlock.isStandbyInAir(parkourability)
+						&& parkourability.getActionInfo().can(HideInBlock.class)
+						&& !MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStartEvent(player, hideInBlock))
+				) {
+					Tuple<BlockPos, BlockPos> area = WorldUtil.getHideAbleSpace(player, new BlockPos(player.blockPosition().below()));
+					if (area != null) {
+						boolean stand = player.getBbHeight() < (Math.abs(area.getB().getY() - area.getA().getY()) + 1);
+						if (!stand) {
+							if (event.getDistance() < 10) {
+								event.setCanceled(true);
+							} else {
+								event.setDamageMultiplier(event.getDamageMultiplier() * 0.4f);
+							}
+						}
+					}
 				}
 			}
 		} else if (event.getEntity() instanceof PlayerEntity) {

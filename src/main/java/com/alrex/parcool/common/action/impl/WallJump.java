@@ -96,6 +96,7 @@ public class WallJump extends Action {
 				&& ((control == ControlType.PressKey && KeyRecorder.keyWallJump.isPressed()) || (control == ControlType.ReleaseKey && KeyRecorder.keyWallJump.isReleased()))
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(VerticalWallRun.class).isDoing()
+				&& !parkourability.get(RideZipline.class).isDoing()
 				&& parkourability.getAdditionalProperties().getNotLandingTick() > 4
 				&& !isInCooldown(parkourability)
 		);
