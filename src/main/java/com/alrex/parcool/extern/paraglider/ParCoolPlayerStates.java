@@ -62,7 +62,7 @@ public class ParCoolPlayerStates {
         private Entry(Class<? extends Action> clazz) {
             this(
                     clazz,
-                    ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, clazz.getSimpleName().toLowerCase()),
+                    new ResourceLocation(ParCool.MOD_ID, clazz.getSimpleName().toLowerCase()),
                     Collections.singletonList(ParagliderPlayerStates.IDLE),
                     -Math.min(15, ActionList.ACTION_REGISTRIES.get(ActionList.getIndexOf(clazz)).getDefaultStaminaConsumption()),
                     0,

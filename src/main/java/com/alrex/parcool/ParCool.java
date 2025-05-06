@@ -44,7 +44,7 @@ public class ParCool {
 	public static final String MOD_ID = "parcool";
 	private static final String PROTOCOL_VERSION = "3.4.0.0";
 	public static final SimpleChannel CHANNEL_INSTANCE = NetworkRegistry.newSimpleChannel(
-			ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "message"),
+			new ResourceLocation(ParCool.MOD_ID, "message"),
 			() -> PROTOCOL_VERSION,
 			PROTOCOL_VERSION::equals,
 			PROTOCOL_VERSION::equals
