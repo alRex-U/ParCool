@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 
 
 public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity> {
-    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation("textures/entity/arrow");
+    private static final ResourceLocation TEXTURE_LOCATION = ResourceLocation.parse("textures/entity/arrow");
 
     public ZiplineRopeRenderer(EntityRendererProvider.Context p_i46179_1_) {
         super(p_i46179_1_);
