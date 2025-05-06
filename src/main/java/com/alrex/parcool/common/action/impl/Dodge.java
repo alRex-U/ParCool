@@ -13,8 +13,14 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.extern.AdditionalMods;
+import com.alrex.parcool.extern.shouldersurfing.ShoulderSurfingManager;
+import com.alrex.parcool.utilities.MathUtil;
 import com.alrex.parcool.utilities.VectorUtil;
+import com.github.exopandora.shouldersurfing.math.Vec2f;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -133,14 +139,14 @@ public class Dodge extends Action {
 			if (KeyRecorder.keyRight.isDoubleTapped()) direction = DodgeDirection.Right;
 		}
 		if (direction == null && KeyRecorder.keyDodge.isPressed()) {
-            if (KeyBindings.isKeyBackDown()) direction = DodgeDirection.Back;
+			if (KeyBindings.isKeyBackDown()) direction = DodgeDirection.Back;
             if (KeyBindings.isKeyForwardDown()) direction = DodgeDirection.Front;
             if (KeyBindings.isKeyLeftDown()) direction = DodgeDirection.Left;
             if (KeyBindings.isKeyRightDown()) direction = DodgeDirection.Right;
 		}
 		if (direction == null) return false;
-        direction = AdditionalMods.betterThirdPerson().handleCustomCameraRotationForDodge(direction);
-        direction = AdditionalMods.shoulderSurfing().handleCustomCameraRotationForDodge(direction);
+		direction = AdditionalMods.betterThirdPerson().handleCustomCameraRotationForDodge(direction);
+		direction = AdditionalMods.shoulderSurfing().handleCustomCameraRotationForDodge(direction);
 		startInfo.putInt(direction.ordinal());
         return ((parkourability.getAdditionalProperties().getLandingTick() > 5 || parkourability.getAdditionalProperties().getPreviousNotLandingTick() < 2)
                 && player.isOnGround()
@@ -180,21 +186,32 @@ public class Dodge extends Action {
 		successivelyCoolTick = getSuccessiveCoolTime(parkourability.getActionInfo());
 
 		if (!player.isOnGround()) return;
-		Vec3 lookVec = VectorUtil.fromYawDegree(player.getYHeadRot());
 		Vec3 dodgeVec = Vec3.ZERO;
-		switch (dodgeDirection) {
-			case Front:
-				dodgeVec = lookVec;
-				break;
-			case Back:
-				dodgeVec = lookVec.reverse();
-				break;
-			case Right:
-				dodgeVec = lookVec.yRot((float) Math.PI / -2);
-				break;
-			case Left:
-				dodgeVec = lookVec.yRot((float) Math.PI / 2);
-				break;
+		ShoulderSurfingManager shoulderSurfing = AdditionalMods.shoulderSurfing();
+		if (shoulderSurfing.isCameraDecoupled()) {
+			LocalPlayer localPlayer = (LocalPlayer) player;
+			float cameraYaw = shoulderSurfing.getCameraAngle();
+			Entity cameraEntity = Minecraft.getInstance().getCameraEntity();
+			dodgeVec = new Vec3(localPlayer.input.leftImpulse, 0, localPlayer.input.forwardImpulse)
+				.yRot((cameraYaw - cameraEntity.getYRot()) * ((float) Math.PI / 180F));
+			float yaw = (float) Math.toDegrees(Math.atan2(-dodgeVec.x, dodgeVec.z));
+			player.setYRot(yaw);
+		} else {
+			Vec3 lookVec = VectorUtil.fromYawDegree(player.getYHeadRot());
+			switch (dodgeDirection) {
+				case Front:
+					dodgeVec = lookVec;
+					break;
+				case Back:
+					dodgeVec = lookVec.reverse();
+					break;
+				case Right:
+					dodgeVec = lookVec.yRot((float) Math.PI / -2);
+					break;
+				case Left:
+					dodgeVec = lookVec.yRot((float) Math.PI / 2);
+					break;
+			}
 		}
 		dodgeVec = dodgeVec.scale(.9 * getSpeedModifier(parkourability.getActionInfo()));
 		player.setDeltaMovement(dodgeVec);
