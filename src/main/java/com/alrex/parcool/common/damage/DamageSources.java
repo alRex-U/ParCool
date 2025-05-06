@@ -11,6 +11,6 @@ public class DamageSources {
     public static final ResourceKey<DamageType> WALL_SLIDE = register("parcool.wall_slide");
 
     private static ResourceKey<DamageType> register(String name) {
-        return ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, name));
+        return ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(ParCool.MOD_ID, name));
     }
 }
