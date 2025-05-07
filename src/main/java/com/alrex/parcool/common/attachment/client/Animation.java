@@ -84,6 +84,10 @@ public class Animation {
 				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()
 				&& !ParCoolConfig.Client.Booleans.EnableFPVAnimation.get()
 		) return;
+		if (animator.shouldRemoved(player, parkourability)) {
+			animator = null;
+			return;
+		}
         if (option.isCanceled(AnimationPart.CAMERA)) return;
 		animator.onCameraSetUp(event, player, parkourability);
 	}
