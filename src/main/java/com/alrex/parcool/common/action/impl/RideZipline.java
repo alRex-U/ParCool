@@ -34,6 +34,7 @@ public class RideZipline extends Action {
     private float currentT;
     @Nullable
     private Vec3 currentPos;
+    private boolean previouslyStopByCollision = false;
 
     public double getAcceleration() {
         return acceleration;
@@ -58,6 +59,7 @@ public class RideZipline extends Action {
                 && !player.isSwimming()
                 && !stamina.isExhausted()
                 && (!KeyBindings.isKeyJumpDown() || getNotDoingTick() > 5)
+                && (!previouslyStopByCollision || getNotDoingTick() > 5)
                 && !parkourability.get(Dive.class).isDoing()
                 && !parkourability.get(Vault.class).isDoing()
                 && !parkourability.get(HangDown.class).isDoing()
@@ -78,15 +80,17 @@ public class RideZipline extends Action {
 
     @Override
     public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
+        if (player.horizontalCollision || player.verticalCollision) {
+            previouslyStopByCollision = true;
+            return false;
+        }
         return KeyBindings.getKeyRideZipline().isDown()
                 && !KeyRecorder.keyJumpState.isPressed()
                 && !player.isInWall()
                 && !stamina.isExhausted()
                 && ridingZipline != null
                 && ridingZipline.isAlive()
-                && 0 <= currentT && currentT <= 1
-                && !player.horizontalCollision
-                && !player.verticalCollision;
+                && 0 <= currentT && currentT <= 1;
     }
 
     @Override
@@ -120,6 +124,7 @@ public class RideZipline extends Action {
 
     @Override
     public void onStart(Player player, Parkourability parkourability, ByteBuffer startData) {
+        previouslyStopByCollision = false;
         endOffsetFromStart = BufferUtil.getVec3(startData);
         player.setSprinting(false);
         parkourability.getBehaviorEnforcer().addMarkerCancellingFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
