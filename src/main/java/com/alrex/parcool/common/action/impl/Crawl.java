@@ -32,6 +32,7 @@ public class Crawl extends Action {
 				&& !parkourability.isDoingAny(Roll.class, Tap.class, ClingToCliff.class, Dive.class)
 				&& parkourability.get(Vault.class).getNotDoingTick() >= 8
 				&& !parkourability.get(HideInBlock.class).isDoing()
+				&& !parkourability.get(RideZipline.class).isDoing()
 				&& player.getVehicle() == null
 				&& (pose == Pose.STANDING || pose == Pose.CROUCHING)
 				&& !player.isInWaterOrBubble()
