@@ -83,7 +83,12 @@ configurations {
     runtimeClasspath.extendsFrom localRuntime
 }
 
+repositories {
+    maven { url = 'https://maven.blamejared.com' }
+}
 dependencies {
+    runtimeOnly "vazkii.patchouli:Patchouli:${patchouli_version}"
+
     compileOnly "curse.maven:ShoulderSurfing-243190:5948017"
     compileOnly "curse.maven:BetterThirdPerson-435044:5859634"
 }
