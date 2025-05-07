@@ -1,6 +1,6 @@
 {
   "name": "Energy Drink",
-  "icon": "minecraft:potion{\"Potion\":\"parcool:energy_drink\"}",
+  "icon": "minecraft:potion#1{\"Potion\":\"parcool:energy_drink\"}",
   "category": "parcool:category_support_features",
   "pages": [
     {
@@ -9,13 +9,13 @@
     },
     {
       "type": "patchouli:spotlight",
-      "item": "minecraft:potion{\"Potion\":\"parcool:energy_drink\"}",
+      "item": "minecraft:potion#1{\"Potion\":\"parcool:energy_drink\"}",
       "title": "Making Energy Drink",
       "text": "Energy Drinks can be made with brewing stand.$(br2)The recipe is$(list)[Awkward Potion] + [Nether Quartz]$(list)[Poor Quality Energy Drink] + [Nether Quartz]"
     },
     {
       "type": "patchouli:spotlight",
-      "item": "minecraft:potion{\"Potion\":\"parcool:poor_energy_drink\"}",
+      "item": "minecraft:potion#1{\"Potion\":\"parcool:poor_energy_drink\"}",
       "title": "Poor Quality Drink",
       "text": "Poor Quality Energy Drinks is low quality version of Energy Drink. This is easy to making but have some bad effects.$(br2)The recipe is$(list)[Awkward Potion] + [Poisonous Potato]$(list)[Awkward Potion] + [Chicken]"
     }
