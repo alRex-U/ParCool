@@ -83,7 +83,7 @@ public class ZiplineRopeRenderer extends EntityRenderer<ZiplineRopeEntity, Zipli
                     bufferSource.getBuffer(RenderTypes.ZIPLINE_2D);
             Matrix4f transformMatrix = matrixStack.last().pose();
 
-            final int divisionCount = 24;
+            int divisionCount = Math.min((int) Math.ceil(endOffsetFromStart.length() / 0.6), 24);
             float invLengthSqrtXZ = (float) Mth.invSqrt(endOffsetFromStart.x() * endOffsetFromStart.x() + endOffsetFromStart.z() * endOffsetFromStart.z());
             float unitLengthX = (float) (endOffsetFromStart.x() * invLengthSqrtXZ);
             float unitLengthZ = (float) (endOffsetFromStart.z() * invLengthSqrtXZ);
