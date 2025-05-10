@@ -1,0 +1,23 @@
+{
+  "name": "匍匐（爬行）",
+  "icon": "minecraft:nautilus_shell",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "  你可以在任何地方爬行并且能够穿过狭窄的通道。$(br2)  请另外在查看一下$(l:parcool:actions/slide)滑铲$()动作。"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/crawl.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list) 按住匍匐（爬行）键($(k:parcool.Crawl))"
+    }
+  ]
+}
