@@ -5,10 +5,7 @@ import com.alrex.parcool.common.block.zipline.ZiplineInfo;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.common.zipline.ZiplineType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.Pose;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -18,6 +15,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -122,19 +120,24 @@ public class ZiplineRopeEntity extends Entity {
     }
 
     @Override
+    public void move(MoverType p_213315_1_, Vector3d p_213315_2_) {
+    }
+
+    @Override
     public void refreshDimensions() {
-        if (size != null) {
-            BlockPos end = getEndPos();
-            BlockPos start = getStartPos();
-            if (end != BlockPos.ZERO || start != BlockPos.ZERO) {
-                size = EntitySize.fixed(Math.max(Math.abs(end.getX() - start.getX()), Math.abs(end.getZ() - start.getZ())) + 0.3f, Math.abs(end.getY() - start.getY()) + 0.3f);
-            }
+        super.refreshDimensions();
+        BlockPos end = getEndPos();
+        BlockPos start = getStartPos();
+        if (end != BlockPos.ZERO || start != BlockPos.ZERO) {
+            size = EntitySize.fixed(Math.max(Math.abs(end.getX() - start.getX()), Math.abs(end.getZ() - start.getZ())) + 0.3f, Math.abs(end.getY() - start.getY()) + 0.3f);
+            double d0 = size.width / 2.0;
+            this.setBoundingBox(new AxisAlignedBB(this.getX() - d0, this.getY(), this.getZ() - d0, this.getX() + d0, this.getY() + size.height, this.getZ() + d0));
         }
     }
 
     @Override
     public void onSyncedDataUpdated(@Nonnull DataParameter<?> param) {
-        if (param.equals(DATA_END_POS)) {
+        if (param.equals(DATA_START_POS) || param.equals(DATA_END_POS)) {
             refreshDimensions();
         }
     }
@@ -147,11 +150,11 @@ public class ZiplineRopeEntity extends Entity {
         return getEntityData().get(DATA_END_POS);
     }
 
-    public void setStartPos(BlockPos start) {
+    private void setStartPos(BlockPos start) {
         getEntityData().set(DATA_START_POS, start);
     }
 
-    public void setEndPos(BlockPos end) {
+    private void setEndPos(BlockPos end) {
         getEntityData().set(DATA_END_POS, end);
     }
 
