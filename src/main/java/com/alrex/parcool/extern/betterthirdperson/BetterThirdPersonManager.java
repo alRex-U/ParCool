@@ -19,18 +19,7 @@ public class BetterThirdPersonManager extends ModManager {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player == null) return direction;
             if (!BetterThirdPerson.getCameraManager().hasCustomCamera()) return direction;
-            CustomCamera camera = BetterThirdPerson.getCameraManager().getCustomCamera();
-            float yaw = MathUtil.normalizeDegree(camera.getPlayerRotation().getYaw() - camera.getCameraRotation().getYaw());
-            float yawAbs = Math.abs(yaw);
-            if (yawAbs < 45) {
-                return direction;
-            } else if (yawAbs > 135) {
-                return direction.inverse();
-            } else if (yaw < 0) {
-                return direction.right();
-            } else {
-                return direction.left();
-            }
+            return Dodge.DodgeDirection.Front;
         }
         return direction;
     }

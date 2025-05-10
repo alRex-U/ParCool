@@ -1,6 +1,5 @@
 package com.alrex.parcool.common.action.impl;
 
-import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.animation.impl.DodgeAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
@@ -14,15 +13,10 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.extern.AdditionalMods;
-import com.alrex.parcool.extern.shouldersurfing.ShoulderSurfingManager;
 import com.alrex.parcool.utilities.MathUtil;
-import com.alrex.parcool.utilities.VectorUtil;
-import com.github.exopandora.shouldersurfing.math.Vec2f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -177,8 +171,8 @@ public class Dodge extends Action {
 	@Override
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		dodgeDirection = DodgeDirection.values()[startData.getInt()];
-		var moveVector = KeyRecorder.getLastDirection();
-		if (moveVector == null) return;
+		var dodgeVec = KeyRecorder.getLastDirection();
+		if (dodgeVec == null) return;
 		coolTime = getMaxCoolTime(parkourability.getActionInfo());
 		if (successivelyCount < getMaxSuccessiveDodge(parkourability.getActionInfo())) {
 			successivelyCount++;
@@ -189,12 +183,11 @@ public class Dodge extends Action {
 
 		if (!player.isOnGround()) return;
 		var cameraYRot = Minecraft.getInstance().getCameraEntity().getYRot();
-		moveVector = moveVector.rotateDegrees(cameraYRot);
-		Vec3 dodgeVec = new Vec3(moveVector.x(), 0, moveVector.y())
-				.normalize()
+		dodgeVec = MathUtil.rotateYDegrees(dodgeVec, cameraYRot);
+		dodgeVec = dodgeVec.normalize()
 				.scale(0.9 * getSpeedModifier(parkourability.getActionInfo()));
 		player.setDeltaMovement(dodgeVec);
-		if ( AdditionalMods.isCameraDecoupled()) {
+		if (AdditionalMods.isCameraDecoupled()) {
 			float yaw = (float) Math.toDegrees(Math.atan2(-dodgeVec.x, dodgeVec.z));
 			player.setYRot(yaw);
 		}

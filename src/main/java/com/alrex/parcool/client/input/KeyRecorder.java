@@ -1,13 +1,12 @@
 package com.alrex.parcool.client.input;
 
-import com.github.exopandora.shouldersurfing.math.Vec2f;
-
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.phys.Vec3;
 
 @OnlyIn(Dist.CLIENT)
 public class KeyRecorder {
@@ -28,7 +27,7 @@ public class KeyRecorder {
 	public static final KeyState keyQuickTurn = new KeyState();
 	public static final KeyState keyFlipping = new KeyState();
     public static final KeyState keyBindGrabWall = new KeyState();
-	public static Vec2f lastDirection = null;
+	public static Vec3 lastDirection = null;
 
 	@SubscribeEvent
 	public static void onClientTick(TickEvent.ClientTickEvent event) {
@@ -54,7 +53,7 @@ public class KeyRecorder {
 		recordMovingVector(KeyBindings.isAnyMovingKeyDown());
 	}
 
-	public static Vec2f getLastDirection() {
+	public static Vec3 getLastDirection() {
 		return lastDirection;
 	}
 
@@ -81,7 +80,7 @@ public class KeyRecorder {
 	private static void recordMovingVector(boolean isDown) {
 		if (KeyBindings.isAnyMovingKeyDown()) {
 			var vector = Minecraft.getInstance().player.input.getMoveVector();
-			lastDirection = new Vec2f(vector.x, vector.y);
+			lastDirection = new Vec3(vector.x, 0, vector.y);
 		}
 	}
 
