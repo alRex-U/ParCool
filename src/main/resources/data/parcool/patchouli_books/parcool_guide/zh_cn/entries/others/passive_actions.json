@@ -1,0 +1,21 @@
+{
+  "name": "被动动作",
+  "icon": "minecraft:brick",
+  "category": "parcool:category_support_features",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "  本模组新增了若干个被动能力与动画效果。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "爬杆",
+      "text": "  玩家可自动攀爬柱形方块，如铁栏杆、堆叠的栅栏、末地烛等。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "坠落动画",
+      "text": "  添加了长时间空中坠落时的新动画。如果你不需要它， 可以在配置选项里面关掉。"
+    }
+  ]
+}
