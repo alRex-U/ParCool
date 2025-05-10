@@ -1,5 +1,7 @@
 package com.alrex.parcool.utilities;
 
+import net.minecraft.world.phys.Vec3;
+
 public class MathUtil {
 	public static float squaring(float value) {
 		return value * value;

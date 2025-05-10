@@ -1,11 +1,13 @@
 package com.alrex.parcool.client.input;
 
+import com.github.exopandora.shouldersurfing.math.Vec2f;
+
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-
+import net.minecraft.client.Minecraft;
 
 @OnlyIn(Dist.CLIENT)
 public class KeyRecorder {
@@ -26,6 +28,7 @@ public class KeyRecorder {
 	public static final KeyState keyQuickTurn = new KeyState();
 	public static final KeyState keyFlipping = new KeyState();
     public static final KeyState keyBindGrabWall = new KeyState();
+	public static Vec2f lastDirection = null;
 
 	@SubscribeEvent
 	public static void onClientTick(TickEvent.ClientTickEvent event) {
@@ -48,6 +51,11 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyQuickTurn(), keyQuickTurn);
 		record(KeyBindings.getKeyFlipping(), keyFlipping);
         record(KeyBindings.getKeyGrabWall(), keyBindGrabWall);
+		recordMovingVector(KeyBindings.isAnyMovingKeyDown());
+	}
+
+	public static Vec2f getLastDirection() {
+		return lastDirection;
 	}
 
     private static void record(Boolean isDown, KeyState state) {
@@ -69,6 +77,13 @@ public class KeyRecorder {
     private static void record(KeyMapping keyBinding, KeyState state) {
         record(keyBinding.isDown(), state);
     }
+
+	private static void recordMovingVector(boolean isDown) {
+		if (KeyBindings.isAnyMovingKeyDown()) {
+			var vector = Minecraft.getInstance().player.input.getMoveVector();
+			lastDirection = new Vec2f(vector.x, vector.y);
+		}
+	}
 
 	public static class KeyState {
 		private boolean pressed = false;

@@ -34,4 +34,10 @@ public class BetterThirdPersonManager extends ModManager {
         }
         return direction;
     }
+
+    public boolean isCameraDecoupled() {
+        if (!isInstalled()) return false;
+        if (!BetterThirdPerson.getCameraManager().hasCustomCamera()) return false;
+        return true;
+    }
 }
