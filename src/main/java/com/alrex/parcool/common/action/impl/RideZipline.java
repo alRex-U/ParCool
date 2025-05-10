@@ -13,6 +13,9 @@ import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -133,6 +136,10 @@ public class RideZipline extends Action {
     @Override
     public void onWorkingTickInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina) {
         if (ridingZipline == null) return;
+        ModifiableAttributeInstance speedAttr = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (speedAttr == null) return;
+        if (!(player instanceof ClientPlayerEntity)) return;
+        ClientPlayerEntity clientPlayer = (ClientPlayerEntity) player;
         double oldSpeed = speed;
         Zipline zipline = ridingZipline.getZipline();
 
@@ -141,11 +148,7 @@ public class RideZipline extends Action {
         speed *= 0.98;
         if (player.isInWater()) speed *= 0.8;
         speed -= gravity * slope * (MathHelper.fastInvSqrt(slope * slope + 1));
-        Vector3d input = new Vector3d(
-                (KeyBindings.isKeyRightDown() ? 1. : 0.) + (KeyBindings.isKeyLeftDown() ? -1. : 0.),
-                0.,
-                (KeyBindings.isKeyForwardDown() ? 1. : 0.) + (KeyBindings.isKeyBackDown() ? -1. : 0.)
-        );
+        Vector3d input = new Vector3d(-clientPlayer.input.leftImpulse, 0., clientPlayer.input.forwardImpulse);
         Vector3d offset = zipline.getOffsetToEndFromStart();
         if (input.lengthSqr() > 0.01) {
             double dot = player.getLookAngle()
@@ -153,7 +156,7 @@ public class RideZipline extends Action {
                     .multiply(1, 0, 1)
                     .normalize()
                     .dot(new Vector3d(offset.x(), 0, offset.z()).normalize());
-            speed += dot * 0.01;
+            speed += Math.min(dot * 0.01 * (speedAttr.getValue() / speedAttr.getBaseValue()), 0.08);
         }
         currentT = (float) zipline.getMovedPositionByParameterApproximately(currentT, (float) speed);
         acceleration = speed - oldSpeed;
