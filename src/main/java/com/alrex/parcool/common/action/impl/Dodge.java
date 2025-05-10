@@ -194,8 +194,7 @@ public class Dodge extends Action {
 				.normalize()
 				.scale(0.9 * getSpeedModifier(parkourability.getActionInfo()));
 		player.setDeltaMovement(dodgeVec);
-		var cameraDecoupled = AdditionalMods.isCameraDecoupled();
-		if (cameraDecoupled) {
+		if ( AdditionalMods.isCameraDecoupled()) {
 			float yaw = (float) Math.toDegrees(Math.atan2(-dodgeVec.x, dodgeVec.z));
 			player.setYRot(yaw);
 		}

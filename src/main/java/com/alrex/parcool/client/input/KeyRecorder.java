@@ -50,7 +50,7 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyWallJump(), keyWallJump);
 		record(KeyBindings.getKeyQuickTurn(), keyQuickTurn);
 		record(KeyBindings.getKeyFlipping(), keyFlipping);
-        record(KeyBindings.getKeyGrabWall(), keyBindGrabWall);
+		record(KeyBindings.getKeyGrabWall(), keyBindGrabWall);
 		recordMovingVector(KeyBindings.isAnyMovingKeyDown());
 	}
 
