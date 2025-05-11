@@ -1,0 +1,23 @@
+{
+  "name": "疾跑",
+  "icon": "minecraft:diamond_boots",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "  现在你是一位跑酷高手了！因此你可以跑得比原来还要快。$(br2)  疾跑是本模组的基础功能，因此想要触发某些跑酷动作就需要先使用此前置功能。"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/fast_run.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list) 在原版冲刺状态下持续按住疾跑键($(k:parcool.FastRun))"
+    }
+  ]
+}

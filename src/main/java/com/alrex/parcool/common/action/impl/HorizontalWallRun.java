@@ -116,8 +116,8 @@ public class HorizontalWallRun extends Action {
 
 		return (!parkourability.get(WallJump.class).justJumped()
                 && (
-                (ParCoolConfig.Client.HWallRunControl.get() == ControlType.PressKey && KeyBindings.getKeyHorizontalWallRun().isDown())
-                        || ParCoolConfig.Client.HWallRunControl.get() == ControlType.Auto
+				(ParCoolConfig.Client.getInstance().HWallRunControl.get() == ControlType.PressKey && KeyBindings.getKeyHorizontalWallRun().isDown())
+						|| ParCoolConfig.Client.getInstance().HWallRunControl.get() == ControlType.Auto
         )
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Dodge.class).isDoing()
@@ -146,8 +146,8 @@ public class HorizontalWallRun extends Action {
 				&& !parkourability.get(Dodge.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
                 && (
-                (ParCoolConfig.Client.HWallRunControl.get() == ControlType.PressKey && KeyBindings.getKeyHorizontalWallRun().isDown())
-                        || ParCoolConfig.Client.HWallRunControl.get() == ControlType.Auto
+				(ParCoolConfig.Client.getInstance().HWallRunControl.get() == ControlType.PressKey && KeyBindings.getKeyHorizontalWallRun().isDown())
+						|| ParCoolConfig.Client.getInstance().HWallRunControl.get() == ControlType.Auto
         )
 				&& !player.onGround()
 		);

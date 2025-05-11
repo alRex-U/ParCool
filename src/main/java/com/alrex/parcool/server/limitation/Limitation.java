@@ -118,7 +118,7 @@ public class Limitation {
     }
 
     public void readFromServerConfig() {
-        enabled = ParCoolConfig.Server.LimitationEnabled.get();
+        enabled = ParCoolConfig.Server.getInstance().LimitationEnabled.get();
         for (ParCoolConfig.Server.Booleans item : ParCoolConfig.Server.Booleans.values()) {
             booleans.put(item, item.get());
         }
@@ -130,11 +130,11 @@ public class Limitation {
         }
         for (int i = 0; i < actionLimitations.length; i++) {
             actionLimitations[i] = new ActionLimitation(
-                    ParCoolConfig.Server.getPermissionOf(Actions.getByIndex(i)),
-                    ParCoolConfig.Server.getLeastStaminaConsumptionOf(Actions.getByIndex(i))
+                    ParCoolConfig.Server.getInstance().getPermissionOf(Actions.getByIndex(i)),
+                    ParCoolConfig.Server.getInstance().getLeastStaminaConsumptionOf(Actions.getByIndex(i))
             );
         }
-        forcedStamina = ParCoolConfig.Server.StaminaType.get();
+        forcedStamina = ParCoolConfig.Server.getInstance().StaminaType.get();
     }
 
     public void saveTo(JsonWriter writer) {

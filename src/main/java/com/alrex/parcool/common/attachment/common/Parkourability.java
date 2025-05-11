@@ -103,6 +103,10 @@ public class Parkourability {
 		return synchronizeTrialCount;
 	}
 
+	public void incrementSynchronizeTrialCount() {
+		synchronizeTrialCount++;
+	}
+
 	@OnlyIn(Dist.CLIENT)
 	public boolean limitationIsNotSynced() {
 		return !getServerLimitation().isSynced();

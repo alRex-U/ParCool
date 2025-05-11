@@ -24,6 +24,7 @@ import com.alrex.parcool.server.command.CommandRegistry;
 import com.alrex.parcool.server.limitation.Limitations;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
@@ -41,7 +42,7 @@ public class ParCool {
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
-	public ParCool() {
+	public ParCool(ModContainer container) {
 		IEventBus eventBus = ModLoadingContext.get().getActiveContainer().getEventBus();
 		assert eventBus != null;
 		EventBusForgeRegistry.register(NeoForge.EVENT_BUS);
@@ -73,8 +74,8 @@ public class ParCool {
 		NeoForge.EVENT_BUS.addListener(Limitations::init);
 		NeoForge.EVENT_BUS.addListener(Limitations::save);
 
-		ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.SERVER, ParCoolConfig.Server.BUILT_CONFIG);
-		ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.Client.BUILT_CONFIG);
+		container.registerConfig(ModConfig.Type.SERVER, ParCoolConfig.Server.getConfigSpec());
+		container.registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.Client.getConfigSpec());
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {
