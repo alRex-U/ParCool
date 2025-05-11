@@ -1,0 +1,16 @@
+{
+  "name": "猫式远跳（猫扑）",
+  "icon": "minecraft:cat_spawn_egg",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "  $(bold)猫扑$()是一种能够快速跳起并攀住墙壁或者直接跳到栅栏等方块上的技术。$(br2)  它被认为是跑酷的基础技术之一。$(br2)  跑酷者也会通过猫扑落地时的腿部动作来缓冲落地的冲击力。$(br2)  在本模组中，该技术被用于跳远动作，请注意冷却时间。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(bold)1.$() 进行$(l:parcool:actions/fast_run)疾跑$()$(br)$(bold)2.$() 快速按下潜行键$(br)$(bold)3.$() 立即取消潜行$(br2)  建议和$(l:parcool:actions/cling_to_cliff)猫挂（边缘悬挂）$()搭配使用。"
+    }
+  ]
+}

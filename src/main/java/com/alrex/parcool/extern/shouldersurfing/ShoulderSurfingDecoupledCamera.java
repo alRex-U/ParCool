@@ -5,7 +5,6 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.github.exopandora.shouldersurfing.api.callback.ICameraCouplingCallback;
 import com.github.exopandora.shouldersurfing.api.plugin.IShoulderSurfingPlugin;
 import com.github.exopandora.shouldersurfing.api.plugin.IShoulderSurfingRegistrar;
-
 import net.minecraft.client.Minecraft;
 
 /**
@@ -16,7 +15,9 @@ public class ShoulderSurfingDecoupledCamera implements ICameraCouplingCallback, 
     @Override
     public boolean isForcingCameraCoupling(Minecraft mc) {
         if (mc.player == null) return false;
-        return Parkourability.get(mc.player).isDoingAny(ClingToCliff.class);
+        var parkourability = Parkourability.get(mc.player);
+        if (parkourability == null) return false;
+        return parkourability.isDoingAny(ClingToCliff.class);
     }
 
     @Override
