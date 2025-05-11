@@ -17,7 +17,7 @@
     {
       "type": "patchouli:text",
       "title": "使用方法",
-      "text": "$(list)快速双击移动方向键（前进键除外）$(list)按住移动方向键的同时按下闪避键($(k:parcool.Dodge))"
+      "text": "$(list)快速双击移动方向键（前进键除外）$(list)按住移动方向键的同时按下躲闪键($(k:parcool.Dodge))"
     }
   ]
 }

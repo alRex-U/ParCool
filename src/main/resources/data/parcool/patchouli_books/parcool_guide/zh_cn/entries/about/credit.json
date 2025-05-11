@@ -45,17 +45,17 @@
     },
     {
       "type": "patchouli:text",
-      "title": "译者者（西班牙语）",
+      "title": "译者（西班牙语）",
       "text": "$(bold)es-es$()$(italic)$(list)GhostOfCazador$(list)elAltrex"
     },
     {
       "type": "patchouli:text",
-      "title": "译者者（韩语）",
+      "title": "译者（韩语）",
       "text": "$(bold)ko-kr$()$(italic)$(list)Mexwell12"
     },
     {
       "type": "patchouli:text",
-      "title": "译者者（俄语）",
+      "title": "译者（俄语）",
       "text": "$(bold)ru-ru$()$(italic)$(list)MasterXort"
     }
   ]

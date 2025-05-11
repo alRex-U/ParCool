@@ -24,7 +24,7 @@
     {
       "type": "patchouli:text",
       "title": "使用方法",
-      "text": "$(list) 在墙壁边缘按住猫挂（边缘悬挂）键($(k:parcool.ClingToCliff))$(br)"
+      "text": "$(list) 在墙壁边缘按住猫挂键($(k:parcool.ClingToCliff))$(br)"
     }
   ]
 }

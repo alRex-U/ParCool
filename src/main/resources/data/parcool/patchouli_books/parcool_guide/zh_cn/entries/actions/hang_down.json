@@ -17,7 +17,7 @@
     {
       "type": "patchouli:text",
       "title": "使用方法",
-      "text": "$(list) 在横着的细长方块下方按下挂杠（吊挂）键($(k:parcool.HangDown))$(br)"
+      "text": "$(list) 在横着的细长方块下方按下挂杠键($(k:parcool.HangDown))$(br)"
     }
   ]
 }
