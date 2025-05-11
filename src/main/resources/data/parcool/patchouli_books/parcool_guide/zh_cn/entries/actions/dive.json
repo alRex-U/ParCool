@@ -1,0 +1,23 @@
+{
+  "name": "鱼跃下高",
+  "icon": "minecraft:cod",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "  本模组拥有一种特殊的跳跃动作：$(bold)鱼跃下高$()。建议在第三人称视角下查看。$(br2)  若在鱼跃下高后的数秒内再次按下跳跃键，即可切换为$(bold)高空俯冲$()状态。"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/dive.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(bold)1.$() 进行$(l:parcool:actions/fast_run)疾跑$()$(br)$(bold)2.$() 从高处跳向开阔区域"
+    }
+  ]
+}

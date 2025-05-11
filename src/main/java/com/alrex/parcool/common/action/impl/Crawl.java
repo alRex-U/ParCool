@@ -41,8 +41,8 @@ public class Crawl extends Action {
 	}
 
     private boolean isActionInvoked(Player player) {
-        return ((ParCoolConfig.Client.CrawlControl.get() == ControlType.PressKey && KeyRecorder.keyCrawlState.isPressed())
-                || (ParCoolConfig.Client.CrawlControl.get() == ControlType.Toggle && toggleStatus));
+		return ((ParCoolConfig.Client.getInstance().CrawlControl.get() == ControlType.PressKey && KeyRecorder.keyCrawlState.isPressed())
+				|| (ParCoolConfig.Client.getInstance().CrawlControl.get() == ControlType.Toggle && toggleStatus));
     }
 
     private boolean disambiguateCommands(Player player, Pose pose) {
@@ -53,7 +53,7 @@ public class Crawl extends Action {
     @Override
 	public void onClientTick(Player player, Parkourability parkourability) {
 		if (player.isLocalPlayer()) {
-			if (ParCoolConfig.Client.CrawlControl.get() == Crawl.ControlType.Toggle) {
+			if (ParCoolConfig.Client.getInstance().CrawlControl.get() == Crawl.ControlType.Toggle) {
 				if (KeyRecorder.keyCrawlState.isPressed())
 					toggleStatus = !toggleStatus;
 			} else {
@@ -64,7 +64,7 @@ public class Crawl extends Action {
 
 	@Override
 	public boolean canContinue(Player player, Parkourability parkourability) {
-		switch (ParCoolConfig.Client.CrawlControl.get()) {
+		switch (ParCoolConfig.Client.getInstance().CrawlControl.get()) {
 			case Toggle:
 				if (!toggleStatus) return false;
 				break;

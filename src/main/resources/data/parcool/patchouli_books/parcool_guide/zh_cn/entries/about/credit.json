@@ -1,0 +1,62 @@
+{
+  "name": "鸣谢",
+  "icon": "minecraft:written_book",
+  "category": "parcool:category_about",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "  这里是模组开发者与译者的名单。$(br2)  同时也感谢未被列入名单的贡献者。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "模组开发者",
+      "text": "主创$()$(italic)$(list)alRex-U$()"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "音效",
+      "text": "$(italic)$(list)SquARzY"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "译者（英语）",
+      "text": "$(bold)en_us$()$(italic)$(list)alRex-U"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "译者（日语）",
+      "text": "$(bold)ja_jp$()$(italic)$(list)alRex-U"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "译者（汉语）",
+      "text": "$(bold)ch_zn$()$(italic)$(list)CatalystGinger$(list)GuoDaiYi$(list)njt-233$(list)Kasualix"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "译者（法语）",
+      "text": "$(bold)fr-fr$()$(italic)$(list)COwOkie"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "译者（葡萄牙语）",
+      "text": "$(bold)pt-br$()$(italic)$(list)FITFC"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "译者（西班牙语）",
+      "text": "$(bold)es-es$()$(italic)$(list)GhostOfCazador$(list)elAltrex"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "译者（韩语）",
+      "text": "$(bold)ko-kr$()$(italic)$(list)Mexwell12"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "译者（俄语）",
+      "text": "$(bold)ru-ru$()$(italic)$(list)MasterXort"
+    }
+  ]
+}

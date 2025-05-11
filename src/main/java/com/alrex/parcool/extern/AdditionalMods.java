@@ -30,4 +30,8 @@ public enum AdditionalMods {
     public static void init() {
         Arrays.stream(values()).map(AdditionalMods::get).forEach(ModManager::init);
     }
+
+    public static boolean isCameraDecoupled() {
+        return shoulderSurfing().isCameraDecoupled() || betterThirdPerson().isCameraDecoupled();
+    }
 }

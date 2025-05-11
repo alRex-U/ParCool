@@ -18,6 +18,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public class ParCoolConfig {
+
     public enum AdvantageousDirection {
         Lower, Higher
     }
@@ -43,18 +44,32 @@ public class ParCoolConfig {
 	}
 
 	public static class Client {
-		public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
-		public static final ModConfigSpec BUILT_CONFIG;
+		private static final Client instance;
+		private static final ModConfigSpec configSpec;
 
-		public static ModConfigSpec.BooleanValue getPossibilityOf(Class<? extends Action> action) {
+		public static Client getInstance() {
+			return instance;
+		}
+
+		public static ModConfigSpec getConfigSpec() {
+			return configSpec;
+		}
+
+		static {
+			var pair = new ModConfigSpec.Builder().configure(Client::new);
+			instance = pair.getLeft();
+			configSpec = pair.getRight();
+		}
+
+		public ModConfigSpec.BooleanValue getPossibilityOf(Class<? extends Action> action) {
 			return actionPossibilities[Actions.getIndexOf(action)];
 		}
 
-		public static ModConfigSpec.BooleanValue canAnimate(Class<? extends Animator> animator) {
+		public ModConfigSpec.BooleanValue canAnimate(Class<? extends Animator> animator) {
 			return animatorPossibilities[AnimatorList.getIndex(animator)];
 		}
 
-		public static ModConfigSpec.IntValue getStaminaConsumptionOf(Class<? extends Action> action) {
+		public ModConfigSpec.IntValue getStaminaConsumptionOf(Class<? extends Action> action) {
 			return staminaConsumptions[Actions.getIndexOf(action)];
 		}
 
@@ -437,21 +452,21 @@ public class ParCoolConfig {
 			}
 		}
 
-        private static final ModConfigSpec.BooleanValue[] actionPossibilities = new ModConfigSpec.BooleanValue[Actions.LIST.size()];
-        private static final ModConfigSpec.BooleanValue[] animatorPossibilities = new ModConfigSpec.BooleanValue[AnimatorList.ANIMATORS.size()];
-        private static final ModConfigSpec.IntValue[] staminaConsumptions = new ModConfigSpec.IntValue[Actions.LIST.size()];
-		public static final ModConfigSpec.EnumValue<HUDType> StaminaHUDType;
-        public static final ModConfigSpec.EnumValue<StaminaType> StaminaType;
-		public static final ModConfigSpec.EnumValue<Vault.TypeSelectionMode> VaultAnimationMode;
-		public static final ModConfigSpec.EnumValue<Position.Horizontal> AlignHorizontalStaminaHUD;
-		public static final ModConfigSpec.EnumValue<Position.Vertical> AlignVerticalStaminaHUD;
-		public static final ModConfigSpec.EnumValue<ColorTheme> GUIColorTheme;
-		public static final ModConfigSpec.EnumValue<FastRun.ControlType> FastRunControl;
-		public static final ModConfigSpec.EnumValue<Crawl.ControlType> CrawlControl;
-		public static final ModConfigSpec.EnumValue<Flipping.ControlType> FlipControl;
-		public static final ModConfigSpec.EnumValue<HorizontalWallRun.ControlType> HWallRunControl;
-		public static final ModConfigSpec.EnumValue<WallJump.ControlType> WallJumpControl;
-        public static final ModConfigSpec.EnumValue<ClingToCliff.ControlType> ClingToCliffControl;
+		private final ModConfigSpec.BooleanValue[] actionPossibilities = new ModConfigSpec.BooleanValue[Actions.LIST.size()];
+		private final ModConfigSpec.BooleanValue[] animatorPossibilities = new ModConfigSpec.BooleanValue[AnimatorList.ANIMATORS.size()];
+		private final ModConfigSpec.IntValue[] staminaConsumptions = new ModConfigSpec.IntValue[Actions.LIST.size()];
+		public final ModConfigSpec.EnumValue<HUDType> StaminaHUDType;
+		public final ModConfigSpec.EnumValue<StaminaType> StaminaType;
+		public final ModConfigSpec.EnumValue<Vault.TypeSelectionMode> VaultAnimationMode;
+		public final ModConfigSpec.EnumValue<Position.Horizontal> AlignHorizontalStaminaHUD;
+		public final ModConfigSpec.EnumValue<Position.Vertical> AlignVerticalStaminaHUD;
+		public final ModConfigSpec.EnumValue<ColorTheme> GUIColorTheme;
+		public final ModConfigSpec.EnumValue<FastRun.ControlType> FastRunControl;
+		public final ModConfigSpec.EnumValue<Crawl.ControlType> CrawlControl;
+		public final ModConfigSpec.EnumValue<Flipping.ControlType> FlipControl;
+		public final ModConfigSpec.EnumValue<HorizontalWallRun.ControlType> HWallRunControl;
+		public final ModConfigSpec.EnumValue<WallJump.ControlType> WallJumpControl;
+		public final ModConfigSpec.EnumValue<ClingToCliff.ControlType> ClingToCliffControl;
 
 		private static void register(ModConfigSpec.Builder builder, ConfigGroup group) {
 			Arrays.stream(Booleans.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
@@ -459,8 +474,7 @@ public class ParCoolConfig {
 			Arrays.stream(Doubles.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
 		}
 
-		static {
-			ModConfigSpec.Builder builder = BUILDER;
+		private Client(ModConfigSpec.Builder builder) {
             builder.push("Possibility_of_Actions(Some_do_not_have_to_work)");
 			{
 				for (int i = 0; i < Actions.LIST.size(); i++) {
@@ -531,11 +545,27 @@ public class ParCoolConfig {
                 builder.pop();
 			}
 			builder.pop();
-			BUILT_CONFIG = builder.build();
 		}
 	}
 
 	public static class Server {
+		private static final Server instance;
+		private static final ModConfigSpec configSpec;
+
+		public static Server getInstance() {
+			return instance;
+		}
+
+		public static ModConfigSpec getConfigSpec() {
+			return configSpec;
+		}
+
+		static {
+			var pair = new ModConfigSpec.Builder().configure(Server::new);
+			instance = pair.getLeft();
+			configSpec = pair.getRight();
+		}
+
 		public enum Booleans implements Item<Boolean> {
 			AllowInfiniteStamina(
 					ConfigGroup.Stamina, "Permission of infinite stamina",
@@ -794,17 +824,20 @@ public class ParCoolConfig {
 			}
 		}
 
-		public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
-		public static final ModConfigSpec BUILT_CONFIG;
-		private static final ModConfigSpec.BooleanValue[] actionPermissions = new ModConfigSpec.BooleanValue[Actions.LIST.size()];
+		private final ModConfigSpec.BooleanValue[] actionPermissions = new ModConfigSpec.BooleanValue[Actions.LIST.size()];
 
-		public static boolean getPermissionOf(Class<? extends Action> action) {
+		public boolean getPermissionOf(Class<? extends Action> action) {
 			return actionPermissions[Actions.getIndexOf(action)].get();
 		}
 
-		private static final ModConfigSpec.IntValue[] leastStaminaConsumptions = new ModConfigSpec.IntValue[Actions.LIST.size()];
-		public static final ModConfigSpec.BooleanValue LimitationEnabled;
-		public static final ModConfigSpec.EnumValue<StaminaType> StaminaType;
+		private final ModConfigSpec.IntValue[] leastStaminaConsumptions = new ModConfigSpec.IntValue[Actions.LIST.size()];
+
+		public int getLeastStaminaConsumptionOf(Class<? extends Action> action) {
+			return leastStaminaConsumptions[Actions.getIndexOf(action)].get();
+		}
+
+		public final ModConfigSpec.BooleanValue LimitationEnabled;
+		public final ModConfigSpec.EnumValue<StaminaType> StaminaType;
 
 		private static void register(ModConfigSpec.Builder builder, ConfigGroup group) {
 			Arrays.stream(Server.Booleans.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
@@ -812,12 +845,8 @@ public class ParCoolConfig {
 			Arrays.stream(Server.Doubles.values()).filter(x -> x.Group == group).forEach(x -> x.register(builder));
 		}
 
-		public static int getLeastStaminaConsumptionOf(Class<? extends Action> action) {
-			return leastStaminaConsumptions[Actions.getIndexOf(action)].get();
-		}
 
-		static {
-			ModConfigSpec.Builder builder = BUILDER;
+		Server(ModConfigSpec.Builder builder) {
 			builder.push("Limitations");
 			{
 				LimitationEnabled = builder.comment("Whether these limitations will be imposed to players").define("limitation_imposed", false);
@@ -868,7 +897,6 @@ public class ParCoolConfig {
 				builder.pop();
 			}
 			builder.pop();
-			BUILT_CONFIG = builder.build();
 		}
 	}
 }

@@ -1,0 +1,12 @@
+{
+  "name": "耐力系统",
+  "icon": "minecraft:golden_apple",
+  "category": "parcool:category_about",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "  本模组为游戏添加了一种耐力机制。$(br2)  当你做出跑酷动作时耐力会被消耗。耐力耗尽时将会受到惩罚：$(list)无法疾跑$(list)无法做出跑酷动作$(br2)  所以请注意合理分配耐力。"
+    }
+  ]
+}

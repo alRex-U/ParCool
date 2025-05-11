@@ -120,10 +120,11 @@ public abstract class ClientSetting {
 
     @OnlyIn(Dist.CLIENT)
     public static ClientSetting readFromLocalConfig() {
+        var configInstance = ParCoolConfig.Client.getInstance();
         Remote instance = new Remote();
         for (int i = 0; i < instance.actionPossibilities.length; i++) {
-            instance.actionPossibilities[i] = ParCoolConfig.Client.getPossibilityOf(Actions.LIST.get(i)).get();
-            instance.staminaConsumptions[i] = ParCoolConfig.Client.getStaminaConsumptionOf(Actions.LIST.get(i)).get();
+            instance.actionPossibilities[i] = instance.getPossibilityOf(Actions.LIST.get(i));
+            instance.staminaConsumptions[i] = instance.getStaminaConsumptionOf(Actions.LIST.get(i));
         }
         for (ParCoolConfig.Client.Booleans item : ParCoolConfig.Client.Booleans.values()) {
             instance.booleans.put(item, item.get());
@@ -134,7 +135,7 @@ public abstract class ClientSetting {
         for (ParCoolConfig.Client.Doubles item : ParCoolConfig.Client.Doubles.values()) {
             instance.doubles.put(item, item.get());
         }
-        instance.requestedStamina = ParCoolConfig.Client.StaminaType.get();
+        instance.requestedStamina = configInstance.StaminaType.get();
         return instance;
     }
 

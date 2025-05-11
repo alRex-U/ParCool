@@ -15,9 +15,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
@@ -118,19 +120,24 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
     }
 
     @Override
+    public void move(MoverType p_19973_, Vec3 p_19974_) {
+    }
+
+    @Override
     public void refreshDimensions() {
-        if (size != null) {
-            BlockPos end = getEndPos();
-            BlockPos start = getStartPos();
-            if (end != BlockPos.ZERO || start != BlockPos.ZERO) {
-                size = EntityDimensions.fixed(Math.max(Math.abs(end.getX() - start.getX()), Math.abs(end.getZ() - start.getZ())) + 0.3f, Math.abs(end.getY() - start.getY()) + 0.3f);
-            }
+        super.refreshDimensions();
+        BlockPos end = getEndPos();
+        BlockPos start = getStartPos();
+        if (end != BlockPos.ZERO || start != BlockPos.ZERO) {
+            size = EntityDimensions.fixed(Math.max(Math.abs(end.getX() - start.getX()), Math.abs(end.getZ() - start.getZ())) + 0.3f, Math.abs(end.getY() - start.getY()) + 0.3f);
+            double d0 = size.width() / 2.0;
+            this.setBoundingBox(new AABB(this.getX() - d0, this.getY(), this.getZ() - d0, this.getX() + d0, this.getY() + size.height(), this.getZ() + d0));
         }
     }
 
     @Override
     public void onSyncedDataUpdated(@Nonnull EntityDataAccessor<?> param) {
-        if (param.equals(DATA_END_POS)) {
+        if (param.equals(DATA_START_POS) || param.equals(DATA_END_POS)) {
             refreshDimensions();
         }
     }
@@ -143,11 +150,11 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
         return getEntityData().get(DATA_END_POS);
     }
 
-    public void setStartPos(BlockPos start) {
+    private void setStartPos(BlockPos start) {
         getEntityData().set(DATA_START_POS, start);
     }
 
-    public void setEndPos(BlockPos end) {
+    private void setEndPos(BlockPos end) {
         getEntityData().set(DATA_END_POS, end);
     }
 

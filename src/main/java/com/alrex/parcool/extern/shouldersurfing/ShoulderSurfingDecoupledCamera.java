@@ -19,7 +19,9 @@ public class ShoulderSurfingDecoupledCamera implements ICameraCouplingCallback, 
     @Override
     public boolean isForcingCameraCoupling(Minecraft mc) {
         if (mc.player == null) return false;
-        return Parkourability.get(mc.player).isDoingAny(ClingToCliff.class);
+        var parkourability = Parkourability.get(mc.player);
+        if (parkourability == null) return false;
+        return parkourability.isDoingAny(ClingToCliff.class);
     }
 
     @Override

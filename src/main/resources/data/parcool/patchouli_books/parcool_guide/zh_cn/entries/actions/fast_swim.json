@@ -1,0 +1,16 @@
+{
+  "name": "速游",
+  "icon": "minecraft:water_bucket",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "  你游泳能游得比之前更快了：$(bold)速游$()。该动作包含原创动画。$(br2)  其操作方法与疾跑相同。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list) 在冲刺状态下持续按住疾跑键($(k:parcool.FastRun))"
+    }
+  ]
+}

@@ -117,7 +117,7 @@ public class SettingActionLimitationScreen extends ParCoolSettingScreen {
 
         ActionConfigSet(Class<? extends Action> action, ActionInfo info) {
             name = Component.translatable("parcool.action." + action.getSimpleName()).getString();
-            var config = ParCoolConfig.Client.getPossibilityOf(action);
+            var config = ParCoolConfig.Client.getInstance().getPossibilityOf(action);
             setter = config::set;
             getter = config::get;
             serverLimitation = () -> info.getServerLimitation().isPermitted(action);

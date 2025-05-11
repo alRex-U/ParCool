@@ -1,0 +1,23 @@
+{
+  "name": "滑铲",
+  "icon": "minecraft:yellow_dye",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "  $(bold)滑铲$()是$(l:parcool:actions/crawl)匍匐（爬行）$()的进阶动作。可以让你快速穿过狭窄的空间。"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/slide.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list)在$(l:parcool:actions/fast_run)疾跑$()状态下执行匍匐（爬行）动作"
+    }
+  ]
+}

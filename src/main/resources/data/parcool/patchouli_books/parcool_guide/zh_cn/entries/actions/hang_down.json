@@ -1,0 +1,23 @@
+{
+  "name": "挂杠（吊挂）",
+  "icon": "minecraft:stone",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "  你可以吊挂在横着的铁链或者末地烛等细长方块上。$(br2)  按下跳跃键还能向前荡杠跳跃从而进行移动。"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/hang_down.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list) 在横着的细长方块下方按下挂杠键($(k:parcool.HangDown))$(br)"
+    }
+  ]
+}
