@@ -1,5 +1,7 @@
 package com.alrex.parcool.client.input;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -53,6 +55,7 @@ public class KeyRecorder {
 		recordMovingVector(KeyBindings.isAnyMovingKeyDown());
 	}
 
+	@Nullable
 	public static Vec3 getLastMoveVector() {
 		return lastDirection;
 	}
