@@ -15,6 +15,7 @@ import com.alrex.parcool.common.registries.ParCoolPoses;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.utilities.VectorUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
@@ -129,6 +130,7 @@ public class Dodge extends Action {
 	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		boolean enabledDoubleTap = ParCoolConfig.Client.Booleans.EnableDoubleTappingForDodge.get();
 		DodgeDirection direction = null;
+		var dodgeVec = KeyRecorder.getLastMoveVector();
 		if (enabledDoubleTap) {
 			if (KeyRecorder.keyBack.isDoubleTapped()) direction = DodgeDirection.Back;
 			if (KeyRecorder.keyLeft.isDoubleTapped()) direction = DodgeDirection.Left;
@@ -139,11 +141,14 @@ public class Dodge extends Action {
 			if (KeyBindings.isKeyForwardDown()) direction = DodgeDirection.Front;
 			if (KeyBindings.isKeyLeftDown()) direction = DodgeDirection.Left;
 			if (KeyBindings.isKeyRightDown()) direction = DodgeDirection.Right;
+			if (direction != null) dodgeVec = KeyBindings.getCurrentMoveVector();
 		}
-		if (direction == null) return false;
+		if (direction == null || dodgeVec == null) return false;
 		direction = AdditionalMods.betterThirdPerson().handleCustomCameraRotationForDodge(direction);
 		direction = AdditionalMods.shoulderSurfing().handleCustomCameraRotationForDodge(direction);
 		startInfo.putInt(direction.ordinal());
+		startInfo.putDouble(dodgeVec.x);
+		startInfo.putDouble(dodgeVec.z);
 		return ((parkourability.getAdditionalProperties().getLandingTick() > 5 || parkourability.getAdditionalProperties().getPreviousNotLandingTick() < 2)
 				&& player.onGround()
 				&& !isInSuccessiveCoolDown(parkourability.getActionInfo())
@@ -175,23 +180,22 @@ public class Dodge extends Action {
 	@Override
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		dodgeDirection = DodgeDirection.values()[startData.getInt()];
+		var dodgeVec = new Vec3(startData.getDouble(), 0, startData.getDouble());
 		coolTime = getMaxCoolTime(parkourability.getActionInfo());
 		if (successivelyCount < getMaxSuccessiveDodge(parkourability.getActionInfo())) {
 			successivelyCount++;
 		}
-		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-            player.playSound(SoundEvents.DODGE.get(), 1f, 1f);
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get()) {
+			player.playSound(SoundEvents.DODGE.get(), 1f, 1f);
+		}
 		successivelyCoolTick = getSuccessiveCoolTime(parkourability.getActionInfo());
 
 		if (!player.onGround()) return;
-		Vec3 lookVec = VectorUtil.fromYawDegree(player.getYHeadRot());
-		Vec3 dodgeVec = switch (dodgeDirection) {
-			case Front -> lookVec;
-			case Back -> lookVec.reverse();
-			case Right -> lookVec.yRot((float) Math.PI / -2);
-			case Left -> lookVec.yRot((float) Math.PI / 2);
-		};
-		dodgeVec = dodgeVec.scale(.9 * getSpeedModifier(parkourability.getActionInfo()));
+		var cameraEntity = Minecraft.getInstance().getCameraEntity();
+		var cameraYRot = cameraEntity != null ? cameraEntity.getYRot() : 0;
+		dodgeVec = VectorUtil.rotateYDegrees(dodgeVec, cameraYRot);
+		dodgeVec = dodgeVec.scale(0.9 * getSpeedModifier(parkourability.getActionInfo()));
+		if (AdditionalMods.isCameraDecoupled()) player.setYRot(VectorUtil.toYaw(dodgeVec));
 		player.setDeltaMovement(dodgeVec);
 
 		Animation animation = Animation.get(player);

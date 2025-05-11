@@ -105,10 +105,14 @@ public class Parkourability {
         return synchronizeTrialCount;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public boolean limitationIsNotSynced() {
-        return !getServerLimitation().isSynced();
-    }
+	public void incrementSynchronizeTrialCount() {
+		synchronizeTrialCount++;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public boolean limitationIsNotSynced() {
+		return !getServerLimitation().isSynced();
+	}
 
     @SafeVarargs
     public final Boolean isDoingAny(Class<? extends Action>... actions) {

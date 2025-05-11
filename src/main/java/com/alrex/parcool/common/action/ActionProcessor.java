@@ -70,6 +70,7 @@ public class ActionProcessor {
                     }
                     ParCool.LOGGER.log(Level.WARN, "Detected ParCool Limitation is not synced. Sending synchronization request...");
                 } else if (trialCount == 5) {
+					parkourability.incrementSynchronizeTrialCount();
                     player.displayClientMessage(Component.translatable("parcool.message.error.limitation.fail_sync").withStyle(ChatFormatting.DARK_RED), false);
                     ParCool.LOGGER.log(Level.ERROR, "Failed to synchronize ParCool Limitation. Please report to developer");
                 }

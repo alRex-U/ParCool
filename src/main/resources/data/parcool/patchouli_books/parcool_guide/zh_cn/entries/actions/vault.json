@@ -1,0 +1,24 @@
+{
+  "name": "撑越（撑手跳）",
+  "icon": "minecraft:oak_fence",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "  $(bold)撑越$()是一种用来快速翻越较矮障碍物（如栅栏）的技术。$(br2)  撑越有多种动作。就比如在本游戏中，你就可以使用$(italic)速过$()和$(italic)金刚跳$()这两种动作。"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/speed_vault.png"
+      ],
+      "title": "快速翻越$"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(bold)1.$() 进行$(l:parcool:actions/fast_run)疾跑$()$(br)$(bold)2.$() 身体与方块相碰"
+    }
+  ]
+}
