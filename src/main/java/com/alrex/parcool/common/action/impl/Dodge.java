@@ -187,7 +187,8 @@ public class Dodge extends Action {
 		successivelyCoolTick = getSuccessiveCoolTime(parkourability.getActionInfo());
 
 		if (!player.isOnGround()) return;
-		var cameraYRot = Minecraft.getInstance().getCameraEntity().getYRot();
+		var cameraEntity = Minecraft.getInstance().getCameraEntity();
+		var cameraYRot = cameraEntity != null ? cameraEntity.getYRot() : 0;
 		dodgeVec = VectorUtil.rotateYDegrees(dodgeVec, cameraYRot);
 		dodgeVec = dodgeVec.scale(0.9 * getSpeedModifier(parkourability.getActionInfo()));
 		if (AdditionalMods.isCameraDecoupled()) player.setYRot(VectorUtil.toYaw(dodgeVec));

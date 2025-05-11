@@ -1,14 +1,13 @@
 package com.alrex.parcool.client.input;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.client.KeyMapping;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.phys.Vec3;
+
+import javax.annotation.Nullable;
 
 @OnlyIn(Dist.CLIENT)
 public class KeyRecorder {

@@ -1,6 +1,5 @@
 package com.alrex.parcool.client.input;
 
-import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
@@ -52,11 +51,12 @@ public class KeyBindings {
 	}
 
 	public static Vec3 getCurrentMoveVector() {
-		var vector = Minecraft.getInstance().player.input.getMoveVector();
+		var player = Minecraft.getInstance().player;
+		if (player == null) return Vec3.ZERO;
+		var vector = player.input.getMoveVector();
 		if (VectorUtil.isZero(vector)) return Vec3.ZERO;
 		double length = vector.length();
-		var result = new Vec3(vector.x / length, 0, vector.y / length);
-		return result;
+		return new Vec3(vector.x / length, 0, vector.y / length);
 	}
 
 	public static Vec3 getForwardVector() {
