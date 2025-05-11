@@ -1,0 +1,42 @@
+{
+  "name": "滑索",
+  "icon": "parcool:zipline_rope",
+  "category": "parcool:category_support_features",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "  滑索是一种跑酷设备，它可以连接两个远距离的点，让玩家能够从一端快速移动到另一端。"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/ride_zipline.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "滑索锁钩",
+      "text": "  首先确定要设置滑索的两个锁钩点。然后在每个位置上都安装滑索锁钩。$(br2)  滑索锁钩一共有两种类型：木质锁钩和铁质锁钩。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "parcool:wooden_zipline_hook",
+      "recipe2": "parcool:iron_zipline_hook"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "滑索绳",
+      "text": "  安装好锁钩后，接下来需要制作滑索绳。潜行时使用滑索绳可以调整绳索张力。$(br2)  对着两个滑索锁钩分别使用同一条滑索绳即可相连形成一条滑索。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "parcool:zipline_rope"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list) 跳起并接近滑索时按下使用滑索键($(k:parcool.RideZipline))"
+    }
+  ]
+}

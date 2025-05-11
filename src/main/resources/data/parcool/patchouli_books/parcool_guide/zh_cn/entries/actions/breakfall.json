@@ -1,0 +1,37 @@
+{
+  "name": "受身（落地缓冲）",
+  "icon": "minecraft:slime_ball",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "  $(bold)受身$()是用来减轻从高处落地时所产生冲击力的技术。$(br2)  本模组目前实现了两种受身方式：$(bold)翻滚缓冲$()和$(bold)四肢缓冲$()。"
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "parcool:textures/gui/entries/breakfall_tap.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "翻滚缓冲",
+      "text": "  $(bold)翻滚缓冲$()是一种受身技术，可将落地时产生的冲击力通过身体滚动的方式来延长冲击时间从而减轻和分散冲击力。$(br2)  需要强调的是：在跑酷运动中的$(italic)翻滚$()属于速降卸力技术，因此本模组中的翻滚也只在高处落地时使用。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list)在落地时按下前后移动方向键+受身键($(k:parcool.Breakfall))"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "四肢缓冲",
+      "text": "  $(bold)四肢缓冲$()也是一种受身技术，通过屈膝和双手撑地来减轻和分散落地时的冲击力。$(br2)（话说史蒂夫要怎么才能弯曲他的腿呢？）"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list)在落地时按下受身键($(k:parcool.Breakfall))"
+    }
+  ]
+}

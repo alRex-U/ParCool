@@ -13,6 +13,7 @@ import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -133,6 +134,9 @@ public class RideZipline extends Action {
     @Override
     public void onWorkingTickInLocalClient(Player player, Parkourability parkourability, IStamina stamina) {
         if (ridingZipline == null) return;
+        var speedAttr = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (speedAttr == null) return;
+        if (!(player instanceof LocalPlayer localPlayer)) return;
         double oldSpeed = speed;
         Zipline zipline = ridingZipline.getZipline();
 
@@ -141,11 +145,7 @@ public class RideZipline extends Action {
         speed *= 0.98;
         if (player.isInWater()) speed *= 0.8;
         speed -= gravity * slope * (Mth.fastInvSqrt(slope * slope + 1));
-        Vec3 input = new Vec3(
-                (KeyBindings.isKeyRightDown() ? 1. : 0.) + (KeyBindings.isKeyLeftDown() ? -1. : 0.),
-                0.,
-                (KeyBindings.isKeyForwardDown() ? 1. : 0.) + (KeyBindings.isKeyBackDown() ? -1. : 0.)
-        );
+        Vec3 input = new Vec3(-localPlayer.input.leftImpulse, 0., localPlayer.input.forwardImpulse);
         Vec3 offset = zipline.getOffsetToEndFromStart();
         if (input.lengthSqr() > 0.01) {
             double dot = player.getLookAngle()
@@ -153,7 +153,7 @@ public class RideZipline extends Action {
                     .multiply(1, 0, 1)
                     .normalize()
                     .dot(new Vec3(offset.x(), 0, offset.z()).normalize());
-            speed += dot * 0.01;
+            speed += Math.min(dot * 0.01 * (speedAttr.getValue() / speedAttr.getBaseValue()), 0.08);
         }
         currentT = (float) zipline.getMovedPositionByParameterApproximately(currentT, (float) speed);
         acceleration = speed - oldSpeed;

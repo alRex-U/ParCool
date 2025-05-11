@@ -1,0 +1,22 @@
+{
+  "name": "蓄力高跳",
+  "icon": "minecraft:rabbit_foot",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "  你可以使用$(bold)蓄力高跳$()来跳得更高。$(br2)  这能帮助你直接跨过栅栏或者攀住更高的墙壁。$(br2)  虽然很简单，但是很实用！"
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "parcool:textures/gui/entries/charge_jump_1.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(bold)1.$() 先原地站立在保持潜行状态数秒$(br)$(bold)2.$() 松开潜行键的同时按下跳跃键"
+    }
+  ]
+}
