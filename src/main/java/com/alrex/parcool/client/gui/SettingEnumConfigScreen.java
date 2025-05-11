@@ -17,16 +17,16 @@ import java.util.List;
 
 public class SettingEnumConfigScreen extends ParCoolSettingScreen {
     private final EnumConfigSet<?>[] enumConfigList = new EnumConfigSet[]{
-            new EnumConfigSet<>(ParCoolConfig.Client.AlignHorizontalStaminaHUD),
-            new EnumConfigSet<>(ParCoolConfig.Client.AlignVerticalStaminaHUD),
-            new EnumConfigSet<>(ParCoolConfig.Client.FastRunControl),
-            new EnumConfigSet<>(ParCoolConfig.Client.CrawlControl),
-            new EnumConfigSet<>(ParCoolConfig.Client.FlipControl),
-            new EnumConfigSet<>(ParCoolConfig.Client.HWallRunControl),
-            new EnumConfigSet<>(ParCoolConfig.Client.ClingToCliffControl),
-            new EnumConfigSet<>(ParCoolConfig.Client.VaultAnimationMode),
-            new EnumConfigSet<>(ParCoolConfig.Client.GUIColorTheme),
-            new EnumConfigSet<>(ParCoolConfig.Client.StaminaHUDType),
+            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().AlignHorizontalStaminaHUD),
+            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().AlignVerticalStaminaHUD),
+            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().FastRunControl),
+            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().CrawlControl),
+            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().FlipControl),
+            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().HWallRunControl),
+            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().ClingToCliffControl),
+            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().VaultAnimationMode),
+            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().GUIColorTheme),
+            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().StaminaHUDType),
     };
     private final Button[] enumConfigButtons = new Button[enumConfigList.length];
 

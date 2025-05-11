@@ -55,7 +55,7 @@ public class FastRun extends Action {
 	@Override
 	public void onClientTick(Player player, Parkourability parkourability) {
 		if (player.isLocalPlayer()) {
-			if (ParCoolConfig.Client.FastRunControl.get() == ControlType.Toggle
+			if (ParCoolConfig.Client.getInstance().FastRunControl.get() == ControlType.Toggle
 					&& parkourability.getAdditionalProperties().getSprintingTick() > 3
 			) {
 				if (KeyRecorder.keyFastRunning.isPressed())
@@ -90,9 +90,9 @@ public class FastRun extends Action {
 				&& !parkourability.get(HangDown.class).isDoing()
                 && !parkourability.get(RideZipline.class).isDoing()
                 && !parkourability.get(HideInBlock.class).isDoing()
-				&& ((ParCoolConfig.Client.FastRunControl.get() == ControlType.PressKey && KeyBindings.getKeyFastRunning().isDown())
-				|| (ParCoolConfig.Client.FastRunControl.get() == ControlType.Toggle && toggleStatus)
-				|| ParCoolConfig.Client.FastRunControl.get() == ControlType.Auto)
+				&& ((ParCoolConfig.Client.getInstance().FastRunControl.get() == ControlType.PressKey && KeyBindings.getKeyFastRunning().isDown())
+				|| (ParCoolConfig.Client.getInstance().FastRunControl.get() == ControlType.Toggle && toggleStatus)
+				|| ParCoolConfig.Client.getInstance().FastRunControl.get() == ControlType.Auto)
 		);
 	}
 

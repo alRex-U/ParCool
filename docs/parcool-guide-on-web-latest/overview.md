@@ -145,7 +145,7 @@ Next let's craft **Zipline Rope**.
 
 ![zipline rope recipe](resources/recipes/zipline_rope.png)
 
-It is possible to change color by dying. Please craft it with dye items like leather armor.
+It is possible to change color by dyeing. Please craft it with dye items like leather armor.
 
 Press shift + right click to select rope tension. After that use it to 2 zipline hooks.
 

@@ -1,9 +1,11 @@
 package com.alrex.parcool.client.input;
 
+import com.alrex.parcool.utilities.VectorUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -32,6 +34,7 @@ public class KeyBindings {
 	private static final KeyMapping keyBindHorizontalWallRun = new KeyMapping("key.parcool.HorizontalWallRun", GLFW.GLFW_KEY_R, "key.categories.parcool");
 	private static final KeyMapping keyBindQuickTurn = new KeyMapping("key.parcool.QuickTurn", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
 	private static final KeyMapping keyBindOpenSettings = new KeyMapping("key.parcool.openSetting", KeyConflictContext.UNIVERSAL, KeyModifier.ALT, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.categories.parcool");
+	private static final Vec3 forwardVector = new Vec3(0, 0, 1);
 
 	public static KeyMapping getKeySprint() {
 		return settings.keySprint;
@@ -46,13 +49,26 @@ public class KeyBindings {
 		return settings.keyShift;
 	}
 
-    public static Boolean isAnyMovingKeyDown() {
-        return mc.player != null
-                && (mc.player.input.left
-                || mc.player.input.right
-                || mc.player.input.forwardImpulse != 0
-                || mc.player.input.leftImpulse != 0);
-    }
+	public static Vec3 getCurrentMoveVector() {
+		var player = Minecraft.getInstance().player;
+		if (player == null) return Vec3.ZERO;
+		var vector = player.input.getMoveVector();
+		if (VectorUtil.isZero(vector)) return Vec3.ZERO;
+		double length = vector.length();
+		return new Vec3(vector.x / length, 0, vector.y / length);
+	}
+
+	public static Vec3 getForwardVector() {
+		return forwardVector;
+	}
+
+	public static Boolean isAnyMovingKeyDown() {
+		return mc.player != null
+				&& (mc.player.input.left
+				|| mc.player.input.right
+				|| mc.player.input.forwardImpulse != 0
+				|| mc.player.input.leftImpulse != 0);
+	}
 
     public static Boolean isLeftAndRightDown() {
         return mc.player != null && mc.player.input.left && mc.player.input.right;
