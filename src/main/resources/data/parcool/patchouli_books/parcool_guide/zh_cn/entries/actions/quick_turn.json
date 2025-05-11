@@ -1,0 +1,16 @@
+{
+  "name": "快速转向",
+  "icon": "minecraft:iron_helmet",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "  有时侯你可能会需要快速向后转身的功能。而这只需按一个按键即可实现。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list)按下快速转向键($(k:parcool.QuickTurn))"
+    }
+  ]
+}

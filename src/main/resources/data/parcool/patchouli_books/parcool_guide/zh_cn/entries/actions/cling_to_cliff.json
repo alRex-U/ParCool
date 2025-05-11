@@ -1,0 +1,30 @@
+{
+  "name": "猫挂（边缘悬挂）",
+  "icon": "minecraft:stone",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "  你可以抓攀在方块的边缘并且能够保持悬挂状态。当然，此状态仍然可以缓慢的进行移动。$(br2)  通过按下跳跃键还能爬上方块。"
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/cling_to_cliff_1.png"
+      ]
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/cling_to_cliff_2.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "使用方法",
+      "text": "$(list) 在墙壁边缘按住猫挂键($(k:parcool.ClingToCliff))$(br)"
+    }
+  ]
+}
