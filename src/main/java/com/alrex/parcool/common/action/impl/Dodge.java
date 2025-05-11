@@ -14,6 +14,7 @@ import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.utilities.VectorUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -127,21 +128,25 @@ public class Dodge extends Action {
 	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		boolean enabledDoubleTap = ParCoolConfig.Client.Booleans.EnableDoubleTappingForDodge.get();
 		DodgeDirection direction = null;
+		var dodgeVec = KeyRecorder.getLastMoveVector();
 		if (enabledDoubleTap) {
 			if (KeyRecorder.keyBack.isDoubleTapped()) direction = DodgeDirection.Back;
 			if (KeyRecorder.keyLeft.isDoubleTapped()) direction = DodgeDirection.Left;
 			if (KeyRecorder.keyRight.isDoubleTapped()) direction = DodgeDirection.Right;
 		}
 		if (direction == null && KeyRecorder.keyDodge.isPressed()) {
-            if (KeyBindings.isKeyBackDown()) direction = DodgeDirection.Back;
+			if (KeyBindings.isKeyBackDown()) direction = DodgeDirection.Back;
             if (KeyBindings.isKeyForwardDown()) direction = DodgeDirection.Front;
             if (KeyBindings.isKeyLeftDown()) direction = DodgeDirection.Left;
             if (KeyBindings.isKeyRightDown()) direction = DodgeDirection.Right;
+			if (direction != null) dodgeVec = KeyBindings.getCurrentMoveVector();
 		}
-		if (direction == null) return false;
-        direction = AdditionalMods.betterThirdPerson().handleCustomCameraRotationForDodge(direction);
-        direction = AdditionalMods.shoulderSurfing().handleCustomCameraRotationForDodge(direction);
+		if (direction == null || dodgeVec == null) return false;
+		direction = AdditionalMods.betterThirdPerson().handleCustomCameraRotationForDodge(direction);
+		direction = AdditionalMods.shoulderSurfing().handleCustomCameraRotationForDodge(direction);
 		startInfo.putInt(direction.ordinal());
+		startInfo.putDouble(dodgeVec.x);
+		startInfo.putDouble(dodgeVec.z);
         return ((parkourability.getAdditionalProperties().getLandingTick() > 5 || parkourability.getAdditionalProperties().getPreviousNotLandingTick() < 2)
                 && player.isOnGround()
 				&& !isInSuccessiveCoolDown(parkourability.getActionInfo())
@@ -171,32 +176,21 @@ public class Dodge extends Action {
 	@Override
 	public void onStartInLocalClient(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		dodgeDirection = DodgeDirection.values()[startData.getInt()];
+		var dodgeVec = new Vec3(startData.getDouble(), 0, startData.getDouble());
 		coolTime = getMaxCoolTime(parkourability.getActionInfo());
 		if (successivelyCount < getMaxSuccessiveDodge(parkourability.getActionInfo())) {
 			successivelyCount++;
 		}
-		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-            player.playSound(SoundEvents.DODGE.get(), 1f, 1f);
+		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get()) {
+			player.playSound(SoundEvents.DODGE.get(), 1f, 1f);
+		}
 		successivelyCoolTick = getSuccessiveCoolTime(parkourability.getActionInfo());
 
 		if (!player.isOnGround()) return;
-		Vec3 lookVec = VectorUtil.fromYawDegree(player.getYHeadRot());
-		Vec3 dodgeVec = Vec3.ZERO;
-		switch (dodgeDirection) {
-			case Front:
-				dodgeVec = lookVec;
-				break;
-			case Back:
-				dodgeVec = lookVec.reverse();
-				break;
-			case Right:
-				dodgeVec = lookVec.yRot((float) Math.PI / -2);
-				break;
-			case Left:
-				dodgeVec = lookVec.yRot((float) Math.PI / 2);
-				break;
-		}
-		dodgeVec = dodgeVec.scale(.9 * getSpeedModifier(parkourability.getActionInfo()));
+		var cameraYRot = Minecraft.getInstance().getCameraEntity().getYRot();
+		dodgeVec = VectorUtil.rotateYDegrees(dodgeVec, cameraYRot);
+		dodgeVec = dodgeVec.scale(0.9 * getSpeedModifier(parkourability.getActionInfo()));
+		if (AdditionalMods.isCameraDecoupled()) player.setYRot(VectorUtil.toYaw(dodgeVec));
 		player.setDeltaMovement(dodgeVec);
 
         Animation animation = Animation.get(player);
