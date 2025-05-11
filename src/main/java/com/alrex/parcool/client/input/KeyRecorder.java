@@ -1,6 +1,7 @@
 package com.alrex.parcool.client.input;
 
 import net.minecraft.client.KeyMapping;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;

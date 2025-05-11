@@ -131,8 +131,8 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
         BlockPos start = getStartPos();
         if (end != BlockPos.ZERO || start != BlockPos.ZERO) {
             size = EntityDimensions.fixed(Math.max(Math.abs(end.getX() - start.getX()), Math.abs(end.getZ() - start.getZ())) + 0.3f, Math.abs(end.getY() - start.getY()) + 0.3f);
-            double d0 = size.width / 2.0;
-            this.setBoundingBox(new AABB(this.getX() - d0, this.getY(), this.getZ() - d0, this.getX() + d0, this.getY() + size.height, this.getZ() + d0));
+            double d0 = size.width() / 2.0;
+            this.setBoundingBox(new AABB(this.getX() - d0, this.getY(), this.getZ() - d0, this.getX() + d0, this.getY() + size.height(), this.getZ() + d0));
         }
     }
 

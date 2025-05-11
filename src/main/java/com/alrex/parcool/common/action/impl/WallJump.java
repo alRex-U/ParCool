@@ -82,7 +82,7 @@ public class WallJump extends Action {
 		Vec3 jumpDirection = getJumpDirection(player, wallDirection);
 		if (jumpDirection == null) return false;
 		ClingToCliff cling = parkourability.get(ClingToCliff.class);
-		ControlType control = ParCoolConfig.Client.WallJumpControl.get();
+		ControlType control = ParCoolConfig.Client.getInstance().WallJumpControl.get();
 
 		boolean value = (!player.onGround()
 				&& !player.isInWaterOrBubble()

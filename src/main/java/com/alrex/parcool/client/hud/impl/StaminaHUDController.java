@@ -45,7 +45,7 @@ public class StaminaHUDController implements LayeredDraw.Layer {
 		if (NeoForge.EVENT_BUS.post(new ParCoolHUDEvent.RenderEvent(graphics, partialTick)).isCanceled())
 			return;
 
-		switch (ParCoolConfig.Client.StaminaHUDType.get()) {
+		switch (ParCoolConfig.Client.getInstance().StaminaHUDType.get()) {
 			case Light:
 				lightStaminaHUD.render(graphics, partialTick);
 				break;

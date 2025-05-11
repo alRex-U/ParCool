@@ -69,13 +69,12 @@ public class StaminaHUD {
 
 		LocalStamina stamina = LocalStamina.get(player);
 		Parkourability parkourability = Parkourability.get(player);
-		if (parkourability == null) return;
 
 		if (parkourability.getActionInfo().isStaminaInfinite(stamina, player)) return;
 
 		Position position = new Position(
-				ParCoolConfig.Client.AlignHorizontalStaminaHUD.get(),
-				ParCoolConfig.Client.AlignVerticalStaminaHUD.get(),
+				ParCoolConfig.Client.getInstance().AlignHorizontalStaminaHUD.get(),
+				ParCoolConfig.Client.getInstance().AlignVerticalStaminaHUD.get(),
                 ParCoolConfig.Client.Integers.HorizontalOffsetOfStaminaHUD.get(),
                 ParCoolConfig.Client.Integers.VerticalOffsetOfStaminaHUD.get()
 		);
