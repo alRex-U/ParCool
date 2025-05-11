@@ -1,9 +1,12 @@
 package com.alrex.parcool.client.input;
 
+import com.alrex.parcool.extern.AdditionalMods;
+import com.alrex.parcool.utilities.VectorUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ClientRegistry;
@@ -33,6 +36,7 @@ public class KeyBindings {
 	private static final KeyMapping keyBindHorizontalWallRun = new KeyMapping("key.parcool.HorizontalWallRun", GLFW.GLFW_KEY_R, "key.categories.parcool");
 	private static final KeyMapping keyBindQuickTurn = new KeyMapping("key.parcool.QuickTurn", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
 	private static final KeyMapping keyBindOpenSettings = new KeyMapping("key.parcool.openSetting", KeyConflictContext.UNIVERSAL, KeyModifier.ALT, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.categories.parcool");
+	private static final Vec3 forwardVector = new Vec3(0, 0, 1);
 
 	public static KeyMapping getKeySprint() {
 		return settings.keySprint;
@@ -45,6 +49,18 @@ public class KeyBindings {
 
 	public static KeyMapping getKeySneak() {
 		return settings.keyShift;
+	}
+
+	public static Vec3 getCurrentMoveVector() {
+		var vector = Minecraft.getInstance().player.input.getMoveVector();
+		if (VectorUtil.isZero(vector)) return Vec3.ZERO;
+		double length = vector.length();
+		var result = new Vec3(vector.x / length, 0, vector.y / length);
+		return result;
+	}
+
+	public static Vec3 getForwardVector() {
+		return forwardVector;
 	}
 
     public static Boolean isAnyMovingKeyDown() {
