@@ -1,0 +1,16 @@
+{
+  "name": "Wall Slide",
+  "icon": "minecraft:sand",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "You can fall slowly by cling to wall. This action is affected by the slipperiness of blocks, so players cannot make fall slow with wall of ice block."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(list)Press Wall Slide key($(k:parcool.WallSlide)) by walls in air"
+    }
+  ]
+}

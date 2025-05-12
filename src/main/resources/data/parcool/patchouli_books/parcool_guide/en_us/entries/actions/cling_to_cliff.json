@@ -1,0 +1,30 @@
+{
+  "name": "Cling To Cliff",
+  "icon": "minecraft:stone",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "You can cling to edge of blocks and stay there. Of course, it is possible to move although slowly.$(br) You can also climb up onto the blocks by pressing jump key."
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/cling_to_cliff_1.png"
+      ]
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/cling_to_cliff_2.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(list) Press Cling-To-Cliff Key($(k:parcool.ClingToCliff)) by a wall$(br)"
+    }
+  ]
+}

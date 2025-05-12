@@ -1,0 +1,18 @@
+{
+  "name": "What is ParCool?",
+  "icon": "minecraft:feather",
+  "category": "parcool:category_about",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Thanks for playing this mod!$(br2)This mod is a Minecraft Forge mod for more $(bold)Cool$() actions like $(bold)Parkour$()$(br)Some actions are actually techniques of parkour.$(br2)Now you become a parkour-player. Let's run around the Minecraft World!"
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "parcool:textures/gui/entries/logo_round.png"
+      ]
+    }
+  ]
+}
