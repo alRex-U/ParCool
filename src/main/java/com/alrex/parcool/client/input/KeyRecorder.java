@@ -1,11 +1,12 @@
 package com.alrex.parcool.client.input;
 
+import javax.annotation.Nullable;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-
 
 @OnlyIn(Dist.CLIENT)
 public class KeyRecorder {
@@ -26,6 +27,7 @@ public class KeyRecorder {
 	public static final KeyState keyQuickTurn = new KeyState();
 	public static final KeyState keyFlipping = new KeyState();
 	public static final KeyState keyBindGrabWall = new KeyState();
+	public static Vector3d lastDirection = null;
 
 	@SubscribeEvent
 	public static void onClientTick(TickEvent.ClientTickEvent event) {
@@ -48,6 +50,12 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyQuickTurn(), keyQuickTurn);
 		record(KeyBindings.getKeyFlipping(), keyFlipping);
 		record(KeyBindings.getKeyGrabWall(), keyBindGrabWall);
+		recordMovingVector(KeyBindings.isAnyMovingKeyDown());
+	}
+
+	@Nullable
+	public static Vector3d getLastMoveVector() {
+		return lastDirection;
 	}
 
 	private static void record(Boolean isDown, KeyState state) {
@@ -68,6 +76,10 @@ public class KeyRecorder {
 
 	private static void record(KeyBinding keyBinding, KeyState state) {
 		record(keyBinding.isDown(), state);
+	}
+
+	private static void recordMovingVector(boolean isMoving) {
+		if (isMoving) lastDirection = KeyBindings.getCurrentMoveVector();
 	}
 
 	public static class KeyState {

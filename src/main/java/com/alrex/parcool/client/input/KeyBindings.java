@@ -4,6 +4,8 @@ import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
+import net.minecraft.util.math.vector.Vector2f;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.settings.KeyConflictContext;
@@ -12,6 +14,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.lwjgl.glfw.GLFW;
+
+import com.alrex.parcool.utilities.VectorUtil;
 
 @OnlyIn(Dist.CLIENT)
 public class KeyBindings {
@@ -33,6 +37,7 @@ public class KeyBindings {
 	private static final KeyBinding keyBindHorizontalWallRun = new KeyBinding("key.parcool.HorizontalWallRun", GLFW.GLFW_KEY_R, "key.categories.parcool");
 	private static final KeyBinding keyBindQuickTurn = new KeyBinding("key.parcool.QuickTurn", GLFW.GLFW_KEY_UNKNOWN, "key.categories.parcool");
 	private static final KeyBinding keyBindOpenSettings = new KeyBinding("key.parcool.openSetting", KeyConflictContext.UNIVERSAL, KeyModifier.ALT, InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.categories.parcool");
+	private static final Vector3d forwardVector = new Vector3d(0, 0, 1);
 
 	public static KeyBinding getKeySprint() {
 		return settings.keySprint;
@@ -45,6 +50,18 @@ public class KeyBindings {
 
 	public static KeyBinding getKeySneak() {
 		return settings.keyShift;
+	}
+
+	public static Vector3d getCurrentMoveVector() {
+		Vector2f vector = Minecraft.getInstance().player.input.getMoveVector();
+		if (VectorUtil.isZero(vector)) return Vector3d.ZERO;
+		double length = VectorUtil.getLength(vector);
+		Vector3d result = new Vector3d(vector.x / length, 0, vector.y / length);
+		return result;
+	}
+
+	public static Vector3d getForwardVector() {
+		return forwardVector;
 	}
 
 	public static Boolean isAnyMovingKeyDown() {
