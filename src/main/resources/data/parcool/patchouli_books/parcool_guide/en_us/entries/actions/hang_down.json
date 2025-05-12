@@ -1,0 +1,23 @@
+{
+  "name": "Hang Down",
+  "icon": "minecraft:stone",
+  "category": "parcool:category_actions",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "You can hang on some blocks like chains or end rods.$(br2)It's also possible to move and jump forward by pressing jump key."
+    },
+    {
+      "type": "patchouli:image",
+      "border": "true",
+      "images": [
+        "parcool:textures/gui/entries/hang_down.png"
+      ]
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How to Use",
+      "text": "$(list) Press Hang Down Key($(k:parcool.HangDown)) below horizontal thin blocks$(br)"
+    }
+  ]
+}
