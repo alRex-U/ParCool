@@ -72,17 +72,25 @@ public class ZiplineRopeEntity extends Entity {
             Vector3d endPos;
             TileEntity startEntity = level.getBlockEntity(start);
             TileEntity endEntity = level.getBlockEntity(end);
+            boolean delayInit = false;
             if (startEntity instanceof ZiplineHookTileEntity) {
                 startPos = ((ZiplineHookTileEntity) startEntity).getActualZiplinePoint(end);
             } else {
-                startPos = new Vector3d(start.getX() + 0.5, start.getY() + 0.7, start.getZ() + 0.5);
+                startPos = new Vector3d(start.getX() + 0.5, start.getY() + 0.5, start.getZ() + 0.5);
+                delayInit = true;
             }
             if (endEntity instanceof ZiplineHookTileEntity) {
                 endPos = ((ZiplineHookTileEntity) endEntity).getActualZiplinePoint(start);
             } else {
-                endPos = new Vector3d(end.getX() + 0.5, end.getY() + 0.7, end.getZ() + 0.5);
+                endPos = new Vector3d(end.getX() + 0.5, end.getY() + 0.5, end.getZ() + 0.5);
+                delayInit = true;
             }
-            zipline = type.getZipline(startPos, endPos);
+            if (delayInit) {
+                return type.getZipline(startPos, endPos);
+            } else {
+                zipline = type.getZipline(startPos, endPos);
+            }
+
         }
         return zipline;
     }
