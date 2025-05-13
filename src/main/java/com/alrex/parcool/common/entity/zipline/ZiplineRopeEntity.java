@@ -15,7 +15,6 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -51,7 +50,6 @@ public class ZiplineRopeEntity extends Entity {
         setPos((end.getX() + start.getX()) / 2.0 + 0.5, Math.min(end.getY(), start.getY()), (end.getZ() + start.getZ()) / 2.0 + 0.5);
         noPhysics = true;
         forcedLoading = true;
-        size = EntitySize.fixed(Math.max(Math.abs(end.getX() - start.getX()), Math.abs(end.getZ() - start.getZ())) + 0.3f, Math.abs(end.getY() - start.getY()) + 0.3f);
     }
 
     private BlockPos zipline_start;
@@ -106,7 +104,7 @@ public class ZiplineRopeEntity extends Entity {
         double t = -(xOffset * baseXOffset + yOffset * baseYOffset + zOffset * baseZOffset) / (xOffset * xOffset + yOffset * yOffset + zOffset * zOffset);
         Vector3d mostNearPoint = new Vector3d(xOffset * t + start.getX(), yOffset * t + start.getY(), zOffset * t + start.getZ());
         distanceSqr = mostNearPoint.distanceToSqr(x, y, z);
-        return distanceSqr < Zipline.MAXIMUM_DISTANCE * Zipline.MAXIMUM_DISTANCE;
+        return distanceSqr < Zipline.MAXIMUM_HORIZONTAL_DISTANCE * Zipline.MAXIMUM_HORIZONTAL_DISTANCE;
     }
 
     @Nonnull
@@ -123,6 +121,7 @@ public class ZiplineRopeEntity extends Entity {
     public void move(MoverType p_213315_1_, Vector3d p_213315_2_) {
     }
 
+    /*
     @Override
     public void refreshDimensions() {
         super.refreshDimensions();
@@ -141,6 +140,7 @@ public class ZiplineRopeEntity extends Entity {
             refreshDimensions();
         }
     }
+    */
 
     public BlockPos getStartPos() {
         return getEntityData().get(DATA_START_POS);

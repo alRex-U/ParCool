@@ -90,7 +90,8 @@ public class ZiplineRopeItem extends Item {
 
                 BlockPos end = context.getClickedPos();
                 if (start.equals(end)) return ActionResultType.PASS;
-                if (start.distSqr(end) > Zipline.MAXIMUM_DISTANCE * Zipline.MAXIMUM_DISTANCE) {
+                double horizontalDistSqr = MathHelper.square(start.getX() - end.getX()) + MathHelper.square(start.getZ() - end.getZ());
+                if (horizontalDistSqr > Zipline.MAXIMUM_HORIZONTAL_DISTANCE * Zipline.MAXIMUM_HORIZONTAL_DISTANCE) {
                     if (context.getLevel().isClientSide()) {
                         PlayerEntity player = context.getPlayer();
                         if (player != null) {
@@ -98,14 +99,17 @@ public class ZiplineRopeItem extends Item {
                         }
                     }
                     return ActionResultType.FAIL;
-                } else if (Math.abs(end.getY() - start.getY()) * MathHelper.fastInvSqrt(Math.pow(end.getX() - start.getX(), 2) + Math.pow(end.getZ() - start.getZ(), 2)) > 1.) {
-                    if (context.getLevel().isClientSide()) {
-                        PlayerEntity player = context.getPlayer();
-                        if (player != null) {
-                            player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.too_steep"), true);
+                } else {
+                    double verticalDist = Math.abs(end.getY() - start.getY());
+                    if (verticalDist * MathHelper.fastInvSqrt(horizontalDistSqr) > 1. || verticalDist > Zipline.MAXIMUM_VERTICAL_DISTANCE) {
+                        if (context.getLevel().isClientSide()) {
+                            PlayerEntity player = context.getPlayer();
+                            if (player != null) {
+                                player.displayClientMessage(new TranslationTextComponent("parcool.message.zipline.too_steep"), true);
+                            }
                         }
+                        return ActionResultType.FAIL;
                     }
-                    return ActionResultType.FAIL;
                 }
 
                 TileEntity startEntity = context.getLevel().getBlockEntity(start);
