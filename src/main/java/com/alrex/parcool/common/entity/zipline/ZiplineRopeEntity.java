@@ -76,17 +76,25 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
             Vec3 endPos;
             BlockEntity startEntity = level.getBlockEntity(start);
             BlockEntity endEntity = level.getBlockEntity(end);
+            boolean delayInit = false;
             if (startEntity instanceof ZiplineHookTileEntity) {
                 startPos = ((ZiplineHookTileEntity) startEntity).getActualZiplinePoint(end);
             } else {
-                startPos = new Vec3(start.getX() + 0.5, start.getY() + 0.7, start.getZ() + 0.5);
+                startPos = new Vec3(start.getX() + 0.5, start.getY() + 0.5, start.getZ() + 0.5);
+                delayInit = true;
             }
             if (endEntity instanceof ZiplineHookTileEntity) {
                 endPos = ((ZiplineHookTileEntity) endEntity).getActualZiplinePoint(start);
             } else {
-                endPos = new Vec3(end.getX() + 0.5, end.getY() + 0.7, end.getZ() + 0.5);
+                endPos = new Vec3(end.getX() + 0.5, end.getY() + 0.5, end.getZ() + 0.5);
+                delayInit = true;
             }
-            zipline = type.getZipline(startPos, endPos);
+            if (delayInit) {
+                return type.getZipline(startPos, endPos);
+            } else {
+                zipline = type.getZipline(startPos, endPos);
+            }
+
         }
         return zipline;
     }
