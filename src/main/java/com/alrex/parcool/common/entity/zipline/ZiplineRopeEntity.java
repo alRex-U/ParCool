@@ -21,7 +21,6 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 
@@ -109,7 +108,7 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
         double t = -(xOffset * baseXOffset + yOffset * baseYOffset + zOffset * baseZOffset) / (xOffset * xOffset + yOffset * yOffset + zOffset * zOffset);
         Vec3 mostNearPoint = new Vec3(xOffset * t + start.getX(), yOffset * t + start.getY(), zOffset * t + start.getZ());
         distanceSqr = mostNearPoint.distanceToSqr(x, y, z);
-        return distanceSqr < Zipline.MAXIMUM_DISTANCE * Zipline.MAXIMUM_DISTANCE;
+        return distanceSqr < Zipline.MAXIMUM_HORIZONTAL_DISTANCE * Zipline.MAXIMUM_HORIZONTAL_DISTANCE;
     }
 
     @Nonnull
@@ -126,6 +125,7 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
     public void move(MoverType p_19973_, Vec3 p_19974_) {
     }
 
+    /*
     @Override
     public void refreshDimensions() {
         super.refreshDimensions();
@@ -144,6 +144,7 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
             refreshDimensions();
         }
     }
+    */
 
     public BlockPos getStartPos() {
         return getEntityData().get(DATA_START_POS);
