@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class Zipline {
-    public static final double MAXIMUM_HORIZONTAL_DISTANCE = 115.;
+    public static final double MAXIMUM_HORIZONTAL_DISTANCE = 72.;
     public static final double MAXIMUM_VERTICAL_DISTANCE = MAXIMUM_HORIZONTAL_DISTANCE * 0.51;
 
     protected Zipline(Vec3 point1, Vec3 point2) {
