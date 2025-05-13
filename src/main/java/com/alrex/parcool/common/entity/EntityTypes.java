@@ -20,7 +20,7 @@ public class EntityTypes {
             () -> EntityType.Builder
                     .of((EntityType.EntityFactory<ZiplineRopeEntity>) ZiplineRopeEntity::new, MobCategory.MISC)
                     .noSave()
-                    .clientTrackingRange((int) (Zipline.MAXIMUM_DISTANCE / 1.9))
+                    .clientTrackingRange((int) (Zipline.MAXIMUM_HORIZONTAL_DISTANCE / 1.9))
                     .updateInterval(Integer.MAX_VALUE)
                     .noSummon()
                     .sized(0.1f, 0.1f)
