@@ -91,7 +91,8 @@ public class ZiplineRopeItem extends Item {
 
                 BlockPos end = context.getClickedPos();
                 if (start.equals(end)) return InteractionResult.PASS;
-                if (start.distSqr(end) > Zipline.MAXIMUM_DISTANCE * Zipline.MAXIMUM_DISTANCE) {
+                double horizontalDistSqr = Mth.square(start.getX() - end.getX()) + Mth.square(start.getZ() - end.getZ());
+                if (horizontalDistSqr > Zipline.MAXIMUM_HORIZONTAL_DISTANCE * Zipline.MAXIMUM_HORIZONTAL_DISTANCE) {
                     if (context.getLevel().isClientSide()) {
                         Player player = context.getPlayer();
                         if (player != null) {
@@ -99,14 +100,17 @@ public class ZiplineRopeItem extends Item {
                         }
                     }
                     return InteractionResult.FAIL;
-                } else if (Math.abs(end.getY() - start.getY()) * Mth.fastInvSqrt(Math.pow(end.getX() - start.getX(), 2) + Math.pow(end.getZ() - start.getZ(), 2)) > 1.) {
-                    if (context.getLevel().isClientSide()) {
-                        Player player = context.getPlayer();
-                        if (player != null) {
-                            player.displayClientMessage(Component.translatable("parcool.message.zipline.too_steep"), true);
+                } else {
+                    double verticalDist = Math.abs(end.getY() - start.getY());
+                    if (verticalDist * Mth.fastInvSqrt(horizontalDistSqr) > 1. || verticalDist > Zipline.MAXIMUM_VERTICAL_DISTANCE) {
+                        if (context.getLevel().isClientSide()) {
+                            Player player = context.getPlayer();
+                            if (player != null) {
+                                player.displayClientMessage(Component.translatable("parcool.message.zipline.too_steep"), true);
+                            }
                         }
+                        return InteractionResult.FAIL;
                     }
-                    return InteractionResult.FAIL;
                 }
 
                 BlockEntity startEntity = context.getLevel().getBlockEntity(start);
