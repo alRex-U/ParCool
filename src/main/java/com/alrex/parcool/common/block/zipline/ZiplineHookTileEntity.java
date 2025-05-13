@@ -199,23 +199,26 @@ public class ZiplineHookTileEntity extends BlockEntity {
     public static void tick(Level level, BlockPos pos, BlockState state, BlockEntity entity) {
         if (!(entity instanceof ZiplineHookTileEntity self)) return;
 
-        if (level != null && !level.isClientSide() && self.connectionEntities.size() < self.getConnectionPoints().size()) {
-            List<ZiplineHookTileEntity> tileEntities = self.getConnectionPoints()
-                    .stream()
-                    .filter(it -> !self.connectionEntities.containsKey(it))
-                    .filter(level::isLoaded)
-                    .map(level::getBlockEntity)
-                    .map(it -> it instanceof ZiplineHookTileEntity ? (ZiplineHookTileEntity) it : null)
-                    .filter(Objects::nonNull)
-                    .toList();
-            tileEntities.forEach(it -> {
-                if (it.getConnectionPoints().contains(self.getBlockPos())) {
-                    self.spawnRope(level, it, self.getConnectionInfo().get(it.getBlockPos()));
-                } else {
-                    self.getConnectionPoints().remove(it.getBlockPos());
-                    self.setChanged();
-                }
-            });
+        if (level != null && !level.isClientSide()) {
+            self.connectionEntities.values().removeIf(it -> !it.isAlive());
+            if (self.connectionEntities.size() < self.getConnectionPoints().size()) {
+                List<ZiplineHookTileEntity> tileEntities = self.getConnectionPoints()
+                        .stream()
+                        .filter(it -> !self.connectionEntities.containsKey(it))
+                        .filter(level::isLoaded)
+                        .map(level::getBlockEntity)
+                        .map(it -> it instanceof ZiplineHookTileEntity ? (ZiplineHookTileEntity) it : null)
+                        .filter(Objects::nonNull)
+                        .toList();
+                tileEntities.forEach(it -> {
+                    if (it.getConnectionPoints().contains(self.getBlockPos())) {
+                        self.spawnRope(level, it, self.getConnectionInfo().get(it.getBlockPos()));
+                    } else {
+                        self.getConnectionPoints().remove(it.getBlockPos());
+                        self.setChanged();
+                    }
+                });
+            }
         }
     }
 }

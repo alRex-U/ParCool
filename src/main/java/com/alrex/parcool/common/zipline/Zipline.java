@@ -11,7 +11,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class Zipline {
-    public static final double MAXIMUM_DISTANCE = 72.;
+    public static final double MAXIMUM_HORIZONTAL_DISTANCE = 72.;
+    public static final double MAXIMUM_VERTICAL_DISTANCE = MAXIMUM_HORIZONTAL_DISTANCE * 0.51;
 
     protected Zipline(Vec3 point1, Vec3 point2) {
         if (point1.y() <= point2.y()) {
@@ -53,9 +54,10 @@ public abstract class Zipline {
 
     @Nullable
     public static ZiplineRopeEntity getHangableZipline(Level world, Player player, @Nullable ZiplineRopeEntity except) {
+        final double d = MAXIMUM_HORIZONTAL_DISTANCE * 0.52 + 1;
         List<ZiplineRopeEntity> entities = world.getEntitiesOfClass(
                 ZiplineRopeEntity.class,
-                player.getBoundingBox().inflate(MAXIMUM_DISTANCE * 0.52)
+                player.getBoundingBox().inflate(d, Zipline.MAXIMUM_VERTICAL_DISTANCE + 1, d)
         );
         Vec3 grabPos = player.position().add(0, player.getBbHeight() * 1.11, 0);
         for (ZiplineRopeEntity ziplineEntity : entities) {
