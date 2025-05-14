@@ -1,11 +1,11 @@
 package com.alrex.parcool.client.input;
 
-import javax.annotation.Nullable;
-import com.alrex.parcool.extern.AdditionalMods;
+import com.alrex.parcool.utilities.CameraUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.MovementInputFromOptions;
+import net.minecraft.util.MovementInput;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
@@ -55,12 +55,17 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyQuickTurn(), keyQuickTurn);
 		record(KeyBindings.getKeyFlipping(), keyFlipping);
 		record(KeyBindings.getKeyGrabWall(), keyBindGrabWall);
-		recordMovingVector(KeyBindings.isAnyMovingKeyDown());
 	}
 
-	@Nullable
 	public static Vector3d getLastMoveVector() {
-		return lastDirection;
+		Vector3d vector = lastDirection;
+		if (vector == null) {
+			ClientPlayerEntity player = Minecraft.getInstance().player;
+			if (player == null) return null;
+			 Vector2f moveVector = player.input.getMoveVector();
+			 vector = new Vector3d(moveVector.x, 0, moveVector.y);
+		}
+		return CameraUtil.alignVectorToCamera(vector);
 	}
 
 	private static void record(Boolean isDown, KeyState state) {
@@ -83,19 +88,10 @@ public class KeyRecorder {
 		record(keyBinding.isDown(), state);
 	}
 
-	private static void recordMovingVector(boolean isMoving) {
-		if (isMoving && !AdditionalMods.betterThirdPerson().isCameraDecoupled()) {
-			lastDirection = KeyBindings.getCurrentMoveVector();
-		}
-	}
-
-	public static void recordMovingVector(MovementInputFromOptions moving) {
-		if (!AdditionalMods.betterThirdPerson().isCameraDecoupled()) return;
+	public static void recordMovingVector(MovementInput moving) {
 		Vector2f vector = moving.getMoveVector();
 		if (!VectorUtil.isZero(vector)) {
-			Vector3d newDirection = new Vector3d(vector.x, 0, vector.y).normalize();
-			Minecraft mc = Minecraft.getInstance();
-			newDirection = VectorUtil.rotateYDegrees(newDirection, mc.player.yRot);
+			Vector3d newDirection = new Vector3d(vector.x, 0, vector.y);
 			lastDirection = newDirection;
 		}
 	}

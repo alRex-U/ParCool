@@ -14,6 +14,7 @@ import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.extern.AdditionalMods;
+import com.alrex.parcool.utilities.CameraUtil;
 import com.alrex.parcool.utilities.EntityUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 
@@ -131,7 +132,6 @@ public class Dodge extends Action {
 	public boolean canStart(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
 		boolean enabledDoubleTap = ParCoolConfig.Client.Booleans.EnableDoubleTappingForDodge.get();
 		DodgeDirection direction = null;
-		Vector3d dodgeVec = KeyRecorder.getLastMoveVector();
 		if (enabledDoubleTap) {
 			if (KeyRecorder.keyBack.isDoubleTapped()) direction = DodgeDirection.Back;
 			if (KeyRecorder.keyLeft.isDoubleTapped()) direction = DodgeDirection.Left;
@@ -142,16 +142,15 @@ public class Dodge extends Action {
 			if (KeyBindings.isKeyForwardDown()) direction = DodgeDirection.Front;
 			if (KeyBindings.isKeyLeftDown()) direction = DodgeDirection.Left;
 			if (KeyBindings.isKeyRightDown()) direction = DodgeDirection.Right;
-			if (direction != null && !AdditionalMods.betterThirdPerson().isCameraDecoupled()) {
-				dodgeVec = KeyBindings.getCurrentMoveVector();
-			}
 		}
-		if (direction == null || dodgeVec == null) return false;
+		if (direction == null) return false;
+		Vector3d dodgeVec = KeyRecorder.getLastMoveVector();
+		if (dodgeVec == null) return false;
 		direction = AdditionalMods.betterThirdPerson().handleCustomCameraRotationForDodge(direction);
 		direction = AdditionalMods.shoulderSurfingManager().handleCustomCameraRotationForDodge(direction);
 		startInfo.putInt(direction.ordinal());
-		startInfo.putDouble(dodgeVec.x);
-		startInfo.putDouble(dodgeVec.z);
+		startInfo.putDouble(dodgeVec.x());
+		startInfo.putDouble(dodgeVec.z());
 		return ((parkourability.getAdditionalProperties().getLandingTick() > 5 || parkourability.getAdditionalProperties().getPreviousNotLandingTick() < 2)
 				&& player.isOnGround()
 				&& !isInSuccessiveCoolDown(parkourability.getActionInfo())
@@ -181,8 +180,8 @@ public class Dodge extends Action {
 	@Override
 	public void onStartInLocalClient(PlayerEntity player, Parkourability parkourability, IStamina stamina, ByteBuffer startData) {
 		dodgeDirection = DodgeDirection.values()[startData.getInt()];
-		Vector3d dodgeVec = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		coolTime = getMaxCoolTime(parkourability.getActionInfo());
+		Vector3d dodgeVec = new Vector3d(startData.getDouble(), 0, startData.getDouble());
 		if (successivelyCount < getMaxSuccessiveDodge(parkourability.getActionInfo())) {
 			successivelyCount++;
 		}
@@ -192,10 +191,8 @@ public class Dodge extends Action {
 		successivelyCoolTick = getSuccessiveCoolTime(parkourability.getActionInfo());
 
 		if (!player.isOnGround()) return;
-		float cameraYRot = Minecraft.getInstance().getCameraEntity().yRot;
-		dodgeVec = VectorUtil.rotateYDegrees(dodgeVec, cameraYRot);
 		dodgeVec = dodgeVec.scale(0.9 * getSpeedModifier(parkourability.getActionInfo()));
-		if (AdditionalMods.isCameraDecoupled()) {
+		if (CameraUtil.isCameraDecoupled()) {
 			EntityUtil.setYRot(player, VectorUtil.toYaw(dodgeVec));
 		}
 		player.setDeltaMovement(dodgeVec);

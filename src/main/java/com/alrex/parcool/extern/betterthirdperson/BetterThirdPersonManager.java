@@ -4,6 +4,7 @@ import com.alrex.parcool.common.action.impl.Dodge;
 import com.alrex.parcool.extern.ModManager;
 import io.socol.betterthirdperson.BetterThirdPerson;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 
 public class BetterThirdPersonManager extends ModManager {
     public BetterThirdPersonManager() {
@@ -18,5 +19,10 @@ public class BetterThirdPersonManager extends ModManager {
         return isInstalled()
             && !Minecraft.getInstance().options.getCameraType().isFirstPerson()
             && BetterThirdPerson.getCameraManager().hasCustomCamera();
+    }
+
+    public Float getCameraYaw() {
+        if (!isCameraDecoupled()) return null;
+        return BetterThirdPerson.getCameraManager().getCustomCamera().getYaw();
     }
 }

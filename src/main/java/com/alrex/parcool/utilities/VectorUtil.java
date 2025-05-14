@@ -1,5 +1,9 @@
 package com.alrex.parcool.utilities;
 
+import com.alrex.parcool.ParCool;
+import com.alrex.parcool.extern.AdditionalMods;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
