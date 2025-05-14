@@ -142,7 +142,9 @@ public class Dodge extends Action {
 			if (KeyBindings.isKeyForwardDown()) direction = DodgeDirection.Front;
 			if (KeyBindings.isKeyLeftDown()) direction = DodgeDirection.Left;
 			if (KeyBindings.isKeyRightDown()) direction = DodgeDirection.Right;
-			if (direction != null) dodgeVec = KeyBindings.getCurrentMoveVector();
+			if (direction != null && !AdditionalMods.betterThirdPerson().isCameraDecoupled()) {
+				dodgeVec = KeyBindings.getCurrentMoveVector();
+			}
 		}
 		if (direction == null || dodgeVec == null) return false;
 		direction = AdditionalMods.betterThirdPerson().handleCustomCameraRotationForDodge(direction);

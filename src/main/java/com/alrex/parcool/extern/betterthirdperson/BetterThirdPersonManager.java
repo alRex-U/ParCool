@@ -1,7 +1,6 @@
 package com.alrex.parcool.extern.betterthirdperson;
 
 import com.alrex.parcool.common.action.impl.Dodge;
-import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.extern.ModManager;
 import io.socol.betterthirdperson.BetterThirdPerson;
 import net.minecraft.client.Minecraft;

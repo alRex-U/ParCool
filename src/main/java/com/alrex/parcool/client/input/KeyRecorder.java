@@ -1,7 +1,12 @@
 package com.alrex.parcool.client.input;
 
 import javax.annotation.Nullable;
+import com.alrex.parcool.extern.AdditionalMods;
+import com.alrex.parcool.utilities.VectorUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.MovementInputFromOptions;
+import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -79,7 +84,20 @@ public class KeyRecorder {
 	}
 
 	private static void recordMovingVector(boolean isMoving) {
-		if (isMoving) lastDirection = KeyBindings.getCurrentMoveVector();
+		if (isMoving && !AdditionalMods.betterThirdPerson().isCameraDecoupled()) {
+			lastDirection = KeyBindings.getCurrentMoveVector();
+		}
+	}
+
+	public static void recordMovingVector(MovementInputFromOptions moving) {
+		if (!AdditionalMods.betterThirdPerson().isCameraDecoupled()) return;
+		Vector2f vector = moving.getMoveVector();
+		if (!VectorUtil.isZero(vector)) {
+			Vector3d newDirection = new Vector3d(vector.x, 0, vector.y).normalize();
+			Minecraft mc = Minecraft.getInstance();
+			newDirection = VectorUtil.rotateYDegrees(newDirection, mc.player.yRot);
+			lastDirection = newDirection;
+		}
 	}
 
 	public static class KeyState {
