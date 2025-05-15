@@ -9,7 +9,8 @@
     "client.LocalPlayerMixin",
     "client.OptionsMixin",
     "client.PlayerModelMixin",
-    "client.PlayerRendererMixin"
+    "client.PlayerRendererMixin",
+    "client.MovementInputMixin"
   ],
   "injectors": {
     "defaultRequire": 1

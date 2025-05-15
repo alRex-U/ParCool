@@ -19,4 +19,9 @@ public class BetterThirdPersonManager extends ModManager {
                 && !Minecraft.getInstance().options.getCameraType().isFirstPerson()
                 && BetterThirdPerson.getCameraManager().hasCustomCamera();
     }
+
+    public Float getCameraYaw() {
+        if (!isCameraDecoupled()) return null;
+        return BetterThirdPerson.getCameraManager().getCustomCamera().getYaw();
+    }
 }

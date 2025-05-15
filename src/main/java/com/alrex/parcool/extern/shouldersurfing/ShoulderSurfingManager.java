@@ -21,4 +21,9 @@ public class ShoulderSurfingManager extends ModManager {
                 && ShoulderSurfing.getInstance().isShoulderSurfing()
                 && ShoulderSurfing.getInstance().isCameraDecoupled();
     }
+
+    public Float getCameraYaw() {
+        if (!isCameraDecoupled()) return null;
+        return ShoulderSurfing.getInstance().getCamera().getYRot();
+    }
 }
