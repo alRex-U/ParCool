@@ -1,13 +1,20 @@
 package com.alrex.parcool.client.input;
 
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.Input;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
 
 import javax.annotation.Nullable;
+
+import com.alrex.parcool.utilities.CameraUtil;
+import com.alrex.parcool.utilities.VectorUtil;
 
 @OnlyIn(Dist.CLIENT)
 public class KeyRecorder {
@@ -27,8 +34,9 @@ public class KeyRecorder {
 	public static final KeyState keyWallJump = new KeyState();
 	public static final KeyState keyQuickTurn = new KeyState();
 	public static final KeyState keyFlipping = new KeyState();
-    public static final KeyState keyBindGrabWall = new KeyState();
-	public static Vec3 lastDirection = null;
+	public static final KeyState keyBindGrabWall = new KeyState();
+	private static Vec3 keyboardDirection = null;
+	private static Vec3 lastDirection = null;
 
 	@SubscribeEvent
 	public static void onClientTick(ClientTickEvent.Post event) {
@@ -49,12 +57,13 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyQuickTurn(), keyQuickTurn);
 		record(KeyBindings.getKeyFlipping(), keyFlipping);
 		record(KeyBindings.getKeyGrabWall(), keyBindGrabWall);
-		recordMovingVector(KeyBindings.isAnyMovingKeyDown());
 	}
 
 	@Nullable
 	public static Vec3 getLastMoveVector() {
-		return lastDirection;
+		Vec3 vector = lastDirection;
+		if (vector == null) return null;
+		return CameraUtil.alignVectorToCamera(vector);
 	}
 
     private static void record(Boolean isDown, KeyState state) {
@@ -77,8 +86,12 @@ public class KeyRecorder {
         record(keyBinding.isDown(), state);
     }
 
-	private static void recordMovingVector(boolean isMoving) {
-		if (isMoving) lastDirection = KeyBindings.getCurrentMoveVector();
+	public static void recordKeyboardMovingVector(Input moving) {
+		var vector = moving.getMoveVector();
+		if (!VectorUtil.isZero(vector)) {
+			var newDirection = new Vec3(vector.x, 0, vector.y);
+			keyboardDirection = newDirection;
+		}
 	}
 
 	public static class KeyState {
@@ -112,5 +125,20 @@ public class KeyRecorder {
         public int getPreviousTickNotKeyDown() {
             return previousTickNotKeyDown;
         }
+	}
+
+	public static void onInputs(MovementInputUpdateEvent event) {
+		LocalPlayer player = Minecraft.getInstance().player;
+		if (player == null) return;
+		if (keyboardDirection != null) {
+			lastDirection = keyboardDirection;
+			keyboardDirection = null;
+			return;
+		}
+		var vector = player.input.getMoveVector();
+		if (!VectorUtil.isZero(vector)) {
+			var newDirection = new Vec3(vector.x, 0, vector.y);
+			lastDirection = newDirection;
+		}
 	}
 }
