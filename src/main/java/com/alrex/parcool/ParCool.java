@@ -4,6 +4,7 @@ import com.alrex.parcool.api.Attributes;
 import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.input.KeyBindings;
+import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.client.renderer.Renderers;
 import com.alrex.parcool.common.block.Blocks;
 import com.alrex.parcool.common.block.TileEntities;
@@ -27,6 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -79,6 +81,7 @@ public class ParCool {
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.addListener(Limitations::init);
 		MinecraftForge.EVENT_BUS.addListener(Limitations::save);
+		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, KeyRecorder::onInputs);
 
 		Blocks.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Items.register(FMLJavaModLoadingContext.get().getModEventBus());

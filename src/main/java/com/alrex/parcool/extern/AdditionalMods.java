@@ -2,7 +2,6 @@ package com.alrex.parcool.extern;
 
 import com.alrex.parcool.extern.betterthirdperson.BetterThirdPersonManager;
 import com.alrex.parcool.extern.shouldersurfing.ShoulderSurfingManager;
-
 import java.util.Arrays;
 import java.util.function.Supplier;
 
@@ -29,9 +28,5 @@ public enum AdditionalMods {
 
     public static void init() {
         Arrays.stream(values()).map(AdditionalMods::get).forEach(ModManager::init);
-    }
-
-    public static boolean isCameraDecoupled() {
-        return shoulderSurfingManager().isCameraDecoupled() || betterThirdPerson().isCameraDecoupled();
     }
 }
