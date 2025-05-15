@@ -18,6 +18,6 @@ public class MovementInputMixin {
       )
    )
    public void tickHook(boolean moveSlowly, CallbackInfo ci) {
-      KeyRecorder.recordMovingVector((MovementInputFromOptions)(Object)this);
+      KeyRecorder.recordKeyboardMovingVector((MovementInputFromOptions)(Object)this);
    }
 }

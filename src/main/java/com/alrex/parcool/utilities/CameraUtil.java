@@ -18,11 +18,11 @@ public class CameraUtil {
         return Minecraft.getInstance().cameraEntity.yRot;
     }
 
-	public static Vector3d alignVectorToCamera(Vector3d vector) {
-		if (vector == null) return null;
-		Minecraft mc = Minecraft.getInstance();
-		if (mc.player == null) return vector;
-		Float cameraYaw = getCameraYaw();
-		return VectorUtil.rotateYDegrees(vector, cameraYaw);
-	}
+    public static Vector3d alignVectorToCamera(Vector3d vector) {
+        if (vector == null) return null;
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null) return vector;
+        Float cameraYaw = getCameraYaw();
+        return VectorUtil.rotateYDegrees(vector, cameraYaw);
+    }
 }
