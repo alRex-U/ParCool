@@ -121,6 +121,7 @@ public class EpicFightStamina implements IStamina {
     public static void consumeOnServer(ServerPlayer player, int value) {
         PlayerPatch<?> patch = AdditionalMods.epicFight().getPlayerPatch(player);
         if (patch == null) return;
+        patch.resetActionTick();
         patch.setStamina(patch.getStamina() - value / 10000f);
     }
 }
