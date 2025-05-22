@@ -5,6 +5,7 @@ import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.attachment.Attachments;
 import com.alrex.parcool.common.attachment.common.Parkourability;
+import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.DeltaTracker;
@@ -107,27 +108,23 @@ public class LightStaminaHUD {
 		oldValue = newValue;
 	}
 
-	public void render(GuiGraphics graphics, DeltaTracker partialTick) {
-		LocalPlayer player = Minecraft.getInstance().player;
-		if (player == null || player.isCreative()) return;
-
-		Parkourability parkourability = Parkourability.get(player);
-		if (parkourability == null) return;
-		var stamina = player.getData(Attachments.STAMINA);
-
+	public void render(GuiGraphics graphics, Parkourability parkourability, ReadonlyStamina stamina, float partialTick) {
+		var player = Minecraft.getInstance().player;
+		if (player == null) return;
 		final boolean inexhaustible = player.hasEffect(Effects.INEXHAUSTIBLE);
-        final boolean exhausted = stamina.isExhausted();
+		final boolean exhausted = stamina.isExhausted();
 
-        if (!showStatus) {
-            long gameTime = player.level().getGameTime();
-            if (gameTime - lastStaminaChangedTick > 40) return;
-        }
+		if (!showStatus) {
+			long gameTime = player.level().getGameTime();
+			if (gameTime - lastStaminaChangedTick > 40 && !ParCoolConfig.Client.Booleans.ShowLightStaminaHUDAlways.get())
+				return;
+		}
 		float staminaScale = (float) stamina.value() / stamina.max();
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
 
         staminaScale *= 10f;
-		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick.getGameTimeDeltaPartialTick(true)) * 10f : 0f;
+		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick) * 10f : 0f;
 
 		final int width = graphics.guiWidth();
 		final int height = graphics.guiHeight();

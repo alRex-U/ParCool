@@ -4,12 +4,10 @@ package com.alrex.parcool.client.hud.impl;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.attachment.client.LocalStamina;
 import com.alrex.parcool.common.attachment.common.Parkourability;
+import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
-import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderType;
@@ -70,16 +68,7 @@ public class StaminaHUD {
         }
 	}
 
-	public void render(GuiGraphics graphics, DeltaTracker partialTick) {
-		LocalPlayer player = Minecraft.getInstance().player;
-		if (player == null) return;
-		if (player.isCreative()) return;
-
-		LocalStamina stamina = LocalStamina.get(player);
-		Parkourability parkourability = Parkourability.get(player);
-
-		if (parkourability.getActionInfo().isStaminaInfinite(stamina, player)) return;
-
+	public void render(GuiGraphics graphics, Parkourability parkourability, ReadonlyStamina stamina, float partialTick) {
 		Position position = new Position(
 				ParCoolConfig.Client.getInstance().AlignHorizontalStaminaHUD.get(),
 				ParCoolConfig.Client.getInstance().AlignVerticalStaminaHUD.get(),
@@ -92,14 +81,14 @@ public class StaminaHUD {
 		final int height = graphics.guiHeight();
 		final Tuple<Integer, Integer> pos = position.calculate(boxWidth, boxHeight, width, height);
 
-		float staminaScale = (float) stamina.getValue(player) / stamina.getMax(player);
-		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick.getGameTimeDeltaPartialTick(true)) : 0f;
+		float staminaScale = (float) stamina.value() / stamina.max();
+		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick) : 0f;
 
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
 
 		graphics.blitSprite(RenderType::guiTextured, STAMINA_EMPTY, 93, 17, 0, 0, pos.getA(), pos.getB(), 93, 17);
-		if (!stamina.isExhausted(player)) {
+		if (!stamina.isExhausted()) {
 			graphics.blitSprite(RenderType::guiTextured, STAMINA_EMPTY_CHARGE, 93, 17, 0, 0, pos.getA(), pos.getB(), (int) Math.ceil(92 * statusScale), 17);
 			graphics.blitSprite(RenderType::guiTextured, STAMINA_CHARGING, 93, 17, 0, 0, pos.getA(), pos.getB(), Math.round(16 + 69 * shadowScale) + 1, 12);
 			graphics.blitSprite(RenderType::guiTextured, STAMINA_FULL[renderGageType], 93, 17, 0, 0, pos.getA(), pos.getB(), Math.round(16 + 69 * staminaScale) + 1, 12);

@@ -221,7 +221,7 @@ public class ActionProcessor {
 			var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
 			if (attr != null) {
 				ReadonlyStamina readonlyStamina = player.getData(Attachments.STAMINA);
-				if (readonlyStamina.isExhausted()) {
+				if (readonlyStamina.isExhausted() && parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.EnableStaminaExhaustionPenalty)) {
 					player.setSprinting(false);
 					if (!attr.hasModifier(STAMINA_DEPLETED_SLOWNESS_MODIFIER_ID)) {
 						attr.addTransientModifier(STAMINA_DEPLETED_SLOWNESS_MODIFIER);
