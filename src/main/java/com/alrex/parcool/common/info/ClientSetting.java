@@ -123,8 +123,8 @@ public abstract class ClientSetting {
         var configInstance = ParCoolConfig.Client.getInstance();
         Remote instance = new Remote();
         for (int i = 0; i < instance.actionPossibilities.length; i++) {
-            instance.actionPossibilities[i] = instance.getPossibilityOf(Actions.LIST.get(i));
-            instance.staminaConsumptions[i] = instance.getStaminaConsumptionOf(Actions.LIST.get(i));
+            instance.actionPossibilities[i] = configInstance.getPossibilityOf(Actions.LIST.get(i)).get();
+            instance.staminaConsumptions[i] = configInstance.getStaminaConsumptionOf(Actions.LIST.get(i)).get();
         }
         for (ParCoolConfig.Client.Booleans item : ParCoolConfig.Client.Booleans.values()) {
             instance.booleans.put(item, item.get());

@@ -4,12 +4,10 @@ package com.alrex.parcool.client.hud.impl;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.common.action.Action;
-import com.alrex.parcool.common.attachment.client.LocalStamina;
 import com.alrex.parcool.common.attachment.common.Parkourability;
+import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
-import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
@@ -62,16 +60,7 @@ public class StaminaHUD {
         }
 	}
 
-	public void render(GuiGraphics graphics, DeltaTracker partialTick) {
-		LocalPlayer player = Minecraft.getInstance().player;
-		if (player == null) return;
-		if (player.isCreative()) return;
-
-		LocalStamina stamina = LocalStamina.get(player);
-		Parkourability parkourability = Parkourability.get(player);
-
-		if (parkourability.getActionInfo().isStaminaInfinite(stamina, player)) return;
-
+	public void render(GuiGraphics graphics, Parkourability parkourability, ReadonlyStamina stamina, float partialTick) {
 		Position position = new Position(
 				ParCoolConfig.Client.getInstance().AlignHorizontalStaminaHUD.get(),
 				ParCoolConfig.Client.getInstance().AlignVerticalStaminaHUD.get(),
@@ -84,14 +73,14 @@ public class StaminaHUD {
 		final int height = graphics.guiHeight();
 		final Tuple<Integer, Integer> pos = position.calculate(boxWidth, boxHeight, width, height);
 
-		float staminaScale = (float) stamina.getValue(player) / stamina.getMax(player);
-		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick.getGameTimeDeltaPartialTick(true)) : 0f;
+		float staminaScale = (float) stamina.value() / stamina.max();
+		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick) : 0f;
 
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
 
 		graphics.blit(STAMINA, pos.getA(), pos.getB(), 0, 0, 93, 17, 128, 128);
-		if (!stamina.isExhausted(player)) {
+		if (!stamina.isExhausted()) {
             graphics.blit(STAMINA, pos.getA(), pos.getB(), 0, 102, (int) Math.ceil(92 * statusScale), 17, 128, 128);
 			graphics.blit(STAMINA, pos.getA(), pos.getB(), 0, 85, Math.round(16 + 69 * shadowScale) + 1, 12, 128, 128);
 			graphics.blit(STAMINA, pos.getA(), pos.getB(), 0, 17 * (renderGageType + 1), Math.round(16 + 69 * staminaScale) + 1, 12, 128, 128);
