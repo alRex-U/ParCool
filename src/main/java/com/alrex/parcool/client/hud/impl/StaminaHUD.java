@@ -7,7 +7,6 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
@@ -61,7 +60,7 @@ public class StaminaHUD {
 		}
 	}
 
-	public void render(ForgeGui gui, PoseStack stack, Parkourability parkourability, IStamina stamina, float partialTick, int width, int height) {
+	public void render(ForgeGui gui, GuiGraphics graphics, Parkourability parkourability, IStamina stamina, float partialTick, int width, int height) {
 		Position position = new Position(
 				ParCoolConfig.Client.AlignHorizontalStaminaHUD.get(),
 				ParCoolConfig.Client.AlignVerticalStaminaHUD.get(),

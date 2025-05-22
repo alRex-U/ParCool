@@ -5,6 +5,7 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.stamina.ParCoolStamina;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.extern.AdditionalMods;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.AbstractClientPlayer;
