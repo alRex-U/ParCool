@@ -2,7 +2,6 @@ package com.alrex.parcool.extern;
 
 import com.alrex.parcool.extern.betterthirdperson.BetterThirdPersonManager;
 import com.alrex.parcool.extern.shouldersurfing.ShoulderSurfingManager;
-
 import java.util.Arrays;
 import java.util.function.Supplier;
 
