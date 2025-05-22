@@ -5,7 +5,6 @@ import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
 import com.alrex.parcool.common.capability.stamina.ParCoolStamina;
 import com.alrex.parcool.config.ParCoolConfig;
-import com.alrex.parcool.extern.AdditionalMods;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -54,14 +53,15 @@ public class StaminaHUDController implements IIngameOverlay {
 
         if (!(stamina instanceof ParCoolStamina)) return;
 
-        if (MinecraftForge.EVENT_BUS.post(new ParCoolHUDEvent.RenderEvent(event, stack))) return;
+		if (MinecraftForge.EVENT_BUS.post(new ParCoolHUDEvent.RenderEvent(gui, poseStack, partialTick, width, height)))
+			return;
 
 		switch (ParCoolConfig.Client.StaminaHUDType.get()) {
 			case Light:
-				lightStaminaHUD.render(gui, poseStack, partialTick, parkourability, stamina, width, height);
+				lightStaminaHUD.render(gui, poseStack, parkourability, stamina, partialTick, width, height);
 				break;
 			case Normal:
-				staminaHUD.render(gui, poseStack, partialTick, parkourability, stamina, width, height);
+				staminaHUD.render(gui, poseStack, parkourability, stamina, partialTick, width, height);
 				break;
 		}
 	}

@@ -63,8 +63,8 @@ public class StaminaHUD extends GuiComponent {
 		}
 	}
 
-	public void render(ForgeIngameGui gui, PoseStack stack, float partialTick, Parkourability parkourability, IStamina stamina, int width, int height) {
-		MainWindow window = Minecraft.getInstance().getWindow();
+	public void render(ForgeIngameGui gui, PoseStack stack, Parkourability parkourability, IStamina stamina, float partialTick, int width, int height) {
+		var window = Minecraft.getInstance().getWindow();
 		Position position = new Position(
 				ParCoolConfig.Client.AlignHorizontalStaminaHUD.get(),
 				ParCoolConfig.Client.AlignVerticalStaminaHUD.get(),

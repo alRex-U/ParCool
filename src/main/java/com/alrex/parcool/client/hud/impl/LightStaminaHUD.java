@@ -71,7 +71,9 @@ public class LightStaminaHUD extends GuiComponent {
 		}
 	}
 
-	public void render(ForgeIngameGui gui, PoseStack stack, float partialTick, Parkourability parkourability, IStamina stamina, int width, int height) {
+	public void render(ForgeIngameGui gui, PoseStack stack, Parkourability parkourability, IStamina stamina, float partialTick, int width, int height) {
+		var player = Minecraft.getInstance().player;
+		if (player == null) return;
 		final boolean inexhaustible = player.hasEffect(Effects.INEXHAUSTIBLE.get());
 		final boolean exhausted = stamina.isExhausted();
 
