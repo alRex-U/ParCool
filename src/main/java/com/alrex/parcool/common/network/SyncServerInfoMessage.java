@@ -14,8 +14,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.logging.log4j.Level;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.util.function.Supplier;
@@ -66,8 +64,12 @@ public class SyncServerInfoMessage {
 		contextSupplier.get().setPacketHandled(true);
 	}
 
-	public void logReceived(PlayerEntity player) {
+	public static void logReceived(PlayerEntity player) {
 		ParCool.LOGGER.log(Level.INFO, "Received Server Limitation of [" + player.getGameProfile().getName() + "]");
+	}
+
+	public static void logSent(PlayerEntity player) {
+		ParCool.LOGGER.log(Level.INFO, "Sent Server Limitation of [" + player.getGameProfile().getName() + "]");
 	}
 
     public static void sync(ServerPlayerEntity player) {
@@ -92,5 +94,6 @@ public class SyncServerInfoMessage {
 			msg.staminaValue = stamina.get();
 		}
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), msg);
+		logSent(player);
 	}
 }
