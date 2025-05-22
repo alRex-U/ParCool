@@ -72,7 +72,12 @@ public class FeathersStamina implements IStamina {
         old = get();
     }
 
-    @Override
-    public void set(int value) {
-    }
+	@Override
+	public void set(int value) {
+	}
+
+	@Override
+	public boolean isImposingExhaustionPenalty() {
+		return false;
+	}
 }

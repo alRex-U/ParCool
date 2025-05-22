@@ -22,16 +22,18 @@ public class SyncStaminaMessage {
 	private int stamina = 0;
     private int max = 0;
 	private boolean exhausted = false;
-    private int consumeOnServer = 0;
-    private int staminaType = -1;
+	private boolean imposingPenalty = false;
+	private int consumeOnServer = 0;
+	private int staminaType = -1;
 	private UUID playerID = null;
 
 	public void encode(FriendlyByteBuf packet) {
 		packet.writeInt(this.stamina);
         packet.writeInt(this.max);
 		packet.writeBoolean(this.exhausted);
-        packet.writeInt(this.staminaType);
-        packet.writeInt(this.consumeOnServer);
+		packet.writeBoolean(this.imposingPenalty);
+		packet.writeInt(this.staminaType);
+		packet.writeInt(this.consumeOnServer);
 		packet.writeLong(this.playerID.getMostSignificantBits());
 		packet.writeLong(this.playerID.getLeastSignificantBits());
 	}
@@ -41,8 +43,9 @@ public class SyncStaminaMessage {
 		message.stamina = packet.readInt();
         message.max = packet.readInt();
 		message.exhausted = packet.readBoolean();
-        message.staminaType = packet.readInt();
-        message.consumeOnServer = packet.readInt();
+		message.imposingPenalty = packet.readBoolean();
+		message.staminaType = packet.readInt();
+		message.consumeOnServer = packet.readInt();
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
 		return message;
 	}
@@ -56,12 +59,13 @@ public class SyncStaminaMessage {
 			if (player == null) return;
 			IStamina stamina = IStamina.get(player);
 			if (stamina == null) return;
-            if (stamina instanceof OtherStamina) {
-                ((OtherStamina) stamina).setMax(this.max);
-            }
-            if (staminaType != -1 && consumeOnServer > 0) {
-                IStamina.Type.values()[staminaType].handleConsumeOnServer(player, consumeOnServer);
-            }
+			if (stamina instanceof OtherStamina) {
+				((OtherStamina) stamina).setMax(this.max);
+				((OtherStamina) stamina).setImposingPenalty(imposingPenalty);
+			}
+			if (staminaType != -1 && consumeOnServer > 0) {
+				IStamina.Type.values()[staminaType].handleConsumeOnServer(player, consumeOnServer);
+			}
 			stamina.set(this.stamina);
 			stamina.setExhaustion(exhausted);
 		});
@@ -85,12 +89,13 @@ public class SyncStaminaMessage {
 			}
 			IStamina stamina = IStamina.get(player);
 			if (stamina == null) return;
-            if (stamina instanceof OtherStamina) {
-                ((OtherStamina) stamina).setMax(this.max);
-            }
-            if (serverPlayer != null && staminaType != -1 && consumeOnServer > 0) {
-                IStamina.Type.values()[staminaType].handleConsumeOnServer(serverPlayer, consumeOnServer);
-            }
+			if (stamina instanceof OtherStamina) {
+				((OtherStamina) stamina).setMax(this.max);
+				((OtherStamina) stamina).setImposingPenalty(imposingPenalty);
+			}
+			if (serverPlayer != null && staminaType != -1 && consumeOnServer > 0) {
+				IStamina.Type.values()[staminaType].handleConsumeOnServer(serverPlayer, consumeOnServer);
+			}
 			stamina.set(this.stamina);
 			stamina.setExhaustion(exhausted);
 		});
@@ -106,9 +111,10 @@ public class SyncStaminaMessage {
 		message.stamina = stamina.get();
         message.max = stamina.getActualMaxStamina();
 		message.exhausted = stamina.isExhausted();
-        message.consumeOnServer = stamina.getRequestedValueConsumedOnServer();
-        IStamina.Type type = IStamina.Type.getFromInstance(stamina);
-        message.staminaType = type != null ? type.ordinal() : -1;
+		message.imposingPenalty = stamina.isImposingExhaustionPenalty();
+		message.consumeOnServer = stamina.getRequestedValueConsumedOnServer();
+		IStamina.Type type = IStamina.Type.getFromInstance(stamina);
+		message.staminaType = type != null ? type.ordinal() : -1;
 		message.playerID = player.getUUID();
 
 		ParCool.CHANNEL_INSTANCE.sendToServer(message);

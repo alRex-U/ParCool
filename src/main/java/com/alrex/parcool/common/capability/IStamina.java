@@ -2,7 +2,7 @@ package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.capability.stamina.HungerStamina;
-import com.alrex.parcool.common.capability.stamina.Stamina;
+import com.alrex.parcool.common.capability.stamina.ParCoolStamina;
 import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.extern.epicfight.EpicFightStamina;
 import com.alrex.parcool.extern.feathers.FeathersStamina;
@@ -17,7 +17,7 @@ import java.util.function.Function;
 
 public interface IStamina {
 	enum Type {
-		Default(Stamina.class, Stamina::new, null),
+		Default(ParCoolStamina.class, ParCoolStamina::new, null),
 		Hunger(HungerStamina.class, HungerStamina::new, HungerStamina::consumeOnServer),
 		Feathers(FeathersStamina.class, AdditionalMods.feathers()::newFeathersStaminaFor, null),
 		Paraglider(ParagliderStamina.class, AdditionalMods.paraglider()::newParagliderStaminaFor, null),
@@ -78,6 +78,10 @@ public interface IStamina {
 	public void set(int value);
 
 	public default void updateOldValue() {
+	}
+
+	public default boolean isImposingExhaustionPenalty() {
+		return isExhausted();
 	}
 
 	public default boolean wantToConsumeOnServer() {

@@ -1,6 +1,7 @@
 package com.alrex.parcool.extern.epicfight;
 
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.stamina.ParCoolStamina;
 import com.alrex.parcool.extern.ModManager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,7 +37,9 @@ public class EpicFightManager extends ModManager {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public boolean isUsingEpicFightStamina(Player player) {
-        return IStamina.get(player) instanceof EpicFightStamina && isBattleMode(player);
+    public boolean canShowStaminaHUD(Player player) {
+        var stamina = IStamina.get(player);
+        if (stamina instanceof ParCoolStamina) return true;
+        return stamina instanceof EpicFightStamina && !isBattleMode(player);
     }
 }

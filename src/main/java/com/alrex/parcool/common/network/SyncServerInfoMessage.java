@@ -64,8 +64,12 @@ public class SyncServerInfoMessage {
         contextSupplier.get().setPacketHandled(true);
     }
 
-    public void logReceived(Player player) {
+    public static void logReceived(Player player) {
         ParCool.LOGGER.log(Level.INFO, "Received Server Limitation of [" + player.getGameProfile().getName() + "]");
+    }
+
+    public static void logSent(Player player) {
+        ParCool.LOGGER.log(Level.INFO, "Sent Server Limitation of [" + player.getGameProfile().getName() + "]");
     }
 
     public static void sync(ServerPlayer player) {
@@ -90,5 +94,6 @@ public class SyncServerInfoMessage {
             msg.staminaValue = stamina.get();
         }
         ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), msg);
+        logSent(player);
     }
 }

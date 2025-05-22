@@ -169,14 +169,14 @@ public class ActionProcessor {
 		if (needSync) {
 			SyncActionStateMessage.sync(player, builder);
 
-            staminaSyncCoolTimeTick++;
-            if (!parkourability.limitationIsNotSynced() && (staminaSyncCoolTimeTick > 3 || stamina.wantToConsumeOnServer())) {
-                staminaSyncCoolTimeTick = 0;
-                SyncStaminaMessage.sync(player);
-            }
-            if (stamina.isExhausted()) {
-                player.setSprinting(false);
-            }
+			staminaSyncCoolTimeTick++;
+			if (!parkourability.limitationIsNotSynced() && (staminaSyncCoolTimeTick > 3 || stamina.wantToConsumeOnServer())) {
+				staminaSyncCoolTimeTick = 0;
+				SyncStaminaMessage.sync(player);
+			}
+			if (stamina.isImposingExhaustionPenalty() && parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.EnableStaminaExhaustionPenalty)) {
+				player.setSprinting(false);
+			}
 		}
 	}
 
