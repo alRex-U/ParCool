@@ -124,6 +124,10 @@ public class ParCoolConfig {
 					ConfigGroup.HUD, "Light stamina HUD shows always",
 					"show_light_hud_always", false
 			),
+			EnableStaminaExhaustionPenalty(
+					ConfigGroup.Stamina, "Enable slowing down of stamina exhaustion",
+					"enable_stamina_exhaustion_penalty", true
+			),
 			EnableDoubleTappingForDodge(
 					ConfigGroup.Control, "Enable double-tapping ctrl for Dodge",
 					"enable_double_tapping_for_dodge", false
