@@ -2,15 +2,14 @@ package com.alrex.parcool.client.hud.impl;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.client.gui.ParCoolHUDEvent;
-import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.stamina.ParCoolStamina;
+import com.alrex.parcool.common.attachment.Attachments;
+import com.alrex.parcool.common.attachment.client.LocalStamina;
+import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
@@ -40,33 +39,28 @@ public class StaminaHUDController implements LayeredDraw.Layer {
 
 	@Override
 	public void render(@Nonnull GuiGraphics graphics, @Nonnull DeltaTracker partialTick) {
-		AbstractClientPlayer player = Minecraft.getInstance().player;
+		var player = Minecraft.getInstance().player;
 		if (player == null) return;
 		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get()) return;
 
 		Parkourability parkourability = Parkourability.get(player);
-		if (parkourability == null) return;
+
+		var localStamina = LocalStamina.get(player);
+		var stamina = player.getData(Attachments.STAMINA);
 
 		if (ParCoolConfig.Client.Booleans.HideStaminaHUDWhenStaminaIsInfinite.get() &&
-				parkourability.getActionInfo().isStaminaInfinite(player.isCreative() || player.isSpectator())
+				parkourability.getActionInfo().isStaminaInfinite(localStamina, player)
 		) return;
-
-		IStamina stamina = IStamina.get(player);
-		if (stamina == null) return;
-
-		if (!(stamina instanceof ParCoolStamina)) {
-			if (!AdditionalMods.epicFight().canShowStaminaHUD(player)) return;
-		}
 
 		if (NeoForge.EVENT_BUS.post(new ParCoolHUDEvent.RenderEvent(graphics, partialTick)).isCanceled())
 			return;
 
 		switch (ParCoolConfig.Client.getInstance().StaminaHUDType.get()) {
 			case Light:
-				lightStaminaHUD.render(graphics, parkourability, stamina, partialTick);
+				lightStaminaHUD.render(graphics, parkourability, stamina, partialTick.getGameTimeDeltaPartialTick(true));
 				break;
 			case Normal:
-				staminaHUD.render(graphics, parkourability, stamina, partialTick);
+				staminaHUD.render(graphics, parkourability, stamina, partialTick.getGameTimeDeltaPartialTick(true));
 				break;
 		}
 	}
