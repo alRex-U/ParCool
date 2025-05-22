@@ -176,7 +176,7 @@ public class ActionProcessor {
 				staminaSyncCoolTimeTick = 0;
 				SyncStaminaMessage.sync(player);
 			}
-			if (stamina.isExhausted()) {
+			if (stamina.isImposingExhaustionPenalty() && parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.EnableStaminaExhaustionPenalty)) {
 				player.setSprinting(false);
 			}
 		}

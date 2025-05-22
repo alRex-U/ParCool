@@ -22,6 +22,7 @@ public class SyncStaminaMessage {
 	private int stamina = 0;
     private int max = 0;
 	private boolean exhausted = false;
+	private boolean imposingPenalty = false;
 	private int consumeOnServer = 0;
 	private int staminaType = -1;
 	private UUID playerID = null;
@@ -30,6 +31,7 @@ public class SyncStaminaMessage {
 		packet.writeInt(this.stamina);
         packet.writeInt(this.max);
 		packet.writeBoolean(this.exhausted);
+		packet.writeBoolean(this.imposingPenalty);
 		packet.writeInt(this.staminaType);
 		packet.writeInt(this.consumeOnServer);
 		packet.writeLong(this.playerID.getMostSignificantBits());
@@ -41,6 +43,7 @@ public class SyncStaminaMessage {
 		message.stamina = packet.readInt();
         message.max = packet.readInt();
 		message.exhausted = packet.readBoolean();
+		message.imposingPenalty = packet.readBoolean();
 		message.staminaType = packet.readInt();
 		message.consumeOnServer = packet.readInt();
 		message.playerID = new UUID(packet.readLong(), packet.readLong());
@@ -58,6 +61,7 @@ public class SyncStaminaMessage {
 			if (stamina == null) return;
 			if (stamina instanceof OtherStamina) {
 				((OtherStamina) stamina).setMax(this.max);
+				((OtherStamina) stamina).setImposingPenalty(imposingPenalty);
 			}
 			if (staminaType != -1 && consumeOnServer > 0) {
 				IStamina.Type.values()[staminaType].handleConsumeOnServer(player, consumeOnServer);
@@ -87,6 +91,7 @@ public class SyncStaminaMessage {
 			if (stamina == null) return;
 			if (stamina instanceof OtherStamina) {
 				((OtherStamina) stamina).setMax(this.max);
+				((OtherStamina) stamina).setImposingPenalty(imposingPenalty);
 			}
 			if (serverPlayer != null && staminaType != -1 && consumeOnServer > 0) {
 				IStamina.Type.values()[staminaType].handleConsumeOnServer(serverPlayer, consumeOnServer);
@@ -106,6 +111,7 @@ public class SyncStaminaMessage {
 		message.stamina = stamina.get();
         message.max = stamina.getActualMaxStamina();
 		message.exhausted = stamina.isExhausted();
+		message.imposingPenalty = stamina.isImposingExhaustionPenalty();
 		message.consumeOnServer = stamina.getRequestedValueConsumedOnServer();
 		IStamina.Type type = IStamina.Type.getFromInstance(stamina);
 		message.staminaType = type != null ? type.ordinal() : -1;

@@ -175,6 +175,7 @@
   "parcool.config.c.enable_particles": "Enable action particles",
   "parcool.config.c.gui_color_theme": "GUI Theme Color",
   "parcool.config.c.show_light_hud_always": "Always show Light Stamina HUD",
+  "parcool.config.c.enable_stamina_exhaustion_penalty": "Enable slowing down of stamina exhaustion",
   "parcool.config.c.parcool_activation": "Whether ParCool is active",
   "parcool.config.c.enable_particles_jt_breakfall": "Enable particle of just time breakfall",
   "parcool.config.c.enable_just_time_effect_breakfall": "Enable effects of just time breakfall"

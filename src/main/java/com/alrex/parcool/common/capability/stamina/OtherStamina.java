@@ -1,6 +1,8 @@
 package com.alrex.parcool.common.capability.stamina;
 
 import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -21,6 +23,7 @@ public class OtherStamina implements IStamina {
     private int max = 0;
     private int value = 0;
     private boolean exhausted;
+    private boolean imposingPenalty;
 
     public void setMax(int value) {
         max = value;
@@ -66,7 +69,9 @@ public class OtherStamina implements IStamina {
             if (attr == null) return;
             if (attr.getModifier(EXHAUSTED_SPEED_MODIFIER_UUID) != null)
                 attr.removeModifier(EXHAUSTED_SPEED_MODIFIER_UUID);
-            if (isExhausted()) {
+            var parkourability = Parkourability.get(player);
+            if (parkourability == null) return;
+            if (isImposingExhaustionPenalty() && parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.EnableStaminaExhaustionPenalty)) {
                 player.setSprinting(false);
                 attr.addTransientModifier(new AttributeModifier(
                         EXHAUSTED_SPEED_MODIFIER_UUID,
@@ -76,6 +81,15 @@ public class OtherStamina implements IStamina {
                 ));
             }
         }
+    }
+
+    @Override
+    public boolean isImposingExhaustionPenalty() {
+        return imposingPenalty;
+    }
+
+    public void setImposingPenalty(boolean imposingPenalty) {
+        this.imposingPenalty = imposingPenalty;
     }
 
     @Override
