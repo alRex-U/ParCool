@@ -63,18 +63,10 @@ public class StaminaHUD extends AbstractGui {
 		}
 	}
 
-	public void render(RenderGameOverlayEvent.Post event, MatrixStack stack) {
+	public void render(RenderGameOverlayEvent.Post event, MatrixStack stack, Parkourability parkourability, IStamina stamina) {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		if (player == null) return;
 		if (player.isCreative()) return;
-
-		IStamina stamina = IStamina.get(player);
-		Parkourability parkourability = Parkourability.get(player);
-		if (stamina == null || parkourability == null) return;
-
-		if (ParCoolConfig.Client.Booleans.HideStaminaHUDWhenStaminaIsInfinite.get() &&
-				parkourability.getActionInfo().isStaminaInfinite(player.isCreative() || player.isSpectator())
-		) return;
 
 		MainWindow window = Minecraft.getInstance().getWindow();
 		Position position = new Position(

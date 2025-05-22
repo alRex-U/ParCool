@@ -71,13 +71,9 @@ public class LightStaminaHUD extends AbstractGui {
 		}
 	}
 
-	public void render(RenderGameOverlayEvent.Post event, MatrixStack stack) {
+	public void render(RenderGameOverlayEvent.Post event, MatrixStack stack, Parkourability parkourability, IStamina stamina) {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		if (player == null || player.isCreative()) return;
-
-		IStamina stamina = IStamina.get(player);
-		Parkourability parkourability = Parkourability.get(player);
-		if (stamina == null || parkourability == null) return;
 
 		final boolean inexhaustible = player.hasEffect(Effects.INEXHAUSTIBLE.get());
 		final boolean exhausted = stamina.isExhausted();

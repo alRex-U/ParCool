@@ -2,7 +2,8 @@ package com.alrex.parcool.client.hud.impl;
 
 import com.alrex.parcool.api.client.gui.ParCoolHUDEvent;
 import com.alrex.parcool.common.capability.IStamina;
-import com.alrex.parcool.common.capability.stamina.Stamina;
+import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.capability.stamina.ParCoolStamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
@@ -36,18 +37,29 @@ public class StaminaHUDController {
 	public void render(RenderGameOverlayEvent.Post event, MatrixStack stack) {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
 		if (player == null) return;
-		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get() ||
-				!(IStamina.get(player) instanceof Stamina))
-			return;
+		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get()) return;
 		if (event.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE) return;
+
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) return;
+
+		if (ParCoolConfig.Client.Booleans.HideStaminaHUDWhenStaminaIsInfinite.get() &&
+				parkourability.getActionInfo().isStaminaInfinite(player.isCreative() || player.isSpectator())
+		) return;
+
+		IStamina stamina = IStamina.get(player);
+		if (stamina == null) return;
+
+		if (!(stamina instanceof ParCoolStamina)) return;
+
 		if (MinecraftForge.EVENT_BUS.post(new ParCoolHUDEvent.RenderEvent(event, stack))) return;
 
 		switch (ParCoolConfig.Client.StaminaHUDType.get()) {
 			case Light:
-				lightStaminaHUD.render(event, stack);
+				lightStaminaHUD.render(event, stack, parkourability, stamina);
 				break;
 			case Normal:
-				staminaHUD.render(event, stack);
+				staminaHUD.render(event, stack, parkourability, stamina);
 				break;
 		}
 	}

@@ -4,7 +4,7 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.capability.Animation;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.stamina.Stamina;
+import com.alrex.parcool.common.capability.stamina.ParCoolStamina;
 import com.alrex.parcool.common.capability.storage.AnimationStorage;
 import com.alrex.parcool.common.capability.storage.ParkourabilityStorage;
 import com.alrex.parcool.common.capability.storage.StaminaStorage;
@@ -33,7 +33,7 @@ public class Capabilities {
 
 	public static void register(CapabilityManager manager) {
 		manager.register(Parkourability.class, new ParkourabilityStorage(), Parkourability::new);
-		manager.register(IStamina.class, new StaminaStorage(), Stamina::new);
+        manager.register(IStamina.class, new StaminaStorage(), ParCoolStamina::new);
 	}
 
 	@OnlyIn(Dist.CLIENT)
