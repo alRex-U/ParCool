@@ -127,6 +127,11 @@ public class EpicFightStamina implements IStamina {
         return neededValue;
     }
 
+    @Override
+    public boolean isImposingExhaustionPenalty() {
+        return !AdditionalMods.epicFight().isBattleMode(player) && parcoolStamina.isImposingExhaustionPenalty();
+    }
+
     public static void consumeOnServer(ServerPlayer player, int value) {
         PlayerPatch<?> patch = AdditionalMods.epicFight().getPlayerPatch(player);
         if (patch == null) return;
