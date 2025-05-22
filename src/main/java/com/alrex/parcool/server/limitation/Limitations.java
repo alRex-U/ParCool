@@ -83,14 +83,12 @@ public class Limitations {
 
     public static void update(ServerPlayer player) {
         Parkourability parkourability = Parkourability.get(player);
-        if (parkourability == null) return;
         parkourability.getActionInfo().setServerLimitation(ServerLimitation.get(player));
         PacketDistributor.sendToPlayer(player, new LimitationPayload(parkourability.getActionInfo().getServerLimitation()));
     }
 
     public static void updateOnlyLimitation(ServerPlayer player) {
         Parkourability parkourability = Parkourability.get(player);
-        if (parkourability == null) return;
         parkourability.getActionInfo().setServerLimitation(ServerLimitation.get(player));
         PacketDistributor.sendToPlayer(player, new LimitationPayload(parkourability.getActionInfo().getServerLimitation()));
     }

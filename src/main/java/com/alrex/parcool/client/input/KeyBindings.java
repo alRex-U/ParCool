@@ -40,8 +40,9 @@ public class KeyBindings {
 		return settings.keySprint;
 	}
 
-    public static Boolean isKeyJumpDown() {
-        return mc.player != null
+	public static Boolean isKeyJumpDown() {
+		return mc.player != null
+				&& mc.player.input != null
 				&& mc.player.input.keyPresses.jump();
 	}
 
@@ -64,6 +65,7 @@ public class KeyBindings {
 
 	public static Boolean isAnyMovingKeyDown() {
 		return mc.player != null
+				&& mc.player.input != null
 				&& (mc.player.input.keyPresses.forward()
 				|| mc.player.input.keyPresses.right()
 				|| mc.player.input.keyPresses.backward()
@@ -72,24 +74,24 @@ public class KeyBindings {
 				|| mc.player.input.leftImpulse != 0);
 	}
 
-    public static Boolean isLeftAndRightDown() {
-		return mc.player != null && mc.player.input.keyPresses.left() && mc.player.input.keyPresses.right();
-    }
+	public static Boolean isLeftAndRightDown() {
+		return mc.player != null && mc.player.input != null && mc.player.input.keyPresses.left() && mc.player.input.keyPresses.right();
+	}
 
     public static Boolean isKeyForwardDown() {
-		return mc.player != null && mc.player.input.keyPresses.forward();
+		return mc.player != null && mc.player.input != null && mc.player.input.keyPresses.forward();
 	}
 
     public static Boolean isKeyLeftDown() {
-		return mc.player != null && mc.player.input.keyPresses.left();
+		return mc.player != null &&mc.player.input != null && mc.player.input.keyPresses.left();
 	}
 
     public static Boolean isKeyRightDown() {
-		return mc.player != null && mc.player.input.keyPresses.right();
+		return mc.player != null &&mc.player.input != null && mc.player.input.keyPresses.right();
 	}
 
     public static Boolean isKeyBackDown() {
-		return mc.player != null && mc.player.input.keyPresses.backward();
+		return mc.player != null && mc.player.input != null && mc.player.input.keyPresses.backward();
 	}
 
     public static KeyMapping getKeyBindEnable() {
