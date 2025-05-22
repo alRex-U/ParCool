@@ -73,22 +73,18 @@ public class LightStaminaHUD {
 		oldValue = newValue;
 	}
 
-	public void render(GuiGraphics graphics, DeltaTracker partialTick) {
-		LocalPlayer player = Minecraft.getInstance().player;
-		if (player == null || player.isCreative()) return;
+	public void render(ForgeGui gui, GuiGraphics graphics, Parkourability parkourability, IStamina stamina, float partialTick, int width, int height) {
+		var player = Minecraft.getInstance().player;
+		if (player == null) return;
+		final boolean inexhaustible = player.hasEffect(Effects.INEXHAUSTIBLE.get());
+		final boolean exhausted = stamina.isExhausted();
 
-		Parkourability parkourability = Parkourability.get(player);
-		if (parkourability == null) return;
-		var stamina = player.getData(Attachments.STAMINA);
-
-		final boolean inexhaustible = player.hasEffect(Effects.INEXHAUSTIBLE);
-        final boolean exhausted = stamina.isExhausted();
-
-        if (!showStatus) {
-            long gameTime = player.level().getGameTime();
-            if (gameTime - lastStaminaChangedTick > 40) return;
-        }
-		float staminaScale = (float) stamina.value() / stamina.max();
+		if (!showStatus) {
+			long gameTime = player.level().getGameTime();
+			if (gameTime - lastStaminaChangedTick > 40 && !ParCoolConfig.Client.Booleans.ShowLightStaminaHUDAlways.get())
+				return;
+		}
+		float staminaScale = (float) stamina.get() / stamina.getActualMaxStamina();
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
 

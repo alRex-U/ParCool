@@ -62,16 +62,7 @@ public class StaminaHUD {
         }
 	}
 
-	public void render(GuiGraphics graphics, DeltaTracker partialTick) {
-		LocalPlayer player = Minecraft.getInstance().player;
-		if (player == null) return;
-		if (player.isCreative()) return;
-
-		LocalStamina stamina = LocalStamina.get(player);
-		Parkourability parkourability = Parkourability.get(player);
-
-		if (parkourability.getActionInfo().isStaminaInfinite(stamina, player)) return;
-
+	public void render(ForgeGui gui, GuiGraphics graphics, Parkourability parkourability, IStamina stamina, float partialTick, int width, int height) {
 		Position position = new Position(
 				ParCoolConfig.Client.getInstance().AlignHorizontalStaminaHUD.get(),
 				ParCoolConfig.Client.getInstance().AlignVerticalStaminaHUD.get(),

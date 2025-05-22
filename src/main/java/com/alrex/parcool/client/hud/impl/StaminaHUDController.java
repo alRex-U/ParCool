@@ -2,6 +2,9 @@ package com.alrex.parcool.client.hud.impl;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.client.gui.ParCoolHUDEvent;
+import com.alrex.parcool.common.capability.IStamina;
+import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.capability.stamina.ParCoolStamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -39,18 +42,31 @@ public class StaminaHUDController implements LayeredDraw.Layer {
 	public void render(@Nonnull GuiGraphics graphics, @Nonnull DeltaTracker partialTick) {
 		AbstractClientPlayer player = Minecraft.getInstance().player;
 		if (player == null) return;
-		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get())
-			return;
+		if (!ParCoolConfig.Client.Booleans.ParCoolIsActive.get()) return;
+
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) return;
+
+		if (ParCoolConfig.Client.Booleans.HideStaminaHUDWhenStaminaIsInfinite.get() &&
+				parkourability.getActionInfo().isStaminaInfinite(player.isCreative() || player.isSpectator())
+		) return;
+
+		IStamina stamina = IStamina.get(player);
+		if (stamina == null) return;
+
+		if (!(stamina instanceof ParCoolStamina)) {
+			if (!AdditionalMods.epicFight().canShowStaminaHUD(player)) return;
+		}
 
 		if (NeoForge.EVENT_BUS.post(new ParCoolHUDEvent.RenderEvent(graphics, partialTick)).isCanceled())
 			return;
 
 		switch (ParCoolConfig.Client.getInstance().StaminaHUDType.get()) {
 			case Light:
-				lightStaminaHUD.render(graphics, partialTick);
+				lightStaminaHUD.render(graphics, parkourability, stamina, partialTick);
 				break;
 			case Normal:
-				staminaHUD.render(graphics, partialTick);
+				staminaHUD.render(graphics, parkourability, stamina, partialTick);
 				break;
 		}
 	}
