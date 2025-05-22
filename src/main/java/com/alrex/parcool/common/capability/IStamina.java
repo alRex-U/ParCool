@@ -78,6 +78,10 @@ public interface IStamina {
 	public default void updateOldValue() {
 	}
 
+	public default boolean isImposingExhaustionPenalty() {
+		return isExhausted();
+	}
+
 	public default boolean wantToConsumeOnServer() {
 		return false;
 	}
