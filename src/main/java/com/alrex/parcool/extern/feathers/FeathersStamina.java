@@ -74,4 +74,9 @@ public class FeathersStamina implements IStamina {
 	@Override
 	public void set(int value) {
 	}
+
+	@Override
+	public boolean isImposingExhaustionPenalty() {
+		return false;
+	}
 }
