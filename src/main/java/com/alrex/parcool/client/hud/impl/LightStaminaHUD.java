@@ -71,20 +71,16 @@ public class LightStaminaHUD extends GuiComponent {
 		}
 	}
 
-	public void render(ForgeGui gui, PoseStack stack, float partialTick, int width, int height) {
-		LocalPlayer player = Minecraft.getInstance().player;
-		if (player == null || player.isCreative()) return;
-
-		IStamina stamina = IStamina.get(player);
-		Parkourability parkourability = Parkourability.get(player);
-		if (stamina == null || parkourability == null) return;
-
+	public void render(ForgeGui gui, PoseStack stack, Parkourability parkourability, IStamina stamina, float partialTick, int width, int height) {
+		var player = Minecraft.getInstance().player;
+		if (player == null) return;
 		final boolean inexhaustible = player.hasEffect(Effects.INEXHAUSTIBLE.get());
 		final boolean exhausted = stamina.isExhausted();
 
 		if (!showStatus) {
 			long gameTime = player.level.getGameTime();
-			if (gameTime - lastStaminaChangedTick > 40) return;
+			if (gameTime - lastStaminaChangedTick > 40 && !ParCoolConfig.Client.Booleans.ShowLightStaminaHUDAlways.get())
+				return;
 		}
 		float staminaScale = (float) stamina.get() / stamina.getActualMaxStamina();
 		if (staminaScale < 0) staminaScale = 0;

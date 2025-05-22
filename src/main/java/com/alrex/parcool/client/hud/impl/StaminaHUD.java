@@ -9,7 +9,6 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
@@ -63,20 +62,7 @@ public class StaminaHUD extends GuiComponent {
 		}
 	}
 
-	public void render(ForgeGui gui, PoseStack stack, float partialTick, int width, int height) {
-		LocalPlayer player = Minecraft.getInstance().player;
-		if (player == null) return;
-		if (player.isCreative()) return;
-
-		IStamina stamina = IStamina.get(player);
-		Parkourability parkourability = Parkourability.get(player);
-		if (stamina == null || parkourability == null) return;
-
-		if (ParCoolConfig.Client.Booleans.HideStaminaHUDWhenStaminaIsInfinite.get() &&
-				parkourability.getActionInfo().isStaminaInfinite(player.isCreative() || player.isSpectator())
-		) return;
-
-		var window = Minecraft.getInstance().getWindow();
+	public void render(ForgeGui gui, PoseStack stack, Parkourability parkourability, IStamina stamina, float partialTick, int width, int height) {
 		Position position = new Position(
 				ParCoolConfig.Client.AlignHorizontalStaminaHUD.get(),
 				ParCoolConfig.Client.AlignVerticalStaminaHUD.get(),

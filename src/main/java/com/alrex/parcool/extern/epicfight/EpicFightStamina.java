@@ -3,7 +3,7 @@ package com.alrex.parcool.extern.epicfight;
 import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.alrex.parcool.common.capability.stamina.Stamina;
+import com.alrex.parcool.common.capability.stamina.ParCoolStamina;
 import com.alrex.parcool.extern.AdditionalMods;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -12,11 +12,11 @@ import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 public class EpicFightStamina implements IStamina {
     private final Player player;
     private float consumeBuffer = 0;
-    private final Stamina parcoolStamina;
+    private final ParCoolStamina parcoolStamina;
 
     public EpicFightStamina(Player player) {
         this.player = player;
-        parcoolStamina = new Stamina(player);
+        parcoolStamina = new ParCoolStamina(player);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class EpicFightStamina implements IStamina {
                 || player.hasEffect(Effects.INEXHAUSTIBLE.get())
         ) return;
         if (AdditionalMods.epicFight().isBattleMode(player)) {
-            consumeBuffer += value / 15f;
+            consumeBuffer += value / 60f;
         } else {
             parcoolStamina.consume(value);
         }
@@ -79,10 +79,12 @@ public class EpicFightStamina implements IStamina {
         if (parkourability.getActionInfo().isStaminaInfinite(player.isSpectator() || player.isCreative())
                 || player.hasEffect(Effects.INEXHAUSTIBLE.get())
         ) return false;
-        if (!AdditionalMods.epicFight().isBattleMode(player)) {
-            return parcoolStamina.isExhausted();
+        if (AdditionalMods.epicFight().isBattleMode(player)) {
+            PlayerPatch<?> patch = AdditionalMods.epicFight().getPlayerPatch(player);
+            if (patch == null) return false;
+            return patch.getStamina() < 0.1f;
         }
-        return false;
+        return parcoolStamina.isExhausted();
     }
 
     @Override
@@ -96,6 +98,13 @@ public class EpicFightStamina implements IStamina {
     public void tick() {
         if (!AdditionalMods.epicFight().isBattleMode(player)) {
             parcoolStamina.tick();
+        }
+    }
+
+    @Override
+    public void updateOldValue() {
+        if (!AdditionalMods.epicFight().isBattleMode(player)) {
+            parcoolStamina.updateOldValue();
         }
     }
 
