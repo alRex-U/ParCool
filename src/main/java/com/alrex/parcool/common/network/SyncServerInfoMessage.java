@@ -64,19 +64,23 @@ public class SyncServerInfoMessage {
         contextSupplier.get().setPacketHandled(true);
     }
 
-    public void logReceived(Player player) {
+    public static void logReceived(Player player) {
         ParCool.LOGGER.log(Level.INFO, "Received Server Limitation of [" + player.getGameProfile().getName() + "]");
     }
 
+	public static void logSent(Player player) {
+		ParCool.LOGGER.log(Level.INFO, "Sent Server Limitation of [" + player.getGameProfile().getName() + "]");
+	}
+
     public static void sync(ServerPlayer player) {
-        Parkourability parkourability = Parkourability.get(player);
-        if (parkourability == null) return;
-        SyncServerInfoMessage msg = new SyncServerInfoMessage();
-        parkourability.getActionInfo().getServerLimitation().writeTo(msg.limitationData);
-        msg.limitationData.flip();
-        msg.staminaNeedSync = false;
-        ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), msg);
-    }
+		Parkourability parkourability = Parkourability.get(player);
+		if (parkourability == null) return;
+		SyncServerInfoMessage msg = new SyncServerInfoMessage();
+		parkourability.getActionInfo().getServerLimitation().writeTo(msg.limitationData);
+		msg.limitationData.flip();
+		msg.staminaNeedSync = false;
+		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), msg);
+	}
 
     public static void syncWithStamina(ServerPlayer player, IStamina stamina) {
         Parkourability parkourability = Parkourability.get(player);
@@ -90,5 +94,6 @@ public class SyncServerInfoMessage {
             msg.staminaValue = stamina.get();
         }
         ParCool.CHANNEL_INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), msg);
+        logSent(player);
     }
 }

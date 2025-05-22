@@ -41,9 +41,10 @@ public class KeyBindings {
 		return settings.keySprint;
 	}
 
-    public static Boolean isKeyJumpDown() {
-        return mc.player != null
-                && mc.player.input.jumping;
+	public static Boolean isKeyJumpDown() {
+		return mc.player != null
+				&& mc.player.input != null
+				&& mc.player.input.jumping;
 	}
 
 	public static KeyMapping getKeySneak() {
@@ -65,30 +66,31 @@ public class KeyBindings {
 
     public static Boolean isAnyMovingKeyDown() {
         return mc.player != null
+                && mc.player.input != null
                 && (mc.player.input.left
                 || mc.player.input.right
                 || mc.player.input.forwardImpulse != 0
                 || mc.player.input.leftImpulse != 0);
     }
 
-    public static Boolean isLeftAndRightDown() {
-        return mc.player != null && mc.player.input.left && mc.player.input.right;
-    }
-
-    public static Boolean isKeyForwardDown() {
-        return mc.player != null && mc.player.input.forwardImpulse > 0;
+	public static Boolean isLeftAndRightDown() {
+		return mc.player != null && mc.player.input != null && mc.player.input.left && mc.player.input.right;
 	}
 
-    public static Boolean isKeyLeftDown() {
-        return mc.player != null && mc.player.input.left;
+	public static Boolean isKeyForwardDown() {
+		return mc.player != null && mc.player.input != null && mc.player.input.forwardImpulse > 0;
 	}
 
-    public static Boolean isKeyRightDown() {
-        return mc.player != null && mc.player.input.right;
+	public static Boolean isKeyLeftDown() {
+		return mc.player != null && mc.player.input != null && mc.player.input.left;
 	}
 
-    public static Boolean isKeyBackDown() {
-        return mc.player != null && mc.player.input.forwardImpulse < 0;
+	public static Boolean isKeyRightDown() {
+		return mc.player != null && mc.player.input != null && mc.player.input.right;
+	}
+
+	public static Boolean isKeyBackDown() {
+		return mc.player != null && mc.player.input != null && mc.player.input.forwardImpulse < 0;
 	}
 
 	public static KeyMapping getKeyBindEnable() {

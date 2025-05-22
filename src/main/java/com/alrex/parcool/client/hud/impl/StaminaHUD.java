@@ -63,20 +63,8 @@ public class StaminaHUD extends GuiComponent {
 		}
 	}
 
-	public void render(ForgeIngameGui gui, PoseStack stack, float partialTick, int width, int height) {
-		LocalPlayer player = Minecraft.getInstance().player;
-		if (player == null) return;
-		if (player.isCreative()) return;
-
-		IStamina stamina = IStamina.get(player);
-		Parkourability parkourability = Parkourability.get(player);
-		if (stamina == null || parkourability == null) return;
-
-		if (ParCoolConfig.Client.Booleans.HideStaminaHUDWhenStaminaIsInfinite.get() &&
-				parkourability.getActionInfo().isStaminaInfinite(player.isCreative() || player.isSpectator())
-		) return;
-
-		var window = Minecraft.getInstance().getWindow();
+	public void render(ForgeIngameGui gui, PoseStack stack, float partialTick, Parkourability parkourability, IStamina stamina, int width, int height) {
+		MainWindow window = Minecraft.getInstance().getWindow();
 		Position position = new Position(
 				ParCoolConfig.Client.AlignHorizontalStaminaHUD.get(),
 				ParCoolConfig.Client.AlignVerticalStaminaHUD.get(),

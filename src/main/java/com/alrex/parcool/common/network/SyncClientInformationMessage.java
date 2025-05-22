@@ -91,9 +91,13 @@ public class SyncClientInformationMessage {
 		contextSupplier.get().setPacketHandled(true);
 	}
 
-    public void logReceived(Player player) {
-        ParCool.LOGGER.log(org.apache.logging.log4j.Level.INFO, "Received Client Information of [" + player.getGameProfile().getName() + "]");
+    public static void logReceived(Player player) {
+        ParCool.LOGGER.log(Level.INFO, "Received Client Information of [" + player.getGameProfile().getName() + "]");
     }
+
+	public static void logSent(Player player) {
+		ParCool.LOGGER.log(Level.INFO, "Sent Client Information of [" + player.getGameProfile().getName() + "]");
+	}
 
 	@OnlyIn(Dist.CLIENT)
 	public static void sync(LocalPlayer player, boolean requestSendLimitation) {
@@ -106,5 +110,6 @@ public class SyncClientInformationMessage {
 		message.requestLimitations = requestSendLimitation;
 
 		ParCool.CHANNEL_INSTANCE.send(PacketDistributor.SERVER.noArg(), message);
+		logSent(player);
 	}
 }

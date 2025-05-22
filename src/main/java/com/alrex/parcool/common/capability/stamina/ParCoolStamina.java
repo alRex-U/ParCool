@@ -7,8 +7,8 @@ import com.alrex.parcool.common.capability.Parkourability;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 
-public class Stamina implements IStamina {
-    public Stamina(Player player) {
+public class ParCoolStamina implements IStamina {
+	public ParCoolStamina(Player player) {
 		this.player = player;
 		if (player != null && player.isLocalPlayer()) {
             set(Integer.MAX_VALUE);

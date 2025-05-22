@@ -2,7 +2,7 @@ package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.capability.stamina.HungerStamina;
-import com.alrex.parcool.common.capability.stamina.Stamina;
+import com.alrex.parcool.common.capability.stamina.ParCoolStamina;
 import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.extern.feathers.FeathersStamina;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 public interface IStamina {
     enum Type {
-		Default(Stamina.class, Stamina::new, null),
+		Default(ParCoolStamina.class, ParCoolStamina::new, null),
 		Hunger(HungerStamina.class, HungerStamina::new, HungerStamina::consumeOnServer),
         Feathers(FeathersStamina.class, AdditionalMods.feathers()::newFeathersStaminaFor, null);
 
