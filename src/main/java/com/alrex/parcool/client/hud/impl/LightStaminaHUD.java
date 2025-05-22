@@ -84,7 +84,8 @@ public class LightStaminaHUD extends AbstractGui {
 
 		if (!showStatus) {
 			long gameTime = player.level.getGameTime();
-			if (gameTime - lastStaminaChangedTick > 40) return;
+			if (gameTime - lastStaminaChangedTick > 40 && !ParCoolConfig.Client.Booleans.ShowLightStaminaHUDAlways.get())
+				return;
 		}
 		float staminaScale = (float) stamina.get() / stamina.getActualMaxStamina();
 		if (staminaScale < 0) staminaScale = 0;
