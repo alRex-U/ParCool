@@ -30,16 +30,16 @@ public class EpicFightManager extends ModManager {
         return EpicFightCapabilities.getEntityPatch(player, PlayerPatch.class);
     }
 
-    public boolean isBattleMode(Player player) {
+    public boolean isEpicFightMode(Player player) {
         PlayerPatch<?> patch = getPlayerPatch(player);
         if (patch == null) return false;
-        return patch.isBattleMode();
+        return patch.isEpicFightMode();
     }
 
     @OnlyIn(Dist.CLIENT)
     public boolean canShowStaminaHUD(Player player) {
         var stamina = IStamina.get(player);
         if (stamina instanceof ParCoolStamina) return true;
-        return stamina instanceof EpicFightStamina && !isBattleMode(player);
+        return stamina instanceof EpicFightStamina && !isEpicFightMode(player);
     }
 }
