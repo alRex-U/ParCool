@@ -21,7 +21,7 @@ public class EpicFightStamina implements IStamina {
 
     @Override
     public int getActualMaxStamina() {
-        if (AdditionalMods.epicFight().isBattleMode(player)) {
+        if (AdditionalMods.epicFight().isEpicFightMode(player)) {
             PlayerPatch<?> patch = AdditionalMods.epicFight().getPlayerPatch(player);
             if (patch == null) return 0;
             return (int) patch.getMaxStamina();
@@ -32,7 +32,7 @@ public class EpicFightStamina implements IStamina {
 
     @Override
     public int get() {
-        if (AdditionalMods.epicFight().isBattleMode(player)) {
+        if (AdditionalMods.epicFight().isEpicFightMode(player)) {
             PlayerPatch<?> patch = AdditionalMods.epicFight().getPlayerPatch(player);
             if (patch == null) return 0;
             return (int) patch.getStamina();
@@ -43,7 +43,7 @@ public class EpicFightStamina implements IStamina {
 
     @Override
     public int getOldValue() {
-        if (AdditionalMods.epicFight().isBattleMode(player)) {
+        if (AdditionalMods.epicFight().isEpicFightMode(player)) {
             return get();
         } else {
             return parcoolStamina.getOldValue();
@@ -58,7 +58,7 @@ public class EpicFightStamina implements IStamina {
                 || parkourability.getActionInfo().isStaminaInfinite(player.isSpectator() || player.isCreative())
                 || player.hasEffect(Effects.INEXHAUSTIBLE.get())
         ) return;
-        if (AdditionalMods.epicFight().isBattleMode(player)) {
+        if (AdditionalMods.epicFight().isEpicFightMode(player)) {
             consumeBuffer += value / 60f;
         } else {
             parcoolStamina.consume(value);
@@ -67,7 +67,7 @@ public class EpicFightStamina implements IStamina {
 
     @Override
     public void recover(int value) {
-        if (!AdditionalMods.epicFight().isBattleMode(player)) {
+        if (!AdditionalMods.epicFight().isEpicFightMode(player)) {
             parcoolStamina.recover(value);
         }
     }
@@ -79,7 +79,7 @@ public class EpicFightStamina implements IStamina {
         if (parkourability.getActionInfo().isStaminaInfinite(player.isSpectator() || player.isCreative())
                 || player.hasEffect(Effects.INEXHAUSTIBLE.get())
         ) return false;
-        if (AdditionalMods.epicFight().isBattleMode(player)) {
+        if (AdditionalMods.epicFight().isEpicFightMode(player)) {
             PlayerPatch<?> patch = AdditionalMods.epicFight().getPlayerPatch(player);
             if (patch == null) return false;
             return patch.getStamina() < 0.1f;
@@ -89,35 +89,35 @@ public class EpicFightStamina implements IStamina {
 
     @Override
     public void setExhaustion(boolean value) {
-        if (!AdditionalMods.epicFight().isBattleMode(player)) {
+        if (!AdditionalMods.epicFight().isEpicFightMode(player)) {
             parcoolStamina.setExhaustion(value);
         }
     }
 
     @Override
     public void tick() {
-        if (!AdditionalMods.epicFight().isBattleMode(player)) {
+        if (!AdditionalMods.epicFight().isEpicFightMode(player)) {
             parcoolStamina.tick();
         }
     }
 
     @Override
     public void updateOldValue() {
-        if (!AdditionalMods.epicFight().isBattleMode(player)) {
+        if (!AdditionalMods.epicFight().isEpicFightMode(player)) {
             parcoolStamina.updateOldValue();
         }
     }
 
     @Override
     public void set(int value) {
-        if (!AdditionalMods.epicFight().isBattleMode(player)) {
+        if (!AdditionalMods.epicFight().isEpicFightMode(player)) {
             parcoolStamina.set(value);
         }
     }
 
     @Override
     public boolean wantToConsumeOnServer() {
-        return AdditionalMods.epicFight().isBattleMode(player) && consumeBuffer != 0f;
+        return AdditionalMods.epicFight().isEpicFightMode(player) && consumeBuffer != 0f;
     }
 
     @Override
@@ -129,7 +129,7 @@ public class EpicFightStamina implements IStamina {
 
     @Override
     public boolean isImposingExhaustionPenalty() {
-        return !AdditionalMods.epicFight().isBattleMode(player) && parcoolStamina.isImposingExhaustionPenalty();
+        return !AdditionalMods.epicFight().isEpicFightMode(player) && parcoolStamina.isImposingExhaustionPenalty();
     }
 
     public static void consumeOnServer(ServerPlayer player, int value) {
