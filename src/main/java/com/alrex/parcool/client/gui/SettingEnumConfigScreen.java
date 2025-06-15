@@ -24,6 +24,7 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
             new EnumConfigSet<>(ParCoolConfig.Client.getInstance().FlipControl),
             new EnumConfigSet<>(ParCoolConfig.Client.getInstance().HWallRunControl),
             new EnumConfigSet<>(ParCoolConfig.Client.getInstance().ClingToCliffControl),
+            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().WallJumpControl),
             new EnumConfigSet<>(ParCoolConfig.Client.getInstance().VaultAnimationMode),
             new EnumConfigSet<>(ParCoolConfig.Client.getInstance().GUIColorTheme),
             new EnumConfigSet<>(ParCoolConfig.Client.getInstance().StaminaHUDType),

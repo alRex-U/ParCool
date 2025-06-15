@@ -5,6 +5,7 @@ import com.alrex.parcool.common.action.impl.ChargeJump;
 import com.alrex.parcool.common.action.impl.ClimbPoles;
 import com.alrex.parcool.common.action.impl.ClimbUp;
 import com.alrex.parcool.common.attachment.common.Parkourability;
+import com.alrex.parcool.common.tags.BlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -131,7 +132,7 @@ public abstract class LivingEntityMixin extends Entity {
 			Direction direction = state.getValue(DirectionalBlock.FACING);
 			return !state.isCollisionShapeFullBlock(world, pos) && (direction == Direction.UP || direction == Direction.DOWN);
 		}
-		return false;
+		return state.getTags().anyMatch(it -> it.equals(BlockTags.POLE_CLIMBABLE));
 	}
 
 	@Inject(method = "setSprinting", at = @At("HEAD"), cancellable = true)
