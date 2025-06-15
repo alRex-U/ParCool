@@ -241,13 +241,6 @@ public class HideInBlock extends Action {
     }
 
     @Override
-    public void onTick(Player player, Parkourability parkourability, IStamina stamina) {
-        if (!isDoing() && getNotDoingTick() <= 1) {
-            player.noPhysics = true;
-        }
-    }
-
-    @Override
     public void onStopInOtherClient(Player player) {
         spawnOnHideParticles(player);
         player.playSound(player.level()
