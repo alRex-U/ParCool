@@ -5,6 +5,7 @@ import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.input.KeyBindings;
+import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.client.renderer.Renderers;
 import com.alrex.parcool.common.attachment.Attachments;
 import com.alrex.parcool.common.attachment.ClientAttachments;
@@ -24,6 +25,7 @@ import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.server.command.CommandRegistry;
 import com.alrex.parcool.server.limitation.Limitations;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModLoadingContext;
@@ -76,6 +78,7 @@ public class ParCool {
 		NeoForge.EVENT_BUS.addListener(this::registerCommand);
 		NeoForge.EVENT_BUS.addListener(Limitations::init);
 		NeoForge.EVENT_BUS.addListener(Limitations::save);
+		NeoForge.EVENT_BUS.addListener(EventPriority.LOW, KeyRecorder::onInputs);
 
 		container.registerConfig(ModConfig.Type.SERVER, ParCoolConfig.Server.getConfigSpec());
 		container.registerConfig(ModConfig.Type.CLIENT, ParCoolConfig.Client.getConfigSpec());
