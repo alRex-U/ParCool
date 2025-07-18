@@ -153,7 +153,7 @@ public class HorizontalWallRun extends Action {
 				.normalize()
 				.yRot((float) -Math.toRadians(player.yRot));
 		// Input almost opposite to wall
-		if (wallDirection.dot(actualInputVector) < -0.86) {
+		if (wallDirection.normalize().dot(actualInputVector) < -0.86) {
 			return false;
 		}
 		return (getDoingTick() < getMaxRunningTick(parkourability.getActionInfo())
