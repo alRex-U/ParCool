@@ -377,6 +377,10 @@ public class ParCoolConfig {
 			DodgeSpeedModifier(
 					ConfigGroup.Modifier, "Dodge speed modifier",
 					"dodge-speed_modifier", 1, Server.Doubles.MaxDodgeSpeedModifier.Min, Server.Doubles.MaxDodgeSpeedModifier.Max
+			),
+			LowestFallDistanceForBreakfall(
+					ConfigGroup.Control, "Lowest fall distance needed to trigger breakfall movements",
+					"lowest_fall_distance_for_breakfall", 2, 0, 10
 			);
 			public final ConfigGroup Group;
 			@Nullable
