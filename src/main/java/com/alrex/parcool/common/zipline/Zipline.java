@@ -4,6 +4,7 @@ import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
@@ -59,7 +60,10 @@ public abstract class Zipline {
                 ZiplineRopeEntity.class,
                 player.getBoundingBox().inflate(d, Zipline.MAXIMUM_VERTICAL_DISTANCE + 1, d)
         );
-        Vector3d grabPos = player.position().add(0, player.getBbHeight() * 1.11, 0);
+        double catchRange = player.getBbWidth() * 0.6;
+        double yDeltaMovement = player.getDeltaMovement().y();
+        double yDistanceScale = MathHelper.clamp(catchRange / yDeltaMovement, 0.4d, 1d);
+        Vector3d grabPos = player.position().add(0, player.getBbHeight() * 1.11 + MathHelper.clamp(yDeltaMovement * 0.4f, player.getBbHeight() * -0.4, player.getBbHeight() * 0.4), 0);
         for (ZiplineRopeEntity ziplineEntity : entities) {
             if (except == ziplineEntity)
                 continue;
@@ -67,8 +71,7 @@ public abstract class Zipline {
                 continue;
             Zipline zipline = ziplineEntity.getZipline();
             if (zipline.isPossiblyHangable(grabPos)) {
-                double distSqr = zipline.getSquaredDistanceApproximately(grabPos);
-                double catchRange = player.getBbWidth() * 0.5;
+                double distSqr = zipline.getSquaredDistanceApproximately(grabPos, yDistanceScale);
                 if (distSqr < catchRange * catchRange) {
                     return ziplineEntity;
                 }
@@ -118,7 +121,11 @@ public abstract class Zipline {
     public abstract double getMovedPositionByParameterApproximately(float currentT, float movement);
 
     // return not accurate distance
-    public abstract double getSquaredDistanceApproximately(Vector3d position);
+    public double getSquaredDistanceApproximately(Vector3d position) {
+        return getSquaredDistanceApproximately(position, 1);
+    }
+
+    public abstract double getSquaredDistanceApproximately(Vector3d position, double yDistanceScale);
 
     public abstract boolean isPossiblyHangable(Vector3d position);
 }
