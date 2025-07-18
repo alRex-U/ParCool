@@ -84,7 +84,7 @@
     "sounds": [
       {
         "name": "parcool:jumping",
-        "volume": 0.4,
+        "volume": 0.2,
         "pitch": 0.7
       }
     ]
