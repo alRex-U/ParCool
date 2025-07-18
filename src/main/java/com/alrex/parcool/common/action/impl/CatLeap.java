@@ -60,6 +60,7 @@ public class CatLeap extends Action {
 		movement = movement.multiply(1, 0, 1).normalize();
 		startInfo.putDouble(movement.x()).putDouble(movement.z());
 		return (player.isOnGround()
+				&& !player.isInWater()
 				&& !stamina.isExhausted()
 				&& coolTimeTick <= 0
 				&& readyTick > 0
