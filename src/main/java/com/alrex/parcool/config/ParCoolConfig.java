@@ -186,7 +186,7 @@ public class ParCoolConfig {
 			),
 			ShowAutoResynchronizationNotification(
 					ConfigGroup.Other, "Notify if auto resynchronization of Limitation is executed",
-					"notify_limitation_auto_resync", true
+					"notify_limitation_auto_resync", false
 			),
 			ParCoolIsActive(
 					ConfigGroup.Other, "Whether ParCool is active",
