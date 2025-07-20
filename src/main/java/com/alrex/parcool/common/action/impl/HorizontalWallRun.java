@@ -13,6 +13,7 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -141,16 +142,25 @@ public class HorizontalWallRun extends Action {
 	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
 		Vec3 wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
 		if (wallDirection == null) return false;
+		if (!(player instanceof LocalPlayer localPlayer)) return false;
+		if (localPlayer.input == null) return false;
+		var moveVector = localPlayer.input.getMoveVector();
+		var actualInputVector
+				= new Vec3(moveVector.x, 0, moveVector.y)
+				.normalize()
+				.yRot((float) -Math.toRadians(player.getYRot()));
+		// Input almost opposite to wall
+		if (wallDirection.normalize().dot(actualInputVector) < -0.86) {
+			return false;
+		}
 		return (getDoingTick() < getMaxRunningTick(parkourability.getActionInfo())
 				&& !stamina.isExhausted()
 				&& !parkourability.get(WallJump.class).justJumped()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Dodge.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
-				&& (
-				(ParCoolConfig.Client.HWallRunControl.get() == ControlType.PressKey && KeyBindings.getKeyHorizontalWallRun().isDown())
-						|| ParCoolConfig.Client.HWallRunControl.get() == ControlType.Auto
-		)
+				&& ((ParCoolConfig.Client.HWallRunControl.get() == ControlType.PressKey && KeyBindings.getKeyHorizontalWallRun().isDown())
+				|| ParCoolConfig.Client.HWallRunControl.get() == ControlType.Auto)
 				&& !player.isOnGround()
 		);
 	}
