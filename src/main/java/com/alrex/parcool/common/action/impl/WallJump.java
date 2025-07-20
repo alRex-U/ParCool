@@ -5,6 +5,7 @@ import com.alrex.parcool.client.animation.impl.BackwardWallJumpAnimator;
 import com.alrex.parcool.client.animation.impl.WallJumpAnimator;
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.attachment.client.Animation;
 import com.alrex.parcool.common.attachment.common.Parkourability;
@@ -29,7 +30,11 @@ public class WallJump extends Action {
 		PressKey, ReleaseKey
 	}
 
+	private static final BehaviorEnforcer.ID ID_FALL_FLY_CANCEL = BehaviorEnforcer.newID();
 	private boolean jump = false;
+	private boolean inPossibleState = false;
+	private final ByteBuffer startInfoTempBuffer = ByteBuffer.allocate(64);
+	private final BehaviorEnforcer.Marker persistentFallFlyCanceler = () -> this.inPossibleState;
 
 	public boolean justJumped() {
 		return jump;
@@ -48,10 +53,17 @@ public class WallJump extends Action {
 	}
 
 	@Override
+	public void onClientTick(Player player, Parkourability parkourability) {
+		startInfoTempBuffer.clear();
+		inPossibleState = checkCanStart(player, parkourability, startInfoTempBuffer);
+		startInfoTempBuffer.flip();
+		parkourability.getBehaviorEnforcer().addMarkerCancellingFallFlying(ID_FALL_FLY_CANCEL, persistentFallFlyCanceler);
+	}
+
+	@Override
 	public StaminaConsumeTiming getStaminaConsumeTiming() {
 		return StaminaConsumeTiming.OnStart;
 	}
-
 
 	@OnlyIn(Dist.CLIENT)
 	@Nullable
@@ -77,12 +89,28 @@ public class WallJump extends Action {
 	}
 
 	@Override
-    public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
+	@OnlyIn(Dist.CLIENT)
+	public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
+		if (inPossibleState && isInputDone() && startInfoTempBuffer.hasRemaining()) {
+			startInfo.put(startInfoTempBuffer);
+			startInfoTempBuffer.rewind();
+			return true;
+		}
+		return false;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public boolean isInputDone() {
+		ControlType control = ParCoolConfig.Client.getInstance().WallJumpControl.get();
+		return (control == ControlType.PressKey && KeyRecorder.keyWallJump.isPressed()) || (control == ControlType.ReleaseKey && KeyRecorder.keyWallJump.isReleased());
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public boolean checkCanStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
 		Vec3 wallDirection = WorldUtil.getWall(player, player.getBbWidth() * 0.65);
 		Vec3 jumpDirection = getJumpDirection(player, wallDirection);
 		if (jumpDirection == null) return false;
 		ClingToCliff cling = parkourability.get(ClingToCliff.class);
-		ControlType control = ParCoolConfig.Client.getInstance().WallJumpControl.get();
 
 		boolean value = (!player.onGround()
 				&& !player.isInWaterOrBubble()
@@ -91,7 +119,6 @@ public class WallJump extends Action {
 				&& parkourability.getAdditionalProperties().getNotCreativeFlyingTick() > 10
 				&& ((!cling.isDoing() && cling.getNotDoingTick() > 3)
 				|| (cling.isDoing() && cling.getFacingDirection() != ClingToCliff.FacingDirection.ToWall))
-				&& ((control == ControlType.PressKey && KeyRecorder.keyWallJump.isPressed()) || (control == ControlType.ReleaseKey && KeyRecorder.keyWallJump.isReleased()))
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(VerticalWallRun.class).isDoing()
                 && !parkourability.get(RideZipline.class).isDoing()

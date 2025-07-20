@@ -110,7 +110,7 @@
   "parcool.message.zipline.reset_point": "Reset point registration",
   "parcool.message.zipline.change_tension": "Change tension : %s",
   "parcool.message.error.limitation.not_synced": "[Warn] ParCool Limitation is not synchronized. Sending a request to server. Please wait a moment...",
-  "parcool.message.error.limitation.fail_sync": "[Error] Failed to synchronize ParCool Limitation. Please report this issue to the developer.",
+  "parcool.message.error.limitation.fail_sync": "[Error] Failed to synchronize ParCool Limitation. There may be problems about server connection. Please report to the developer if this is not solved after checking connection",
   "parcool.command.message.invalidActionName": "No Such Action : %s",
   "parcool.command.message.invalidConfigName": "No Such Limitation : %s",
   "parcool.command.message.invalidStaminaType": "No Such Stamina Type : %s",
@@ -180,5 +180,6 @@
   "parcool.config.c.enable_stamina_exhaustion_penalty": "Enable slowing down of stamina exhaustion",
   "parcool.config.c.parcool_activation": "Whether ParCool is active",
   "parcool.config.c.enable_particles_jt_breakfall": "Enable particle of just time breakfall",
-  "parcool.config.c.enable_just_time_effect_breakfall": "Enable effects of just time breakfall"
+  "parcool.config.c.enable_just_time_effect_breakfall": "Enable effects of just time breakfall",
+  "parcool.config.c.lowest_fall_distance_for_breakfall": "Enable effects of just time breakfall"
 }

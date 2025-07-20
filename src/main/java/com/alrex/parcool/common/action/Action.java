@@ -14,6 +14,10 @@ public abstract class Action {
 	private int doingTick = 0;
 	private int notDoingTick = 0;
 
+	public boolean isJustStarted() {
+		return isDoing() && getDoingTick() == 0;
+	}
+
 	public void setDoingTick(int doingTick) {
 		this.doingTick = doingTick;
 	}

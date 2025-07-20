@@ -84,7 +84,7 @@
     "sounds": [
       {
         "name": "parcool:jumping",
-        "volume": 0.4,
+        "volume": 0.2,
         "pitch": 0.7
       }
     ]
@@ -94,7 +94,7 @@
     "sounds": [
       {
         "name": "parcool:grabbing",
-        "volume": 0.85,
+        "volume": 0.8,
         "pitch": 0.6
       }
     ]
@@ -104,7 +104,7 @@
     "sounds": [
       {
         "name": "parcool:jumping",
-        "volume": 0.4,
+        "volume": 0.2,
         "pitch": 0.6
       }
     ]
