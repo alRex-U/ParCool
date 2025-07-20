@@ -17,50 +17,48 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class WorldUtil {
 
+	@Nullable
 	public static Vec3 getRunnableWall(LivingEntity entity, double range) {
 		double width = entity.getBbWidth() * 0.4f;
 		double wallX = 0;
 		double wallZ = 0;
 		Vec3 pos = entity.position();
 
-		AABB baseBox1 = new AABB(
-				pos.x() - width,
-				pos.y(),
-				pos.z() - width,
-				pos.x() + width,
-				pos.y() + entity.getBbHeight() / 1.63,
-				pos.z() + width
-		);
-		AABB baseBox2 = new AABB(
-				pos.x() - width,
-				pos.y() + entity.getBbHeight() / 1.63,
-				pos.z() - width,
-				pos.x() + width,
-				pos.y() + entity.getBbHeight(),
-				pos.z() + width
+		List<AABB> boxes = Arrays.asList(
+				new AABB(
+						pos.x() - width,
+						pos.y(),
+						pos.z() - width,
+						pos.x() + width,
+						pos.y() + entity.getBbHeight() * 0.3,
+						pos.z() + width
+				),
+				new AABB(
+						pos.x() - width,
+						pos.y() + entity.getBbHeight() * 0.85,
+						pos.z() - width,
+						pos.x() + width,
+						pos.y() + entity.getBbHeight(),
+						pos.z() + width
+				)
 		);
 
-		if (!entity.level().noCollision(baseBox1.expandTowards(range, 0, 0))
-				&& !entity.level().noCollision(baseBox2.expandTowards(range, 0, 0))
-		) {
+		if (boxes.stream().noneMatch(box -> entity.level().noCollision(box.expandTowards(range, 0, 0)))) {
 			wallX++;
 		}
-		if (!entity.level().noCollision(baseBox1.expandTowards(-range, 0, 0))
-				&& !entity.level().noCollision(baseBox2.expandTowards(-range, 0, 0))
-		) {
+		if (boxes.stream().noneMatch(box -> entity.level().noCollision(box.expandTowards(-range, 0, 0)))) {
 			wallX--;
 		}
-		if (!entity.level().noCollision(baseBox1.expandTowards(0, 0, range))
-				&& !entity.level().noCollision(baseBox2.expandTowards(0, 0, range))
-		) {
+		if (boxes.stream().noneMatch(box -> entity.level().noCollision(box.expandTowards(0, 0, range)))) {
 			wallZ++;
 		}
-		if (!entity.level().noCollision(baseBox1.expandTowards(0, 0, -range))
-				&& !entity.level().noCollision(baseBox1.expandTowards(0, 0, -range))
-		) {
+		if (boxes.stream().noneMatch(box -> entity.level().noCollision(box.expandTowards(0, 0, -range)))) {
 			wallZ--;
 		}
 		if (wallX == 0 && wallZ == 0) return null;
@@ -80,25 +78,30 @@ public class WorldUtil {
 		double wallZ = 0;
 		Vec3 pos = entity.position();
 
-		AABB baseBox = new AABB(
-				pos.x() - width,
-				pos.y(),
-				pos.z() - width,
-				pos.x() + width,
-				pos.y() + entity.getBbHeight(),
-				pos.z() + width
-		);
+		List<AABB> boxes = new LinkedList<>();
+		final int division = 2;
+		double singleYHeight = entity.getBbHeight() / division;
+		for (int i = 0; i < division; i++) {
+			boxes.add(new AABB(
+					pos.x() - width,
+					pos.y() + singleYHeight * i,
+					pos.z() - width,
+					pos.x() + width,
+					pos.y() + singleYHeight * (i + 1),
+					pos.z() + width
+			));
+		}
 
-		if (!entity.getCommandSenderWorld().noCollision(entity, baseBox.expandTowards(range, 0, 0))) {
+		if (boxes.stream().noneMatch(box -> entity.level().noCollision(box.expandTowards(range, 0, 0)))) {
 			wallX++;
 		}
-		if (!entity.getCommandSenderWorld().noCollision(entity, baseBox.expandTowards(-range, 0, 0))) {
+		if (boxes.stream().noneMatch(box -> entity.level().noCollision(box.expandTowards(-range, 0, 0)))) {
 			wallX--;
 		}
-		if (!entity.getCommandSenderWorld().noCollision(entity, baseBox.expandTowards(0, 0, range))) {
+		if (boxes.stream().noneMatch(box -> entity.level().noCollision(box.expandTowards(0, 0, range)))) {
 			wallZ++;
 		}
-		if (!entity.getCommandSenderWorld().noCollision(entity, baseBox.expandTowards(0, 0, -range))) {
+		if (boxes.stream().noneMatch(box -> entity.level().noCollision(box.expandTowards(0, 0, -range)))) {
 			wallZ--;
 		}
 		if (wallX == 0 && wallZ == 0) return null;

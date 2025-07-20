@@ -60,22 +60,22 @@ public class ActionProcessor {
 		boolean needSync = event.side == LogicalSide.CLIENT && player.isLocalPlayer();
 		SyncActionStateMessage.Encoder builder = SyncActionStateMessage.Encoder.reset();
 
-        if (needSync && player.tickCount > 100 && player.tickCount % 150 == 0 && parkourability.limitationIsNotSynced()) {
-            if (player instanceof LocalPlayer) {
-                int trialCount = parkourability.getSynchronizeTrialCount();
-                if (trialCount < 5) {
-                    parkourability.trySyncLimitation((LocalPlayer) player);
-                    if (ParCoolConfig.Client.Booleans.ShowAutoResynchronizationNotification.get()) {
-                        player.displayClientMessage(Component.translatable("parcool.message.error.limitation.not_synced"), false);
-                    }
-                    ParCool.LOGGER.log(Level.WARN, "Detected ParCool Limitation is not synced. Sending synchronization request...");
-                } else if (trialCount == 5) {
+		if (needSync && player.tickCount > 100 && player.tickCount % 150 == 0 && parkourability.limitationIsNotSynced()) {
+			if (player instanceof LocalPlayer localPlayer) {
+				int trialCount = parkourability.getSynchronizeTrialCount();
+				if (trialCount < 5) {
+					parkourability.trySyncLimitation(localPlayer);
+					if (ParCoolConfig.Client.Booleans.ShowAutoResynchronizationNotification.get()) {
+						player.displayClientMessage(Component.translatable("parcool.message.error.limitation.not_synced"), false);
+					}
+					ParCool.LOGGER.log(Level.WARN, "Detected ParCool Limitation is not synced. Sending synchronization request...");
+				} else if (trialCount == 5) {
 					parkourability.incrementSynchronizeTrialCount();
-                    player.displayClientMessage(Component.translatable("parcool.message.error.limitation.fail_sync").withStyle(ChatFormatting.DARK_RED), false);
-                    ParCool.LOGGER.log(Level.ERROR, "Failed to synchronize ParCool Limitation. Please report to developer");
-                }
-            }
-        }
+					player.displayClientMessage(Component.translatable("parcool.message.error.limitation.fail_sync").withStyle(ChatFormatting.DARK_RED), false);
+					ParCool.LOGGER.log(Level.ERROR, "Failed to synchronize ParCool Limitation. There may be problems about server connection. Please report to the developer after checking connection");
+				}
+			}
+		}
 
 		parkourability.getAdditionalProperties().onTick(player, parkourability);
 		for (Action action : actions) {

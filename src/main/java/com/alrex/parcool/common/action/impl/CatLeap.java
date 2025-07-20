@@ -55,11 +55,12 @@ public class CatLeap extends Action {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, IStamina stamina, ByteBuffer startInfo) {
-        Vec3 movement = player.getDeltaMovement();
-        if (movement.lengthSqr() < 0.001) return false;
-        movement = movement.multiply(1, 0, 1).normalize();
-        startInfo.putDouble(movement.x()).putDouble(movement.z());
+		Vec3 movement = player.getDeltaMovement();
+		if (movement.lengthSqr() < 0.001) return false;
+		movement = movement.multiply(1, 0, 1).normalize();
+		startInfo.putDouble(movement.x()).putDouble(movement.z());
 		return (player.onGround()
+				&& !player.isInWater()
 				&& !stamina.isExhausted()
 				&& coolTimeTick <= 0
 				&& readyTick > 0
