@@ -55,16 +55,19 @@ public class StraightZipline extends Zipline {
     }
 
     @Override
-    public double getSquaredDistanceApproximately(Vec3 position) {
+    public double getSquaredDistanceApproximately(Vec3 position, double yDistanceScale) {
         double t = getParameterD(position);
         Vec3 mostNearPoint = getMidPoint(t);
-        return mostNearPoint.distanceToSqr(position);
+        double xOffset = mostNearPoint.x - position.x;
+        double zOffset = mostNearPoint.z - position.z;
+        double yOffset = (mostNearPoint.y - position.y) * yDistanceScale;
+        return xOffset * xOffset + zOffset * zOffset + yOffset * yOffset;
     }
 
     @Override
     public boolean isPossiblyHangable(Vec3 position) {
         return new AABB(getStartPos().x(), getStartPos().y(), getStartPos().z(), getEndPos().x(), getEndPos().y(), getEndPos().z())
-                .inflate(0.5)
+                .inflate(1d)
                 .contains(position);
     }
 }
