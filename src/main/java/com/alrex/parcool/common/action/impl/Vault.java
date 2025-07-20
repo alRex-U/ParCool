@@ -88,7 +88,7 @@ public class Vault extends Action {
                 && !player.isInWater()
 				&& !(ParCoolConfig.Client.Booleans.VaultKeyPressedNeeded.get() && !KeyBindings.getKeyVault().isDown())
 				&& parkourability.get(FastRun.class).canActWithRunning(player)
-				&& (player.isOnGround() || ParCoolConfig.Client.Booleans.EnableVaultInAir.get())
+				&& (player.onGround() || ParCoolConfig.Client.Booleans.EnableVaultInAir.get())
 				&& wallHeight > player.getBbHeight() * 0.44 /*about 0.8*/
 		);
 	}
