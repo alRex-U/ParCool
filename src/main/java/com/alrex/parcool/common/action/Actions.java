@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.action;
 
 import com.alrex.parcool.common.action.impl.*;
+import com.alrex.parcool.common.action.instant.StartSwimByCrawl;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -37,7 +38,9 @@ public class Actions {
 			new ActionRegistry<>(Vault.class, Vault::new, 50),
 			new ActionRegistry<>(VerticalWallRun.class, VerticalWallRun::new, 150),
 			new ActionRegistry<>(WallJump.class, WallJump::new, 120),
-            new ActionRegistry<>(WallSlide.class, WallSlide::new, 8)
+            new ActionRegistry<>(WallSlide.class, WallSlide::new, 8),
+
+            new ActionRegistry<>(StartSwimByCrawl.class, StartSwimByCrawl::new, 0)
 	);
 	private static final HashMap<Class<? extends Action>, Short> INDEX_MAP;
 	private static final TreeMap<String, Short> NAME_2_INDEX_MAP;

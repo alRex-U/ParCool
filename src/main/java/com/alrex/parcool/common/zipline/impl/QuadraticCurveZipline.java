@@ -66,16 +66,19 @@ public class QuadraticCurveZipline extends Zipline {
     }
 
     @Override
-    public double getSquaredDistanceApproximately(Vec3 position) {
+    public double getSquaredDistanceApproximately(Vec3 position, double yDistanceScale) {
         float t = getParameter(position);
         Vec3 simplifiedNearestPoint = getMidPoint(t);
-        return position.distanceToSqr(simplifiedNearestPoint);
+        double xOffset = simplifiedNearestPoint.x - position.x;
+        double zOffset = simplifiedNearestPoint.z - position.z;
+        double yOffset = (simplifiedNearestPoint.y - position.y) * yDistanceScale;
+        return xOffset * xOffset + zOffset * zOffset + yOffset * yOffset;
     }
 
     @Override
     public boolean isPossiblyHangable(Vec3 position) {
         return new AABB(getStartPos().x(), getStartPos().y(), getStartPos().z(), getEndPos().x(), getEndPos().y(), getEndPos().z())
-                .inflate(0.5)
+                .inflate(1d)
                 .contains(position);
     }
 

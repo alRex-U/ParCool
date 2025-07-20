@@ -108,6 +108,5 @@ public class Crawl extends Action {
 	@Override
 	public void onStop(Player player) {
 		player.setForcedPose(null);
-        player.setPose(Pose.STANDING);
 	}
 }

@@ -72,18 +72,18 @@ public class ActionProcessor {
 		LinkedList<ActionStatePayload.Entry> syncStates = new LinkedList<>();
 
 		if (needSync && player.tickCount > 100 && player.tickCount % 150 == 0 && parkourability.limitationIsNotSynced()) {
-			if (player instanceof LocalPlayer) {
+			if (player instanceof LocalPlayer localPlayer) {
 				int trialCount = parkourability.getSynchronizeTrialCount();
 				if (trialCount < 5) {
-					parkourability.trySyncLimitation((LocalPlayer) player, parkourability);
+					parkourability.trySyncLimitation(localPlayer, parkourability);
 					if (ParCoolConfig.Client.Booleans.ShowAutoResynchronizationNotification.get()) {
 						player.displayClientMessage(Component.translatable("parcool.message.error.limitation.not_synced"), false);
 					}
 					ParCool.LOGGER.log(Level.WARN, "Detected ParCool Limitation is not synced. Sending synchronization request...");
 				} else if (trialCount == 5) {
-                    parkourability.incrementSynchronizeTrialCount();
+					parkourability.incrementSynchronizeTrialCount();
 					player.displayClientMessage(Component.translatable("parcool.message.error.limitation.fail_sync").withStyle(ChatFormatting.DARK_RED), false);
-					ParCool.LOGGER.log(Level.ERROR, "Failed to synchronize ParCool Limitation. Please report to developer");
+					ParCool.LOGGER.log(Level.ERROR, "Failed to synchronize ParCool Limitation. There may be problems about server connection. Please report to the developer after checking connection");
 				}
 			}
 		}
