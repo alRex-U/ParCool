@@ -55,16 +55,19 @@ public class StraightZipline extends Zipline {
     }
 
     @Override
-    public double getSquaredDistanceApproximately(Vector3d position) {
+    public double getSquaredDistanceApproximately(Vector3d position, double yDistanceScale) {
         double t = getParameterD(position);
         Vector3d mostNearPoint = getMidPoint(t);
-        return mostNearPoint.distanceToSqr(position);
+        double xOffset = mostNearPoint.x - position.x;
+        double zOffset = mostNearPoint.z - position.z;
+        double yOffset = (mostNearPoint.y - position.y) * yDistanceScale;
+        return xOffset * xOffset + zOffset * zOffset + yOffset * yOffset;
     }
 
     @Override
     public boolean isPossiblyHangable(Vector3d position) {
         return new AxisAlignedBB(getStartPos().x(), getStartPos().y(), getStartPos().z(), getEndPos().x(), getEndPos().y(), getEndPos().z())
-                .inflate(0.5)
+                .inflate(1d)
                 .contains(position);
     }
 }

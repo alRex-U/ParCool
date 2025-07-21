@@ -49,8 +49,10 @@ public class PlayerDamageHandler {
 			) {
 				boolean justTime = parkourability.get(BreakfallReady.class).getDoingTick() < 5;
 				float distance = event.getDistance();
-				if (distance > 2) {
+				if (distance > parkourability.getClientInfo().get(ParCoolConfig.Client.Doubles.LowestFallDistanceForBreakfall)) {
 					StartBreakfallMessage.send(player, justTime);
+				} else {
+					return;
 				}
 				if (distance < 6 || (justTime && distance < 8)) {
 					event.setCanceled(true);

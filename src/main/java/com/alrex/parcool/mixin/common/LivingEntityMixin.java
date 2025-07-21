@@ -5,6 +5,7 @@ import com.alrex.parcool.common.action.impl.ChargeJump;
 import com.alrex.parcool.common.action.impl.ClimbPoles;
 import com.alrex.parcool.common.action.impl.ClimbUp;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.alrex.parcool.common.tags.BlockTags;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -37,6 +38,9 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Shadow
     public abstract void releaseUsingItem();
+
+	@Shadow
+	public int removeArrowTime;
 
 	public LivingEntityMixin(EntityType<?> p_i48580_1_, World p_i48580_2_) {
 		super(p_i48580_1_, p_i48580_2_);
@@ -130,6 +134,6 @@ public abstract class LivingEntityMixin extends Entity {
 			Direction direction = state.getValue(DirectionalBlock.FACING);
 			return !state.isCollisionShapeFullBlock(world, pos) && (direction == Direction.UP || direction == Direction.DOWN);
 		}
-		return false;
+		return block.getTags().contains(BlockTags.POLE_CLIMBABLE);
 	}
 }

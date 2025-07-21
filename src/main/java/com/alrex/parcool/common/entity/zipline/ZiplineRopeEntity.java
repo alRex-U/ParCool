@@ -5,10 +5,7 @@ import com.alrex.parcool.common.block.zipline.ZiplineInfo;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.common.zipline.ZiplineType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.Pose;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -53,7 +50,6 @@ public class ZiplineRopeEntity extends Entity {
         setPos((end.getX() + start.getX()) / 2.0 + 0.5, Math.min(end.getY(), start.getY()), (end.getZ() + start.getZ()) / 2.0 + 0.5);
         noPhysics = true;
         forcedLoading = true;
-        size = EntitySize.fixed(Math.max(Math.abs(end.getX() - start.getX()), Math.abs(end.getZ() - start.getZ())) + 0.3f, Math.abs(end.getY() - start.getY()) + 0.3f);
     }
 
     private BlockPos zipline_start;
@@ -76,17 +72,25 @@ public class ZiplineRopeEntity extends Entity {
             Vector3d endPos;
             TileEntity startEntity = level.getBlockEntity(start);
             TileEntity endEntity = level.getBlockEntity(end);
+            boolean delayInit = false;
             if (startEntity instanceof ZiplineHookTileEntity) {
                 startPos = ((ZiplineHookTileEntity) startEntity).getActualZiplinePoint(end);
             } else {
-                startPos = new Vector3d(start.getX() + 0.5, start.getY() + 0.7, start.getZ() + 0.5);
+                startPos = new Vector3d(start.getX() + 0.5, start.getY() + 0.5, start.getZ() + 0.5);
+                delayInit = true;
             }
             if (endEntity instanceof ZiplineHookTileEntity) {
                 endPos = ((ZiplineHookTileEntity) endEntity).getActualZiplinePoint(start);
             } else {
-                endPos = new Vector3d(end.getX() + 0.5, end.getY() + 0.7, end.getZ() + 0.5);
+                endPos = new Vector3d(end.getX() + 0.5, end.getY() + 0.5, end.getZ() + 0.5);
+                delayInit = true;
             }
-            zipline = type.getZipline(startPos, endPos);
+            if (delayInit) {
+                return type.getZipline(startPos, endPos);
+            } else {
+                zipline = type.getZipline(startPos, endPos);
+            }
+
         }
         return zipline;
     }
@@ -108,7 +112,7 @@ public class ZiplineRopeEntity extends Entity {
         double t = -(xOffset * baseXOffset + yOffset * baseYOffset + zOffset * baseZOffset) / (xOffset * xOffset + yOffset * yOffset + zOffset * zOffset);
         Vector3d mostNearPoint = new Vector3d(xOffset * t + start.getX(), yOffset * t + start.getY(), zOffset * t + start.getZ());
         distanceSqr = mostNearPoint.distanceToSqr(x, y, z);
-        return distanceSqr < Zipline.MAXIMUM_DISTANCE * Zipline.MAXIMUM_DISTANCE;
+        return distanceSqr < Zipline.MAXIMUM_HORIZONTAL_DISTANCE * Zipline.MAXIMUM_HORIZONTAL_DISTANCE;
     }
 
     @Nonnull
@@ -122,22 +126,29 @@ public class ZiplineRopeEntity extends Entity {
     }
 
     @Override
+    public void move(MoverType p_213315_1_, Vector3d p_213315_2_) {
+    }
+
+    /*
+    @Override
     public void refreshDimensions() {
-        if (size != null) {
-            BlockPos end = getEndPos();
-            BlockPos start = getStartPos();
-            if (end != BlockPos.ZERO || start != BlockPos.ZERO) {
-                size = EntitySize.fixed(Math.max(Math.abs(end.getX() - start.getX()), Math.abs(end.getZ() - start.getZ())) + 0.3f, Math.abs(end.getY() - start.getY()) + 0.3f);
-            }
+        super.refreshDimensions();
+        BlockPos end = getEndPos();
+        BlockPos start = getStartPos();
+        if (end != BlockPos.ZERO || start != BlockPos.ZERO) {
+            size = EntitySize.fixed(Math.max(Math.abs(end.getX() - start.getX()), Math.abs(end.getZ() - start.getZ())) + 0.3f, Math.abs(end.getY() - start.getY()) + 0.3f);
+            double d0 = size.width / 2.0;
+            this.setBoundingBox(new AxisAlignedBB(this.getX() - d0, this.getY(), this.getZ() - d0, this.getX() + d0, this.getY() + size.height, this.getZ() + d0));
         }
     }
 
     @Override
     public void onSyncedDataUpdated(@Nonnull DataParameter<?> param) {
-        if (param.equals(DATA_END_POS)) {
+        if (param.equals(DATA_START_POS) || param.equals(DATA_END_POS)) {
             refreshDimensions();
         }
     }
+    */
 
     public BlockPos getStartPos() {
         return getEntityData().get(DATA_START_POS);
@@ -147,11 +158,11 @@ public class ZiplineRopeEntity extends Entity {
         return getEntityData().get(DATA_END_POS);
     }
 
-    public void setStartPos(BlockPos start) {
+    private void setStartPos(BlockPos start) {
         getEntityData().set(DATA_START_POS, start);
     }
 
-    public void setEndPos(BlockPos end) {
+    private void setEndPos(BlockPos end) {
         getEntityData().set(DATA_END_POS, end);
     }
 

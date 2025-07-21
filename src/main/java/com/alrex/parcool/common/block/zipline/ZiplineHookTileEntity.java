@@ -194,22 +194,25 @@ public class ZiplineHookTileEntity extends TileEntity implements ITickableTileEn
     @Override
     public void tick() {
 
-        if (level != null && !level.isClientSide() && connectionEntities.size() < getConnectionPoints().size()) {
-            List<ZiplineHookTileEntity> tileEntities = getConnectionPoints()
-                    .stream()
-                    .filter(it -> !connectionEntities.containsKey(it))
-                    .filter(level::isLoaded)
-                    .map(level::getBlockEntity)
-                    .map(it -> it instanceof ZiplineHookTileEntity ? (ZiplineHookTileEntity) it : null)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
-            tileEntities.forEach(it -> {
-                if (it.getConnectionPoints().contains(this.getBlockPos())) {
-                    this.spawnRope(level, it, getConnectionInfo().get(it.getBlockPos()));
-                } else {
-                    this.getConnectionPoints().remove(it.getBlockPos());
-                }
-            });
+        if (level != null && !level.isClientSide()) {
+            connectionEntities.values().removeIf(it -> !it.isAlive());
+            if (connectionEntities.size() < getConnectionPoints().size()) {
+                List<ZiplineHookTileEntity> tileEntities = getConnectionPoints()
+                        .stream()
+                        .filter(it -> !connectionEntities.containsKey(it))
+                        .filter(level::isLoaded)
+                        .map(level::getBlockEntity)
+                        .map(it -> it instanceof ZiplineHookTileEntity ? (ZiplineHookTileEntity) it : null)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+                tileEntities.forEach(it -> {
+                    if (it.getConnectionPoints().contains(this.getBlockPos())) {
+                        this.spawnRope(level, it, getConnectionInfo().get(it.getBlockPos()));
+                    } else {
+                        this.getConnectionPoints().remove(it.getBlockPos());
+                    }
+                });
+            }
         }
     }
 }

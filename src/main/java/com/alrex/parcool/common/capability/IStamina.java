@@ -2,7 +2,7 @@ package com.alrex.parcool.common.capability;
 
 import com.alrex.parcool.common.capability.capabilities.Capabilities;
 import com.alrex.parcool.common.capability.stamina.HungerStamina;
-import com.alrex.parcool.common.capability.stamina.Stamina;
+import com.alrex.parcool.common.capability.stamina.ParCoolStamina;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.util.LazyOptional;
@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 public interface IStamina {
 	public enum Type {
-		Default(Stamina.class, Stamina::new, null),
+		Default(ParCoolStamina.class, ParCoolStamina::new, null),
 		Hunger(HungerStamina.class, HungerStamina::new, HungerStamina::consumeOnServer);
 
 		Type(Class<? extends IStamina> clazz, Function<PlayerEntity, IStamina> constructor, BiConsumer<ServerPlayerEntity, Integer> serverStaminaHandler) {
@@ -71,6 +71,10 @@ public interface IStamina {
 	public void set(int value);
 
 	public default void updateOldValue() {
+	}
+
+	public default boolean isImposingExhaustionPenalty() {
+		return isExhausted();
 	}
 
 	public default boolean wantToConsumeOnServer() {

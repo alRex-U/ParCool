@@ -70,8 +70,9 @@ public class ActionProcessor {
 					}
 					ParCool.LOGGER.log(Level.WARN, "Detected ParCool Limitation is not synced. Sending synchronization request...");
 				} else if (trialCount == 5) {
+					parkourability.incrementSynchronizeTrialCount();
 					player.displayClientMessage(new TranslationTextComponent("parcool.message.error.limitation.fail_sync").withStyle(TextFormatting.DARK_RED), false);
-					ParCool.LOGGER.log(Level.ERROR, "Failed to synchronize ParCool Limitation. Please report to developer");
+					ParCool.LOGGER.log(Level.ERROR, "Failed to synchronize ParCool Limitation. There may be problems about server connection. Please report to the developer after checking connection");
 				}
 			}
 		}
@@ -173,7 +174,7 @@ public class ActionProcessor {
 				staminaSyncCoolTimeTick = 0;
 				SyncStaminaMessage.sync(player);
 			}
-			if (stamina.isExhausted()) {
+			if (stamina.isImposingExhaustionPenalty() && parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.EnableStaminaExhaustionPenalty)) {
 				player.setSprinting(false);
 			}
 		}

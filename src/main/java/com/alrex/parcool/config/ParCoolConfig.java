@@ -120,6 +120,14 @@ public class ParCoolConfig {
 					ConfigGroup.HUD, "Stamina HUD shows action charge rate, cool time or etc",
 					"show_action_status_bar", true
 			),
+			ShowLightStaminaHUDAlways(
+					ConfigGroup.HUD, "Light stamina HUD shows always",
+					"show_light_hud_always", false
+			),
+			EnableStaminaExhaustionPenalty(
+					ConfigGroup.Stamina, "Enable slowing down of stamina exhaustion",
+					"enable_stamina_exhaustion_penalty", true
+			),
 			EnableDoubleTappingForDodge(
 					ConfigGroup.Control, "Enable double-tapping ctrl for Dodge",
 					"enable_double_tapping_for_dodge", false
@@ -178,7 +186,7 @@ public class ParCoolConfig {
 			),
 			ShowAutoResynchronizationNotification(
 					ConfigGroup.Other, "Notify if auto resynchronization of Limitation is executed",
-					"notify_limitation_auto_resync", true
+					"notify_limitation_auto_resync", false
 			),
 			ParCoolIsActive(
 					ConfigGroup.Other, "Whether ParCool is active",
@@ -369,6 +377,10 @@ public class ParCoolConfig {
 			DodgeSpeedModifier(
 					ConfigGroup.Modifier, "Dodge speed modifier",
 					"dodge-speed_modifier", 1, Server.Doubles.MaxDodgeSpeedModifier.Min, Server.Doubles.MaxDodgeSpeedModifier.Max
+			),
+			LowestFallDistanceForBreakfall(
+					ConfigGroup.Control, "Lowest fall distance needed to trigger breakfall movements",
+					"lowest_fall_distance_for_breakfall", 2, 0, 10
 			);
 			public final ConfigGroup Group;
 			@Nullable

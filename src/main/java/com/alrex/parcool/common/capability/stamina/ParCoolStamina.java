@@ -9,15 +9,15 @@ import net.minecraft.entity.player.PlayerEntity;
 
 import javax.annotation.Nullable;
 
-public class Stamina implements IStamina {
-	public Stamina(@Nullable PlayerEntity player) {
+public class ParCoolStamina implements IStamina {
+	public ParCoolStamina(@Nullable PlayerEntity player) {
 		this.player = player;
 		if (player != null && player.isLocalPlayer()) {
             set(Integer.MAX_VALUE);
 		}
 	}
 
-	public Stamina() {
+	public ParCoolStamina() {
 		this.player = null;
 	}
 

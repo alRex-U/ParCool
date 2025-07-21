@@ -15,8 +15,9 @@ public class EntityType {
             = REGISTER.register("zipline_rope", () -> net.minecraft.entity.EntityType.Builder
             .of((net.minecraft.entity.EntityType.IFactory<ZiplineRopeEntity>) ZiplineRopeEntity::new, EntityClassification.MISC)
             .noSave()
-            .clientTrackingRange((int) (Zipline.MAXIMUM_DISTANCE / 1.9))
+            .clientTrackingRange((int) (Zipline.MAXIMUM_HORIZONTAL_DISTANCE / 1.9))
             .updateInterval(Integer.MAX_VALUE)
+            .sized(0.1f, 0.1f)
             .noSummon()
             .build("zipline_rope")
     );
