@@ -23,4 +23,8 @@ public interface IParCoolStaminaHandler {
 
     public default void processOnServer(Player player, int value) {
     }
+
+    public default boolean isExternalStamina() {
+        return false;
+    }
 }

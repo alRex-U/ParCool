@@ -195,10 +195,10 @@ public class ParCoolConfig {
 					ConfigGroup.Control, "enable players to do actions needing Fast-Running by sprint",
 					"substitute_sprint", false
 			),
-            ShowAutoResynchronizationNotification(
-                    ConfigGroup.Other, "Notify if auto resynchronization of Limitation is executed",
-                    "notify_limitation_auto_resync", true
-            ),
+			ShowAutoResynchronizationNotification(
+					ConfigGroup.Other, "Notify if auto resynchronization of Limitation is executed",
+					"notify_limitation_auto_resync", false
+			),
 			ParCoolIsActive(
 					ConfigGroup.Other, "Whether ParCool is active",
 					"parcool_activation", true
@@ -388,6 +388,10 @@ public class ParCoolConfig {
 			DodgeSpeedModifier(
 					ConfigGroup.Modifier, "Dodge speed modifier",
 					"dodge-speed_modifier", 1, Server.Doubles.MaxDodgeSpeedModifier.Min, Server.Doubles.MaxDodgeSpeedModifier.Max
+			),
+			LowestFallDistanceForBreakfall(
+					ConfigGroup.Control, "Lowest fall distance needed to trigger breakfall movements",
+					"lowest_fall_distance_for_breakfall", 2, 0, 10
 			);
 			public final ConfigGroup Group;
 			@Nullable
