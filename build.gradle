@@ -89,6 +89,9 @@ dependencies {
     runtimeOnly "vazkii.patchouli:Patchouli:${patchouli_version}"
     compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}"
 
+    compileOnly "curse.maven:paraglider-289240:6739615"
+    runtimeOnly "curse.maven:paraglider-289240:6739615"
+
     compileOnly "curse.maven:ShoulderSurfing-243190:6496668"
     compileOnly "curse.maven:BetterThirdPerson-435044:5833474"
 }
