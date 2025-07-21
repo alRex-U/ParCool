@@ -43,7 +43,6 @@ public class FastRun extends Action {
 		if (attr == null) return;
 		if (attr.getModifier(FAST_RUNNING_MODIFIER) != null) attr.removeModifier(FAST_RUNNING_MODIFIER);
 		if (isDoing()) {
-			player.setSprinting(true);
 			attr.addTransientModifier(new AttributeModifier(
 					FAST_RUNNING_MODIFIER,
 					speedModifier / 100d,
