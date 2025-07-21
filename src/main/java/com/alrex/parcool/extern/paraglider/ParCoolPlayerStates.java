@@ -35,6 +35,7 @@ public class ParCoolPlayerStates {
     public static final Entry VAULT = new Entry(Vault.class).parentID(FAST_RUN.stateID());
     public static final Entry CATLEAP = new Entry(CatLeap.class).parentID(FAST_RUN.stateID());
     public static final Entry CHARGE_JUMP = new Entry(ChargeJump.class).parentID(ParagliderPlayerStates.MIDAIR);
+    public static final Entry RIDE_ZIPLINE = new Entry(RideZipline.class).parentID(ParagliderPlayerStates.MIDAIR);
 
     public static final List<Entry> ENTRIES = Arrays.asList(
             FAST_RUN,
@@ -48,7 +49,8 @@ public class ParCoolPlayerStates {
             VERTICAL_WALL_RUN,
             VAULT,
             CATLEAP,
-            CHARGE_JUMP
+            CHARGE_JUMP,
+            RIDE_ZIPLINE
     );
 
     public record Entry(
