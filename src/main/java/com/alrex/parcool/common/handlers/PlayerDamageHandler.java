@@ -42,7 +42,6 @@ public class PlayerDamageHandler {
         if (event.getEntity() instanceof ServerPlayer player) {
 
             Parkourability parkourability = Parkourability.get(player);
-            if (parkourability == null) return;
 
             if (parkourability.get(BreakfallReady.class).isDoing()
                     && (parkourability.getActionInfo().can(Tap.class)
@@ -50,8 +49,10 @@ public class PlayerDamageHandler {
             ) {
                 boolean justTime = parkourability.get(BreakfallReady.class).getDoingTick() < 5;
                 float distance = event.getDistance();
-                if (distance > 2) {
+                if (distance > parkourability.getClientInfo().get(ParCoolConfig.Client.Doubles.LowestFallDistanceForBreakfall)) {
                     PacketDistributor.sendToPlayer(player, new StartBreakfallEventPayload(justTime));
+                } else {
+                    return;
                 }
                 if (distance < 6 || (justTime && distance < 8)) {
                     event.setCanceled(true);
@@ -64,7 +65,7 @@ public class PlayerDamageHandler {
                         && parkourability.getActionInfo().can(HideInBlock.class)
                         && !NeoForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStartEvent(player, hideInBlock)).isCanceled()
                 ) {
-                    Tuple<BlockPos, BlockPos> area = WorldUtil.getHideAbleSpace(player, player.blockPosition().below());
+                    Tuple<BlockPos, BlockPos> area = WorldUtil.getHideAbleSpace(player, new BlockPos(player.blockPosition().below()));
                     if (area != null) {
                         boolean stand = player.getBbHeight() < (Math.abs(area.getB().getY() - area.getA().getY()) + 1);
                         if (!stand) {
@@ -77,13 +78,11 @@ public class PlayerDamageHandler {
                     }
                 }
             }
-        } else if (event.getEntity() instanceof Player) {
-            Player player = (Player) event.getEntity();
+        } else if (event.getEntity() instanceof Player player) {
             if (!player.isLocalPlayer()) {
                 return;
             }
             Parkourability parkourability = Parkourability.get(player);
-            if (parkourability == null) return;
             if (parkourability.getAdditionalProperties().getNotLandingTick() > 5 && event.getDistance() < 0.4f) {
                 parkourability.get(ChargeJump.class).onLand(player, parkourability);
             }

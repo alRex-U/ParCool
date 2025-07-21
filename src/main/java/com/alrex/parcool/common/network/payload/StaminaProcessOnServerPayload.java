@@ -36,7 +36,7 @@ public record StaminaProcessOnServerPayload(StaminaType stamina, int value) impl
     public static void handleServer(StaminaProcessOnServerPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             Player player = context.player();
-            payload.stamina().newHandler().processOnServer(player, payload.value());
+            payload.stamina().newHandler(player).processOnServer(player, payload.value());
         });
     }
 }

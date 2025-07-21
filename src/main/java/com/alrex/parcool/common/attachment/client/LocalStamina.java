@@ -32,8 +32,13 @@ public class LocalStamina {
 
     public void changeType(LocalPlayer player, StaminaType type) {
         currentType = type;
-        handler = type.newHandler();
+        handler = type.newHandler(player);
         player.setData(Attachments.STAMINA, handler.initializeStamina(player, player.getData(Attachments.STAMINA)));
+    }
+
+    @Nullable
+    public IParCoolStaminaHandler getHandler() {
+        return handler;
     }
 
     public boolean isExhausted(LocalPlayer player) {
@@ -76,5 +81,9 @@ public class LocalStamina {
 
     public void sync(LocalPlayer player) {
         player.getData(Attachments.STAMINA).sync(player);
+    }
+
+    public boolean isUsingExternalStamina() {
+        return handler != null && handler.isExternalStamina();
     }
 }
