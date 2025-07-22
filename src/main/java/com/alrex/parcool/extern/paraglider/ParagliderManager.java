@@ -16,6 +16,10 @@ public class ParagliderManager extends ModManager {
 
     public ParagliderManager() {
         super("paraglider");
+    }
+
+    @Override
+    public void initInClient() {
         NeoForge.EVENT_BUS.register(EventConsumerForParaglider.class);
     }
 

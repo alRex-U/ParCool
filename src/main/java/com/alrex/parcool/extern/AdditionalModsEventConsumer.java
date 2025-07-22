@@ -7,13 +7,15 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 
 public class AdditionalModsEventConsumer {
-    @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
-    public static void onHUDRender(ParCoolHUDEvent.RenderEvent event) {
-        var player = Minecraft.getInstance().player;
-        if (player == null) return;
-        if (AdditionalMods.isUsingExternalStamina()) {
-            event.setCanceled(true);
+    public static class Client {
+        @OnlyIn(Dist.CLIENT)
+        @SubscribeEvent
+        public static void onHUDRender(ParCoolHUDEvent.RenderEvent event) {
+            var player = Minecraft.getInstance().player;
+            if (player == null) return;
+            if (AdditionalMods.isUsingExternalStamina()) {
+                event.setCanceled(true);
+            }
         }
     }
 }
