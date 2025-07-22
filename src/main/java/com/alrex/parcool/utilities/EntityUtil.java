@@ -7,4 +7,10 @@ public class EntityUtil {
 	public static void addVelocity(Entity entity, Vec3 vec) {
 		entity.setDeltaMovement(entity.getDeltaMovement().add(vec));
 	}
+
+    public static void setYRot(Entity entity, float yRot) {
+        entity.setYBodyRot(yRot);
+        entity.setYHeadRot(yRot);
+        entity.yRot = yRot;
+    }
 }
