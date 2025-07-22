@@ -43,6 +43,14 @@ public enum AdditionalMods {
         NeoForge.EVENT_BUS.register(AdditionalModsEventConsumer.class);
     }
 
+    public static void initInClient() {
+        Arrays.stream(values()).map(AdditionalMods::get).forEach(ModManager::initInClient);
+    }
+
+    public static void initInDedicatedServer() {
+        Arrays.stream(values()).map(AdditionalMods::get).forEach(ModManager::initInDedicatedServer);
+    }
+
     @OnlyIn(Dist.CLIENT)
     public static boolean isCameraDecoupled() {
         return shoulderSurfing().isCameraDecoupled() || betterThirdPerson().isCameraDecoupled();
