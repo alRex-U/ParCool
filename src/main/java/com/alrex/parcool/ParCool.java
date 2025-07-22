@@ -24,6 +24,7 @@ import com.alrex.parcool.server.command.CommandRegistry;
 import com.alrex.parcool.server.limitation.Limitations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -91,8 +92,10 @@ public class ParCool {
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {
-		AdditionalMods.init();
 		PotionRecipeRegistry.register();
+		AdditionalMods.init();
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> AdditionalMods::initInClient);
+		DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> AdditionalMods::initInDedicatedServer);
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {

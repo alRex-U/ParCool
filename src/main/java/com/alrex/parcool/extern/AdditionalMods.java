@@ -31,6 +31,14 @@ public enum AdditionalMods {
         Arrays.stream(values()).map(AdditionalMods::get).forEach(ModManager::init);
     }
 
+    public static void initInClient() {
+        Arrays.stream(values()).map(AdditionalMods::get).forEach(ModManager::initInClient);
+    }
+
+    public static void initInDedicatedServer() {
+        Arrays.stream(values()).map(AdditionalMods::get).forEach(ModManager::initInDedicatedServer);
+    }
+
     public static boolean isCameraDecoupled() {
         return shoulderSurfingManager().isCameraDecoupled() || betterThirdPerson().isCameraDecoupled();
     }
