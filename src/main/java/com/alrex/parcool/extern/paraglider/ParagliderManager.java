@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import tictim.paraglider.api.item.Paraglider;
 
 import javax.annotation.Nullable;
@@ -20,6 +21,13 @@ public class ParagliderManager extends ModManager {
 	public IStamina newParagliderStaminaFor(Player player) {
 		if (!isInstalled()) return IStamina.Type.Default.newInstance(player);
 		return new ParagliderStamina(player);
+	}
+
+	@Override
+	public void initInClient() {
+		if (isInstalled()) {
+			MinecraftForge.EVENT_BUS.register(EventConsumerForParaglider.class);
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
