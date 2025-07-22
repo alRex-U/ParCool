@@ -1,10 +1,17 @@
 package com.alrex.parcool.client.input;
 
 import javax.annotation.Nullable;
+import com.alrex.parcool.utilities.CameraUtil;
+import com.alrex.parcool.utilities.VectorUtil;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.MovementInput;
+import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.InputUpdateEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -27,7 +34,8 @@ public class KeyRecorder {
 	public static final KeyState keyQuickTurn = new KeyState();
 	public static final KeyState keyFlipping = new KeyState();
 	public static final KeyState keyBindGrabWall = new KeyState();
-	public static Vector3d lastDirection = null;
+	private static Vector3d keyboardDirection = null;
+	private static Vector3d lastDirection = null;
 
 	@SubscribeEvent
 	public static void onClientTick(TickEvent.ClientTickEvent event) {
@@ -50,12 +58,13 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyQuickTurn(), keyQuickTurn);
 		record(KeyBindings.getKeyFlipping(), keyFlipping);
 		record(KeyBindings.getKeyGrabWall(), keyBindGrabWall);
-		recordMovingVector(KeyBindings.isAnyMovingKeyDown());
 	}
 
 	@Nullable
 	public static Vector3d getLastMoveVector() {
-		return lastDirection;
+		Vector3d vector = lastDirection;
+		if (vector == null) return null;
+		return CameraUtil.alignVectorToCamera(vector);
 	}
 
 	private static void record(Boolean isDown, KeyState state) {
@@ -78,8 +87,12 @@ public class KeyRecorder {
 		record(keyBinding.isDown(), state);
 	}
 
-	private static void recordMovingVector(boolean isMoving) {
-		if (isMoving) lastDirection = KeyBindings.getCurrentMoveVector();
+	public static void recordKeyboardMovingVector(MovementInput moving) {
+		Vector2f vector = moving.getMoveVector();
+		if (!VectorUtil.isZero(vector)) {
+			Vector3d newDirection = new Vector3d(vector.x, 0, vector.y);
+			keyboardDirection = newDirection;
+		}
 	}
 
 	public static class KeyState {
@@ -112,6 +125,21 @@ public class KeyRecorder {
 
 		public int getPreviousTickNotKeyDown() {
 			return previousTickNotKeyDown;
+		}
+	}
+
+	public static void onInputs(InputUpdateEvent event) {
+		ClientPlayerEntity player = Minecraft.getInstance().player;
+		if (player == null) return;
+		if (keyboardDirection != null) {
+			lastDirection = keyboardDirection;
+			keyboardDirection = null;
+			return;
+		}
+		Vector2f vector = player.input.getMoveVector();
+		if (!VectorUtil.isZero(vector)) {
+			Vector3d newDirection = new Vector3d(vector.x, 0, vector.y);
+			lastDirection = newDirection;
 		}
 	}
 }

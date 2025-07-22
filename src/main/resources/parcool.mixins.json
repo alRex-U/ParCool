@@ -11,7 +11,8 @@
     "client.GameSettingsMixin",
     "client.LivingRendererMixin",
     "client.PlayerModelMixin",
-    "client.PlayerRendererMixin"
+    "client.PlayerRendererMixin",
+    "client.MovementInputMixin"
   ],
   "injectors": {
     "defaultRequire": 1
