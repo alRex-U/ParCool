@@ -23,6 +23,7 @@ import com.alrex.parcool.proxy.ServerProxy;
 import com.alrex.parcool.server.command.CommandRegistry;
 import com.alrex.parcool.server.limitation.Limitations;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -93,8 +94,10 @@ public class ParCool {
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {
-		AdditionalMods.init();
 		PotionRecipeRegistry.register();
+		AdditionalMods.init();
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> AdditionalMods::initInClient);
+		DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> AdditionalMods::initInDedicatedServer);
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {

@@ -18,6 +18,13 @@ public abstract class ModManager {
         installed = mod != null;
     }
 
+    // These are called After `init` method
+    public void initInClient() {
+    }
+
+    public void initInDedicatedServer() {
+    }
+
     public boolean isInstalled() {
         return installed;
     }
