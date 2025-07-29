@@ -105,9 +105,4 @@ public class Crawl extends Action {
 		player.setSprinting(false);
 		player.setPose(Pose.SWIMMING);
 	}
-
-	@Override
-	public void onStop(PlayerEntity player) {
-		player.setPose(Pose.STANDING);
-	}
 }
