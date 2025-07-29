@@ -1,12 +1,10 @@
 package com.alrex.parcool.common.action;
 
-import net.minecraft.client.settings.PointOfView;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.function.Supplier;
 
 public class BehaviorEnforcer {
@@ -57,7 +55,7 @@ public class BehaviorEnforcer {
 
     private final TreeMap<ID, Marker> jumpCancelMarks = new TreeMap<>();
     private final TreeMap<ID, Marker> descendFromEdgeCancelMarks = new TreeMap<>();
-    private final TreeMap<ID, Marker> sneakCancelMarks = new TreeMap<>();
+    private final ConcurrentSkipListMap<ID, Marker> sneakCancelMarks = new ConcurrentSkipListMap<>();
     private final TreeMap<ID, Marker> sprintCancelMarks = new TreeMap<>();
     private final TreeMap<ID, Marker> fallFlyingCancelMarks = new TreeMap<>();
     private final TreeMap<ID, Marker> showNameCancelMarks = new TreeMap<>();
