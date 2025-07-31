@@ -69,7 +69,6 @@ public class ClingToCliff extends Action {
 	@Override
 	public boolean canContinue(Player player, Parkourability parkourability, IStamina stamina) {
 		return (!stamina.isExhausted()
-				&& parkourability.getActionInfo().can(ClingToCliff.class)
 				&& isGrabbing()
 				&& !parkourability.get(HorizontalWallRun.class).isDoing()
 				&& !parkourability.get(ClimbUp.class).isDoing()
@@ -81,7 +80,7 @@ public class ClingToCliff extends Action {
 	private boolean isGrabbing() {
 		return ParCoolConfig.Client.ClingToCliffControl.get() == ControlType.PressKey
 				? KeyBindings.getKeyGrabWall().isDown()
-				: !KeyRecorder.keyBindGrabWall.isPressed();
+				: !KeyRecorder.keyGrabWall.isPressed();
 	}
 
     @Override

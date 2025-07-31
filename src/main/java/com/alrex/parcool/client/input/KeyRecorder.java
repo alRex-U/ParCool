@@ -4,7 +4,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import javax.annotation.Nullable;
@@ -27,17 +27,15 @@ public class KeyRecorder {
 	public static final KeyState keyWallJump = new KeyState();
 	public static final KeyState keyQuickTurn = new KeyState();
 	public static final KeyState keyFlipping = new KeyState();
-    public static final KeyState keyBindGrabWall = new KeyState();
+	public static final KeyState keyGrabWall = new KeyState();
 	public static Vec3 lastDirection = null;
 
 	@SubscribeEvent
-	public static void onClientTick(TickEvent.ClientTickEvent event) {
-		if (event.phase != TickEvent.Phase.START) return;
-
-        record(KeyBindings.isKeyForwardDown(), keyForward);
-        record(KeyBindings.isKeyBackDown(), keyBack);
-        record(KeyBindings.isKeyRightDown(), keyRight);
-        record(KeyBindings.isKeyLeftDown(), keyLeft);
+	public static void onClientTick(MovementInputUpdateEvent event) {
+		record(KeyBindings.isKeyForwardDown(), keyForward);
+		record(KeyBindings.isKeyBackDown(), keyBack);
+		record(KeyBindings.isKeyRightDown(), keyRight);
+		record(KeyBindings.isKeyLeftDown(), keyLeft);
 		record(KeyBindings.getKeySneak(), keySneak);
         record(KeyBindings.isKeyJumpDown(), keyJumpState);
 		record(KeyBindings.getKeySprint(), keySprintState);
@@ -50,7 +48,7 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyWallJump(), keyWallJump);
 		record(KeyBindings.getKeyQuickTurn(), keyQuickTurn);
 		record(KeyBindings.getKeyFlipping(), keyFlipping);
-		record(KeyBindings.getKeyGrabWall(), keyBindGrabWall);
+		record(KeyBindings.getKeyGrabWall(), keyGrabWall);
 		recordMovingVector(KeyBindings.isAnyMovingKeyDown());
 	}
 
