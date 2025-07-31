@@ -59,7 +59,8 @@ public class ZiplineRopeDyeRecipe extends CustomRecipe {
             }
         }
         if (ziplineRope == null || dyeItems.isEmpty()) return ItemStack.EMPTY;
-        ziplineRope = ziplineRope.copy();
+        ItemStack resultZiplineRope = new ItemStack(Items.ZIPLINE_ROPE::get);
+        resultZiplineRope.applyComponents(resultZiplineRope.getComponents());
         int r = 0, g = 0, b = 0;
         int dyeSize = dyeItems.size();
         for (DyeItem dyeItem : dyeItems) {
@@ -68,9 +69,9 @@ public class ZiplineRopeDyeRecipe extends CustomRecipe {
             g += FastColor.ARGB32.green(color);
             b += FastColor.ARGB32.blue(color);
         }
-        if (ZiplineRopeItem.hasCustomColor(ziplineRope)) {
+        if (ZiplineRopeItem.hasCustomColor(resultZiplineRope)) {
             dyeSize++;
-            int color = ZiplineRopeItem.getColor(ziplineRope);
+            int color = ZiplineRopeItem.getColor(resultZiplineRope);
             r += FastColor.ARGB32.red(color);
             g += FastColor.ARGB32.green(color);
             b += FastColor.ARGB32.blue(color);
@@ -78,8 +79,8 @@ public class ZiplineRopeDyeRecipe extends CustomRecipe {
         r = Mth.clamp(r / dyeSize, 0, 0xFF);
         g = Mth.clamp(g / dyeSize, 0, 0xFF);
         b = Mth.clamp(b / dyeSize, 0, 0xFF);
-        ZiplineRopeItem.setColor(ziplineRope, FastColor.ARGB32.color(r, g, b));
-        return ziplineRope;
+        ZiplineRopeItem.setColor(resultZiplineRope, FastColor.ARGB32.color(r, g, b));
+        return resultZiplineRope;
     }
 
     @Override

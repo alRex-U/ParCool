@@ -83,10 +83,9 @@ public class ParCool {
 
 	private void loaded(FMLLoadCompleteEvent event) {
 		AdditionalMods.init();
-		if (FMLEnvironment.dist == Dist.CLIENT) {
-			AdditionalMods.initInClient();
-		} else if (FMLEnvironment.dist == Dist.DEDICATED_SERVER) {
-			AdditionalMods.initInDedicatedServer();
+		switch (FMLEnvironment.dist) {
+			case CLIENT -> AdditionalMods.initInClient();
+			case DEDICATED_SERVER -> AdditionalMods.initInDedicatedServer();
 		}
 	}
 
