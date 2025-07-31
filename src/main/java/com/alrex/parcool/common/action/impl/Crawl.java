@@ -64,13 +64,15 @@ public class Crawl extends Action {
 
 	@Override
 	public boolean canContinue(Player player, Parkourability parkourability) {
-		switch (ParCoolConfig.Client.getInstance().CrawlControl.get()) {
-			case Toggle:
-				if (!toggleStatus) return false;
-				break;
-			case PressKey:
-				if (!KeyBindings.getKeyCrawl().isDown()) return false;
-				break;
+		if (player.canPlayerFitWithinBlocksAndEntitiesWhen(Pose.STANDING)) {
+			switch (ParCoolConfig.Client.getInstance().CrawlControl.get()) {
+				case Toggle:
+					if (!toggleStatus) return false;
+					break;
+				case PressKey:
+					if (!KeyBindings.getKeyCrawl().isDown()) return false;
+					break;
+			}
 		}
 		return !parkourability.get(Roll.class).isDoing()
 				&& !parkourability.get(Tap.class).isDoing()
@@ -87,7 +89,7 @@ public class Crawl extends Action {
 	@Override
 	public void onWorkingTickInClient(Player player, Parkourability parkourability) {
 		Animation animation = Animation.get(player);
-		if (animation != null && !animation.hasAnimator()) {
+		if (!animation.hasAnimator()) {
 			animation.setAnimator(new CrawlAnimator());
 		}
 	}
