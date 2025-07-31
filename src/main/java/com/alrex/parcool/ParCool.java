@@ -22,6 +22,7 @@ import com.alrex.parcool.common.registries.EventBusForgeRegistry;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.server.command.CommandRegistry;
+import com.alrex.parcool.server.command.args.ParCoolArgumentTypeInfos;
 import com.alrex.parcool.server.limitation.Limitations;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -72,6 +73,7 @@ public class ParCool {
 		TileEntities.registerAll(eventBus);
 		DataComponents.registerAll(eventBus);
 		Attachments.registerAll(eventBus);
+		ParCoolArgumentTypeInfos.registerAll(eventBus);
 
 		NeoForge.EVENT_BUS.addListener(this::registerCommand);
 		NeoForge.EVENT_BUS.addListener(Limitations::init);
@@ -83,10 +85,13 @@ public class ParCool {
 
 	private void loaded(FMLLoadCompleteEvent event) {
 		AdditionalMods.init();
+		switch (FMLEnvironment.dist) {
+			case CLIENT -> AdditionalMods.initInClient();
+			case DEDICATED_SERVER -> AdditionalMods.initInDedicatedServer();
+		}
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
-		CommandRegistry.registerArgumentTypes(event);
 	}
 
 	private void registerCommand(final RegisterCommandsEvent event) {

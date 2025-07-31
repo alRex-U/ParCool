@@ -34,7 +34,15 @@ public enum AdditionalMods {
 
     public static void init() {
         Arrays.stream(values()).map(AdditionalMods::get).forEach(ModManager::init);
-        NeoForge.EVENT_BUS.register(AdditionalModsEventConsumer.class);
+    }
+
+    public static void initInClient() {
+        NeoForge.EVENT_BUS.register(AdditionalModsEventConsumer.Client.class);
+        Arrays.stream(values()).map(AdditionalMods::get).forEach(ModManager::initInClient);
+    }
+
+    public static void initInDedicatedServer() {
+        Arrays.stream(values()).map(AdditionalMods::get).forEach(ModManager::initInDedicatedServer);
     }
 
     @OnlyIn(Dist.CLIENT)

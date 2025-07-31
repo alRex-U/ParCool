@@ -6,6 +6,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
 
 import javax.annotation.Nullable;
 
@@ -27,11 +28,11 @@ public class KeyRecorder {
 	public static final KeyState keyWallJump = new KeyState();
 	public static final KeyState keyQuickTurn = new KeyState();
 	public static final KeyState keyFlipping = new KeyState();
-    public static final KeyState keyBindGrabWall = new KeyState();
+	public static final KeyState keyGrabWall = new KeyState();
 	public static Vec3 lastDirection = null;
 
 	@SubscribeEvent
-	public static void onClientTick(ClientTickEvent.Post event) {
+	public static void onClientTick(MovementInputUpdateEvent event) {
         record(KeyBindings.isKeyForwardDown(), keyForward);
         record(KeyBindings.isKeyBackDown(), keyBack);
         record(KeyBindings.isKeyRightDown(), keyRight);
@@ -48,7 +49,7 @@ public class KeyRecorder {
 		record(KeyBindings.getKeyWallJump(), keyWallJump);
 		record(KeyBindings.getKeyQuickTurn(), keyQuickTurn);
 		record(KeyBindings.getKeyFlipping(), keyFlipping);
-		record(KeyBindings.getKeyGrabWall(), keyBindGrabWall);
+		record(KeyBindings.getKeyGrabWall(), keyGrabWall);
 		recordMovingVector(KeyBindings.isAnyMovingKeyDown());
 	}
 
