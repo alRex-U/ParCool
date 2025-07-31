@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.attachment.client;
 
+import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.common.attachment.Attachments;
 import com.alrex.parcool.common.attachment.ClientAttachments;
 import com.alrex.parcool.common.stamina.IParCoolStaminaHandler;
@@ -56,6 +57,7 @@ public class LocalStamina {
     public void consume(LocalPlayer player, int value) {
         if (player.isCreative() || player.isSpectator()) return;
         if (handler == null) return;
+        if (player.hasEffect(Effects.INEXHAUSTIBLE)) return;
         player.setData(
                 Attachments.STAMINA,
                 handler.consume(player, player.getData(Attachments.STAMINA), value)

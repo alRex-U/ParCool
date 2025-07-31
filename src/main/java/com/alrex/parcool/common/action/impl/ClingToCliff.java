@@ -78,7 +78,7 @@ public class ClingToCliff extends Action {
     private boolean isGrabbing() {
 		return ParCoolConfig.Client.getInstance().ClingToCliffControl.get() == ControlType.PressKey
                 ? KeyBindings.getKeyGrabWall().isDown()
-                : !KeyRecorder.keyBindGrabWall.isPressed();
+                : !KeyRecorder.keyGrabWall.isPressed();
 	}
 
     @Override
