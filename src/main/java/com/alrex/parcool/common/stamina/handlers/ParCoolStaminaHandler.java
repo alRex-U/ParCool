@@ -51,4 +51,10 @@ public class ParCoolStaminaHandler implements IParCoolStaminaHandler {
         }
         return current;
     }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public boolean shouldShowHUD(LocalPlayer player) {
+        return true;
+    }
 }
