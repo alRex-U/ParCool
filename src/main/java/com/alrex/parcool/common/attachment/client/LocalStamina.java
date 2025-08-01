@@ -57,6 +57,7 @@ public class LocalStamina {
     public void consume(LocalPlayer player, int value) {
         if (player.isCreative() || player.isSpectator()) return;
         if (handler == null) return;
+        if (isInfinite(player)) return;
         if (player.hasEffect(Effects.INEXHAUSTIBLE)) return;
         player.setData(
                 Attachments.STAMINA,
@@ -79,6 +80,11 @@ public class LocalStamina {
                 Attachments.STAMINA,
                 handler.onTick(player, player.getData(Attachments.STAMINA))
         );
+    }
+
+    public boolean shouldShowHUD(LocalPlayer player) {
+        if (handler == null) return false;
+        return handler.shouldShowHUD(player);
     }
 
     public void sync(LocalPlayer player) {
