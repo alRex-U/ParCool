@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.gui;
 
+import com.alrex.parcool.common.attachment.client.LocalStamina;
 import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
@@ -17,6 +18,7 @@ import java.util.List;
 
 public class SettingEnumConfigScreen extends ParCoolSettingScreen {
     private final EnumConfigSet<?>[] enumConfigList = new EnumConfigSet[]{
+            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().StaminaType),
             new EnumConfigSet<>(ParCoolConfig.Client.getInstance().AlignHorizontalStaminaHUD),
             new EnumConfigSet<>(ParCoolConfig.Client.getInstance().AlignVerticalStaminaHUD),
             new EnumConfigSet<>(ParCoolConfig.Client.getInstance().FastRunControl),
@@ -99,8 +101,8 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
         Parkourability parkourability = Parkourability.get(player);
-        if (parkourability == null) return;
         parkourability.getActionInfo().setClientSetting(ClientSetting.readFromLocalConfig());
+        parkourability.getActionInfo().updateStaminaType(LocalStamina.get(player), player);
         PacketDistributor.sendToServer(new ClientInformationPayload(player.getUUID(), true, parkourability.getClientInfo()));
     }
 

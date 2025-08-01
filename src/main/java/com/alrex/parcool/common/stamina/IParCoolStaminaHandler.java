@@ -21,6 +21,11 @@ public interface IParCoolStaminaHandler {
         return current;
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public default boolean shouldShowHUD(LocalPlayer player) {
+        return false;
+    }
+
     public default void processOnServer(Player player, int value) {
     }
 }

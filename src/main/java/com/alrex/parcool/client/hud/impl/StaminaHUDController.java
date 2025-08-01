@@ -52,6 +52,8 @@ public class StaminaHUDController implements LayeredDraw.Layer {
 				parkourability.getActionInfo().isStaminaInfinite(localStamina, player)
 		) return;
 
+		if (!localStamina.shouldShowHUD(player)) return;
+
 		if (NeoForge.EVENT_BUS.post(new ParCoolHUDEvent.RenderEvent(graphics, partialTick)).isCanceled())
 			return;
 
