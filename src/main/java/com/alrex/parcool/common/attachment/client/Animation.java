@@ -93,17 +93,21 @@ public class Animation {
 		if (animator != null) {
             animator.tick(player);
 		}
-        {
-            ParCoolAnimationInfoEvent animationEvent = new ParCoolAnimationInfoEvent(player, animator);
-			NeoForge.EVENT_BUS.post(animationEvent);
-            option = animationEvent.getOption();
-        }
 	}
 
 	public void onRenderTick(RenderFrameEvent event, Player player, Parkourability parkourability) {
 		if (animator != null) {
 			animator.onRenderTick(event, player, parkourability);
 		}
+        if (event instanceof RenderFrameEvent.Pre){
+            updateAnimationInfo((AbstractClientPlayer) player);
+        }
+	}
+
+	public void updateAnimationInfo(AbstractClientPlayer player) {
+		ParCoolAnimationInfoEvent animationEvent = new ParCoolAnimationInfoEvent(player, animator);
+		NeoForge.EVENT_BUS.post(animationEvent);
+		option = animationEvent.getOption();
 	}
 
 	public boolean hasAnimator() {
