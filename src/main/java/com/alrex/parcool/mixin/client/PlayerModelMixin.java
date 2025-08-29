@@ -2,7 +2,6 @@ package com.alrex.parcool.mixin.client;
 
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.attachment.client.Animation;
-import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
@@ -41,10 +40,6 @@ public abstract class PlayerModelMixin extends HumanoidModel<PlayerRenderState> 
 		var entity = level.getEntity(renderState.id);
 		if (!(entity instanceof Player player)) return;
 		PlayerModel model = (PlayerModel) (Object) this;
-		if (player.isLocalPlayer()
-				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()
-				&& !ParCoolConfig.Client.Booleans.EnableFPVAnimation.get()
-		) return;
 
         parCool$transformer = new PlayerModelTransformer(
 				player,
@@ -72,10 +67,6 @@ public abstract class PlayerModelMixin extends HumanoidModel<PlayerRenderState> 
 		if (level == null) return;
 		var entity = level.getEntity(renderState.id);
 		if (!(entity instanceof Player player)) return;
-		if (player.isLocalPlayer()
-				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()
-				&& !ParCoolConfig.Client.Booleans.EnableFPVAnimation.get()
-		) return;
 
 		Animation animation = Animation.get(player);
 

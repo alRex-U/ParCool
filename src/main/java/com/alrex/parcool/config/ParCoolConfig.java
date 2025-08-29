@@ -104,7 +104,7 @@ public class ParCoolConfig {
 			),
 			EnableCameraAnimationOfFlipping(
 					ConfigGroup.CameraAnimation, "Enable rotation of camera by Flipping",
-					"enable_camera_rotation_flipping", true
+					"enable_camera_rotation_flipping", false
 			),
 			EnableCameraAnimationOfVault(
 					ConfigGroup.CameraAnimation, "Enable animation of camera by Vault",
