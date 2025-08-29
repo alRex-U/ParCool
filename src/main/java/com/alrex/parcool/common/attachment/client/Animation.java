@@ -42,49 +42,45 @@ public class Animation {
         if (animator != null && animator.shouldRemoved(player, parkourability)) animator = null;
         if (animator == null) return false;
         modelTransformer.setOption(option);
-        if (option.isAnimationCanceled()) return false;
+		if (shouldCancelAnimation(player)) return false;
 		return animator.animatePre(player, parkourability, modelTransformer);
 	}
 
 	public void animatePost(Player player, PlayerModelTransformer modelTransformer) {
 		Parkourability parkourability = Parkourability.get(player);
+		if (shouldCancelAnimation(player)) return;
 		if (animator == null) {
 			passiveAnimation.animate(player, parkourability, modelTransformer);
 			return;
 		}
-        if (option.isAnimationCanceled()) return;
 		animator.animatePost(player, parkourability, modelTransformer);
 	}
 
-    public boolean rotatePre(AbstractClientPlayer player, PlayerModelRotator rotator) {
-        Parkourability parkourability = Parkourability.get(player);
-        if (animator != null && animator.shouldRemoved(player, parkourability)) animator = null;
-        if (animator == null) return false;
-        if (option.isAnimationCanceled() || option.isCanceled(AnimationPart.ROTATION)) return false;
-        return animator.rotatePre(player, parkourability, rotator);
-    }
+	public boolean rotatePre(AbstractClientPlayer player, PlayerModelRotator rotator) {
+		Parkourability parkourability = Parkourability.get(player);
+		if (animator != null && animator.shouldRemoved(player, parkourability)) animator = null;
+		if (animator == null) return false;
+		if (shouldCancelAnimation(player) || option.isCanceled(AnimationPart.ROTATION)) return false;
+		return animator.rotatePre(player, parkourability, rotator);
+	}
 
     public void rotatePost(AbstractClientPlayer player, PlayerModelRotator rotator) {
 		Parkourability parkourability = Parkourability.get(player);
+		if (shouldCancelAnimation(player) || option.isCanceled(AnimationPart.ROTATION)) return;
 		if (animator == null) {
 			passiveAnimation.rotate(player, parkourability, rotator);
 			return;
 		}
-        if (option.isAnimationCanceled() || option.isCanceled(AnimationPart.ROTATION)) return;
-        animator.rotatePost(player, parkourability, rotator);
+		animator.rotatePost(player, parkourability, rotator);
 	}
 
     public void cameraSetup(ViewportEvent.ComputeCameraAngles event, LocalPlayer player, Parkourability parkourability) {
 		if (animator == null) return;
-		if (player.isLocalPlayer()
-				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()
-				&& !ParCoolConfig.Client.Booleans.EnableFPVAnimation.get()
-		) return;
+		if (option.isCanceled(AnimationPart.CAMERA)) return;
 		if (animator.shouldRemoved(player, parkourability)) {
 			animator = null;
 			return;
 		}
-        if (option.isCanceled(AnimationPart.CAMERA)) return;
 		animator.onCameraSetUp(event, player, parkourability);
 	}
 
@@ -108,6 +104,16 @@ public class Animation {
 		ParCoolAnimationInfoEvent animationEvent = new ParCoolAnimationInfoEvent(player, animator);
 		NeoForge.EVENT_BUS.post(animationEvent);
 		option = animationEvent.getOption();
+	}
+
+	public boolean shouldCancelAnimation(Player player) {
+		if (player.isLocalPlayer()
+				&& Minecraft.getInstance().options.getCameraType().isFirstPerson()
+				&& !ParCoolConfig.Client.Booleans.EnableFPVAnimation.get()
+		) {
+			return true;
+		}
+		return this.option.isAnimationCanceled();
 	}
 
 	public boolean hasAnimator() {
