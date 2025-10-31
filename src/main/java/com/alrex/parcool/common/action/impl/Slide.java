@@ -27,7 +27,9 @@ import java.nio.ByteBuffer;
 
 public class Slide extends Action {
     private static final BehaviorEnforcer.ID ID_JUMP_CANCEL = BehaviorEnforcer.newID();
-	private Vec3 slidingVec = null;
+    public boolean flipPose = false;
+    public Pose oPose;
+    private Vec3 slidingVec = null;
 
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
@@ -94,21 +96,40 @@ public class Slide extends Action {
         spawnSlidingParticle(player);
     }
 
-	@Override
-	public void onStopInLocalClient(Player player) {
-		Animation animation = Animation.get(player);
-		if (animation != null && !animation.hasAnimator()) {
-			animation.setAnimator(new CrawlAnimator());
-		}
-	}
+    @Override
+    public void onStopInLocalClient(Player player) {
+        Animation animation = Animation.get(player);
+        if (animation != null && !animation.hasAnimator()) {
+            animation.setAnimator(new CrawlAnimator());
+        }
+        if (!Parkourability.get(player).get(Crawl.class).isDoing()) {
+            flipPose = true;
+        }
+    }
 
-	@Override
-	public void onStopInOtherClient(Player player) {
-		Animation animation = Animation.get(player);
-		if (animation != null && !animation.hasAnimator()) {
-			animation.setAnimator(new CrawlAnimator());
-		}
-	}
+    @Override
+    public void onStopInOtherClient(Player player) {
+        Animation animation = Animation.get(player);
+        if (animation != null && !animation.hasAnimator()) {
+            animation.setAnimator(new CrawlAnimator());
+        }
+        if (!Parkourability.get(player).get(Crawl.class).isDoing()) {
+            flipPose = true;
+        }
+    }
+
+    public void onClientTick(Player player, Parkourability parkourability) {
+        if (player.swimAmount == 0.0F) {
+            flipPose = false;
+        }
+        var pose = player.getPose();
+        if (pose != oPose) {
+            if (pose == Pose.SWIMMING) {
+                flipPose = false;
+            }
+            oPose = pose;
+        }
+    }
 
     @Nullable
     public Vec3 getSlidingVector() {
