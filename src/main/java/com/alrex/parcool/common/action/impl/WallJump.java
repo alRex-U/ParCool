@@ -14,6 +14,7 @@ import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
@@ -186,9 +187,9 @@ public class WallJump extends Action {
 		Vec3 motion = player.getDeltaMovement();
 
 		BlockPos leanedBlock = new BlockPos(
-				(int) (player.getX() + wallDirection.x()),
-				(int) (player.getBoundingBox().minY + player.getBbHeight() * 0.25),
-				(int) (player.getZ() + wallDirection.z())
+				Mth.floor(player.getX() + wallDirection.x()),
+				Mth.floor(player.getBoundingBox().minY + player.getBbHeight() * 0.25),
+				Mth.floor(player.getZ() + wallDirection.z())
 		);
 		float slipperiness = player.getCommandSenderWorld().isLoaded(leanedBlock) ?
 				player.getCommandSenderWorld().getBlockState(leanedBlock).getFriction(player.getCommandSenderWorld(), leanedBlock, player)
@@ -230,9 +231,9 @@ public class WallJump extends Action {
         Vec3 jumpDirection = new Vec3(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		Vec3 wallDirection = new Vec3(startData.getDouble(), 0, startData.getDouble());
         BlockPos leanedBlock = new BlockPos(
-                (int) Math.floor(player.getX() + wallDirection.x()),
-                (int) Math.floor(player.getBoundingBox().minY + player.getBbHeight() * 0.25),
-                (int) Math.floor(player.getZ() + wallDirection.z())
+				Mth.floor(player.getX() + wallDirection.x()),
+				Mth.floor(player.getBoundingBox().minY + player.getBbHeight() * 0.25),
+				Mth.floor(player.getZ() + wallDirection.z())
         );
         float slipperiness = player.level().isLoaded(leanedBlock) ?
                 player.level().getBlockState(leanedBlock).getFriction(player.level(), leanedBlock, player)
@@ -268,9 +269,9 @@ public class WallJump extends Action {
 		Level level = player.level();
 		Vec3 pos = player.position();
         BlockPos leanedBlock = new BlockPos(
-                (int) Math.floor(pos.x() + wallDirection.x()),
-                (int) Math.floor(pos.y() + player.getBbHeight() * 0.25),
-                (int) Math.floor(pos.z() + wallDirection.z())
+				Mth.floor(pos.x() + wallDirection.x()),
+				Mth.floor(pos.y() + player.getBbHeight() * 0.25),
+				Mth.floor(pos.z() + wallDirection.z())
         );
 		if (!level.isLoaded(leanedBlock)) return;
 		float width = player.getBbWidth();

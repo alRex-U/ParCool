@@ -100,6 +100,9 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
     protected void save() {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
+        for (var configItem : enumConfigList) {
+            configItem.save();
+        }
         Parkourability parkourability = Parkourability.get(player);
         parkourability.getActionInfo().setClientSetting(ClientSetting.readFromLocalConfig());
         parkourability.getActionInfo().updateStaminaType(LocalStamina.get(player), player);
@@ -109,6 +112,7 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
     private static class EnumConfigSet<T extends Enum<T>> {
         final ModConfigSpec.EnumValue<T> configInstance;
         final T[] values;
+        private boolean dirty = false;
 
         public EnumConfigSet(ModConfigSpec.EnumValue<T> configInstance) {
             this.configInstance = configInstance;
@@ -118,10 +122,17 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
         public void next() {
             int index = (configInstance.get().ordinal() + 1) % values.length;
             configInstance.set(values[index]);
+            dirty = true;
         }
 
         public T get() {
             return configInstance.get();
+        }
+
+        public void save() {
+            if (dirty) {
+                configInstance.save();
+            }
         }
     }
 }

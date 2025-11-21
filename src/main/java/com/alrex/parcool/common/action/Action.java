@@ -13,17 +13,36 @@ public abstract class Action {
 	private boolean doing = false;
 	private int doingTick = 0;
 	private int notDoingTick = 0;
+	private int tickFromStarted = -1;
+
+	public void tick() {
+		if (doing) {
+			doingTick++;
+			notDoingTick = 0;
+		} else {
+			notDoingTick++;
+			doingTick = 0;
+		}
+		if (tickFromStarted >= 0) {
+			tickFromStarted++;
+		}
+	}
+
+	public void start() {
+		doing = true;
+		doingTick = 0;
+		notDoingTick = 0;
+		tickFromStarted = 0;
+	}
+
+	public void finish() {
+		doing = false;
+		doingTick = 0;
+		notDoingTick = 0;
+	}
 
 	public boolean isJustStarted() {
 		return isDoing() && getDoingTick() == 0;
-	}
-
-	public void setDoingTick(int doingTick) {
-		this.doingTick = doingTick;
-	}
-
-	public void setNotDoingTick(int notDoingTick) {
-		this.notDoingTick = notDoingTick;
 	}
 
 	public int getDoingTick() {
@@ -34,12 +53,12 @@ public abstract class Action {
 		return notDoingTick;
 	}
 
-	public boolean isDoing() {
-		return doing;
+	public int getTickFromLastStarted() {
+		return tickFromStarted;
 	}
 
-	public void setDoing(boolean value) {
-		doing = value;
+	public boolean isDoing() {
+		return doing;
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -4,7 +4,7 @@ import com.alrex.parcool.common.action.impl.HangDown;
 import com.alrex.parcool.common.tags.BlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
+import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -151,7 +151,7 @@ public class WorldUtil {
 		if (stepX == 0 || stepZ == 0) {
 			Vec3 result = new Vec3(stepX, 0, stepZ);
 			Vec3 blockPosition = entity.position().add(result).add(0, 0.5, 0);
-            BlockPos target = new BlockPos(new Vec3i((int) Math.floor(blockPosition.x()), (int) Math.floor(blockPosition.y()), (int) Math.floor(blockPosition.z())));
+			BlockPos target = new BlockPos(Mth.floor(blockPosition.x()), Mth.floor(blockPosition.y()), Mth.floor(blockPosition.z()));
 			if (!world.isLoaded(target)) return null;
 			BlockState state = world.getBlockState(target);
 			if (state.getBlock() instanceof StairBlock) {
@@ -236,9 +236,9 @@ public class WorldUtil {
 		);
 		if (entity.getCommandSenderWorld().noCollision(entity, bb)) return null;
 		BlockPos pos = new BlockPos(
-				(int) Math.floor(entity.getX()),
-				(int) Math.floor(entity.getY() + entity.getBbHeight() + 0.4),
-				(int) Math.floor(entity.getZ())
+				Mth.floor(entity.getX()),
+				Mth.floor(entity.getY() + entity.getBbHeight() + 0.4),
+				Mth.floor(entity.getZ())
 		);
 		if (!entity.getCommandSenderWorld().isLoaded(pos)) return null;
 		BlockState state = entity.getCommandSenderWorld().getBlockState(pos);
@@ -298,9 +298,9 @@ public class WorldUtil {
         Level world = entity.level();
         Vec3 center = entity.position();
         if (!world.isLoaded(new BlockPos(
-                (int) Math.floor(center.x()),
-                (int) Math.floor(center.y()),
-                (int) Math.floor(center.z())
+				Mth.floor(center.x()),
+				Mth.floor(center.y()),
+				Mth.floor(center.z())
         ))) return false;
         double height = entity.getBbHeight() * 1.5;
         double width = entity.getBbWidth() * 2;
@@ -321,9 +321,9 @@ public class WorldUtil {
 		double wideWidth = entity.getBbWidth() * 2;
 		Vec3 center = entity.position();
         if (!world.isLoaded(new BlockPos(
-                (int) Math.floor(center.x()),
-                (int) Math.floor(center.y()),
-                (int) Math.floor(center.z())
+				Mth.floor(center.x()),
+				Mth.floor(center.y()),
+				Mth.floor(center.z())
         ))) return false;
 		Vec3 diveDirection = VectorUtil.fromYawDegree(entity.getYHeadRot());
 		for (int i = 0; i < 4; i++) {
@@ -349,9 +349,9 @@ public class WorldUtil {
 		);
         if (world.noCollision(verticalWideBox)) return true;
         BlockPos centerBlockPos = new BlockPos(
-                (int) Math.floor(center.x()),
-                (int) Math.floor(center.y() - 0.5),
-                (int) Math.floor(center.z())
+				Mth.floor(center.x()),
+				Mth.floor(center.y() - 0.5),
+				Mth.floor(center.z())
         );
 
         // check if water pool exists
@@ -436,14 +436,14 @@ public class WorldUtil {
 		float slipperiness;
 		if (xDirection != 0 && zDirection != 0) {
 			BlockPos blockPos1 = new BlockPos(
-					(int) (entity.getX() + xDirection),
-					(int) (entity.getBoundingBox().minY + baseLine - 0.3),
-					(int) entity.getZ()
+					Mth.floor(entity.getX() + xDirection),
+					Mth.floor(entity.getBoundingBox().minY + baseLine - 0.3),
+					Mth.floor(entity.getZ())
 			);
 			BlockPos blockPos2 = new BlockPos(
-					(int) entity.getX(),
-					(int) (entity.getBoundingBox().minY + baseLine - 0.3),
-					(int) (entity.getZ() + zDirection)
+					Mth.floor(entity.getX()),
+					Mth.floor(entity.getBoundingBox().minY + baseLine - 0.3),
+					Mth.floor(entity.getZ() + zDirection)
 			);
 			if (!entity.getCommandSenderWorld().isLoaded(blockPos1)) return null;
 			if (!entity.getCommandSenderWorld().isLoaded(blockPos2)) return null;
@@ -453,9 +453,9 @@ public class WorldUtil {
 			);
 		} else {
 			BlockPos blockPos = new BlockPos(
-					(int) (entity.getX() + xDirection),
-					(int) (entity.getBoundingBox().minY + baseLine - 0.3),
-					(int) (entity.getZ() + zDirection)
+					Mth.floor(entity.getX() + xDirection),
+					Mth.floor(entity.getBoundingBox().minY + baseLine - 0.3),
+					Mth.floor(entity.getZ() + zDirection)
 			);
 			if (!entity.getCommandSenderWorld().isLoaded(blockPos)) return null;
 			slipperiness = entity.getCommandSenderWorld().getBlockState(blockPos).getFriction(entity.getCommandSenderWorld(), blockPos, entity);

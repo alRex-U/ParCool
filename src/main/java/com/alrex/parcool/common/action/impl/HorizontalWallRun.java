@@ -17,6 +17,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -68,9 +69,9 @@ public class HorizontalWallRun extends Action {
 		bodyYaw = (float) VectorUtil.toYawDegree(lookVec.yRot((float) (differenceAngle / 10)));
 		Vec3 movement = player.getDeltaMovement();
 		BlockPos leanedBlock = new BlockPos(
-				(int) (player.getX() + runningWallDirection.x()),
-				(int) (player.getBoundingBox().minY + player.getBbHeight() * 0.5),
-				(int) (player.getZ() + runningWallDirection.z())
+				Mth.floor(player.getX() + runningWallDirection.x()),
+				Mth.floor(player.getBoundingBox().minY + player.getBbHeight() * 0.5),
+				Mth.floor(player.getZ() + runningWallDirection.z())
 		);
 		if (!player.getCommandSenderWorld().isLoaded(leanedBlock)) return;
 		float slipperiness = player.getCommandSenderWorld().getBlockState(leanedBlock).getFriction(player.getCommandSenderWorld(), leanedBlock, player);
@@ -242,9 +243,9 @@ public class HorizontalWallRun extends Action {
 		Level level = player.level();
 		Vec3 pos = player.position();
         BlockPos leanedBlock = new BlockPos(
-                (int) Math.floor(pos.x() + runningWallDirection.x()),
-                (int) Math.floor(pos.y() + player.getBbHeight() * 0.25),
-                (int) Math.floor(pos.z() + runningWallDirection.z())
+				Mth.floor(pos.x() + runningWallDirection.x()),
+				Mth.floor(pos.y() + player.getBbHeight() * 0.25),
+				Mth.floor(pos.z() + runningWallDirection.z())
         );
 		if (!level.isLoaded(leanedBlock)) return;
 		float width = player.getBbWidth();

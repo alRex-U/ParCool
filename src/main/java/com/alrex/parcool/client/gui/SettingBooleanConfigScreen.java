@@ -84,11 +84,14 @@ public class SettingBooleanConfigScreen extends ParCoolSettingScreen {
     protected void save() {
         for (int i = 0; i < booleans.length; i++) {
             booleans[i].set(configButtons[i].selected());
+            var configInstance = booleans[i].getInternalInstance();
+            if (configInstance != null) {
+                configInstance.save();
+            }
         }
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
         Parkourability parkourability = Parkourability.get(player);
-        if (parkourability == null) return;
         parkourability.getActionInfo().setClientSetting(ClientSetting.readFromLocalConfig());
         PacketDistributor.sendToServer(new ClientInformationPayload(player.getUUID(), true, parkourability.getClientInfo()));
     }

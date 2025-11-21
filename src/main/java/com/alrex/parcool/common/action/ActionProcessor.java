@@ -96,13 +96,7 @@ public class ActionProcessor {
 				action.saveSynchronizedState(bufferOfPreState);
 				bufferOfPreState.flip();
 			}
-			if (action.isDoing()) {
-				action.setDoingTick(action.getDoingTick() + 1);
-				action.setNotDoingTick(0);
-			} else {
-				action.setDoingTick(0);
-				action.setNotDoingTick(action.getNotDoingTick() + 1);
-			}
+			action.tick();
 
 			action.onTick(player, parkourability);
 			if (player.level().isClientSide()) {
@@ -118,7 +112,7 @@ public class ActionProcessor {
 							&& !NeoForge.EVENT_BUS.post(new ParCoolActionEvent.TryToContinueEvent(player, action)).isCanceled()
 							&& action.canContinue(player, parkourability);
 					if (!canContinue) {
-						action.setDoing(false);
+						action.finish();
 						action.onStopInLocalClient(player);
 						action.onStop(player);
 						NeoForge.EVENT_BUS.post(new ParCoolActionEvent.StopEvent(player, action));
@@ -137,7 +131,7 @@ public class ActionProcessor {
 							&& action.canStart(player, parkourability, bufferOfStarting);
 					bufferOfStarting.flip();
 					if (start) {
-						action.setDoing(true);
+						action.start();
 						action.onStart(player, parkourability, bufferOfStarting);
 						bufferOfStarting.rewind();
 						action.onStartInLocalClient(player, parkourability, bufferOfStarting);
