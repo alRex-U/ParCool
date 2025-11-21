@@ -8,6 +8,7 @@ import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -126,6 +127,7 @@ public class LightStaminaHUD {
         staminaScale *= 10f;
 		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick) * 10f : 0f;
 
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		final int width = graphics.guiWidth();
 		final int height = graphics.guiHeight();
         int baseX = width / 2 + 91 + ParCoolConfig.Client.Integers.HorizontalOffsetOfLightStaminaHUD.get();

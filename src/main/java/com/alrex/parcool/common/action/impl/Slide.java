@@ -13,6 +13,7 @@ import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -130,34 +131,34 @@ public class Slide extends Action {
 		var direction = getSlidingVector();
 		if (direction == null) return;
 
-        if (feetBlock.getRenderShape() != RenderShape.INVISIBLE) {
-            var particlePos = new Vec3(
-                    pos.x() + (player.getRandom().nextDouble() - 0.5D) * width,
-                    pos.y() + 0.01D + 0.2 * player.getRandom().nextDouble(),
-                    pos.z() + (player.getRandom().nextDouble() - 0.5D) * width
-            );
-            var particleSpeed = direction
-                    .reverse()
-                    .scale(2.5 + 5 * player.getRandom().nextDouble())
-                    .add(0, 1.5, 0);
-            var blockPos = player.position().add(0, -0.5, 0);
-            level.addParticle(
-                    new BlockParticleOption(ParticleTypes.BLOCK, feetBlock).setPos(
-                            new BlockPos(
-                                    (int) Math.floor(blockPos.x()),
-                                    (int) Math.floor(blockPos.y()),
-                                    (int) Math.floor(blockPos.z())
-                            )
-                    ),
-                    particlePos.x(),
-                    particlePos.y(),
-                    particlePos.z(),
-                    particleSpeed.x(),
-                    particleSpeed.y(),
-                    particleSpeed.z()
-            );
-        }
-    }
+		if (feetBlock.getRenderShape() != RenderShape.INVISIBLE) {
+			var particlePos = new Vec3(
+					pos.x() + (player.getRandom().nextDouble() - 0.5D) * width,
+					pos.y() + 0.01D + 0.2 * player.getRandom().nextDouble(),
+					pos.z() + (player.getRandom().nextDouble() - 0.5D) * width
+			);
+			var particleSpeed = direction
+					.reverse()
+					.scale(2.5 + 5 * player.getRandom().nextDouble())
+					.add(0, 1.5, 0);
+			var blockPos = player.position().add(0, -0.5, 0);
+			level.addParticle(
+					new BlockParticleOption(ParticleTypes.BLOCK, feetBlock).setPos(
+							new BlockPos(
+									Mth.floor(blockPos.x()),
+									Mth.floor(blockPos.y()),
+									Mth.floor(blockPos.z())
+							)
+					),
+					particlePos.x(),
+					particlePos.y(),
+					particlePos.z(),
+					particleSpeed.x(),
+					particleSpeed.y(),
+					particleSpeed.z()
+			);
+		}
+	}
 
 
 	@Override

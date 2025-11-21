@@ -18,32 +18,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LocalPlayer.class)
 public abstract class LocalPlayerMixin extends AbstractClientPlayer {
 
-    private boolean oldSprinting = false;
-
-	public LocalPlayerMixin(ClientLevel p_250460_, GameProfile p_249912_) {
+    public LocalPlayerMixin(ClientLevel p_250460_, GameProfile p_249912_) {
         super(p_250460_, p_249912_);
     }
 
     @Inject(method = "isShiftKeyDown", at = @At("HEAD"), cancellable = true)
-	public void onIsShiftKeyDown(CallbackInfoReturnable<Boolean> cir) {
-		Parkourability parkourability = Parkourability.get((Player) (Object) this);
+    public void onIsShiftKeyDown(CallbackInfoReturnable<Boolean> cir) {
+        Parkourability parkourability = Parkourability.get((Player) (Object) this);
 
-		if (parkourability == null) return;
+        if (parkourability == null) return;
         if (parkourability.getBehaviorEnforcer().cancelSneak()) {
-			cir.setReturnValue(false);
-		}
-	}
-
-    @Inject(method = "aiStep", at = @At("HEAD"))
-	public void onAiStep(CallbackInfo ci) {
-        var player = (LocalPlayer) (Object) this;
-        if (player.isLocalPlayer()) {
-            boolean flag = !player.input.hasForwardImpulse() || !((float) player.getFoodData().getFoodLevel() > 6.0F || this.getAbilities().mayfly);
-            boolean flag1 = flag || this.isInWater() && !this.isUnderWater();
-            if (oldSprinting && !flag1) {
-                player.setSprinting(true);
-            }
-            oldSprinting = player.isSprinting();
+            cir.setReturnValue(false);
         }
     }
 

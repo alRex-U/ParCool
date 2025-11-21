@@ -8,6 +8,7 @@ import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderType;
@@ -87,6 +88,7 @@ public class StaminaHUD {
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
 
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		graphics.blitSprite(RenderType::guiTextured, STAMINA_EMPTY, 93, 17, 0, 0, pos.getA(), pos.getB(), 93, 17);
 		if (!stamina.isExhausted()) {
 			graphics.blitSprite(RenderType::guiTextured, STAMINA_EMPTY_CHARGE, 93, 17, 0, 0, pos.getA(), pos.getB(), (int) Math.ceil(92 * statusScale), 17);

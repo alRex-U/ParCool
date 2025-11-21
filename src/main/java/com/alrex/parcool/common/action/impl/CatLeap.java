@@ -12,6 +12,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
@@ -126,9 +127,9 @@ public class CatLeap extends Action {
 		Vec3 pos = player.position();
 		var blockPosVec = pos.add(0, -0.2, 0);
 		BlockPos blockpos = new BlockPos(
-				(int) Math.floor(blockPosVec.x()),
-				(int) Math.floor(blockPosVec.y()),
-				(int) Math.floor(blockPosVec.z())
+				Mth.floor(blockPosVec.x()),
+				Mth.floor(blockPosVec.y()),
+				Mth.floor(blockPosVec.z())
 		);
 		if (!level.isLoaded(blockpos)) return;
 		float width = player.getBbWidth();

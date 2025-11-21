@@ -13,6 +13,7 @@ import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
@@ -98,9 +99,9 @@ public class WallSlide extends Action {
 		leanedWallDirection = WorldUtil.getWall(player);
 		if (leanedWallDirection != null) {
 			BlockPos leanedBlock = new BlockPos(
-					(int) (player.getX() + leanedWallDirection.x),
-					(int) (player.getY() + player.getBbHeight() * 0.75),
-					(int) (player.getZ() + leanedWallDirection.z)
+					Mth.floor(player.getX() + leanedWallDirection.x),
+					Mth.floor(player.getY() + player.getBbHeight() * 0.75),
+					Mth.floor(player.getZ() + leanedWallDirection.z)
 			);
 			if (!player.getCommandSenderWorld().isLoaded(leanedBlock)) return;
 			float slipperiness = player.getCommandSenderWorld().getBlockState(leanedBlock).getFriction(player.getCommandSenderWorld(), leanedBlock, player);
@@ -131,9 +132,9 @@ public class WallSlide extends Action {
 		Level level = player.level();
 		Vec3 pos = player.position();
         BlockPos leanedBlock = new BlockPos(
-                (int) Math.floor(pos.x() + leanedWallDirection.x()),
-                (int) Math.floor(pos.y() + player.getBbHeight() * 0.25),
-                (int) Math.floor(pos.z() + leanedWallDirection.z())
+				Mth.floor(pos.x() + leanedWallDirection.x()),
+				Mth.floor(pos.y() + player.getBbHeight() * 0.25),
+				Mth.floor(pos.z() + leanedWallDirection.z())
         );
 		if (!level.isLoaded(leanedBlock)) return;
 		float width = player.getBbWidth();

@@ -62,13 +62,12 @@ public record ActionStatePayload(UUID playerID, List<Entry> states) implements C
             if (player == null || player.isLocalPlayer()) return;
 
             Parkourability parkourability = Parkourability.get(player);
-            if (parkourability == null) return;
 
             for (var state : payload.states()) {
                 Action action = parkourability.get(state.action());
                 switch (state.type()) {
                     case Start:
-                        action.setDoing(true);
+                        action.start();
                         var buf = state.getDataAsBuffer();
                         action.onStart(player, parkourability, buf);
                         buf.rewind();
@@ -76,7 +75,7 @@ public record ActionStatePayload(UUID playerID, List<Entry> states) implements C
                         NeoForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
                         break;
                     case Finish:
-                        action.setDoing(false);
+                        action.finish();
                         action.onStopInOtherClient(player);
                         action.onStop(player);
                         NeoForge.EVENT_BUS.post(new ParCoolActionEvent.StopEvent(player, action));
@@ -95,13 +94,12 @@ public record ActionStatePayload(UUID playerID, List<Entry> states) implements C
             PacketDistributor.sendToAllPlayers(payload);
 
             Parkourability parkourability = Parkourability.get(player);
-            if (parkourability == null) return;
 
             for (var state : payload.states()) {
                 Action action = parkourability.get(state.action());
                 switch (state.type()) {
                     case Start:
-                        action.setDoing(true);
+                        action.start();
                         var buf = state.getDataAsBuffer();
                         action.onStart(player, parkourability, buf);
                         buf.rewind();
@@ -109,7 +107,7 @@ public record ActionStatePayload(UUID playerID, List<Entry> states) implements C
                         NeoForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
                         break;
                     case Finish:
-                        action.setDoing(false);
+                        action.finish();
                         action.onStopInServer(player);
                         action.onStop(player);
                         NeoForge.EVENT_BUS.post(new ParCoolActionEvent.StopEvent(player, action));
