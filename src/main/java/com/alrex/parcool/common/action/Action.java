@@ -30,15 +30,11 @@ public abstract class Action {
 
 	public void start() {
 		doing = true;
-		doingTick = 0;
-		notDoingTick = 0;
 		tickFromStarted = 0;
 	}
 
 	public void finish() {
 		doing = false;
-		doingTick = 0;
-		notDoingTick = 0;
 	}
 
 	public boolean isJustStarted() {
