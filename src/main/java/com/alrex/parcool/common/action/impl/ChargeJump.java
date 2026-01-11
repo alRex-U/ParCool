@@ -80,6 +80,7 @@ public class ChargeJump extends Action {
                     && !cp.input.keyPresses.left()
                     && !parkourability.get(Crawl.class).isDoing()
                     && !NeoForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStartEvent(player, this)).isCanceled()
+                    && !NeoForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStart(player, this)).isCanceled()
             ) {
                 if (cp.isShiftKeyDown() && KeyRecorder.keySneak.getPreviousTickNotKeyDown() > 5) {
                     chargeTick++;

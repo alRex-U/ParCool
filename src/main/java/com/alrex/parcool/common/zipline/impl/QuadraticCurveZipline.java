@@ -1,7 +1,6 @@
 package com.alrex.parcool.common.zipline.impl;
 
 import com.alrex.parcool.common.zipline.Zipline;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class QuadraticCurveZipline extends Zipline {
@@ -73,13 +72,6 @@ public class QuadraticCurveZipline extends Zipline {
         double zOffset = simplifiedNearestPoint.z - position.z;
         double yOffset = (simplifiedNearestPoint.y - position.y) * yDistanceScale;
         return xOffset * xOffset + zOffset * zOffset + yOffset * yOffset;
-    }
-
-    @Override
-    public boolean isPossiblyHangable(Vec3 position) {
-        return new AABB(getStartPos().x(), getStartPos().y(), getStartPos().z(), getEndPos().x(), getEndPos().y(), getEndPos().z())
-                .inflate(1d)
-                .contains(position);
     }
 
     public double getAccurateDistance(Vec3 position) {

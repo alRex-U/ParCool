@@ -79,6 +79,7 @@ public class Dive extends Action {
 				|| player.onGround()
 				|| (fallingTick > 5 && player.fallDistance < 0.1)
                 || player.getData(Attachments.STAMINA).isExhausted()
+				|| parkourability.get(RideZipline.class).isDoing()
 		);
 	}
 

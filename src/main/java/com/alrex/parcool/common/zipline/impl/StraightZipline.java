@@ -63,11 +63,4 @@ public class StraightZipline extends Zipline {
         double yOffset = (mostNearPoint.y - position.y) * yDistanceScale;
         return xOffset * xOffset + zOffset * zOffset + yOffset * yOffset;
     }
-
-    @Override
-    public boolean isPossiblyHangable(Vec3 position) {
-        return new AABB(getStartPos().x(), getStartPos().y(), getStartPos().z(), getEndPos().x(), getEndPos().y(), getEndPos().z())
-                .inflate(1d)
-                .contains(position);
-    }
 }

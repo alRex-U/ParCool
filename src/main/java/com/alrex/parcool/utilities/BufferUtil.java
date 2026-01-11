@@ -52,9 +52,19 @@ public class BufferUtil {
         return new Vec3(buffer.getDouble(), buffer.getDouble(), buffer.getDouble());
     }
 
-
-
 	public ByteBuffer unwrap() {
 		return buffer;
+	}
+
+	public static boolean haveSameContents(ByteBuffer buffer1, ByteBuffer buffer2) {
+		if (buffer1.limit() != buffer2.limit()) {
+			return false;
+		}
+		while (buffer1.hasRemaining() && buffer2.hasRemaining()) {
+			if (buffer1.get() != buffer2.get()) {
+				return false;
+			}
+		}
+		return true;
 	}
 }
