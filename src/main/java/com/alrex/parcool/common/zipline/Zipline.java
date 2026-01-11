@@ -60,10 +60,10 @@ public abstract class Zipline {
                 ZiplineRopeEntity.class,
                 player.getBoundingBox().inflate(d, Zipline.MAXIMUM_VERTICAL_DISTANCE + 1, d)
         );
-        double catchRange = player.getBbWidth() * 0.6;
+        double catchRange = player.getBbWidth();
         double yDeltaMovement = player.getDeltaMovement().y();
-        double yDistanceScale = Mth.clamp(catchRange / yDeltaMovement, 0.4d, 1d);
-        var grabPos = player.position().add(0, player.getBbHeight() * 1.11 + Mth.clamp(yDeltaMovement * 0.4f, player.getBbHeight() * -0.4, player.getBbHeight() * 0.4), 0);
+        double yDistanceScale = Mth.clamp(0.7 / (Math.abs(yDeltaMovement) + 0.7), 0.4d, 1d);
+        var grabPos = player.position().add(0, player.getBbHeight() * 1.11, 0);
         for (ZiplineRopeEntity ziplineEntity : entities) {
             if (except == ziplineEntity)
                 continue;
@@ -127,5 +127,9 @@ public abstract class Zipline {
 
     public abstract double getSquaredDistanceApproximately(Vec3 position, double yDistanceScale);
 
-    public abstract boolean isPossiblyHangable(Vec3 position);
+    public boolean isPossiblyHangable(Vec3 position) {
+        return new AABB(getStartPos().x(), getStartPos().y(), getStartPos().z(), getEndPos().x(), getEndPos().y(), getEndPos().z())
+                .inflate(1d)
+                .contains(position);
+    }
 }

@@ -67,18 +67,17 @@ public record ActionStatePayload(UUID playerID, List<Entry> states) implements C
                 Action action = parkourability.get(state.action());
                 switch (state.type()) {
                     case Start:
-                        action.start();
                         var buf = state.getDataAsBuffer();
-                        action.onStart(player, parkourability, buf);
-                        buf.rewind();
-                        action.onStartInOtherClient(player, parkourability, buf);
+                        NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Start.Pre(player, action));
+                        action.start(player, parkourability, buf);
                         NeoForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
+                        NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Start.Post(player, action));
                         break;
                     case Finish:
-                        action.finish();
-                        action.onStopInOtherClient(player);
-                        action.onStop(player);
+                        NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Finish.Pre(player, action));
+                        action.finish(player);
                         NeoForge.EVENT_BUS.post(new ParCoolActionEvent.StopEvent(player, action));
+                        NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Finish.Post(player, action));
                         break;
                     case Normal:
                         action.restoreSynchronizedState(state.getDataAsBuffer());
@@ -99,18 +98,17 @@ public record ActionStatePayload(UUID playerID, List<Entry> states) implements C
                 Action action = parkourability.get(state.action());
                 switch (state.type()) {
                     case Start:
-                        action.start();
                         var buf = state.getDataAsBuffer();
-                        action.onStart(player, parkourability, buf);
-                        buf.rewind();
-                        action.onStartInServer(player, parkourability, buf);
+                        NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Start.Pre(player, action));
+                        action.start(player, parkourability, buf);
                         NeoForge.EVENT_BUS.post(new ParCoolActionEvent.StartEvent(player, action));
+                        NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Start.Post(player, action));
                         break;
                     case Finish:
-                        action.finish();
-                        action.onStopInServer(player);
-                        action.onStop(player);
+                        NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Finish.Pre(player, action));
+                        action.finish(player);
                         NeoForge.EVENT_BUS.post(new ParCoolActionEvent.StopEvent(player, action));
+                        NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Finish.Post(player, action));
                         break;
                     case Normal:
                         action.restoreSynchronizedState(state.getDataAsBuffer());

@@ -60,7 +60,6 @@ public class RideZipline extends Action {
                 && !player.isSwimming()
                 && (!KeyBindings.isKeyJumpDown() || getNotDoingTick() > 5)
                 && (!previouslyStopByCollision || getNotDoingTick() > 5)
-                && !parkourability.get(Dive.class).isDoing()
                 && !parkourability.get(Vault.class).isDoing()
                 && !parkourability.get(HangDown.class).isDoing()
                 && !parkourability.get(Flipping.class).isDoing()
