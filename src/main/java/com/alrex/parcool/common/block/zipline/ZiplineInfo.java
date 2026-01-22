@@ -2,12 +2,24 @@ package com.alrex.parcool.common.block.zipline;
 
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
 import com.alrex.parcool.common.zipline.ZiplineType;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
 import javax.annotation.Nullable;
 
 public class ZiplineInfo {
+    public static final Codec<ZiplineInfo> CODEC = RecordCodecBuilder.create(instance ->
+        instance.group(
+            ZiplineType.CODEC.optionalFieldOf("type", ZiplineType.LOOSE)
+                .forGetter(ZiplineInfo::getType),
+            Codec.INT.optionalFieldOf("color", ZiplineRopeItem.DEFAULT_COLOR)
+                .forGetter(ZiplineInfo::getColor)
+        )
+            .apply(instance, ZiplineInfo::new)
+    );
+
     public ZiplineInfo(ZiplineType type, int color) {
         this.color = color;
         this.type = type;
@@ -23,23 +35,5 @@ public class ZiplineInfo {
 
     public ZiplineType getType() {
         return type;
-    }
-
-    public Tag save() {
-        var tag = new CompoundTag();
-        tag.putInt("color", color);
-        tag.putByte("type", (byte) getType().ordinal());
-        return tag;
-    }
-
-    public static ZiplineInfo load(@Nullable Tag tag) {
-        if (tag instanceof CompoundTag cTag) {
-            int color = cTag.contains("color") ? cTag.getInt("color") : ZiplineRopeItem.DEFAULT_COLOR;
-            ZiplineType type = cTag.contains("type") ?
-                    ZiplineType.values()[cTag.getByte("type") % ZiplineType.values().length] :
-                    ZiplineType.LOOSE;
-            return new ZiplineInfo(type, color);
-        }
-        return new ZiplineInfo(ZiplineType.LOOSE, ZiplineRopeItem.DEFAULT_COLOR);
     }
 }

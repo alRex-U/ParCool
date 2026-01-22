@@ -73,8 +73,8 @@ public class HorizontalWallRun extends Action {
 				Mth.floor(player.getBoundingBox().minY + player.getBbHeight() * 0.5),
 				Mth.floor(player.getZ() + runningWallDirection.z())
 		);
-		if (!player.getCommandSenderWorld().isLoaded(leanedBlock)) return;
-		float slipperiness = player.getCommandSenderWorld().getBlockState(leanedBlock).getFriction(player.getCommandSenderWorld(), leanedBlock, player);
+		if (!player.level().isLoaded(leanedBlock)) return;
+		float slipperiness = player.level().getBlockState(leanedBlock).getFriction(player.level(), leanedBlock, player);
 		if (slipperiness <= 0.8) {
             double speedScale = 0.2;
             var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
@@ -125,7 +125,7 @@ public class HorizontalWallRun extends Action {
 				&& !parkourability.get(Dodge.class).isDoing()
 				&& !parkourability.get(Vault.class).isDoing()
                 && !parkourability.get(ClingToCliff.class).isDoing()
-                && !player.isInWaterOrBubble()
+                && !player.isInWater()
                 && Math.abs(player.getDeltaMovement().y()) < 0.5
 				&& coolTime == 0
 				&& !player.onGround()

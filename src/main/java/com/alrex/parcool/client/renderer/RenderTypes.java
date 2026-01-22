@@ -12,25 +12,19 @@ public class RenderTypes {
     static {
         ZIPLINE_2D = RenderType.create(
                 "zipline2d",
-                DefaultVertexFormat.POSITION_COLOR_LIGHTMAP,
-                VertexFormat.Mode.QUADS, 256,
-                false, false,
+                256,
+                false, false, RenderPipelines.ZIPLINE_2D,
                 RenderType.CompositeState.builder()
-                        .setShaderState(RenderStateShard.RENDERTYPE_LEASH_SHADER)
                         .setTextureState(RenderStateShard.NO_TEXTURE)
-                        .setCullState(RenderStateShard.NO_CULL)
                         .setLightmapState(RenderStateShard.LIGHTMAP)
                         .createCompositeState(false)
         );
         ZIPLINE_3D = RenderType.create(
                 "zipline3d",
-                DefaultVertexFormat.POSITION_COLOR_LIGHTMAP,
-                VertexFormat.Mode.QUADS, 256,
-                false, false,
+                256,
+                false, false, RenderPipelines.ZIPLINE_3D,
                 RenderType.CompositeState.builder()
-                        .setShaderState(RenderStateShard.RENDERTYPE_LEASH_SHADER)
                         .setTextureState(RenderStateShard.NO_TEXTURE)
-                        .setCullState(RenderStateShard.CULL)
                         .setLightmapState(RenderStateShard.LIGHTMAP)
                         .createCompositeState(false)
         );

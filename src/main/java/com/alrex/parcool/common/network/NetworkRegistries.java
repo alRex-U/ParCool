@@ -2,8 +2,8 @@ package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.common.network.payload.*;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 
 public class NetworkRegistries {
     private static final String PROTOCOL_VERSION = "3.3.0.0";
@@ -14,50 +14,42 @@ public class NetworkRegistries {
         r.playBidirectional(
                 StartBreakfallEventPayload.TYPE,
                 StartBreakfallEventPayload.CODEC,
-                new DirectionalPayloadHandler<>(
-                        StartBreakfallEventPayload::handleClient,
-                        StartBreakfallEventPayload::handleServer
-                )
+                StartBreakfallEventPayload::handleServer
         );
         r.playBidirectional(
                 ActionStatePayload.TYPE,
                 ActionStatePayload.CODEC,
-                new DirectionalPayloadHandler<>(
-                        ActionStatePayload::handleClient,
-                        ActionStatePayload::handleServer
-                )
+                ActionStatePayload::handleServer
         );
         r.playBidirectional(
                 LimitationPayload.TYPE,
                 LimitationPayload.CODEC,
-                new DirectionalPayloadHandler<>(
-                        LimitationPayload::handleClient,
-                        LimitationPayload::handleServer
-                )
+                LimitationPayload::handleServer
         );
         r.playBidirectional(
                 ClientInformationPayload.TYPE,
                 ClientInformationPayload.CODEC,
-                new DirectionalPayloadHandler<>(
-                        ClientInformationPayload::handleClient,
-                        ClientInformationPayload::handleServer
-                )
+                ClientInformationPayload::handleServer
         );
         r.playBidirectional(
                 StaminaPayload.TYPE,
                 StaminaPayload.CODEC,
-                new DirectionalPayloadHandler<>(
-                        StaminaPayload::handleClient,
-                        StaminaPayload::handleServer
-                )
+                StaminaPayload::handleServer
         );
         r.playBidirectional(
                 StaminaProcessOnServerPayload.TYPE,
                 StaminaProcessOnServerPayload.CODEC,
-                new DirectionalPayloadHandler<>(
-                        StaminaProcessOnServerPayload::handleClient,
-                        StaminaProcessOnServerPayload::handleServer
-                )
+                StaminaProcessOnServerPayload::handleServer
         );
+    }
+
+    @SubscribeEvent
+    public static void onRegisterClientPayloads(RegisterClientPayloadHandlersEvent event) {
+        event.register(StartBreakfallEventPayload.TYPE, StartBreakfallEventPayload::handleClient);
+        event.register(ActionStatePayload.TYPE, ActionStatePayload::handleClient);
+        event.register(LimitationPayload.TYPE, LimitationPayload::handleClient);
+        event.register(ClientInformationPayload.TYPE, ClientInformationPayload::handleClient);
+        event.register(StaminaPayload.TYPE, StaminaPayload::handleClient);
+        event.register(StaminaProcessOnServerPayload.TYPE, StaminaProcessOnServerPayload::handleClient);
     }
 }

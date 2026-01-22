@@ -13,6 +13,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
@@ -69,7 +70,7 @@ public class LightStaminaHUD {
 		var stamina = player.getData(Attachments.STAMINA);
 		int newValue = stamina.value();
 		changingSign = (int) Math.signum(newValue - oldValue);
-		final long gameTime = player.getCommandSenderWorld().getGameTime();
+		final long gameTime = player.level().getGameTime();
 		if (changingSign != lastChangingSign) {
 			lastChangingSign = changingSign;
 			changingTimeTick = 0;
@@ -127,7 +128,6 @@ public class LightStaminaHUD {
         staminaScale *= 10f;
 		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick) * 10f : 0f;
 
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		final int width = graphics.guiWidth();
 		final int height = graphics.guiHeight();
         int baseX = width / 2 + 91 + ParCoolConfig.Client.Integers.HorizontalOffsetOfLightStaminaHUD.get();
@@ -175,7 +175,7 @@ public class LightStaminaHUD {
 				offsetY = randomOffset;
 			}
 
-			graphics.blitSprite(RenderType::guiTextured, type.getTexture(size), 9, 9, 0, 0, x, baseY + offsetY, 9, 9);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, type.getTexture(size), 9, 9, 0, 0, x, baseY + offsetY, 9, 9);
 		}
 		Minecraft.getInstance().gui.rightHeight += 10;
 	}

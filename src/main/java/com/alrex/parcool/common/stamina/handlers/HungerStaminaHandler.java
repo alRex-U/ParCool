@@ -8,6 +8,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public class HungerStaminaHandler implements IParCoolStaminaHandler {
@@ -36,7 +37,7 @@ public class HungerStaminaHandler implements IParCoolStaminaHandler {
     @Override
     public ReadonlyStamina onTick(LocalPlayer player, ReadonlyStamina current) {
         if (consumed > 0) {
-            PacketDistributor.sendToServer(new StaminaProcessOnServerPayload(StaminaType.HUNGER, consumed));
+            ClientPacketDistributor.sendToServer(new StaminaProcessOnServerPayload(StaminaType.HUNGER, consumed));
             consumed = 0;
         }
         return new ReadonlyStamina(

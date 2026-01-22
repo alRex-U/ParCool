@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -84,7 +85,7 @@ public class SettingActionLimitationScreen extends ParCoolSettingScreen {
             if ((topOffset < mouseY && mouseY < topOffset + headerHeight)
                     && (columnCenter - permissionColumnWidth / 2 < mouseX && mouseX < columnCenter + permissionColumnWidth / 2)
             ) {
-                graphics.renderComponentTooltip(font, Collections.singletonList(Header_Limitation_Text), mouseX, mouseY);
+                graphics.setTooltipForNextFrame(font, Header_Limitation_Text, mouseX, mouseY);
             }
         }
     }
@@ -107,7 +108,7 @@ public class SettingActionLimitationScreen extends ParCoolSettingScreen {
         if (player == null) return;
         Parkourability parkourability = Parkourability.get(player);
         parkourability.getActionInfo().setClientSetting(ClientSetting.readFromLocalConfig());
-        PacketDistributor.sendToServer(new ClientInformationPayload(player.getUUID(), true, parkourability.getClientInfo()));
+        ClientPacketDistributor.sendToServer(new ClientInformationPayload(player.getUUID(), true, parkourability.getClientInfo()));
     }
 
     private static class ActionConfigSet {

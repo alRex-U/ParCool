@@ -3,6 +3,7 @@ package com.alrex.parcool.common.attachment.common;
 import com.alrex.parcool.api.Attributes;
 import com.alrex.parcool.common.network.payload.StaminaPayload;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.player.LocalPlayer;
@@ -10,6 +11,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public record ReadonlyStamina(boolean isExhausted, int value, int max) {
@@ -51,10 +53,10 @@ public record ReadonlyStamina(boolean isExhausted, int value, int max) {
 
     @OnlyIn(Dist.CLIENT)
     public void sync(LocalPlayer player) {
-        PacketDistributor.sendToServer(new StaminaPayload(player.getUUID(), this));
+        ClientPacketDistributor.sendToServer(new StaminaPayload(player.getUUID(), this));
     }
 
-    public static final Codec<ReadonlyStamina> CODEC = RecordCodecBuilder.create(staminaInstance ->
+    public static final MapCodec<ReadonlyStamina> CODEC = RecordCodecBuilder.mapCodec(staminaInstance ->
             staminaInstance.group(
                     Codec.BOOL.fieldOf("exhausted").forGetter(ReadonlyStamina::isExhausted),
                     Codec.INT.fieldOf("value").forGetter(ReadonlyStamina::value),

@@ -24,6 +24,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -134,18 +135,18 @@ public class ActionProcessor {
 					if (ParCoolConfig.Client.Booleans.ShowAutoResynchronizationNotification.get()) {
 						player.displayClientMessage(Component.translatable("parcool.message.error.limitation.not_synced"), false);
 					}
-					ParCool.LOGGER.log(Level.WARN, "Detected ParCool Limitation is not synced. Sending synchronization request...");
+					ParCool.LOGGER.warn("Detected ParCool Limitation is not synced. Sending synchronization request...");
 				} else if (trialCount == 5) {
 					parkourability.incrementSynchronizeTrialCount();
 					player.displayClientMessage(Component.translatable("parcool.message.error.limitation.fail_sync").withStyle(ChatFormatting.DARK_RED), false);
-					ParCool.LOGGER.log(Level.ERROR, "Failed to synchronize ParCool Limitation. There may be problems about server connection. Please report to the developer after checking connection");
+					ParCool.LOGGER.error("Failed to synchronize ParCool Limitation. There may be problems about server connection. Please report to the developer after checking connection");
 				}
 			}
 		}
 	}
 
 	private void onTick$sendSynchronizationPacket(Player player, List<ActionStatePayload.Entry> syncStates) {
-		PacketDistributor.sendToServer(new ActionStatePayload(player.getUUID(), syncStates));
+		ClientPacketDistributor.sendToServer(new ActionStatePayload(player.getUUID(), syncStates));
 
 	}
 
@@ -264,7 +265,7 @@ public class ActionProcessor {
 	public void onRenderTick(RenderFrameEvent.Pre event) {
 		Player clientPlayer = Minecraft.getInstance().player;
 		if (clientPlayer == null) return;
-		for (Player player : clientPlayer.getCommandSenderWorld().players()) {
+		for (Player player : clientPlayer.level().players()) {
 			Parkourability parkourability = Parkourability.get(player);
 			if (parkourability == null) return;
 			List<Action> actions = parkourability.getList();
