@@ -26,6 +26,11 @@ public interface IParCoolStaminaHandler {
         return false;
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public default boolean shouldImposeExhaustionPenalty(LocalPlayer player, ReadonlyStamina current) {
+        return true;
+    }
+
     public default void processOnServer(Player player, int value) {
     }
 

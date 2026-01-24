@@ -308,6 +308,10 @@ public class ParCoolConfig {
 					Server.Integers.MaxJustTimeBreakfallTick.DefaultValue,
 					Server.Integers.MaxJustTimeBreakfallTick.Min,
 					Server.Integers.MaxJustTimeBreakfallTick.Max
+			),
+			CoyoteTime(
+					ConfigGroup.Control, "coyote time tick (how long tick player can behave like on ground after getting off ledge",
+					"coyote_time", Server.Integers.MaxCoyoteTime
 			);
 			public final ConfigGroup Group;
 			@Nullable
@@ -730,6 +734,10 @@ public class ParCoolConfig {
 			MaxJustTimeBreakfallTick(
 					ConfigGroup.Control, "Window time of just time breakfall",
 					"justtime_breakfall_tick", 5, 0, Integer.MAX_VALUE, AdvantageousDirection.Higher
+			),
+			MaxCoyoteTime(
+					ConfigGroup.Control, "Max coyote time tick (how long tick player can behave like on ground after getting off ledge",
+					"max_coyote_time", 3, 0, 20, AdvantageousDirection.Higher
 			);
 			public final ConfigGroup Group;
 			@Nullable

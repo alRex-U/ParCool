@@ -87,6 +87,12 @@ public class LocalStamina {
         return handler.shouldShowHUD(player);
     }
 
+    public boolean imposeExhaustionPenalty(LocalPlayer player) {
+        if (handler == null) return false;
+        var current = player.getData(Attachments.STAMINA);
+        return current.isExhausted() && handler.shouldImposeExhaustionPenalty(player, current);
+    }
+
     public void sync(LocalPlayer player) {
         player.getData(Attachments.STAMINA).sync(player);
     }
