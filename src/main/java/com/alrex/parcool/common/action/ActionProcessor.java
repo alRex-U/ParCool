@@ -20,6 +20,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -47,7 +48,7 @@ public class ActionProcessor {
 	private static final ByteBuffer bufferOfStarting = ByteBuffer.allocate(128);
 	private static int staminaSyncCoolTimeTick = 0;
 
-
+	@SubscribeEvent
 	public void onTick(PlayerTickEvent.Post event) {
 		var player = event.getEntity();
 		Parkourability parkourability = Parkourability.get(player);
@@ -254,6 +255,7 @@ public class ActionProcessor {
             }
         }
 
+		@SubscribeEvent
 		public void onRenderTick(RenderFrameEvent.Pre event) {
 			Player clientPlayer = Minecraft.getInstance().player;
 			if (clientPlayer == null) return;
@@ -270,6 +272,7 @@ public class ActionProcessor {
 			}
 		}
 
+		@SubscribeEvent
 		public void onViewRender(ViewportEvent.ComputeCameraAngles event) {
 			LocalPlayer player = Minecraft.getInstance().player;
 			if (player == null) return;
