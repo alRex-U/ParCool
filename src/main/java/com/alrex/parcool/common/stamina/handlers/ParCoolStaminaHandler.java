@@ -5,6 +5,7 @@ import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import com.alrex.parcool.common.stamina.IParCoolStaminaHandler;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -13,26 +14,26 @@ public class ParCoolStaminaHandler implements IParCoolStaminaHandler {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public ReadonlyStamina initializeStamina(LocalPlayer player, ReadonlyStamina current) {
+    public ReadonlyStamina initializeStamina(Player player, ReadonlyStamina current) {
         return current;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public ReadonlyStamina consume(LocalPlayer player, ReadonlyStamina current, int value) {
+    public ReadonlyStamina consume(Player player, ReadonlyStamina current, int value) {
         recoveryCoolDown = 30;
         return current.consumed(value);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public ReadonlyStamina recover(LocalPlayer player, ReadonlyStamina current, int value) {
+    public ReadonlyStamina recover(Player player, ReadonlyStamina current, int value) {
         return current.recovered(value);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public ReadonlyStamina onTick(LocalPlayer player, ReadonlyStamina current) {
+    public ReadonlyStamina onTick(Player player, ReadonlyStamina current) {
         if (recoveryCoolDown > 0) {
             recoveryCoolDown--;
         }
@@ -54,7 +55,7 @@ public class ParCoolStaminaHandler implements IParCoolStaminaHandler {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public boolean shouldShowHUD(LocalPlayer player) {
+    public boolean shouldShowHUD(Player player) {
         return true;
     }
 }
