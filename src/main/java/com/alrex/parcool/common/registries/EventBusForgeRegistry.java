@@ -8,6 +8,8 @@ import com.alrex.parcool.common.potion.ParCoolBrewingRecipe;
 import net.neoforged.bus.api.IEventBus;
 
 public class EventBusForgeRegistry {
+    private static final ActionProcessor ACTION_PROCESSOR = new ActionProcessor();
+
 	public static void register(IEventBus bus) {
         bus.register(ParCoolBrewingRecipe.class);
         bus.register(PlayerJumpHandler.class);
@@ -15,7 +17,8 @@ public class EventBusForgeRegistry {
         bus.register(PlayerVisibilityHandler.class);
         bus.register(PlayerDamageHandler.class);
         bus.register(PlayerCloneHandler.class);
-		bus.register(new ActionProcessor());
+
+        bus.addListener(ACTION_PROCESSOR::onTick);
 	}
 
 	public static void registerClient(IEventBus bus) {
@@ -25,5 +28,8 @@ public class EventBusForgeRegistry {
         bus.register(PlayerJoinHandler.class);
         bus.register(HUDManager.getInstance());
         bus.register(InputHandler.class);
+
+        bus.addListener(ACTION_PROCESSOR::onRenderTick);
+        bus.addListener(ACTION_PROCESSOR::onViewRender);
 	}
 }

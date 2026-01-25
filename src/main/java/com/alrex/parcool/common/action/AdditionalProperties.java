@@ -17,12 +17,21 @@ public class AdditionalProperties {
     private int inWaterTick = 0;
     private int notInWaterTick = 0;
 	private int tickAfterLastJump = 0;
+	private int actualNotLandingTick = 0;
+	private boolean inAirByJumping = false;
 
 	public void onJump() {
 		tickAfterLastJump = 0;
+		inAirByJumping = true;
 	}
 
 	public void onTick(Player player, Parkourability parkourability) {
+		if (player.onGround) {
+			inAirByJumping = false;
+			actualNotLandingTick = 0;
+		} else {
+			actualNotLandingTick++;
+		}
 		tickAfterLastJump++;
 		if (player.isSprinting()) {
 			notSprintingTick = 0;
@@ -115,4 +124,12 @@ public class AdditionalProperties {
     public int getLastSneakingTick() {
         return lastSneakingTick;
     }
+
+	public int getActualNotLandingTick() {
+		return actualNotLandingTick;
+	}
+
+	public boolean isInAirByJumping() {
+		return inAirByJumping;
+	}
 }
