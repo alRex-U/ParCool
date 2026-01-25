@@ -25,5 +25,6 @@ public class EventBusForgeRegistry {
         bus.register(PlayerJoinHandler.class);
         bus.register(HUDManager.getInstance());
         bus.register(InputHandler.class);
+        bus.register(new ActionProcessor.ClientActionProcessor());
 	}
 }

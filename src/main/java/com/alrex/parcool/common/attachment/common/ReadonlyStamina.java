@@ -9,6 +9,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -41,7 +42,7 @@ public record ReadonlyStamina(boolean isExhausted, int value, int max) {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public ReadonlyStamina updateMax(LocalPlayer player) {
+    public ReadonlyStamina updateMax(Player player) {
         var attr = player.getAttribute(Attributes.MAX_STAMINA);
         if (attr == null) return this;
         var parkourability = Parkourability.get(player);
@@ -52,7 +53,7 @@ public record ReadonlyStamina(boolean isExhausted, int value, int max) {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void sync(LocalPlayer player) {
+    public void sync(Player player) {
         ClientPacketDistributor.sendToServer(new StaminaPayload(player.getUUID(), this));
     }
 

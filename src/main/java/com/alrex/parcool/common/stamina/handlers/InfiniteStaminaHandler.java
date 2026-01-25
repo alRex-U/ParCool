@@ -3,6 +3,7 @@ package com.alrex.parcool.common.stamina.handlers;
 import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import com.alrex.parcool.common.stamina.IParCoolStaminaHandler;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -11,19 +12,19 @@ public class InfiniteStaminaHandler implements IParCoolStaminaHandler {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public ReadonlyStamina initializeStamina(LocalPlayer player, ReadonlyStamina current) {
+    public ReadonlyStamina initializeStamina(Player player, ReadonlyStamina current) {
         return INSTANCE;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public ReadonlyStamina consume(LocalPlayer player, ReadonlyStamina current, int value) {
+    public ReadonlyStamina consume(Player player, ReadonlyStamina current, int value) {
         return INSTANCE;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public ReadonlyStamina recover(LocalPlayer player, ReadonlyStamina current, int value) {
+    public ReadonlyStamina recover(Player player, ReadonlyStamina current, int value) {
         return INSTANCE;
     }
 }

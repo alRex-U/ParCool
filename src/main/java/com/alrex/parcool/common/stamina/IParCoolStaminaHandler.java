@@ -8,21 +8,21 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 public interface IParCoolStaminaHandler {
     @OnlyIn(Dist.CLIENT)
-    public ReadonlyStamina initializeStamina(LocalPlayer player, ReadonlyStamina current);
+    public ReadonlyStamina initializeStamina(Player player, ReadonlyStamina current);
 
     @OnlyIn(Dist.CLIENT)
-    public ReadonlyStamina consume(LocalPlayer player, ReadonlyStamina current, int value);
+    public ReadonlyStamina consume(Player player, ReadonlyStamina current, int value);
 
     @OnlyIn(Dist.CLIENT)
-    public ReadonlyStamina recover(LocalPlayer player, ReadonlyStamina current, int value);
+    public ReadonlyStamina recover(Player player, ReadonlyStamina current, int value);
 
     @OnlyIn(Dist.CLIENT)
-    public default ReadonlyStamina onTick(LocalPlayer player, ReadonlyStamina current) {
+    public default ReadonlyStamina onTick(Player player, ReadonlyStamina current) {
         return current;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public default boolean shouldShowHUD(LocalPlayer player) {
+    public default boolean shouldShowHUD(Player player) {
         return false;
     }
 
