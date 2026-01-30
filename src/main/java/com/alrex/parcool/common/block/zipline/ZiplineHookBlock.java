@@ -4,7 +4,6 @@ import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.common.block.TileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -60,19 +59,6 @@ public abstract class ZiplineHookBlock extends DirectionalBlock implements Entit
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction direction = context.getClickedFace();
         return this.defaultBlockState().setValue(FACING, direction);
-    }
-
-    @Override
-    public void affectNeighborsAfterRemoval(@Nonnull BlockState state, @Nonnull ServerLevel world, @Nonnull BlockPos pos, boolean movedByPiston) {
-        if (!world.isClientSide()) {
-            var tileEntity = world.getBlockEntity(pos);
-            if (tileEntity instanceof ZiplineHookTileEntity) {
-                ZiplineHookTileEntity ziplineHookTileEntity = (ZiplineHookTileEntity) tileEntity;
-                List<ItemStack> itemStacks = ziplineHookTileEntity.removeAllConnection();
-                itemStacks.forEach((it) -> Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), it));
-            }
-        }
-        super.affectNeighborsAfterRemoval(state, world, pos, movedByPiston);
     }
 
     @Override

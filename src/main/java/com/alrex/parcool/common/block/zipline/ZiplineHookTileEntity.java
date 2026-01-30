@@ -7,10 +7,9 @@ import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.Containers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -45,6 +44,18 @@ public class ZiplineHookTileEntity extends BlockEntity {
 
     private TreeMap<BlockPos, ZiplineInfo> getConnectionInfo() {
         return connections;
+    }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        if (this.level == null) return;
+        if (!this.level.isClientSide()) {
+            var tileEntity = this.level.getBlockEntity(pos);
+            if (tileEntity instanceof ZiplineHookTileEntity ziplineHookTileEntity) {
+                List<ItemStack> itemStacks = ziplineHookTileEntity.removeAllConnection();
+                itemStacks.forEach((it) -> Containers.dropItemStack(this.level, pos.getX(), pos.getY(), pos.getZ(), it));
+            }
+        }
     }
 
     public List<ItemStack> removeAllConnection() {
