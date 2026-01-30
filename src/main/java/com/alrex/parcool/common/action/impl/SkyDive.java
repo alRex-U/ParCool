@@ -32,8 +32,8 @@ public class SkyDive extends Action {
 			return;
 		}
 		Vec3 forwardVec = VectorUtil.fromYawDegree(player.yHeadRot);
-		Vec3 leftVec = forwardVec.yRot((float) Math.PI / 2).scale(clientPlayer.input.leftImpulse * 0.0);
-		forwardVec = forwardVec.scale(clientPlayer.input.forwardImpulse * 0.03);
+		Vec3 leftVec = forwardVec.yRot((float) Math.PI / 2).scale(clientPlayer.input.getMoveVector().x * 0.0);
+		forwardVec = forwardVec.scale(clientPlayer.input.getMoveVector().y * 0.03);
 		clientPlayer.setDeltaMovement(clientPlayer.getDeltaMovement()
 				.multiply(
 						1,

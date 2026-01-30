@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.block.zipline;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import com.alrex.parcool.common.item.Items;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
@@ -9,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -16,6 +18,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
@@ -137,71 +142,74 @@ public class ZiplineHookTileEntity extends BlockEntity {
         return result ? entity : null;
     }
 
-    private void saveTo(CompoundTag nbt) {
-        var connections = new ListTag();
+    private void saveTo(ValueOutput output) {
+        var connections = output.childrenList("Connection");
         for (Map.Entry<BlockPos, ZiplineInfo> infoEntry : getConnectionInfo().entrySet()) {
-            var entryTag = new CompoundTag();
+            var entryTag = connections.addChild();
             var pos = getBlockPos();
             entryTag.putInt("rX", infoEntry.getKey().getX() - pos.getX());
             entryTag.putInt("rY", infoEntry.getKey().getY() - pos.getY());
             entryTag.putInt("rZ", infoEntry.getKey().getZ() - pos.getZ());
-            entryTag.put("Info", infoEntry.getValue().save());
-            connections.add(entryTag);
-        }
-        nbt.put("Connection", connections);
-    }
-
-    private void restoreFrom(CompoundTag nbt) {
-        Tag connections = nbt.get("Connection");
-        if (!(connections instanceof ListTag listConnections)) {
-            return;
-        }
-        getConnectionInfo().clear();
-
-        for (Tag entry : listConnections) {
-            if (!(entry instanceof CompoundTag cTag))
-                continue;
-
-            BlockPos pos;
-            if (cTag.contains("rX") && cTag.contains("rY") && cTag.contains("rZ")) {
-                pos = getBlockPos().offset(
-                        cTag.getInt("rX"),
-                        cTag.getInt("rY"),
-                        cTag.getInt("rZ")
-                );
-            } else if (cTag.contains("X") && cTag.contains("Y") && cTag.contains("Z")) {
-                pos = new BlockPos(cTag.getInt("X"), cTag.getInt("Y"), cTag.getInt("Z"));
-            } else
-                continue;
-            ZiplineInfo info = ZiplineInfo.load(cTag.get("Info"));
-            getConnectionInfo().put(pos, info);
+            entryTag.store("Info", ZiplineInfo.CODEC, infoEntry.getValue());
         }
     }
 
-    @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        saveTo(tag);
+    private void restoreFrom(ValueInput input) {
+        input.childrenList("Connection").ifPresent(connections -> {
+            getConnectionInfo().clear();
+
+            for (ValueInput entry : connections) {
+                BlockPos pos;
+                Optional<Integer> rX = entry.getInt("rX");
+                Optional<Integer> rY = entry.getInt("rY");
+                Optional<Integer> rZ = entry.getInt("rZ");
+
+                Optional<Integer> x = entry.getInt("X");
+                Optional<Integer> y = entry.getInt("Y");
+                Optional<Integer> z = entry.getInt("Z");
+
+                if (rX.isPresent() && rY.isPresent() && rZ.isPresent()) {
+                    pos = getBlockPos().offset(
+                        rX.get(),
+                        rY.get(),
+                        rZ.get()
+                    );
+                } else if (x.isPresent() && y.isPresent() && z.isPresent()) {
+                    pos = new BlockPos(x.get(), y.get(), z.get());
+                } else
+                    continue;
+                ZiplineInfo info = entry.read("Info", ZiplineInfo.CODEC).orElseThrow();
+                getConnectionInfo().put(pos, info);
+            }
+        });
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        restoreFrom(tag);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        saveTo(output);
+    }
+
+    @Override
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        restoreFrom(input);
     }
 
     @Nonnull
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        var nbt = super.getUpdateTag(registries);
-        saveTo(nbt);
-        return nbt;
+        try (ProblemReporter.ScopedCollector collector = new ProblemReporter.ScopedCollector(this.problemPath(), ParCool.LOGGER)) {
+            var nbt = TagValueOutput.createWithContext(collector, registries);
+            saveTo(nbt);
+            return nbt.buildResult();
+        }
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        super.handleUpdateTag(tag, lookupProvider);
-        restoreFrom(tag);
+    public void handleUpdateTag(ValueInput input) {
+        super.handleUpdateTag(input);
+        restoreFrom(input);
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, BlockEntity entity) {

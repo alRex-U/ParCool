@@ -143,7 +143,7 @@ public class RideZipline extends Action {
         speed *= 0.98;
         if (player.isInWater()) speed *= 0.8;
         speed -= gravity * slope * (Mth.invSqrt(slope * slope + 1));
-        Vec3 input = new Vec3(-localPlayer.input.leftImpulse, 0., localPlayer.input.forwardImpulse);
+        Vec3 input = new Vec3(-localPlayer.input.getMoveVector().x, 0., localPlayer.input.getMoveVector().y);
         Vec3 offset = zipline.getOffsetToEndFromStart();
         if (input.lengthSqr() > 0.01) {
             double dot = player.getLookAngle()

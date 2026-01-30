@@ -64,7 +64,7 @@ public class AdditionalProperties {
 		} else {
 			notCreativeFlyingTick++;
 		}
-        if (player.isInWaterOrBubble()) {
+        if (player.isInWater()) {
             inWaterTick++;
             notInWaterTick = 0;
         } else {

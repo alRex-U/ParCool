@@ -19,6 +19,8 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
@@ -197,20 +199,20 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
     }
 
     @Override
-    public void readAdditionalSaveData(@Nonnull CompoundTag compoundNBT) {
-        setStartPos(new BlockPos(compoundNBT.getInt("Tile1_X"), compoundNBT.getInt("Tile1_Y"), compoundNBT.getInt("Tile1_Z")));
-        setEndPos(new BlockPos(compoundNBT.getInt("Tile2_X"), compoundNBT.getInt("Tile2_Y"), compoundNBT.getInt("Tile2_Z")));
+    public void readAdditionalSaveData(@Nonnull ValueInput input) {
+        setStartPos(new BlockPos(input.getIntOr("Tile1_X", 0), input.getIntOr("Tile1_Y", 0), input.getIntOr("Tile1_Z", 0)));
+        setEndPos(new BlockPos(input.getIntOr("Tile2_X", 0), input.getIntOr("Tile2_Y", 0), input.getIntOr("Tile2_Z", 0)));
     }
 
     @Override
-    public void addAdditionalSaveData(@Nonnull CompoundTag compoundNBT) {
+    public void addAdditionalSaveData(@Nonnull ValueOutput output) {
         BlockPos startPos = getStartPos();
         BlockPos endPos = getEndPos();
-        compoundNBT.putInt("Tile1_X", startPos.getX());
-        compoundNBT.putInt("Tile1_X", startPos.getY());
-        compoundNBT.putInt("Tile1_X", startPos.getZ());
-        compoundNBT.putInt("Tile2_X", endPos.getX());
-        compoundNBT.putInt("Tile2_X", endPos.getY());
-        compoundNBT.putInt("Tile2_X", endPos.getZ());
+        output.putInt("Tile1_X", startPos.getX());
+        output.putInt("Tile1_X", startPos.getY());
+        output.putInt("Tile1_X", startPos.getZ());
+        output.putInt("Tile2_X", endPos.getX());
+        output.putInt("Tile2_X", endPos.getY());
+        output.putInt("Tile2_X", endPos.getZ());
     }
 }

@@ -103,8 +103,8 @@ public class WallSlide extends Action {
 					Mth.floor(player.getY() + player.getBbHeight() * 0.75),
 					Mth.floor(player.getZ() + leanedWallDirection.z)
 			);
-			if (!player.getCommandSenderWorld().isLoaded(leanedBlock)) return;
-			float slipperiness = player.getCommandSenderWorld().getBlockState(leanedBlock).getFriction(player.getCommandSenderWorld(), leanedBlock, player);
+			if (!player.level().isLoaded(leanedBlock)) return;
+			float slipperiness = player.level().getBlockState(leanedBlock).getFriction(player.level(), leanedBlock, player);
 			slipperiness = (float) Math.sqrt(slipperiness);
 			player.fallDistance *= slipperiness;
 			player.setDeltaMovement(player.getDeltaMovement().multiply(0.8, slipperiness, 0.8));

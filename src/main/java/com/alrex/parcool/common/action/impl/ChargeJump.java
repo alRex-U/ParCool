@@ -73,7 +73,7 @@ public class ChargeJump extends Action {
                     && parkourability.getActionInfo().can(ChargeJump.class)
                     && !cp.isVisuallyCrawling()
                     && !cp.isSprinting()
-                    && !cp.isInWaterOrBubble()
+                    && !cp.isInWater()
                     && !cp.input.keyPresses.forward()
                     && !cp.input.keyPresses.backward()
                     && !cp.input.keyPresses.right()

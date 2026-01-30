@@ -150,9 +150,9 @@ public class Dodge extends Action {
 				&& player.onGround()
 				&& !isInSuccessiveCoolDown(parkourability.getActionInfo())
 				&& coolTime <= 0
-                && !player.isInWaterOrBubble()
+                && !player.isInWater()
 				&& player.onGround()
-                && !player.isInWaterOrBubble()
+                && !player.isInWater()
 				&& !player.isShiftKeyDown()
 				&& !parkourability.get(Crawl.class).isDoing()
 				&& !parkourability.get(Roll.class).isDoing()
@@ -166,7 +166,7 @@ public class Dodge extends Action {
 		return !(parkourability.get(Roll.class).isDoing()
 				|| parkourability.get(ClingToCliff.class).isDoing()
 				|| getDoingTick() >= MAX_TICK
-				|| player.isInWaterOrBubble()
+				|| player.isInWater()
 				|| player.isFallFlying()
 				|| player.getAbilities().flying
 		);

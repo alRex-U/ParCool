@@ -34,7 +34,7 @@ public class Crawl extends Action {
 				&& !parkourability.get(RideZipline.class).isDoing()
 				&& player.getVehicle() == null
                 && (pose == Pose.STANDING || pose == Pose.CROUCHING)
-				&& !player.isInWaterOrBubble()
+				&& !player.isInWater()
 				&& !player.isFallFlying()
 				&& !player.onClimbable()
 				&& (player.onGround() || ParCoolConfig.Client.Booleans.EnableCrawlInAir.get());
@@ -80,7 +80,7 @@ public class Crawl extends Action {
 				&& !parkourability.get(Dive.class).isDoing()
 				&& parkourability.get(Vault.class).getNotDoingTick() >= 8
 				&& player.getVehicle() == null
-				&& !player.isInWaterOrBubble()
+				&& !player.isInWater()
 				&& !player.isFallFlying()
 				&& !player.onClimbable()
 				&& (player.onGround() || ParCoolConfig.Client.Booleans.EnableCrawlInAir.get());

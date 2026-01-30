@@ -73,7 +73,7 @@ public class Dive extends Action {
     public boolean canContinue(Player player, Parkourability parkourability) {
 		return !(player.isFallFlying()
 				|| player.getAbilities().flying
-				|| player.isInWaterOrBubble()
+				|| player.isInWater()
 				|| player.isInLava()
 				|| player.isSwimming()
 				|| player.onGround()
@@ -102,7 +102,7 @@ public class Dive extends Action {
 
 	@Override
 	public void onStopInLocalClient(Player player) {
-		if (player.isInWaterOrBubble()) {
+		if (player.isInWater()) {
 			Animation animation = Animation.get(player);
 			Parkourability parkourability = Parkourability.get(player);
 			if (animation != null
@@ -117,7 +117,7 @@ public class Dive extends Action {
 
 	@Override
 	public void onStopInOtherClient(Player player) {
-		if (player.isInWaterOrBubble()) {
+		if (player.isInWater()) {
             Animation animation = Animation.get(player);
             Parkourability parkourability = Parkourability.get(player);
             if (animation != null

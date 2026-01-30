@@ -11,6 +11,7 @@ import com.alrex.parcool.utilities.MathUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -88,14 +89,13 @@ public class StaminaHUD {
 		if (staminaScale < 0) staminaScale = 0;
 		if (staminaScale > 1) staminaScale = 1;
 
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-		graphics.blitSprite(RenderType::guiTextured, STAMINA_EMPTY, 93, 17, 0, 0, pos.getA(), pos.getB(), 93, 17);
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, STAMINA_EMPTY, 93, 17, 0, 0, pos.getA(), pos.getB(), 93, 17);
 		if (!stamina.isExhausted()) {
-			graphics.blitSprite(RenderType::guiTextured, STAMINA_EMPTY_CHARGE, 93, 17, 0, 0, pos.getA(), pos.getB(), (int) Math.ceil(92 * statusScale), 17);
-			graphics.blitSprite(RenderType::guiTextured, STAMINA_CHARGING, 93, 17, 0, 0, pos.getA(), pos.getB(), Math.round(16 + 69 * shadowScale) + 1, 12);
-			graphics.blitSprite(RenderType::guiTextured, STAMINA_FULL[renderGageType], 93, 17, 0, 0, pos.getA(), pos.getB(), Math.round(16 + 69 * staminaScale) + 1, 12);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, STAMINA_EMPTY_CHARGE, 93, 17, 0, 0, pos.getA(), pos.getB(), (int) Math.ceil(92 * statusScale), 17);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, STAMINA_CHARGING, 93, 17, 0, 0, pos.getA(), pos.getB(), Math.round(16 + 69 * shadowScale) + 1, 12);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, STAMINA_FULL[renderGageType], 93, 17, 0, 0, pos.getA(), pos.getB(), Math.round(16 + 69 * staminaScale) + 1, 12);
 		} else {
-			graphics.blitSprite(RenderType::guiTextured, STAMINA_DEPLETED, 93, 17, 0, 0, pos.getA(), pos.getB(), Math.round(16 + 69 * staminaScale) + 1, 17);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, STAMINA_DEPLETED, 93, 17, 0, 0, pos.getA(), pos.getB(), Math.round(16 + 69 * staminaScale) + 1, 17);
 		}
 		shadowScale = staminaScale - (staminaScale - shadowScale) / 1.1f;
 	}

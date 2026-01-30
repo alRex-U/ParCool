@@ -13,6 +13,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 @OnlyIn(Dist.CLIENT)
@@ -28,7 +29,7 @@ public class EnableOrDisableParCoolHandler {
             Parkourability parkourability = Parkourability.get(player);
             if (parkourability == null) return;
             parkourability.getActionInfo().setClientSetting(ClientSetting.readFromLocalConfig());
-            PacketDistributor.sendToServer(new ClientInformationPayload(player.getUUID(), false, parkourability.getClientInfo()));
+            ClientPacketDistributor.sendToServer(new ClientInformationPayload(player.getUUID(), false, parkourability.getClientInfo()));
             player.displayClientMessage(Component.translatable(currentStatus ? "parcool.message.enabled" : "parcool.message.disabled"), true);
             if (currentStatus) {
                 player.playSound(SoundEvents.PARCOOL_ENABLE.get(), 1.0f, 1.0f);

@@ -2,7 +2,9 @@ package com.alrex.parcool.common.zipline;
 
 import com.alrex.parcool.common.zipline.impl.GeneralQuadraticCurveZipline;
 import com.alrex.parcool.common.zipline.impl.StraightZipline;
+import com.mojang.serialization.Codec;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.phys.Vec3;
 
 public enum ZiplineType {
@@ -10,6 +12,8 @@ public enum ZiplineType {
     STANDARD("parcool.gui.text.zipline.type.normal"),
     LOOSE("parcool.gui.text.zipline.type.loose"),
     VERY_LOOSE("parcool.gui.text.zipline.type.very_loose");
+
+    public static final Codec<ZiplineType> CODEC = ExtraCodecs.idResolverCodec(ZiplineType::ordinal, i -> ZiplineType.values()[i], 0);
 
     private ZiplineType(String translation) {
         this.translationID = translation;

@@ -77,9 +77,9 @@ public abstract class ParCoolSettingScreen extends Screen {
 			graphics.fill(3, 3, topBarHeight - 4, topBarHeight - 4, 0xFFEE0000);
 			graphics.drawCenteredString(font, "!", topBarHeight / 2, (topBarHeight - font.lineHeight) / 2 + 1, 0xEEEEEE);
 			if (2 <= mouseX && mouseX < topBarHeight - 3 && 1 <= mouseY && mouseY < topBarHeight - 3) {
-				graphics.renderComponentTooltip(
+				graphics.setTooltipForNextFrame(
 						font,
-						Collections.singletonList(Permission_Not_Received),
+						Permission_Not_Received,
 						mouseX, mouseY);
 			}
 			titleOffset = topBarHeight;

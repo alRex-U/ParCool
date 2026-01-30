@@ -114,7 +114,7 @@ public class WallJump extends Action {
 		ClingToCliff cling = parkourability.get(ClingToCliff.class);
 
 		boolean value = (!player.onGround()
-				&& !player.isInWaterOrBubble()
+				&& !player.isInWater()
 				&& !player.isFallFlying()
 				&& !player.getAbilities().flying
 				&& parkourability.getAdditionalProperties().getNotCreativeFlyingTick() > 10
@@ -191,8 +191,8 @@ public class WallJump extends Action {
 				Mth.floor(player.getBoundingBox().minY + player.getBbHeight() * 0.25),
 				Mth.floor(player.getZ() + wallDirection.z())
 		);
-		float slipperiness = player.getCommandSenderWorld().isLoaded(leanedBlock) ?
-				player.getCommandSenderWorld().getBlockState(leanedBlock).getFriction(player.getCommandSenderWorld(), leanedBlock, player)
+		float slipperiness = player.level().isLoaded(leanedBlock) ?
+				player.level().getBlockState(leanedBlock).getFriction(player.level(), leanedBlock, player)
 				: 0.6f;
 
 		double ySpeed;

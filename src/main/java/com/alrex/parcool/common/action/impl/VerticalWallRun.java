@@ -65,8 +65,8 @@ public class VerticalWallRun extends Action {
 							Mth.floor(player.getBoundingBox().minY + player.getBbHeight() * 0.5),
 							Mth.floor(player.getZ() + wall.z())
 					);
-					if (!player.getCommandSenderWorld().isLoaded(targetBlock)) return false;
-					float slipperiness = player.getCommandSenderWorld().getBlockState(targetBlock).getFriction(player.getCommandSenderWorld(), targetBlock, player);
+					if (!player.level().isLoaded(targetBlock)) return false;
+					float slipperiness = player.level().getBlockState(targetBlock).getFriction(player.level(), targetBlock, player);
 					startInfo.putDouble(height);
 					startInfo.putFloat(slipperiness);
 					startInfo.putDouble(wall.x());

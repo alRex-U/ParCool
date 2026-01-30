@@ -51,7 +51,7 @@ public class PlayerDamageHandler {
 						ParCoolConfig.Client.Integers.JustTimeBreakfallTick,
 						ParCoolConfig.Server.Integers.MaxJustTimeBreakfallTick
 				);
-				float distance = event.getDistance();
+				double distance = event.getDistance();
 				if (distance > parkourability.getLimitedValue(
 						ParCoolConfig.Client.Doubles.LowestFallDistanceForBreakfall,
 						ParCoolConfig.Server.Doubles.MinLowestFallDistanceForBreakfall

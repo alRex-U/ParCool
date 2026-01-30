@@ -13,6 +13,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.CompoundTagArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
@@ -69,7 +70,7 @@ public class ZiplineCommand {
         ZiplineInfo info;
         if (hasInfo) {
             var infoTag = CompoundTagArgument.getCompoundTag(context, ARGS_NAME_ZIPLINE_INFO);
-            info = ZiplineInfo.load(infoTag);
+            info = ZiplineInfo.CODEC.decode(NbtOps.INSTANCE, infoTag).getOrThrow().getFirst();
         } else {
             info = new ZiplineInfo(ZiplineType.STANDARD, ZiplineRopeItem.DEFAULT_COLOR);
         }

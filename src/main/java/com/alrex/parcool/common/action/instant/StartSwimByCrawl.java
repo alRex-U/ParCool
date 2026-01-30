@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 public class StartSwimByCrawl extends InstantAction {
     @Override
     public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
-        return player.isInWaterOrBubble()
+        return player.isInWater()
                 && !player.isSwimming()
                 && KeyRecorder.keyCrawlState.isPressed();
     }

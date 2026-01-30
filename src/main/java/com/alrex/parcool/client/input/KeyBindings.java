@@ -17,7 +17,6 @@ import org.lwjgl.glfw.GLFW;
 @OnlyIn(Dist.CLIENT)
 public class KeyBindings {
     private static final Minecraft mc = Minecraft.getInstance();
-    private static final Options settings = mc.options;
     private static final KeyMapping keyBindEnable = new KeyMapping("key.parcool.Enable", KeyConflictContext.UNIVERSAL, KeyModifier.CONTROL, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.categories.parcool");
 	private static final KeyMapping keyBindCrawl = new KeyMapping("key.parcool.Crawl", GLFW.GLFW_KEY_C, "key.categories.parcool");
 	private static final KeyMapping keyBindGrabWall = new KeyMapping("key.parcool.ClingToCliff", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "key.categories.parcool");
@@ -37,7 +36,7 @@ public class KeyBindings {
 	private static final Vec3 forwardVector = new Vec3(0, 0, 1);
 
 	public static KeyMapping getKeySprint() {
-		return settings.keySprint;
+		return mc.options.keySprint;
 	}
 
 	public static Boolean isKeyJumpDown() {
@@ -47,7 +46,7 @@ public class KeyBindings {
 	}
 
 	public static KeyMapping getKeySneak() {
-		return settings.keyShift;
+		return mc.options.keyShift;
 	}
 
 	public static Vec3 getCurrentMoveVector() {
@@ -70,8 +69,8 @@ public class KeyBindings {
 				|| mc.player.input.keyPresses.right()
 				|| mc.player.input.keyPresses.backward()
 				|| mc.player.input.keyPresses.left()
-				|| mc.player.input.forwardImpulse != 0
-				|| mc.player.input.leftImpulse != 0);
+				|| mc.player.input.getMoveVector().x != 0
+				|| mc.player.input.getMoveVector().y != 0);
 	}
 
 	public static Boolean isLeftAndRightDown() {
