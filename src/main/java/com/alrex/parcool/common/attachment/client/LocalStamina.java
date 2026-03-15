@@ -3,6 +3,7 @@ package com.alrex.parcool.common.attachment.client;
 import com.alrex.parcool.api.Effects;
 import com.alrex.parcool.common.attachment.Attachments;
 import com.alrex.parcool.common.attachment.ClientAttachments;
+import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import com.alrex.parcool.common.stamina.IParCoolStaminaHandler;
 import com.alrex.parcool.common.stamina.StaminaType;
 import com.alrex.parcool.common.stamina.handlers.InfiniteStaminaHandler;
@@ -93,8 +94,13 @@ public class LocalStamina {
         return current.isExhausted() && handler.shouldImposeExhaustionPenalty(player, current);
     }
 
+    private ReadonlyStamina oldStamina = ReadonlyStamina.createDefault();
     public void sync(LocalPlayer player) {
-        player.getData(Attachments.STAMINA).sync(player);
+        ReadonlyStamina stamina = player.getData(Attachments.STAMINA);
+        if (!stamina.equals(oldStamina)) {
+            stamina.sync(player);
+        }
+        oldStamina = stamina;
     }
 
     public boolean isUsingExternalStamina() {

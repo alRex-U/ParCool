@@ -41,6 +41,16 @@ public class NetworkRegistries {
                 StaminaProcessOnServerPayload.CODEC,
                 StaminaProcessOnServerPayload::handleServer
         );
+        r.playToClient(
+                StaminaBroadcastPayload.TYPE,
+                StaminaBroadcastPayload.CODEC,
+                StaminaBroadcastPayload::handleClient
+        );
+        r.playToClient(
+                ActionStateBroadcastPayload.TYPE,
+                ActionStateBroadcastPayload.CODEC,
+                ActionStateBroadcastPayload::handleClient
+        );
     }
 
     @SubscribeEvent

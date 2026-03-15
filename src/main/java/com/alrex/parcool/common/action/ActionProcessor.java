@@ -46,7 +46,7 @@ public class ActionProcessor {
 	private static final ByteBuffer bufferOfPostState = ByteBuffer.allocate(128);
 	private static final ByteBuffer bufferOfPreState = ByteBuffer.allocate(128);
 	private static final ByteBuffer bufferOfStarting = ByteBuffer.allocate(128);
-	private static int staminaSyncCoolTimeTick = 0;
+	private static int staminaSyncCoolTimeTick = 5;
 
 	@SubscribeEvent
 	public void onTick(PlayerTickEvent.Post event) {
@@ -77,8 +77,8 @@ public class ActionProcessor {
 			processAction(player, parkourability, syncStates, inClient, action);
 			NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Tick.Post(player, action));
 		}
-		if (needSync) {
-			ClientActionProcessor.onTick$sendSynchronizationPacket(player, syncStates);
+		if (needSync && !syncStates.isEmpty()) {
+            ClientActionProcessor.onTick$sendSynchronizationPacket(player, syncStates);
 		}
 
 		if (inClient) ClientActionProcessor.onTick$doPostProcessInClient(event, parkourability);
@@ -166,12 +166,10 @@ public class ActionProcessor {
 
         private static void onTick$doPostProcessInClient(PlayerTickEvent event, Parkourability parkourability) {
             if (!(event.getEntity() instanceof LocalPlayer player)) return;
-            staminaSyncCoolTimeTick++;
             if (!parkourability.limitationIsNotSynced()) {
                 var stamina = LocalStamina.get(player);
                 stamina.onTick(player);
-                staminaSyncCoolTimeTick++;
-                if (staminaSyncCoolTimeTick > 5) {
+                if (--staminaSyncCoolTimeTick > 5) {
                     stamina.sync(player);
                     staminaSyncCoolTimeTick = 0;
                 }

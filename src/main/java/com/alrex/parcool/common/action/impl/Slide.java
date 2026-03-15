@@ -100,6 +100,10 @@ public class Slide extends Action {
 		if (animation != null && !animation.hasAnimator()) {
 			animation.setAnimator(new CrawlAnimator());
 		}
+        if (!Parkourability.get(player).get(Crawl.class).isDoing()) {
+            player.swimAmount = 0;
+            player.swimAmountO = 0;
+        }
 	}
 
 	@Override
@@ -108,6 +112,10 @@ public class Slide extends Action {
 		if (animation != null && !animation.hasAnimator()) {
 			animation.setAnimator(new CrawlAnimator());
 		}
+        if (!Parkourability.get(player).get(Crawl.class).isDoing()) {
+            player.swimAmount = 0;
+            player.swimAmountO = 0;
+        }
 	}
 
     @Nullable
