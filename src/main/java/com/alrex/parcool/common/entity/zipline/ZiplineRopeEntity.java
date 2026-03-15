@@ -56,7 +56,6 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
     private BlockPos zipline_end;
     private ZiplineType zip_type;
     private Zipline zipline;
-
     public Zipline getZipline() {
         BlockPos start = getStartPos();
         BlockPos end = getEndPos();
