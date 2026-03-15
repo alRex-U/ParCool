@@ -19,9 +19,11 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
     private static final EntityDataAccessor<BlockPos> DATA_START_POS;
@@ -50,13 +52,15 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
         setZiplineType(info.getType());
         setPos((end.getX() + start.getX()) / 2.0 + 0.5, Math.min(end.getY(), start.getY()), (end.getZ() + start.getZ()) / 2.0 + 0.5);
         noPhysics = true;
+        cullingBB = new AABB(start.getX(), start.getY(), start.getZ(), end.getX(), end.getY(), end.getZ()).inflate(1);
     }
 
     private BlockPos zipline_start;
     private BlockPos zipline_end;
     private ZiplineType zip_type;
     private Zipline zipline;
-
+    @Nullable
+    private AABB cullingBB;
     public Zipline getZipline() {
         BlockPos start = getStartPos();
         BlockPos end = getEndPos();
@@ -69,6 +73,7 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
             zipline_start = start;
             zipline_end = end;
             zip_type = type;
+            cullingBB = new AABB(start.getX(), start.getY(), start.getZ(), end.getX(), end.getY(), end.getZ()).inflate(1);
             Vec3 startPos;
             Vec3 endPos;
             BlockEntity startEntity = level().getBlockEntity(start);
@@ -114,6 +119,13 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
         Vec3 mostNearPoint = new Vec3(xOffset * t + start.getX(), yOffset * t + start.getY(), zOffset * t + start.getZ());
         distanceSqr = mostNearPoint.distanceToSqr(x, y, z);
         return distanceSqr < Zipline.MAXIMUM_HORIZONTAL_DISTANCE * Zipline.MAXIMUM_HORIZONTAL_DISTANCE;
+    }
+
+    @Nonnull
+    @Override
+    public AABB getBoundingBoxForCulling() {
+        if (cullingBB == null) return super.getBoundingBoxForCulling();
+        return cullingBB;
     }
 
     @Nonnull
