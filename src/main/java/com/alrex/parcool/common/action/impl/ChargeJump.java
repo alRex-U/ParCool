@@ -175,4 +175,8 @@ public class ChargeJump extends Action {
     public int getChargingTick() {
         return chargeTick;
     }
+
+    public int getNotChargingTick() {
+        return notChargeTick;
+    }
 }

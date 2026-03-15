@@ -14,16 +14,13 @@ public class SlidingAnimator extends Animator {
 	private static final int MAX_TRANSITION_TICK = 5;
 	@Override
 	public boolean shouldRemoved(Player player, Parkourability parkourability) {
-		return !parkourability.get(Slide.class).isDoing();
+        Slide slide = parkourability.get(Slide.class);
+        return !slide.isDoing() && slide.getNotDoingTick() >= MAX_TRANSITION_TICK;
 	}
 
 	@Override
 	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
-		float animFactor = (getTick() + transformer.getPartialTick()) / MAX_TRANSITION_TICK;
-		if (animFactor > 1) animFactor = 1;
-		animFactor = new Easing(animFactor)
-				.sinInOut(0, 1, 0, 1)
-				.get();
+        float animFactor = getAnimFactor(parkourability, transformer.getPartialTick());
 
 		transformer
                 .translateLeftLeg(
@@ -53,12 +50,8 @@ public class SlidingAnimator extends Animator {
     public boolean rotatePre(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
         Vec3 vec = parkourability.get(Slide.class).getSlidingVector();
         if (vec == null) return false;
-        float animFactor = (getTick() + rotator.getPartialTick()) / MAX_TRANSITION_TICK;
-        float yRot = (float) VectorUtil.toYawDegree(vec);
-        if (animFactor > 1) animFactor = 1;
-        animFactor = new Easing(animFactor)
-                .sinInOut(0, 1, 0, 1)
-				.get();
+        float animFactor = getAnimFactor(parkourability, rotator.getPartialTick());
+        float yRot = parkourability.get(Slide.class).isDoing() ? (float) VectorUtil.toYawDegree(vec) : rotator.getYRot();
 		rotator
                 .rotateYawRightward(180f + yRot)
                 .rotatePitchFrontward(-55f * animFactor)
@@ -67,4 +60,18 @@ public class SlidingAnimator extends Animator {
                 .translate(0, -0.7f * animFactor, -0.3f * animFactor);
         return true;
 	}
+
+    private float getAnimFactor(Parkourability parkourability, float partialTick) {
+        Slide slide = parkourability.get(Slide.class);
+        boolean doing = slide.isDoing();
+        int tick = doing ? getTick() : slide.getNotDoingTick();
+        float animFactor = Math.min((tick + partialTick) / MAX_TRANSITION_TICK, 1);
+        if (!doing) {
+            animFactor = 1 - animFactor;
+        }
+        animFactor = new Easing(animFactor)
+                .sinInOut(0, 1, 0, 1)
+                .get();
+        return animFactor;
+    }
 }

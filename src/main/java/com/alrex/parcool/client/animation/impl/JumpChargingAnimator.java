@@ -17,10 +17,7 @@ public class JumpChargingAnimator extends Animator {
 
     @Override
     public boolean animatePre(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
-        float transitionPhase = Math.min(1f, (parkourability.get(ChargeJump.class).getChargingTick() + transformer.getPartialTick()) / ChargeJump.JUMP_MAX_CHARGE_TICK);
-        float animFactor = new Easing(transitionPhase)
-                .sinInOut(0, 1, 0, 1)
-                .get();
+        float animFactor = getAnimFactor(parkourability, transformer.getPartialTick());
         transformer
                 .translateLeftLeg(
                         0,
@@ -53,14 +50,20 @@ public class JumpChargingAnimator extends Animator {
 
     @Override
     public boolean rotatePre(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
-        float transitionPhase = Math.min(1f, (parkourability.get(ChargeJump.class).getChargingTick() + rotator.getPartialTick()) / ChargeJump.JUMP_MAX_CHARGE_TICK);
-        float animFactor = new Easing(transitionPhase)
-                .sinInOut(0, 1, 0, 1)
-                .get();
+        float animFactor = getAnimFactor(parkourability, rotator.getPartialTick());
         rotator
                 .rotateYawRightward(180f + rotator.getYRot())
                 .translate(0, 0f, 0.3f * animFactor)
                 .rotatePitchFrontward(25 * animFactor);
         return true;
+    }
+
+    private float getAnimFactor(Parkourability parkourability, float partialTick) {
+        partialTick *= (parkourability.get(ChargeJump.class).getNotChargingTick() == 0 ? 1 : -1);
+        float transitionPhase = Math.min(1f, (parkourability.get(ChargeJump.class).getChargingTick() + partialTick) / ChargeJump.JUMP_MAX_CHARGE_TICK);
+        float animFactor = new Easing(transitionPhase)
+                .sinInOut(0, 1, 0, 1)
+                .get();
+        return animFactor;
     }
 }
