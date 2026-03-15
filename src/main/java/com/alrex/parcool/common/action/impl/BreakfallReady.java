@@ -12,13 +12,11 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 
 public class BreakfallReady extends Action {
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	public void startBreakfall(Player player, Parkourability parkourability, boolean justTimed) {
 		if (!(player instanceof LocalPlayer localPlayer)) return;
         boolean playSound = false;

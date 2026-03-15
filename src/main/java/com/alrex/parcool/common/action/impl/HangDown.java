@@ -14,8 +14,6 @@ import com.alrex.parcool.utilities.VectorUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 
 import javax.annotation.Nullable;
@@ -50,7 +48,7 @@ public class HangDown extends Action {
 
 	private BarAxis hangingBarAxis = null;
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
 		startInfo.putDouble(Math.max(-1, Math.min(1, 3 * player.getLookAngle().multiply(1, 0, 1).normalize().dot(player.getDeltaMovement()))));
@@ -63,7 +61,7 @@ public class HangDown extends Action {
 		);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public boolean canContinue(Player player, Parkourability parkourability) {
         return (!player.getData(Attachments.STAMINA).isExhausted()
@@ -87,7 +85,7 @@ public class HangDown extends Action {
 		if (animation != null) animation.setAnimator(new HangAnimator());
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		setup(player, startData);
@@ -107,7 +105,7 @@ public class HangDown extends Action {
         }
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public void onWorkingTickInLocalClient(Player player, Parkourability parkourability) {
 		Vec3 bodyVec = VectorUtil.fromYawDegree(player.yBodyRot);
@@ -159,7 +157,7 @@ public class HangDown extends Action {
 		armSwingAmount = buffer.getFloat();
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public void onRenderTick(RenderFrameEvent event, Player player, Parkourability parkourability) {
 		if (isDoing()) {

@@ -12,8 +12,6 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
@@ -40,7 +38,7 @@ public class Vault extends Action {
 		return currentAnimation;
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
 		Vec3 lookVec = player.getLookAngle();
@@ -98,7 +96,7 @@ public class Vault extends Action {
 		return 2;
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		currentAnimation = AnimationType.values()[startData.get()];
@@ -122,7 +120,7 @@ public class Vault extends Action {
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		currentAnimation = AnimationType.values()[startData.get()];
@@ -144,7 +142,7 @@ public class Vault extends Action {
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onWorkingTickInLocalClient(Player player, Parkourability parkourability) {
 		if (stepDirection == null) return;

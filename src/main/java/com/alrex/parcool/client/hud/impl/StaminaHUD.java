@@ -8,18 +8,14 @@ import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 
-@OnlyIn(Dist.CLIENT)
+//@OnlyIn(Dist.CLIENT)
 public class StaminaHUD {
 	public static final ResourceLocation STAMINA_CHARGING = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_charging");
 	public static final ResourceLocation STAMINA_DEPLETED = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_depleted");

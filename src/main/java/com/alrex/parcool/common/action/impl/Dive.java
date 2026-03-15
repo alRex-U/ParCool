@@ -12,8 +12,6 @@ import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 
@@ -43,7 +41,7 @@ public class Dive extends Action {
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
 		if (player.getVehicle() != null) return false;
@@ -68,7 +66,7 @@ public class Dive extends Action {
                 && !player.isVisuallyCrawling();
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public boolean canContinue(Player player, Parkourability parkourability) {
 		return !(player.isFallFlying()
@@ -89,7 +87,7 @@ public class Dive extends Action {
 		justJumped = true;
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
         double initialYSpeed = startData.getDouble();
@@ -147,7 +145,7 @@ public class Dive extends Action {
 		playerYSpeedOld = buffer.getDouble();
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
         double initialYSpeed = startData.getDouble();

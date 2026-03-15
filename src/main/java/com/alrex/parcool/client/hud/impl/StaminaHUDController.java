@@ -11,15 +11,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.gui.GuiLayer;
 import net.neoforged.neoforge.common.NeoForge;
 
 import javax.annotation.Nonnull;
 
-@OnlyIn(Dist.CLIENT)
+//@OnlyIn(Dist.CLIENT)
 public class StaminaHUDController implements GuiLayer {
 	public static ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud.stamina");
 	LightStaminaHUD lightStaminaHUD;

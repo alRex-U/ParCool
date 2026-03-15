@@ -17,8 +17,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 
@@ -99,7 +97,7 @@ public class Dodge extends Action {
 	private int successivelyCount = 0;
 	private int successivelyCoolTick = 0;
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public void onClientTick(Player player, Parkourability parkourability) {
 		if (coolTime > 0) coolTime--;
@@ -122,7 +120,7 @@ public class Dodge extends Action {
 		);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
 		boolean enabledDoubleTap = ParCoolConfig.Client.Booleans.EnableDoubleTappingForDodge.get();
@@ -160,7 +158,7 @@ public class Dodge extends Action {
 		);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public boolean canContinue(Player player, Parkourability parkourability) {
 		return !(parkourability.get(Roll.class).isDoing()
@@ -172,7 +170,7 @@ public class Dodge extends Action {
 		);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		dodgeDirection = DodgeDirection.values()[startData.getInt()];
@@ -202,7 +200,7 @@ public class Dodge extends Action {
         }
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
 		dodgeDirection = DodgeDirection.values()[startData.getInt()];

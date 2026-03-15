@@ -20,8 +20,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
@@ -66,7 +64,7 @@ public class WallJump extends Action {
 		return StaminaConsumeTiming.OnStart;
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Nullable
 	private Vec3 getJumpDirection(Player player, Vec3 wall) {
 		if (wall == null) return null;
@@ -90,7 +88,7 @@ public class WallJump extends Action {
 	}
 
 	@Override
-    @OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
     public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
         if (inPossibleState && isInputDone() && startInfoTempBuffer.hasRemaining()) {
             startInfo.put(startInfoTempBuffer);
@@ -100,13 +98,13 @@ public class WallJump extends Action {
         return false;
     }
 
-    @OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
     public boolean isInputDone() {
         ControlType control = ParCoolConfig.Client.getInstance().WallJumpControl.get();
         return (control == ControlType.PressKey && KeyRecorder.keyWallJump.isPressed()) || (control == ControlType.ReleaseKey && KeyRecorder.keyWallJump.isReleased());
     }
 
-    @OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
     public boolean checkCanStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
 		Vec3 wallDirection = WorldUtil.getWall(player, player.getBbWidth() * 0.65);
 		Vec3 jumpDirection = getJumpDirection(player, wallDirection);
@@ -263,7 +261,7 @@ public class WallJump extends Action {
         super.onWorkingTickInClient(player, parkourability);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	private void spawnJumpParticles(Player player, Vec3 wallDirection, Vec3 jumpDirection) {
 		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		Level level = player.level();

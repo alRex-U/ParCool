@@ -12,8 +12,6 @@ import com.alrex.parcool.utilities.VectorUtil;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 
@@ -24,7 +22,7 @@ public class Roll extends Action {
 
 	public enum Direction {Front, Back, Left, Right}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onClientTick(Player player, Parkourability parkourability) {
 		if (player.isLocalPlayer()) {

@@ -5,8 +5,6 @@ import com.alrex.parcool.common.attachment.client.LocalStamina;
 import com.alrex.parcool.common.stamina.StaminaType;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.player.LocalPlayer;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 public class ActionInfo {
     public ActionInfo() {
@@ -65,7 +63,7 @@ public class ActionInfo {
         return getServerLimitation().get(ParCoolConfig.Server.Integers.MaxStaminaLimit);
 	}
 
-    @OnlyIn(Dist.CLIENT)
+    //@OnlyIn(Dist.CLIENT)
     public boolean isStaminaInfinite(LocalStamina stamina, LocalPlayer player) {
         return stamina.isInfinite(player);
 	}
@@ -74,7 +72,7 @@ public class ActionInfo {
         return serverLimitation.get(ParCoolConfig.Server.Booleans.AllowInfiniteStamina);
 	}
 
-    @OnlyIn(Dist.CLIENT)
+    //@OnlyIn(Dist.CLIENT)
     public void updateStaminaType(LocalStamina stamina, LocalPlayer player) {
         stamina.changeType(player, getStaminaType());
     }

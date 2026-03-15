@@ -9,14 +9,11 @@ import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor;
 
-@OnlyIn(Dist.CLIENT)
+//@OnlyIn(Dist.CLIENT)
 public class EnableOrDisableParCoolHandler {
     @SubscribeEvent
     public static void onTick(ClientTickEvent.Post event) {

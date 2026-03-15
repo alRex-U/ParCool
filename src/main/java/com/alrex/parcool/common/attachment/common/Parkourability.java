@@ -12,10 +12,7 @@ import com.alrex.parcool.common.network.payload.ClientInformationPayload;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -118,13 +115,13 @@ public class Parkourability {
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	public void trySyncLimitation(LocalPlayer player, Parkourability parkourability) {
 		synchronizeTrialCount++;
 		ClientPacketDistributor.sendToServer(new ClientInformationPayload(player.getUUID(), true, parkourability.getClientInfo()));
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	public int getSynchronizeTrialCount() {
 		return synchronizeTrialCount;
 	}
@@ -133,7 +130,7 @@ public class Parkourability {
 		synchronizeTrialCount++;
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	public boolean limitationIsNotSynced() {
 		return !getServerLimitation().isSynced();
 	}

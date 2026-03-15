@@ -10,13 +10,11 @@ import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 
 public class ClimbUp extends Action {
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
 		ClingToCliff cling = parkourability.get(ClingToCliff.class);
@@ -26,13 +24,13 @@ public class ClimbUp extends Action {
 				&& KeyRecorder.keyJumpState.isPressed();
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public boolean canContinue(Player player, Parkourability parkourability) {
 		return getDoingTick() < 2;
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
         Vec3 speed = player.getDeltaMovement();

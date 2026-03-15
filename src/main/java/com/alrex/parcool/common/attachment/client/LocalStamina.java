@@ -8,12 +8,10 @@ import com.alrex.parcool.common.stamina.IParCoolStaminaHandler;
 import com.alrex.parcool.common.stamina.StaminaType;
 import com.alrex.parcool.common.stamina.handlers.InfiniteStaminaHandler;
 import net.minecraft.client.player.LocalPlayer;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
-@OnlyIn(Dist.CLIENT)
+//@OnlyIn(Dist.CLIENT)
 public class LocalStamina {
     @Nullable
     private StaminaType currentType = null;

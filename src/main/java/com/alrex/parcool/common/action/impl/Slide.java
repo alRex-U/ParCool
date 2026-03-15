@@ -12,15 +12,12 @@ import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
@@ -128,7 +125,7 @@ public class Slide extends Action {
 		return StaminaConsumeTiming.None;
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	private void spawnSlidingParticle(Player player) {
 		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		var level = player.level();

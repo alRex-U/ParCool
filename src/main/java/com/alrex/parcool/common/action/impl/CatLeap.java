@@ -18,8 +18,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 
@@ -52,7 +50,7 @@ public class CatLeap extends Action {
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
 		Vec3 movement = player.getDeltaMovement();
@@ -71,7 +69,7 @@ public class CatLeap extends Action {
 		);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public boolean canContinue(Player player, Parkourability parkourability) {
 		return !((getDoingTick() > 1 && player.onGround())
@@ -120,7 +118,7 @@ public class CatLeap extends Action {
 		return StaminaConsumeTiming.OnStart;
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	private void spawnJumpEffect(Player player, Vec3 jumpDirection) {
 		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		Level level = player.level();

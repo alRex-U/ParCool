@@ -24,8 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 
 import java.nio.ByteBuffer;
@@ -52,7 +50,7 @@ public class HorizontalWallRun extends Action {
 		if (coolTime > 0) coolTime--;
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public void onWorkingTickInLocalClient(Player player, Parkourability parkourability) {
 		Vec3 wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
@@ -89,7 +87,7 @@ public class HorizontalWallRun extends Action {
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
 		Vec3 wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
@@ -136,7 +134,7 @@ public class HorizontalWallRun extends Action {
 		);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public boolean canContinue(Player player, Parkourability parkourability) {
 		Vec3 wallDirection = WorldUtil.getRunnableWall(player, player.getBbWidth() * 0.65f);
@@ -195,7 +193,7 @@ public class HorizontalWallRun extends Action {
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public void onRenderTick(RenderFrameEvent event, Player player, Parkourability parkourability) {
 		if (isDoing()) {
@@ -236,7 +234,7 @@ public class HorizontalWallRun extends Action {
 		return StaminaConsumeTiming.OnWorking;
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	public void spawnRunningParticle(Player player) {
 		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		if (runningDirection == null || runningWallDirection == null) return;

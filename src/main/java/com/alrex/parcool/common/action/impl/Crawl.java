@@ -10,8 +10,6 @@ import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.nio.ByteBuffer;
 
@@ -22,7 +20,7 @@ public class Crawl extends Action {
 
 	public boolean toggleStatus = false;
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
         Pose pose = player.getPose();

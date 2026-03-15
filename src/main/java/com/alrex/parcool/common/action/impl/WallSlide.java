@@ -19,8 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
@@ -38,7 +36,7 @@ public class WallSlide extends Action {
 		return leanedWallDirection;
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
         startInfo.putDouble(Math.abs(player.getDeltaMovement().y()));
@@ -75,7 +73,7 @@ public class WallSlide extends Action {
         damageCoolTime = 0;
     }
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	@Override
     public void onWorkingTickInClient(Player player, Parkourability parkourability) {
 		Animation animation = Animation.get(player);
@@ -124,7 +122,7 @@ public class WallSlide extends Action {
         }
     }
 
-	@OnlyIn(Dist.CLIENT)
+	//@OnlyIn(Dist.CLIENT)
 	private void spawnSlideParticle(Player player) {
 		if (!ParCoolConfig.Client.Booleans.EnableActionParticles.get()) return;
 		if (leanedWallDirection == null) return;

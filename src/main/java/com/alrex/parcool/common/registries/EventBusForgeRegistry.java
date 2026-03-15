@@ -19,7 +19,7 @@ public class EventBusForgeRegistry {
         bus.register(PlayerCloneHandler.class);
         bus.register(ActionSynchronizationBroadcaster.class);
         bus.register(StaminaSynchronizationBroadcaster.class);
-        bus.addListener(ACTION_PROCESSOR::onTick);
+        bus.register(new ActionProcessor());
 	}
 
 	public static void registerClient(IEventBus bus) {

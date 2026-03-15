@@ -6,8 +6,6 @@ import com.alrex.parcool.common.stamina.StaminaType;
 import com.alrex.parcool.config.ParCoolConfig;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -118,7 +116,7 @@ public abstract class ClientSetting {
 
     public abstract Double get(ParCoolConfig.Client.Doubles item);
 
-    @OnlyIn(Dist.CLIENT)
+    //@OnlyIn(Dist.CLIENT)
     public static ClientSetting readFromLocalConfig() {
         var configInstance = ParCoolConfig.Client.getInstance();
         Remote instance = new Remote();
