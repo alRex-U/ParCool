@@ -266,6 +266,7 @@ public class HideInBlock extends Action {
     private void spawnOnHideParticles(Player player) {
         if (hidingArea == null) return;
         Level world = player.level();
+        var minecraft = Minecraft.getInstance();
         int minX = hidingArea.getA().getX();
         int minY = hidingArea.getA().getY();
         int minZ = hidingArea.getA().getZ();
@@ -277,7 +278,8 @@ public class HideInBlock extends Action {
                 for (int x = minX; x <= maxX; x++) {
                     BlockPos pos = new BlockPos(x, y, z);
                     if (!world.isLoaded(pos)) break;
-                    Minecraft.getInstance().particleEngine.destroy(pos, world.getBlockState(pos));
+                    var state = world.getBlockState(pos);
+                    world.addDestroyBlockEffect(pos, state);
                 }
             }
         }

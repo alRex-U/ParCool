@@ -9,11 +9,11 @@ import com.alrex.parcool.config.ParCoolConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 
@@ -83,13 +83,13 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int type) {
+    public boolean mouseClicked(MouseButtonEvent mouseEvent, boolean __) {
         for (Button button : enumConfigButtons) {
-            if (button.mouseClicked(mouseX, mouseY, type)) {
+            if (button.mouseClicked(mouseEvent, __)) {
                 return true;
             }
         }
-        return super.mouseClicked(mouseX, mouseY, type);
+        return super.mouseClicked(mouseEvent, __);
     }
 
     @Override

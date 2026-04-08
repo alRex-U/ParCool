@@ -33,7 +33,7 @@ public class Blocks {
                     .of()
                     .mapColor(MapColor.METAL)
                     .strength(1.0f, 3.0f)
-                    .noCollission()
+                    .noCollision()
                     .sound(SoundType.CHAIN)
                     .setId(ResourceKey.create(Registries.BLOCK, name))
             )

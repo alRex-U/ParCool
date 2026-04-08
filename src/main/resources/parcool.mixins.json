@@ -3,13 +3,13 @@
   "package": "com.alrex.parcool.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "client.AvatarRendererMixin",
     "client.ClientPacketListenerMixin",
     "client.ClientWorldMixin",
     "client.LivingRendererMixin",
     "client.LocalPlayerMixin",
     "client.OptionsMixin",
-    "client.PlayerModelMixin",
-    "client.PlayerRendererMixin"
+    "client.PlayerModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -47,7 +47,7 @@ public class ParCool {
 		IEventBus eventBus = ModLoadingContext.get().getActiveContainer().getEventBus();
 		assert eventBus != null;
 		EventBusForgeRegistry.register(NeoForge.EVENT_BUS);
-        if (FMLEnvironment.dist == Dist.CLIENT) {
+		if (FMLEnvironment.getDist() == Dist.CLIENT) {
             EventBusForgeRegistry.registerClient(NeoForge.EVENT_BUS);
             eventBus.addListener(KeyBindings::register);
 			eventBus.addListener(Renderers::register);
@@ -82,7 +82,7 @@ public class ParCool {
 
 	private void loaded(FMLLoadCompleteEvent event) {
 		AdditionalMods.init();
-		switch (FMLEnvironment.dist) {
+		switch (FMLEnvironment.getDist()) {
 			case CLIENT -> AdditionalMods.initInClient();
 			case DEDICATED_SERVER -> AdditionalMods.initInDedicatedServer();
 		}

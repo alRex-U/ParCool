@@ -7,7 +7,7 @@ import net.minecraft.client.model.AnimationUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
@@ -19,7 +19,7 @@ public class PlayerModelTransformer {
 	private final Player player;
 	private final PlayerModel model;
 	private final boolean slim;
-	private final PlayerRenderState state;
+    private final AvatarRenderState state;
 	private final HumanoidModel.ArmPose rightArmPose;
 	private final HumanoidModel.ArmPose leftArmPose;
 
@@ -48,7 +48,7 @@ public class PlayerModelTransformer {
 		return model;
 	}
 
-	public PlayerRenderState getState() {
+    public AvatarRenderState getState() {
 		return state;
 	}
 
@@ -56,7 +56,7 @@ public class PlayerModelTransformer {
 			Player player,
 			PlayerModel model,
 			boolean slim,
-			PlayerRenderState state,
+            AvatarRenderState state,
 			HumanoidModel.ArmPose rightArmPose,
 			HumanoidModel.ArmPose leftArmPose
 	) {

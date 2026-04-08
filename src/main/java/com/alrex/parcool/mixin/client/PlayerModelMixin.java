@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerModel.class)
-public abstract class PlayerModelMixin extends HumanoidModel<PlayerRenderState> {
+public abstract class PlayerModelMixin extends HumanoidModel<AvatarRenderState> {
 	@Shadow
 	@Final
 	private boolean slim;
@@ -29,8 +29,8 @@ public abstract class PlayerModelMixin extends HumanoidModel<PlayerRenderState> 
 		super(p_i1148_1_);
 	}
 
-	@Inject(method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;)V", at = @At("HEAD"), cancellable = true)
-	protected void onSetupAnimHead(PlayerRenderState renderState, CallbackInfo info) {
+    @Inject(method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;)V", at = @At("HEAD"), cancellable = true)
+    protected void onSetupAnimHead(AvatarRenderState renderState, CallbackInfo info) {
 		var level = Minecraft.getInstance().level;
 		if (level == null) return;
 		var entity = level.getEntity(renderState.id);
@@ -57,8 +57,8 @@ public abstract class PlayerModelMixin extends HumanoidModel<PlayerRenderState> 
 		}
 	}
 
-	@Inject(method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;)V", at = @At("TAIL"))
-	protected void onSetupAnimTail(PlayerRenderState renderState, CallbackInfo ci) {
+    @Inject(method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;)V", at = @At("TAIL"))
+    protected void onSetupAnimTail(AvatarRenderState renderState, CallbackInfo ci) {
 		var level = Minecraft.getInstance().level;
 		if (level == null) return;
 		var entity = level.getEntity(renderState.id);

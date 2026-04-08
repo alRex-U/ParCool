@@ -4,13 +4,14 @@ import com.alrex.parcool.common.info.ActionInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -129,8 +130,8 @@ public abstract class ParCoolSettingScreen extends Screen {
     }
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		switch (keyCode) {
+	public boolean keyPressed(KeyEvent event) {
+		switch (event.key()) {
 			case GLFW.GLFW_KEY_RIGHT:
                 save();
                 Minecraft.getInstance().setScreen(screenList[(currentScreen + 1) % screenList.length].screenSupplier.get());
@@ -146,7 +147,7 @@ public abstract class ParCoolSettingScreen extends Screen {
 				mouseScrolled(0, 0, -1);
 				break;
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(event);
 	}
 
 	@Override
@@ -183,9 +184,9 @@ public abstract class ParCoolSettingScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int type) {//type:1->right 0->left
+	public boolean mouseClicked(MouseButtonEvent mouseEvent, boolean __) {
         for (ScreenSet<?> modeSet : screenList) {
-			if (modeSet.isMouseIn((int) mouseX, (int) mouseY) && type == 0) {
+			if (modeSet.isMouseIn((int) mouseEvent.x(), (int) mouseEvent.y()) && mouseEvent.input() == 0) {
                 save();
                 Minecraft.getInstance().setScreen(modeSet.screenSupplier.get());
 				return true;
