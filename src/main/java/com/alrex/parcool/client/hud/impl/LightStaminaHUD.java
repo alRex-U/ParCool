@@ -8,43 +8,40 @@ import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 
 public class LightStaminaHUD {
-	public static final ResourceLocation STAMINA_CHARGED_MAX = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_charged_max");
-	public static final ResourceLocation STAMINA_CHARGED_FULL = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_charged_full");
-	public static final ResourceLocation STAMINA_CHARGED_HALF = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_charged_half");
-	public static final ResourceLocation STAMINA_CHARGED_EMPTY = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_charged_empty");
-	public static final ResourceLocation STAMINA_DEPLETED_FULL = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_depleted_full");
-	public static final ResourceLocation STAMINA_DEPLETED_HALF = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_depleted_half");
-	public static final ResourceLocation STAMINA_DEPLETED_EMPTY = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_depleted_empty");
-	public static final ResourceLocation STAMINA_INFINITE_FULL = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_infinite_full");
-	public static final ResourceLocation STAMINA_INFINITE_HALF = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_infinite_half");
-	public static final ResourceLocation STAMINA_INFINITE_EMPTY = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_infinite_empty");
-	public static final ResourceLocation STAMINA_NORMAL_FULL = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_normal_full");
-	public static final ResourceLocation STAMINA_NORMAL_HALF = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_normal_half");
-	public static final ResourceLocation STAMINA_NORMAL_EMPTY = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_normal_empty");
+	public static final Identifier STAMINA_CHARGED_MAX = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_charged_max");
+	public static final Identifier STAMINA_CHARGED_FULL = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_charged_full");
+	public static final Identifier STAMINA_CHARGED_HALF = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_charged_half");
+	public static final Identifier STAMINA_CHARGED_EMPTY = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_charged_empty");
+	public static final Identifier STAMINA_DEPLETED_FULL = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_depleted_full");
+	public static final Identifier STAMINA_DEPLETED_HALF = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_depleted_half");
+	public static final Identifier STAMINA_DEPLETED_EMPTY = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_depleted_empty");
+	public static final Identifier STAMINA_INFINITE_FULL = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_infinite_full");
+	public static final Identifier STAMINA_INFINITE_HALF = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_infinite_half");
+	public static final Identifier STAMINA_INFINITE_EMPTY = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_infinite_empty");
+	public static final Identifier STAMINA_NORMAL_FULL = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_normal_full");
+	public static final Identifier STAMINA_NORMAL_HALF = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_normal_half");
+	public static final Identifier STAMINA_NORMAL_EMPTY = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/stamina_normal_empty");
 
 	private enum Type {
-		NORMAL(new ResourceLocation[]{STAMINA_NORMAL_EMPTY, STAMINA_NORMAL_HALF, STAMINA_NORMAL_FULL, STAMINA_CHARGED_MAX}),
-		DEPLETED(new ResourceLocation[]{STAMINA_DEPLETED_EMPTY, STAMINA_DEPLETED_HALF, STAMINA_DEPLETED_FULL, STAMINA_CHARGED_MAX}),
-		INFINITE(new ResourceLocation[]{STAMINA_INFINITE_EMPTY, STAMINA_INFINITE_HALF, STAMINA_INFINITE_FULL, STAMINA_CHARGED_MAX}),
-		CHARGED(new ResourceLocation[]{STAMINA_CHARGED_EMPTY, STAMINA_CHARGED_HALF, STAMINA_CHARGED_FULL, STAMINA_CHARGED_MAX});
-		private ResourceLocation[] list;
+		NORMAL(new Identifier[]{STAMINA_NORMAL_EMPTY, STAMINA_NORMAL_HALF, STAMINA_NORMAL_FULL, STAMINA_CHARGED_MAX}),
+		DEPLETED(new Identifier[]{STAMINA_DEPLETED_EMPTY, STAMINA_DEPLETED_HALF, STAMINA_DEPLETED_FULL, STAMINA_CHARGED_MAX}),
+		INFINITE(new Identifier[]{STAMINA_INFINITE_EMPTY, STAMINA_INFINITE_HALF, STAMINA_INFINITE_FULL, STAMINA_CHARGED_MAX}),
+		CHARGED(new Identifier[]{STAMINA_CHARGED_EMPTY, STAMINA_CHARGED_HALF, STAMINA_CHARGED_FULL, STAMINA_CHARGED_MAX});
+		private Identifier[] list;
 
-		Type(ResourceLocation[] list) {
+		Type(Identifier[] list) {
 			this.list = list;
 		}
 
-		private ResourceLocation getTexture(Size size) {
+		private Identifier getTexture(Size size) {
 			return list[size.ordinal()];
 		}
 	}

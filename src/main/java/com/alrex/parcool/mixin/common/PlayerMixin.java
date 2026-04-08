@@ -1,8 +1,6 @@
 package com.alrex.parcool.mixin.common;
 
-import com.alrex.parcool.common.action.impl.FastRun;
 import com.alrex.parcool.common.attachment.common.Parkourability;
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -35,10 +33,5 @@ public abstract class PlayerMixin extends LivingEntity {
         if (parkourability.getBehaviorEnforcer().cancelDescendFromEdge()) {
             cir.setReturnValue(true);
         }
-    }
-
-    @WrapWithCondition(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;setSprinting(Z)V"))
-    public boolean wrapSetSprinting(Player instance, boolean b) {
-        return !Parkourability.get(instance).get(FastRun.class).isDoing();
     }
 }

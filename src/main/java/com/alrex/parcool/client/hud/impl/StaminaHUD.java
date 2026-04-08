@@ -11,20 +11,20 @@ import com.alrex.parcool.utilities.MathUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Tuple;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 
 //@OnlyIn(Dist.CLIENT)
 public class StaminaHUD {
-	public static final ResourceLocation STAMINA_CHARGING = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_charging");
-	public static final ResourceLocation STAMINA_DEPLETED = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_depleted");
-	public static final ResourceLocation STAMINA_EMPTY_CHARGE = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_empty");
-	public static final ResourceLocation STAMINA_EMPTY = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_empty_no_charge");
-	public static final ResourceLocation[] STAMINA_FULL = new ResourceLocation[]{
-			ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_full_1"),
-			ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_full_2"),
-			ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_full_3")
+    public static final Identifier STAMINA_CHARGING = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_charging");
+    public static final Identifier STAMINA_DEPLETED = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_depleted");
+    public static final Identifier STAMINA_EMPTY_CHARGE = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_empty");
+    public static final Identifier STAMINA_EMPTY = Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_empty_no_charge");
+    public static final Identifier[] STAMINA_FULL = new Identifier[]{
+            Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_full_1"),
+            Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_full_2"),
+            Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "hud/large_stamina/stamina_bar_full_3")
 	};
 
 	public StaminaHUD() {

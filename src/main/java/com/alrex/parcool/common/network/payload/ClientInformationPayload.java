@@ -8,7 +8,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -21,7 +21,7 @@ import java.util.UUID;
 public record ClientInformationPayload(UUID playerID, boolean requestLimitation,
                                        ClientSetting information) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ClientInformationPayload> TYPE
-            = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "payload.client_info"));
+            = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "payload.client_info"));
     public static final StreamCodec<ByteBuf, ClientInformationPayload> CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_LONG,
             (p) -> p.playerID().getMostSignificantBits(),

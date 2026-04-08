@@ -39,10 +39,11 @@ public abstract class ParCoolSettingScreen extends Screen {
     protected final BooleanSupplier serverPermissionReceived;
 
 	@Override
-    public void resize(@Nonnull Minecraft minecraft, int p_231152_2_, int p_231152_3_) {
-        super.resize(minecraft, p_231152_2_, p_231152_3_);
+	public void resize(int width, int height) {
+		super.resize(width, height);
 		mouseScrolled(0, 0, 0);
 	}
+
 	private static final Component MenuTitle = Component.translatable("parcool.gui.title.setting");
 
 	@Override

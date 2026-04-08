@@ -4,8 +4,8 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import com.alrex.parcool.common.zipline.Zipline;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.neoforged.bus.api.IEventBus;
@@ -27,7 +27,7 @@ public class EntityTypes {
                     .fireImmune()
                     .build(ResourceKey.create(
                             Registries.ENTITY_TYPE,
-                            ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "zipline_rope")
+                            Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "zipline_rope")
                     ))
     );
 

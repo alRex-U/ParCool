@@ -8,7 +8,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public record StaminaPayload(UUID playerID, ReadonlyStamina stamina) implements CustomPacketPayload {
     public static final Type<StaminaPayload> TYPE
-            = new Type<>(ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "payload.stamina"));
+            = new Type<>(Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "payload.stamina"));
     public static final StreamCodec<ByteBuf, StaminaPayload> CODEC = StreamCodec.composite(
             UUIDUtil.STREAM_CODEC,
             StaminaPayload::playerID,

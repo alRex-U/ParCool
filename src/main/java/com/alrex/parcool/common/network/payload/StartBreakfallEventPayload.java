@@ -7,7 +7,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
 
 public record StartBreakfallEventPayload(boolean justTimed) implements CustomPacketPayload {
     public static final Type<StartBreakfallEventPayload> TYPE
-            = new Type<>(ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "payload.start_breakfall_event"));
+            = new Type<>(Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "payload.start_breakfall_event"));
     public static final StreamCodec<ByteBuf, StartBreakfallEventPayload> CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL,
             StartBreakfallEventPayload::justTimed,

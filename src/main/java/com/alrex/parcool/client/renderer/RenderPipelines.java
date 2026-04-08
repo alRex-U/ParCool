@@ -4,7 +4,7 @@ import com.alrex.parcool.ParCool;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class RenderPipelines {
     private static final RenderPipeline.Snippet ZIPLINE_SNIPPET = RenderPipeline.builder(net.minecraft.client.renderer.RenderPipelines.MATRICES_FOG_SNIPPET)
@@ -15,11 +15,11 @@ public class RenderPipelines {
         .buildSnippet();
 
     public static final RenderPipeline ZIPLINE_3D = RenderPipeline.builder(ZIPLINE_SNIPPET)
-        .withLocation(ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "zipline3d"))
+            .withLocation(Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "zipline3d"))
         .withCull(true)
         .build();
     public static final RenderPipeline ZIPLINE_2D = RenderPipeline.builder(ZIPLINE_SNIPPET)
-        .withLocation(ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "zipline2d"))
+            .withLocation(Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "zipline2d"))
         .withCull(false)
         .build();
 }

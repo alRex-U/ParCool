@@ -8,14 +8,14 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import javax.annotation.Nonnull;
 
 public record LimitationPayload(ServerLimitation limitation) implements CustomPacketPayload {
     public static final Type<LimitationPayload> TYPE
-            = new Type<>(ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "payload.limitation"));
+            = new Type<>(Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "payload.limitation"));
     public static final StreamCodec<ByteBuf, LimitationPayload> CODEC = StreamCodec.composite(
             ServerLimitation.STREAM_CODEC,
             LimitationPayload::limitation,

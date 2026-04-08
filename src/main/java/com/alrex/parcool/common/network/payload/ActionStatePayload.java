@@ -9,7 +9,7 @@ import com.alrex.parcool.common.network.ActionSynchronizationBroadcaster;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
@@ -23,7 +23,7 @@ import java.util.UUID;
 
 public record ActionStatePayload(UUID playerID, List<Entry> states) implements CustomPacketPayload {
     public static final Type<ActionStatePayload> TYPE
-            = new Type<>(ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "payload.action_state"));
+            = new Type<>(Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "payload.action_state"));
     public static final StreamCodec<ByteBuf, ActionStatePayload> CODEC = StreamCodec.of(
             ActionStatePayload::encode,
             ActionStatePayload::decode

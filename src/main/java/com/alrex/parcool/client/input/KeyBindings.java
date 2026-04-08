@@ -5,7 +5,7 @@ import com.alrex.parcool.utilities.VectorUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
@@ -15,7 +15,7 @@ import org.lwjgl.glfw.GLFW;
 
 //@OnlyIn(Dist.CLIENT)
 public class KeyBindings {
-    public static final KeyMapping.Category KEY_CATEGORY_PARCOOL = new KeyMapping.Category(ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "base"));
+	public static final KeyMapping.Category KEY_CATEGORY_PARCOOL = new KeyMapping.Category(Identifier.fromNamespaceAndPath(ParCool.MOD_ID, "base"));
     private static final Minecraft mc = Minecraft.getInstance();
     private static final KeyMapping keyBindEnable = new KeyMapping("key.parcool.Enable", KeyConflictContext.UNIVERSAL, KeyModifier.CONTROL, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, KEY_CATEGORY_PARCOOL);
     private static final KeyMapping keyBindCrawl = new KeyMapping("key.parcool.Crawl", GLFW.GLFW_KEY_C, KEY_CATEGORY_PARCOOL);

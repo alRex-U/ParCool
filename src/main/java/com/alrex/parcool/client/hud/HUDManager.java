@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.hud;
 
 import com.alrex.parcool.client.hud.impl.StaminaHUDController;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
@@ -21,7 +21,7 @@ public class HUDManager {
     }
 
     public void registerHUD(RegisterGuiLayersEvent event) {
-        event.registerAbove(ResourceLocation.withDefaultNamespace("food_level"), StaminaHUDController.ID, staminaHUD);
+        event.registerAbove(Identifier.withDefaultNamespace("food_level"), StaminaHUDController.ID, staminaHUD);
     }
 
     @SubscribeEvent

@@ -15,6 +15,7 @@ import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.util.Mth;
 
 public class ZiplineCommand {
@@ -25,7 +26,7 @@ public class ZiplineCommand {
     public static ArgumentBuilder<CommandSourceStack, ?> getBuilder() {
         return Commands
                 .literal("zipline")
-                .requires(commandSource -> commandSource.hasPermission(2))
+                .requires(commandSource -> commandSource.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
                 .then(Commands.literal("set")
                         .then(
                                 Commands.argument(
