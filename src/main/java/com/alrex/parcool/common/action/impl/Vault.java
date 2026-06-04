@@ -5,6 +5,7 @@ import com.alrex.parcool.client.animation.impl.KongVaultAnimator;
 import com.alrex.parcool.client.animation.impl.SpeedVaultAnimator;
 import com.alrex.parcool.client.input.KeyBindings;
 import com.alrex.parcool.common.action.Action;
+import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.attachment.client.Animation;
 import com.alrex.parcool.common.attachment.common.Parkourability;
@@ -19,6 +20,8 @@ import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 
 public class Vault extends Action {
+	private static final BehaviorEnforcer.ID ID_SPRINT_CANCEL = BehaviorEnforcer.newID();
+
 	public enum TypeSelectionMode {
 		SpeedVault, KongVault, Dynamic
 	}
@@ -106,6 +109,7 @@ public class Vault extends Action {
             player.playSound(SoundEvents.VAULT.get(), 1f, 1f);
 		stepDirection = new Vec3(startData.getDouble(), startData.getDouble(), startData.getDouble());
 		stepHeight = startData.getDouble();
+		parkourability.getBehaviorEnforcer().addMarkerCancellingSprint(ID_SPRINT_CANCEL, this::isDoing);
 		Animation animation = Animation.get(player);
 		if (animation != null && currentAnimation != null) {
 			switch (currentAnimation) {
