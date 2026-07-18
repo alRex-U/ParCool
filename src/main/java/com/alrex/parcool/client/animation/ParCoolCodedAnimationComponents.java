@@ -20,7 +20,7 @@ public class ParCoolCodedAnimationComponents {
         return new Transform(Vec3f.ZERO, Vector3f.YP.rotation((float) yaw));
     }
 
-    public static final ID<CodedAnimationComponent> HANG_ON_LOCK_BODY = CodedAnimationComponents.getInstance().register(
+    public final ID<CodedAnimationComponent> HANG_ON_LOCK_BODY = CodedAnimationComponents.getInstance().register(
             "builtin/hang_on_lock_body",
             (player, part, progress, partial, mirror) -> {
                 if (part != AnimatableModelPart.BODY) return null;
@@ -29,7 +29,7 @@ public class ParCoolCodedAnimationComponents {
                 return lockBody(player, wallVec, partial);
             }
     );
-    public static final ID<CodedAnimationComponent> CLIMB_UP_LOCK_BODY = CodedAnimationComponents.getInstance().register(
+    public final ID<CodedAnimationComponent> CLIMB_UP_LOCK_BODY = CodedAnimationComponents.getInstance().register(
             "builtin/climb_up_lock_body",
             (player, part, progress, partial, mirror) -> {
                 if (part != AnimatableModelPart.BODY) return null;
@@ -38,7 +38,7 @@ public class ParCoolCodedAnimationComponents {
                 return lockBody(player, wallVec, partial);
             }
     );
-    public static final ID<CodedAnimationComponent> SLIDE_DOWN_LOCK_BODY = CodedAnimationComponents.getInstance().register(
+    public final ID<CodedAnimationComponent> SLIDE_DOWN_LOCK_BODY = CodedAnimationComponents.getInstance().register(
             "builtin/slide_down_lock_body",
             (player, part, progress, partial, mirror) -> {
                 if (part != AnimatableModelPart.BODY) return null;
@@ -47,7 +47,7 @@ public class ParCoolCodedAnimationComponents {
                 return lockBody(player, wallVec, partial);
             }
     );
-    public static final ID<CodedAnimationComponent> HORIZONTAL_WALL_RUN_LOCK_BODY = CodedAnimationComponents.getInstance().register(
+    public final ID<CodedAnimationComponent> HORIZONTAL_WALL_RUN_LOCK_BODY = CodedAnimationComponents.getInstance().register(
             "builtin/horizontal_wall_run_lock_body",
             (player, part, progress, partial, mirror) -> {
                 if (part != AnimatableModelPart.BODY) return null;
@@ -56,7 +56,7 @@ public class ParCoolCodedAnimationComponents {
                 return lockBody(player, runningDirection, partial);
             }
     );
-    public static final ID<CodedAnimationComponent> SLIDE_LOCK_BODY = CodedAnimationComponents.getInstance().register(
+    public final ID<CodedAnimationComponent> SLIDE_LOCK_BODY = CodedAnimationComponents.getInstance().register(
             "builtin/slide_lock_body",
             (player, part, progress, partial, mirror) -> {
                 if (part != AnimatableModelPart.BODY) return null;
@@ -65,7 +65,7 @@ public class ParCoolCodedAnimationComponents {
                 return lockBody(player, slidingDirection, partial);
             }
     );
-    public static final ID<CodedAnimationComponent> HIDE_IN_BLOCK_LOCK_BODY = CodedAnimationComponents.getInstance().register(
+    public final ID<CodedAnimationComponent> HIDE_IN_BLOCK_LOCK_BODY = CodedAnimationComponents.getInstance().register(
             "builtin/hide_in_block_lock_body",
             (player, part, progress, partial, mirror) -> {
                 if (part != AnimatableModelPart.BODY) return null;
@@ -74,7 +74,7 @@ public class ParCoolCodedAnimationComponents {
                 return lockBody(player, facingDirection, partial);
             }
     );
-    public static final ID<CodedAnimationComponent> POLE_CLIMB_LOCK_BODY = CodedAnimationComponents.getInstance().register(
+    public final ID<CodedAnimationComponent> POLE_CLIMB_LOCK_BODY = CodedAnimationComponents.getInstance().register(
             "builtin/pole_climb_lock_body",
             (player, part, progress, partial, mirror) -> {
                 if (part != AnimatableModelPart.BODY) return null;
@@ -83,7 +83,7 @@ public class ParCoolCodedAnimationComponents {
                 return lockBody(player, vec, partial);
             }
     );
-    public static final ID<CodedAnimationComponent> DODGE_LOCK_BODY = CodedAnimationComponents.getInstance().register(
+    public final ID<CodedAnimationComponent> DODGE_LOCK_BODY = CodedAnimationComponents.getInstance().register(
             "builtin/dodge_lock_body",
             (player, part, progress, partial, mirror) -> {
                 if (part != AnimatableModelPart.BODY) return null;
@@ -92,7 +92,7 @@ public class ParCoolCodedAnimationComponents {
                 return lockBody(player, vec, partial);
             }
     );
-    public static final ID<CodedAnimationComponent> HANG_DOWN_ROTATE_BODY = CodedAnimationComponents.getInstance().register(
+    public final ID<CodedAnimationComponent> HANG_DOWN_ROTATE_BODY = CodedAnimationComponents.getInstance().register(
             "builtin/hang_down_rotate_body",
             (player, part, progress, partial, mirror) -> {
                 if (part != AnimatableModelPart.BODY) return null;
@@ -101,7 +101,7 @@ public class ParCoolCodedAnimationComponents {
                 return lockBody(player, vec, partial);
             }
     );
-    public static final ID<CodedAnimationComponent> HANG_DOWN_SWING_BODY = CodedAnimationComponents.getInstance().register(
+    public final ID<CodedAnimationComponent> HANG_DOWN_SWING_BODY = CodedAnimationComponents.getInstance().register(
             "builtin/hang_down_swing_body",
             (player, part, progress, partial, mirror) -> {
                 switch (part) {
@@ -121,7 +121,7 @@ public class ParCoolCodedAnimationComponents {
                 }
             }
     );
-    public static final ID<CodedAnimationComponent> HANG_DOWN_SWING_LIMBS = CodedAnimationComponents.getInstance().register(
+    public final ID<CodedAnimationComponent> HANG_DOWN_SWING_LIMBS = CodedAnimationComponents.getInstance().register(
             "builtin/hang_down_swing_limbs",
             (player, part, progress, partial, mirror) -> {
                 switch (part) {
@@ -135,7 +135,7 @@ public class ParCoolCodedAnimationComponents {
                 }
             }
     );
-    public static final ID<CodedAnimationComponent> ZIPLINE_SWING_BODY = CodedAnimationComponents.getInstance().register(
+    public final ID<CodedAnimationComponent> ZIPLINE_SWING_BODY = CodedAnimationComponents.getInstance().register(
             "builtin/zipline_swing_body",
             (player, part, progress, partial, mirror) -> {
                 if (part != AnimatableModelPart.BODY && part != AnimatableModelPart.HEAD) return null;
@@ -159,7 +159,7 @@ public class ParCoolCodedAnimationComponents {
                 }
             }
     );
-    public static final ID<CodedAnimationComponent> ZIPLINE_SWING_LIMBS = CodedAnimationComponents.getInstance().register(
+    public final ID<CodedAnimationComponent> ZIPLINE_SWING_LIMBS = CodedAnimationComponents.getInstance().register(
             "builtin/zipline_swing_limbs",
             (player, part, progress, partial, mirror) -> {
                 if (part != AnimatableModelPart.LEFT_LEG && part != AnimatableModelPart.RIGHT_LEG) return null;
@@ -175,7 +175,4 @@ public class ParCoolCodedAnimationComponents {
                 );
             }
     );
-
-    public static void register() {
-    }
 }

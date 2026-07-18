@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.action.*;
-import com.alrex.parcool.client.animation.ParCoolAnimations;
+import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
@@ -80,7 +80,7 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
 
     @Override
     public void onStartInClient() {
-        PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(ParCoolAnimations.JUMP_CHARGING);
+        PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().JUMP_CHARGING);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
     @Override
     public void onStopInClient() {
         if (shouldConsumeCost)
-            PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(ParCoolAnimations.CHARGE_JUMP);
+            PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().CHARGE_JUMP);
     }
 
     @Override

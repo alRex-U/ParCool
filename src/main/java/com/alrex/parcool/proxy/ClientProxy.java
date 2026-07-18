@@ -1,10 +1,11 @@
 package com.alrex.parcool.proxy;
 
-import com.alrex.parcool.client.animation.ParCoolAnimationProgresses;
-import com.alrex.parcool.client.animation.ParCoolAnimations;
-import com.alrex.parcool.client.animation.ParCoolBlendingFactors;
-import com.alrex.parcool.client.animation.ParCoolCodedAnimationComponents;
+import com.alrex.parcool.ParCool;
+import com.alrex.parcool.client.animation.AnimationRegistries;
+import com.alrex.parcool.client.animation.system.config.AnimationSystemConfig;
+import com.alrex.parcool.client.animation.system.event.RegisterAnimationEntryEvent;
 import com.alrex.parcool.client.animation.system.handle.TickEventHandler;
+import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.handlers.InputHandler;
@@ -17,6 +18,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.simple.SimpleChannel;
 
@@ -29,15 +32,22 @@ public class ClientProxy extends CommonProxy {
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		bus.addListener(ParCoolKeyBinds::registerAll);
 		bus.addListener(HUDRegistry.getInstance()::onSetup);
-		MinecraftForge.EVENT_BUS.addListener(ParCoolKeyBinds::tick);
-		MinecraftForge.EVENT_BUS.register(HUDRegistry.getInstance());
-		MinecraftForge.EVENT_BUS.register(OpenSettingsParCoolHandler.class);
-		MinecraftForge.EVENT_BUS.register(InputHandler.class);
-        MinecraftForge.EVENT_BUS.register(TickEventHandler.class);
-		ParCoolAnimationProgresses.register();
-        ParCoolCodedAnimationComponents.register();
-        ParCoolBlendingFactors.register();
-		ParCoolAnimations.register();
+		bus.addListener(AnimationRegistries::register);
+
+		bus = MinecraftForge.EVENT_BUS;
+		bus.addListener(ParCoolKeyBinds::tick);
+		bus.register(HUDRegistry.getInstance());
+		bus.register(OpenSettingsParCoolHandler.class);
+		bus.register(InputHandler.class);
+		bus.register(TickEventHandler.class);
+
+
+		var registerAnimationEntryEvent = new RegisterAnimationEntryEvent();
+		FMLJavaModLoadingContext.get().getModEventBus().post(registerAnimationEntryEvent);
+		registerAnimationEntryEvent.finish();
+		var animConfig = new AnimationSystemConfig(AnimationSets.getInstance());
+		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, animConfig.getBuiltConfig(), "parcool-animation.toml");
+		ParCool.setAnimationConfig(animConfig);
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.ParCoolAttributes;
 import com.alrex.parcool.api.action.*;
-import com.alrex.parcool.client.animation.ParCoolAnimations;
+import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
@@ -92,9 +92,9 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         var leftToWall = propertyLeftToWall.get();
         if (leftToWall == null) return;
         if (leftToWall) {
-            PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(ParCoolAnimations.HORIZONTAL_WALL_RUN);
+            PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().HORIZONTAL_WALL_RUN);
         } else {
-            PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(ParCoolAnimations.HORIZONTAL_WALL_RUN, true);
+            PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().HORIZONTAL_WALL_RUN, true);
         }
     }
 

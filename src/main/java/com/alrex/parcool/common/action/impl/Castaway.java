@@ -3,7 +3,7 @@ package com.alrex.parcool.common.action.impl;
 import com.alrex.parcool.api.action.Action;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.api.action.ContinuableAction;
-import com.alrex.parcool.client.animation.ParCoolAnimations;
+import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.IRequestable;
@@ -49,7 +49,7 @@ public class Castaway extends ContinuableAction implements IRequestable<Castaway
 
     @Override
     public void onStart() {
-        PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(ParCoolAnimations.CASTAWAY);
+        PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().CASTAWAY);
     }
 
     public record RequestContext(HangOn.HangState hangState) {

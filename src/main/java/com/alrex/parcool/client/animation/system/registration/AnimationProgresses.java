@@ -9,7 +9,7 @@ import net.minecraft.util.Mth;
 
 import javax.annotation.Nullable;
 
-public class AnimationProgresses extends AnimationRegistry<AnimationProgress, AnimationProgresses.RegistrationEntry<?>> {
+public class AnimationProgresses extends BasicRegistry<AnimationProgress, AnimationProgresses.RegistrationEntry<?>> {
     public record RegistrationEntry<T extends AnimationProgress>(
             ResourceLocation name,
             AnimationProgress.Constructor<T> constructor
@@ -44,11 +44,11 @@ public class AnimationProgresses extends AnimationRegistry<AnimationProgress, An
     }
 
     public ID<AnimationProgress> register(String subName, AnimationProgress.Constructor<?> progressProvider) {
-        return register(subName, new RegistrationEntry<>(new ResourceLocation(ParCool.MOD_ID, subName), progressProvider));
+        return registerItem(subName, new RegistrationEntry<>(new ResourceLocation(ParCool.MOD_ID, subName), progressProvider));
     }
 
     public ID<AnimationProgress> register(ResourceLocation name, AnimationProgress.Constructor<?> progressProvider) {
-        return register(name, new RegistrationEntry<>(name, progressProvider));
+        return registerItem(name, new RegistrationEntry<>(name, progressProvider));
     }
 
     public AnimationProgress getNewInstance(ID<AnimationProgress> id, boolean loop, float rangeMin, float rangeMax, Argument argument) {

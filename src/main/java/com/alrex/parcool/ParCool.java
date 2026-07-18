@@ -6,6 +6,7 @@ import com.alrex.parcool.api.ParCoolPotions;
 import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.RegisterParCoolActionEvent;
 import com.alrex.parcool.api.stamina.RegisterParCoolStaminaTypeEvent;
+import com.alrex.parcool.client.animation.system.config.AnimationSystemConfig;
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.animation.system.resource.AnimationResourceManager;
 import com.alrex.parcool.client.renderer.Renderers;
@@ -40,8 +41,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @Mod(ParCool.MOD_ID)
 public class ParCool {
@@ -57,12 +56,12 @@ public class ParCool {
 			() -> ClientProxy::new,
 			() -> ServerProxy::new
 	);
-	public static final Logger LOGGER = LogManager.getLogger();
 
 	private static final ActionRegistry actionRegistry = new ActionRegistry();
 	private static final StaminaTypeRegistry staminaTypeRegistry = new StaminaTypeRegistry();
 	private static final ActionProcessor actionProcessor = new ActionProcessor();
 	private static ParCoolConfig config;
+	private static AnimationSystemConfig animConfig;
 
 	public static ActionRegistry getActionRegistry() {
 		return actionRegistry;
@@ -74,6 +73,16 @@ public class ParCool {
 
 	public static ParCoolConfig getConfig() {
 		return config;
+	}
+
+	public static AnimationSystemConfig getAnimationConfig() {
+		return animConfig;
+	}
+
+	public static void setAnimationConfig(AnimationSystemConfig config) {
+		if (animConfig == null) {
+			animConfig = config;
+		}
 	}
 
 	public static ActionProcessor getActionProcessor() {

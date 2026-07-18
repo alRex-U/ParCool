@@ -2,7 +2,7 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.ParCoolAttributes;
 import com.alrex.parcool.api.action.*;
-import com.alrex.parcool.client.animation.ParCoolAnimations;
+import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
 import com.alrex.parcool.client.input.LogicalMovement;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
@@ -70,10 +70,10 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
     public void onStartInClient() {
         switch (propertyWorkingBreakfallType.getOrDefaultIfNull(BreakfallType.NONE)) {
             case TAP:
-                PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(ParCoolAnimations.BREAKFALL_NO_MOVE);
+                PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().BREAKFALL_NO_MOVE);
                 return;
             case ROLL:
-                PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(ParCoolAnimations.BREAKFALL_FORWARD);
+                PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().BREAKFALL_FORWARD);
         }
     }
 

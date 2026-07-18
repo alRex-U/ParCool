@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.action.*;
-import com.alrex.parcool.client.animation.ParCoolAnimations;
+import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
 import com.alrex.parcool.client.animation.system.math.EasingFunctions;
 import com.alrex.parcool.common.Parkourability;
@@ -47,13 +47,13 @@ public class Vault extends ContinuableAction {
     public void onStartInClient() {
         switch (propertyVaultType.getOrDefaultIfNull(Type.FORWARD)) {
             case FORWARD:
-                PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(ParCoolAnimations.VAULT_FORWARD);
+                PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().VAULT_FORWARD);
                 break;
             case LEFT:
-                PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(ParCoolAnimations.VAULT_SIDE);
+                PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().VAULT_SIDE);
                 break;
             case RIGHT:
-                PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(ParCoolAnimations.VAULT_SIDE, true);
+                PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().VAULT_SIDE, true);
                 break;
         }
     }

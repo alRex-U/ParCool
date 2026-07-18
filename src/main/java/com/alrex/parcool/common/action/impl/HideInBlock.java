@@ -3,7 +3,7 @@ package com.alrex.parcool.common.action.impl;
 import com.alrex.parcool.api.ParCoolBlockTags;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.RenderBehaviorEnforcer;
-import com.alrex.parcool.client.animation.ParCoolAnimations;
+import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
 import com.alrex.parcool.client.animation.system.math.EasingFunctions;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
@@ -103,8 +103,8 @@ public class HideInBlock extends ContinuableAction implements ActionExtension.Vi
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(
                 propertyStanding.getOrDefaultIfNull(Boolean.TRUE)
-                        ? ParCoolAnimations.HIDE_IN_BLOCK_STANDING
-                        : ParCoolAnimations.HIDE_IN_BLOCK_CRAWLING
+                        ? AnimationRegistries.get().animations().HIDE_IN_BLOCK_STANDING
+                        : AnimationRegistries.get().animations().HIDE_IN_BLOCK_CRAWLING
         );
         var area1 = propertyHidingAreaEdge1.get();
         if (area1 == null) return;

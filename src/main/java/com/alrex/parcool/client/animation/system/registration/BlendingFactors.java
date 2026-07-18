@@ -13,12 +13,9 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 
-public class BlendingFactors extends AnimationRegistry<IBlendingFactor, BlendingFactors.RegistrationEntry> {
+public class BlendingFactors extends BasicRegistry<IBlendingFactor, BlendingFactors.RegistrationEntry> {
     public interface BlendingFactorFactory {
         IBlendingFactor newInstance(Argument args, BlendMethod method);
-    }
-
-    private BlendingFactors() {
     }
 
     @Nullable
@@ -29,6 +26,9 @@ public class BlendingFactors extends AnimationRegistry<IBlendingFactor, Blending
         return INSTANCE;
     }
 
+    BlendingFactors() {
+    }
+
     public record RegistrationEntry(ResourceLocation name, BlendingFactorFactory factorFactory) {
     }
 
@@ -37,7 +37,7 @@ public class BlendingFactors extends AnimationRegistry<IBlendingFactor, Blending
     }
 
     public ID<IBlendingFactor> register(ResourceLocation name, BlendingFactorFactory factor) {
-        return register(name, new RegistrationEntry(name, factor));
+        return registerItem(name, new RegistrationEntry(name, factor));
     }
 
     @Nullable

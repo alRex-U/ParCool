@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.action.*;
-import com.alrex.parcool.client.animation.ParCoolAnimations;
+import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
@@ -115,7 +115,7 @@ public class RideZipline extends ContinuableAction {
     @Override
     public void onStartInClient() {
         currentAngleRadian = oldAngleRadian = 0;
-        PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(ParCoolAnimations.RIDE_ZIPLINE);
+        PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().RIDE_ZIPLINE);
     }
 
     @Override

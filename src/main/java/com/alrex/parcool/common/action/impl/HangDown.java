@@ -1,7 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.action.*;
-import com.alrex.parcool.client.animation.ParCoolAnimations;
+import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
@@ -142,16 +142,16 @@ public class HangDown extends ContinuableAction {
     public void onStartInClient() {
         oldAngularSpeed = 0;
         oldAngle = 0;
-        PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(ParCoolAnimations.HANG_DOWN);
+        PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().HANG_DOWN);
     }
 
     @Override
     public void onStopInClient() {
         if (propertyJumpOff.getOrDefaultIfNull(false)) {
             if (propertyBodyAngularSpeedInRad.getOrDefaultIfNull(1f) > 0f) {
-                PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(ParCoolAnimations.HANG_DOWN_JUMP_FORWARD);
+                PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().HANG_DOWN_JUMP_FORWARD);
             } else {
-                PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(ParCoolAnimations.HANG_DOWN_JUMP_BACKWARD);
+                PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().HANG_DOWN_JUMP_BACKWARD);
             }
         }
 

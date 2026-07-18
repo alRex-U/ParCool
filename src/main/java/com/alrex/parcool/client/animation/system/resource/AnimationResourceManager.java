@@ -177,8 +177,8 @@ public class AnimationResourceManager extends SimplePreparableReloadListener<Ani
             for (var compEntry : compGroupEntry.getValue().getComponents()) {
                 IAnimationComponent comp = components.get(compEntry.getName());
                 if (comp == null) {
-                    comp = CodedAnimationComponents.getInstance().get(compEntry.getName());
-                    if (comp == null) {
+                    var codedComp = CodedAnimationComponents.getInstance().get(compEntry.getName());
+                    if (codedComp == null || (comp = codedComp.component()) == null) {
                         LOGGER.warn("Component[{}] requested by Group[{}], is not loaded", compEntry.getName(), compGroupEntry.getKey());
                         continue;
                     }

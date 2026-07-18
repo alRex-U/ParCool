@@ -11,8 +11,11 @@ import net.minecraft.util.Mth;
 
 import javax.annotation.Nullable;
 
-public class CodedAnimationComponents extends AnimationRegistry<CodedAnimationComponent, CodedAnimationComponents.RegistrationEntry> {
+public class CodedAnimationComponents extends BasicRegistry<CodedAnimationComponent, CodedAnimationComponents.RegistrationEntry> {
     public record RegistrationEntry(ResourceLocation name, CodedAnimationComponent component) {
+    }
+
+    private CodedAnimationComponents() {
     }
 
     @Nullable
@@ -23,20 +26,13 @@ public class CodedAnimationComponents extends AnimationRegistry<CodedAnimationCo
         return INSTANCE;
     }
 
-    @Nullable
-    public CodedAnimationComponent get(ResourceLocation name) {
-        var id = getID(name);
-        if (id == null) return null;
-        return getRegistry().get(id).component;
-    }
-
     public ID<CodedAnimationComponent> register(String subName, CodedAnimationComponent component) {
         var name = new ResourceLocation(ParCool.MOD_ID, subName);
         return register(name, component);
     }
 
     public ID<CodedAnimationComponent> register(ResourceLocation name, CodedAnimationComponent component) {
-        return register(name, new RegistrationEntry(name, component));
+        return registerItem(name, new RegistrationEntry(name, component));
     }
 
     public final ID<CodedAnimationComponent> LOCK_HEAD_ROTATION = register("builtin/lock_head_front", (player, part, progress, partial, mirror) -> {

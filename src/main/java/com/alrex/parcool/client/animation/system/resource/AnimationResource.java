@@ -17,7 +17,7 @@ public class AnimationResource {
     private final Random random = new Random();
 
     public static AnimationResource empty() {
-        return new AnimationResource(Collections.EMPTY_MAP, Collections.EMPTY_MAP, Collections.EMPTY_MAP);
+        return new AnimationResource(Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap());
     }
 
     public AnimationResource(
