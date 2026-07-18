@@ -4,12 +4,16 @@ import com.alrex.parcool.api.action.Action;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
+import com.alrex.parcool.client.animation.system.util.EntityUtil;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionExtension;
 import com.alrex.parcool.common.action.InteractingWallDirection;
 import com.alrex.parcool.common.action.ParCoolActions;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.ForgeMod;
@@ -67,7 +71,30 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
 
     @Override
     public void onStartInClient() {
-        PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().WALL_RUN);
+        var player = parkourability.player();
+        PlayerAnimator.get((AbstractClientPlayer) player).start(AnimationRegistries.get().animations().WALL_RUN);
+
+        var pos = player.position();
+        var lookVec = EntityUtil.getHorizontalLookAngle(player);
+        var blockPos = new BlockPos(pos.x + lookVec.x, pos.y + 0.1, pos.z + lookVec.z);
+        var blockState = player.level.getBlockState(blockPos);
+        if (blockState.isAir()) return;
+        var random = player.level.random;
+        var rotatedLookVec = lookVec.yRot(Mth.HALF_PI);
+        for (var i = 0; i < 5; i++) {
+            var particleMove = lookVec
+                    .scale(random.nextDouble() * 0.4).reverse()
+                    .add(rotatedLookVec.scale((random.nextDouble() - 0.5) * 0.4));
+            var particlePos = pos
+                    .add(lookVec.scale(player.getBbWidth() / 2))
+                    .add(rotatedLookVec.scale(player.getBbWidth() * (random.nextDouble() - 0.5)));
+
+            player.level.addParticle(
+                    new BlockParticleOption(ParticleTypes.BLOCK, blockState),
+                    particlePos.x, particlePos.y + (random.nextDouble() - 0.5) * 0.3, particlePos.z,
+                    particleMove.x, particleMove.y, particleMove.z
+            );
+        }
     }
 
     @Override

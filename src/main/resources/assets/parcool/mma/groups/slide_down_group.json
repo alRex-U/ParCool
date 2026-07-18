@@ -28,6 +28,12 @@
       }
     },
     {
+      "name": "parcool:builtin/bob_left_arm",
+      "blend": {
+        "name": "parcool:builtin/slide_down_left_to_wall"
+      }
+    },
+    {
       "name": "parcool:slide_down_side.json",
       "mirror": true,
       "blend": {
@@ -41,6 +47,12 @@
           "max": 6,
           "scale": 3.5
         }
+      }
+    },
+    {
+      "name": "parcool:builtin/bob_right_arm",
+      "blend": {
+        "name": "parcool:builtin/slide_down_right_to_wall"
       }
     },
     {

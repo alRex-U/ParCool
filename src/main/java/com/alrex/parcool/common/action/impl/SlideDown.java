@@ -12,6 +12,9 @@ import com.alrex.parcool.util.EntityUtil;
 import com.alrex.parcool.util.MathUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -71,6 +74,25 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
     public void onWorkingTickInClient() {
         oldAnimData = currentAnimData;
         currentAnimData = AnimationData.get(this, parkourability.player());
+
+        var direction = propertyDirection.get();
+        if (direction == null) return;
+        var player = parkourability.player();
+        var pos = player.position();
+        var blockPos = new BlockPos(pos.x + direction.asVec().x, pos.y, pos.z + direction.asVec().z);
+        var blockState = player.level.getBlockState(blockPos);
+        if (blockState.isAir()) return;
+        var random = player.level.random;
+        var particleMove = com.alrex.parcool.client.animation.system.util.EntityUtil.getPositionDifference(player).reverse().scale(0.1).add(direction.asVec().reverse().scale(0.3));
+        var particlePos = pos.add(0, player.getBbHeight() + 0.5, 0).add(direction.asVec().scale(player.getBbWidth() * 0.5));
+
+        player.level.addParticle(
+                new BlockParticleOption(ParticleTypes.BLOCK, blockState),
+                particlePos.x + (random.nextDouble() - 0.5) * 0.35,
+                particlePos.y,
+                particlePos.z + (random.nextDouble() - 0.5) * 0.35,
+                particleMove.x, particleMove.y, particleMove.z
+        );
     }
 
     @Override

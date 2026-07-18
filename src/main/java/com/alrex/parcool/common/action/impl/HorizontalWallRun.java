@@ -4,6 +4,7 @@ import com.alrex.parcool.api.ParCoolAttributes;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
+import com.alrex.parcool.client.animation.system.util.EntityUtil;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionExtension;
@@ -11,6 +12,9 @@ import com.alrex.parcool.common.action.InteractingWallDirection;
 import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
@@ -116,6 +120,28 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         if (leftToWall == null) return null;
 
         return wallDirection.asVec().yRot(Mth.HALF_PI * (leftToWall ? 1f : -1f));
+    }
+
+    @Override
+    public void onWorkingTickInClient() {
+        var direction = propertyDirection.get();
+        if (direction == null) return;
+        var player = parkourability.player();
+        var pos = player.position();
+        var blockPos = new BlockPos(pos.x + direction.asVec().x, pos.y, pos.z + direction.asVec().z);
+        var blockState = player.level.getBlockState(blockPos);
+        if (blockState.isAir()) return;
+        var random = player.level.random;
+        var particleMove = EntityUtil.getPositionDifference(player).reverse().scale(2).add(direction.asVec().reverse().scale(0.3));
+        var particlePos = pos.add(direction.asVec().scale(player.getBbWidth() * 0.5));
+
+        player.level.addParticle(
+                new BlockParticleOption(ParticleTypes.BLOCK, blockState),
+                particlePos.x + (random.nextDouble() - 0.5) * 0.35,
+                particlePos.y + (random.nextDouble() - 0.5) * 0.35,
+                particlePos.z + (random.nextDouble() - 0.5) * 0.35,
+                particleMove.x, particleMove.y, particleMove.z
+        );
     }
 
     @Override

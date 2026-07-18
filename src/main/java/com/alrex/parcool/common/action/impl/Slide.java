@@ -8,6 +8,8 @@ import com.alrex.parcool.common.action.IRequestable;
 import com.alrex.parcool.util.EntityUtil;
 import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
@@ -66,6 +68,26 @@ public class Slide extends ContinuableAction implements IRequestable<Slide.Reque
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().SLIDE);
+    }
+
+    @Override
+    public void onWorkingTickInClient() {
+        var movingDirection = propertyMovingDirection.get();
+        if (movingDirection == null) return;
+        var player = parkourability.player();
+        var pos = player.position();
+        var blockPos = player.getBlockPosBelowThatAffectsMyMovement();
+        var blockState = player.level.getBlockState(blockPos);
+        if (blockState.isAir()) return;
+        var random = player.level.random;
+        var particleMove = com.alrex.parcool.client.animation.system.util.EntityUtil.getPositionDifference(player).reverse().scale(0.1).add(0, random.nextDouble() * 0.1, 0);
+        var particlePos = pos.add(movingDirection.yRot(Mth.HALF_PI).scale(player.getBbWidth() * (random.nextDouble() - 0.5)));
+
+        player.level.addParticle(
+                new BlockParticleOption(ParticleTypes.BLOCK, blockState),
+                particlePos.x, particlePos.y, particlePos.z,
+                particleMove.x, particleMove.y, particleMove.z
+        );
     }
 
     public record RequestContext() {
