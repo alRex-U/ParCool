@@ -17,7 +17,7 @@ import com.alrex.parcool.common.block.Blocks;
 import com.alrex.parcool.common.block.TileEntities;
 import com.alrex.parcool.common.entity.EntityTypes;
 import com.alrex.parcool.common.handlers.AddAttributesHandler;
-import com.alrex.parcool.common.item.Items;
+import com.alrex.parcool.common.item.ParCoolItems;
 import com.alrex.parcool.common.item.recipe.Recipes;
 import com.alrex.parcool.common.potion.PotionRecipeRegistry;
 import com.alrex.parcool.common.stamina.StaminaTypeRegistry;
@@ -107,7 +107,7 @@ public class ParCool {
 		ParCoolAttributes.register(eventBus);
 		ParCoolSoundEvents.register(eventBus);
 		Blocks.register(eventBus);
-		Items.register(eventBus);
+		ParCoolItems.register(eventBus);
 		Recipes.register(eventBus);
 		EntityTypes.register(eventBus);
 		TileEntities.register(eventBus);
@@ -133,7 +133,7 @@ public class ParCool {
 
 	private void setupClient(final FMLClientSetupEvent event) {
 		Renderers.register();
-		Items.registerColors();
+		ParCoolItems.registerColors();
         AnimationSets.getInstance().freeze();
     }
 

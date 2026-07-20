@@ -1,8 +1,7 @@
 package com.alrex.parcool.common.item.recipe.special;
 
-import com.alrex.parcool.common.item.Items;
+import com.alrex.parcool.common.item.DyeAble;
 import com.alrex.parcool.common.item.recipe.Recipes;
-import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -17,47 +16,54 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nonnull;
 import java.util.LinkedList;
 
-public class ZiplineRopeDyeRecipe extends CustomRecipe {
-    public ZiplineRopeDyeRecipe(ResourceLocation p_i48169_1_) {
+public class ParCoolDyeRecipe extends CustomRecipe {
+    public ParCoolDyeRecipe(ResourceLocation p_i48169_1_) {
         super(p_i48169_1_);
     }
 
     @Override
     public boolean matches(@Nonnull CraftingContainer craftingContainer, @Nonnull Level level) {
-        boolean ziplineRopeFound = false;
+        boolean dyeAbleItemFound = false;
         boolean dyeItemFound = false;
         for (int i = 0; i < craftingContainer.getContainerSize(); i++) {
             ItemStack stack = craftingContainer.getItem(i);
-            if (stack.getItem().equals(Items.ZIPLINE_ROPE.get())) {
-                if (ziplineRopeFound) return false;
-                else ziplineRopeFound = true;
+            if (stack.getItem() instanceof DyeAble) {
+                if (dyeAbleItemFound) return false;
+                else dyeAbleItemFound = true;
             } else if (stack.getItem() instanceof DyeItem) {
                 dyeItemFound = true;
             } else if (!stack.isEmpty()) {
                 return false;
             }
         }
-        return ziplineRopeFound && dyeItemFound;
+        return dyeAbleItemFound && dyeItemFound;
     }
 
+    @Nonnull
     @Override
-    public net.minecraft.world.item.ItemStack assemble(CraftingContainer craftingContainer) {
-        ItemStack ziplineRope = null;
+    public ItemStack assemble(CraftingContainer craftingContainer) {
+        ItemStack dyeAbleStack = null;
+        DyeAble dyeAbleItem = null;
         LinkedList<DyeItem> dyeItems = new LinkedList<>();
         for (int i = 0; i < craftingContainer.getContainerSize(); i++) {
             ItemStack stack = craftingContainer.getItem(i);
             Item item = stack.getItem();
-            if (item instanceof ZiplineRopeItem) {
-                ziplineRope = stack;
+            if (item instanceof DyeAble dyeAble) {
+                dyeAbleStack = stack;
+                dyeAbleItem = dyeAble;
             } else if (item instanceof DyeItem) {
                 dyeItems.add((DyeItem) item);
             } else if (!stack.isEmpty()) {
                 return ItemStack.EMPTY;
             }
         }
-        if (ziplineRope == null || dyeItems.isEmpty()) return ItemStack.EMPTY;
-        ItemStack resultZiplineRope = new ItemStack(Items.ZIPLINE_ROPE::get);
-        resultZiplineRope.setTag(ziplineRope.getTag());
+        if (dyeAbleStack == null || dyeItems.isEmpty()) return ItemStack.EMPTY;
+        ItemStack resultItem = new ItemStack(dyeAbleStack.getItem());
+        var originalTag = dyeAbleStack.getTag();
+        if (originalTag != null) {
+            resultItem.setTag(originalTag.copy());
+        }
+
         int r = 0, g = 0, b = 0;
         int dyeSize = dyeItems.size();
         for (DyeItem dyeItem : dyeItems) {
@@ -66,9 +72,9 @@ public class ZiplineRopeDyeRecipe extends CustomRecipe {
             g += (int) (color.getTextureDiffuseColors()[1] * 255f);
             b += (int) (color.getTextureDiffuseColors()[2] * 255f);
         }
-        if (ZiplineRopeItem.hasCustomColor(resultZiplineRope)) {
+        if (dyeAbleItem.hasCustomColor(resultItem)) {
             dyeSize++;
-            int color = ZiplineRopeItem.getColor(resultZiplineRope);
+            int color = dyeAbleItem.getColor(resultItem);
             r += (color & 0xFF0000) >> 16;
             g += (color & 0x00FF00) >> 8;
             b += (color & 0x0000FF);
@@ -76,8 +82,8 @@ public class ZiplineRopeDyeRecipe extends CustomRecipe {
         r = Mth.clamp(r / dyeSize, 0, 0xFF);
         g = Mth.clamp(g / dyeSize, 0, 0xFF);
         b = Mth.clamp(b / dyeSize, 0, 0xFF);
-        ZiplineRopeItem.setColor(resultZiplineRope, (r << 16) + (g << 8) + b);
-        return resultZiplineRope;
+        dyeAbleItem.setColor(resultItem, (r << 16) + (g << 8) + b);
+        return resultItem;
     }
 
     @Override
@@ -88,6 +94,6 @@ public class ZiplineRopeDyeRecipe extends CustomRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return Recipes.ZIPLINE_ROPE_DYE.get();
+        return Recipes.DYE_ITEM.get();
     }
 }

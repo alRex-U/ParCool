@@ -1,5 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCool;
+import com.alrex.parcool.api.ParCoolAttributes;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
@@ -8,6 +10,8 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionExtension;
 import com.alrex.parcool.common.action.InteractingWallDirection;
 import com.alrex.parcool.common.action.ParCoolActions;
+import com.alrex.parcool.common.damage.DamageSources;
+import com.alrex.parcool.common.item.armor.GloveItem;
 import com.alrex.parcool.util.EntityUtil;
 import com.alrex.parcool.util.MathUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -25,10 +29,14 @@ import java.util.List;
 public class SlideDown extends ContinuableAction implements ActionExtension.LeaveFromWallListener {
     private final SynchronizedDataHolder dataHolder;
     private final SynchronizedProperty<InteractingWallDirection> propertyDirection;
+    private final SynchronizedProperty<Float> propertyBeginningYSpeed;
 
     private AnimationData currentAnimData = AnimationData.NONE;
     private AnimationData oldAnimData = AnimationData.NONE;
     private short tickSinceCanceled = 0;
+
+    private byte damageCoolTime;
+    private byte damageCount;
 
     public SlideDown(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry, List.of(
@@ -39,7 +47,8 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
                 ParCoolActions.CASTAWAY
         ));
         dataHolder = SynchronizedDataHolder.create(entry,
-                propertyDirection = SynchronizedProperty.newEnum(InteractingWallDirection.class)
+                propertyDirection = SynchronizedProperty.newEnum(InteractingWallDirection.class),
+                propertyBeginningYSpeed = SynchronizedProperty.newFloat()
         );
     }
 
@@ -65,6 +74,7 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
             var direction = parkourability.getAdditionalProperties().getDefaultWallInteraction();
             if (direction == null) return false;
             propertyDirection.set(direction);
+            propertyBeginningYSpeed.set((float) parkourability.player().getDeltaMovement().y);
             return true;
         }
         return false;
@@ -128,6 +138,11 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
     }
 
     @Override
+    public void onStartInServer() {
+        damageCount = (byte) Mth.clamp(5.5 * (-propertyBeginningYSpeed.getOrDefaultIfNull(0f) - 1.) / parkourability.player().getBbHeight(), 0, Byte.MAX_VALUE);
+    }
+
+    @Override
     public void onTickInLocalClient() {
         if (tickSinceCanceled < 255) tickSinceCanceled++;
     }
@@ -158,12 +173,32 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
 
     @Override
     public void onWorkingTickInLocalClient() {
-        parkourability.player().setDeltaMovement(parkourability.player().getDeltaMovement().multiply(0, 0.9, 0));
+        var player = parkourability.player();
+        var attr = player.getAttribute(ParCoolAttributes.SLIDE_DOWN_DECELERATION.get());
+        if (attr == null) return;
+        parkourability.player().setDeltaMovement(parkourability.player().getDeltaMovement().multiply(0, 1. - attr.getValue(), 0));
     }
 
     @Override
     public void onWorkingTickInServer() {
-        parkourability.player().fallDistance *= 0.9f;
+        var player = parkourability.player();
+        var attr = player.getAttribute(ParCoolAttributes.SLIDE_DOWN_DECELERATION.get());
+        if (attr == null) return;
+        player.fallDistance *= (float) (1. - attr.getValue());
+
+        if (damageCoolTime <= 0) {
+            if (damageCount <= 0) return;
+            damageCount--;
+            if (!ParCool.getConfig().server().damageWithoutGlove.get()) return;
+            if (GloveItem.isEquipped(player)) return;
+            int invulnerableTime = player.invulnerableTime; // bypass invulnerableTime
+            damageCoolTime = 1;
+            player.invulnerableTime = 0;
+            player.hurt(DamageSources.FRICTION, 0.3f);
+            player.invulnerableTime = invulnerableTime;
+        } else {
+            damageCoolTime--;
+        }
     }
 
     @Override

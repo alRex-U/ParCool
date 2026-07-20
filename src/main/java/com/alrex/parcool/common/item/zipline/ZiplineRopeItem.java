@@ -3,22 +3,21 @@ package com.alrex.parcool.common.item.zipline;
 import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.common.block.zipline.ZiplineHookBlock;
 import com.alrex.parcool.common.block.zipline.ZiplineHookTileEntity;
-import com.alrex.parcool.common.item.Items;
+import com.alrex.parcool.common.item.DyeAble;
+import com.alrex.parcool.common.item.ParCoolItems;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.common.zipline.ZiplineInfo;
 import com.alrex.parcool.common.zipline.ZiplineType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -29,17 +28,15 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
 
-public class ZiplineRopeItem extends Item {
-    public static class RopeColor implements ItemColor {
-        @Override
-        public int getColor(@Nonnull ItemStack itemStack, int i) {
-            return i > 0 ? -1 : ZiplineRopeItem.getColor(itemStack);
-        }
+public class ZiplineRopeItem extends Item implements DyeAble {
+    @Override
+    public int getDefaultColor() {
+        return DEFAULT_COLOR;
     }
 
     public static ItemStack from(ZiplineInfo info) {
-        var stack = new ItemStack(Items.ZIPLINE_ROPE::get);
-        ZiplineRopeItem.setColor(stack, info.color());
+        var stack = new ItemStack(ParCoolItems.ZIPLINE_ROPE::get);
+        ParCoolItems.ZIPLINE_ROPE.get().setColor(stack, info.color());
         return stack;
     }
 
@@ -82,6 +79,22 @@ public class ZiplineRopeItem extends Item {
             */
             lines.add(Component.translatable("parcool.gui.text.zipline.colored").withStyle(ChatFormatting.BLUE));
         }
+    }
+
+    @Override
+    public void fillItemCategory(@Nonnull CreativeModeTab tab, @Nonnull NonNullList<ItemStack> list) {
+        if (this.allowedIn(tab)) {
+            list.add(new ItemStack(this));
+            for (var dye : DyeColor.values()) {
+                var itemStack = new ItemStack(this);
+                int r = (int) (dye.getTextureDiffuseColors()[0] * 255f);
+                int g = (int) (dye.getTextureDiffuseColors()[1] * 255f);
+                int b = (int) (dye.getTextureDiffuseColors()[2] * 255f);
+                this.setColor(itemStack, (r << 16) + (g << 8) + b);
+                list.add(itemStack);
+            }
+        }
+
     }
 
     @Nonnull
@@ -228,32 +241,6 @@ public class ZiplineRopeItem extends Item {
             return null;
         }
         return new BlockPos(tag.getInt("Tile_X"), tag.getInt("Tile_Y"), tag.getInt("Tile_Z"));
-    }
-
-    public static void setColor(ItemStack stack, int color) {
-        var tag = stack.getTag();
-        if (tag == null) {
-            tag = new CompoundTag();
-            stack.setTag(tag);
-        }
-        if (color != DEFAULT_COLOR) tag.putInt("color", color);
-        else tag.remove("color");
-    }
-
-    public static int getColor(ItemStack stack) {
-        var tag = stack.getTag();
-        if (tag == null || !tag.contains("color")) {
-            return DEFAULT_COLOR;
-        }
-        return tag.getInt("color");
-    }
-
-    public static boolean hasCustomColor(ItemStack stack) {
-        var tag = stack.getTag();
-        if (tag == null) {
-            return false;
-        }
-        return tag.contains("color");
     }
 
     public static ZiplineType getZiplineType(ItemStack stack) {

@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
@@ -7,6 +8,8 @@ import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.ParCoolActions;
+import com.alrex.parcool.common.damage.DamageSources;
+import com.alrex.parcool.common.item.armor.GloveItem;
 import com.alrex.parcool.common.zipline.ILoadedZiplineHolderProvider;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.util.EntityUtil;
@@ -168,6 +171,19 @@ public class RideZipline extends ContinuableAction {
         propertySlope.set(slope);
         propertyAcceleration.set((float) (speed - oldSpeed));
         propertyZiplinePowered.set(ridingZipline.powered());
+    }
+
+    @Override
+    public void onWorkingTickInServer() {
+        if (!propertyZiplinePowered.getOrDefaultIfNull(false)) return;
+        if (!ParCool.getConfig().server().damageWithoutGlove.get()) return;
+        var player = parkourability.player();
+        if (player.tickCount % 4 == 0 && !GloveItem.isEquipped(player)) {
+            var tmp = player.invulnerableTime;
+            player.invulnerableTime = 0;
+            player.hurt(DamageSources.FRICTION, 0.3f);
+            player.invulnerableTime = tmp;
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

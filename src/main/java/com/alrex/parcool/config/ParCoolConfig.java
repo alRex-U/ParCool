@@ -88,6 +88,7 @@ public class ParCoolConfig {
 	public static class Server {
 		private final ForgeConfigSpec builtConfig;
 		private final TreeMap<String, TreeMap<ActionEntry<?>, ActionValue>> actionMap;
+        public final ForgeConfigSpec.BooleanValue damageWithoutGlove;
 
 		public final ResourceLocation getStaminaTypeID() {
 			var id = ResourceLocation.tryParse(staminaType.get());
@@ -127,6 +128,11 @@ public class ParCoolConfig {
 			}
 			builder.pop();
 
+            builder.push("Game");
+            {
+                damageWithoutGlove = builder.define("damage_without_glove", true);
+            }
+            builder.pop();
 			builder.push("Stamina");
 			{
 				var registeredItems = staminaTypeRegistry.getEntries();

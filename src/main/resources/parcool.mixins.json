@@ -9,9 +9,11 @@
     "client.AbstractClientPlayerMixin",
     "client.CameraMixin",
     "client.ClientLevelMixin",
+    "client.ItemInHandRendererMixin",
     "client.LivingRendererMixin",
     "client.LocalPlayerMixin",
     "client.OptionsMixin",
+    "client.PlayerItemInHandLayerMixin",
     "client.PlayerModelMixin",
     "client.PlayerRendererMixin"
   ],

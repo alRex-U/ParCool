@@ -4,8 +4,11 @@ import com.alrex.parcool.client.animation.system.AnimatableModelPart;
 import com.alrex.parcool.client.animation.system.IPlayerAnimatorHolder;
 import com.alrex.parcool.client.animation.system.data.Transform;
 import com.alrex.parcool.client.animation.system.math.Vec3f;
+import com.alrex.parcool.client.renderer.entity.layers.ParCoolGeneralEquipmentLayer;
+import com.alrex.parcool.client.renderer.entity.layers.ParCoolModelLayers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -21,6 +24,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
 	public PlayerRendererMixin(EntityRendererProvider.Context p_174289_, PlayerModel<AbstractClientPlayer> p_174290_, float p_174291_) {
 		super(p_174289_, p_174290_, p_174291_);
+	}
+
+	@Inject(method = "<init>", at = @At("TAIL"))
+	private void onInit(EntityRendererProvider.Context context, boolean slim, CallbackInfo ci) {
+		this.addLayer(new ParCoolGeneralEquipmentLayer<>(this,
+				new HumanoidModel<>(context.bakeLayer(slim ? ParCoolModelLayers.INNER_EQUIPMENT_SLIM : ParCoolModelLayers.INNER_EQUIPMENT)),
+				new HumanoidModel<>(context.bakeLayer(slim ? ParCoolModelLayers.OUTER_EQUIPMENT_SLIM : ParCoolModelLayers.OUTER_EQUIPMENT))
+		));
 	}
 
 	@Inject(method = "setupRotations(Lnet/minecraft/client/player/AbstractClientPlayer;Lcom/mojang/blaze3d/vertex/PoseStack;FFF)V", at = @At("HEAD"), cancellable = true)

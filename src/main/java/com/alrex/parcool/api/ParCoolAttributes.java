@@ -16,6 +16,7 @@ public class ParCoolAttributes {
     public static final RegistryObject<Attribute> BREAKFALL_DAMAGE_REDUCTION = register("parcool.breakfall.damage_reduction", 0.4, 0, 1);
     public static final RegistryObject<Attribute> FAST_RUN_SPEED = register("parcool.fast_run.speed", 0.02, 0, 10);
     public static final RegistryObject<Attribute> FAST_SWIM_SPEED = register("parcool.fast_swim.speed", 0.04, 0, 10);
+    public static final RegistryObject<Attribute> SLIDE_DOWN_DECELERATION = register("parcool.slide_down.deceleration", 0.1, 0, 1);
     public static final RegistryObject<Attribute> HORIZONTAL_WALL_RUN_DURATION = register("parcool.horizontal_wall_run.duration", 20, 0, 10000);
 
     private static RegistryObject<Attribute> register(String name, double defaultValue, double min, double max) {

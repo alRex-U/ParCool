@@ -12,6 +12,6 @@ public class ParCoolItemGroup extends CreativeModeTab {
 
 	@Override
 	public ItemStack makeIcon() {
-        return new ItemStack(Items.PARCOOL_GUIDE.get());
+		return new ItemStack(ParCoolItems.PARCOOL_GUIDE.get());
 	}
 }

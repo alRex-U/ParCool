@@ -163,8 +163,7 @@ public class PoleClimb extends ContinuableAction {
                 var pos = wallBlockPos.above(i);
                 if (level.getMaxBuildHeight() < pos.getY()) return false;
                 blockState = level.getBlockState(pos);
-                if (!(blockState.getBlock() instanceof ChainBlock) && ((i + 1) < playerHeight || !blockState.isAir()))
-                    return false;
+                if (!(blockState.getBlock() instanceof ChainBlock)) return false;
                 if (blockState.getValue(ChainBlock.AXIS) != Direction.Axis.Y) return false;
             }
             return true;
