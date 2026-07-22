@@ -101,13 +101,14 @@ public abstract class Action {
 
 	protected final boolean isPossible() {
 		var player = parkourability.player();
-		if (parkourability.player().isSpectator() //TODO
-				|| (!entry.option().availableInFluid() && player.isInFluidType())
-				|| (!entry.option().availableNotInFluid() && !player.isInFluidType())
-				|| (!entry.option().availableWithFallFlying() && player.isFallFlying())
-				|| (entry.option().needOnGround() && !player.isOnGround())
-				|| (entry.option().needNotOnGround() && player.isOnGround())
-				|| (entry.option().neededPose() != null && entry.option().neededPose() != player.getPose())
+		if (parkourability.player().isSpectator() || (parkourability.getStamina().isExhausted())) return false;
+		var option = entry.option();
+		if ((!option.availableInFluid() && player.isInFluidType())
+				|| (!option.availableNotInFluid() && !player.isInFluidType())
+				|| (!option.availableWithFallFlying() && player.isFallFlying())
+				|| (option.needOnGround() && !player.isOnGround())
+				|| (option.needNotOnGround() && player.isOnGround())
+				|| (option.neededPose() != null && option.neededPose() != player.getPose())
 				|| !parkourability.permit(entry)
 		) {
 			return false;
