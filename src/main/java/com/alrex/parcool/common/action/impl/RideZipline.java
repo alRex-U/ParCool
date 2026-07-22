@@ -5,6 +5,7 @@ import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
+import com.alrex.parcool.client.sound.ZiplineUseSoundInstance;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.ParCoolActions;
@@ -13,6 +14,7 @@ import com.alrex.parcool.common.item.armor.GloveItem;
 import com.alrex.parcool.common.zipline.ILoadedZiplineHolderProvider;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.util.EntityUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
@@ -103,7 +105,7 @@ public class RideZipline extends ContinuableAction {
         if (ridingZipline == null) {
             return;
         }
-        var player = parkourability.player();
+        if (!(parkourability.player() instanceof LocalPlayer player)) return;
         parkourability.getBehaviorEnforcer().setMarkerEnforcingMovePoint(
                 this::isDoing,
                 () -> {
@@ -113,6 +115,7 @@ public class RideZipline extends ContinuableAction {
         );
         parkourability.getBehaviorEnforcer().addMarkerEnforcingNoSprint(ID_SPRINT_CANCEL, this::isDoing);
         parkourability.getBehaviorEnforcer().addMarkerEnforcingNoFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
+        Minecraft.getInstance().getSoundManager().play(new ZiplineUseSoundInstance(player, this));
     }
 
     @Override

@@ -3,11 +3,14 @@ package com.alrex.parcool.common.action.impl;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
+import com.alrex.parcool.client.sound.SlideSoundInstance;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.IRequestable;
 import com.alrex.parcool.util.EntityUtil;
 import com.alrex.parcool.util.VectorUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
@@ -63,6 +66,8 @@ public class Slide extends ContinuableAction implements IRequestable<Slide.Reque
                     return new Vec3(movingDirection.x * scale, parkourability.player().getDeltaMovement().y, movingDirection.z * scale);
                 }
         );
+        if (!(parkourability.player() instanceof LocalPlayer player)) return;
+        Minecraft.getInstance().getSoundManager().play(new SlideSoundInstance(player, this));
     }
 
     @Override

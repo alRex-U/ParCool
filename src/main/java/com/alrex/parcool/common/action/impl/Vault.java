@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
@@ -56,6 +57,7 @@ public class Vault extends ContinuableAction {
                 PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().VAULT_SIDE, true);
                 break;
         }
+        parkourability.player().playSound(ParCoolSoundEvents.VAULT.get());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
@@ -81,6 +82,7 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().JUMP_CHARGING);
+        parkourability.player().playSound(ParCoolSoundEvents.CHARGE_JUMP.get());
     }
 
     @Override

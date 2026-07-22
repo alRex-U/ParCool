@@ -1,5 +1,5 @@
 {
-  "death.attack.parcool.friction": "%1$s couldn't bear the burns caused by the frictional heat.",
+  "death.attack.parcool.friction": "%1$s couldn't bear the burns caused by the frictional heat",
 
   "effect.parcool.inexhaustible": "Inexhaustible",
 
@@ -11,6 +11,7 @@
   "item.minecraft.lingering_potion.effect.poor_energy_drink": "Lingering Poor Quality Energy Drink",
   "item.minecraft.tipped_arrow.effect.energy_drink": "Arrow of Inexhaustible",
   "item.minecraft.tipped_arrow.effect.poor_energy_drink": "Poor Quality Arrow of Inexhaustible",
+
   "itemGroup.ParCool": "ParCool!",
   "item.parcool.parcool_guide": "§bParCool Guide",
   "item.parcool.zipline_rope": "Zipline Rope",
@@ -33,7 +34,21 @@
   "key.parcool.breakfall": "Breakfall",
   "key.parcool.horizontal_wall_run": "Horizontal Wall Run",
   "key.parcool.hide_in_block": "Hide in block",
-
+  "parcool.sound.action.breakfall.subtitle": "",
+  "parcool.sound.action.charge_jump.subtitle": "",
+  "parcool.sound.action.climb_up.subtitle": "",
+  "parcool.sound.action.dodge.subtitle": "",
+  "parcool.sound.action.dive.subtitle": "",
+  "parcool.sound.action.hang_on.subtitle": "",
+  "parcool.sound.action.hang_down.subtitle": "",
+  "parcool.sound.action.h_wall_run.subtitle": "",
+  "parcool.sound.action.pole_climb.subtitle": "",
+  "parcool.sound.action.slide.subtitle": "",
+  "parcool.sound.action.slide_down.subtitle": "",
+  "parcool.sound.action.vault.subtitle": "",
+  "parcool.sound.action.wall_run.subtitle": "",
+  "parcool.sound.action.wall_jump.subtitle": "",
+  "parcool.sound.action.zipline.subtitle": "",
   "parcool.sound.zipline.set.subtitle": "Zipline placed",
   "parcool.sound.zipline.remove.subtitle": "Zipline removed",
   "attribute.name.parcool.max_stamina": "Maximum Stamina",
@@ -60,7 +75,7 @@
   "parcool.gui.text.zipline.type.normal": "Normal",
   "parcool.gui.text.zipline.type.loose": "Loose",
   "parcool.gui.text.zipline.type.very_loose": "Very Loose",
-  "parcool.gui.text.glove.tooltip": "Protect you from damage of hand friction, and enable to use powered zipline.",
+  "parcool.gui.text.glove.tooltip": "Protect you from damage of hand friction, and enable to use powered zipline.\n",
 
   "parcool.message.enabled": "ParCool : Enabled",
   "parcool.message.disabled": "ParCool : Disabled",

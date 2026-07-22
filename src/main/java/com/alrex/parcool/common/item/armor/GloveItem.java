@@ -78,7 +78,6 @@ public class GloveItem extends Item implements EquipAble, DyeAble {
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> lines, TooltipFlag tooltipFlag) {
         lines.add(Component.translatable("parcool.gui.text.glove.tooltip").withStyle(ChatFormatting.GRAY));
-        lines.add(Component.empty());
     }
 
     @Override

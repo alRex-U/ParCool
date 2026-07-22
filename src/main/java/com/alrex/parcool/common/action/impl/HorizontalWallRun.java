@@ -6,12 +6,15 @@ import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
 import com.alrex.parcool.client.animation.system.util.EntityUtil;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
+import com.alrex.parcool.client.sound.HorizontalWallRunSoundInstance;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionExtension;
 import com.alrex.parcool.common.action.InteractingWallDirection;
 import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.util.VectorUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -78,7 +81,7 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
 
     @Override
     public void onStartInLocalClient() {
-        var player = parkourability.player();
+        if (!(parkourability.player() instanceof LocalPlayer player)) return;
         var durationAttr = player.getAttribute(ParCoolAttributes.HORIZONTAL_WALL_RUN_DURATION.get());
         if (durationAttr == null) return;
         var duration = durationAttr.getValue();
@@ -89,6 +92,7 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
                     .add(wallDirection.asVec().scale(1 / 16d))
                     .multiply(1, getDoingTick() < duration ? 0 : Math.min(1f, (getDoingTick() - duration) / duration), 1);
         });
+        Minecraft.getInstance().getSoundManager().play(new HorizontalWallRunSoundInstance(player, this));
     }
 
     @Override

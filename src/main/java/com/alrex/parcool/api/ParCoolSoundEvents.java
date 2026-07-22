@@ -10,45 +10,28 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class ParCoolSoundEvents {
     private static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, ParCool.MOD_ID);
-    private static final SoundEvent VAULT_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.vault"));
-    private static final SoundEvent VERTICAL_WALL_RUN_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.v_wall_run"));
-    private static final SoundEvent HORIZONTAL_WALL_RUN_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.h_wall_run"));
-    private static final SoundEvent BREAKFALL_JUST_TIME_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.breakfall.just"));
-    private static final SoundEvent ROLL_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.breakfall.roll"));
-    private static final SoundEvent SAFETY_TAP_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.breakfall.tap"));
-    private static final SoundEvent CATLEAP_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.catleap"));
-    private static final SoundEvent CHARGE_JUMP_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.charge_jump"));
-    private static final SoundEvent WALL_JUMP_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.wall_jump"));
-    private static final SoundEvent CLING_TO_CLIFF_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.cling_to_cliff.grab"));
-    private static final SoundEvent CLING_TO_CLIFF_JUMP_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.cling_to_cliff.jump"));
-    private static final SoundEvent HANG_DOWN_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.hang_down.grab"));
-    private static final SoundEvent HANG_DOWN_JUMP_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.hang_down.jump"));
-    private static final SoundEvent SLIDE_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.slide"));
-    private static final SoundEvent DODGE_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "action.dodge"));
-    private static final SoundEvent PARCOOL_ENABLE_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "parcool.enable"));
-    private static final SoundEvent PARCOOL_DISABLE_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "parcool.disable"));
-    private static final SoundEvent ZIPLINE_SET_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "zipline.set"));
-    private static final SoundEvent ZIPLINE_REMOVE_SOUND = new SoundEvent(new ResourceLocation(ParCool.MOD_ID, "zipline.remove"));
 
-    public static final RegistryObject<SoundEvent> VAULT = SOUNDS.register("action.vault", () -> VAULT_SOUND);
-    public static final RegistryObject<SoundEvent> VERTICAL_WALL_RUN = SOUNDS.register("action.v_wall_run", () -> VERTICAL_WALL_RUN_SOUND);
-    public static final RegistryObject<SoundEvent> HORIZONTAL_WALL_RUN = SOUNDS.register("action.h_wall_run", () -> HORIZONTAL_WALL_RUN_SOUND);
-    public static final RegistryObject<SoundEvent> BREAKFALL_JUST_TIME = SOUNDS.register("action.breakfall.just", () -> BREAKFALL_JUST_TIME_SOUND);
-    public static final RegistryObject<SoundEvent> ROLL = SOUNDS.register("action.breakfall.roll", () -> ROLL_SOUND);
-    public static final RegistryObject<SoundEvent> SAFETY_TAP = SOUNDS.register("action.breakfall.tap", () -> SAFETY_TAP_SOUND);
-    public static final RegistryObject<SoundEvent> CATLEAP = SOUNDS.register("action.catleap", () -> CATLEAP_SOUND);
-    public static final RegistryObject<SoundEvent> CHARGE_JUMP = SOUNDS.register("action.charge_jump", () -> CHARGE_JUMP_SOUND);
-    public static final RegistryObject<SoundEvent> WALL_JUMP = SOUNDS.register("action.wall_jump", () -> WALL_JUMP_SOUND);
-    public static final RegistryObject<SoundEvent> CLING_TO_CLIFF = SOUNDS.register("action.cling_to_cliff.grab", () -> CLING_TO_CLIFF_SOUND);
-    public static final RegistryObject<SoundEvent> CLING_TO_CLIFF_JUMP = SOUNDS.register("action.cling_to_cliff.jump", () -> CLING_TO_CLIFF_JUMP_SOUND);
-    public static final RegistryObject<SoundEvent> HANG_DOWN = SOUNDS.register("action.hang_down.grab", () -> HANG_DOWN_SOUND);
-    public static final RegistryObject<SoundEvent> HANG_DOWN_JUMP = SOUNDS.register("hang_down.jump", () -> HANG_DOWN_JUMP_SOUND);
-    public static final RegistryObject<SoundEvent> SLIDE = SOUNDS.register("action.slide", () -> SLIDE_SOUND);
-    public static final RegistryObject<SoundEvent> DODGE = SOUNDS.register("action.dodge", () -> DODGE_SOUND);
-    public static final RegistryObject<SoundEvent> PARCOOL_ENABLE = SOUNDS.register("action.enable", () -> PARCOOL_ENABLE_SOUND);
-    public static final RegistryObject<SoundEvent> PARCOOL_DISABLE = SOUNDS.register("action.disable", () -> PARCOOL_DISABLE_SOUND);
-    public static final RegistryObject<SoundEvent> ZIPLINE_SET = SOUNDS.register("zipline.set", () -> ZIPLINE_SET_SOUND);
-    public static final RegistryObject<SoundEvent> ZIPLINE_REMOVE = SOUNDS.register("zipline.remove", () -> ZIPLINE_REMOVE_SOUND);
+    public static final RegistryObject<SoundEvent> BREAKFALL = register("action.breakfall");
+    public static final RegistryObject<SoundEvent> DODGE = register("action.dodge");
+    public static final RegistryObject<SoundEvent> VAULT = register("action.vault");
+    public static final RegistryObject<SoundEvent> HANG_ON = register("action.hang_on");
+    public static final RegistryObject<SoundEvent> CLIMB_UP = register("action.climb_up");
+    public static final RegistryObject<SoundEvent> WALL_RUN = register("action.wall_run");
+    public static final RegistryObject<SoundEvent> WALL_JUMP = register("action.wall_jump");
+    public static final RegistryObject<SoundEvent> CHARGE_JUMP = register("action.charge_jump");
+    public static final RegistryObject<SoundEvent> HANG_DOWN = register("action.hang_down");
+    public static final RegistryObject<SoundEvent> POLE_CLIMB = register("action.pole_climb");
+    public static final RegistryObject<SoundEvent> SLIDE = register("action.slide");
+    public static final RegistryObject<SoundEvent> HORIZONTAL_WALL_RUN = register("action.h_wall_run");
+    public static final RegistryObject<SoundEvent> SLIDE_DOWN = register("action.slide_down");
+    public static final RegistryObject<SoundEvent> DIVE = register("action.dive");
+    public static final RegistryObject<SoundEvent> ZIPLINE_USE = register("action.zipline");
+    public static final RegistryObject<SoundEvent> ZIPLINE_SET = register("zipline.set");
+    public static final RegistryObject<SoundEvent> ZIPLINE_REMOVE = register("zipline.remove");
+
+    private static RegistryObject<SoundEvent> register(String name) {
+        return SOUNDS.register(name, () -> new SoundEvent(new ResourceLocation(ParCool.MOD_ID, name)));
+    }
 
     public static void register(IEventBus modBus) {
         SOUNDS.register(modBus);

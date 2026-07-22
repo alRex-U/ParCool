@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
@@ -87,6 +88,7 @@ public class ClimbUp extends ContinuableAction implements IRequestable<ClimbUp.R
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().CLIMB_UP);
+        parkourability.player().playSound(ParCoolSoundEvents.CLIMB_UP.get());
     }
 
     public record RequestContext(HangOn.HangState hangState) {

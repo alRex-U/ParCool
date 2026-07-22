@@ -1,162 +1,62 @@
 {
-  "action.vault": {
-    "subtitle": "parcool.sound.vault.subtitle",
+  "action.breakfall": {
+    "subtitle": "parcool.sound.action.breakfall.subtitle",
     "sounds": [
-      {
-        "name": "parcool:grabbing",
-        "volume": 0.7,
-        "pitch": 0.6
-      }
-    ]
-  },
-  "action.v_wall_run": {
-    "subtitle": "parcool.sound.v_wall_run.subtitle",
-    "sounds": [
-      {
-        "name": "parcool:wallrun_and_running",
-        "volume": 0.85,
-        "pitch": 0.6
-      }
-    ]
-  },
-  "action.h_wall_run": {
-    "subtitle": "parcool.sound.h_wall_run.subtitle",
-    "sounds": [
-      {
-        "name": "parcool:wallrun_and_running",
-        "volume": 0.85,
-        "pitch": 0.7
-      }
-    ]
-  },
-  "action.breakfall.just": {
-    "subtitle": "parcool.sound.breakfall.just.subtitle",
-    "sounds": [
-      {
-        "name": "minecraft:random/anvil_land",
-        "volume": 0.65,
-        "pitch": 2
-      }
-    ]
-  },
-  "action.breakfall.roll": {
-    "subtitle": "parcool.sound.breakfall.roll.subtitle",
-    "sounds": [
-      {
-        "name": "parcool:landing",
-        "volume": 0.40,
-        "pitch": 0.7
-      }
-    ]
-  },
-  "action.breakfall.tap": {
-    "subtitle": "parcool.sound.breakfall.tap.subtitle",
-    "sounds": [
-      {
-        "name": "parcool:landing",
-        "volume": 0.40,
-        "pitch": 0.7
-      }
-    ]
-  },
-  "action.charge_jump": {
-    "subtitle": "parcool.sound.charge_jump.subtitle",
-    "sounds": [
-      {
-        "name": "parcool:jumping",
-        "volume": 0.35,
-        "pitch": 0.6
-      }
-    ]
-  },
-  "action.catleap": {
-    "subtitle": "parcool.sound.catleap.subtitle",
-    "sounds": [
-      {
-        "name": "parcool:jumping",
-        "volume": 0.4,
-        "pitch": 0.7
-      }
-    ]
-  },
-  "action.wall_jump": {
-    "subtitle": "parcool.sound.wall_jump.subtitle",
-    "sounds": [
-      {
-        "name": "parcool:jumping",
-        "volume": 0.2,
-        "pitch": 0.7
-      }
-    ]
-  },
-  "action.cling_to_cliff.grab": {
-    "subtitle": "parcool.sound.cling_to_cliff.grab.subtitle",
-    "sounds": [
-      {
-        "name": "parcool:grabbing",
-        "volume": 0.8,
-        "pitch": 0.6
-      }
-    ]
-  },
-  "action.cling_to_cliff.jump": {
-    "subtitle": "parcool.sound.cling_to_cliff.jump.subtitle",
-    "sounds": [
-      {
-        "name": "parcool:jumping",
-        "volume": 0.2,
-        "pitch": 0.6
-      }
-    ]
-  },
-  "action.hang_down.grab": {
-    "subtitle": "parcool.sound.hang_down.grab.subtitle",
-    "sounds": [
-      {
-        "name": "parcool:grabbing",
-        "volume": 0.75,
-        "pitch": 0.6
-      }
-    ]
-  },
-  "action.hang_down.jump": {
-    "subtitle": "parcool.sound.hang_down.jump.subtitle",
-    "sounds": [
-      {
-        "name": "parcool:jumping",
-        "volume": 0.4,
-        "pitch": 0.6
-      }
-    ]
-  },
-  "action.slide": {
-    "subtitle": "parcool.sound.slide.subtitle",
-    "sounds": [
-      {
-        "name": "parcool:sliding_1",
-        "volume": 0.35,
-        "pitch": 0.6
-      },
-      {
-        "name": "parcool:sliding_2",
-        "volume": 0.35,
-        "pitch": 0.6
-      },
-      {
-        "name": "parcool:sliding_3",
-        "volume": 0.35,
-        "pitch": 0.6
-      }
+      "parcool:action/breakfall"
     ]
   },
   "action.dodge": {
-    "subtitle": "parcool.sound.dodge.subtitle",
+    "subtitle": "parcool.sound.action.dodge.subtitle"
+  },
+  "action.vault": {
+    "subtitle": "parcool.sound.action.vault.subtitle"
+  },
+  "action.hang_on": {
+    "subtitle": "parcool.sound.action.hang_on.subtitle"
+  },
+  "action.climb_up": {
+    "subtitle": "parcool.sound.action.climb_up.subtitle"
+  },
+  "action.wall_run": {
+    "subtitle": "parcool.sound.action.wall_run.subtitle"
+  },
+  "action.wall_jump": {
+    "subtitle": "parcool.sound.action.wall_jump.subtitle"
+  },
+  "action.charge_jump": {
+    "subtitle": "parcool.sound.action.charge_jump.subtitle"
+  },
+  "action.hang_down": {
+    "subtitle": "parcool.sound.action.hang_down.subtitle"
+  },
+  "action.pole_climb": {
+    "subtitle": "parcool.sound.action.pole_climb.subtitle"
+  },
+  "action.slide": {
+    "subtitle": "parcool.sound.action.slide.subtitle",
     "sounds": [
-      {
-        "name": "parcool:roll_and_dodge",
-        "volume": 0.35,
-        "pitch": 1
-      }
+      "parcool:action/slide.loop"
+    ]
+  },
+  "action.h_wall_run": {
+    "subtitle": "parcool.sound.action.h_wall_run.subtitle"
+  },
+  "action.slide_down": {
+    "subtitle": "parcool.sound.action.slide_down.subtitle",
+    "sounds": [
+      "parcool:action/slide.loop"
+    ]
+  },
+  "action.dive": {
+    "subtitle": "parcool.sound.action.dive.subtitle",
+    "sounds": [
+      "item/elytra/elytra_loop"
+    ]
+  },
+  "action.zipline": {
+    "subtitle": "parcool.sound.action.zipline.subtitle",
+    "sounds": [
+      "parcool:action/zipline.loop"
     ]
   },
   "zipline.set": {

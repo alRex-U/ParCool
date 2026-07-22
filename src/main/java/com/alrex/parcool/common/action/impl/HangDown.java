@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
@@ -143,6 +144,7 @@ public class HangDown extends ContinuableAction {
         oldAngularSpeed = 0;
         oldAngle = 0;
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().HANG_DOWN);
+        parkourability.player().playSound(ParCoolSoundEvents.HANG_DOWN.get());
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.api.ParCoolAttributes;
+import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
@@ -9,6 +10,7 @@ import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionExtension;
 import com.alrex.parcool.util.EntityUtil;
+import com.alrex.parcool.util.MathUtil;
 import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -21,12 +23,14 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
     private final SynchronizedProperty<BreakfallType> propertyInputBreakfallType;
     // Server -> Local
     private final SynchronizedProperty<BreakfallType> propertyWorkingBreakfallType;
+    private final SynchronizedProperty<Float> propertyFallDist;
 
     public Breakfall(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry);
         holder = SynchronizedDataHolder.create(entry,
                 propertyInputBreakfallType = SynchronizedProperty.newEnum(BreakfallType.class),
-                propertyWorkingBreakfallType = SynchronizedProperty.newEnum(BreakfallType.class)
+                propertyWorkingBreakfallType = SynchronizedProperty.newEnum(BreakfallType.class),
+                propertyFallDist = SynchronizedProperty.newFloat()
         );
     }
 
@@ -61,6 +65,7 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
                 event.setCanceled(true);
             }
 
+            propertyFallDist.set(event.getDistance());
             propertyWorkingBreakfallType.set(breakfallType);
             startExplicitly();
         }
@@ -71,10 +76,15 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
         switch (propertyWorkingBreakfallType.getOrDefaultIfNull(BreakfallType.NONE)) {
             case TAP:
                 PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().BREAKFALL_NO_MOVE);
-                return;
+                break;
             case ROLL:
                 PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().BREAKFALL_FORWARD);
         }
+        parkourability.player().playSound(
+                ParCoolSoundEvents.BREAKFALL.get(),
+                MathUtil.mapLinear(propertyFallDist.getOrDefaultIfNull(0f), 3f, 10f, 0f, 1f),
+                1f
+        );
     }
 
     @Override

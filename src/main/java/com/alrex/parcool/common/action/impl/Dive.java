@@ -3,11 +3,14 @@ package com.alrex.parcool.common.action.impl;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
+import com.alrex.parcool.client.sound.DiveSoundInstance;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionExtension;
 import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.util.VectorUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
@@ -69,6 +72,12 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().DIVE);
+    }
+
+    @Override
+    public void onStartInLocalClient() {
+        if (!(parkourability.player() instanceof LocalPlayer player)) return;
+        Minecraft.getInstance().getSoundManager().play(new DiveSoundInstance(player, this));
     }
 
     @Override

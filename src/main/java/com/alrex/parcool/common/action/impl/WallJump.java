@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.Action;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.api.action.SynchronizedDataHolder;
@@ -48,6 +49,7 @@ public class WallJump extends Action {
                 PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().WALL_JUMP, true);
                 break;
         }
+        parkourability.player().playSound(ParCoolSoundEvents.WALL_JUMP.get());
     }
 
     @Override
