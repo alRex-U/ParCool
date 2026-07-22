@@ -31,13 +31,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class GloveItem extends Item implements EquipAble, DyeAble {
-    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(ParCool.MOD_ID, "textures/models/equipment/glove.png");
+public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
+    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(ParCool.MOD_ID, "textures/models/equipment/traceur_gloves.png");
     private static final UUID MODIFIER_UUID = UUID.fromString("f757de68-b2f5-4b41-af69-438ae46d15dc");
     private final Multimap<Attribute, AttributeModifier> equipModifier;
     private final Multimap<Attribute, AttributeModifier> inHandModifier;
 
-    public GloveItem(Properties properties) {
+    public TraceurGlovesItem(Properties properties) {
         super(properties);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> chestModifiersBuilder = ImmutableMultimap.builder();
         ImmutableMultimap.Builder<Attribute, AttributeModifier> inHandModifiersBuilder = ImmutableMultimap.builder();
@@ -78,6 +78,7 @@ public class GloveItem extends Item implements EquipAble, DyeAble {
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> lines, TooltipFlag tooltipFlag) {
         lines.add(Component.translatable("parcool.gui.text.glove.tooltip").withStyle(ChatFormatting.GRAY));
+        DyeAble.appendHoverText(this, stack, level, lines, tooltipFlag);
     }
 
     @Override
@@ -98,7 +99,7 @@ public class GloveItem extends Item implements EquipAble, DyeAble {
     private static boolean shouldRenderAsEquipment(LivingEntity entity, EquipmentSlot slot) {
         if (slot == EquipmentSlot.MAINHAND || slot == EquipmentSlot.OFFHAND) {
             var chestItem = entity.getItemBySlot(EquipmentSlot.CHEST);
-            if (chestItem.getItem() instanceof GloveItem) return false;
+            if (chestItem.getItem() instanceof TraceurGlovesItem) return false;
         }
         return true;
     }
@@ -114,7 +115,7 @@ public class GloveItem extends Item implements EquipAble, DyeAble {
     public static boolean isEquipped(LivingEntity entity) {
         for (var slot : new EquipmentSlot[]{EquipmentSlot.CHEST, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND}) {
             var item = entity.getItemBySlot(slot).getItem();
-            if (item instanceof GloveItem) return true;
+            if (item instanceof TraceurGlovesItem) return true;
         }
         return false;
     }

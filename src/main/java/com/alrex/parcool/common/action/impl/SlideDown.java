@@ -12,7 +12,7 @@ import com.alrex.parcool.common.action.ActionExtension;
 import com.alrex.parcool.common.action.InteractingWallDirection;
 import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.common.damage.DamageSources;
-import com.alrex.parcool.common.item.armor.GloveItem;
+import com.alrex.parcool.common.item.armor.TraceurGlovesItem;
 import com.alrex.parcool.util.EntityUtil;
 import com.alrex.parcool.util.MathUtil;
 import net.minecraft.client.Minecraft;
@@ -193,7 +193,7 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
             if (damageCount <= 0) return;
             damageCount--;
             if (!ParCool.getConfig().server().damageWithoutGlove.get()) return;
-            if (GloveItem.isEquipped(player)) return;
+            if (TraceurGlovesItem.isEquipped(player)) return;
             int invulnerableTime = player.invulnerableTime; // bypass invulnerableTime
             damageCoolTime = 1;
             player.invulnerableTime = 0;

@@ -9,7 +9,6 @@ import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.common.zipline.ZiplineInfo;
 import com.alrex.parcool.common.zipline.ZiplineType;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -62,23 +61,8 @@ public class ZiplineRopeItem extends Item implements DyeAble {
         } else {
             lines.add(Component.translatable("parcool.gui.text.zipline.not_bound").withStyle(ChatFormatting.DARK_GRAY));
         }
-        lines.add(Component.empty());
         lines.add(Component.translatable("parcool.gui.text.zipline.tension", getZiplineType(stack).getTranslationName()).withStyle(ChatFormatting.GRAY));
-        if (hasCustomColor(stack)) {
-            var player = Minecraft.getInstance().player;
-            /*
-                int color = getColor(stack);
-                DecimalFormat format = PERCENT_FORMATTER;
-                float r = 100f * ((color & 0xFF0000) >> 16) / 255f;
-                float g = 100f * ((color & 0x00FF00) >> 8) / 255f;
-                float b = 100f * (color & 0x0000FF) / 255f;
-                lines.add(Component.literal(""));
-                lines.add(Component.literal("R : " + format.format(r) + "%").withStyle(ChatFormatting.RED));
-                lines.add(Component.literal("G : " + format.format(g) + "%").withStyle(ChatFormatting.GREEN));
-                lines.add(Component.literal("B : " + format.format(b) + "%").withStyle(ChatFormatting.BLUE));
-            */
-            lines.add(Component.translatable("parcool.gui.text.zipline.colored").withStyle(ChatFormatting.BLUE));
-        }
+        DyeAble.appendHoverText(this, stack, world, lines, flag);
     }
 
     @Override

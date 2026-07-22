@@ -10,7 +10,7 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.common.damage.DamageSources;
-import com.alrex.parcool.common.item.armor.GloveItem;
+import com.alrex.parcool.common.item.armor.TraceurGlovesItem;
 import com.alrex.parcool.common.zipline.ILoadedZiplineHolderProvider;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.util.EntityUtil;
@@ -181,7 +181,7 @@ public class RideZipline extends ContinuableAction {
         if (!propertyZiplinePowered.getOrDefaultIfNull(false)) return;
         if (!ParCool.getConfig().server().damageWithoutGlove.get()) return;
         var player = parkourability.player();
-        if (player.tickCount % 4 == 0 && !GloveItem.isEquipped(player)) {
+        if (player.tickCount % 4 == 0 && !TraceurGlovesItem.isEquipped(player)) {
             var tmp = player.invulnerableTime;
             player.invulnerableTime = 0;
             player.hurt(DamageSources.FRICTION, 0.3f);

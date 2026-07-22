@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "parcool:item/traceur_glove"
+    "layer0": "parcool:item/traceur_boots"
   }
 }

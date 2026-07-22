@@ -1,10 +1,16 @@
 package com.alrex.parcool.common.item;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 public interface DyeAble {
     class DyedColor implements ItemColor {
@@ -48,4 +54,11 @@ public interface DyeAble {
         return tag.contains("color");
     }
 
+    static void appendHoverText(DyeAble dyeAble, @Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> lines, TooltipFlag flag) {
+        if (dyeAble.hasCustomColor(stack)) {
+            lines.add(Component.translatable("parcool.gui.text.dyeable.colored").withStyle(ChatFormatting.BLUE));
+        } else {
+            lines.add(Component.translatable("parcool.gui.text.dyeable.dyeable").withStyle(ChatFormatting.DARK_GRAY));
+        }
+    }
 }
