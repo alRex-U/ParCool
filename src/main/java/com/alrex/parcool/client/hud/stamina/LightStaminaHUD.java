@@ -15,15 +15,17 @@ import net.minecraftforge.client.gui.overlay.ForgeGui;
 public class LightStaminaHUD extends GuiComponent implements IStaminaHUD {
 	public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation("parcool", "textures/gui/stamina_bar.png");
 
-	private int tickValueChanging;
+	private boolean valueChanging;
+	private int tickValueChangingOrNotChanging;
 	private int consumingStaminaVibration;
 
 	@Override
 	public void tick(Player player, StaminaDisplayContext currentContext, StaminaDisplayContext oldContext) {
-		if (currentContext.value() != oldContext.value()) {
-			tickValueChanging++;
+		if (valueChanging != (currentContext.value() != oldContext.value())) {
+			valueChanging = (currentContext.value() != oldContext.value());
+			tickValueChangingOrNotChanging = 0;
 		} else {
-			tickValueChanging = 0;
+			tickValueChangingOrNotChanging++;
 		}
 		if (player.getRandom().nextInt(5) == 0) {
 			consumingStaminaVibration = player.getRandom().nextBoolean() ? 1 : -1;
@@ -34,6 +36,8 @@ public class LightStaminaHUD extends GuiComponent implements IStaminaHUD {
 
 	@Override
 	public void render(ForgeGui gui, PoseStack stack, Parkourability parkourability, StaminaDisplayContext currentContext, StaminaDisplayContext oldContext, float partialTick, int width, int height) {
+		if (!valueChanging && tickValueChangingOrNotChanging > 40 && ParCool.getConfig().client().staminaHud.hideAutomatically().get())
+			return;
 		var player = parkourability.player();
 		final boolean inexhaustible = player.hasEffect(ParCoolMobEffects.INEXHAUSTIBLE.get());
 
@@ -85,7 +89,7 @@ public class LightStaminaHUD extends GuiComponent implements IStaminaHUD {
 			if (currentContext.justFilled()) {
 				offsetY = -1;
 			} else if (currentContext.value() > oldContext.value()) {
-				if ((tickValueChanging & 31) == i) {
+				if ((tickValueChangingOrNotChanging & 31) == i) {
 					offsetY = -1;
 				}
 			} else if (i + 1 > staminaScale && staminaScale > i && currentContext.value() < oldContext.value()) {

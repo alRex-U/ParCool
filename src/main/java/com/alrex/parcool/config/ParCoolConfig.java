@@ -51,6 +51,7 @@ public class ParCoolConfig {
 				ForgeConfigSpec.EnumValue<Position.Horizontal> alignHorizontal,
 				ForgeConfigSpec.EnumValue<Position.Vertical> alignVertical,
 				ForgeConfigSpec.BooleanValue showAlways,
+				ForgeConfigSpec.BooleanValue hideAutomatically,
 				ForgeConfigSpec.IntValue offsetHorizontal,
 				ForgeConfigSpec.IntValue offsetVertical
 		) {
@@ -69,7 +70,8 @@ public class ParCoolConfig {
 						builder.defineEnum("stamina_hud_type", HUDType.Light),
 						builder.comment("horizontal alignment").defineEnum("hud_align_h_s", Position.Horizontal.Right),
 						builder.comment("vertical alignment").defineEnum("hud_align_v_s", Position.Vertical.Bottom),
-						builder.define("show_stamina_hud_always", false),
+						builder.define("show_always", false),
+						builder.define("hide_automatically", true),
 						builder.defineInRange("hud_offset_h", 0, -100, 100),
 						builder.defineInRange("hud_offset_v", 0, -100, 100)
 				);
