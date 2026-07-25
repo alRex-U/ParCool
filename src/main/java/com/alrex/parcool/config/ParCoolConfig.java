@@ -91,6 +91,7 @@ public class ParCoolConfig {
 		private final ForgeConfigSpec builtConfig;
 		private final TreeMap<String, TreeMap<ActionEntry<?>, ActionValue>> actionMap;
         public final ForgeConfigSpec.BooleanValue damageWithoutGlove;
+        public final ForgeConfigSpec.BooleanValue enableSkillTree;
 
 		public final ResourceLocation getStaminaTypeID() {
 			var id = ResourceLocation.tryParse(staminaType.get());
@@ -132,6 +133,7 @@ public class ParCoolConfig {
 
             builder.push("Game");
             {
+                enableSkillTree = builder.define("enable_skill_tree", true);
                 damageWithoutGlove = builder.define("damage_without_glove", true);
             }
             builder.pop();

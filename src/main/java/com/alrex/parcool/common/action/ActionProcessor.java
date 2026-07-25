@@ -9,6 +9,7 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.network.ActionStatePacket;
 import com.alrex.parcool.common.network.ActionStateSetPacket;
 import com.alrex.parcool.common.stamina.StaminaSynchronizationDepot;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -63,6 +64,9 @@ public class ActionProcessor {
 		if (!synchronizedData.isEmpty()) {
 			onTick$sendSyncPacket(parkourability, event.side, synchronizedData);
 		}
+        if (player instanceof ServerPlayer serverPlayer && parkourability.getCapabilities().isDirty()) {
+            parkourability.getCapabilities().sync(serverPlayer);
+        }
 
 		parkourability.finishTicking();
 	}

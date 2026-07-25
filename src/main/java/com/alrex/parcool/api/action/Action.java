@@ -89,26 +89,27 @@ public abstract class Action {
 	public void startExplicitly() {
 		start();
 		var player = parkourability.player();
-		var packet = player.level.isClientSide()
+        var clientSide = player.level.isClientSide();
+        var packet = clientSide
 				? ActionStateSetPacket.fromClient(parkourability.player().getUUID())
 				: ActionStateSetPacket.fromServer(parkourability.player().getUUID());
 		packet.add(new ActionStatePacket(
 				entry.id().getNamespace(),
 				Collections.singletonList(getSynchronizedData().packToEntry(ActionStatePacket.Type.START, entry))
 		));
-		ParCool.CONNECTION.send(PacketDistributor.ALL.noArg(), packet);
+        ParCool.CONNECTION.send(clientSide ? PacketDistributor.SERVER.noArg() : PacketDistributor.ALL.noArg(), packet);
 	}
 
 	protected final boolean isPossible() {
 		var player = parkourability.player();
 		if (parkourability.player().isSpectator() || (parkourability.getStamina().isExhausted())) return false;
 		var option = entry.option();
-		if ((!option.availableInFluid() && player.isInFluidType())
+        if ((option.neededPose() != null && option.neededPose() != player.getPose())
+                || (!option.availableInFluid() && player.isInFluidType())
 				|| (!option.availableNotInFluid() && !player.isInFluidType())
 				|| (!option.availableWithFallFlying() && player.isFallFlying())
 				|| (option.needOnGround() && !player.isOnGround())
 				|| (option.needNotOnGround() && player.isOnGround())
-				|| (option.neededPose() != null && option.neededPose() != player.getPose())
 				|| !parkourability.permit(entry)
 		) {
 			return false;

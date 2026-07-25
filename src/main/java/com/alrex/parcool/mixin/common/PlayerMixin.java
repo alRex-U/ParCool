@@ -5,6 +5,7 @@ import com.alrex.parcool.common.IParkourabilityHolder;
 import com.alrex.parcool.common.Parkourability;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -23,17 +24,17 @@ import javax.annotation.Nonnull;
 public abstract class PlayerMixin extends LivingEntity implements IParkourabilityHolder {
     @Unique
     @Nonnull
-    private Parkourability parkourability = null;
+    private Parkourability parcool$parkourability = null;
 
     @Inject(method = "<init>", at = @At("TAIL"))
     public void onInit(Level level, BlockPos blockPos, float p_219729_, GameProfile profile, ProfilePublicKey publicKey, CallbackInfo ci) {
-        parkourability = new Parkourability((Player) (Object) this, ParCool.getActionRegistry());
+        parcool$parkourability = new Parkourability((Player) (Object) this, ParCool.getActionRegistry());
     }
 
     @Nonnull
     @Override
     public Parkourability getParkourability() {
-        return parkourability;
+        return parcool$parkourability;
     }
 
     protected PlayerMixin(EntityType<? extends LivingEntity> p_i48577_1_, Level p_i48577_2_) {
@@ -64,6 +65,18 @@ public abstract class PlayerMixin extends LivingEntity implements IParkourabilit
         if (parkourability == null) return;
         if (parkourability.getBehaviorEnforcer().enforceNoDescendingFromEdge()) {
             cir.setReturnValue(true);
+        }
+    }
+
+    @Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
+    public void onAddAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
+        tag.put("parcool.parkourability", parcool$parkourability.saveToTag());
+    }
+
+    @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
+    public void onReadAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
+        if (tag.get("parcool.parkourability") instanceof CompoundTag pTag) {
+            parcool$parkourability.readFrom(pTag);
         }
     }
 }

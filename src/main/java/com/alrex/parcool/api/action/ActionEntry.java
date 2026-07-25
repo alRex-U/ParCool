@@ -14,6 +14,7 @@ public class ActionEntry<T extends Action> implements Comparable<ActionEntry<?>>
     private final ActionConstructor<T> factory;
     private final ActionOption.Value option;
     private final ArrayList<ActionEntry<? extends Action>> children = new ArrayList<>();
+    private final String translationKey;
 
     public ActionEntry(
             short index,
@@ -30,6 +31,7 @@ public class ActionEntry<T extends Action> implements Comparable<ActionEntry<?>>
         if (this.option.parent() != null) {
             this.option.parent().children.add(this);
         }
+        this.translationKey = "parcool.action." + id.getNamespace() + "." + id.getPath();
     }
 
     public short index() {
@@ -66,5 +68,9 @@ public class ActionEntry<T extends Action> implements Comparable<ActionEntry<?>>
 
     public interface ActionConstructor<T extends Action> {
         T construct(Parkourability parkourability, ActionEntry<T> entry);
+    }
+
+    public String getTranslationKey() {
+        return translationKey;
     }
 }

@@ -9,12 +9,12 @@ import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.client.renderer.entity.layers.ParCoolModelLayers;
+import com.alrex.parcool.client.skilltree.ParCoolSkillTrees;
+import com.alrex.parcool.client.textures.ParCoolActionsTextureAtlas;
+import com.alrex.parcool.client.textures.ParCoolTextureAtlases;
 import com.alrex.parcool.common.handlers.InputHandler;
 import com.alrex.parcool.common.handlers.OpenSettingsParCoolHandler;
-import com.alrex.parcool.common.network.ActionStateSetPacket;
-import com.alrex.parcool.common.network.MultiActionStateSetPacket;
-import com.alrex.parcool.common.network.MultiStaminaPacket;
-import com.alrex.parcool.common.network.StaminaPacket;
+import com.alrex.parcool.common.network.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -35,6 +35,7 @@ public class ClientProxy extends CommonProxy {
 		bus.addListener(HUDRegistry.getInstance()::onSetup);
 		bus.addListener(AnimationRegistries::register);
 		bus.addListener(ParCoolModelLayers::register);
+        bus.addListener(ParCoolTextureAtlases::init);
 
 		bus = MinecraftForge.EVENT_BUS;
 		bus.addListener(ParCoolKeyBinds::tick);
@@ -42,6 +43,7 @@ public class ClientProxy extends CommonProxy {
 		bus.register(OpenSettingsParCoolHandler.class);
 		bus.register(InputHandler.class);
 		bus.register(TickEventHandler.class);
+        bus.register(ParCoolSkillTrees.class);
 
 
 		var registerAnimationEntryEvent = new RegisterAnimationEntryEvent();
@@ -79,5 +81,11 @@ public class ClientProxy extends CommonProxy {
 				.encoder(MultiActionStateSetPacket::encode)
 				.consumerMainThread(MultiActionStateSetPacket::handleInPhysicalClient)
 				.add();
+        instance.messageBuilder(ActionCapabilitiesPacket.class, index++)
+                .noResponse()
+                .decoder(ActionCapabilitiesPacket.HANDLER::decode)
+                .encoder(ActionCapabilitiesPacket.HANDLER::encode)
+                .consumerMainThread(ActionCapabilitiesPacket.HANDLER::handleInPhysicalClient)
+                .add();
 	}
 }

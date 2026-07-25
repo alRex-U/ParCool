@@ -12,7 +12,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public record StaminaPacket(UUID playerID, boolean fromClient, ReadonlyStamina stamina) {
-	public static final IHandler<StaminaPacket> HANDLER = new IHandler<StaminaPacket>() {
+    public static final IHandler<StaminaPacket> HANDLER = new IHandler<>() {
 		@Override
 		public void encode(StaminaPacket staminaPacket, FriendlyByteBuf packet) {
 			packet.writeUUID(staminaPacket.playerID);

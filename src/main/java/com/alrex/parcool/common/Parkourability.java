@@ -8,6 +8,7 @@ import com.alrex.parcool.api.stamina.IReadableStamina;
 import com.alrex.parcool.common.action.*;
 import com.alrex.parcool.common.stamina.ReadonlyStamina;
 import com.alrex.parcool.common.stamina.StaminaTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nonnull;
@@ -26,12 +27,14 @@ public class Parkourability {
 	private final ActionSet actions;
 	private final TreeMap<ActionEntry<?>, Object> requestedContexts = new TreeMap<>();
 	private final Player player;
+    private ActionCapabilities capabilities;
 	private IReadableStamina stamina;
 
 	public Parkourability(Player player, ActionRegistry registry) {
 		this.player = player;
 		this.actions = new ActionSet(this, registry);
 		this.properties = new AdditionalProperties(player);
+        this.capabilities = new ActionCapabilities(registry);
 		if (player.isLocalPlayer()) {
 			var staminaProvider = ParCool.getStaminaTypeRegistry().getRegistry().get(ParCool.getConfig().server().getStaminaTypeID());
 			if (staminaProvider == null) {
@@ -67,14 +70,23 @@ public class Parkourability {
 		return stamina;
 	}
 
+    public ActionCapabilities getCapabilities() {
+        return capabilities;
+    }
+
 	public void updateStaminaInRemote(ReadonlyStamina newStamina) {
 		if (stamina instanceof ReadonlyStamina) {
 			stamina = newStamina;
 		}
 	}
 
+    public void updateActionCapability(ActionCapabilities capabilities) {
+        this.capabilities = capabilities;
+    }
+
 	public boolean permit(ActionEntry<?> actionEntry) {
-		return ParCool.getConfig().server().get(actionEntry).permit().get();
+        var config = ParCool.getConfig().server();
+        return config.get(actionEntry).permit().get() && (!config.enableSkillTree.get() || capabilities.can(actionEntry));
 	}
 
 	/// Request the action start.
@@ -97,9 +109,6 @@ public class Parkourability {
 		requestedContexts.clear();
 	}
 
-	public void copyFrom(Parkourability original) {
-	}
-
 	public double getCost(ActionEntry<?> entry, StaminaConsumption.Type type) {
 		var config = ParCool.getConfig().server().get(entry);
 		return switch (type) {
@@ -108,4 +117,18 @@ public class Parkourability {
 			case FINISH -> config.costOnFinish().get();
 		};
 	}
+
+    public void copyFrom(Parkourability original) {
+        this.capabilities = original.capabilities;
+    }
+
+    public CompoundTag saveToTag() {
+        var tag = new CompoundTag();
+        tag.put("caps", capabilities.saveToTag());
+        return tag;
+    }
+
+    public void readFrom(CompoundTag tag) {
+        if (tag.get("caps") instanceof CompoundTag compoundCapTag) capabilities.readFromTag(compoundCapTag);
+    }
 }

@@ -1,9 +1,6 @@
 package com.alrex.parcool.proxy;
 
-import com.alrex.parcool.common.network.ActionStateSetPacket;
-import com.alrex.parcool.common.network.MultiActionStateSetPacket;
-import com.alrex.parcool.common.network.MultiStaminaPacket;
-import com.alrex.parcool.common.network.StaminaPacket;
+import com.alrex.parcool.common.network.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -37,5 +34,11 @@ public class ServerProxy extends CommonProxy {
 				.encoder(MultiActionStateSetPacket::encode)
 				.consumerMainThread(MultiActionStateSetPacket::handleInPhysicalServer)
 				.add();
+        instance.messageBuilder(ActionCapabilitiesPacket.class, index++)
+                .noResponse()
+                .decoder(ActionCapabilitiesPacket.HANDLER::decode)
+                .encoder(ActionCapabilitiesPacket.HANDLER::encode)
+                .consumerMainThread(ActionCapabilitiesPacket.HANDLER::handleInPhysicalServer)
+                .add();
 	}
 }

@@ -1,7 +1,14 @@
 package com.alrex.parcool.common.handlers;
 
+import com.alrex.parcool.api.client.skilltree.PrepareParCoolSkillTreeEvent;
+import com.alrex.parcool.client.gui.screen.SkillTreeScreen;
+import com.alrex.parcool.client.input.ParCoolKeyBinds;
+import com.alrex.parcool.common.Parkourability;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -11,15 +18,13 @@ public class OpenSettingsParCoolHandler {
 	public static void onTick(TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.END) return;
 
-		/*
-		if (KeyRecorder.keyOpenSettingsState.isPressed()) {
-			LocalPlayer player = Minecraft.getInstance().player;
-			if (player == null) return;
-			Parkourability parkourability = Parkourability.get(player);
-			if (parkourability == null) return;
-			//Minecraft.getInstance().setScreen(new SettingActionLimitationScreen(Component.literal("ParCool Setting"), parkourability.getActionInfo(), ParCoolConfig.Client.GUI_COLOR_THEME.get()));
+        if (ParCoolKeyBinds.SHIFT.state().isDown()) {
+            var player = Minecraft.getInstance().player;
+            if (player == null) return;
+            var prepareEvent = new PrepareParCoolSkillTreeEvent();
+            MinecraftForge.EVENT_BUS.post(prepareEvent);
+            Minecraft.getInstance().setScreen(new SkillTreeScreen(Parkourability.get(player).getCapabilities(), prepareEvent.getSkillTrees()));
 		}
 
-		 */
 	}
 }

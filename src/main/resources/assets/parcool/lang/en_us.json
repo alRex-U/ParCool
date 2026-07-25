@@ -59,6 +59,7 @@
   "attribute.name.parcool.fast_swim.speed": "Fast Swim Speed",
   "attribute.name.parcool.slide_down.deceleration": "Slide Down Deceleration",
   "attribute.name.parcool.horizontal_wall_run.duration": "Horizontal Wall Run Duration",
+  "parcool.action.parcool.fast_run": "Fast Run",
 
   "parcool.gui.title.setting": "ParCool Settings",
   "parcool.gui.text.action": "Action",
