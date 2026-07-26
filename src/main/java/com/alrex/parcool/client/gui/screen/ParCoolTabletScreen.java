@@ -3,6 +3,7 @@ package com.alrex.parcool.client.gui.screen;
 import com.alrex.parcool.ParCool;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.Util;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
@@ -93,5 +94,12 @@ public class ParCoolTabletScreen extends Screen {
         @Override
         public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
         }
+    }
+
+    protected void confirmLink(boolean confirmed, String uri) {
+        if (confirmed) {
+            Util.getPlatform().openUri(uri);
+        }
+        if (minecraft != null) minecraft.setScreen(this);
     }
 }

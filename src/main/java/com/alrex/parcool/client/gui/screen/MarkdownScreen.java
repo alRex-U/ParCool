@@ -4,14 +4,15 @@ import com.alrex.parcool.client.md.CompiledMarkdown;
 import com.alrex.parcool.client.md.MarkdownResourceManager;
 import com.alrex.parcool.client.md.ui.MarkdownWidget;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class MarkdownScreen extends Screen {
+public class MarkdownScreen extends ParCoolTabletScreen {
+    private static final int MD_VIEW_WIDTH = 180;
     @Nullable
     private final CompiledMarkdown content;
 
@@ -24,13 +25,30 @@ public class MarkdownScreen extends Screen {
     protected void init() {
         super.init();
         if (content != null) {
-            addRenderableWidget(new MarkdownWidget(font, 20, 0, width - 20, height, content, ~0));
+            addRenderableWidget(
+                    new MarkdownWidget(
+                            font,
+                            contentOffsetX + CONTENT_WIDTH - MD_VIEW_WIDTH + 4,
+                            contentOffsetY,
+                            MD_VIEW_WIDTH - 4,
+                            CONTENT_HEIGHT,
+                            content,
+                            0xFF111111,
+                            (location) -> Minecraft.getInstance().setScreen(new MarkdownScreen(location)),
+                            (url) -> Minecraft.getInstance().setScreen(new ConfirmLinkScreen((b) -> this.confirmLink(b, url), url, false))
+                    )
+            );
         }
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
-        renderBackground(poseStack);
-        super.render(poseStack, mouseX, mouseY, partial);
+    protected void renderContent(PoseStack poseStack, int mouseX, int mouseY, float partial) {
+        fill(poseStack, contentOffsetX, contentOffsetY, contentOffsetX + CONTENT_WIDTH, contentOffsetY + CONTENT_HEIGHT, ~0);
+        super.renderContent(poseStack, mouseX, mouseY, partial);
+        fill(poseStack,
+                contentOffsetX + CONTENT_WIDTH - MD_VIEW_WIDTH, contentOffsetY,
+                contentOffsetX + CONTENT_WIDTH - MD_VIEW_WIDTH + 1, contentOffsetY + CONTENT_HEIGHT,
+                0x88999999
+        );
     }
 }

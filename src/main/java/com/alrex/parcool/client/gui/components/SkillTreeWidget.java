@@ -115,29 +115,29 @@ public class SkillTreeWidget extends AbstractWidget {
         {
             RenderSystem.enableDepthTest();
             RenderSystem.depthFunc(GL11.GL_LEQUAL);
+            RenderSystem.depthMask(true);
             RenderSystem.colorMask(false, false, false, false);
+            poseStack.translate(0, 0, -1f);
             fill(poseStack, x, y, x + width, y + height, ~0);
-            RenderSystem.depthFunc(GL11.GL_GEQUAL);
+            RenderSystem.depthFunc(GL11.GL_EQUAL);
             RenderSystem.colorMask(true, true, true, true);
-        }
-        poseStack.popPose();
 
-        poseStack.pushPose();
-        {
-            poseStack.translate(x, y, 0);
-            poseStack.scale(scale, scale, 0);
-            poseStack.translate(-scrollX, -scrollY, 1);
             int mouseXScaled = mouseIsOutOfWidget ? -1 : (int) getMouseXInContent(mouseX);
             int mouseYScaled = mouseIsOutOfWidget ? -1 : (int) getMouseYInContent(mouseY);
+
+            poseStack.translate(x, y, 0);
+            poseStack.scale(scale, scale, 0);
+            poseStack.translate(-scrollX, -scrollY, 0);
             for (var widget : connectivities) {
                 widget.render(poseStack, mouseXScaled, mouseYScaled, partialTick);
             }
             for (var widget : icons) {
                 widget.render(poseStack, mouseXScaled, mouseYScaled, partialTick);
             }
+            RenderSystem.depthFunc(GL11.GL_LEQUAL);
+            RenderSystem.disableDepthTest();
         }
         poseStack.popPose();
-        RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 
     @Override
