@@ -3,12 +3,10 @@ package com.alrex.parcool.client.textures;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.common.action.ActionRegistry;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.TextureAtlasHolder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;

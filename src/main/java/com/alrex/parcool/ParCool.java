@@ -8,7 +8,6 @@ import com.alrex.parcool.api.action.RegisterParCoolActionEvent;
 import com.alrex.parcool.api.stamina.RegisterParCoolStaminaTypeEvent;
 import com.alrex.parcool.client.animation.system.config.AnimationSystemConfig;
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
-import com.alrex.parcool.client.animation.system.resource.AnimationResourceManager;
 import com.alrex.parcool.client.renderer.Renderers;
 import com.alrex.parcool.common.action.ActionProcessor;
 import com.alrex.parcool.common.action.ActionRegistry;
@@ -29,7 +28,6 @@ import com.alrex.parcool.proxy.CommonProxy;
 import com.alrex.parcool.proxy.ServerProxy;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -94,7 +92,6 @@ public class ParCool {
 		eventBus.addListener(this::setup);
 		eventBus.addListener(this::setupClient);
 		eventBus.addListener(this::loaded);
-        eventBus.addListener(this::registerResource);
 		eventBus.register(AddAttributesHandler.class);
 		eventBus.register(ParCoolActions.class);
 		eventBus.register(StaminaTypes.class);
@@ -136,8 +133,4 @@ public class ParCool {
 		ParCoolItems.registerColors();
         AnimationSets.getInstance().freeze();
     }
-
-    private void registerResource(final RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(AnimationResourceManager.getInstance());
-	}
 }

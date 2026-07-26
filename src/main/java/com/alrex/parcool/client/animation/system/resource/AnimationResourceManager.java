@@ -20,6 +20,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,6 +48,10 @@ public class AnimationResourceManager extends SimplePreparableReloadListener<Ani
 
     public AnimationResource getResource() {
         return resource;
+    }
+
+    public static void register(RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener(getInstance());
     }
 
     @Override

@@ -6,11 +6,12 @@ import com.alrex.parcool.client.animation.system.config.AnimationSystemConfig;
 import com.alrex.parcool.client.animation.system.event.RegisterAnimationEntryEvent;
 import com.alrex.parcool.client.animation.system.handle.TickEventHandler;
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
+import com.alrex.parcool.client.animation.system.resource.AnimationResourceManager;
 import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
+import com.alrex.parcool.client.md.MarkdownResourceManager;
 import com.alrex.parcool.client.renderer.entity.layers.ParCoolModelLayers;
 import com.alrex.parcool.client.skilltree.ParCoolSkillTrees;
-import com.alrex.parcool.client.textures.ParCoolActionsTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextureAtlases;
 import com.alrex.parcool.common.handlers.InputHandler;
 import com.alrex.parcool.common.handlers.OpenSettingsParCoolHandler;
@@ -36,6 +37,8 @@ public class ClientProxy extends CommonProxy {
 		bus.addListener(AnimationRegistries::register);
 		bus.addListener(ParCoolModelLayers::register);
         bus.addListener(ParCoolTextureAtlases::init);
+        bus.addListener(AnimationResourceManager::register);
+        bus.addListener(MarkdownResourceManager::register);
 
 		bus = MinecraftForge.EVENT_BUS;
 		bus.addListener(ParCoolKeyBinds::tick);
