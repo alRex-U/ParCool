@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.TreeMap;
 
 public class ActionCapabilities {
@@ -37,6 +38,13 @@ public class ActionCapabilities {
             groupCapabilities[action.index()] = value;
             dirty = true;
         }
+    }
+
+    public void setAll(boolean value) {
+        for (var groupCapability : capabilities.entrySet()) {
+            Arrays.fill(groupCapability.getValue(), value);
+        }
+        dirty = true;
     }
 
     public void unlock(ServerPlayer player, ActionEntry<?> action) {
