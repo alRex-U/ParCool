@@ -28,6 +28,7 @@ public class CardPanel extends AbstractWidget {
 
     @Override
     public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+        if (!visible) return;
         if (shadow) {
             fill(poseStack, x, y, x + width + 1, y + height + 1, shadowColor);
         }

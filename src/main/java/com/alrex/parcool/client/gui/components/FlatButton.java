@@ -35,10 +35,10 @@ public class FlatButton extends AbstractButton {
 
     @Override
     public void renderButton(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
-        renderFlatButton(poseStack, mouseX, mouseY, partial, this.backColor, this.txtColor);
+        renderFlatButton(poseStack, this.backColor, this.txtColor);
     }
 
-    public void renderFlatButton(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial, int backColor, int txtColor) {
+    public void renderFlatButton(@Nonnull PoseStack poseStack, int backColor, int txtColor) {
         if (shadow && active) {
             fill(poseStack, x, y, x + width + 1, y + height + 1, shadowColor);
         }

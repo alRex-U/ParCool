@@ -46,7 +46,6 @@ public class ClientProxy extends CommonProxy {
 		bus.register(TickEventHandler.class);
         bus.register(ParCoolSkillTrees.class);
 
-
 		var registerAnimationEntryEvent = new RegisterAnimationEntryEvent();
 		FMLJavaModLoadingContext.get().getModEventBus().post(registerAnimationEntryEvent);
 		registerAnimationEntryEvent.finish();
@@ -88,5 +87,11 @@ public class ClientProxy extends CommonProxy {
                 .encoder(ActionCapabilitiesPacket.HANDLER::encode)
                 .consumerMainThread(ActionCapabilitiesPacket.HANDLER::handleInPhysicalClient)
                 .add();
+		instance.messageBuilder(RequestUnlockActionPacket.class, index++)
+				.noResponse()
+				.decoder(RequestUnlockActionPacket.HANDLER::decode)
+				.encoder(RequestUnlockActionPacket.HANDLER::encode)
+				.consumerMainThread(RequestUnlockActionPacket.HANDLER::handleInPhysicalClient)
+				.add();
 	}
 }

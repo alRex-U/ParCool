@@ -1,6 +1,7 @@
 package com.alrex.parcool.client.md.resource;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.client.md.CompiledMarkdown;
 import com.alrex.parcool.client.md.MarkdownParser;
 import com.alrex.parcool.client.md.resource.json.PageGroupJson;
@@ -37,6 +38,13 @@ public class GuideResourceManager extends SimplePreparableReloadListener<GuideRe
     public static GuideResourceManager getInstance() {
         if (INSTANCE == null) INSTANCE = new GuideResourceManager();
         return INSTANCE;
+    }
+
+    public static ResourceLocation getLocation(ActionEntry<?> action) {
+        return new ResourceLocation(
+                action.id().getNamespace(),
+                "actions/" + action.id().getPath()
+        );
     }
 
     private GuideResource resource = GuideResource.empty();
@@ -104,12 +112,7 @@ public class GuideResourceManager extends SimplePreparableReloadListener<GuideRe
         if (generate.equals("actions")) {
             var registry = ParCool.getActionRegistry();
             for (var action : registry.getRegisteredActions().entrySet()) {
-                pageEntries.add(new PageEntry(action.getValue().getTranslationKey(),
-                        new ResourceLocation(
-                                action.getKey().getNamespace(),
-                                "actions/" + action.getKey().getPath()
-                        )
-                ));
+                pageEntries.add(new PageEntry(action.getValue().getTranslationKey(), getLocation(action.getValue())));
             }
         }
     }

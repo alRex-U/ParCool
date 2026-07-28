@@ -39,6 +39,14 @@ public class ActionCapabilities {
         }
     }
 
+    public void unlock(ServerPlayer player, ActionEntry<?> action) {
+        if (can(action)) return;
+        var costExpLevel = action.option().learningCost();
+        if (player.experienceLevel < costExpLevel) return;
+        player.giveExperienceLevels(-costExpLevel);
+        set(action, true);
+    }
+
     public boolean isDirty() {
         return dirty;
     }
@@ -85,7 +93,8 @@ public class ActionCapabilities {
             var byteCount = buf.readByte();
             var bytes = new byte[byteCount];
             buf.readBytes(bytes);
-            capabilities.put(groupName, decodeFromByteArray(byteCount, bytes));
+            if (!capabilities.containsKey(groupName)) continue;
+            capabilities.compute(groupName, (k, groupCapability) -> decodeFromByteArray(groupCapability.length, bytes));
         }
     }
 
@@ -97,7 +106,7 @@ public class ActionCapabilities {
             byte data = 0;
             for (var bit = 0; bit < 8; bit++) {
                 var idx = 8 * i + bit;
-                if (idx >= bytes.length) break;
+                if (idx >= logicalArray.length) break;
                 data |= (byte) ((logicalArray[idx] ? 1 : 0) << bit);
             }
             bytes[i] = data;

@@ -44,9 +44,6 @@ public class GuideResource {
 
     @Nullable
     public CompiledMarkdown get(ActionEntry<?> action) {
-        return locationToContent.get(new ResourceLocation(
-                action.id().getNamespace(),
-                "actions/" + action.id().getPath()
-        ));
+        return locationToContent.get(GuideResourceManager.getLocation(action));
     }
 }

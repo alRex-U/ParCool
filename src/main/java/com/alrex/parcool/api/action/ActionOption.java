@@ -11,6 +11,7 @@ import java.util.TreeSet;
 public class ActionOption {
     public record Value(
             StaminaConsumption defaultCost,
+            int learningCost,
             @Nullable ActionEntry<? extends ContinuableAction> parent,
             @Nullable Pose neededPose,
             Set<ActionEntry<? extends Action>> beforeProcessedActions,
@@ -24,6 +25,7 @@ public class ActionOption {
     }
 
     private StaminaConsumption staminaConsumption = StaminaConsumption.ZERO;
+    private int learningCost;
     @Nullable
     private ActionEntry<? extends ContinuableAction> parent = null;
     private final TreeSet<ActionEntry<? extends Action>> beforeProcessedActions = new TreeSet<>();
@@ -38,7 +40,7 @@ public class ActionOption {
 
     public Value build() {
         return new Value(
-                staminaConsumption, parent, neededPose, beforeProcessedActions, needOnGround, needNotOnGround, availableInFluid, availableNotInFluid, availableWithFallFlying, triggeredSide
+                staminaConsumption, learningCost, parent, neededPose, beforeProcessedActions, needOnGround, needNotOnGround, availableInFluid, availableNotInFluid, availableWithFallFlying, triggeredSide
         );
     }
 
@@ -47,6 +49,11 @@ public class ActionOption {
 
     public ActionOption cost(StaminaConsumption consumption) {
         this.staminaConsumption = consumption;
+        return this;
+    }
+
+    public ActionOption learningCost(int cost) {
+        this.learningCost = cost;
         return this;
     }
 

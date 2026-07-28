@@ -40,5 +40,11 @@ public class ServerProxy extends CommonProxy {
                 .encoder(ActionCapabilitiesPacket.HANDLER::encode)
                 .consumerMainThread(ActionCapabilitiesPacket.HANDLER::handleInPhysicalServer)
                 .add();
+		instance.messageBuilder(RequestUnlockActionPacket.class, index++)
+				.noResponse()
+				.decoder(RequestUnlockActionPacket.HANDLER::decode)
+				.encoder(RequestUnlockActionPacket.HANDLER::encode)
+				.consumerMainThread(RequestUnlockActionPacket.HANDLER::handleInPhysicalServer)
+				.add();
 	}
 }

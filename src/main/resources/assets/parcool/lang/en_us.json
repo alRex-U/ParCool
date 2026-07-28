@@ -80,6 +80,7 @@
   "parcool.gui.text.dyeable.dyeable": "Dyeable",
   "parcool.gui.text.glove.tooltip": "Protect you from damage of hand friction, and enable to use powered zipline.",
   "parcool.gui.text.guide.tooltip": "Use to open guide\nUse to open skill tree with shift key",
+  "parcool.gui.text.unlocked": "Unlocked",
 
   "parcool.message.enabled": "ParCool : Enabled",
   "parcool.message.disabled": "ParCool : Disabled",

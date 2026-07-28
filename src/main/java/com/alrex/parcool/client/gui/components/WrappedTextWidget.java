@@ -20,6 +20,7 @@ public class WrappedTextWidget extends AbstractWidget {
 
     @Override
     public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+        if (!visible) return;
         font.drawWordWrap(getMessage(), x, y, width, txtColor);
     }
 

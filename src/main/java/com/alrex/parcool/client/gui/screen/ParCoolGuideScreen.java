@@ -17,7 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import javax.annotation.Nullable;
 
 public class ParCoolGuideScreen extends ParCoolTabletScreen {
-    private static final int SIDE_PANEL_WIDTH_OPENED = 100;
+    private static final int SIDE_PANEL_WIDTH_OPENED = 190;
     private static final int SIDE_PANEL_WIDTH_CLOSED = 13;
     @Nullable
     private CompiledMarkdown content;
