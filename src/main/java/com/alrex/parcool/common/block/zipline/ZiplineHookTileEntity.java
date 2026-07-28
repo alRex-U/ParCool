@@ -1,6 +1,6 @@
 package com.alrex.parcool.common.block.zipline;
 
-import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
+import com.alrex.parcool.common.item.misc.ZiplineRopeItem;
 import com.alrex.parcool.common.zipline.ILoadedZiplineHolderProvider;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.common.zipline.ZiplineInfo;

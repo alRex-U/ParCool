@@ -117,10 +117,12 @@ public class MarkdownParser {
         for (int i = 0; i < line.length(); i++) {
             var c = line.charAt(i);
             if ('0' <= c && c <= '9') continue;
-            if (0 < i && i < line.length() - 2 && c == '.') {
-                if (line.charAt(i + 1) == ' ') return new MarkdownParagraph.Text(toText(line.substring(i + 2)));
-                return null;
-            }
+            if (c == '.') {
+                if (0 < i && i < line.length() - 2) {
+                    if (line.charAt(i + 1) == ' ') return new MarkdownParagraph.Text(toText(line.substring(i + 2)));
+                    return null;
+                }
+            } else return null;
         }
         return null;
     }
@@ -148,34 +150,33 @@ public class MarkdownParser {
         for (int i = start; i < end && i < line.length(); i++) {
             var c = line.charAt(i);
             if (c == '*' && !match(line, i - 1, " * ")) {
+                int skip = match(line, i, "**") ? 2 : 1;
+                int found = find(line, i + 1, "*".repeat(skip));
+                if (found == -1) {
+                    builder.append("*".repeat(skip));
+                    continue;
+                }
                 list.add(new MarkdownText.Text(builder.toString()));
                 builder = new StringBuilder();
-                if (match(line, i, "**")) {
-                    var found = find(line, i + 1, "**");
-                    if (found == -1) found = line.length();
-                    if (i + 1 < line.length()) list.add(new MarkdownText.Strong(toText(line, i + 1, found)));
-                    i = found + 2;
-                } else {
-                    var found = find(line, i + 1, "*");
-                    if (found == -1) found = line.length();
-                    if (i + 1 < line.length()) list.add(new MarkdownText.Emphasis(toText(line, i + 1, found)));
-                    i = found + 1;
-                }
+                if (i + 1 < line.length()) list.add(skip == 1
+                        ? new MarkdownText.Emphasis(toText(line, i + 1, found))
+                        : new MarkdownText.Strong(toText(line, i + 1, found))
+                );
+                i = found + skip;
             } else if (c == '_' && !match(line, i - 1, " _ ")) {
+                int skip = match(line, i, "__") ? 2 : 1;
+                int found = find(line, i + 1, "_".repeat(skip));
+                if (found == -1) {
+                    builder.append("_".repeat(skip));
+                    continue;
+                }
                 list.add(new MarkdownText.Text(builder.toString()));
                 builder = new StringBuilder();
-                if (match(line, i, "__")) {
-                    var found = find(line, i + 1, "__");
-                    if (found == -1) found = line.length();
-                    if (i + 1 < line.length()) list.add(new MarkdownText.Strong(toText(line, i + 1, found)));
-                    i = found + 2;
-                } else {
-                    var found = find(line, i + 1, "_");
-                    if (found == -1) found = line.length();
-                    if (i + 1 < line.length())
-                        list.add(new MarkdownText.Emphasis(toText(line, i + 1, found)));
-                    i = found + 1;
-                }
+                if (i + 1 < line.length()) list.add(skip == 1
+                        ? new MarkdownText.Emphasis(toText(line, i + 1, found))
+                        : new MarkdownText.Strong(toText(line, i + 1, found))
+                );
+                i = found + skip;
             } else if (c == '[') {
                 int found = find(line, i + 1, "]");
                 if (found != -1 && match(line, found + 1, "(")) {

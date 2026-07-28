@@ -1,0 +1,41 @@
+[
+  {
+    "group": "parcool.guide.group.parcool",
+    "pages": [
+      {
+        "title": "parcool.guide.page.welcome",
+        "location": "parcool:welcome.md"
+      }
+    ]
+  },
+  {
+    "group": "parcool.guide.group.how_to_play",
+    "pages": [
+      {
+        "title": "parcool.guide.page.tutorial",
+        "location": "parcool:tutorial.md"
+      },
+      {
+        "title": "parcool.guide.page.skilltree",
+        "location": "parcool:skilltree.md"
+      }
+    ]
+  },
+  {
+    "group": "parcool.guide.group.actions",
+    "generate": "actions"
+  },
+  {
+    "group": "parcool.guide.group.postscript",
+    "pages": [
+      {
+        "title": "parcool.guide.page.credit",
+        "location": "parcool:credit.md"
+      },
+      {
+        "title": "parcool.guide.page.issue_report",
+        "location": "parcool:issue_report.md"
+      }
+    ]
+  }
+]

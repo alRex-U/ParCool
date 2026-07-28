@@ -286,12 +286,13 @@ public class MarkdownWidget extends AbstractWidget {
     private class HeadingWidget extends ComponentWidget<MarkdownParagraph.Heading> {
         private final TextWidget widget;
         private final float scale;
-
+        private final boolean bottomLine;
         public HeadingWidget(int x, int y, int width, MarkdownParagraph.Heading content) {
             super(x, y, width, 0, content);
-            scale = Mth.map(Mth.clamp(content.level(), 1, 6), 1, 6, 2, 1.1f);
-            widget = new TextWidget(0, 0, (int) (width / scale), content.text(), style.withBold(true));
-            setHeight((int) (widget.getHeight() * scale));
+            scale = Mth.map(Mth.clamp(content.level(), 1, 6), 1, 6, 1.3f, 1.0f);
+            widget = new TextWidget(1, 0, (int) (width / scale), content.text(), style.withBold(true));
+            setHeight(Mth.ceil(widget.getHeight() * scale) + 1);
+            bottomLine = content.level() <= 2;
         }
 
         @Override
@@ -303,6 +304,11 @@ public class MarkdownWidget extends AbstractWidget {
                 widget.render(poseStack, (int) ((mouseX - x) / scale), (int) ((mouseY - y) / scale), partial);
             }
             poseStack.popPose();
+            if (bottomLine) {
+                RenderSystem.setShaderColor(1f, 1f, 1f, 0.4f);
+                hLine(poseStack, x, x + width, y + Mth.ceil(widget.getHeight() * scale), textColor());
+                RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            }
         }
     }
 
@@ -325,7 +331,7 @@ public class MarkdownWidget extends AbstractWidget {
         public OrderedListWidget(int x, int y, int width, MarkdownParagraph.OrderedList content) {
             super(x, y, width, 0, content);
             int currentY = 0;
-            var offset = font.lineHeight * 2;
+            var offset = font.lineHeight;
             widgets = new ArrayList<>();
             for (var item : content.items()) {
                 var widget = new TextWidget(x + offset, y + currentY, width, item.text(), style);
@@ -333,7 +339,7 @@ public class MarkdownWidget extends AbstractWidget {
                 currentY += widget.getHeight();
             }
             if (!widgets.isEmpty()) {
-                setHeight(currentY - 4);
+                setHeight(currentY);
             }
         }
 
@@ -354,14 +360,14 @@ public class MarkdownWidget extends AbstractWidget {
             super(x, y, width, 0, content);
             int currentY = 0;
             widgets = new ArrayList<>();
-            var offset = font.lineHeight * 2;
+            var offset = font.lineHeight;
             for (var item : content.items()) {
                 var widget = new TextWidget(x + offset, y + currentY, width - offset, item.text(), style);
                 widgets.add(widget);
                 currentY += widget.getHeight();
             }
             if (!widgets.isEmpty()) {
-                setHeight(currentY - 4);
+                setHeight(currentY);
             }
         }
 

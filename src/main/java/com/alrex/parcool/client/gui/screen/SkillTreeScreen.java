@@ -1,10 +1,8 @@
 package com.alrex.parcool.client.gui.screen;
 
 import com.alrex.parcool.api.client.skilltree.SkillTree;
-import com.alrex.parcool.client.gui.components.FlatButton;
-import com.alrex.parcool.client.gui.components.ImageWidget;
-import com.alrex.parcool.client.gui.components.SkillTreeWidget;
-import com.alrex.parcool.client.gui.components.WrappedTextWidget;
+import com.alrex.parcool.client.gui.GuiColorPallet;
+import com.alrex.parcool.client.gui.components.*;
 import com.alrex.parcool.client.textures.ParCoolTextureAtlases;
 import com.alrex.parcool.common.action.ActionCapabilities;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -27,7 +25,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
     private final List<SkillTree> trees;
 
     public SkillTreeScreen(ActionCapabilities capabilities, List<SkillTree> trees) {
-        super(Component.empty(), "prcl://skilltree");
+        super(Component.empty(), GuiColorPallet.DEFAULT_DARK, "prcl://skilltree");
         this.trees = trees;
         this.capabilities = capabilities;
     }
@@ -41,6 +39,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
         skilltreeWidget = addRenderableWidget(
                 new SkillTreeWidget(trees, capabilities, contentOffsetX, contentOffsetY, 190, CONTENT_HEIGHT, this::onSkillSelectionChanged)
         );
+        addRenderableOnly(new CardPanel(skillViewTabOffsetX, skillViewTabOffsetY, contentOffsetX + CONTENT_WIDTH - skillViewTabOffsetX, CONTENT_HEIGHT, colors.surface()));
         selectedSkillIconWidget = addRenderableOnly(
                 new ImageWidget(skillViewTabOffsetX + 4, skillViewTabOffsetY + 4, skillViewTabWidth - 8, skillViewTabWidth - 8, null)
         );
@@ -52,7 +51,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                         skillViewTabWidth - 8,
                         40,
                         Component.empty(),
-                        0xFF222222
+                        colors.onSurface()
                 )
         );
         unlockButton = addRenderableWidget(
@@ -62,8 +61,9 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                         contentOffsetY + CONTENT_HEIGHT - 21,
                         skillViewTabWidth - 8,
                         Component.literal("Unlock"),
-                        0xFF678FE3,
-                        0xFFFFFFFF,
+                        colors.primary(),
+                        colors.onPrimary(),
+                        colors.shadow(),
                         true,
                         this::unlockSkill
                 )
@@ -75,8 +75,9 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                         contentOffsetY + CONTENT_HEIGHT - 21,
                         skillViewTabWidth - 8,
                         Component.literal("View guide"),
-                        0xFF678FE3,
-                        0xFFFFFFFF,
+                        colors.primary(),
+                        colors.onPrimary(),
+                        colors.shadow(),
                         false,
                         this::viewGuide
                 )
@@ -86,10 +87,8 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
 
     @Override
     protected void renderContent(PoseStack poseStack, int mouseX, int mouseY, float partial) {
-        fill(poseStack, contentOffsetX, contentOffsetY, contentOffsetX + CONTENT_WIDTH, contentOffsetY + CONTENT_HEIGHT, 0xFFBBBBBB);
-        fill(poseStack, skillViewTabOffsetX, skillViewTabOffsetY, contentOffsetX + CONTENT_WIDTH, contentOffsetY + CONTENT_HEIGHT, ~0);
+        fill(poseStack, contentOffsetX, contentOffsetY, contentOffsetX + CONTENT_WIDTH, contentOffsetY + CONTENT_HEIGHT, colors.background());
         super.renderContent(poseStack, mouseX, mouseY, partial);
-        fill(poseStack, skillViewTabOffsetX - 1, skillViewTabOffsetY, skillViewTabOffsetX, contentOffsetY + CONTENT_HEIGHT, 0x88999999);
     }
 
     @Override

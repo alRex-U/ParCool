@@ -1,6 +1,7 @@
 package com.alrex.parcool.client.gui.screen;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.client.gui.GuiColorPallet;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
@@ -11,25 +12,29 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class ParCoolTabletScreen extends Screen {
-    protected static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(ParCool.MOD_ID, "textures/gui/parcool_screen.png");
+    public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(ParCool.MOD_ID, "textures/gui/parcool_screen.png");
     protected static final int FRAME_WIDTH = 256;
     protected static final int FRAME_HEIGHT = 160;
     protected static final int CONTENT_WIDTH = 246;
     protected static final int CONTENT_HEIGHT = 136;
+    protected final GuiColorPallet colors;
     private String urlBarText;
     private int frameOffsetX = 0;
     private int frameOffsetY = 0;
     protected int contentOffsetX = 0;
     protected int contentOffsetY = 0;
+    private IconButton backButton;
 
-    protected ParCoolTabletScreen(Component title) {
-        this(title, "prcl://index");
+    protected ParCoolTabletScreen(Component title, GuiColorPallet colors) {
+        this(title, colors, "prcl://index");
     }
 
-    protected ParCoolTabletScreen(Component title, String initialTopBarText) {
+    protected ParCoolTabletScreen(Component title, GuiColorPallet colors, String initialTopBarText) {
         super(title);
+        this.colors = colors;
         this.urlBarText = initialTopBarText;
     }
 
@@ -40,7 +45,7 @@ public class ParCoolTabletScreen extends Screen {
         frameOffsetY = (height - FRAME_HEIGHT) / 2;
         contentOffsetX = frameOffsetX + 5;
         contentOffsetY = frameOffsetY + 19;
-        addRenderableWidget(new BackButton(frameOffsetX + 7, frameOffsetY + 6));
+        backButton = addWidget(new IconButton.Back(frameOffsetX + 7, frameOffsetY + 6, null));
     }
 
     @Override
@@ -50,6 +55,7 @@ public class ParCoolTabletScreen extends Screen {
         {
             renderContent(poseStack, mouseX, mouseY, partial);
             renderFrame(poseStack, partial);
+            backButton.render(poseStack, mouseX, mouseY, partial);
         }
         poseStack.popPose();
     }
@@ -73,26 +79,60 @@ public class ParCoolTabletScreen extends Screen {
         this.urlBarText = urlLikeText;
     }
 
-    private static class BackButton extends AbstractButton {
-        public BackButton(int x, int y) {
-            super(x, y, 10, 10, Component.empty());
+    protected static class IconButton extends AbstractButton {
+        private final int texX;
+        private final int texY;
+        @Nullable
+        private final Runnable pressListener;
+
+        public IconButton(int x, int y, int texX, int texY, @Nullable Runnable listener) {
+            super(x, y, 11, 11, Component.empty());
+            this.texX = texX;
+            this.texY = texY;
+            this.pressListener = listener;
         }
 
         @Override
         public void renderButton(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
             if (isHovered) {
-                RenderSystem.setShaderColor(0.8f, 0.8f, 0.8f, 0.8f);
+                RenderSystem.setShaderColor(0.8f, 0.8f, 0.8f, 1f);
             }
-            blit(poseStack, x, y, 240, 160, width, height);
+            RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
+            blit(poseStack, x, y, texX, texY, width, height);
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         }
 
         @Override
         public void onPress() {
+            if (pressListener != null) pressListener.run();
         }
 
         @Override
         public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+        }
+
+        protected static class Back extends IconButton {
+            public Back(int x, int y, @Nullable Runnable listener) {
+                super(x, y, 0, 160, listener);
+            }
+        }
+
+        protected static class Home extends IconButton {
+            public Home(int x, int y, @Nullable Runnable listener) {
+                super(x, y, 11, 160, listener);
+            }
+        }
+
+        protected static class Hamburger extends IconButton {
+            public Hamburger(int x, int y, @Nullable Runnable listener) {
+                super(x, y, 22, 160, listener);
+            }
+        }
+
+        protected static class SlideToLeft extends IconButton {
+            public SlideToLeft(int x, int y, @Nullable Runnable listener) {
+                super(x, y, 33, 160, listener);
+            }
         }
     }
 

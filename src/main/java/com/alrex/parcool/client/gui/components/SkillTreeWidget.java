@@ -1,6 +1,8 @@
 package com.alrex.parcool.client.gui.components;
 
 import com.alrex.parcool.api.client.skilltree.SkillTree;
+import com.alrex.parcool.client.gui.GuiRenderUtil;
+import com.alrex.parcool.client.gui.screen.ParCoolTabletScreen;
 import com.alrex.parcool.client.textures.ParCoolActionsTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextureAtlases;
 import com.alrex.parcool.common.action.ActionCapabilities;
@@ -12,7 +14,6 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -113,15 +114,7 @@ public class SkillTreeWidget extends AbstractWidget {
         boolean mouseIsOutOfWidget = mouseX < x || x + width < mouseX || mouseY < y || y + height < mouseY;
         poseStack.pushPose();
         {
-            RenderSystem.enableDepthTest();
-            RenderSystem.depthFunc(GL11.GL_LEQUAL);
-            RenderSystem.depthMask(true);
-            RenderSystem.colorMask(false, false, false, false);
-            poseStack.translate(0, 0, -1f);
-            fill(poseStack, x, y, x + width, y + height, ~0);
-            RenderSystem.depthFunc(GL11.GL_EQUAL);
-            RenderSystem.colorMask(true, true, true, true);
-
+            GuiRenderUtil.enableScissorTestInGuiCoordinate(x, y, width, height);
             int mouseXScaled = mouseIsOutOfWidget ? -1 : (int) getMouseXInContent(mouseX);
             int mouseYScaled = mouseIsOutOfWidget ? -1 : (int) getMouseYInContent(mouseY);
 
@@ -134,8 +127,7 @@ public class SkillTreeWidget extends AbstractWidget {
             for (var widget : icons) {
                 widget.render(poseStack, mouseXScaled, mouseYScaled, partialTick);
             }
-            RenderSystem.depthFunc(GL11.GL_LEQUAL);
-            RenderSystem.disableDepthTest();
+            RenderSystem.disableScissor();
         }
         poseStack.popPose();
     }
@@ -227,17 +219,30 @@ public class SkillTreeWidget extends AbstractWidget {
 
         @Override
         public void renderButton(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-            RenderSystem.setShaderTexture(0, ParCoolActionsTextureAtlas.TEXTURE_LOCATION);
+            RenderSystem.setShaderTexture(0, ParCoolTabletScreen.TEXTURE_LOCATION);
             if (entry.isVisible(capabilities)) {
+                blit(poseStack,
+                        this.x, this.y, this.width, this.height,
+                        0f, 176f, 32, 32, 256, 256
+                );
+                RenderSystem.setShaderTexture(0, ParCoolActionsTextureAtlas.TEXTURE_LOCATION);
                 if (isHovered)
                     RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                 else
-                    RenderSystem.setShaderColor(0.9f, 0.9f, 0.9f, 0.9f);
+                    RenderSystem.setShaderColor(0.9f, 0.9f, 0.9f, 1f);
+                blit(poseStack, this.x, this.y, 0, this.width, this.height, ParCoolTextureAtlases.action(entry.getActionEntry()));
+                RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             } else {
-                RenderSystem.setShaderColor(0.1f, 0.1f, 0.1f, 0.1f);
+                blit(poseStack,
+                        this.x, this.y, this.width, this.height,
+                        32f, 176f, 32, 32, 256, 256
+                );
             }
-            blit(poseStack, x, y, 0, width, height, ParCoolTextureAtlases.action(entry.getActionEntry()));
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        }
+
+        @Override
+        protected boolean isValidClickButton(int p_93652_) {
+            return entry.isVisible(capabilities);
         }
 
         @Override

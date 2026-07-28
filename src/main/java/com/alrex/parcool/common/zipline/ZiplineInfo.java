@@ -1,6 +1,6 @@
 package com.alrex.parcool.common.zipline;
 
-import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
+import com.alrex.parcool.common.item.misc.ZiplineRopeItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
