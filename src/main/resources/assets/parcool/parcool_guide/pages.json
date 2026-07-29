@@ -18,6 +18,18 @@
       {
         "title": "parcool.guide.page.skilltree",
         "location": "parcool:skilltree.md"
+      },
+      {
+        "title": "parcool.guide.page.zipline",
+        "location": "parcool:zipline.md"
+      },
+      {
+        "title": "parcool.guide.page.potion",
+        "location": "parcool:potions.md"
+      },
+      {
+        "title": "parcool.guide.page.equipment",
+        "location": "parcool:equipments.md"
       }
     ]
   },

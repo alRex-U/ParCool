@@ -215,7 +215,8 @@ public class MarkdownWidget extends AbstractWidget {
                     while (!str.isEmpty()) {
                         int splitPos = splitter.findLineBreak(str, (int) (context.width - context.currentX), style);
                         var thisLine = str.substring(0, splitPos);
-                        var fragment = new TextFragment(Component.literal(thisLine).withStyle(style.withColor((TextColor) null)), context.currentX, context.currentY, font.width(thisLine));
+                        var component = Component.literal(thisLine).withStyle(style.withColor((TextColor) null));
+                        var fragment = new TextFragment(component, context.currentX, context.currentY, font.width(component));
                         interactions.add(new Tuple<>(fragment, new InteractiveZone(idx, (int) fragment.x, (int) fragment.y, Mth.ceil(fragment.width), font.lineHeight)));
                         context.currentX += fragment.width;
                         if (str.length() <= splitPos) {
@@ -253,7 +254,8 @@ public class MarkdownWidget extends AbstractWidget {
                     while (!str.isEmpty()) {
                         int splitPos = splitter.findLineBreak(str, (int) (context.width - context.currentX), textStyle);
                         var thisLine = str.substring(0, splitPos);
-                        var fragment = new TextFragment(Component.literal(thisLine).withStyle(textStyle), context.currentX, context.currentY, font.width(thisLine));
+                        var component = Component.literal(thisLine).withStyle(textStyle);
+                        var fragment = new TextFragment(component, context.currentX, context.currentY, font.width(component));
                         result.add(fragment);
                         context.currentX += fragment.width;
                         if (str.length() <= splitPos) {
@@ -446,7 +448,6 @@ public class MarkdownWidget extends AbstractWidget {
         @Override
         public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
             RenderSystem.setShaderTexture(0, CRAFTING_TABLE_LOCATION);
-            var bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
             var modelViewStack = RenderSystem.getModelViewStack();
             poseStack.pushPose();
             {
@@ -463,9 +464,9 @@ public class MarkdownWidget extends AbstractWidget {
                     i++;
                     var items = ingredient.getItems();
                     if (items.length == 0) continue;
-                    var item = items[0];
-                    var column = i % 3;
-                    var row = i / 3;
+                    var item = items[Mth.floor(partial / 20f) % items.length];
+                    var column = i % craftingRecipe.getWidth();
+                    var row = i / craftingRecipe.getWidth();
                     modelViewStack.pushPose();
                     {
                         modelViewStack.scale(scale, scale, 1);

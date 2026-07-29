@@ -73,7 +73,6 @@ public class MarkdownParser {
             }
 
             currentParagraph.addAll(toText(line));
-            currentParagraph.add(LINE_BREAK);
         }
         if (!currentParagraph.isEmpty()) {
             paragraphs.add(new MarkdownParagraph.Text(currentParagraph.stream().toList()));
@@ -175,48 +174,56 @@ public class MarkdownParser {
             if (c == '*' && !match(line, i - 1, " * ")) {
                 int skip = match(line, i, "**") ? 2 : 1;
                 int found = find(line, i + 1, "*".repeat(skip));
-                if (found == -1) {
+                if (found == -1 || found >= end) {
                     builder.append("*".repeat(skip));
                     continue;
                 }
-                list.add(new MarkdownText.Text(builder.toString()));
-                builder = new StringBuilder();
+                if (!builder.isEmpty()) {
+                    list.add(new MarkdownText.Text(builder.toString()));
+                    builder = new StringBuilder();
+                }
                 if (i + 1 < line.length()) list.add(skip == 1
-                        ? new MarkdownText.Emphasis(toText(line, i + 1, found))
-                        : new MarkdownText.Strong(toText(line, i + 1, found))
+                        ? new MarkdownText.Emphasis(toText(line, i + skip, found))
+                        : new MarkdownText.Strong(toText(line, i + skip, found))
                 );
-                i = found + skip;
+                i = found + skip - 1;
             } else if (c == '_' && !match(line, i - 1, " _ ")) {
                 int skip = match(line, i, "__") ? 2 : 1;
                 int found = find(line, i + 1, "_".repeat(skip));
-                if (found == -1) {
+                if (found == -1 || found >= end) {
                     builder.append("_".repeat(skip));
                     continue;
                 }
-                list.add(new MarkdownText.Text(builder.toString()));
-                builder = new StringBuilder();
+                if (!builder.isEmpty()) {
+                    list.add(new MarkdownText.Text(builder.toString()));
+                    builder = new StringBuilder();
+                }
                 if (i + 1 < line.length()) list.add(skip == 1
                         ? new MarkdownText.Emphasis(toText(line, i + 1, found))
                         : new MarkdownText.Strong(toText(line, i + 1, found))
                 );
-                i = found + skip;
+                i = found + skip - 1;
             } else if (c == '[') {
                 int found = find(line, i + 1, "]");
-                if (found != -1 && match(line, found + 1, "(")) {
+                if ((found != -1 && found < end) && match(line, found + 1, "(")) {
                     var text = line.substring(i + 1, found);
                     var closeFound = find(line, found + 2, ")");
                     if (closeFound != -1) {
                         var location = line.substring(found + 2, closeFound);
                         if (location.startsWith("https://")) { // http(not https) is unavailable for users security
-                            list.add(new MarkdownText.Text(builder.toString()));
-                            builder = new StringBuilder();
+                            if (!builder.isEmpty()) {
+                                list.add(new MarkdownText.Text(builder.toString()));
+                                builder = new StringBuilder();
+                            }
                             list.add(new MarkdownText.ExternalLink(text, location));
                             i = closeFound;
                         } else {
                             var linkText = ResourceLocation.tryParse(location);
                             if (linkText != null) {
-                                list.add(new MarkdownText.Text(builder.toString()));
-                                builder = new StringBuilder();
+                                if (!builder.isEmpty()) {
+                                    list.add(new MarkdownText.Text(builder.toString()));
+                                    builder = new StringBuilder();
+                                }
                                 list.add(new MarkdownText.Link(text, linkText));
                                 i = closeFound;
                             }
@@ -231,8 +238,10 @@ public class MarkdownParser {
                 }
                 i = result.getB();
                 var tag = result.getA();
-                list.add(new MarkdownText.Text(builder.toString()));
-                builder = new StringBuilder();
+                if (!builder.isEmpty()) {
+                    list.add(new MarkdownText.Text(builder.toString()));
+                    builder = new StringBuilder();
+                }
                 switch (tag.name()) {
                     case "translation" -> {
                         var translationKey = tag.attributes().get("key");
@@ -256,7 +265,23 @@ public class MarkdownParser {
                 }
             } else builder.append(c);
         }
-        list.add(new MarkdownText.Text(builder.toString()));
+        if (start == 0 && end == line.length()) {
+            int lastSpacesCount;
+            for (lastSpacesCount = 0; lastSpacesCount < builder.length(); lastSpacesCount++) {
+                if (builder.charAt(builder.length() - 1 - lastSpacesCount) != ' ') break;
+            }
+            String lastStr = builder.substring(0, builder.length() - lastSpacesCount);
+            if (lastSpacesCount <= 1) {
+                lastStr = lastStr + " ";
+                list.add(new MarkdownText.Text(lastStr));
+            } else {
+                if (!lastStr.isEmpty()) list.add(new MarkdownText.Text(lastStr));
+                list.add(LINE_BREAK);
+            }
+        } else {
+            String lastStr = builder.toString();
+            if (!lastStr.isEmpty()) list.add(new MarkdownText.Text(lastStr));
+        }
         list.trimToSize();
         return Collections.unmodifiableList(list);
     }
