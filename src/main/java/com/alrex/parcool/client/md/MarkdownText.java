@@ -22,4 +22,19 @@ public interface MarkdownText {
 
     class LineBreak implements MarkdownText {
     }
+
+    /// Extension for display key bind
+    /// - `<key name = "key.parcool.crawl" />` -> `C`
+    record ExtensionMCKey(String keyBindName) implements MarkdownText {
+    }
+
+    /// Extension for display translation
+    /// - `<translation key = "parcool.action.parcool.crawl" />` -> `Crawl`
+    record ExtensionMCTranslatable(String translationKey) implements MarkdownText {
+    }
+
+    /// Extension for display item name
+    /// - `<item id = "parcool:parcool_guide" />` -> `ParCool Guide`
+    record ExtensionMCItemName(ResourceLocation id) implements MarkdownText {
+    }
 }

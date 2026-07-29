@@ -66,6 +66,11 @@ public class MarkdownParser {
                 paragraphs.add(image);
                 continue;
             }
+            var extensions = checkExtensionsParagraph(line);
+            if (extensions != null) {
+                paragraphs.add(extensions);
+                continue;
+            }
 
             currentParagraph.addAll(toText(line));
             currentParagraph.add(LINE_BREAK);
@@ -140,6 +145,24 @@ public class MarkdownParser {
         return new MarkdownParagraph.Image(location, alt.isEmpty() ? null : alt);
     }
 
+    @Nullable
+    private static MarkdownParagraph checkExtensionsParagraph(String line) {
+        var tag = HtmlLikeTagParser.parse(line, 0);
+        if (tag == null) return null;
+        for (var i = tag.getB() + 1; i < line.length(); i++) {
+            if (line.charAt(i) != ' ') return null;
+        }
+        var extTag = tag.getA();
+        if (extTag.name().equals("recipe")) {
+            var id = extTag.attributes().get("id");
+            if (id == null) return null;
+            var location = ResourceLocation.tryParse(id);
+            if (location == null) return null;
+            return new MarkdownParagraph.ExtensionMCRecipe(location);
+        }
+        return null;
+    }
+
     private static List<MarkdownText> toText(String line) {
         return toText(line, 0, line.length());
     }
@@ -197,6 +220,37 @@ public class MarkdownParser {
                                 list.add(new MarkdownText.Link(text, linkText));
                                 i = closeFound;
                             }
+                        }
+                    }
+                }
+            } else if (c == '<') {
+                var result = HtmlLikeTagParser.parse(line, i);
+                if (result == null) {
+                    builder.append(c);
+                    continue;
+                }
+                i = result.getB();
+                var tag = result.getA();
+                list.add(new MarkdownText.Text(builder.toString()));
+                builder = new StringBuilder();
+                switch (tag.name()) {
+                    case "translation" -> {
+                        var translationKey = tag.attributes().get("key");
+                        if (translationKey != null) {
+                            list.add(new MarkdownText.ExtensionMCTranslatable(translationKey));
+                        }
+                    }
+                    case "key" -> {
+                        var name = tag.attributes().get("name");
+                        if (name != null) {
+                            list.add(new MarkdownText.ExtensionMCKey(name));
+                        }
+                    }
+                    case "item" -> {
+                        var itemId = tag.attributes().get("id");
+                        if (itemId != null) {
+                            var location = ResourceLocation.tryParse(itemId);
+                            if (location != null) list.add(new MarkdownText.ExtensionMCItemName(location));
                         }
                     }
                 }

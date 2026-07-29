@@ -1,6 +1,6 @@
 # Credit
 
-## Author / Coding / Art
+## Author
 
 - alRex_U
 

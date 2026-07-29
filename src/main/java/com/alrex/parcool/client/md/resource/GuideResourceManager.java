@@ -43,7 +43,7 @@ public class GuideResourceManager extends SimplePreparableReloadListener<GuideRe
     public static ResourceLocation getLocation(ActionEntry<?> action) {
         return new ResourceLocation(
                 action.id().getNamespace(),
-                "actions/" + action.id().getPath()
+                "actions/" + action.id().getPath() + ".md"
         );
     }
 
@@ -73,12 +73,12 @@ public class GuideResourceManager extends SimplePreparableReloadListener<GuideRe
                         for (var page : group.pages) {
                             var pageEntry = new PageEntry(page.title, page.location);
                             pageEntries.add(pageEntry);
-                            loadingPages.add(pageEntry);
                         }
                     }
                     if (group.generate != null) {
                         generatePageEntries(group.generate, pageEntries);
                     }
+                    loadingPages.addAll(pageEntries);
                     groupsEntries.add(new PageGroupEntry(
                             group.group,
                             pageEntries.stream().toList()

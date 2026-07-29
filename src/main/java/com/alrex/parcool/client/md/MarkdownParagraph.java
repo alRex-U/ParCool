@@ -23,4 +23,8 @@ public interface MarkdownParagraph {
 
     record Text(List<MarkdownText> text) implements MarkdownParagraph {
     }
+
+    /// `<recipe id="parcool:parcool_guide"/>`
+    record ExtensionMCRecipe(ResourceLocation recipeId) implements MarkdownParagraph {
+    }
 }

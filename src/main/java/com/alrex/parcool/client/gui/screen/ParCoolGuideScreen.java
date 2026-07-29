@@ -43,9 +43,9 @@ public class ParCoolGuideScreen extends ParCoolTabletScreen {
             addRenderableWidget(
                     new MarkdownWidget(
                             font,
-                            contentOffsetX + sideBarWidth + 2,
+                            contentOffsetX + sideBarWidth + 4,
                             contentOffsetY,
-                            CONTENT_WIDTH - sideBarWidth - 3,
+                            CONTENT_WIDTH - sideBarWidth - 7,
                             CONTENT_HEIGHT,
                             content,
                             colors.onSurface(),

@@ -6,22 +6,25 @@ import com.alrex.parcool.client.md.MarkdownParagraph;
 import com.alrex.parcool.client.md.MarkdownText;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class MarkdownWidget extends AbstractWidget {
@@ -58,6 +61,8 @@ public class MarkdownWidget extends AbstractWidget {
                 contentRendererWidgets.add(new UnorderedListWidget(0, currentY, width, list));
             } else if (paragraph instanceof MarkdownParagraph.OrderedList list) {
                 contentRendererWidgets.add(new OrderedListWidget(0, currentY, width, list));
+            } else if (paragraph instanceof MarkdownParagraph.ExtensionMCRecipe recipe) {
+                contentRendererWidgets.add(new RecipeWidget(10, currentY, width - 20, recipe));
             }
             if (!contentRendererWidgets.isEmpty())
                 currentY += contentRendererWidgets.get(contentRendererWidgets.size() - 1).getHeight() + font.lineHeight;
@@ -68,24 +73,6 @@ public class MarkdownWidget extends AbstractWidget {
 
     @Override
     public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
-    }
-
-    private static class ComponentWidget<T extends MarkdownParagraph> extends AbstractWidget {
-        protected T content;
-
-        public ComponentWidget(int x, int y, int width, int height, T content) {
-            super(x, y, width, height, Component.empty());
-            this.content = content;
-        }
-
-        @Override
-        public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
-        }
-
-        @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int click) {
-            return false;
-        }
     }
 
     @Override
@@ -120,14 +107,47 @@ public class MarkdownWidget extends AbstractWidget {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollDelta) {
         this.scrollY -= (float) (scrollDelta * 8);
+        if (scrollY > maxScrollY) scrollY = maxScrollY;
         if (scrollY < 0) scrollY = 0;
-        else if (scrollY > maxScrollY) scrollY = maxScrollY;
         return true;
     }
 
     private int textColor() {
         var color = style.getColor();
         return color != null ? color.getValue() : ~0;
+    }
+
+    private static class ComponentWidget<T extends MarkdownParagraph> extends AbstractWidget {
+        protected final List<TextWidget> textWidgets = new ArrayList<>();
+        protected T content;
+
+        public ComponentWidget(int x, int y, int width, int height, T content) {
+            super(x, y, width, height, Component.empty());
+            this.content = content;
+        }
+
+        @Override
+        public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+        }
+
+        @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int click) {
+            for (var textWidget : textWidgets) {
+                if (textWidget.x < mouseX && mouseX < textWidget.x + textWidget.getWidth() && textWidget.y < mouseY && mouseY < textWidget.y + textWidget.getHeight()) {
+                    if (textWidget.mouseClicked(mouseX, mouseY, click)) return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+            if (isActive()) {
+                for (var widget : textWidgets) {
+                    widget.render(poseStack, mouseX, mouseY, partial);
+                }
+            }
+        }
     }
 
     private class TextWidget extends AbstractWidget {
@@ -180,30 +200,11 @@ public class MarkdownWidget extends AbstractWidget {
                 if (text instanceof MarkdownText.LineBreak) {
                     context.currentX = 0;
                     context.currentY += font.lineHeight;
-                } else if (text instanceof MarkdownText.Text normalText) {
-                    var splitter = font.getSplitter();
-                    var str = normalText.text();
-                    while (!str.isEmpty()) {
-                        int splitPos = splitter.findLineBreak(str, (int) (context.width - context.currentX), style);
-                        var thisLine = str.substring(0, splitPos);
-                        var fragment = new TextFragment(Component.literal(thisLine).withStyle(style), context.currentX, context.currentY, font.width(thisLine));
-                        result.add(fragment);
-                        context.currentX += fragment.width;
-                        if (str.length() <= splitPos) {
-                            break;
-                        } else {
-                            context.currentX = 0;
-                            context.currentY += font.lineHeight;
-                            str = splitPos < str.length() - 1 && str.charAt(splitPos) == ' '
-                                    ? str.substring(splitPos + 1)
-                                    : str.substring(splitPos);
-                        }
-                    }
                 } else if (text instanceof MarkdownText.Strong strong) {
                     format(font, context, strong.child().iterator(), result, interactions, interactiveText, style.withBold(true));
                 } else if (text instanceof MarkdownText.Emphasis emphasis) {
                     format(font, context, emphasis.child().iterator(), result, interactions, interactiveText, style.withItalic(true));
-                } else {
+                } else if (text instanceof MarkdownText.ExternalLink || text instanceof MarkdownText.Link) {
                     String str;
                     if (text instanceof MarkdownText.ExternalLink externalLink) str = externalLink.text();
                     else if (text instanceof MarkdownText.Link link) str = link.text();
@@ -216,6 +217,44 @@ public class MarkdownWidget extends AbstractWidget {
                         var thisLine = str.substring(0, splitPos);
                         var fragment = new TextFragment(Component.literal(thisLine).withStyle(style.withColor((TextColor) null)), context.currentX, context.currentY, font.width(thisLine));
                         interactions.add(new Tuple<>(fragment, new InteractiveZone(idx, (int) fragment.x, (int) fragment.y, Mth.ceil(fragment.width), font.lineHeight)));
+                        context.currentX += fragment.width;
+                        if (str.length() <= splitPos) {
+                            break;
+                        } else {
+                            context.currentX = 0;
+                            context.currentY += font.lineHeight;
+                            str = splitPos < str.length() - 1 && str.charAt(splitPos) == ' '
+                                    ? str.substring(splitPos + 1)
+                                    : str.substring(splitPos);
+                        }
+                    }
+                } else {
+                    var splitter = font.getSplitter();
+                    String str = "";
+                    var textStyle = style;
+                    if (text instanceof MarkdownText.Text normalText) {
+                        str = normalText.text();
+                    } else if (text instanceof MarkdownText.ExtensionMCTranslatable translatable) {
+                        str = I18n.get(translatable.translationKey());
+                        textStyle = style.withItalic(true);
+                    } else if (text instanceof MarkdownText.ExtensionMCKey key) {
+                        var keyBind = Arrays.stream(Minecraft.getInstance().options.keyMappings)
+                                .filter(keyMapping -> keyMapping.getName().equals(key.keyBindName()))
+                                .findAny();
+                        if (keyBind.isPresent()) {
+                            str = keyBind.get().getTranslatedKeyMessage().getString();
+                        }
+                        textStyle = style.withItalic(true);
+                    } else if (text instanceof MarkdownText.ExtensionMCItemName itemName) {
+                        var item = Registry.ITEM.get(itemName.id());
+                        str = I18n.get(item.getDescriptionId());
+                        textStyle = style.withItalic(true);
+                    }
+                    while (!str.isEmpty()) {
+                        int splitPos = splitter.findLineBreak(str, (int) (context.width - context.currentX), textStyle);
+                        var thisLine = str.substring(0, splitPos);
+                        var fragment = new TextFragment(Component.literal(thisLine).withStyle(textStyle), context.currentX, context.currentY, font.width(thisLine));
+                        result.add(fragment);
                         context.currentX += fragment.width;
                         if (str.length() <= splitPos) {
                             break;
@@ -326,19 +365,17 @@ public class MarkdownWidget extends AbstractWidget {
     }
 
     private class OrderedListWidget extends ComponentWidget<MarkdownParagraph.OrderedList> {
-        private final ArrayList<TextWidget> widgets;
 
         public OrderedListWidget(int x, int y, int width, MarkdownParagraph.OrderedList content) {
             super(x, y, width, 0, content);
             int currentY = 0;
             var offset = font.lineHeight;
-            widgets = new ArrayList<>();
             for (var item : content.items()) {
                 var widget = new TextWidget(x + offset, y + currentY, width, item.text(), style);
-                widgets.add(widget);
+                textWidgets.add(widget);
                 currentY += widget.getHeight();
             }
-            if (!widgets.isEmpty()) {
+            if (!textWidgets.isEmpty()) {
                 setHeight(currentY);
             }
         }
@@ -346,27 +383,24 @@ public class MarkdownWidget extends AbstractWidget {
         @Override
         public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
             int i = 0;
-            for (var widget : widgets) {
+            for (var widget : textWidgets) {
                 font.draw(poseStack, (++i) + ".", x, widget.y, textColor());
-                widget.render(poseStack, mouseX, mouseY, partial);
             }
+            super.render(poseStack, mouseX, mouseY, partial);
         }
     }
 
     private class UnorderedListWidget extends ComponentWidget<MarkdownParagraph.UnOrderedList> {
-        private final ArrayList<TextWidget> widgets;
-
         public UnorderedListWidget(int x, int y, int width, MarkdownParagraph.UnOrderedList content) {
             super(x, y, width, 0, content);
             int currentY = 0;
-            widgets = new ArrayList<>();
             var offset = font.lineHeight;
             for (var item : content.items()) {
                 var widget = new TextWidget(x + offset, y + currentY, width - offset, item.text(), style);
-                widgets.add(widget);
+                textWidgets.add(widget);
                 currentY += widget.getHeight();
             }
-            if (!widgets.isEmpty()) {
+            if (!textWidgets.isEmpty()) {
                 setHeight(currentY);
             }
         }
@@ -374,16 +408,81 @@ public class MarkdownWidget extends AbstractWidget {
         @Override
         public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
             var offset = font.lineHeight / 2;
-            for (var widget : widgets) {
+            for (var widget : textWidgets) {
                 fill(poseStack, x + offset - 1, widget.y + offset - 1, x + offset + 1, widget.y + offset + 1, textColor());
-                widget.render(poseStack, mouseX, mouseY, partial);
             }
+            super.render(poseStack, mouseX, mouseY, partial);
         }
     }
 
     private static class ImageWidget extends ComponentWidget<MarkdownParagraph.Image> {
         public ImageWidget(int x, int y, int width, int height, MarkdownParagraph.Image content) {
             super(x, y, width, height, content);
+        }
+    }
+
+    private class RecipeWidget extends ComponentWidget<MarkdownParagraph.ExtensionMCRecipe> {
+        private static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation("textures/gui/container/crafting_table.png");
+        @Nullable
+        private final Recipe<?> recipe;
+        private final float scale;
+        private final ItemRenderer itemRenderer;
+
+        public RecipeWidget(int x, int y, int width, MarkdownParagraph.ExtensionMCRecipe content) {
+            super(x, y, width, 0, content);
+            var connection = Minecraft.getInstance().getConnection();
+            if (connection != null) {
+                var manager = connection.getRecipeManager();
+                var recipe = manager.byKey(content.recipeId());
+                this.recipe = recipe.orElse(null);
+            } else {
+                this.recipe = null;
+            }
+            itemRenderer = Minecraft.getInstance().getItemRenderer();
+            scale = width / 118f;
+            setHeight((int) (scale * 56f));
+        }
+
+        @Override
+        public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+            RenderSystem.setShaderTexture(0, CRAFTING_TABLE_LOCATION);
+            var bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+            var modelViewStack = RenderSystem.getModelViewStack();
+            poseStack.pushPose();
+            {
+                poseStack.translate(x, y, 0);
+                poseStack.scale(scale, scale, 1);
+                blit(poseStack, 0, 0, 28, 15, 118, 56);
+            }
+            poseStack.popPose();
+            modelViewStack.pushPose();
+            modelViewStack.translate(MarkdownWidget.this.x + x, MarkdownWidget.this.y - scrollY + y, 0);
+            if (recipe instanceof ShapedRecipe craftingRecipe) {
+                int i = -1;
+                for (var ingredient : craftingRecipe.getIngredients()) {
+                    i++;
+                    var items = ingredient.getItems();
+                    if (items.length == 0) continue;
+                    var item = items[0];
+                    var column = i % 3;
+                    var row = i / 3;
+                    modelViewStack.pushPose();
+                    {
+                        modelViewStack.scale(scale, scale, 1);
+                        itemRenderer.renderGuiItem(item, 2 + 18 * column, 2 + 18 * row);
+                    }
+                    modelViewStack.popPose();
+                }
+                var result = craftingRecipe.getResultItem();
+                modelViewStack.pushPose();
+                {
+                    modelViewStack.scale(scale, scale, 1);
+                    itemRenderer.renderGuiItem(result, 96, 20);
+                }
+                modelViewStack.popPose();
+            }
+            modelViewStack.popPose();
+            RenderSystem.applyModelViewMatrix();
         }
     }
 }

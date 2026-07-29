@@ -27,7 +27,7 @@ public record GuiColorPallet(
             0xFF111111,
             0xFFFFFFFF,
             0xFF111111,
-            0xFFC5C5C5,
+            0xFFE9E9E9,
             0x60808080
     );
     public static final GuiColorPallet DEFAULT_DARK = new GuiColorPallet(

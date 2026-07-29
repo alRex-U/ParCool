@@ -45,7 +45,7 @@ public class ParCoolGuidePageList extends AbstractWidget {
                     )).toList()
             ));
         }
-        var innerHeight = -2;
+        var innerHeight = 0;
         for (var group : pages) {
             innerHeight += (1 + group.getB().size()) * (ROW_HEIGHT + 1);
         }
@@ -116,7 +116,7 @@ public class ParCoolGuidePageList extends AbstractWidget {
                     font.draw(poseStack, page.getA(), 2, currentY + 1 + (ROW_HEIGHT - font.lineHeight) / 2f, textColor);
                     currentY += ROW_HEIGHT;
                 }
-                hLine(poseStack, 1, width - 2, currentY - 1, lineColor);
+                hLine(poseStack, 2, width - 3, currentY, lineColor);
                 currentY += 1;
             }
         }
