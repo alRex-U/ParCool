@@ -8,8 +8,21 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import java.util.TreeMap;
 
 public class AnimationSystemConfig {
+    private static AnimationSystemConfig instance;
+
+    public static AnimationSystemConfig getInstance() {
+        return instance;
+    }
+
+    public static void init(AnimationSets animationSets) {
+        if (instance == null) {
+            instance = new AnimationSystemConfig(animationSets);
+        }
+    }
+
     private final ForgeConfigSpec builtConfig;
     private final TreeMap<ID<AnimationSet>, ForgeConfigSpec.BooleanValue> animationAvailabilities;
+    public final ForgeConfigSpec.BooleanValue enableAnimation;
 
     public AnimationSystemConfig(AnimationSets animations) {
         var builder = new ForgeConfigSpec.Builder();
@@ -18,6 +31,7 @@ public class AnimationSystemConfig {
         }
         builder.push("Animation");
         {
+            enableAnimation = builder.define("enable", true);
             builder.push("Availability");
             {
                 animationAvailabilities = new TreeMap<>();

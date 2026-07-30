@@ -1,7 +1,9 @@
 package com.alrex.parcool.client.animation.system;
 
+import com.alrex.parcool.client.animation.system.config.AnimationSystemConfig;
 import com.alrex.parcool.client.animation.system.data.AnimationSet;
 import com.alrex.parcool.client.animation.system.registration.ID;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 
 import javax.annotation.Nullable;
@@ -24,11 +26,11 @@ public class PlayerAnimator {
     }
 
     public void onRenderTick(AbstractClientPlayer player, float partialTick) {
-        updateTransformation(player, partialTick);
+        updateTransformation(player, Minecraft.getInstance().options.getCameraType().isFirstPerson(), partialTick);
     }
 
-    private void updateTransformation(AbstractClientPlayer player, float partialTick) {
-        currentTransformation = animationProcessor.getTransformation(player, partialTick);
+    private void updateTransformation(AbstractClientPlayer player, boolean firstPersonView, float partialTick) {
+        currentTransformation = animationProcessor.getTransformation(player, firstPersonView, partialTick);
     }
 
     @Nullable
@@ -37,19 +39,27 @@ public class PlayerAnimator {
     }
 
     public void start(ID<AnimationSet> id) {
-        animationProcessor.start(id, false);
+        if (AnimationSystemConfig.getInstance().isAvailable(id)) {
+            animationProcessor.start(id, false);
+        }
     }
 
     public void start(ID<AnimationSet> id, boolean mirror) {
-        animationProcessor.start(id, mirror);
+        if (AnimationSystemConfig.getInstance().isAvailable(id)) {
+            animationProcessor.start(id, mirror);
+        }
     }
 
     public void startIfNotWorking(ID<AnimationSet> id) {
-        animationProcessor.startIfNotWorking(id, false);
+        if (AnimationSystemConfig.getInstance().isAvailable(id)) {
+            animationProcessor.startIfNotWorking(id, false);
+        }
     }
 
     public void startIfNotWorking(ID<AnimationSet> id, boolean mirror) {
-        animationProcessor.startIfNotWorking(id, true);
+        if (AnimationSystemConfig.getInstance().isAvailable(id)) {
+            animationProcessor.startIfNotWorking(id, mirror);
+        }
     }
 
     public void stop(ID<AnimationSet> id) {

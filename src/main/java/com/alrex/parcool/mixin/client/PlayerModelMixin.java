@@ -3,13 +3,10 @@ package com.alrex.parcool.mixin.client;
 import com.alrex.parcool.client.animation.system.AnimatableModelPart;
 import com.alrex.parcool.client.animation.system.IPlayerAnimatorHolder;
 import com.alrex.parcool.client.animation.system.data.Transform;
-import net.minecraft.client.CameraType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,9 +23,6 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends HumanoidM
 	@Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V", at = @At("HEAD"), cancellable = true)
 	protected void onSetupAnimHead(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo info) {
 		if (entity.isFallFlying()) return;
-		if (entity instanceof Player player && player.isLocalPlayer()) {
-			if (Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON) return;
-		}
 		if (entity instanceof IPlayerAnimatorHolder holder) {
 			var transform = holder.getParCoolPlayerAnimator().getCurrentTransformation();
 			if (transform == null) return;
@@ -52,9 +46,6 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends HumanoidM
 	@Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V", at = @At("TAIL"))
 	protected void onSetupAnimTail(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo info) {
 		if (entity.isFallFlying()) return;
-		if (entity instanceof Player player && player.isLocalPlayer()) {
-			if (Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON) return;
-		}
 		if (entity instanceof IPlayerAnimatorHolder holder) {
 			var transform = holder.getParCoolPlayerAnimator().getCurrentTransformation();
 			if (transform == null) return;

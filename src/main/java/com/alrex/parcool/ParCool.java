@@ -6,7 +6,6 @@ import com.alrex.parcool.api.ParCoolPotions;
 import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.RegisterParCoolActionEvent;
 import com.alrex.parcool.api.stamina.RegisterParCoolStaminaTypeEvent;
-import com.alrex.parcool.client.animation.system.config.AnimationSystemConfig;
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.renderer.Renderers;
 import com.alrex.parcool.common.action.ActionProcessor;
@@ -59,7 +58,6 @@ public class ParCool {
 	private static final StaminaTypeRegistry staminaTypeRegistry = new StaminaTypeRegistry();
 	private static final ActionProcessor actionProcessor = new ActionProcessor();
 	private static ParCoolConfig config;
-	private static AnimationSystemConfig animConfig;
 
 	public static ActionRegistry getActionRegistry() {
 		return actionRegistry;
@@ -71,16 +69,6 @@ public class ParCool {
 
 	public static ParCoolConfig getConfig() {
 		return config;
-	}
-
-	public static AnimationSystemConfig getAnimationConfig() {
-		return animConfig;
-	}
-
-	public static void setAnimationConfig(AnimationSystemConfig config) {
-		if (animConfig == null) {
-			animConfig = config;
-		}
 	}
 
 	public static ActionProcessor getActionProcessor() {

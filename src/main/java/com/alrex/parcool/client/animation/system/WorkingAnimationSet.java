@@ -19,6 +19,7 @@ public class WorkingAnimationSet {
     private int primaryTick = 0;
     private final int fadeInTick;
     private final int fadeOutTick;
+    private final float fpvBlend;
     private final boolean mirror;
     private int forceFinishingTick = -1;
     private AnimationPhase phase;
@@ -30,6 +31,7 @@ public class WorkingAnimationSet {
         this.controller = controller;
         this.fadeInTick = animationSet.fadeInDuration();
         this.fadeOutTick = animationSet.fadeOutDuration();
+        this.fpvBlend = animationSet.blendFactorInFirstPersonView();
         this.mirror = mirror;
         this.phase = animationSet.introAnimation() != null ? AnimationPhase.INTRO : AnimationPhase.MAIN;
         this.currentAnimation = getAnimation(phase);
@@ -97,22 +99,23 @@ public class WorkingAnimationSet {
         return animation.getTransformation(player, partialTick, mirror);
     }
 
-    public float getCurrentBlendFactor(float partialTick) {
+    public float getCurrentBlendFactor(boolean firstPersonView, float partialTick) {
         float tick = primaryTick + partialTick;
+        float fpvBlendScale = firstPersonView ? fpvBlend : 1f;
         if (forceFinishingTick >= 0) {
-            return EasingFunctions.QUAD.easeInOut(1 - ((forceFinishingTick + partialTick) / fadeOutTick));
+            return EasingFunctions.QUAD.easeInOut(1 - ((forceFinishingTick + partialTick) / fadeOutTick)) * fpvBlendScale;
         }
-        if (tick < fadeInTick) return EasingFunctions.QUAD.easeInOut(tick / fadeInTick);
+        if (tick < fadeInTick) return EasingFunctions.QUAD.easeInOut(tick / fadeInTick) * fpvBlendScale;
         if (isOnFinalPhase()) {
             var animation = getAnimation(phase);
             if (animation == null) return 1f;
             var tickInPhase = this.tickInPhase + partialTick;
             var animationDuration = animation.getDuration();
             if (animationDuration - fadeOutTick <= tickInPhase) {
-                return EasingFunctions.QUAD.easeInOut((animationDuration - tickInPhase) / fadeOutTick);
+                return EasingFunctions.QUAD.easeInOut((animationDuration - tickInPhase) / fadeOutTick) * (fpvBlendScale);
             }
         }
-        return 1f;
+        return fpvBlendScale;
     }
 
     public void enter(AnimationPhase phase) {

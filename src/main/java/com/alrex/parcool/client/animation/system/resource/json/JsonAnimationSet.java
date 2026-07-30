@@ -8,22 +8,10 @@ import java.util.List;
 
 public class JsonAnimationSet {
     private ResourceLocation name;
-    @SerializedName("fade_in_duration")
-    private int fadeInDuration;
-    @SerializedName("fade_out_duration")
-    private int fadeOutDuration;
     private List<AnimationItem> animations;
 
     public ResourceLocation getName() {
         return name;
-    }
-
-    public int getFadeInDuration() {
-        return fadeInDuration;
-    }
-
-    public int getFadeOutDuration() {
-        return fadeOutDuration;
     }
 
     public List<AnimationItem> getAnimations() {
@@ -36,6 +24,12 @@ public class JsonAnimationSet {
         private ResourceLocation main;
         @Nullable
         private ResourceLocation outro;
+        @SerializedName("fpv_blend")
+        private float fpvBlend = 1f;
+        @SerializedName("fade_in_duration")
+        private int fadeInDuration = 0;
+        @SerializedName("fade_out_duration")
+        private int fadeOutDuration = 0;
 
         @Nullable
         public ResourceLocation getIntro() {
@@ -49,6 +43,18 @@ public class JsonAnimationSet {
         @Nullable
         public ResourceLocation getOutro() {
             return outro;
+        }
+
+        public float getFpvBlend() {
+            return fpvBlend;
+        }
+
+        public int getFadeInDuration() {
+            return fadeInDuration;
+        }
+
+        public int getFadeOutDuration() {
+            return fadeOutDuration;
         }
     }
 }

@@ -101,13 +101,13 @@ public class AnimationProcessor {
     }
 
     @Nullable
-    public BlendingModelTransform getTransformation(AbstractClientPlayer player, float partial) {
+    public BlendingModelTransform getTransformation(AbstractClientPlayer player, boolean firstPersonView, float partial) {
         if (animators.isEmpty()) return null;
         var factors = new float[10];
         int i;
         var maxBlendFactor = 0f;
         for (i = 0; i < 10 && i < animators.size(); i++) {
-            factors[i] = animators.get((animators.size() - 1) - i).animator().getCurrentBlendFactor(partial);
+            factors[i] = animators.get((animators.size() - 1) - i).animator().getCurrentBlendFactor(firstPersonView, partial);
             if (maxBlendFactor < factors[i]) maxBlendFactor = factors[i];
             if (factors[i] >= 0.99) {
                 maxBlendFactor = factors[i] = 1;

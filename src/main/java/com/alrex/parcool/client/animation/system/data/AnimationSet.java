@@ -7,11 +7,12 @@ import javax.annotation.Nullable;
 
 public record AnimationSet(
         ResourceLocation name,
-        int fadeInDuration,
-        int fadeOutDuration,
         @Nullable AnimationComponentGroup introAnimation,
         AnimationComponentGroup mainAnimation,
-        @Nullable AnimationComponentGroup outroAnimation
+        @Nullable AnimationComponentGroup outroAnimation,
+        int fadeInDuration,
+        int fadeOutDuration,
+        float blendFactorInFirstPersonView
 ) {
     @Nullable
     AnimationComponentGroup getAnimation(AnimationPhase phase) {

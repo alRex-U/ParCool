@@ -1,6 +1,5 @@
 package com.alrex.parcool.proxy;
 
-import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.config.AnimationSystemConfig;
 import com.alrex.parcool.client.animation.system.event.RegisterAnimationEntryEvent;
@@ -49,9 +48,8 @@ public class ClientProxy extends CommonProxy {
 		var registerAnimationEntryEvent = new RegisterAnimationEntryEvent();
 		FMLJavaModLoadingContext.get().getModEventBus().post(registerAnimationEntryEvent);
 		registerAnimationEntryEvent.finish();
-		var animConfig = new AnimationSystemConfig(AnimationSets.getInstance());
-		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, animConfig.getBuiltConfig(), "parcool-animation.toml");
-		ParCool.setAnimationConfig(animConfig);
+		AnimationSystemConfig.init(AnimationSets.getInstance());
+		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, AnimationSystemConfig.getInstance().getBuiltConfig(), "parcool-animation.toml");
 	}
 
 	@Override

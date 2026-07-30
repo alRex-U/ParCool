@@ -1,336 +1,347 @@
 [
   {
     "name": "parcool:fast_run",
-    "fade_in_duration": 10,
-    "fade_out_duration": 10,
     "animations": [
       {
-        "main": "parcool:fast_run_group.json"
+        "main": "parcool:fast_run_group.json",
+        "fade_in_duration": 10,
+        "fade_out_duration": 10,
+        "fpv_blend": 0.1
       }
     ]
   },
   {
     "name": "parcool:crawl",
-    "fade_in_duration": 10,
-    "fade_out_duration": 10,
     "animations": [
       {
-        "main": "parcool:crawl_group.json"
+        "main": "parcool:crawl_group.json",
+        "fade_in_duration": 10,
+        "fade_out_duration": 10
       }
     ]
   },
   {
     "name": "parcool:dodge_right",
-    "fade_in_duration": 5,
-    "fade_out_duration": 4,
     "animations": [
       {
-        "main": "parcool:dodge_right_group.json"
+        "main": "parcool:dodge_right_group.json",
+        "fade_in_duration": 5,
+        "fade_out_duration": 4
       }
     ]
   },
   {
     "name": "parcool:dodge_front",
-    "fade_in_duration": 5,
-    "fade_out_duration": 2,
     "animations": [
       {
-        "main": "parcool:dodge_front_group.json"
+        "main": "parcool:dodge_front_group.json",
+        "fade_in_duration": 5,
+        "fade_out_duration": 2
       }
     ]
   },
   {
     "name": "parcool:dodge_back",
-    "fade_in_duration": 2,
-    "fade_out_duration": 3,
     "animations": [
       {
-        "main": "parcool:dodge_back_group.json"
+        "main": "parcool:dodge_back_group.json",
+        "fade_in_duration": 2,
+        "fade_out_duration": 3
       }
     ]
   },
   {
     "name": "parcool:hang_on",
-    "fade_in_duration": 5,
-    "fade_out_duration": 5,
     "animations": [
       {
-        "main": "parcool:hang_on_group.json"
+        "main": "parcool:hang_on_group.json",
+        "fade_in_duration": 5,
+        "fade_out_duration": 5
       }
     ]
   },
   {
     "name": "parcool:climb_up",
-    "fade_in_duration": 3,
-    "fade_out_duration": 5,
     "animations": [
       {
-        "main": "parcool:climb_up_group.json"
+        "main": "parcool:climb_up_group.json",
+        "fade_in_duration": 3,
+        "fade_out_duration": 5
       }
     ]
   },
   {
     "name": "parcool:trick_jump_back",
-    "fade_in_duration": 2,
-    "fade_out_duration": 6,
     "animations": [
       {
-        "main": "parcool:back_flip_group.json"
+        "main": "parcool:back_flip_group.json",
+        "fade_in_duration": 2,
+        "fade_out_duration": 6
       }
     ]
   },
   {
     "name": "parcool:trick_jump_forward",
-    "fade_in_duration": 2,
-    "fade_out_duration": 4,
     "animations": [
       {
-        "main": "parcool:front_flip_group.json"
+        "main": "parcool:front_flip_group.json",
+        "fade_in_duration": 2,
+        "fade_out_duration": 4
       },
       {
-        "main": "parcool:front_flip_group.json"
+        "main": "parcool:front_flip_group.json",
+        "fade_in_duration": 2,
+        "fade_out_duration": 4
       },
       {
-        "main": "parcool:side_flip_group.json"
+        "main": "parcool:side_flip_group.json",
+        "fade_in_duration": 2,
+        "fade_out_duration": 4
       },
       {
-        "main": "parcool:side_flip_mirror_group.json"
+        "main": "parcool:side_flip_mirror_group.json",
+        "fade_in_duration": 2,
+        "fade_out_duration": 4
       }
     ]
   },
   {
     "name": "parcool:stride",
-    "fade_in_duration": 2,
-    "fade_out_duration": 5,
     "animations": [
       {
-        "main": "parcool:stride_group.json"
+        "main": "parcool:stride_group.json",
+        "fade_in_duration": 2,
+        "fade_out_duration": 5
       }
     ]
   },
   {
     "name": "parcool:slide_down",
-    "fade_in_duration": 5,
-    "fade_out_duration": 5,
     "animations": [
       {
-        "main": "parcool:slide_down_group.json"
+        "main": "parcool:slide_down_group.json",
+        "fade_in_duration": 5,
+        "fade_out_duration": 5
       }
     ]
   },
   {
     "name": "parcool:breakfall_no_move",
-    "fade_in_duration": 0,
-    "fade_out_duration": 4,
     "animations": [
       {
-        "main": "parcool:breakfall_tap_group.json"
+        "main": "parcool:breakfall_tap_group.json",
+        "fade_in_duration": 0,
+        "fade_out_duration": 4
       }
     ]
   },
   {
     "name": "parcool:breakfall_forward",
-    "fade_in_duration": 2,
-    "fade_out_duration": 4,
     "animations": [
       {
-        "main": "parcool:breakfall_roll_group.json"
+        "main": "parcool:breakfall_roll_group.json",
+        "fade_in_duration": 2,
+        "fade_out_duration": 4
       }
     ]
   },
   {
     "name": "parcool:horizontal_wall_run",
-    "fade_in_duration": 6,
-    "fade_out_duration": 7,
     "animations": [
       {
-        "main": "parcool:horizontal_wall_run_group.json"
+        "main": "parcool:horizontal_wall_run_group.json",
+        "fade_in_duration": 6,
+        "fade_out_duration": 7
       }
     ]
   },
   {
     "name": "parcool:slide",
-    "fade_in_duration": 6,
-    "fade_out_duration": 8,
     "animations": [
       {
-        "main": "parcool:slide_group.json"
+        "main": "parcool:slide_group.json",
+        "fade_in_duration": 6,
+        "fade_out_duration": 8
       }
     ]
   },
   {
     "name": "parcool:dive",
-    "fade_in_duration": 2,
-    "fade_out_duration": 5,
     "animations": [
       {
-        "main": "parcool:dive_group.json"
+        "main": "parcool:dive_group.json",
+        "fade_in_duration": 2,
+        "fade_out_duration": 5
       }
     ]
   },
   {
     "name": "parcool:skydive",
-    "fade_in_duration": 8,
-    "fade_out_duration": 8,
     "animations": [
       {
-        "main": "parcool:skydive_group.json"
+        "main": "parcool:skydive_group.json",
+        "fade_in_duration": 8,
+        "fade_out_duration": 8
       }
     ]
   },
   {
     "name": "parcool:jump_charging",
-    "fade_in_duration": 0,
-    "fade_out_duration": 5,
     "animations": [
       {
-        "main": "parcool:jump_charging_group.json"
+        "main": "parcool:jump_charging_group.json",
+        "fade_in_duration": 0,
+        "fade_out_duration": 5
       }
     ]
   },
   {
     "name": "parcool:charge_jump",
-    "fade_in_duration": 0,
-    "fade_out_duration": 5,
     "animations": [
       {
-        "main": "parcool:charge_jump_group.json"
+        "main": "parcool:charge_jump_group.json",
+        "fade_in_duration": 0,
+        "fade_out_duration": 5
       }
     ]
   },
   {
     "name": "parcool:vault_forward",
-    "fade_in_duration": 0,
-    "fade_out_duration": 4,
     "animations": [
       {
-        "main": "parcool:kong_vault_group.json"
+        "main": "parcool:kong_vault_group.json",
+        "fade_in_duration": 0,
+        "fade_out_duration": 4
       },
       {
-        "main": "parcool:dash_vault_group.json"
+        "main": "parcool:dash_vault_group.json",
+        "fade_in_duration": 0,
+        "fade_out_duration": 4
       }
     ]
   },
   {
     "name": "parcool:vault_side",
-    "fade_in_duration": 0,
-    "fade_out_duration": 6,
     "animations": [
       {
-        "main": "parcool:speed_vault_group.json"
+        "main": "parcool:speed_vault_group.json",
+        "fade_in_duration": 0,
+        "fade_out_duration": 6
       },
       {
-        "main": "parcool:reverse_vault_group.json"
+        "main": "parcool:reverse_vault_group.json",
+        "fade_in_duration": 0,
+        "fade_out_duration": 6
       }
     ]
   },
   {
     "name": "parcool:wall_jump",
-    "fade_in_duration": 1,
-    "fade_out_duration": 4,
     "animations": [
       {
-        "main": "parcool:wall_jump_group.json"
+        "main": "parcool:wall_jump_group.json",
+        "fade_in_duration": 1,
+        "fade_out_duration": 4
       }
     ]
   },
   {
     "name": "parcool:hide_in_block_stand",
-    "fade_in_duration": 4,
-    "fade_out_duration": 5,
     "animations": [
       {
-        "main": "parcool:hide_in_block_stand_group.json"
+        "main": "parcool:hide_in_block_stand_group.json",
+        "fade_in_duration": 4,
+        "fade_out_duration": 5
       }
     ]
   },
   {
     "name": "parcool:hide_in_block_crawl",
-    "fade_in_duration": 4,
-    "fade_out_duration": 5,
     "animations": [
       {
-        "main": "parcool:hide_in_block_crawl_group.json"
+        "main": "parcool:hide_in_block_crawl_group.json",
+        "fade_in_duration": 4,
+        "fade_out_duration": 5
       }
     ]
   },
   {
     "name": "parcool:hang_down",
-    "fade_in_duration": 4,
-    "fade_out_duration": 5,
     "animations": [
       {
-        "main": "parcool:hang_down_group.json"
+        "main": "parcool:hang_down_group.json",
+        "fade_in_duration": 4,
+        "fade_out_duration": 5
       }
     ]
   },
   {
     "name": "parcool:hang_down_jump_forward",
-    "fade_in_duration": 4,
-    "fade_out_duration": 5,
     "animations": [
       {
-        "main": "parcool:back_flip_group.json"
+        "main": "parcool:back_flip_group.json",
+        "fade_in_duration": 4,
+        "fade_out_duration": 5
       }
     ]
   },
   {
     "name": "parcool:hang_down_jump_backward",
-    "fade_in_duration": 4,
-    "fade_out_duration": 5,
     "animations": [
       {
-        "main": "parcool:front_flip_group.json"
+        "main": "parcool:front_flip_group.json",
+        "fade_in_duration": 4,
+        "fade_out_duration": 5
       }
     ]
   },
   {
     "name": "parcool:ride_zipline",
-    "fade_in_duration": 6,
-    "fade_out_duration": 6,
     "animations": [
       {
-        "main": "parcool:ride_zipline_group.json"
+        "main": "parcool:ride_zipline_group.json",
+        "fade_in_duration": 6,
+        "fade_out_duration": 6
       }
     ]
   },
   {
     "name": "parcool:wall_run",
-    "fade_in_duration": 1,
-    "fade_out_duration": 4,
     "animations": [
       {
-        "main": "parcool:wall_run_group.json"
+        "main": "parcool:wall_run_group.json",
+        "fade_in_duration": 1,
+        "fade_out_duration": 4
       }
     ]
   },
   {
     "name": "parcool:castaway",
-    "fade_in_duration": 1,
-    "fade_out_duration": 5,
     "animations": [
       {
-        "main": "parcool:castaway_group.json"
+        "main": "parcool:castaway_group.json",
+        "fade_in_duration": 1,
+        "fade_out_duration": 5
       }
     ]
   },
   {
     "name": "parcool:pole_climb",
-    "fade_in_duration": 3,
-    "fade_out_duration": 5,
     "animations": [
       {
-        "main": "parcool:pole_climb_group.json"
+        "main": "parcool:pole_climb_group.json",
+        "fade_in_duration": 3,
+        "fade_out_duration": 5
       }
     ]
   },
   {
     "name": "parcool:fast_swim",
-    "fade_in_duration": 6,
-    "fade_out_duration": 10,
     "animations": [
       {
-        "main": "parcool:fast_swim_group.json"
+        "main": "parcool:fast_swim_group.json",
+        "fade_in_duration": 6,
+        "fade_out_duration": 10
       }
     ]
   }
