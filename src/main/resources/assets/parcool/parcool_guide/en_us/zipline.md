@@ -28,5 +28,5 @@ See [Ride Zipline](parcool:actions/ride_zipline.md)
 When you input redstone signal to your hook, the zipline will be *powered zipline*.  
 Powered zipline give acceleration bigger than gravity, so it enable you to go upward by zipline.
 
-As a point to note, you take damage if you use *powered zipline* without <item id="parcool:traceur_glove"/>.  
-Please see [equipments](parcool:equipments.md) about how to make <item id="parcool:traceur_glove"/>.
+As a point to note, you take damage if you use *powered zipline* without <item id="parcool:traceur_gloves"/>.  
+Please see [equipments](parcool:equipments.md) about how to make <item id="parcool:traceur_gloves"/>.

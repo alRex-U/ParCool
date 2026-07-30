@@ -9,6 +9,7 @@ import com.alrex.parcool.common.item.misc.ZiplineRopeItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -23,7 +24,7 @@ public class ParCoolItems {
     public static final RegistryObject<ZiplineRopeItem> ZIPLINE_ROPE = ITEMS.register("zipline_rope", () -> new ZiplineRopeItem(new Item.Properties().tab(ParCoolItemGroup.INSTANCE)));
     public static final RegistryObject<TraceurGlovesItem> TRACEUR_GLOVES = ITEMS.register("traceur_gloves", () -> new TraceurGlovesItem(new Item.Properties().tab(ParCoolItemGroup.INSTANCE).stacksTo(1)));
     public static final RegistryObject<TraceurBootsItem> TRACEUR_BOOTS = ITEMS.register("traceur_boots", () -> new TraceurBootsItem(new Item.Properties().tab(ParCoolItemGroup.INSTANCE).stacksTo(1)));
-    public static final RegistryObject<ParCoolGuideItem> PARCOOL_GUIDE = ITEMS.register("parcool_guide", () -> new ParCoolGuideItem(new Item.Properties().tab(ParCoolItemGroup.INSTANCE).stacksTo(1)));
+    public static final RegistryObject<ParCoolGuideItem> PARCOOL_GUIDE = ITEMS.register("parcool_guide", () -> new ParCoolGuideItem(new Item.Properties().tab(ParCoolItemGroup.INSTANCE).stacksTo(1).rarity(Rarity.UNCOMMON)));
 
     public static void register(IEventBus bus) {
         ITEMS.register(bus);
