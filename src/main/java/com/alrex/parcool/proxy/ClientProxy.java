@@ -12,7 +12,7 @@ import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.client.md.resource.GuideResourceManager;
 import com.alrex.parcool.client.renderer.entity.layers.ParCoolModelLayers;
 import com.alrex.parcool.client.skilltree.ParCoolSkillTrees;
-import com.alrex.parcool.client.textures.ParCoolTextureAtlases;
+import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.handlers.InputHandler;
 import com.alrex.parcool.common.network.*;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,7 +35,7 @@ public class ClientProxy extends CommonProxy {
 		bus.addListener(HUDRegistry.getInstance()::onSetup);
 		bus.addListener(AnimationRegistries::register);
 		bus.addListener(ParCoolModelLayers::register);
-        bus.addListener(ParCoolTextureAtlases::init);
+		bus.addListener(ParCoolTextures::init);
         bus.addListener(AnimationResourceManager::register);
         bus.addListener(GuideResourceManager::register);
 

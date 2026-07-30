@@ -4,7 +4,7 @@ import com.alrex.parcool.api.client.skilltree.SkillTree;
 import com.alrex.parcool.client.gui.GuiRenderUtil;
 import com.alrex.parcool.client.gui.screen.ParCoolTabletScreen;
 import com.alrex.parcool.client.textures.ParCoolActionsTextureAtlas;
-import com.alrex.parcool.client.textures.ParCoolTextureAtlases;
+import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.action.ActionCapabilities;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -230,7 +230,7 @@ public class SkillTreeWidget extends AbstractWidget {
                     RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                 else
                     RenderSystem.setShaderColor(0.9f, 0.9f, 0.9f, 1f);
-                blit(poseStack, this.x, this.y, 0, this.width, this.height, ParCoolTextureAtlases.action(entry.getActionEntry()));
+                blit(poseStack, this.x, this.y, 0, this.width, this.height, ParCoolTextures.action(entry.getActionEntry()));
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             } else {
                 blit(poseStack,

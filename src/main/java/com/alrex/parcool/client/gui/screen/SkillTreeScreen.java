@@ -5,7 +5,7 @@ import com.alrex.parcool.api.client.skilltree.SkillTree;
 import com.alrex.parcool.client.gui.GuiColorPallet;
 import com.alrex.parcool.client.gui.components.*;
 import com.alrex.parcool.client.md.resource.GuideResourceManager;
-import com.alrex.parcool.client.textures.ParCoolTextureAtlases;
+import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.action.ActionCapabilities;
 import com.alrex.parcool.common.network.RequestUnlockActionPacket;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -162,7 +162,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
 
         this.selectedSkill = selectedItem;
         var action = selectedItem != null ? selectedItem.getActionEntry() : null;
-        selectedSkillIconWidget.setImage(action != null ? ParCoolTextureAtlases.action(action) : null);
+        selectedSkillIconWidget.setImage(action != null ? ParCoolTextures.action(action) : null);
         selectedSkillNameWidget.setMessage(action != null ? Component.translatable(action.getTranslationKey()) : Component.empty());
         if (selectedItem != null) {
             if (selectedItem.isUnlocked(capabilities)) {

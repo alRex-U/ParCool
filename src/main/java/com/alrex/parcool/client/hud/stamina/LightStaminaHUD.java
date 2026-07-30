@@ -3,18 +3,19 @@ package com.alrex.parcool.client.hud.stamina;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolMobEffects;
 import com.alrex.parcool.api.client.gui.StaminaDisplayContext;
+import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.Parkourability;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 
-public class LightStaminaHUD extends GuiComponent implements IStaminaHUD {
-	public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation("parcool", "textures/gui/stamina_bar.png");
+import static com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas.*;
 
+public class LightStaminaHUD extends GuiComponent implements IStaminaHUD {
 	private boolean valueChanging;
 	private int tickValueChangingOrNotChanging;
 	private int consumingStaminaVibration;
@@ -54,37 +55,34 @@ public class LightStaminaHUD extends GuiComponent implements IStaminaHUD {
 		int baseX = width / 2 + 91 + ParCool.getConfig().client().staminaHud.offsetHorizontal().get();
 		int baseY = height - gui.rightHeight + ParCool.getConfig().client().staminaHud.offsetVertical().get();
 		for (int i = 0; i < 10; i++) {
+			TextureAtlasSprite staminaSprite;
 			int x = baseX - i * 8 - 9;
 			int offsetY = 0;
-			int textureX;
-			if (inexhaustible) {
-				/*
-				if (showStatus) {
-					if (statusScale > i + 0.9f) {
-						textureX = 90;
-					} else {
-						textureX = 0;
-					}
-				} else {
-					textureX = 54;
-				}
-				 */
-				textureX = 54;
-			} else {
-				if (currentContext.exhausted()) {
-					textureX = 27;
-				} else if (false/* statusScale > i + 0.9f*/) {
-					textureX = 90;
-				} else {
-					textureX = 0;
-				}
-			}
+			int fillPhase;
+			if (staminaScale < i) fillPhase = 0;
+			else if (staminaScale < i + 0.5f) fillPhase = 1;
+			else fillPhase = 2;
+
 			if (currentContext.justFilled()) {
-				textureX = 81;
-			} else if (staminaScale < i) {//empty
-				textureX += 18;
-			} else if (staminaScale < i + 0.5f) {//not full
-				textureX += 9;
+				staminaSprite = ParCoolTextures.instance().getGuiSprite(STAMINA_FLUSH);
+			} else if (inexhaustible) {
+				staminaSprite = switch (fillPhase) {
+					case 0 -> ParCoolTextures.instance().getGuiSprite(STAMINA_INEXHAUSTIBLE_EMPTY);
+					case 1 -> ParCoolTextures.instance().getGuiSprite(STAMINA_INEXHAUSTIBLE_HALF);
+					default -> ParCoolTextures.instance().getGuiSprite(STAMINA_INEXHAUSTIBLE_FULL);
+				};
+			} else if (currentContext.exhausted()) {
+				staminaSprite = switch (fillPhase) {
+					case 0 -> ParCoolTextures.instance().getGuiSprite(STAMINA_EXHAUSTED_EMPTY);
+					case 1 -> ParCoolTextures.instance().getGuiSprite(STAMINA_EXHAUSTED_HALF);
+					default -> ParCoolTextures.instance().getGuiSprite(STAMINA_EXHAUSTED_FULL);
+				};
+			} else {
+				staminaSprite = switch (fillPhase) {
+					case 0 -> ParCoolTextures.instance().getGuiSprite(STAMINA_EMPTY);
+					case 1 -> ParCoolTextures.instance().getGuiSprite(STAMINA_HALF);
+					default -> ParCoolTextures.instance().getGuiSprite(STAMINA_FULL);
+				};
 			}
 			if (currentContext.justFilled()) {
 				offsetY = -1;
@@ -96,7 +94,7 @@ public class LightStaminaHUD extends GuiComponent implements IStaminaHUD {
 				offsetY = consumingStaminaVibration;
 			}
 
-			blit(stack, x, baseY + offsetY, textureX, 119, 9, 9, 128, 128);
+			blit(stack, x, baseY + offsetY, 0, 9, 9, staminaSprite);
 		}
 		gui.rightHeight += 10;
 	}

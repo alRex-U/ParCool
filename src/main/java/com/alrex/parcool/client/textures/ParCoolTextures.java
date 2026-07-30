@@ -6,28 +6,36 @@ import com.alrex.parcool.common.action.ActionRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 
-public class ParCoolTextureAtlases {
-    private static ParCoolTextureAtlases INSTANCE;
+public class ParCoolTextures {
+    private static ParCoolTextures INSTANCE;
 
     private final ParCoolActionsTextureAtlas actionsTextureAtlas;
+    private final ParCoolGuiTextureAtlas guiTextureAtlas;
 
     public static void init(RegisterClientReloadListenersEvent event) {
-        INSTANCE = new ParCoolTextureAtlases(Minecraft.getInstance().textureManager, ParCool.getActionRegistry());
+        INSTANCE = new ParCoolTextures(Minecraft.getInstance().textureManager, ParCool.getActionRegistry());
         event.registerReloadListener(INSTANCE.actionsTextureAtlas);
+        event.registerReloadListener(INSTANCE.guiTextureAtlas);
     }
 
-    public static ParCoolTextureAtlases instance() {
+    public static ParCoolTextures instance() {
         return INSTANCE;
     }
 
-    protected ParCoolTextureAtlases(TextureManager manager, ActionRegistry actionRegistry) {
+    protected ParCoolTextures(TextureManager manager, ActionRegistry actionRegistry) {
         actionsTextureAtlas = new ParCoolActionsTextureAtlas(manager, actionRegistry);
+        guiTextureAtlas = new ParCoolGuiTextureAtlas(manager);
     }
 
     public TextureAtlasSprite getActionIcon(ActionEntry<?> entry) {
         return INSTANCE.actionsTextureAtlas.getSprite(entry);
+    }
+
+    public TextureAtlasSprite getGuiSprite(ResourceLocation spriteId) {
+        return INSTANCE.guiTextureAtlas.getSprite(spriteId);
     }
 
     public static TextureAtlasSprite action(ActionEntry<?> entry) {
