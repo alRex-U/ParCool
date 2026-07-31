@@ -61,6 +61,8 @@ public class MarkdownWidget extends AbstractWidget {
                 contentRendererWidgets.add(new UnorderedListWidget(0, currentY, width, list));
             } else if (paragraph instanceof MarkdownParagraph.OrderedList list) {
                 contentRendererWidgets.add(new OrderedListWidget(0, currentY, width, list));
+            } else if (paragraph instanceof MarkdownParagraph.Image image) {
+                contentRendererWidgets.add(new ImageWidget(10, currentY, width - 20, image));
             } else if (paragraph instanceof MarkdownParagraph.ExtensionMCRecipe recipe) {
                 contentRendererWidgets.add(new RecipeWidget(10, currentY, width - 20, recipe));
             }
@@ -418,8 +420,23 @@ public class MarkdownWidget extends AbstractWidget {
     }
 
     private static class ImageWidget extends ComponentWidget<MarkdownParagraph.Image> {
-        public ImageWidget(int x, int y, int width, int height, MarkdownParagraph.Image content) {
-            super(x, y, width, height, content);
+        public ImageWidget(int x, int y, int width, MarkdownParagraph.Image content) {
+            super(x + (width - Math.min(width, content.texAreaWidth())) / 2, y,
+                    Math.min(width, content.texAreaWidth()),
+                    Math.min(width, content.texAreaWidth()) * content.texAreaHeight() / content.texAreaWidth(),
+                    content
+            );
+        }
+
+        @Override
+        public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+            RenderSystem.setShaderTexture(0, content.textureLocation());
+            blit(poseStack,
+                    x, y, width, height,
+                    content.texX(), content.texY(),
+                    content.texAreaWidth(), content.texAreaHeight(),
+                    content.texWidth(), content.texHeight()
+            );
         }
     }
 

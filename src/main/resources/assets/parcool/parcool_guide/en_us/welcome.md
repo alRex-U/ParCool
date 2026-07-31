@@ -1,5 +1,7 @@
 # Welcome to ParCool!
 
+![](parcool:textures/parcool_guide/logo_round.png)
+
 ParCool is a mod to enable you to *Cool* actions like *Parkour*.  
 Now you become a parkour-player. Let's run around the Minecraft World!
 

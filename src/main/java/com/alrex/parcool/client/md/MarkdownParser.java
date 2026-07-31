@@ -141,7 +141,7 @@ public class MarkdownParser {
         if (closeFound == -1) return null;
         var location = ResourceLocation.tryParse(line.substring(found + 2, closeFound));
         if (location == null) return null;
-        return new MarkdownParagraph.Image(location, alt.isEmpty() ? null : alt);
+        return MarkdownParagraph.Image.from(location, alt.isEmpty() ? null : alt);
     }
 
     @Nullable

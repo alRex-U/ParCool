@@ -6,7 +6,11 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public interface MarkdownParagraph {
-    record Image(ResourceLocation textureLocation, @Nullable String caption) implements MarkdownParagraph {
+    record Image(ResourceLocation textureLocation, @Nullable String caption, int texX, int texY, int texAreaWidth,
+                 int texAreaHeight, int texWidth, int texHeight) implements MarkdownParagraph {
+        public static Image from(ResourceLocation textureLocation, @Nullable String caption) {
+            return new Image(textureLocation, caption, 0, 0, 128, 128, 128, 128);
+        }
     }
 
     class HorizontalLine implements MarkdownParagraph {
