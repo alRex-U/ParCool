@@ -21,12 +21,15 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
+@OnlyIn(Dist.CLIENT)
 public class MarkdownWidget extends AbstractWidget {
     private final CompiledMarkdown content;
     private final List<AbstractWidget> contentRendererWidgets;

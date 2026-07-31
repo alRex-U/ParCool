@@ -1,7 +1,10 @@
 package com.alrex.parcool.client.animation;
 
 import com.alrex.parcool.client.animation.system.event.RegisterAnimationEntryEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class AnimationRegistries {
     private static AnimationRegistries INSTANCE = null;
 

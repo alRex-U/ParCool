@@ -4,10 +4,13 @@ import com.alrex.parcool.client.animation.system.IAnimationController;
 import com.alrex.parcool.client.animation.system.data.AnimationSet;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
 
+@OnlyIn(Dist.CLIENT)
 public class AnimationSets extends BasicRegistry<AnimationSet, AnimationSets.Entry> {
     @Nullable
     private static AnimationSets instance = null;

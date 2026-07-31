@@ -4,9 +4,12 @@ import com.alrex.parcool.client.animation.system.registration.AnimationProgresse
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.animation.system.registration.BlendingFactors;
 import com.alrex.parcool.client.animation.system.registration.CodedAnimationComponents;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.event.IModBusEvent;
 
+@OnlyIn(Dist.CLIENT)
 public class RegisterAnimationEntryEvent extends Event implements IModBusEvent {
     public RegisterAnimationEntryEvent() {
     }

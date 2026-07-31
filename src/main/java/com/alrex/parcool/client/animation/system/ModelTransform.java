@@ -1,9 +1,12 @@
 package com.alrex.parcool.client.animation.system;
 
 import com.alrex.parcool.client.animation.system.data.Transform;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.EnumMap;
 
+@OnlyIn(Dist.CLIENT)
 public record ModelTransform(EnumMap<AnimatableModelPart, Transform> transforms) {
     public static final ModelTransform NO_TRANSFORMATION;
 

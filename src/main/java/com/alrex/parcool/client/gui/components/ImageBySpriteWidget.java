@@ -5,10 +5,13 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+@OnlyIn(Dist.CLIENT)
 public class ImageBySpriteWidget extends AbstractWidget {
     @Nullable
     private TextureAtlasSprite sprite;

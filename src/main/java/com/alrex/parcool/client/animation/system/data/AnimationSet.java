@@ -4,10 +4,13 @@ import com.alrex.parcool.client.animation.system.AnimationPhase;
 import com.alrex.parcool.client.animation.system.IBlendingFactor;
 import com.alrex.parcool.client.animation.system.math.Vec3f;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
+@OnlyIn(Dist.CLIENT)
 public record AnimationSet(
         ResourceLocation name,
         @Nullable AnimationComponentGroup introAnimation,

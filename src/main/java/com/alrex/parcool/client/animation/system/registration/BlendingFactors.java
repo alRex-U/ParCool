@@ -10,9 +10,12 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
+@OnlyIn(Dist.CLIENT)
 public class BlendingFactors extends BasicRegistry<IBlendingFactor, BlendingFactors.RegistrationEntry> {
     public interface BlendingFactorFactory {
         IBlendingFactor newInstance(Argument args, BlendMethod method);

@@ -1,10 +1,13 @@
 package com.alrex.parcool.client.md;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
+@OnlyIn(Dist.CLIENT)
 public interface MarkdownParagraph {
     record Image(ResourceLocation textureLocation, @Nullable String caption, int texX, int texY, int texAreaWidth,
                  int texAreaHeight, int texWidth, int texHeight) implements MarkdownParagraph {

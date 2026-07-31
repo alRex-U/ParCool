@@ -13,11 +13,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
+@OnlyIn(Dist.CLIENT)
 public class SkillTreeScreen extends ParCoolTabletScreen {
     private SkillTreeWidget skilltreeWidget;
     private ImageBySpriteWidget selectedSkillIconWidget;

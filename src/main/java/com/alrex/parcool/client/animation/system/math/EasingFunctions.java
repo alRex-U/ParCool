@@ -1,7 +1,10 @@
 package com.alrex.parcool.client.animation.system.math;
 
 import net.minecraft.util.Mth;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class EasingFunctions {
     public static final IEasingFunction SINE = new Sine();
     public static final IEasingFunction QUAD = new Quad();

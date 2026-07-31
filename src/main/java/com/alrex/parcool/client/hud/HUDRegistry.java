@@ -2,10 +2,13 @@ package com.alrex.parcool.client.hud;
 
 import com.alrex.parcool.client.hud.stamina.StaminaHUDController;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+@OnlyIn(Dist.CLIENT)
 public class HUDRegistry {
 	private static HUDRegistry instance = null;
 

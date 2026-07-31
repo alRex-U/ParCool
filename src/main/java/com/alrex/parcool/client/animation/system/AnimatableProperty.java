@@ -1,7 +1,11 @@
 package com.alrex.parcool.client.animation.system;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import java.util.List;
 
+@OnlyIn(Dist.CLIENT)
 public enum AnimatableProperty {
     TRANSLATE_X(0),
     TRANSLATE_Y(0),

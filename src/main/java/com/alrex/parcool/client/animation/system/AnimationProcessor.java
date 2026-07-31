@@ -10,11 +10,14 @@ import com.alrex.parcool.client.animation.system.resource.AnimationResourceManag
 import com.mojang.math.Quaternion;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.util.Mth;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+@OnlyIn(Dist.CLIENT)
 public class AnimationProcessor {
     private record WorkingAnimationEntry(AnimationSets.Entry registration, WorkingAnimationSet animator) {
     }

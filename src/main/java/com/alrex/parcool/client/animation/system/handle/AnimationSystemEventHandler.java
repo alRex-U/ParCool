@@ -2,10 +2,13 @@ package com.alrex.parcool.client.animation.system.handle;
 
 import com.alrex.parcool.client.animation.system.IPlayerAnimatorHolder;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+@OnlyIn(Dist.CLIENT)
 public class AnimationSystemEventHandler {
     @SubscribeEvent
     public static void onTick(TickEvent.ClientTickEvent event) {

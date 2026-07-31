@@ -13,9 +13,12 @@ import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
+@OnlyIn(Dist.CLIENT)
 public class ParCoolGuideScreen extends ParCoolTabletScreen {
     private static final int SIDE_PANEL_WIDTH_OPENED = 90;
     private static final int SIDE_PANEL_WIDTH_CLOSED = 13;

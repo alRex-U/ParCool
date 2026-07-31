@@ -17,6 +17,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Supplier;
 
+@OnlyIn(Dist.CLIENT)
 public class AnimationResourceManager extends SimplePreparableReloadListener<AnimationResource> {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final TypeToken<List<JsonAnimationSet>> ANIMATION_SETS_TYPE = new TypeToken<>() {

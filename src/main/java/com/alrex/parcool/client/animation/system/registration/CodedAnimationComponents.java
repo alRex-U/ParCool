@@ -9,9 +9,12 @@ import com.alrex.parcool.client.animation.system.util.EntityUtil;
 import com.mojang.math.Vector3f;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
+@OnlyIn(Dist.CLIENT)
 public class CodedAnimationComponents extends BasicRegistry<CodedAnimationComponent, CodedAnimationComponents.RegistrationEntry> {
     public record RegistrationEntry(ResourceLocation name, CodedAnimationComponent component) {
     }

@@ -5,10 +5,13 @@ import com.alrex.parcool.client.animation.system.AnimatableProperty;
 import com.alrex.parcool.client.animation.system.math.Vec3f;
 import com.mojang.math.Quaternion;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
 
+@OnlyIn(Dist.CLIENT)
 public record StaticAnimationComponent(
         EnumMap<AnimatableModelPart, EnumMap<AnimatableProperty, Timeline>> animationCurves,
         int duration

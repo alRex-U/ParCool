@@ -6,9 +6,12 @@ import com.alrex.parcool.client.animation.system.resource.Argument;
 import com.alrex.parcool.client.animation.system.util.EntityUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
+@OnlyIn(Dist.CLIENT)
 public class AnimationProgresses extends BasicRegistry<AnimationProgress, AnimationProgresses.RegistrationEntry<?>> {
     public record RegistrationEntry<T extends AnimationProgress>(
             ResourceLocation name,

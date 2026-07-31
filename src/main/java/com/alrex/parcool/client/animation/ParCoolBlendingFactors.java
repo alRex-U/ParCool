@@ -9,7 +9,10 @@ import com.alrex.parcool.client.animation.system.registration.ID;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ParCoolActions;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class ParCoolBlendingFactors {
     public final ID<IBlendingFactor> HANG_ON_LEFT_TO_WALL = BlendingFactors.getInstance()
             .register(new ResourceLocation(ParCool.MOD_ID, "builtin/hang_on_left_to_wall"), (args, method) ->

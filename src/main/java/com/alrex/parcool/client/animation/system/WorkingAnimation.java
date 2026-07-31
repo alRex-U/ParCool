@@ -4,11 +4,14 @@ import com.alrex.parcool.client.animation.system.data.AnimationComponentGroup;
 import com.alrex.parcool.client.animation.system.data.IAnimationComponent;
 import com.alrex.parcool.client.animation.system.data.Transform;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.List;
 
+@OnlyIn(Dist.CLIENT)
 public class WorkingAnimation implements IWorkingAnimation {
     public record Component(
             IAnimationComponent component,

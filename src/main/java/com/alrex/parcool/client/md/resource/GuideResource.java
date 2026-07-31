@@ -3,6 +3,8 @@ package com.alrex.parcool.client.md.resource;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.client.md.CompiledMarkdown;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+@OnlyIn(Dist.CLIENT)
 public class GuideResource {
     public static GuideResource empty() {
         return new GuideResource(Collections.emptyList(), Collections.emptyMap());

@@ -2,12 +2,15 @@ package com.alrex.parcool.client.md;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 
+@OnlyIn(Dist.CLIENT)
 public class MarkdownParser {
     private static final MarkdownParagraph.HorizontalLine HORIZONTAL_LINE = new MarkdownParagraph.HorizontalLine();
     private static final MarkdownText.LineBreak LINE_BREAK = new MarkdownText.LineBreak();

@@ -11,6 +11,8 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.Tuple;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+@OnlyIn(Dist.CLIENT)
 public class ParCoolGuidePageList extends AbstractWidget {
     private static final int ROW_HEIGHT = 13;
     private final List<Tuple<Component, List<Tuple<Component, PageEntry>>>> pages;

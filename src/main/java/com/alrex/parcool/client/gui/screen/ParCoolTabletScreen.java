@@ -10,10 +10,13 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+@OnlyIn(Dist.CLIENT)
 public class ParCoolTabletScreen extends Screen {
     public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(ParCool.MOD_ID, "textures/gui/parcool_screen.png");
     protected static final int FRAME_WIDTH = 256;

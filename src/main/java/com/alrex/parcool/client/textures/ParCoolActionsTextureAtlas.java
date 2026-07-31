@@ -7,12 +7,15 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.TextureAtlasHolder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.TreeSet;
 import java.util.stream.Stream;
 
+@OnlyIn(Dist.CLIENT)
 public class ParCoolActionsTextureAtlas extends TextureAtlasHolder {
     public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(ParCool.MOD_ID, "textures/atlas/action_icons.png");
 

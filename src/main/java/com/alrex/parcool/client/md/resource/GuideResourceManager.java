@@ -14,6 +14,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+@OnlyIn(Dist.CLIENT)
 public class GuideResourceManager extends SimplePreparableReloadListener<GuideResource> {
     private static final ResourceLocation PAGES_LOCATION = new ResourceLocation(ParCool.MOD_ID, "parcool_guide/pages.json");
     private static final Logger LOGGER = LogManager.getLogger();

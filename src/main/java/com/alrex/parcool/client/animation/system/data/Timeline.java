@@ -1,7 +1,11 @@
 package com.alrex.parcool.client.animation.system.data;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import java.util.TreeMap;
 
+@OnlyIn(Dist.CLIENT)
 public class Timeline {
     private final TreeMap<Float, Transition> transitions = new TreeMap<>();
 

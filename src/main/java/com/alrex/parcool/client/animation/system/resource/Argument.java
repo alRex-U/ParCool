@@ -1,8 +1,12 @@
 package com.alrex.parcool.client.animation.system.resource;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import java.util.Collections;
 import java.util.Map;
 
+@OnlyIn(Dist.CLIENT)
 public class Argument {
     public static final Argument EMPTY = new Argument(Collections.emptyMap());
 

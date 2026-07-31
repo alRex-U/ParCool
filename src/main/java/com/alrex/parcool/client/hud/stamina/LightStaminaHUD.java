@@ -11,10 +11,13 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 
 import static com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas.*;
 
+@OnlyIn(Dist.CLIENT)
 public class LightStaminaHUD extends GuiComponent implements IStaminaHUD {
 	private boolean valueChanging;
 	private int tickValueChangingOrNotChanging;

@@ -14,6 +14,8 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
+@OnlyIn(Dist.CLIENT)
 public class SkillTreeWidget extends AbstractWidget {
     private final List<SkillTreeActionIcon> icons;
     private final List<ConnectivityWidget> connectivities;

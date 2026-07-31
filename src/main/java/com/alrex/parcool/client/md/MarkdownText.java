@@ -1,9 +1,12 @@
 package com.alrex.parcool.client.md;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 
+@OnlyIn(Dist.CLIENT)
 public interface MarkdownText {
     record ExternalLink(String text, String url) implements MarkdownText {
     }

@@ -1,8 +1,12 @@
 package com.alrex.parcool.client.input;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import java.util.LinkedList;
 import java.util.List;
 
+@OnlyIn(Dist.CLIENT)
 public class KeyInputCommand {
     private boolean active = false;
     private byte currentProgress = 0;

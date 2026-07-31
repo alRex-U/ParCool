@@ -1,7 +1,10 @@
 package com.alrex.parcool.client.animation.system.math;
 
 import com.mojang.math.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public record Vec3f(float x, float y, float z) {
     public static final Vec3f ZERO = new Vec3f(0f, 0f, 0f);
 

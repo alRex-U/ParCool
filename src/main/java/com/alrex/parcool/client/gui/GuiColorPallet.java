@@ -1,5 +1,9 @@
 package com.alrex.parcool.client.gui;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT)
 public record GuiColorPallet(
         int primary,
         int primaryLight,
