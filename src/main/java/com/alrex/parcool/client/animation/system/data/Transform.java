@@ -55,9 +55,9 @@ public record Transform(Vec3f translation, Quaternion rotation) {
         return new Transform(translation.add(after.translation.scale(t)), rot);
     }
 
-    public void applyInQuaternion(ModelPart part, float blendingFactor) {
+    public void applyInQuaternion(ModelPart part, float blendingFactor, boolean useShortestPath) {
         var modelRot = MathUtil.fromModelPartRotation(-part.xRot, -part.yRot, part.zRot);
-        var appliedRotation = MathUtil.slerp(blendingFactor, modelRot, rotation, true);
+        var appliedRotation = MathUtil.slerp(blendingFactor, modelRot, rotation, useShortestPath);
 
         applyTransformation(
                 part,

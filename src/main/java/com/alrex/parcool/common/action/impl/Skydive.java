@@ -5,13 +5,18 @@ import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
+import com.alrex.parcool.common.action.IRequestable;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
-public class Skydive extends ContinuableAction {
-    private static final byte TRANSITION_TICK = 5;
+public class Skydive extends ContinuableAction implements IRequestable<Skydive.RequestContext> {
+
+    public record RequestContext() {
+    }
+
+    private static final byte TRANSITION_TICK = 10;
     private final SynchronizedDataHolder dataHolder;
     private final SynchronizedProperty<Byte> propertyMovingForwardTick;
     private final SynchronizedProperty<Byte> propertyMovingLeftTick;
@@ -29,6 +34,11 @@ public class Skydive extends ContinuableAction {
     }
 
     @Override
+    public SynchronizedDataHolder getSynchronizedData() {
+        return dataHolder;
+    }
+
+    @Override
     public boolean canContinue() {
         return !ParCoolKeyBinds.JUMP.state().isJustPressed();
     }
@@ -40,6 +50,13 @@ public class Skydive extends ContinuableAction {
         propertyMovingForwardTick.set((byte) 0);
         propertyMovingLeftTick.set((byte) 0);
         return ParCoolKeyBinds.JUMP.state().isJustPressed();
+    }
+
+    @Override
+    public boolean canStart(RequestContext requestContext) {
+        propertyMovingForwardTick.set((byte) 0);
+        propertyMovingLeftTick.set((byte) 0);
+        return true;
     }
 
     @Override

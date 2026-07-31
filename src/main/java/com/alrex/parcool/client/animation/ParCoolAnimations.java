@@ -94,6 +94,21 @@ public class ParCoolAnimations {
             (p) -> Parkourability.get(p).get(ParCoolActions.SKYDIVE).isDoing(),
             DIVE
     );
+    public final ID<AnimationSet> DIVE_IN_AIR = AnimationSets.getInstance().register(
+            new ResourceLocation(ParCool.MOD_ID, "dive_in_air"),
+            (p) -> Parkourability.get(p).get(ParCoolActions.DIVE).isDoing(),
+            null
+    );
+    public final ID<AnimationSet> SKYDIVE_IN_AIR = AnimationSets.getInstance().register(
+            new ResourceLocation(ParCool.MOD_ID, "skydive_in_air"),
+            (p) -> Parkourability.get(p).get(ParCoolActions.SKYDIVE).isDoing(),
+            DIVE_IN_AIR
+    );
+    public final ID<AnimationSet> DIVE_INTO_WATER = AnimationSets.getInstance().registerTimeout(
+            new ResourceLocation(ParCool.MOD_ID, "dive_into_water"),
+            100,
+            null
+    );
     public final ID<AnimationSet> JUMP_CHARGING = AnimationSets.getInstance().register(
             new ResourceLocation(ParCool.MOD_ID, "jump_charging"),
             (p) -> Parkourability.get(p).get(ParCoolActions.CHARGE_JUMP).isDoing(),

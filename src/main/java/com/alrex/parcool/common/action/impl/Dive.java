@@ -3,6 +3,7 @@ package com.alrex.parcool.common.action.impl;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
+import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.client.sound.DiveSoundInstance;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionExtension;
@@ -13,14 +14,17 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
 public class Dive extends ContinuableAction implements ActionExtension.JumpListener {
     private final SynchronizedDataHolder dataHolder;
     private final SynchronizedProperty<Float> propertyYSpeedOnBeginning;
+    private final SynchronizedProperty<Boolean> propertyStartInAir;
 
     // Only for client
     private float ySpeedO;
@@ -30,7 +34,8 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
     public Dive(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry, List.of(ParCoolActions.RIDE_ZIPLINE));
         dataHolder = SynchronizedDataHolder.create(entry,
-                propertyYSpeedOnBeginning = SynchronizedProperty.newFloat()
+                propertyYSpeedOnBeginning = SynchronizedProperty.newFloat(),
+                propertyStartInAir = SynchronizedProperty.newBoolean()
         );
     }
 
@@ -61,17 +66,37 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
 
     @Override
     public boolean canStart() {
-        if (!jumped) return false;
+        var player = parkourability.player();
+        if (!jumped) {
+            if (parkourability.getAdditionalProperties().getOnGroundDurations().durationNotDoing() <= 5
+                    || (player.position().y - player.yo) > -0.7
+            ) return false;
+            if (ParCoolKeyBinds.JUMP.state().getPressedDuration() > 5 || ParCoolKeyBinds.CRAWL.state().isJustPressed()) {
+                if (!checkEnoughSpaceBelow(player.level, player.position())) return false;
+                ySpeed = ySpeedO = (float) (player.position().y - player.yo);
+                propertyYSpeedOnBeginning.set(0.42f);
+                propertyStartInAir.set(true);
+                if (ParCoolKeyBinds.CRAWL.state().isJustPressed()) {
+                    parkourability.request(ParCoolActions.SKYDIVE, new Skydive.RequestContext());
+                }
+                return true;
+            }
+            return false;
+        }
         jumped = false;
-        if (!parkourability.player().isSprinting()) return false;
+        if (!player.isSprinting()) return false;
         if (!checkEnoughSpace()) return false;
-        propertyYSpeedOnBeginning.set(ySpeed = ySpeedO = (float) (parkourability.player().position().y - parkourability.player().yo));
+        propertyYSpeedOnBeginning.set(ySpeed = ySpeedO = (float) (player.position().y - player.yo));
+        propertyStartInAir.set(false);
         return true;
     }
 
     @Override
     public void onStartInClient() {
-        PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().DIVE);
+        PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(isStartedInAir()
+                ? AnimationRegistries.get().animations().DIVE_IN_AIR
+                : AnimationRegistries.get().animations().DIVE
+        );
     }
 
     @Override
@@ -81,8 +106,19 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
     }
 
     @Override
+    public void onStopInClient() {
+        if (parkourability.player().isInFluidType()) {
+            PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().DIVE_INTO_WATER);
+        }
+    }
+
+    @Override
     public void onJump() {
         jumped = true;
+    }
+
+    public boolean isStartedInAir() {
+        return propertyStartInAir.getOrDefaultIfNull(false);
     }
 
     private boolean checkEnoughSpace() {
@@ -90,7 +126,6 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
         var world = player.level;
         double width = player.getBbWidth() * 1.5;
         double height = player.getBbHeight() * 1.5;
-        double wideWidth = player.getBbWidth() * 2;
         var center = player.position();
         if (!world.isLoaded(new BlockPos(
                 Mth.floor(center.x()),
@@ -111,6 +146,13 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
             if (!world.noCollision(player, box)) return false;
         }
         center = center.add(diveDirection.scale(4));
+        return checkEnoughSpaceBelow(world, center);
+    }
+
+    private boolean checkEnoughSpaceBelow(Level world, Vec3 center) {
+        var player = parkourability.player();
+        double height = player.getBbHeight() * 1.5;
+        double wideWidth = player.getBbWidth() * 2;
         if (world.noCollision(new AABB(
                 center.x() - wideWidth,
                 center.y() - 7,

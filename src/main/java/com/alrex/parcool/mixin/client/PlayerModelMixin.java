@@ -51,16 +51,16 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends HumanoidM
 			if (transform == null) return;
 			var blendingFactor = transform.blendFactor();
 			var headTransform = transform.transformation().transforms().get(AnimatableModelPart.HEAD);
-			if (headTransform != null) headTransform.applyInQuaternion(head, blendingFactor);
+			if (headTransform != null) headTransform.applyInQuaternion(head, blendingFactor, true);
 			var rATransform = transform.transformation().transforms().get(AnimatableModelPart.RIGHT_ARM);
-			if (rATransform != null) rATransform.applyInQuaternion(rightArm, blendingFactor);
+			if (rATransform != null) rATransform.applyInQuaternion(rightArm, blendingFactor, false);
 			var rLTransform = transform.transformation().transforms().get(AnimatableModelPart.RIGHT_LEG);
-			if (rLTransform != null) rLTransform.applyInQuaternion(rightLeg, blendingFactor);
+			if (rLTransform != null) rLTransform.applyInQuaternion(rightLeg, blendingFactor, false);
 			var lATransform = transform.transformation().transforms().get(AnimatableModelPart.LEFT_ARM);
-			if (lATransform != null) lATransform.applyInQuaternion(leftArm, blendingFactor);
+			if (lATransform != null) lATransform.applyInQuaternion(leftArm, blendingFactor, false);
 			var lLTransform = transform.transformation().transforms().get(AnimatableModelPart.LEFT_LEG);
-			if (lLTransform != null) lLTransform.applyInQuaternion(leftLeg, blendingFactor);
-			Transform.NO_TRANSFORMATION.applyInQuaternion(body, blendingFactor);
+			if (lLTransform != null) lLTransform.applyInQuaternion(leftLeg, blendingFactor, false);
+			Transform.NO_TRANSFORMATION.applyInQuaternion(body, blendingFactor, true);
 		}
 	}
 

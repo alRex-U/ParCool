@@ -1,0 +1,14 @@
+{
+  "duration": 9,
+  "components": [
+    {
+      "name": "parcool:dive_into_water.json",
+      "progress": {
+        "name": "parcool:time",
+        "args": {
+          "max": 7
+        }
+      }
+    }
+  ]
+}

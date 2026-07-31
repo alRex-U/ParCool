@@ -175,8 +175,8 @@
     "animations": [
       {
         "main": "parcool:dive_group.json",
-        "fade_in_duration": 2,
-        "fade_out_duration": 5
+        "fade_in_duration": 4,
+        "fade_out_duration": 3
       }
     ]
   },
@@ -187,6 +187,36 @@
         "main": "parcool:skydive_group.json",
         "fade_in_duration": 8,
         "fade_out_duration": 8
+      }
+    ]
+  },
+  {
+    "name": "parcool:dive_in_air",
+    "animations": [
+      {
+        "main": "parcool:dive_group.json",
+        "fade_in_duration": 9,
+        "fade_out_duration": 3
+      }
+    ]
+  },
+  {
+    "name": "parcool:skydive_in_air",
+    "animations": [
+      {
+        "main": "parcool:skydive_group.json",
+        "fade_in_duration": 20,
+        "fade_out_duration": 8
+      }
+    ]
+  },
+  {
+    "name": "parcool:dive_into_water",
+    "animations": [
+      {
+        "main": "parcool:dive_into_water_group.json",
+        "fade_in_duration": 1,
+        "fade_out_duration": 4
       }
     ]
   },
