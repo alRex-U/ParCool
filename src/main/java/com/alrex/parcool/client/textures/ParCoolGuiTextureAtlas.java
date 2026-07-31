@@ -31,6 +31,9 @@ public class ParCoolGuiTextureAtlas extends TextureAtlasHolder {
     public static final ResourceLocation STAMINA_BRIGHT_HALF = register("hud/stamina_bright_half");
     public static final ResourceLocation STAMINA_BRIGHT_EMPTY = register("hud/stamina_bright_empty");
     public static final ResourceLocation STAMINA_FLUSH = register("hud/stamina_flush");
+    public static final ResourceLocation SKILLTREE_ACTION_UNAVAILABLE = register("icon/action_frame_unavailable");
+    public static final ResourceLocation SKILLTREE_ACTION_LOCKED = register("icon/action_frame_locked");
+    public static final ResourceLocation SKILLTREE_ACTION_UNLOCKED = register("icon/action_frame_unlocked");
 
     public ParCoolGuiTextureAtlas(TextureManager manager) {
         super(manager, TEXTURE_LOCATION, "gui/sprites");

@@ -2,8 +2,8 @@ package com.alrex.parcool.client.gui.components;
 
 import com.alrex.parcool.api.client.skilltree.SkillTree;
 import com.alrex.parcool.client.gui.GuiRenderUtil;
-import com.alrex.parcool.client.gui.screen.ParCoolTabletScreen;
 import com.alrex.parcool.client.textures.ParCoolActionsTextureAtlas;
+import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.action.ActionCapabilities;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -32,7 +32,7 @@ public class SkillTreeWidget extends AbstractWidget {
     @Nullable
     private SkillTree.Entry<?> selectedSkill;
     @Nullable
-    private Consumer<SkillTree.Entry<?>> selectionListener;
+    private final Consumer<SkillTree.Entry<?>> selectionListener;
     private double scrollX;
     private double scrollY;
     private float scale = 1f;
@@ -43,8 +43,8 @@ public class SkillTreeWidget extends AbstractWidget {
         super(x, y, width, height, Component.empty());
         this.capabilities = capabilities;
         this.selectionListener = selectionListener;
-        icons = new ArrayList<>();
-        connectivities = new ArrayList<>();
+        this.icons = new ArrayList<>();
+        this.connectivities = new ArrayList<>();
         var contentWidth = 0;
         var contentHeight = 0;
         for (var skillTree : skillTrees) {
@@ -222,24 +222,25 @@ public class SkillTreeWidget extends AbstractWidget {
 
         @Override
         public void renderButton(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-            RenderSystem.setShaderTexture(0, ParCoolTabletScreen.TEXTURE_LOCATION);
+            RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
             if (entry.isVisible(capabilities)) {
-                blit(poseStack,
-                        this.x, this.y, this.width, this.height,
-                        0f, 176f, 32, 32, 256, 256
-                );
-                RenderSystem.setShaderTexture(0, ParCoolActionsTextureAtlas.TEXTURE_LOCATION);
                 if (isHovered)
                     RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                 else
                     RenderSystem.setShaderColor(0.9f, 0.9f, 0.9f, 1f);
-                blit(poseStack, this.x, this.y, 0, this.width, this.height, ParCoolTextures.action(entry.getActionEntry()));
+                blit(poseStack, this.x, this.y, 0, this.width, this.height,
+                        ParCoolTextures.instance().getGuiSprite(entry.isUnlocked(capabilities)
+                                ? ParCoolGuiTextureAtlas.SKILLTREE_ACTION_UNLOCKED
+                                : ParCoolGuiTextureAtlas.SKILLTREE_ACTION_LOCKED
+                        )
+                );
+                if (visible) {
+                    RenderSystem.setShaderTexture(0, ParCoolActionsTextureAtlas.TEXTURE_LOCATION);
+                    blit(poseStack, this.x, this.y, 0, this.width, this.height, ParCoolTextures.action(entry.getActionEntry()));
+                }
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             } else {
-                blit(poseStack,
-                        this.x, this.y, this.width, this.height,
-                        32f, 176f, 32, 32, 256, 256
-                );
+                blit(poseStack, this.x, this.y, 0, this.width, this.height, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.SKILLTREE_ACTION_UNAVAILABLE));
             }
         }
 
