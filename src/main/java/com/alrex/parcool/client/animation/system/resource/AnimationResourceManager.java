@@ -1,9 +1,6 @@
 package com.alrex.parcool.client.animation.system.resource;
 
-import com.alrex.parcool.client.animation.system.AnimatableModelPart;
-import com.alrex.parcool.client.animation.system.AnimatableProperty;
-import com.alrex.parcool.client.animation.system.AnimationProgress;
-import com.alrex.parcool.client.animation.system.BlendMethod;
+import com.alrex.parcool.client.animation.system.*;
 import com.alrex.parcool.client.animation.system.data.*;
 import com.alrex.parcool.client.animation.system.registration.AnimationProgresses;
 import com.alrex.parcool.client.animation.system.registration.BlendingFactors;
@@ -26,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Supplier;
 
 public class AnimationResourceManager extends SimplePreparableReloadListener<AnimationResource> {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -256,10 +254,15 @@ public class AnimationResourceManager extends SimplePreparableReloadListener<Ani
                         continue;
                     }
                 }
+                var blend = animSet.getBlend();
+                Supplier<IBlendingFactor> blendingFactorSupplier = blend == null ? null : () -> BlendingFactors.getInstance().newInstance(
+                        blend.getName(), blend.getArgs(), blend.getBlendMethod()
+                );
                 compiledAnimList.add(
                         new AnimationSet(
                                 animSetsEntry.getKey(),
                                 intro, main, outro,
+                                blendingFactorSupplier,
                                 animSet.getFadeInDuration(),
                                 animSet.getFadeOutDuration(),
                                 animSet.getFpvBlend(),

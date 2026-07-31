@@ -16,6 +16,8 @@ public class WorkingAnimationSet {
     @Nullable
     private IWorkingAnimation currentAnimation;
     private final IAnimationController controller;
+    @Nullable
+    private final IBlendingFactor blendFactorOverVanilla;
     private int tickInPhase = 0;
     private int primaryTick = 0;
     private final int fadeInTick;
@@ -31,6 +33,8 @@ public class WorkingAnimationSet {
         this.mainAnimation = new WorkingAnimation(animationSet.mainAnimation());
         this.introAnimation = animationSet.introAnimation() != null ? new WorkingAnimation(animationSet.introAnimation()) : null;
         this.outroAnimation = animationSet.outroAnimation() != null ? new WorkingAnimation(animationSet.outroAnimation()) : null;
+        this.blendFactorOverVanilla = animationSet.blendingFactorSupplier() != null
+                ? animationSet.blendingFactorSupplier().get() : null;
         this.controller = controller;
         this.fadeInTick = animationSet.fadeInDuration();
         this.fadeOutTick = animationSet.fadeOutDuration();
@@ -88,6 +92,7 @@ public class WorkingAnimationSet {
                 startForceFinishing();
             }
         }
+        if (blendFactorOverVanilla != null) blendFactorOverVanilla.tick(player);
         if (currentAnimation != null) {
             currentAnimation.tick(player);
             if (currentAnimation.isFinished()) {
@@ -110,7 +115,7 @@ public class WorkingAnimationSet {
 
     public float getCurrentBlendFactor(boolean firstPersonView, float partialTick) {
         float tick = primaryTick + partialTick;
-        float fpvBlendScale = firstPersonView ? fpvBlend : 1f;
+        float fpvBlendScale = (firstPersonView ? fpvBlend : 1f);
         if (forceFinishingTick >= 0) {
             return EasingFunctions.QUAD.easeInOut(1 - ((forceFinishingTick + partialTick) / fadeOutTick)) * fpvBlendScale;
         }
@@ -125,6 +130,10 @@ public class WorkingAnimationSet {
             }
         }
         return fpvBlendScale;
+    }
+
+    public float getBlendFactorOverVanilla(AbstractClientPlayer player, float partial) {
+        return blendFactorOverVanilla == null ? 1f : blendFactorOverVanilla.getFactor(player, partial);
     }
 
     public void enter(AnimationPhase phase) {

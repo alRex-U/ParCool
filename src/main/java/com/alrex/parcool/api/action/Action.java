@@ -110,6 +110,7 @@ public abstract class Action {
 				|| (!option.availableWithFallFlying() && player.isFallFlying())
 				|| (option.needOnGround() && !player.isOnGround())
 				|| (option.needNotOnGround() && player.isOnGround())
+				|| player.getAbilities().flying
 				|| !parkourability.permit(entry)
 		) {
 			return false;

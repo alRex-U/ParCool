@@ -1,10 +1,13 @@
 package com.alrex.parcool.client.animation.system;
 
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.util.Mth;
 
 public class SimpleBlendFactor implements IBlendingFactor {
     private final Handler handler;
     private final BlendMethod method;
+    private float old;
+    private float current;
 
     public SimpleBlendFactor(Handler handler, BlendMethod method) {
         this.handler = handler;
@@ -13,11 +16,13 @@ public class SimpleBlendFactor implements IBlendingFactor {
 
     @Override
     public float getFactor(AbstractClientPlayer player, float partial) {
-        return handler.getFactor(player, partial);
+        return Mth.lerp(partial, old, current);
     }
 
     @Override
-    public void tick() {
+    public void tick(AbstractClientPlayer player) {
+        old = current;
+        current = handler.getFactor(player);
     }
 
     @Override
@@ -26,6 +31,6 @@ public class SimpleBlendFactor implements IBlendingFactor {
     }
 
     public interface Handler {
-        float getFactor(AbstractClientPlayer player, float partial);
+        float getFactor(AbstractClientPlayer player);
     }
 }

@@ -384,5 +384,22 @@
         "fade_out_duration": 10
       }
     ]
+  },
+  {
+    "name": "parcool:creative_fly",
+    "animations": [
+      {
+        "main": "parcool:creative_fly_group.json",
+        "fade_in_duration": 8,
+        "fade_out_duration": 8,
+        "blend_over_vanilla": {
+          "name": "parcool:velocity_forward",
+          "args": {
+            "min": 0,
+            "max": 0.4
+          }
+        }
+      }
+    ]
   }
 ]

@@ -73,7 +73,7 @@ public class WorkingAnimation implements IWorkingAnimation {
         }
         for (var component : components) {
             component.progress().tick(player);
-            if (component.blendingFactor != null) component.blendingFactor.tick();
+            if (component.blendingFactor != null) component.blendingFactor.tick(player);
         }
     }
 

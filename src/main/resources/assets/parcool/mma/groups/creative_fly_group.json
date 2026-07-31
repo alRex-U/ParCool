@@ -1,0 +1,23 @@
+{
+  "infinite": true,
+  "components": [
+    {
+      "name": "parcool:creative_fly_limbs.json"
+    },
+    {
+      "name": "parcool:builtin/bob_left_arm"
+    },
+    {
+      "name": "parcool:builtin/bob_left_leg"
+    },
+    {
+      "name": "parcool:builtin/bob_right_arm"
+    },
+    {
+      "name": "parcool:builtin/bob_right_leg"
+    },
+    {
+      "name": "parcool:builtin/rotate_body_to_move_pitch"
+    }
+  ]
+}

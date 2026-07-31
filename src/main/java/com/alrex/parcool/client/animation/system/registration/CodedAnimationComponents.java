@@ -5,6 +5,7 @@ import com.alrex.parcool.client.animation.system.AnimatableModelPart;
 import com.alrex.parcool.client.animation.system.data.CodedAnimationComponent;
 import com.alrex.parcool.client.animation.system.data.Transform;
 import com.alrex.parcool.client.animation.system.math.Vec3f;
+import com.alrex.parcool.client.animation.system.util.EntityUtil;
 import com.mojang.math.Vector3f;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -91,6 +92,15 @@ public class CodedAnimationComponents extends BasicRegistry<CodedAnimationCompon
         return new Transform(
                 new Vec3f(0, -0.6f, 0),
                 Vector3f.XP.rotation(Mth.lerp(player.getSwimAmount(partial), 0.0F, (float) Math.toRadians(swimRot)))
+        );
+    });
+    public final ID<CodedAnimationComponent> ROTATE_BODY_TO_MOVE_PITCH = register("builtin/rotate_body_to_move_pitch", (player, part, progress, partial, mirror) -> {
+        if (part != AnimatableModelPart.BODY) return null;
+        var posDiff = EntityUtil.getPositionDifference(player);
+        var horizontalLen = Math.sqrt(posDiff.x * posDiff.x + posDiff.z * posDiff.z);
+
+        return new Transform(Vec3f.ZERO,
+                Vector3f.XP.rotation((float) Math.atan2(posDiff.y(), horizontalLen) - Mth.HALF_PI)
         );
     });
 

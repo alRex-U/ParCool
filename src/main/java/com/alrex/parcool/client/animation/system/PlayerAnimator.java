@@ -72,4 +72,8 @@ public class PlayerAnimator {
     public void stopImmediately(ID<AnimationSet> id) {
         animationProcessor.stopImmediately(id);
     }
+
+    public boolean isIdle() {
+        return animationProcessor.isIdle();
+    }
 }

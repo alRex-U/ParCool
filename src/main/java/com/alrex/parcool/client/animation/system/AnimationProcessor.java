@@ -96,6 +96,9 @@ public class AnimationProcessor {
         }
     }
 
+    public boolean isIdle() {
+        return animators.isEmpty();
+    }
 
     @Nullable
     private WorkingAnimationEntry getWorkingAnimator(ID<AnimationSet> id) {
@@ -124,6 +127,7 @@ public class AnimationProcessor {
         var maxI = i;
         var transform = ModelTransform.NO_TRANSFORMATION;
         Vec3f cameraRotation = null;
+        float vanillaBlend = 1f;
         do {
             var animator = animators.get((animators.size() - 1) - i).animator;
             var thisAnimatorTransform = animator.getTransform(player, partial);
@@ -149,10 +153,13 @@ public class AnimationProcessor {
                     );
                 }
             }
-            if (i == maxI) factors[i] = 1f; // First animation is applied without blending
+            if (i == maxI) {
+                factors[i] = 1f; // First animation is applied without blending
+                vanillaBlend = animator.getBlendFactorOverVanilla(player, partial);
+            }
             transform = transform.morph(thisAnimatorTransform, factors[i]);
         } while ((--i) >= 0);
-        return BlendingModelTransform.from(transform, maxBlendFactor, cameraRotation);
+        return BlendingModelTransform.from(transform, maxBlendFactor * vanillaBlend, cameraRotation);
     }
 
     private boolean isWorking(ID<AnimationSet> id) {

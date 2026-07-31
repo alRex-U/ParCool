@@ -5,7 +5,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 public interface IBlendingFactor {
     float getFactor(AbstractClientPlayer player, float partial);
 
-    void tick();
+    void tick(AbstractClientPlayer player);
 
     BlendMethod getBlendMethod();
 }

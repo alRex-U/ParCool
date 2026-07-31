@@ -184,4 +184,9 @@ public class ParCoolAnimations {
             (p) -> Parkourability.get(p).get(ParCoolActions.FAST_SWIM).isDoing(),
             null
     );
+    public final ID<AnimationSet> CREATIVE_FLY = AnimationSets.getInstance().register(
+            new ResourceLocation(ParCool.MOD_ID, "creative_fly"),
+            (p) -> p.getAbilities().flying,
+            null
+    );
 }

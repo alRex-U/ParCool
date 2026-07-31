@@ -21,10 +21,6 @@ public class Skydive extends ContinuableAction implements IRequestable<Skydive.R
     private final SynchronizedProperty<Byte> propertyMovingForwardTick;
     private final SynchronizedProperty<Byte> propertyMovingLeftTick;
 
-    // Only for client
-    private byte oldMovingForwardTick;
-    private byte oldMovingLeftTick;
-
     public Skydive(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry);
         dataHolder = SynchronizedDataHolder.create(entry,
@@ -75,9 +71,7 @@ public class Skydive extends ContinuableAction implements IRequestable<Skydive.R
     @Override
     public void onWorkingTickInClient() {
         var oldMovingForwardTick = propertyMovingForwardTick.get();
-        if (oldMovingForwardTick != null) this.oldMovingForwardTick = oldMovingForwardTick;
         var oldMovingLeftTick = propertyMovingLeftTick.get();
-        if (oldMovingLeftTick != null) this.oldMovingLeftTick = oldMovingLeftTick;
     }
 
     @Override
@@ -85,28 +79,20 @@ public class Skydive extends ContinuableAction implements IRequestable<Skydive.R
         updateMovementProperties();
     }
 
-    public float getBlendingFactorLeanForward(float partial) {
-        var movingTick = propertyMovingForwardTick.get();
-        if (movingTick == null) return 0f;
-        return Mth.clamp(Mth.lerp(partial, oldMovingForwardTick, movingTick) / TRANSITION_TICK, 0, 1);
+    public float getBlendingFactorLeanForward() {
+        return Mth.clamp(propertyMovingForwardTick.getOrDefaultIfNull((byte) 0) / (float) TRANSITION_TICK, 0f, 1f);
     }
 
-    public float getBlendingFactorLeanBackward(float partial) {
-        var movingTick = propertyMovingForwardTick.get();
-        if (movingTick == null) return 0f;
-        return Mth.clamp(-Mth.lerp(partial, oldMovingForwardTick, movingTick) / TRANSITION_TICK, 0, 1);
+    public float getBlendingFactorLeanBackward() {
+        return Mth.clamp(-propertyMovingForwardTick.getOrDefaultIfNull((byte) 0) / (float) TRANSITION_TICK, 0f, 1f);
     }
 
-    public float getBlendingFactorLeanLeft(float partial) {
-        var movingTick = propertyMovingLeftTick.get();
-        if (movingTick == null) return 0f;
-        return Mth.clamp(Mth.lerp(partial, oldMovingLeftTick, movingTick) / TRANSITION_TICK, 0, 1);
+    public float getBlendingFactorLeanLeft() {
+        return Mth.clamp(propertyMovingLeftTick.getOrDefaultIfNull((byte) 0) / (float) TRANSITION_TICK, 0f, 1f);
     }
 
-    public float getBlendingFactorLeanRight(float partial) {
-        var movingTick = propertyMovingLeftTick.get();
-        if (movingTick == null) return 0f;
-        return Mth.clamp(-Mth.lerp(partial, oldMovingLeftTick, movingTick) / TRANSITION_TICK, 0, 1);
+    public float getBlendingFactorLeanRight() {
+        return Mth.clamp(-propertyMovingLeftTick.getOrDefaultIfNull((byte) 0) / (float) TRANSITION_TICK, 0f, 1f);
     }
 
     private void updateMovementProperties() {

@@ -1,6 +1,7 @@
 package com.alrex.parcool.proxy;
 
 import com.alrex.parcool.client.animation.AnimationRegistries;
+import com.alrex.parcool.client.animation.PassiveAnimationProcessor;
 import com.alrex.parcool.client.animation.system.config.AnimationSystemConfig;
 import com.alrex.parcool.client.animation.system.event.RegisterAnimationEntryEvent;
 import com.alrex.parcool.client.animation.system.handle.AnimationSystemEventHandler;
@@ -44,6 +45,7 @@ public class ClientProxy extends CommonProxy {
 		bus.register(InputHandler.class);
         bus.register(AnimationSystemEventHandler.class);
         bus.register(ParCoolSkillTrees.class);
+		bus.register(new PassiveAnimationProcessor());
 
 		var registerAnimationEntryEvent = new RegisterAnimationEntryEvent();
 		FMLJavaModLoadingContext.get().getModEventBus().post(registerAnimationEntryEvent);

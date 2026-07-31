@@ -34,7 +34,6 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
     private final SynchronizedProperty<Float> propertyBeginningYSpeed;
 
     private AnimationData currentAnimData = AnimationData.NONE;
-    private AnimationData oldAnimData = AnimationData.NONE;
     private short tickSinceCanceled = 0;
 
     private byte damageCoolTime;
@@ -84,7 +83,6 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
 
     @Override
     public void onWorkingTickInClient() {
-        oldAnimData = currentAnimData;
         currentAnimData = AnimationData.get(this, parkourability.player());
 
         var direction = propertyDirection.get();
@@ -162,16 +160,16 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
         return wallVec.asVec();
     }
 
-    public float getBlendFactorRightToWall(float partial) {
-        return Mth.lerp(partial, oldAnimData.blendFactorRightToWall, currentAnimData.blendFactorRightToWall);
+    public float getBlendFactorRightToWall() {
+        return currentAnimData.blendFactorRightToWall;
     }
 
-    public float getBlendFactorLeftToWall(float partial) {
-        return Mth.lerp(partial, oldAnimData.blendFactorLeftToWall, currentAnimData.blendFactorLeftToWall);
+    public float getBlendFactorLeftToWall() {
+        return currentAnimData.blendFactorLeftToWall;
     }
 
-    public float getBlendFactorBackToWall(float partial) {
-        return Mth.lerp(partial, oldAnimData.blendFactorBackToWall, currentAnimData.blendFactorBackToWall);
+    public float getBlendFactorBackToWall() {
+        return currentAnimData.blendFactorBackToWall;
     }
 
     @Override

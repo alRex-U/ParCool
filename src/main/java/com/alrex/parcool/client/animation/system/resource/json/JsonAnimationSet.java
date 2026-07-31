@@ -35,6 +35,9 @@ public class JsonAnimationSet {
         @SerializedName("camera_blend")
         @Nullable
         private float[] cameraBlending;
+        @Nullable
+        @SerializedName("blend_over_vanilla")
+        private JsonBlendingFactor blend;
 
         @Nullable
         public ResourceLocation getIntro() {
@@ -52,6 +55,11 @@ public class JsonAnimationSet {
 
         public float getFpvBlend() {
             return Mth.clamp(fpvBlend, 0, 1f);
+        }
+
+        @Nullable
+        public JsonBlendingFactor getBlend() {
+            return blend;
         }
 
         public int getFadeInDuration() {

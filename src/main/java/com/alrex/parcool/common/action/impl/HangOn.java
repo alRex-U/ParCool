@@ -35,7 +35,6 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
     private InteractingWallDirection oldDirection = null;
     // For Client
     private AnimationData currentAnimData = AnimationData.NONE;
-    private AnimationData oldAnimData = AnimationData.NONE;
 
     // Only for Local Client
     @Nullable
@@ -128,10 +127,7 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
 
     @Override
     public void onWorkingTickInOtherClient() {
-        currentAnimData = AnimationData.get(
-                this, this.parkourability.player(),
-                oldAnimData = currentAnimData
-        );
+        currentAnimData = AnimationData.get(this, this.parkourability.player(), currentAnimData);
     }
 
     @Override
@@ -165,20 +161,20 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
         return VectorUtil.lerp(partial, oldDirection.asVec(), direction.asVec()).normalize();
     }
 
-    public float getBlendFactorRightToWall(float partial) {
-        return Mth.lerp(partial, oldAnimData.blendFactorRightToWall, currentAnimData.blendFactorRightToWall);
+    public float getBlendFactorRightToWall() {
+        return currentAnimData.blendFactorRightToWall;
     }
 
-    public float getBlendFactorLeftToWall(float partial) {
-        return Mth.lerp(partial, oldAnimData.blendFactorLeftToWall, currentAnimData.blendFactorLeftToWall);
+    public float getBlendFactorLeftToWall() {
+        return currentAnimData.blendFactorLeftToWall;
     }
 
-    public float getBlendFactorBackToWall(float partial) {
-        return Mth.lerp(partial, oldAnimData.blendFactorBackToWall, currentAnimData.blendFactorBackToWall);
+    public float getBlendFactorBackToWall() {
+        return currentAnimData.blendFactorBackToWall;
     }
 
-    public float getBlendFactorMovingLeft(float partial) {
-        return Mth.lerp(partial, oldAnimData.blendFactorMovementLeft, currentAnimData.blendFactorMovementLeft);
+    public float getBlendFactorMovingLeft() {
+        return currentAnimData.blendFactorMovementLeft;
     }
 
     @Override

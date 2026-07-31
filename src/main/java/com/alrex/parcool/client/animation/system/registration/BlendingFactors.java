@@ -56,7 +56,7 @@ public class BlendingFactors extends BasicRegistry<IBlendingFactor, BlendingFact
 
     public final ID<IBlendingFactor> ONE = register(
             "one",
-            (args, method) -> new SimpleBlendFactor((player, partial) -> 1, method)
+            (args, method) -> new SimpleBlendFactor((player) -> 1, method)
     );
     public final ID<IBlendingFactor> TIME = register(
             "time",
@@ -71,7 +71,7 @@ public class BlendingFactors extends BasicRegistry<IBlendingFactor, BlendingFact
                     }
 
                     @Override
-                    public void tick() {
+                    public void tick(AbstractClientPlayer player) {
                         tick++;
                     }
 
@@ -87,7 +87,7 @@ public class BlendingFactors extends BasicRegistry<IBlendingFactor, BlendingFact
             (args, method) -> {
                 var min = Mth.clamp(args.request("min", 0f), 0f, 10f);
                 var max = Mth.clamp(args.request("max", 0.25f), min, 100f);
-                return new SimpleBlendFactor((player, partial) -> Mth.clamp(EasingFunctions.QUAD.easeInOut((float) ((player.position().subtract(player.xo, player.yo, player.zo).length() - min) / (max - min))), 0f, 1f), method);
+                return new SimpleBlendFactor((player) -> EasingFunctions.QUAD.easeInOut((float) Mth.clamp((player.position().subtract(player.xo, player.yo, player.zo).length() - min) / (max - min), 0d, 1d)), method);
             }
     );
     public final ID<IBlendingFactor> VELOCITY_VERTICAL = register(
@@ -95,7 +95,7 @@ public class BlendingFactors extends BasicRegistry<IBlendingFactor, BlendingFact
             (args, method) -> {
                 var min = Mth.clamp(args.request("min", 0f), 0f, 10f);
                 var max = Mth.clamp(args.request("max", 0.25f), min, 100f);
-                return new SimpleBlendFactor((player, partial) -> Mth.clamp(EasingFunctions.QUAD.easeInOut((float) ((player.position().y() - player.yo - min) / (max - min))), 0f, 1f), method);
+                return new SimpleBlendFactor((player) -> EasingFunctions.QUAD.easeInOut((float) Mth.clamp((player.position().y() - player.yo - min) / (max - min), 0d, 1d)), method);
             }
     );
     public final ID<IBlendingFactor> VELOCITY_HORIZONTAL = register(
@@ -103,31 +103,15 @@ public class BlendingFactors extends BasicRegistry<IBlendingFactor, BlendingFact
             (args, method) -> {
                 var min = Mth.clamp(args.request("min", 0f), 0f, 10f);
                 var max = Mth.clamp(args.request("max", 0.25f), min, 100f);
-                return new SimpleBlendFactor((player, partial) -> Mth.clamp(EasingFunctions.QUAD.easeInOut((float) (((new Vec3(player.position().x - player.xo, 0., player.position().z - player.zo)).length() - min) / (max - min))), 0f, 1f), method);
+                return new SimpleBlendFactor((player) -> EasingFunctions.QUAD.easeInOut((float) Mth.clamp(((new Vec3(player.position().x - player.xo, 0., player.position().z - player.zo)).length() - min) / (max - min), 0d, 1d)), method);
             }
     );
-    public final ID<IBlendingFactor> ANGULAR_VELOCITY_RIGHT = register(
-            "rotation_r",
+    public final ID<IBlendingFactor> VELOCITY_FORWARD = register(
+            "velocity_forward",
             (args, method) -> {
-                return new SimpleBlendFactor((player, partial) -> 0f, method);
-            }
-    );
-    public final ID<IBlendingFactor> ANGULAR_VELOCITY_LEFT = register(
-            "rotation_l",
-            (args, method) -> {
-                return new SimpleBlendFactor((player, partial) -> 0f, method);
-            }
-    );
-    public final ID<IBlendingFactor> ANGULAR_VELOCITY_UP = register(
-            "rotation_u",
-            (args, method) -> {
-                return new SimpleBlendFactor((player, partial) -> 0f, method);
-            }
-    );
-    public final ID<IBlendingFactor> ANGULAR_VELOCITY_DOWN = register(
-            "rotation_d",
-            (args, method) -> {
-                return new SimpleBlendFactor((player, partial) -> 0f, method);
+                var min = Mth.clamp(args.request("min", 0f), 0f, 10f);
+                var max = Mth.clamp(args.request("max", 0.25f), min, 100f);
+                return new SimpleBlendFactor((player) -> EasingFunctions.QUAD.easeInOut((float) Mth.clamp(((new Vec3(player.position().x - player.xo, 0., player.position().z - player.zo)).dot(player.getLookAngle()) - min) / (max - min), 0d, 1d)), method);
             }
     );
 }
