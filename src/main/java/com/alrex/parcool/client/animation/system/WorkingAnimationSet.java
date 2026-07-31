@@ -2,6 +2,7 @@ package com.alrex.parcool.client.animation.system;
 
 import com.alrex.parcool.client.animation.system.data.AnimationSet;
 import com.alrex.parcool.client.animation.system.math.EasingFunctions;
+import com.alrex.parcool.client.animation.system.math.Vec3f;
 import net.minecraft.client.player.AbstractClientPlayer;
 
 import javax.annotation.Nullable;
@@ -21,6 +22,8 @@ public class WorkingAnimationSet {
     private final int fadeOutTick;
     private final float fpvBlend;
     private final boolean mirror;
+    @Nullable
+    private final Vec3f cameraAnimationScales;
     private int forceFinishingTick = -1;
     private AnimationPhase phase;
 
@@ -32,6 +35,7 @@ public class WorkingAnimationSet {
         this.fadeInTick = animationSet.fadeInDuration();
         this.fadeOutTick = animationSet.fadeOutDuration();
         this.fpvBlend = animationSet.blendFactorInFirstPersonView();
+        this.cameraAnimationScales = animationSet.cameraAnimationScales();
         this.mirror = mirror;
         this.phase = animationSet.introAnimation() != null ? AnimationPhase.INTRO : AnimationPhase.MAIN;
         this.currentAnimation = getAnimation(phase);
@@ -49,6 +53,11 @@ public class WorkingAnimationSet {
 
     public IWorkingAnimation getMainAnimation() {
         return mainAnimation;
+    }
+
+    @Nullable
+    public Vec3f getCameraAnimationScale() {
+        return cameraAnimationScales;
     }
 
     @Nullable

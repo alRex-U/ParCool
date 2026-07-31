@@ -1,10 +1,15 @@
 package com.alrex.parcool.client.animation.system;
 
+import com.alrex.parcool.client.animation.system.config.AnimationSystemConfig;
 import com.alrex.parcool.client.animation.system.data.AnimationSet;
+import com.alrex.parcool.client.animation.system.math.MathUtil;
+import com.alrex.parcool.client.animation.system.math.Vec3f;
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.animation.system.registration.ID;
 import com.alrex.parcool.client.animation.system.resource.AnimationResourceManager;
+import com.mojang.math.Quaternion;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.util.Mth;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -116,13 +121,38 @@ public class AnimationProcessor {
             }
         }
         i--;
-        factors[i] = 1f; // First animation is applied without blending
+        var maxI = i;
         var transform = ModelTransform.NO_TRANSFORMATION;
+        Vec3f cameraRotation = null;
         do {
-            var animator = animators.get((animators.size() - 1) - i);
-            transform = transform.morph(animator.animator().getTransform(player, partial), factors[i]);
+            var animator = animators.get((animators.size() - 1) - i).animator;
+            var thisAnimatorTransform = animator.getTransform(player, partial);
+            if (thisAnimatorTransform == null) continue;
+            var cameraScale = animator.getCameraAnimationScale();
+            if (firstPersonView && cameraScale != null && AnimationSystemConfig.getInstance().enableCameraAnimation.get()) {
+                var bodyTrans = thisAnimatorTransform.transforms().get(AnimatableModelPart.BODY);
+                if (bodyTrans != null) {
+                    if (cameraRotation == null) cameraRotation = Vec3f.ZERO;
+                    var bodyQ = bodyTrans.rotation();
+                    var rot = new Quaternion(
+                            cameraScale.x() * bodyQ.i(),
+                            cameraScale.y() * bodyQ.j(),
+                            cameraScale.z() * bodyQ.k(),
+                            bodyQ.r()
+                    );
+                    rot.normalize();
+                    var bodyRot = MathUtil.toCameraRotation(rot);
+                    cameraRotation = new Vec3f(
+                            Mth.lerp(factors[i], cameraRotation.x(), bodyRot.x()),
+                            Mth.lerp(factors[i], cameraRotation.y(), bodyRot.y()),
+                            Mth.lerp(factors[i], cameraRotation.z(), bodyRot.z())
+                    );
+                }
+            }
+            if (i == maxI) factors[i] = 1f; // First animation is applied without blending
+            transform = transform.morph(thisAnimatorTransform, factors[i]);
         } while ((--i) >= 0);
-        return BlendingModelTransform.from(transform, maxBlendFactor);
+        return BlendingModelTransform.from(transform, maxBlendFactor, cameraRotation);
     }
 
     private boolean isWorking(ID<AnimationSet> id) {

@@ -71,6 +71,28 @@ public class MathUtil {
         return q;
     }
 
+    public static Vec3f toCameraRotation(Quaternion q) {
+        float xRot_pitch, yRot_yaw, zRot_roll;
+        xRot_pitch = (float) -Math.asin(2 * (q.j() * q.k() + q.i() * q.r()));
+        if (Math.abs(Math.cos(xRot_pitch)) > 1e-4) {
+            yRot_yaw = (float) -Math.atan2(
+                    q.j() * q.r() - q.i() * q.k(),
+                    q.r() * q.r() + q.k() * q.k() - 0.5
+            );
+            zRot_roll = (float) -Math.atan2(
+                    q.k() * q.r() - q.i() * q.j(),
+                    q.r() * q.r() + q.j() * q.j() - 0.5
+            );
+        } else {
+            yRot_yaw = 0;
+            zRot_roll = (float) -Math.atan2(
+                    q.k() * q.r() + q.i() * q.j(),
+                    q.r() * q.r() + q.i() * q.i() - 0.5
+            );
+        }
+        return new Vec3f(xRot_pitch, yRot_yaw, zRot_roll);
+    }
+
     public static Vec3f toModelPartRotation(Quaternion q) {
         float xRot, zRot, yRot = (float) Math.asin(2 * (-q.i() * q.k() + q.j() * q.r()));
         double cosY = Math.cos(yRot);

@@ -93,6 +93,7 @@ public class WorkingAnimation implements IWorkingAnimation {
                 if (transform == null) transform = Transform.NO_TRANSFORMATION;
                 var componentTransform = component.component.getTransform(player, modelPart, component.progress.getProgress(player, partialTick), partialTick, mirror);
                 if (componentTransform != null) {
+                    componentTransform.rotation().normalize();
                     switch (method) {
                         case ADD ->
                                 map.put(modelPart, transform.append(componentTransform, blendingValue, modelPart == AnimatableModelPart.BODY));

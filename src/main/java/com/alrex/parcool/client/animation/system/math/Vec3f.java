@@ -16,4 +16,16 @@ public record Vec3f(float x, float y, float z) {
     public Vector3f toVector3f() {
         return new Vector3f(x, y, z);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Vec3f vec3f) {
+            return x == vec3f.x && y == vec3f.y && z == vec3f.z;
+        }
+        return false;
+    }
+
+    public boolean isApproximatelyZero() {
+        return Math.abs(x) < 1e-5 && Math.abs(y) < 1e-5 && Math.abs(z) < 1e-5;
+    }
 }

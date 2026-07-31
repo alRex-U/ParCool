@@ -23,6 +23,7 @@ public class AnimationSystemConfig {
     private final ForgeConfigSpec builtConfig;
     private final TreeMap<ID<AnimationSet>, ForgeConfigSpec.BooleanValue> animationAvailabilities;
     public final ForgeConfigSpec.BooleanValue enableAnimation;
+    public final ForgeConfigSpec.BooleanValue enableCameraAnimation;
 
     public AnimationSystemConfig(AnimationSets animations) {
         var builder = new ForgeConfigSpec.Builder();
@@ -32,6 +33,7 @@ public class AnimationSystemConfig {
         builder.push("Animation");
         {
             enableAnimation = builder.define("enable", true);
+            enableCameraAnimation = builder.define("enable_camera_animation", true);
             builder.push("Availability");
             {
                 animationAvailabilities = new TreeMap<>();

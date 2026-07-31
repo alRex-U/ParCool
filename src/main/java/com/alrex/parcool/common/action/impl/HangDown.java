@@ -250,11 +250,15 @@ public class HangDown extends ContinuableAction {
     }
 
     public float getRotationAngle(float partial) {
-        return Mth.lerp(partial, oldAngle, propertyBodySwingAngleInRad.getOrDefaultIfNull(0f));
+        return isDoing()
+                ? Mth.lerp(partial, oldAngle, propertyBodySwingAngleInRad.getOrDefaultIfNull(0f))
+                : propertyBodySwingAngleInRad.getOrDefaultIfNull(0f);
     }
 
     public float getAngularSpeed(float partial) {
-        return Mth.lerp(partial, oldAngularSpeed, propertyBodyAngularSpeedInRad.getOrDefaultIfNull(0f));
+        return isDoing()
+                ? Mth.lerp(partial, oldAngularSpeed, propertyBodyAngularSpeedInRad.getOrDefaultIfNull(0f))
+                : propertyBodyAngularSpeedInRad.getOrDefaultIfNull(0f);
     }
 
     public float getBlendFactorOrthogonalToBar(float partial) {

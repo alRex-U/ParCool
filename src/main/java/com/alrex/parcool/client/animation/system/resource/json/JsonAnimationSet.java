@@ -1,7 +1,9 @@
 package com.alrex.parcool.client.animation.system.resource.json;
 
+import com.alrex.parcool.client.animation.system.math.Vec3f;
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -30,6 +32,9 @@ public class JsonAnimationSet {
         private int fadeInDuration = 0;
         @SerializedName("fade_out_duration")
         private int fadeOutDuration = 0;
+        @SerializedName("camera_blend")
+        @Nullable
+        private float[] cameraBlending;
 
         @Nullable
         public ResourceLocation getIntro() {
@@ -46,15 +51,25 @@ public class JsonAnimationSet {
         }
 
         public float getFpvBlend() {
-            return fpvBlend;
+            return Mth.clamp(fpvBlend, 0, 1f);
         }
 
         public int getFadeInDuration() {
-            return fadeInDuration;
+            return Math.max(0, fadeInDuration);
         }
 
         public int getFadeOutDuration() {
-            return fadeOutDuration;
+            return Math.max(0, fadeOutDuration);
+        }
+
+        @Nullable
+        public Vec3f getCameraAnimationScales() {
+            if (cameraBlending == null || cameraBlending.length != 3) return null;
+            return new Vec3f(
+                    Mth.clamp(cameraBlending[0], 0, 1),
+                    Mth.clamp(cameraBlending[1], 0, 1),
+                    Mth.clamp(cameraBlending[2], 0, 1)
+            );
         }
     }
 }

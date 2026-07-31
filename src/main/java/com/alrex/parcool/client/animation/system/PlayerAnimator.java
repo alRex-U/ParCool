@@ -30,7 +30,10 @@ public class PlayerAnimator {
     }
 
     private void updateTransformation(AbstractClientPlayer player, boolean firstPersonView, float partialTick) {
-        currentTransformation = animationProcessor.getTransformation(player, firstPersonView, partialTick);
+        if (AnimationSystemConfig.getInstance().enableAnimation.get())
+            currentTransformation = animationProcessor.getTransformation(player, firstPersonView, partialTick);
+        else
+            currentTransformation = null;
     }
 
     @Nullable

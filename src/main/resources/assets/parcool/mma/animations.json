@@ -141,7 +141,12 @@
       {
         "main": "parcool:breakfall_roll_group.json",
         "fade_in_duration": 2,
-        "fade_out_duration": 4
+        "fade_out_duration": 4,
+        "camera_blend": [
+          1,
+          1,
+          1
+        ]
       }
     ]
   },
@@ -271,7 +276,12 @@
       {
         "main": "parcool:hang_down_group.json",
         "fade_in_duration": 4,
-        "fade_out_duration": 5
+        "fade_out_duration": 8,
+        "camera_blend": [
+          0.4,
+          0,
+          0
+        ]
       }
     ]
   },

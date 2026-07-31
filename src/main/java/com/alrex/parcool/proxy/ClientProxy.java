@@ -3,7 +3,7 @@ package com.alrex.parcool.proxy;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.config.AnimationSystemConfig;
 import com.alrex.parcool.client.animation.system.event.RegisterAnimationEntryEvent;
-import com.alrex.parcool.client.animation.system.handle.TickEventHandler;
+import com.alrex.parcool.client.animation.system.handle.AnimationSystemEventHandler;
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.animation.system.resource.AnimationResourceManager;
 import com.alrex.parcool.client.hud.HUDRegistry;
@@ -42,7 +42,7 @@ public class ClientProxy extends CommonProxy {
 		bus.addListener(ParCoolKeyBinds::tick);
 		bus.register(HUDRegistry.getInstance());
 		bus.register(InputHandler.class);
-		bus.register(TickEventHandler.class);
+        bus.register(AnimationSystemEventHandler.class);
         bus.register(ParCoolSkillTrees.class);
 
 		var registerAnimationEntryEvent = new RegisterAnimationEntryEvent();

@@ -260,9 +260,10 @@ public class AnimationResourceManager extends SimplePreparableReloadListener<Ani
                         new AnimationSet(
                                 animSetsEntry.getKey(),
                                 intro, main, outro,
-                                Math.max(0, animSet.getFadeInDuration()),
-                                Math.max(0, animSet.getFadeOutDuration()),
-                                Mth.clamp(animSet.getFpvBlend(), 0f, 1f)
+                                animSet.getFadeInDuration(),
+                                animSet.getFadeOutDuration(),
+                                animSet.getFpvBlend(),
+                                animSet.getCameraAnimationScales()
                         )
                 );
             }
