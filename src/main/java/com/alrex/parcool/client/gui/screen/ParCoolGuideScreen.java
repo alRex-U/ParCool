@@ -17,29 +17,33 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.Stack;
 
 @OnlyIn(Dist.CLIENT)
 public class ParCoolGuideScreen extends ParCoolTabletScreen {
     private static final int SIDE_PANEL_WIDTH_OPENED = 90;
     private static final int SIDE_PANEL_WIDTH_CLOSED = 13;
-    @Nullable
-    private CompiledMarkdown content;
-    private ResourceLocation currentPage;
+
+    private record PageStackEntry(ResourceLocation page, @Nullable CompiledMarkdown content) {
+    }
+
+    private final Stack<PageStackEntry> pageStack = new Stack<>();
     @Nullable
     private ParCoolGuidePageList pageList;
     private boolean openSidePanel;
 
     public ParCoolGuideScreen(ResourceLocation dataLocation) {
         super(Component.empty(), GuiColorPallet.DEFAULT_LIGHT);
-        currentPage = dataLocation;
-        content = GuideResourceManager.getInstance().getResource().get(dataLocation);
+        var content = GuideResourceManager.getInstance().getResource().get(dataLocation);
         if (content == null) openSidePanel = true;
+        pageStack.push(new PageStackEntry(dataLocation, content));
     }
 
     @Override
     protected void init() {
         super.init();
         updateTopBarText();
+        var content = getCurrentContent();
         addRenderableOnly(new CardPanel(contentOffsetX, contentOffsetY, CONTENT_WIDTH, CONTENT_HEIGHT, content != null ? colors.surface() : colors.background()));
         int sideBarWidth = openSidePanel ? SIDE_PANEL_WIDTH_OPENED : SIDE_PANEL_WIDTH_CLOSED;
         if (content != null) {
@@ -73,7 +77,7 @@ public class ParCoolGuideScreen extends ParCoolTabletScreen {
                             sideBarWidth,
                             CONTENT_HEIGHT - 13,
                             colors.separator(),
-                            this::changePage
+                            this::pushPage
                     )
             );
             if (oldPageList != null) {
@@ -90,20 +94,49 @@ public class ParCoolGuideScreen extends ParCoolTabletScreen {
         super.renderContent(poseStack, mouseX, mouseY, partial);
     }
 
-    private void changePage(PageEntry page) {
-        if (currentPage != null && currentPage.equals(page.resourceLocation())) return;
-        currentPage = page.resourceLocation();
-        content = GuideResourceManager.getInstance().getResource().get(page);
+    private void pushPage(PageEntry page) {
+        if (!pageStack.isEmpty()) {
+            var currentPage = pageStack.lastElement();
+            if (currentPage != null && currentPage.page.equals(page.resourceLocation())) return;
+        }
+        var pageLocation = page.resourceLocation();
+        pageStack.push(new PageStackEntry(pageLocation, GuideResourceManager.getInstance().getResource().get(page)));
         rebuildWidgets();
         updateTopBarText();
     }
 
+    private void popPage() {
+        if (!pageStack.isEmpty()) pageStack.pop();
+        if (pageStack.isEmpty()) {
+            Minecraft.getInstance().setScreen(null);
+        } else {
+            rebuildWidgets();
+            updateTopBarText();
+        }
+    }
+
+    public ResourceLocation getCurrentPageId() {
+        return pageStack.lastElement().page();
+    }
+
+    @Nullable
+    public CompiledMarkdown getCurrentContent() {
+        if (pageStack.isEmpty()) return null;
+        return pageStack.lastElement().content();
+    }
+
     private void updateTopBarText() {
-        if (content == null) {
+        if (getCurrentContent() == null || pageStack.isEmpty()) {
             setTopBarText("prcl://guide/not_found");
         } else {
+            var currentPage = getCurrentPageId();
             setTopBarText(String.format("prcl://guide/%s/%s", currentPage.getNamespace(), currentPage.getPath()));
         }
+    }
+
+    @Override
+    protected void onPressTobBarButton() {
+        popPage();
     }
 
     private void openOrCloseSidePanel() {

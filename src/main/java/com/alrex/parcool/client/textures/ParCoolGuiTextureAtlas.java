@@ -34,6 +34,11 @@ public class ParCoolGuiTextureAtlas extends TextureAtlasHolder {
     public static final ResourceLocation SKILLTREE_ACTION_UNAVAILABLE = register("icon/action_frame_unavailable");
     public static final ResourceLocation SKILLTREE_ACTION_LOCKED = register("icon/action_frame_locked");
     public static final ResourceLocation SKILLTREE_ACTION_UNLOCKED = register("icon/action_frame_unlocked");
+    public static final ResourceLocation BUTTON_BACK = register("icon/button_back");
+    public static final ResourceLocation BUTTON_CLOSE = register("icon/button_close");
+    public static final ResourceLocation BUTTON_HAMBURGER = register("icon/button_hamburger");
+    public static final ResourceLocation BUTTON_HOME = register("icon/button_home");
+    public static final ResourceLocation ICON_EXPERIENCE = register("icon/icon_experience");
 
     public ParCoolGuiTextureAtlas(TextureManager manager) {
         super(manager, TEXTURE_LOCATION, "gui/sprites");

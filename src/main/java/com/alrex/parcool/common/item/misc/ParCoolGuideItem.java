@@ -40,7 +40,7 @@ public class ParCoolGuideItem extends Item {
                 MinecraftForge.EVENT_BUS.post(prepareEvent);
                 Minecraft.getInstance().setScreen(new SkillTreeScreen(Parkourability.get(player).getCapabilities(), prepareEvent.getSkillTrees()));
             } else {
-                Minecraft.getInstance().setScreen(new ParCoolGuideScreen(new ResourceLocation("parcool", "parcool_guide/welcome.md")));
+                Minecraft.getInstance().setScreen(new ParCoolGuideScreen(new ResourceLocation("parcool", "welcome.md")));
             }
         }
         return InteractionResultHolder.success(player.getItemInHand(hand));

@@ -5,6 +5,8 @@ import com.alrex.parcool.api.client.skilltree.SkillTree;
 import com.alrex.parcool.client.gui.GuiColorPallet;
 import com.alrex.parcool.client.gui.components.*;
 import com.alrex.parcool.client.md.resource.GuideResourceManager;
+import com.alrex.parcool.client.textures.ParCoolActionsTextureAtlas;
+import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.action.ActionCapabilities;
 import com.alrex.parcool.common.network.RequestUnlockActionPacket;
@@ -27,7 +29,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
     private WrappedTextWidget selectedSkillNameWidget;
     private FlatButton unlockButton;
     private FlatButton viewGuideButton;
-    private ImageWidget experienceIcon;
+    private ImageBySpriteWidget experienceIcon;
     private TextWidget costView;
     private TextWidget unlockedText;
     private CardPanel skillViewTab;
@@ -54,7 +56,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
         );
         skillViewTab = addRenderableOnly(new CardPanel(skillViewTabOffsetX, skillViewTabOffsetY, contentOffsetX + CONTENT_WIDTH - skillViewTabOffsetX, CONTENT_HEIGHT, colors.surface()));
         selectedSkillIconWidget = addRenderableOnly(
-                new ImageBySpriteWidget(skillViewTabOffsetX + 4, skillViewTabOffsetY + 4, skillViewTabWidth - 8, skillViewTabWidth - 8, null)
+                new ImageBySpriteWidget(skillViewTabOffsetX + 4, skillViewTabOffsetY + 4, skillViewTabWidth - 8, skillViewTabWidth - 8, ParCoolActionsTextureAtlas.TEXTURE_LOCATION, null)
         );
         selectedSkillNameWidget = addRenderableOnly(
                 new WrappedTextWidget(
@@ -96,12 +98,12 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                 )
         );
         experienceIcon = addRenderableOnly(
-                new ImageWidget(
+                new ImageBySpriteWidget(
                         skillViewTabOffsetX + 6,
                         viewGuideButton.y - 12,
                         8, 8,
-                        TEXTURE_LOCATION,
-                        0, 208, 8, 8
+                        ParCoolGuiTextureAtlas.TEXTURE_LOCATION,
+                        ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.ICON_EXPERIENCE)
                 )
         );
         costView = addRenderableOnly(
@@ -135,9 +137,9 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
         if (player == null) return;
         var playerExp = Component.literal(Integer.toString(player.experienceLevel)).withStyle(Style.EMPTY.withColor(colors.accent()));
         var expWidth = font.width(playerExp);
-        RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
+        RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
         var textOffset = selectedSkill != null ? skillViewTabOffsetX - expWidth - 2 : contentOffsetX + CONTENT_WIDTH - 2 - expWidth;
-        blit(poseStack, textOffset - 14, contentOffsetY + 3, 0, 208, 8, 8);
+        blit(poseStack, textOffset - 14, contentOffsetY + 3, 0, 8, 8, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.ICON_EXPERIENCE));
         font.drawShadow(poseStack, playerExp, textOffset, contentOffsetY + 3.5f, ~0);
     }
 
@@ -157,6 +159,12 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
     private void viewGuide() {
         if (selectedSkill == null) return;
         Minecraft.getInstance().setScreen(new ParCoolGuideScreen(GuideResourceManager.getLocation(selectedSkill.getActionEntry())));
+    }
+
+    @Override
+    protected void onPressTobBarButton() {
+        if (selectedSkill != null) onSkillSelectionChanged(null);
+        else Minecraft.getInstance().setScreen(null);
     }
 
     private void onSkillSelectionChanged(@Nullable SkillTree.Entry<?> selectedItem) {

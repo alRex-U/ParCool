@@ -2,12 +2,15 @@ package com.alrex.parcool.client.gui.screen;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.gui.GuiColorPallet;
+import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
+import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -48,7 +51,7 @@ public class ParCoolTabletScreen extends Screen {
         frameOffsetY = (height - FRAME_HEIGHT) / 2;
         contentOffsetX = frameOffsetX + 5;
         contentOffsetY = frameOffsetY + 19;
-        backButton = addWidget(new IconButton.Back(frameOffsetX + 7, frameOffsetY + 6, null));
+        backButton = addWidget(new IconButton.Back(frameOffsetX + 7, frameOffsetY + 6, this::onPressTobBarButton));
     }
 
     @Override
@@ -83,15 +86,13 @@ public class ParCoolTabletScreen extends Screen {
     }
 
     protected static class IconButton extends AbstractButton {
-        private final int texX;
-        private final int texY;
+        private final TextureAtlasSprite sprite;
         @Nullable
         private final Runnable pressListener;
 
-        public IconButton(int x, int y, int texX, int texY, @Nullable Runnable listener) {
+        public IconButton(int x, int y, TextureAtlasSprite sprite, @Nullable Runnable listener) {
             super(x, y, 11, 11, Component.empty());
-            this.texX = texX;
-            this.texY = texY;
+            this.sprite = sprite;
             this.pressListener = listener;
         }
 
@@ -100,8 +101,8 @@ public class ParCoolTabletScreen extends Screen {
             if (isHovered) {
                 RenderSystem.setShaderColor(0.8f, 0.8f, 0.8f, 1f);
             }
-            RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
-            blit(poseStack, x, y, texX, texY, width, height);
+            RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
+            blit(poseStack, x, y, 0, width, height, sprite);
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         }
 
@@ -116,25 +117,25 @@ public class ParCoolTabletScreen extends Screen {
 
         protected static class Back extends IconButton {
             public Back(int x, int y, @Nullable Runnable listener) {
-                super(x, y, 0, 160, listener);
+                super(x, y, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.BUTTON_BACK), listener);
             }
         }
 
         protected static class Home extends IconButton {
             public Home(int x, int y, @Nullable Runnable listener) {
-                super(x, y, 11, 160, listener);
+                super(x, y, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.BUTTON_HOME), listener);
             }
         }
 
         protected static class Hamburger extends IconButton {
             public Hamburger(int x, int y, @Nullable Runnable listener) {
-                super(x, y, 22, 160, listener);
+                super(x, y, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.BUTTON_HAMBURGER), listener);
             }
         }
 
         protected static class SlideToLeft extends IconButton {
             public SlideToLeft(int x, int y, @Nullable Runnable listener) {
-                super(x, y, 33, 160, listener);
+                super(x, y, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.BUTTON_CLOSE), listener);
             }
         }
     }
@@ -144,5 +145,8 @@ public class ParCoolTabletScreen extends Screen {
             Util.getPlatform().openUri(uri);
         }
         if (minecraft != null) minecraft.setScreen(this);
+    }
+
+    protected void onPressTobBarButton() {
     }
 }
