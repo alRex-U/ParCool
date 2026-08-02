@@ -188,23 +188,27 @@ public class SkillTreeWidget extends AbstractWidget {
 
         @Override
         public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+            int color = root.getSkillTreeEntry().isUnlocked(capabilities) ? 0xFFEEEEEE : 0xAA777777;
             var rootYCenter = root.y + root.getHeight() / 2;
-            int color = root.getSkillTreeEntry().isUnlocked(capabilities) ? 0xFFAAAAAA : 0xAA777777;
+            var rootXCenter = root.x + root.getWidth() / 2;
             if (leaves.isEmpty()) return;
             if (leaves.size() == 1) {
-                vLine(poseStack, root.x + root.getWidth() / 2, rootYCenter, leaves.get(0).y, color);
+                fill(poseStack, rootXCenter - 1, rootYCenter, rootXCenter + 2, leaves.get(0).y, 0xFF000000);
+                vLine(poseStack, rootXCenter, rootYCenter, leaves.get(0).y, color);
                 return;
             }
-            vLine(poseStack, root.x + root.getWidth() / 2, rootYCenter, yOfHLine, color);
-            int minX = Integer.MAX_VALUE;
-            int maxX = Integer.MIN_VALUE;
+            int minX = leaves.stream().map(leaf -> leaf.x + leaf.getWidth() / 2).min(Integer::compare).get();
+            int maxX = leaves.stream().map(leaf -> leaf.x + leaf.getWidth() / 2).max(Integer::compare).get();
+            fill(poseStack, minX - 1, yOfHLine - 1, maxX + 1, yOfHLine + 2, 0xFF000000);
+            hLine(poseStack, minX, maxX, yOfHLine, color);
             for (var leaf : leaves) {
                 var x = leaf.x + leaf.getWidth() / 2;
-                if (x < minX) minX = x;
-                if (maxX < x) maxX = x;
-                vLine(poseStack, x, yOfHLine, leaf.y + leaf.getHeight() / 2, color);
+                var y = leaf.y + leaf.getHeight() / 2;
+                fill(poseStack, x - 1, yOfHLine + 1, x + 2, y, 0xFF000000);
+                vLine(poseStack, x, yOfHLine, y, color);
             }
-            hLine(poseStack, minX, maxX, yOfHLine, color);
+            fill(poseStack, rootXCenter - 1, rootYCenter, rootXCenter + 2, yOfHLine, 0xFF000000);
+            vLine(poseStack, rootXCenter, rootYCenter, yOfHLine, color);
         }
     }
 
@@ -225,9 +229,9 @@ public class SkillTreeWidget extends AbstractWidget {
             RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
             if (entry.isVisible(capabilities)) {
                 if (isHovered)
-                    RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-                else
                     RenderSystem.setShaderColor(0.9f, 0.9f, 0.9f, 1f);
+                else
+                    RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                 blit(poseStack, this.x, this.y, 0, this.width, this.height,
                         ParCoolTextures.instance().getGuiSprite(entry.isUnlocked(capabilities)
                                 ? ParCoolGuiTextureAtlas.SKILLTREE_ACTION_UNLOCKED

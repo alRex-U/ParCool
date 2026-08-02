@@ -5,53 +5,40 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@OnlyIn(Dist.CLIENT)
-public class FlatButton extends AbstractButton {
-    private final int backColor;
+public class ImageBySpriteButton extends AbstractButton {
     private final int txtColor;
-    private final int shadowColor;
-    private final boolean shadow;
     private final Font font;
     @Nullable
     private final Runnable runnable;
+    private final ResourceLocation texLocation;
+    private final TextureAtlasSprite sprite;
 
-    public FlatButton(Font font, int x, int y, int width, Component text, int backColor, int txtColor, int shadowColor, boolean shadow) {
-        this(font, x, y, width, text, backColor, txtColor, shadowColor, shadow, null);
-    }
-
-    public FlatButton(Font font, int x, int y, int width, Component text, int backColor, int txtColor, int shadowColor, boolean shadow, @Nullable Runnable runnable) {
-        super(x, y, width, font.lineHeight + 8, text);
+    public ImageBySpriteButton(Font font, int x, int y, int width, int height, Component text, int txtColor, ResourceLocation texLocation, TextureAtlasSprite sprite, @Nullable Runnable onPressListener) {
+        super(x, y, width, height, text);
         this.font = font;
-        this.backColor = backColor;
         this.txtColor = txtColor;
-        this.shadowColor = shadowColor;
-        this.shadow = shadow;
-        this.runnable = runnable;
+        this.runnable = onPressListener;
+        this.texLocation = texLocation;
+        this.sprite = sprite;
     }
 
     @Override
     public void renderButton(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
-        renderFlatButton(poseStack, this.backColor, this.txtColor);
-    }
-
-    public void renderFlatButton(@Nonnull PoseStack poseStack, int backColor, int txtColor) {
-        if (shadow && active) {
-            fill(poseStack, x, y, x + width + 1, y + height + 1, shadowColor);
-        }
         if (active) {
             if (isHovered) RenderSystem.setShaderColor(0.85f, 0.85f, 0.85f, 0.85f);
             else RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         } else {
             RenderSystem.setShaderColor(0.5f, 0.5f, 0.5f, 0.5f);
         }
-        fill(poseStack, x, y, x + width, y + height, backColor);
+        RenderSystem.setShaderTexture(0, texLocation);
+        blit(poseStack, x, y, 0, width, height, sprite);
         var message = getMessage();
         font.draw(poseStack, message, x + (width - font.width(message)) / 2f, 1 + y + (height - font.lineHeight) / 2f, txtColor);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);

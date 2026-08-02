@@ -10,7 +10,6 @@ import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.action.ActionCapabilities;
 import com.alrex.parcool.common.network.RequestUnlockActionPacket;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -27,15 +26,16 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
     private SkillTreeWidget skilltreeWidget;
     private ImageBySpriteWidget selectedSkillIconWidget;
     private WrappedTextWidget selectedSkillNameWidget;
-    private FlatButton unlockButton;
-    private FlatButton viewGuideButton;
-    private ImageBySpriteWidget experienceIcon;
+    private ImageBySpriteButton unlockButton;
+    private ImageBySpriteButton viewGuideButton;
     private TextWidget costView;
     private TextWidget unlockedText;
-    private CardPanel skillViewTab;
+    private WidgetGroup unlockCostViewGroup;
+    private WidgetGroup actionUnlockStateViewGroup;
+    private WidgetGroup skillViewTabGroup;
+    private WidgetGroup currentExperienceViewGroup;
     @Nullable
     private SkillTree.Entry<?> selectedSkill;
-    private int skillViewTabOffsetX;
     private final ActionCapabilities capabilities;
     private final List<SkillTree> trees;
 
@@ -48,81 +48,77 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
     @Override
     protected void init() {
         super.init();
+        var player = Minecraft.getInstance().player;
+        if (player == null) return;
         int skillViewTabWidth = CONTENT_WIDTH - 190;
-        skillViewTabOffsetX = contentOffsetX + CONTENT_WIDTH - skillViewTabWidth;
+        int skillViewTabOffsetX = contentOffsetX + CONTENT_WIDTH - skillViewTabWidth;
         int skillViewTabOffsetY = contentOffsetY;
         skilltreeWidget = addRenderableWidget(
                 new SkillTreeWidget(trees, capabilities, contentOffsetX, contentOffsetY, 190, CONTENT_HEIGHT, this::onSkillSelectionChanged)
         );
-        skillViewTab = addRenderableOnly(new CardPanel(skillViewTabOffsetX, skillViewTabOffsetY, contentOffsetX + CONTENT_WIDTH - skillViewTabOffsetX, CONTENT_HEIGHT, colors.surface()));
-        selectedSkillIconWidget = addRenderableOnly(
-                new ImageBySpriteWidget(skillViewTabOffsetX + 4, skillViewTabOffsetY + 4, skillViewTabWidth - 8, skillViewTabWidth - 8, ParCoolActionsTextureAtlas.TEXTURE_LOCATION, null)
-        );
-        selectedSkillNameWidget = addRenderableOnly(
-                new WrappedTextWidget(
-                        font,
-                        skillViewTabOffsetX + 5,
-                        selectedSkillIconWidget.y + selectedSkillIconWidget.getHeight() + 4,
-                        skillViewTabWidth - 8,
-                        40,
-                        Component.empty(),
-                        colors.onSurface()
+        skillViewTabGroup = addRenderableWidget(
+                new WidgetGroup(
+                        skillViewTabOffsetX, skillViewTabOffsetY, contentOffsetX + CONTENT_WIDTH - skillViewTabOffsetX, CONTENT_HEIGHT,
+                        List.of(
+                                new CardPanel(0, 0, skillViewTabWidth, CONTENT_HEIGHT, colors.surface(), colors.shadow()).shadowLeft(true),
+                                new CardPanel(3, 2, skillViewTabWidth - 4, CONTENT_HEIGHT - 36, colors.surface(), colors.shadow()).shadowLeft(true).shadowRight(true).shadowTop(true).shadowBottom(true),
+                                selectedSkillIconWidget = new ImageBySpriteWidget(4, 4, skillViewTabWidth - 8, skillViewTabWidth - 8, ParCoolActionsTextureAtlas.TEXTURE_LOCATION, null),
+                                selectedSkillNameWidget = new WrappedTextWidget(
+                                        font,
+                                        3,
+                                        selectedSkillIconWidget.y + selectedSkillIconWidget.getHeight() + 4,
+                                        skillViewTabWidth - 5,
+                                        Component.empty(),
+                                        TextWidget.HorizontalAlignment.CENTER,
+                                        colors.onSurface()
+                                ).withShadow(true),
+                                unlockButton = new ImageBySpriteButton(
+                                        font, 3, CONTENT_HEIGHT - 17, 50, 15,
+                                        Component.translatable("parcool.gui.text.unlock"),
+                                        colors.onPrimary(),
+                                        ParCoolGuiTextureAtlas.TEXTURE_LOCATION,
+                                        ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.BASIC_BUTTON),
+                                        this::unlockSkill
+                                ),
+                                viewGuideButton = new ImageBySpriteButton(
+                                        font, 3, CONTENT_HEIGHT - 17, 50, 15,
+                                        Component.translatable("parcool.gui.text.open_guide"),
+                                        colors.onPrimary(),
+                                        ParCoolGuiTextureAtlas.TEXTURE_LOCATION,
+                                        ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.BASIC_BUTTON),
+                                        this::viewGuide
+                                ),
+                                actionUnlockStateViewGroup = new WidgetGroup(
+                                        (skillViewTabWidth - 50) / 2,
+                                        viewGuideButton.y - 13,
+                                        33, 11,
+                                        List.of(
+                                                new ImageBySpriteWidget(0, 0, 50, 11, ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.UNLOCK_COST_BOX)),
+                                                unlockCostViewGroup = new WidgetGroup(0, 0, 50, 11, List.of(
+                                                        new ImageBySpriteWidget(1, 1, 9, 9, ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.ICON_EXPERIENCE)),
+                                                        costView = new TextWidget(font, 13, 2, 34, Component.empty(), TextWidget.HorizontalAlignment.END, colors.accent()).withShadow(true)
+                                                ))
+                                        )
+                                ),
+                                unlockedText = new TextWidget(font, 0, viewGuideButton.y - 11, skillViewTabWidth,
+                                        Component.translatable("parcool.gui.text.unlocked"),
+                                        TextWidget.HorizontalAlignment.CENTER,
+                                        colors.accent()
+                                ).withShadow(true)
+                        )
                 )
         );
-        unlockButton = addRenderableWidget(
-                new FlatButton(
-                        font,
-                        skillViewTabOffsetX + 4,
-                        contentOffsetY + CONTENT_HEIGHT - 21,
-                        skillViewTabWidth - 8,
-                        Component.literal("Unlock"),
-                        colors.primary(),
-                        colors.onPrimary(),
-                        colors.shadow(),
-                        true,
-                        this::unlockSkill
-                )
-        );
-        viewGuideButton = addRenderableWidget(
-                new FlatButton(
-                        font,
-                        skillViewTabOffsetX + 4,
-                        contentOffsetY + CONTENT_HEIGHT - 21,
-                        skillViewTabWidth - 8,
-                        Component.literal("Guide"),
-                        colors.primary(),
-                        colors.onPrimary(),
-                        colors.shadow(),
-                        true,
-                        this::viewGuide
-                )
-        );
-        experienceIcon = addRenderableOnly(
-                new ImageBySpriteWidget(
-                        skillViewTabOffsetX + 6,
-                        viewGuideButton.y - 12,
-                        8, 8,
-                        ParCoolGuiTextureAtlas.TEXTURE_LOCATION,
-                        ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.ICON_EXPERIENCE)
-                )
-        );
-        costView = addRenderableOnly(
-                new TextWidget(font,
-                        experienceIcon.x + experienceIcon.getWidth() + 2,
-                        experienceIcon.y,
-                        40,
-                        Component.empty(),
-                        TextWidget.HorizontalAlignment.START, colors.accent()
-                )
-        );
-        unlockedText = addRenderableOnly(
-                new TextWidget(font,
-                        skillViewTabOffsetX,
-                        costView.y,
-                        skillViewTabWidth,
-                        Component.translatable("parcool.gui.text.unlocked"),
-                        TextWidget.HorizontalAlignment.CENTER,
-                        colors.accent()
+        var playerExpText = Component.literal(player.experienceLevel < 100 ? Integer.toString(player.experienceLevel) : "99+").withStyle(Style.EMPTY.withColor(colors.accent()));
+        currentExperienceViewGroup = addRenderableWidget(
+                new WidgetGroup(
+                        skillViewTabOffsetX - 35,
+                        contentOffsetY + 3,
+                        33, 11,
+                        List.of(
+                                new ImageBySpriteWidget(0, 0, 33, 11, ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.EXPERIENCE_BOX)),
+                                new ImageBySpriteWidget(1, 1, 9, 9, ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.ICON_EXPERIENCE)),
+                                new TextWidget(font, 13, 2, 17, playerExpText, TextWidget.HorizontalAlignment.END, ~0).withShadow(true)
+                        )
                 )
         );
         onSkillSelectionChanged(selectedSkill);
@@ -132,15 +128,6 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
     protected void renderContent(PoseStack poseStack, int mouseX, int mouseY, float partial) {
         fill(poseStack, contentOffsetX, contentOffsetY, contentOffsetX + CONTENT_WIDTH, contentOffsetY + CONTENT_HEIGHT, colors.background());
         super.renderContent(poseStack, mouseX, mouseY, partial);
-
-        var player = Minecraft.getInstance().player;
-        if (player == null) return;
-        var playerExp = Component.literal(Integer.toString(player.experienceLevel)).withStyle(Style.EMPTY.withColor(colors.accent()));
-        var expWidth = font.width(playerExp);
-        RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
-        var textOffset = selectedSkill != null ? skillViewTabOffsetX - expWidth - 2 : contentOffsetX + CONTENT_WIDTH - 2 - expWidth;
-        blit(poseStack, textOffset - 14, contentOffsetY + 3, 0, 8, 8, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.ICON_EXPERIENCE));
-        font.drawShadow(poseStack, playerExp, textOffset, contentOffsetY + 3.5f, ~0);
     }
 
     @Override
@@ -178,29 +165,28 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
         if (selectedItem != null) {
             if (selectedItem.isUnlocked(capabilities)) {
                 unlockButton.visible = false;
-                experienceIcon.visible = false;
-                costView.visible = false;
+                actionUnlockStateViewGroup.visible = false;
                 unlockedText.visible = true;
                 viewGuideButton.visible = true;
+                viewGuideButton.active = true;
             } else {
                 unlockButton.visible = true;
-                experienceIcon.visible = true;
-                costView.visible = true;
+                actionUnlockStateViewGroup.visible = true;
                 unlockedText.visible = false;
                 viewGuideButton.visible = false;
-                costView.setMessage(Component.literal(Integer.toString(selectedItem.getActionEntry().option().learningCost())));
-                unlockButton.active = player.experienceLevel >= selectedItem.getActionEntry().option().learningCost();
+                var learnCost = selectedItem.getActionEntry().option().learningCost();
+                costView.setMessage(Component.literal(
+                        learnCost + "/" + (player.experienceLevel < 100 ? Integer.toString(player.experienceLevel) : "99+")
+                ).withStyle(Style.EMPTY.withColor(player.experienceLevel >= learnCost ? colors.accent() : colors.onSurface())));
+                unlockButton.active = player.experienceLevel >= learnCost;
             }
-            skillViewTab.visible = true;
             skilltreeWidget.setWidth(190);
+            skillViewTabGroup.visible = true;
+            currentExperienceViewGroup.x = skilltreeWidget.x + skilltreeWidget.getWidth() - 35;
         } else {
-            skillViewTab.visible = false;
-            unlockButton.visible = false;
-            viewGuideButton.visible = false;
-            experienceIcon.visible = false;
-            costView.visible = false;
-            unlockedText.visible = false;
             skilltreeWidget.setWidth(CONTENT_WIDTH);
+            skillViewTabGroup.visible = false;
+            currentExperienceViewGroup.x = skilltreeWidget.x + skilltreeWidget.getWidth() - 35;
         }
         if (action != null) {
             setTopBarText("prcl://skilltree?a=" + action.id().getNamespace() + "." + action.id().getPath());

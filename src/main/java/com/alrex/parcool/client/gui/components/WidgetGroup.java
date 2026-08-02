@@ -1,0 +1,89 @@
+package com.alrex.parcool.client.gui.components;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
+
+import javax.annotation.Nonnull;
+import java.util.List;
+
+public class WidgetGroup extends AbstractWidget {
+    private final List<AbstractWidget> widgets;
+
+    public WidgetGroup(int x, int y, int width, int height, List<AbstractWidget> widgets) {
+        super(x, y, width, height, Component.empty());
+        this.widgets = widgets;
+    }
+
+    @Override
+    public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+    }
+
+    @Override
+    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+        if (!visible) return;
+        poseStack.pushPose();
+        poseStack.translate(x, y, 0);
+        mouseX -= x;
+        mouseY -= y;
+        for (var widget : widgets) {
+            widget.render(poseStack, mouseX, mouseY, partial);
+        }
+        poseStack.popPose();
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int click) {
+        if (!visible) return false;
+        mouseX -= x;
+        mouseY -= y;
+        for (var widget : widgets) {
+            if (widget.mouseClicked(mouseX, mouseY, click)) return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void mouseMoved(double mouseX, double mouseY) {
+        if (!visible) return;
+        mouseX -= x;
+        mouseY -= y;
+        for (var widget : widgets) {
+            widget.mouseMoved(mouseX, mouseY);
+        }
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
+        if (!visible) return false;
+        mouseX -= x;
+        mouseY -= y;
+        for (var widget : widgets) {
+            if (widget.mouseScrolled(mouseX, mouseY, scroll)) return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean keyPressed(int mouseX, int mouseY, int key) {
+        if (!visible) return false;
+        mouseX -= x;
+        mouseY -= y;
+        for (var widget : widgets) {
+            if (widget.keyPressed(mouseX, mouseY, key)) return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean keyReleased(int mouseX, int mouseY, int key) {
+        if (!visible) return false;
+        mouseX -= x;
+        mouseY -= y;
+        for (var widget : widgets) {
+            if (widget.keyReleased(mouseX, mouseY, key)) return true;
+        }
+        return false;
+    }
+}

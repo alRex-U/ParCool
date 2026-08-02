@@ -16,23 +16,23 @@ public class TextWidget extends AbstractWidget {
         START, CENTER, END
     }
 
-    private final Font font;
-    private final int txtColor;
-    private final boolean shadow;
-    private final HorizontalAlignment alignment;
+    protected final Font font;
+    protected final int txtColor;
+    protected boolean shadow;
+    protected final HorizontalAlignment alignment;
     private int messageWidth;
 
     public TextWidget(Font font, int x, int y, int width, Component message, HorizontalAlignment alignment, int txtColor) {
-        this(font, x, y, width, message, alignment, txtColor, false);
-    }
-
-    public TextWidget(Font font, int x, int y, int width, Component message, HorizontalAlignment alignment, int txtColor, boolean shadow) {
         super(x, y, width, font.lineHeight, message);
         this.font = font;
         this.txtColor = txtColor;
         this.alignment = alignment;
         this.messageWidth = font.width(getMessage());
-        this.shadow = shadow;
+    }
+
+    public TextWidget withShadow(boolean value) {
+        this.shadow = value;
+        return this;
     }
 
     @Override
