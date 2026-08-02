@@ -30,7 +30,8 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
     private ImageBySpriteButton viewGuideButton;
     private TextWidget costView;
     private TextWidget unlockedText;
-    private WidgetGroup unlockCostViewGroup;
+    private ToggleActionButton toggleActionButton;
+    private WidgetGroup actionUnlockedViewGroup;
     private WidgetGroup actionUnlockStateViewGroup;
     private WidgetGroup skillViewTabGroup;
     private WidgetGroup currentExperienceViewGroup;
@@ -61,7 +62,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                         skillViewTabOffsetX, skillViewTabOffsetY, contentOffsetX + CONTENT_WIDTH - skillViewTabOffsetX, CONTENT_HEIGHT,
                         List.of(
                                 new CardPanel(0, 0, skillViewTabWidth, CONTENT_HEIGHT, colors.surface(), colors.shadow()).shadowLeft(true),
-                                new CardPanel(3, 2, skillViewTabWidth - 4, CONTENT_HEIGHT - 36, colors.surface(), colors.shadow()).shadowLeft(true).shadowRight(true).shadowTop(true).shadowBottom(true),
+                                new CardPanel(2, 3, skillViewTabWidth - 4, CONTENT_HEIGHT - 50, colors.surface(), colors.shadow()).shadowLeft(true).shadowRight(true).shadowTop(true).shadowBottom(true),
                                 selectedSkillIconWidget = new ImageBySpriteWidget(4, 4, skillViewTabWidth - 8, skillViewTabWidth - 8, ParCoolActionsTextureAtlas.TEXTURE_LOCATION, null),
                                 selectedSkillNameWidget = new WrappedTextWidget(
                                         font,
@@ -91,20 +92,24 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                                 actionUnlockStateViewGroup = new WidgetGroup(
                                         (skillViewTabWidth - 50) / 2,
                                         viewGuideButton.y - 13,
-                                        33, 11,
+                                        50, 11,
                                         List.of(
                                                 new ImageBySpriteWidget(0, 0, 50, 11, ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.UNLOCK_COST_BOX)),
-                                                unlockCostViewGroup = new WidgetGroup(0, 0, 50, 11, List.of(
-                                                        new ImageBySpriteWidget(1, 1, 9, 9, ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.ICON_EXPERIENCE)),
-                                                        costView = new TextWidget(font, 13, 2, 34, Component.empty(), TextWidget.HorizontalAlignment.END, colors.accent()).withShadow(true)
-                                                ))
+                                                new ImageBySpriteWidget(1, 1, 9, 9, ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.ICON_EXPERIENCE)),
+                                                costView = new TextWidget(font, 13, 2, 34, Component.empty(), TextWidget.HorizontalAlignment.END, colors.accent()).withShadow(true)
                                         )
                                 ),
-                                unlockedText = new TextWidget(font, 0, viewGuideButton.y - 11, skillViewTabWidth,
-                                        Component.translatable("parcool.gui.text.unlocked"),
-                                        TextWidget.HorizontalAlignment.CENTER,
-                                        colors.accent()
-                                ).withShadow(true)
+                                actionUnlockedViewGroup = new WidgetGroup(
+                                        actionUnlockStateViewGroup.x, viewGuideButton.y - 26, 50, 26,
+                                        List.of(
+                                                unlockedText = new TextWidget(font, 0, 0, 50,
+                                                        Component.translatable("parcool.gui.text.unlocked"),
+                                                        TextWidget.HorizontalAlignment.CENTER,
+                                                        colors.accent()
+                                                ).withShadow(true),
+                                                toggleActionButton = new ToggleActionButton(0, 11)
+                                        )
+                                )
                         )
                 )
         );
@@ -166,13 +171,13 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
             if (selectedItem.isUnlocked(capabilities)) {
                 unlockButton.visible = false;
                 actionUnlockStateViewGroup.visible = false;
-                unlockedText.visible = true;
+                actionUnlockedViewGroup.visible = true;
                 viewGuideButton.visible = true;
                 viewGuideButton.active = true;
             } else {
                 unlockButton.visible = true;
                 actionUnlockStateViewGroup.visible = true;
-                unlockedText.visible = false;
+                actionUnlockedViewGroup.visible = false;
                 viewGuideButton.visible = false;
                 var learnCost = selectedItem.getActionEntry().option().learningCost();
                 costView.setMessage(Component.literal(
@@ -192,6 +197,27 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
             setTopBarText("prcl://skilltree?a=" + action.id().getNamespace() + "." + action.id().getPath());
         } else {
             setTopBarText("prcl://skilltree");
+        }
+    }
+
+    private class ToggleActionButton extends ImageBySpriteButton {
+        private boolean on;
+
+        public ToggleActionButton(int x, int y) {
+            super(font, x, y, 50, 13, Component.translatable("parcool.gui.text.enabled"), colors.onSurface(), ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.TOGGLE_BUTTON_ON), null);
+            on = true;
+        }
+
+        @Override
+        public void onPress() {
+            on = !on;
+            if (on) {
+                setMessage(Component.translatable("parcool.gui.text.enabled"));
+                setSprite(ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.TOGGLE_BUTTON_ON));
+            } else {
+                setMessage(Component.translatable("parcool.gui.text.disabled"));
+                setSprite(ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.TOGGLE_BUTTON_OFF));
+            }
         }
     }
 }

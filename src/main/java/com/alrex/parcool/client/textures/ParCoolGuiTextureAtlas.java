@@ -35,6 +35,8 @@ public class ParCoolGuiTextureAtlas extends TextureAtlasHolder {
     public static final ResourceLocation SKILLTREE_ACTION_UNLOCKED = register("icon/action_frame_unlocked");
     public static final ResourceLocation SKILLTREE_ACTION_LOCKED = register("icon/action_frame_locked");
     public static final ResourceLocation BASIC_BUTTON = register("icon/basic_button");
+    public static final ResourceLocation TOGGLE_BUTTON_ON = register("icon/toggle_button_on");
+    public static final ResourceLocation TOGGLE_BUTTON_OFF = register("icon/toggle_button_off");
     public static final ResourceLocation UNLOCK_COST_BOX = register("icon/unlock_cost_box");
     public static final ResourceLocation EXPERIENCE_BOX = register("icon/experience_box");
     public static final ResourceLocation ICON_EXPERIENCE = register("icon/icon_experience");

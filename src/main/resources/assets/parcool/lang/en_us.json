@@ -106,6 +106,8 @@
   "parcool.gui.text.unlocked": "Unlocked",
   "parcool.gui.text.unlock": "Unlock",
   "parcool.gui.text.open_guide": "Guide",
+  "parcool.gui.text.enabled": "Enabled",
+  "parcool.gui.text.disabled": "Disabled",
 
   "parcool.message.enabled": "ParCool : Enabled",
   "parcool.message.disabled": "ParCool : Disabled",

@@ -18,7 +18,7 @@ public class ImageBySpriteButton extends AbstractButton {
     @Nullable
     private final Runnable runnable;
     private final ResourceLocation texLocation;
-    private final TextureAtlasSprite sprite;
+    private TextureAtlasSprite sprite;
 
     public ImageBySpriteButton(Font font, int x, int y, int width, int height, Component text, int txtColor, ResourceLocation texLocation, TextureAtlasSprite sprite, @Nullable Runnable onPressListener) {
         super(x, y, width, height, text);
@@ -26,6 +26,10 @@ public class ImageBySpriteButton extends AbstractButton {
         this.txtColor = txtColor;
         this.runnable = onPressListener;
         this.texLocation = texLocation;
+        this.sprite = sprite;
+    }
+
+    public void setSprite(TextureAtlasSprite sprite) {
         this.sprite = sprite;
     }
 
