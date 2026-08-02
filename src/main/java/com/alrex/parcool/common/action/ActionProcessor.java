@@ -6,6 +6,7 @@ import com.alrex.parcool.api.action.ContinuableAction;
 import com.alrex.parcool.api.action.ParCoolActionEvent;
 import com.alrex.parcool.api.stamina.AbstractLocalStamina;
 import com.alrex.parcool.common.Parkourability;
+import com.alrex.parcool.common.network.ActionCapabilitiesPacket;
 import com.alrex.parcool.common.network.ActionStatePacket;
 import com.alrex.parcool.common.network.ActionStateSetPacket;
 import com.alrex.parcool.common.stamina.StaminaSynchronizationDepot;
@@ -64,9 +65,14 @@ public class ActionProcessor {
 		if (!synchronizedData.isEmpty()) {
 			onTick$sendSyncPacket(parkourability, event.side, synchronizedData);
 		}
-        if (player instanceof ServerPlayer serverPlayer && parkourability.getCapabilities().isDirty()) {
-            parkourability.getCapabilities().sync(serverPlayer);
-        }
+		if (player instanceof ServerPlayer serverPlayer) {
+			if (parkourability.getCapabilities().isDirty()) {
+				parkourability.getCapabilities().sync(serverPlayer, ActionCapabilitiesPacket.Target.CAPABILITY);
+			}
+			if (parkourability.getEnabledActions().isDirty()) {
+				parkourability.getEnabledActions().sync(serverPlayer, ActionCapabilitiesPacket.Target.ENABLED_ACTIONS);
+			}
+		}
 
 		parkourability.finishTicking();
 	}

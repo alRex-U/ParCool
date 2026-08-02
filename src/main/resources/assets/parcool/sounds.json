@@ -1,66 +1,66 @@
 {
   "action.breakfall": {
-    "subtitle": "parcool.sound.action.breakfall.subtitle",
+    "subtitle": "subtitle.parcool.action.breakfall",
     "sounds": [
       "parcool:action/breakfall"
     ]
   },
   "action.dodge": {
-    "subtitle": "parcool.sound.action.dodge.subtitle"
+    "subtitle": "subtitle.parcool.action.dodge"
   },
   "action.vault": {
-    "subtitle": "parcool.sound.action.vault.subtitle"
+    "subtitle": "subtitle.parcool.action.vault"
   },
   "action.hang_on": {
-    "subtitle": "parcool.sound.action.hang_on.subtitle"
+    "subtitle": "subtitle.parcool.action.hang_on"
   },
   "action.climb_up": {
-    "subtitle": "parcool.sound.action.climb_up.subtitle"
+    "subtitle": "subtitle.parcool.action.climb_up"
   },
   "action.wall_run": {
-    "subtitle": "parcool.sound.action.wall_run.subtitle"
+    "subtitle": "subtitle.parcool.action.wall_run"
   },
   "action.wall_jump": {
-    "subtitle": "parcool.sound.action.wall_jump.subtitle"
+    "subtitle": "subtitle.parcool.action.wall_jump"
   },
   "action.charge_jump": {
-    "subtitle": "parcool.sound.action.charge_jump.subtitle"
+    "subtitle": "subtitle.parcool.action.charge_jump"
   },
   "action.hang_down": {
-    "subtitle": "parcool.sound.action.hang_down.subtitle"
+    "subtitle": "subtitle.parcool.action.hang_down"
   },
   "action.pole_climb": {
-    "subtitle": "parcool.sound.action.pole_climb.subtitle"
+    "subtitle": "subtitle.parcool.action.pole_climb"
   },
   "action.slide": {
-    "subtitle": "parcool.sound.action.slide.subtitle",
+    "subtitle": "subtitle.parcool.action.slide",
     "sounds": [
       "parcool:action/slide.loop"
     ]
   },
   "action.h_wall_run": {
-    "subtitle": "parcool.sound.action.h_wall_run.subtitle"
+    "subtitle": "subtitle.parcool.action.h_wall_run"
   },
   "action.slide_down": {
-    "subtitle": "parcool.sound.action.slide_down.subtitle",
+    "subtitle": "subtitle.parcool.action.slide_down",
     "sounds": [
       "parcool:action/slide.loop"
     ]
   },
   "action.dive": {
-    "subtitle": "parcool.sound.action.dive.subtitle",
+    "subtitle": "subtitle.parcool.action.dive",
     "sounds": [
       "item/elytra/elytra_loop"
     ]
   },
   "action.zipline": {
-    "subtitle": "parcool.sound.action.zipline.subtitle",
+    "subtitle": "subtitle.parcool.action.zipline",
     "sounds": [
       "parcool:action/zipline.loop"
     ]
   },
   "zipline.set": {
-    "subtitle": "parcool.sound.zipline.set.subtitle",
+    "subtitle": "subtitle.parcool.zipline.set",
     "sounds": [
       "entity/leashknot/place1",
       "entity/leashknot/place2",
@@ -68,15 +68,24 @@
     ]
   },
   "zipline.remove": {
-    "subtitle": "parcool.sound.zipline.remove.subtitle",
+    "subtitle": "subtitle.parcool.zipline.remove",
     "sounds": [
       "minecraft:mob/sheep/shear"
     ]
   },
+  "skilltree.unlock": {
+    "subtitle": "subtitle.parcool.skilltree.unlock",
+    "sounds": [
+      {
+        "type": "event",
+        "name": "entity.player.levelup"
+      }
+    ]
+  },
   "parcool.enable": {
-    "subtitle": "parcool.sound.enable_parcool.subtitle"
+    "subtitle": "subtitle.parcool.enable_parcool"
   },
   "parcool.disable": {
-    "subtitle": "parcool.sound.disable_parcool.subtitle"
+    "subtitle": "subtitle.parcool.disable_parcool"
   }
 }

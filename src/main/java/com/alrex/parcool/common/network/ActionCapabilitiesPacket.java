@@ -3,27 +3,29 @@ package com.alrex.parcool.common.network;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionCapabilities;
-import com.alrex.parcool.common.stamina.ReadonlyStamina;
-import com.alrex.parcool.util.NetworkUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public record ActionCapabilitiesPacket(ActionCapabilities capabilities) {
+public record ActionCapabilitiesPacket(ActionCapabilities capabilities, Target target) {
+    public enum Target {
+        CAPABILITY, ENABLED_ACTIONS
+    }
     public static final IHandler<ActionCapabilitiesPacket> HANDLER = new IHandler<>() {
         @Override
         public void encode(ActionCapabilitiesPacket actionCapabilitiesPacket, FriendlyByteBuf packet) {
+            packet.writeByte(actionCapabilitiesPacket.target.ordinal());
             actionCapabilitiesPacket.capabilities.write(packet);
         }
 
         @Override
         public ActionCapabilitiesPacket decode(FriendlyByteBuf packet) {
+            var target = Target.values()[packet.readByte() % Target.values().length];
             var caps = new ActionCapabilities(ParCool.getActionRegistry());
             caps.read(packet);
-            return new ActionCapabilitiesPacket(caps);
+            return new ActionCapabilitiesPacket(caps, target);
         }
 
         @Override
@@ -36,7 +38,11 @@ public record ActionCapabilitiesPacket(ActionCapabilities capabilities) {
             var player = Minecraft.getInstance().player;
             if (player == null) return;
             var parkourability = Parkourability.get(player);
-            parkourability.updateActionCapability(packet.capabilities);
+            if (packet.target == Target.CAPABILITY) {
+                parkourability.updateActionCapability(packet.capabilities);
+            } else {
+                parkourability.updateEnabledActions(packet.capabilities);
+            }
         }
     };
 }

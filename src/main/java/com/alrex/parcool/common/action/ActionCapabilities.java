@@ -14,13 +14,24 @@ import java.util.Arrays;
 import java.util.TreeMap;
 
 public class ActionCapabilities {
-    private final TreeMap<String, boolean[]> capabilities;
+    private TreeMap<String, boolean[]> capabilities;
     private boolean dirty;
 
     public ActionCapabilities(ActionRegistry registry) {
         capabilities = new TreeMap<>();
         for (var group : registry.getRegisteredGroups().entrySet()) {
             capabilities.put(group.getKey(), new boolean[group.getValue().actions().size()]);
+        }
+    }
+
+    public ActionCapabilities(ActionRegistry registry, boolean initial) {
+        capabilities = new TreeMap<>();
+        for (var group : registry.getRegisteredGroups().entrySet()) {
+            var array = new boolean[group.getValue().actions().size()];
+            if (initial) {
+                Arrays.fill(array, true);
+            }
+            capabilities.put(group.getKey(), array);
         }
     }
 
@@ -59,9 +70,16 @@ public class ActionCapabilities {
         return dirty;
     }
 
-    public void sync(ServerPlayer owner) {
+    public void sync(ServerPlayer owner, ActionCapabilitiesPacket.Target target) {
         this.dirty = false;
-        ParCool.CONNECTION.send(PacketDistributor.PLAYER.with(() -> owner), new ActionCapabilitiesPacket(this));
+        ParCool.CONNECTION.send(PacketDistributor.PLAYER.with(() -> owner), new ActionCapabilitiesPacket(this, target));
+    }
+
+    public void copyFrom(ActionCapabilities capabilities) {
+        this.capabilities.clear();
+        for (var group : capabilities.capabilities.entrySet()) {
+            this.capabilities.put(group.getKey(), group.getValue().clone());
+        }
     }
 
     public CompoundTag saveToTag() {

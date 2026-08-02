@@ -38,7 +38,12 @@ public class ParCoolGuideItem extends Item {
             if (player.isShiftKeyDown()) {
                 var prepareEvent = new PrepareParCoolSkillTreeEvent();
                 MinecraftForge.EVENT_BUS.post(prepareEvent);
-                Minecraft.getInstance().setScreen(new SkillTreeScreen(Parkourability.get(player).getCapabilities(), prepareEvent.getSkillTrees()));
+                var parkourability = Parkourability.get(player);
+                Minecraft.getInstance().setScreen(new SkillTreeScreen(
+                        parkourability.getCapabilities(),
+                        parkourability.getEnabledActions(),
+                        prepareEvent.getSkillTrees()
+                ));
             } else {
                 Minecraft.getInstance().setScreen(new ParCoolGuideScreen(new ResourceLocation("parcool", "welcome.md")));
             }

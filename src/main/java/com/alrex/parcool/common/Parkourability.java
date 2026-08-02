@@ -27,14 +27,16 @@ public class Parkourability {
 	private final ActionSet actions;
 	private final TreeMap<ActionEntry<?>, Object> requestedContexts = new TreeMap<>();
 	private final Player player;
-    private ActionCapabilities capabilities;
+	private final ActionCapabilities capabilities;
+	private final ActionCapabilities enabledActionStates;
 	private IReadableStamina stamina;
 
 	public Parkourability(Player player, ActionRegistry registry) {
 		this.player = player;
 		this.actions = new ActionSet(this, registry);
 		this.properties = new AdditionalProperties(player);
-        this.capabilities = new ActionCapabilities(registry);
+		this.capabilities = new ActionCapabilities(registry, false);
+		this.enabledActionStates = new ActionCapabilities(registry, true);
 		if (player.isLocalPlayer()) {
 			var staminaProvider = ParCool.getStaminaTypeRegistry().getRegistry().get(ParCool.getConfig().server().getStaminaTypeID());
 			if (staminaProvider == null) {
@@ -74,6 +76,10 @@ public class Parkourability {
         return capabilities;
     }
 
+	public ActionCapabilities getEnabledActions() {
+		return enabledActionStates;
+	}
+
 	public void updateStaminaInRemote(ReadonlyStamina newStamina) {
 		if (stamina instanceof ReadonlyStamina) {
 			stamina = newStamina;
@@ -81,12 +87,16 @@ public class Parkourability {
 	}
 
     public void updateActionCapability(ActionCapabilities capabilities) {
-        this.capabilities = capabilities;
-    }
+		this.capabilities.copyFrom(capabilities);
+	}
+
+	public void updateEnabledActions(ActionCapabilities capabilities) {
+		this.enabledActionStates.copyFrom(capabilities);
+	}
 
 	public boolean permit(ActionEntry<?> actionEntry) {
         var config = ParCool.getConfig().server();
-        return config.get(actionEntry).permit().get() && (!config.enableSkillTree.get() || capabilities.can(actionEntry));
+		return config.get(actionEntry).permit().get() && (!config.enableSkillTree.get() || capabilities.can(actionEntry)) && enabledActionStates.can(actionEntry);
 	}
 
 	/// Request the action start.
@@ -119,16 +129,19 @@ public class Parkourability {
 	}
 
     public void copyFrom(Parkourability original) {
-        this.capabilities = original.capabilities;
+		this.capabilities.copyFrom(original.capabilities);
+		this.enabledActionStates.copyFrom(original.enabledActionStates);
     }
 
     public CompoundTag saveToTag() {
         var tag = new CompoundTag();
         tag.put("caps", capabilities.saveToTag());
+		tag.put("enabled", enabledActionStates.saveToTag());
         return tag;
     }
 
     public void readFrom(CompoundTag tag) {
         if (tag.get("caps") instanceof CompoundTag compoundCapTag) capabilities.readFromTag(compoundCapTag);
+		if (tag.get("enabled") instanceof CompoundTag compoundCapTag) enabledActionStates.readFromTag(compoundCapTag);
     }
 }

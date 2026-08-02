@@ -93,5 +93,11 @@ public class ClientProxy extends CommonProxy {
 				.encoder(RequestUnlockActionPacket.HANDLER::encode)
 				.consumerMainThread(RequestUnlockActionPacket.HANDLER::handleInPhysicalClient)
 				.add();
+		instance.messageBuilder(EnableActionPacket.class, index++)
+				.noResponse()
+				.decoder(EnableActionPacket.HANDLER::decode)
+				.encoder(EnableActionPacket.HANDLER::encode)
+				.consumerMainThread(EnableActionPacket.HANDLER::handleInPhysicalClient)
+				.add();
 	}
 }

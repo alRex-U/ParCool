@@ -28,6 +28,7 @@ public class ParCoolSoundEvents {
     public static final RegistryObject<SoundEvent> ZIPLINE_USE = register("action.zipline");
     public static final RegistryObject<SoundEvent> ZIPLINE_SET = register("zipline.set");
     public static final RegistryObject<SoundEvent> ZIPLINE_REMOVE = register("zipline.remove");
+    public static final RegistryObject<SoundEvent> SKILLTREE_UNLOCK = register("skilltree.unlock");
 
     private static RegistryObject<SoundEvent> register(String name) {
         return SOUNDS.register(name, () -> new SoundEvent(new ResourceLocation(ParCool.MOD_ID, name)));
