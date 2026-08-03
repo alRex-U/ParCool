@@ -87,7 +87,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                                         Component.translatable("parcool.gui.text.unlock"),
                                         colors.onPrimary(),
                                         ParCoolGuiTextureAtlas.TEXTURE_LOCATION,
-                                        ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.BASIC_BUTTON),
+                                        ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BASIC_BUTTON),
                                         this::unlockSkill
                                 ),
                                 viewGuideButton = new ImageBySpriteButton(
@@ -95,7 +95,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                                         Component.translatable("parcool.gui.text.open_guide"),
                                         colors.onPrimary(),
                                         ParCoolGuiTextureAtlas.TEXTURE_LOCATION,
-                                        ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.BASIC_BUTTON),
+                                        ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BASIC_BUTTON),
                                         this::viewGuide
                                 ),
                                 actionUnlockStateViewGroup = new WidgetGroup(
@@ -103,8 +103,8 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                                         viewGuideButton.y - 13,
                                         50, 11,
                                         List.of(
-                                                new ImageBySpriteWidget(0, 0, 50, 11, ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.UNLOCK_COST_BOX)),
-                                                new ImageBySpriteWidget(1, 1, 9, 9, ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.ICON_EXPERIENCE)),
+                                                new ImageBySpriteWidget(0, 0, 50, 11, ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.UNLOCK_COST_BOX)),
+                                                new ImageBySpriteWidget(1, 1, 9, 9, ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.ICON_EXPERIENCE)),
                                                 costView = new TextWidget(font, 13, 2, 34, Component.empty(), TextWidget.HorizontalAlignment.END, colors.accent()).withShadow(true)
                                         )
                                 ),
@@ -128,8 +128,8 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                         contentOffsetY + 3,
                         33, 11,
                         List.of(
-                                new ImageBySpriteWidget(0, 0, 33, 11, ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.EXPERIENCE_BOX)),
-                                new ImageBySpriteWidget(1, 1, 9, 9, ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.ICON_EXPERIENCE)),
+                                new ImageBySpriteWidget(0, 0, 33, 11, ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.EXPERIENCE_BOX)),
+                                new ImageBySpriteWidget(1, 1, 9, 9, ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.ICON_EXPERIENCE)),
                                 currentExperienceLevelView = new TextWidget(font, 13, 2, 17, Component.empty(), TextWidget.HorizontalAlignment.END, ~0).withShadow(true)
                         )
                 )
@@ -225,13 +225,14 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
         } else {
             setTopBarText("prcl://skilltree");
         }
+        updateWidgetVisibility();
     }
 
     private class ToggleActionButton extends ImageBySpriteButton {
         private boolean on;
 
         public ToggleActionButton(int x, int y) {
-            super(font, x, y, 50, 13, Component.translatable("parcool.gui.text.enabled"), colors.onSurface(), ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.TOGGLE_BUTTON_ON), null);
+            super(font, x, y, 50, 13, Component.translatable("parcool.gui.text.enabled"), colors.onSurface(), ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.TOGGLE_BUTTON_ON), null);
             on = true;
         }
 
@@ -246,10 +247,10 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
             on = enabledActions.can(selectedSkill.getActionEntry());
             if (on) {
                 setMessage(Component.translatable("parcool.gui.text.enabled"));
-                setSprite(ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.TOGGLE_BUTTON_ON));
+                setSprite(ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.TOGGLE_BUTTON_ON));
             } else {
                 setMessage(Component.translatable("parcool.gui.text.disabled"));
-                setSprite(ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.TOGGLE_BUTTON_OFF));
+                setSprite(ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.TOGGLE_BUTTON_OFF));
             }
         }
     }

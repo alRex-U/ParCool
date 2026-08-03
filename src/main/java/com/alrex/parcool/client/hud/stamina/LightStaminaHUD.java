@@ -67,24 +67,24 @@ public class LightStaminaHUD extends GuiComponent implements IStaminaHUD {
 			else fillPhase = 2;
 
 			if (currentContext.justFilled()) {
-				staminaSprite = ParCoolTextures.instance().getGuiSprite(STAMINA_FLUSH);
+                staminaSprite = ParCoolTextures.guiSprite(STAMINA_FLUSH);
 			} else if (inexhaustible) {
 				staminaSprite = switch (fillPhase) {
-					case 0 -> ParCoolTextures.instance().getGuiSprite(STAMINA_INEXHAUSTIBLE_EMPTY);
-					case 1 -> ParCoolTextures.instance().getGuiSprite(STAMINA_INEXHAUSTIBLE_HALF);
-					default -> ParCoolTextures.instance().getGuiSprite(STAMINA_INEXHAUSTIBLE_FULL);
+                    case 0 -> ParCoolTextures.guiSprite(STAMINA_INEXHAUSTIBLE_EMPTY);
+                    case 1 -> ParCoolTextures.guiSprite(STAMINA_INEXHAUSTIBLE_HALF);
+                    default -> ParCoolTextures.guiSprite(STAMINA_INEXHAUSTIBLE_FULL);
 				};
 			} else if (currentContext.exhausted()) {
 				staminaSprite = switch (fillPhase) {
-					case 0 -> ParCoolTextures.instance().getGuiSprite(STAMINA_EXHAUSTED_EMPTY);
-					case 1 -> ParCoolTextures.instance().getGuiSprite(STAMINA_EXHAUSTED_HALF);
-					default -> ParCoolTextures.instance().getGuiSprite(STAMINA_EXHAUSTED_FULL);
+                    case 0 -> ParCoolTextures.guiSprite(STAMINA_EXHAUSTED_EMPTY);
+                    case 1 -> ParCoolTextures.guiSprite(STAMINA_EXHAUSTED_HALF);
+                    default -> ParCoolTextures.guiSprite(STAMINA_EXHAUSTED_FULL);
 				};
 			} else {
 				staminaSprite = switch (fillPhase) {
-					case 0 -> ParCoolTextures.instance().getGuiSprite(STAMINA_EMPTY);
-					case 1 -> ParCoolTextures.instance().getGuiSprite(STAMINA_HALF);
-					default -> ParCoolTextures.instance().getGuiSprite(STAMINA_FULL);
+                    case 0 -> ParCoolTextures.guiSprite(STAMINA_EMPTY);
+                    case 1 -> ParCoolTextures.guiSprite(STAMINA_HALF);
+                    default -> ParCoolTextures.guiSprite(STAMINA_FULL);
 				};
 			}
 			if (currentContext.justFilled()) {

@@ -17,11 +17,13 @@ public class ParCoolTextures {
 
     private final ParCoolActionsTextureAtlas actionsTextureAtlas;
     private final ParCoolGuiTextureAtlas guiTextureAtlas;
+    private final ParCoolGuideImageTextureAtlas guideImageTextureAtlas;
 
     public static void init(RegisterClientReloadListenersEvent event) {
         INSTANCE = new ParCoolTextures(Minecraft.getInstance().textureManager, ParCool.getActionRegistry());
         event.registerReloadListener(INSTANCE.actionsTextureAtlas);
         event.registerReloadListener(INSTANCE.guiTextureAtlas);
+        event.registerReloadListener(INSTANCE.guideImageTextureAtlas);
     }
 
     public static ParCoolTextures instance() {
@@ -31,17 +33,18 @@ public class ParCoolTextures {
     protected ParCoolTextures(TextureManager manager, ActionRegistry actionRegistry) {
         actionsTextureAtlas = new ParCoolActionsTextureAtlas(manager, actionRegistry);
         guiTextureAtlas = new ParCoolGuiTextureAtlas(manager);
+        guideImageTextureAtlas = new ParCoolGuideImageTextureAtlas(manager);
     }
 
-    public TextureAtlasSprite getActionIcon(ActionEntry<?> entry) {
-        return INSTANCE.actionsTextureAtlas.getSprite(entry);
-    }
-
-    public TextureAtlasSprite getGuiSprite(ResourceLocation spriteId) {
+    public static TextureAtlasSprite guiSprite(ResourceLocation spriteId) {
         return INSTANCE.guiTextureAtlas.getSprite(spriteId);
     }
 
+    public static TextureAtlasSprite guideResourceSprite(ResourceLocation spriteId) {
+        return INSTANCE.guideImageTextureAtlas.getSprite(spriteId);
+    }
+
     public static TextureAtlasSprite action(ActionEntry<?> entry) {
-        return INSTANCE.getActionIcon(entry);
+        return INSTANCE.actionsTextureAtlas.getSprite(entry);
     }
 }

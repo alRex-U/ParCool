@@ -162,6 +162,13 @@ public class MarkdownParser {
             if (location == null) return null;
             return new MarkdownParagraph.ExtensionMCRecipe(location);
         }
+        if (extTag.name().equals("brewing-recipe")) {
+            var potionId = extTag.attributes().get("potion");
+            if (potionId == null) return null;
+            var potionLocation = ResourceLocation.tryParse(potionId);
+            if (potionLocation == null) return null;
+            return new MarkdownParagraph.ExtensionMCBrewingRecipe(potionLocation);
+        }
         return null;
     }
 

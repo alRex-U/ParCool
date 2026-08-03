@@ -9,10 +9,9 @@ import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public interface MarkdownParagraph {
-    record Image(ResourceLocation textureLocation, @Nullable String caption, int texX, int texY, int texAreaWidth,
-                 int texAreaHeight, int texWidth, int texHeight) implements MarkdownParagraph {
-        public static Image from(ResourceLocation textureLocation, @Nullable String caption) {
-            return new Image(textureLocation, caption, 0, 0, 128, 128, 128, 128);
+    record Image(ResourceLocation spriteLocation, @Nullable String caption) implements MarkdownParagraph {
+        public static Image from(ResourceLocation sprite, @Nullable String caption) {
+            return new Image(sprite, caption);
         }
     }
 
@@ -33,5 +32,9 @@ public interface MarkdownParagraph {
 
     /// `<recipe id="parcool:parcool_guide"/>`
     record ExtensionMCRecipe(ResourceLocation recipeId) implements MarkdownParagraph {
+    }
+
+    /// `<brewing-recipe input="minecraft:awkward_potion" ingredient="minecraft:chicken"/>`
+    record ExtensionMCBrewingRecipe(ResourceLocation potionId) implements MarkdownParagraph {
     }
 }

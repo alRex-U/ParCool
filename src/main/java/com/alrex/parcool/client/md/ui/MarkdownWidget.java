@@ -4,14 +4,20 @@ import com.alrex.parcool.client.gui.GuiRenderUtil;
 import com.alrex.parcool.client.md.CompiledMarkdown;
 import com.alrex.parcool.client.md.MarkdownParagraph;
 import com.alrex.parcool.client.md.MarkdownText;
+import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
+import com.alrex.parcool.client.textures.ParCoolGuideImageTextureAtlas;
+import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -19,10 +25,17 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.brewing.BrewingRecipe;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -68,6 +81,8 @@ public class MarkdownWidget extends AbstractWidget {
                 contentRendererWidgets.add(new ImageWidget(10, currentY, width - 20, image));
             } else if (paragraph instanceof MarkdownParagraph.ExtensionMCRecipe recipe) {
                 contentRendererWidgets.add(new RecipeWidget(10, currentY, width - 20, recipe));
+            } else if (paragraph instanceof MarkdownParagraph.ExtensionMCBrewingRecipe recipe) {
+                contentRendererWidgets.add(new BrewingRecipeWidget(10, currentY, width - 20, recipe));
             }
             if (!contentRendererWidgets.isEmpty())
                 currentY += contentRendererWidgets.get(contentRendererWidgets.size() - 1).getHeight() + font.lineHeight;
@@ -423,23 +438,19 @@ public class MarkdownWidget extends AbstractWidget {
     }
 
     private static class ImageWidget extends ComponentWidget<MarkdownParagraph.Image> {
+        private final TextureAtlasSprite sprite;
         public ImageWidget(int x, int y, int width, MarkdownParagraph.Image content) {
-            super(x + (width - Math.min(width, content.texAreaWidth())) / 2, y,
-                    Math.min(width, content.texAreaWidth()),
-                    Math.min(width, content.texAreaWidth()) * content.texAreaHeight() / content.texAreaWidth(),
-                    content
-            );
+            super(0, y, 0, 0, content);
+            sprite = ParCoolTextures.guideResourceSprite(content.spriteLocation());
+            this.x = x + (width - Math.min(width, sprite.getWidth())) / 2;
+            setWidth(Math.min(width, sprite.getWidth()));
+            setHeight(getWidth() * sprite.getHeight() / sprite.getHeight());
         }
 
         @Override
         public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
-            RenderSystem.setShaderTexture(0, content.textureLocation());
-            blit(poseStack,
-                    x, y, width, height,
-                    content.texX(), content.texY(),
-                    content.texAreaWidth(), content.texAreaHeight(),
-                    content.texWidth(), content.texHeight()
-            );
+            RenderSystem.setShaderTexture(0, ParCoolGuideImageTextureAtlas.TEXTURE_LOCATION);
+            blit(poseStack, x, y, 0, width, height, sprite);
         }
     }
 
@@ -468,7 +479,6 @@ public class MarkdownWidget extends AbstractWidget {
         @Override
         public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
             RenderSystem.setShaderTexture(0, CRAFTING_TABLE_LOCATION);
-            var modelViewStack = RenderSystem.getModelViewStack();
             poseStack.pushPose();
             {
                 poseStack.translate(x, y, 0);
@@ -476,34 +486,81 @@ public class MarkdownWidget extends AbstractWidget {
                 blit(poseStack, 0, 0, 28, 15, 118, 56);
             }
             poseStack.popPose();
-            modelViewStack.pushPose();
-            modelViewStack.translate(MarkdownWidget.this.x + x, MarkdownWidget.this.y - scrollY + y, 0);
-            if (recipe instanceof ShapedRecipe craftingRecipe) {
+            var time = Util.getMillis() / 1000;
+            if (recipe instanceof ShapelessRecipe || recipe instanceof ShapedRecipe) {
+                var craftWidth = 3;
+                NonNullList<Ingredient> ingredients;
+                ItemStack result;
+
+                if (recipe instanceof ShapelessRecipe craftingRecipe) {
+                    ingredients = craftingRecipe.getIngredients();
+                    result = craftingRecipe.getResultItem();
+                } else if (recipe instanceof ShapedRecipe craftingRecipe) {
+                    ingredients = craftingRecipe.getIngredients();
+                    result = craftingRecipe.getResultItem();
+                } else return;
+
                 int i = -1;
-                for (var ingredient : craftingRecipe.getIngredients()) {
+                for (var ingredient : ingredients) {
                     i++;
                     var items = ingredient.getItems();
                     if (items.length == 0) continue;
-                    var item = items[Mth.floor(partial / 20f) % items.length];
-                    var column = i % craftingRecipe.getWidth();
-                    var row = i / craftingRecipe.getWidth();
-                    modelViewStack.pushPose();
-                    {
-                        modelViewStack.scale(scale, scale, 1);
-                        itemRenderer.renderGuiItem(item, 2 + 18 * column, 2 + 18 * row);
-                    }
-                    modelViewStack.popPose();
+                    var item = items[(int) (time % items.length)];
+                    var column = i % craftWidth;
+                    var row = i / craftWidth;
+                    GuiRenderUtil.renderScaledGuiItem(itemRenderer, item, MarkdownWidget.this.x + x, MarkdownWidget.this.y - scrollY + y, 2 + 18 * column, 2 + 18 * row, scale);
                 }
-                var result = craftingRecipe.getResultItem();
-                modelViewStack.pushPose();
-                {
-                    modelViewStack.scale(scale, scale, 1);
-                    itemRenderer.renderGuiItem(result, 96, 20);
-                }
-                modelViewStack.popPose();
+                GuiRenderUtil.renderScaledGuiItem(itemRenderer, result, MarkdownWidget.this.x + x, MarkdownWidget.this.y - scrollY + y, 96, 20, scale);
             }
-            modelViewStack.popPose();
-            RenderSystem.applyModelViewMatrix();
+        }
+    }
+
+    private class BrewingRecipeWidget extends ComponentWidget<MarkdownParagraph.ExtensionMCBrewingRecipe> {
+        @Nullable
+        private BrewingRecipe recipe;
+        private final float scale;
+        private final ItemRenderer itemRenderer;
+
+        public BrewingRecipeWidget(int x, int y, int width, MarkdownParagraph.ExtensionMCBrewingRecipe content) {
+            super(x, y, width, 0, content);
+            itemRenderer = Minecraft.getInstance().getItemRenderer();
+            scale = width / 127f;
+            setHeight((int) (scale * 20f));
+            recipe = null;
+            var outputPotion = Registry.POTION.get(content.potionId());
+            if (outputPotion == Potions.EMPTY) return;
+            for (var brewingRecipe : BrewingRecipeRegistry.getRecipes()) {
+                if (!(brewingRecipe instanceof BrewingRecipe basicRecipe)) continue;
+                var potion = PotionUtils.getPotion(basicRecipe.getOutput());
+                if (potion != outputPotion) continue;
+                this.recipe = basicRecipe;
+                break;
+            }
+        }
+
+        @Override
+        public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+            RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
+            poseStack.pushPose();
+            {
+                poseStack.translate(x, y, 0);
+                poseStack.scale(scale, scale, 1);
+                blit(poseStack, 0, 0, 0, 127, 20, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BREWING_RECIPE_BOX));
+            }
+            poseStack.popPose();
+            var time = Util.getMillis() / 1000;
+            if (recipe == null) return;
+            var inputItems = recipe.getInput().getItems();
+            if (inputItems.length != 0) {
+                var input = inputItems[(int) (time % inputItems.length)];
+                GuiRenderUtil.renderScaledGuiItem(itemRenderer, input, MarkdownWidget.this.x + x, MarkdownWidget.this.y - scrollY + y, 2, 2, scale);
+            }
+            var ingredientItems = recipe.getIngredient().getItems();
+            if (ingredientItems.length != 0) {
+                var ingredient = ingredientItems[(int) (time % ingredientItems.length)];
+                GuiRenderUtil.renderScaledGuiItem(itemRenderer, ingredient, MarkdownWidget.this.x + x, MarkdownWidget.this.y - scrollY + y, 51, 2, scale);
+            }
+            GuiRenderUtil.renderScaledGuiItem(itemRenderer, recipe.getOutput(), MarkdownWidget.this.x + x, MarkdownWidget.this.y - scrollY + y, 109, 2, scale);
         }
     }
 }

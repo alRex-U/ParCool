@@ -18,6 +18,7 @@ public class ParCoolGuiTextureAtlas extends TextureAtlasHolder {
     public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(ParCool.MOD_ID, "textures/atlas/gui.png");
     private static final ArrayList<ResourceLocation> LOCATIONS = new ArrayList<>();
 
+    public static final ResourceLocation BREWING_RECIPE_BOX = register("icon/brewing_recipe_box");
     public static final ResourceLocation STAMINA_FULL = register("hud/stamina_full");
     public static final ResourceLocation STAMINA_HALF = register("hud/stamina_half");
     public static final ResourceLocation STAMINA_EMPTY = register("hud/stamina_empty");

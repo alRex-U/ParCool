@@ -233,7 +233,7 @@ public class SkillTreeWidget extends AbstractWidget {
                 else
                     RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                 blit(poseStack, this.x, this.y, 0, this.width, this.height,
-                        ParCoolTextures.instance().getGuiSprite(entry.isUnlocked(capabilities)
+                        ParCoolTextures.guiSprite(entry.isUnlocked(capabilities)
                                 ? ParCoolGuiTextureAtlas.SKILLTREE_ACTION_UNLOCKED
                                 : ParCoolGuiTextureAtlas.SKILLTREE_ACTION_LOCKED
                         )
@@ -244,7 +244,7 @@ public class SkillTreeWidget extends AbstractWidget {
                 }
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             } else {
-                blit(poseStack, this.x, this.y, 0, this.width, this.height, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.SKILLTREE_ACTION_UNAVAILABLE));
+                blit(poseStack, this.x, this.y, 0, this.width, this.height, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.SKILLTREE_ACTION_UNAVAILABLE));
             }
         }
 

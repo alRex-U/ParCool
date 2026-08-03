@@ -16,6 +16,10 @@
         "location": "parcool:tutorial.md"
       },
       {
+        "title": "parcool.guide.page.stamina",
+        "location": "parcool:stamina.md"
+      },
+      {
         "title": "parcool.guide.page.skilltree",
         "location": "parcool:skilltree.md"
       },
@@ -45,8 +49,8 @@
         "location": "parcool:credit.md"
       },
       {
-        "title": "parcool.guide.page.issue_report",
-        "location": "parcool:issue_report.md"
+        "title": "parcool.guide.page.contact",
+        "location": "parcool:contact.md"
       }
     ]
   }

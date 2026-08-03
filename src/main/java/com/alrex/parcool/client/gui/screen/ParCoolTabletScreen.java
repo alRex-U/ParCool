@@ -117,25 +117,25 @@ public class ParCoolTabletScreen extends Screen {
 
         protected static class Back extends IconButton {
             public Back(int x, int y, @Nullable Runnable listener) {
-                super(x, y, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.BUTTON_BACK), listener);
+                super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_BACK), listener);
             }
         }
 
         protected static class Home extends IconButton {
             public Home(int x, int y, @Nullable Runnable listener) {
-                super(x, y, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.BUTTON_HOME), listener);
+                super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_HOME), listener);
             }
         }
 
         protected static class Hamburger extends IconButton {
             public Hamburger(int x, int y, @Nullable Runnable listener) {
-                super(x, y, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.BUTTON_HAMBURGER), listener);
+                super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_HAMBURGER), listener);
             }
         }
 
         protected static class SlideToLeft extends IconButton {
             public SlideToLeft(int x, int y, @Nullable Runnable listener) {
-                super(x, y, ParCoolTextures.instance().getGuiSprite(ParCoolGuiTextureAtlas.BUTTON_CLOSE), listener);
+                super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_CLOSE), listener);
             }
         }
     }
