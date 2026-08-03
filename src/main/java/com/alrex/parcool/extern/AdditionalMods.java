@@ -1,19 +1,24 @@
 package com.alrex.parcool.extern;
 
+import com.alrex.parcool.extern.curios.CuriosManager;
+
 import java.util.Arrays;
 import java.util.function.Supplier;
 
 public enum AdditionalMods {
-    ;
+    CURIOS(CuriosManager::new);
     private final ModManager manager;
 
     AdditionalMods(Supplier<ModManager> supplier) {
         manager = supplier.get();
     }
 
-
     public ModManager get() {
         return manager;
+    }
+
+    public static CuriosManager curios() {
+        return (CuriosManager) CURIOS.get();
     }
 
     public static void init() {

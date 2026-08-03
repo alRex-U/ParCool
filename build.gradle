@@ -12,6 +12,7 @@ plugins {
 repositories {
     maven { url = 'https://maven.blamejared.com' }
     maven { url = 'https://www.cursemaven.com' }
+    maven { url = "https://maven.theillusivec4.top/" }
 }
 
 compileJava.options.encoding("UTF-8")
@@ -77,9 +78,8 @@ dependencies {
     // Specify the version of Minecraft to use.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
-    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
-
+    compileOnly "top.theillusivec4.curios:curios-forge:${curios_version}:api"
+    //runtimeOnly "top.theillusivec4.curios:curios-forge:${curios_version}"
     //compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
 

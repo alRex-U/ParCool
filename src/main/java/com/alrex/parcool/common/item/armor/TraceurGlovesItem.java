@@ -4,10 +4,12 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolAttributes;
 import com.alrex.parcool.client.renderer.entity.layers.EquipmentRenderLayer;
 import com.alrex.parcool.common.item.DyeAble;
+import com.alrex.parcool.extern.AdditionalMods;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -24,6 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -128,5 +131,10 @@ public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
     @Override
     public int getDefaultColor() {
         return 0xFFDD93;
+    }
+
+    @Override
+    public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+        return AdditionalMods.curios().initEquipAbleCapabilities(stack, nbt);
     }
 }

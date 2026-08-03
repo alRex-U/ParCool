@@ -4,8 +4,10 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolAttributes;
 import com.alrex.parcool.client.renderer.entity.layers.EquipmentRenderLayer;
 import com.alrex.parcool.common.item.DyeAble;
+import com.alrex.parcool.extern.AdditionalMods;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -20,6 +22,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -81,5 +84,10 @@ public class TraceurBootsItem extends Item implements EquipAble, DyeAble {
     @Override
     public int getDefaultColor() {
         return 0xE0BD70;
+    }
+
+    @Override
+    public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+        return AdditionalMods.curios().initEquipAbleCapabilities(stack, nbt);
     }
 }
