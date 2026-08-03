@@ -84,6 +84,7 @@ dependencies {
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
 
     compileOnly fg.deobf("curse.maven:BetterThirdPerson-435044:${betterthirdperson_file_id}")
+    //runtimeOnly fg.deobf("curse.maven:BetterThirdPerson-435044:${betterthirdperson_file_id}")
 
     compileOnly fg.deobf("curse.maven:ShoulderSurfing-243190:${shouldersurfing_file_id}")
     runtimeOnly fg.deobf("curse.maven:ShoulderSurfing-243190:${shouldersurfing_file_id}")
@@ -118,7 +119,7 @@ tasks.register("generateModMetadata", ProcessResources) {
             ],
             extern_shouldersurfing  : [
                     mod_id: 'shouldersurfing',
-                    version_range: '[1.19.2-4.11.0,)'
+                    version_range: '[1.19.2-4.22.1,)'
             ],
             extern_betterthirdperson: [
                     mod_id: 'betterthirdperson',
@@ -130,7 +131,7 @@ tasks.register("generateModMetadata", ProcessResources) {
             ],
             extern_curios           : [
                     mod_id       : 'curios',
-                    version_range: '[5.1.6.3,)'
+                    version_range: '[5.1.6.4,)'
             ]
     ]
     inputs.properties properties

@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.input;
 
+import com.alrex.parcool.extern.AdditionalMods;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -118,14 +119,18 @@ public class ParCoolKeyBinds {
     public static final LogicalInput MOVEMENT_LEFT = listen(Minecraft.getInstance().options.keyLeft::isDown);
 
     public static InputState getMovementInput(LogicalMovement movement) {
-        // TODO: switch key state logically when camera decoupled
-        return switch (movement) {
-            case LEFT -> MOVEMENT_LEFT.state;
-            case RIGHT -> MOVEMENT_RIGHT.state;
-            case FORWARD -> MOVEMENT_FORWARD.state;
-            case BACKWARD -> MOVEMENT_BACK.state;
-        };
+		var input = AdditionalMods.getLogicalKey(movement);
+		return input == null ? getStandardInput(movement).state : input.state;
     }
+
+	public static LogicalInput getStandardInput(LogicalMovement movement) {
+		return switch (movement) {
+			case LEFT -> MOVEMENT_LEFT;
+			case RIGHT -> MOVEMENT_RIGHT;
+			case FORWARD -> MOVEMENT_FORWARD;
+			case BACKWARD -> MOVEMENT_BACK;
+		};
+	}
 
 	public static void tick(TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.END) return;
