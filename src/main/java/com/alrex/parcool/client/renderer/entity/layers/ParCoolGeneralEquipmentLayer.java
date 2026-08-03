@@ -1,6 +1,7 @@
 package com.alrex.parcool.client.renderer.entity.layers;
 
 import com.alrex.parcool.common.item.armor.EquipAble;
+import com.alrex.parcool.extern.AdditionalMods;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
@@ -11,8 +12,10 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -35,6 +38,7 @@ public class ParCoolGeneralEquipmentLayer<T extends LivingEntity, M extends Huma
             @Nonnull MultiBufferSource multiBufferSource,
             int i, @Nonnull T entity, float v, float v1, float v2, float v3, float v4, float v5
     ) {
+        if (!shouldRenderModel(entity)) return;
         for (var slot : EquipmentSlot.values()) {
             var itemStack = entity.getItemBySlot(slot);
             var item = itemStack.getItem();
@@ -87,5 +91,9 @@ public class ParCoolGeneralEquipmentLayer<T extends LivingEntity, M extends Huma
     private void renderModel(PoseStack stack, MultiBufferSource bufferSource, int p_117109_, boolean hasFoil, Model model, float r, float g, float b, ResourceLocation textureLocation) {
         var vertexconsumer = ItemRenderer.getArmorFoilBuffer(bufferSource, RenderType.armorCutoutNoCull(textureLocation), false, hasFoil);
         model.renderToBuffer(stack, vertexconsumer, p_117109_, OverlayTexture.NO_OVERLAY, r, g, b, 1.0F);
+    }
+
+    private boolean shouldRenderModel(Entity entity) {
+        return !(entity instanceof Player player) || !AdditionalMods.epicFight().isBattleMode(player);
     }
 }

@@ -10,6 +10,8 @@ public class FeathersManager extends ModManager {
 
     @Override
     public void init() {
+        super.init();
+        if (!isInstalled()) return;
         FMLJavaModLoadingContext.get().getModEventBus().register(new FeathersModLoadEventHandler());
     }
 }

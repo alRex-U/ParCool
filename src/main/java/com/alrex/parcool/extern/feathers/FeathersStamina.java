@@ -18,6 +18,7 @@ public class FeathersStamina extends AbstractLocalStamina {
 
     @Override
     public void consume(double value) {
+        if (isInfinite()) return;
         if (owner.isLocalPlayer()) {
             int spentFeathers = (int) (value / 100);
             fraction += (value / 100.) - spentFeathers;

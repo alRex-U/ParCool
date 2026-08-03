@@ -4,6 +4,7 @@ import com.alrex.parcool.client.input.LogicalMovement;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.extern.betterthirdperson.BetterThirdPersonManager;
 import com.alrex.parcool.extern.curios.CuriosManager;
+import com.alrex.parcool.extern.epicfight.EpicFightManager;
 import com.alrex.parcool.extern.feathers.FeathersManager;
 import com.alrex.parcool.extern.shouldersurfing.ShoulderSurfingManager;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,7 +18,8 @@ public enum AdditionalMods {
     CURIOS(CuriosManager::new),
     BETTER_THIRD_PERSON(BetterThirdPersonManager::new),
     SHOULDER_SURFING(ShoulderSurfingManager::new),
-    FEATHERS(FeathersManager::new);
+    FEATHERS(FeathersManager::new),
+    EPIC_FIGHT(EpicFightManager::new);
 
     private final ModManager manager;
 
@@ -43,6 +45,10 @@ public enum AdditionalMods {
 
     public static FeathersManager feathers() {
         return (FeathersManager) FEATHERS.get();
+    }
+
+    public static EpicFightManager epicFight() {
+        return (EpicFightManager) EPIC_FIGHT.get();
     }
 
     public static void init() {
