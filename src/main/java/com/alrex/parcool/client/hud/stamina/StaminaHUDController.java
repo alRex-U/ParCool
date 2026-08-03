@@ -53,6 +53,10 @@ public class StaminaHUDController implements IGuiOverlay {
 		if (tickValueNotChange > 40 && !ParCool.getConfig().client().staminaHud.showAlways().get()) {
 			return;
 		}
+		if (parkourability.getStamina() instanceof AbstractLocalStamina localStamina && !localStamina.showHud()) {
+			return;
+		}
+
 		if (MinecraftForge.EVENT_BUS.post(new RenderParCoolHUDEvent.Render.Stamina.Pre(gui, poseStack, partialTick, width, height, currentContext, oldContext)))
 			return;
 

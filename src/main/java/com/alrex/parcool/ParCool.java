@@ -97,6 +97,8 @@ public class ParCool {
 		EntityTypes.register(eventBus);
 		TileEntities.register(eventBus);
 
+		AdditionalMods.init();
+
 		FMLJavaModLoadingContext.get().getModEventBus().post(new RegisterParCoolStaminaTypeEvent(staminaTypeRegistry));
 		staminaTypeRegistry.freeze();
 		FMLJavaModLoadingContext.get().getModEventBus().post(new RegisterParCoolActionEvent(actionRegistry));
@@ -107,7 +109,6 @@ public class ParCool {
 
 	private void loaded(FMLLoadCompleteEvent event) {
 		PotionRecipeRegistry.register();
-		AdditionalMods.init();
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> AdditionalMods::initInClient);
 		DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> AdditionalMods::initInDedicatedServer);
 	}

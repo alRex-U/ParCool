@@ -88,4 +88,9 @@ public class ParCoolStamina extends AbstractLocalStamina {
             recover(owner.isOnGround() ? recoverValue : recoverValue * 0.4);
         }
     }
+
+    @Override
+    public boolean showHud() {
+        return true;
+    }
 }

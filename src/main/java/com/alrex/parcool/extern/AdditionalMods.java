@@ -4,6 +4,7 @@ import com.alrex.parcool.client.input.LogicalMovement;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.extern.betterthirdperson.BetterThirdPersonManager;
 import com.alrex.parcool.extern.curios.CuriosManager;
+import com.alrex.parcool.extern.feathers.FeathersManager;
 import com.alrex.parcool.extern.shouldersurfing.ShoulderSurfingManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -15,7 +16,8 @@ import java.util.function.Supplier;
 public enum AdditionalMods {
     CURIOS(CuriosManager::new),
     BETTER_THIRD_PERSON(BetterThirdPersonManager::new),
-    SHOULDER_SURFING(ShoulderSurfingManager::new);
+    SHOULDER_SURFING(ShoulderSurfingManager::new),
+    FEATHERS(FeathersManager::new);
 
     private final ModManager manager;
 
@@ -37,6 +39,10 @@ public enum AdditionalMods {
 
     public static ShoulderSurfingManager shoulderSurfing() {
         return (ShoulderSurfingManager) SHOULDER_SURFING.get();
+    }
+
+    public static FeathersManager feathers() {
+        return (FeathersManager) FEATHERS.get();
     }
 
     public static void init() {

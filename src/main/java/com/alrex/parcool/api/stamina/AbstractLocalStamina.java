@@ -26,4 +26,8 @@ public abstract class AbstractLocalStamina implements IReadableStamina {
     public boolean imposePenalty() {
         return isExhausted();
     }
+
+    public boolean showHud() {
+        return false;
+    }
 }
