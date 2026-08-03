@@ -11,7 +11,9 @@ public class ParCoolRunningSkillTree extends SkillTree {
         super(new Entry<>(
                 ParCoolActions.FAST_RUN,
                 new Entry<>(ParCoolActions.FAST_SWIM),
-                new Entry<>(ParCoolActions.VAULT),
+                new Entry<>(ParCoolActions.VAULT,
+                        new Entry<>(ParCoolActions.BREAKFALL)
+                ),
                 new Entry<>(ParCoolActions.TRICK_JUMP,
                         new Entry<>(ParCoolActions.DODGE)
                 ),
