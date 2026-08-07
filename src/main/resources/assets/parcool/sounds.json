@@ -6,28 +6,52 @@
     ]
   },
   "action.dodge": {
-    "subtitle": "subtitle.parcool.action.dodge"
+    "subtitle": "subtitle.parcool.action.dodge",
+    "sounds": [
+      "parcool:action/steps"
+    ]
   },
   "action.vault": {
-    "subtitle": "subtitle.parcool.action.vault"
+    "subtitle": "subtitle.parcool.action.vault",
+    "sounds": [
+      "parcool:action/vault"
+    ]
   },
   "action.hang_on": {
-    "subtitle": "subtitle.parcool.action.hang_on"
+    "subtitle": "subtitle.parcool.action.hang_on",
+    "sounds": [
+      "parcool:action/grabbing"
+    ]
   },
   "action.climb_up": {
-    "subtitle": "subtitle.parcool.action.climb_up"
+    "subtitle": "subtitle.parcool.action.climb_up",
+    "sounds": [
+      "parcool:action/steps_double"
+    ]
   },
   "action.wall_run": {
-    "subtitle": "subtitle.parcool.action.wall_run"
+    "subtitle": "subtitle.parcool.action.wall_run",
+    "sounds": [
+      "parcool:action/steps_double"
+    ]
   },
   "action.wall_jump": {
-    "subtitle": "subtitle.parcool.action.wall_jump"
+    "subtitle": "subtitle.parcool.action.wall_jump",
+    "sounds": [
+      "parcool:action/steps"
+    ]
   },
   "action.charge_jump": {
-    "subtitle": "subtitle.parcool.action.charge_jump"
+    "subtitle": "subtitle.parcool.action.charge_jump",
+    "sounds": [
+      "parcool:action/steps"
+    ]
   },
   "action.hang_down": {
-    "subtitle": "subtitle.parcool.action.hang_down"
+    "subtitle": "subtitle.parcool.action.hang_down",
+    "sounds": [
+      "parcool:action/grabbing"
+    ]
   },
   "action.pole_climb": {
     "subtitle": "subtitle.parcool.action.pole_climb"
@@ -39,7 +63,10 @@
     ]
   },
   "action.h_wall_run": {
-    "subtitle": "subtitle.parcool.action.h_wall_run"
+    "subtitle": "subtitle.parcool.action.h_wall_run",
+    "sounds": [
+      "parcool:action/steps"
+    ]
   },
   "action.slide_down": {
     "subtitle": "subtitle.parcool.action.slide_down",
@@ -81,11 +108,5 @@
         "name": "entity.player.levelup"
       }
     ]
-  },
-  "parcool.enable": {
-    "subtitle": "subtitle.parcool.enable_parcool"
-  },
-  "parcool.disable": {
-    "subtitle": "subtitle.parcool.disable_parcool"
   }
 }

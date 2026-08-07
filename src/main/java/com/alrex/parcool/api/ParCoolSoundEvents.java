@@ -25,7 +25,7 @@ public class ParCoolSoundEvents {
     public static final RegistryObject<SoundEvent> HORIZONTAL_WALL_RUN = register("action.h_wall_run");
     public static final RegistryObject<SoundEvent> SLIDE_DOWN = register("action.slide_down");
     public static final RegistryObject<SoundEvent> DIVE = register("action.dive");
-    public static final RegistryObject<SoundEvent> ZIPLINE_USE = register("action.zipline");
+    public static final RegistryObject<SoundEvent> ZIPLINE_USE = register("action.ride_zipline");
     public static final RegistryObject<SoundEvent> ZIPLINE_SET = register("zipline.set");
     public static final RegistryObject<SoundEvent> ZIPLINE_REMOVE = register("zipline.remove");
     public static final RegistryObject<SoundEvent> SKILLTREE_UNLOCK = register("skilltree.unlock");
