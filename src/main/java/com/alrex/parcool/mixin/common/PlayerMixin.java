@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 
 @Mixin(Player.class)
 public abstract class PlayerMixin extends LivingEntity implements IParkourabilityHolder {
+
     @Unique
     @Nonnull
     private Parkourability parcool$parkourability = null;
@@ -78,5 +79,13 @@ public abstract class PlayerMixin extends LivingEntity implements IParkourabilit
         if (tag.get("parcool.parkourability") instanceof CompoundTag pTag) {
             parcool$parkourability.readFrom(pTag);
         }
+    }
+
+    @Inject(method = "updatePlayerPose", at = @At("HEAD"), cancellable = true)
+    public void onUpdatePlayerPose(CallbackInfo ci) {
+        var pose = parcool$parkourability.getBehaviorEnforcer().getEnforcedForcedPose();
+        if (pose == null) return;
+        setPose(pose);
+        ci.cancel();
     }
 }

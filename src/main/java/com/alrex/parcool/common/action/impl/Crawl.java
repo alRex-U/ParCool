@@ -55,13 +55,6 @@ public class Crawl extends ContinuableAction {
 
     @Override
     public void onStart() {
-        parkourability.player().setForcedPose(Pose.SWIMMING);
-    }
-
-    @Override
-    public void onStop() {
-        if (parkourability.player().getForcedPose() == Pose.SWIMMING) {
-            parkourability.player().setForcedPose(null);
-        }
+        parkourability.getBehaviorEnforcer().setMarkerEnforcingForcedPose(this::isDoing, () -> Pose.SWIMMING);
     }
 }

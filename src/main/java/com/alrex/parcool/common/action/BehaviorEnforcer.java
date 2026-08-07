@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action;
 
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -69,6 +70,8 @@ public class BehaviorEnforcer {
     private Enforcer<Vec3> deltaMovementEnforcer = null;
     @Nullable
     private Enforcer<Float> eyeHeightEnforcer = null;
+    @Nullable
+    private Enforcer<Pose> forcedPoseEnforcer = null;
 
     public void addMarkerEnforcingNoJump(ID id, Marker marker) {
         enforceNoJumpMarks.put(id, marker);
@@ -116,6 +119,10 @@ public class BehaviorEnforcer {
 
     public void setMarkerEnforcingEyeHeight(Marker marker, Supplier<Float> eyeHeightSupplier) {
         eyeHeightEnforcer = new Enforcer<>(marker, eyeHeightSupplier);
+    }
+
+    public void setMarkerEnforcingForcedPose(Marker marker, Supplier<Pose> forcedPoseSupplier) {
+        forcedPoseEnforcer = new Enforcer<>(marker, forcedPoseSupplier);
     }
 
     public boolean enforceNoJump() {
@@ -191,6 +198,15 @@ public class BehaviorEnforcer {
             return eyeHeightEnforcer.getBehavior();
         }
         eyeHeightEnforcer = null;
+        return null;
+    }
+
+    @Nullable
+    public Pose getEnforcedForcedPose() {
+        if (forcedPoseEnforcer != null && forcedPoseEnforcer.remain()) {
+            return forcedPoseEnforcer.getBehavior();
+        }
+        forcedPoseEnforcer = null;
         return null;
     }
 }
