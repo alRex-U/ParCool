@@ -9,6 +9,7 @@ import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.client.sound.HorizontalWallRunSoundInstance;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionExtension;
+import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.InteractingWallDirection;
 import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.util.VectorUtil;
@@ -25,6 +26,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class HorizontalWallRun extends ContinuableAction implements ActionExtension.LeaveFromWallListener {
+    private static final BehaviorEnforcer.ID ID_FALL_FLY_CANCEL = BehaviorEnforcer.newID();
     private final SynchronizedDataHolder dataHolder;
     private final SynchronizedProperty<InteractingWallDirection> propertyDirection;
     private final SynchronizedProperty<Boolean> propertyLeftToWall;
@@ -82,6 +84,7 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
     @Override
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
+        parkourability.getBehaviorEnforcer().addMarkerEnforcingNoFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
         var durationAttr = player.getAttribute(ParCoolAttributes.HORIZONTAL_WALL_RUN_DURATION.get());
         if (durationAttr == null) return;
         var duration = durationAttr.getValue();

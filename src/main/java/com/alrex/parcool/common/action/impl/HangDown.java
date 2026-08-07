@@ -6,6 +6,7 @@ import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
+import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.util.EntityUtil;
 import com.alrex.parcool.util.MathUtil;
@@ -27,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class HangDown extends ContinuableAction {
+    private static final BehaviorEnforcer.ID ID_FALL_FLY_CANCEL = BehaviorEnforcer.newID();
     enum BarAxis {
         X(new Vec3(1, 0, 0), new Vec3(0, 0, 1)),
         Z(new Vec3(0, 0, 1), new Vec3(1, 0, 0));
@@ -119,6 +121,7 @@ public class HangDown extends ContinuableAction {
     @Override
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
+        parkourability.getBehaviorEnforcer().addMarkerEnforcingNoFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
         parkourability.getBehaviorEnforcer().setMarkerEnforcingMovePoint(
                 this::isDoing, () -> {
                     var currentBarAxis = propertyHangingBarAxis.get();

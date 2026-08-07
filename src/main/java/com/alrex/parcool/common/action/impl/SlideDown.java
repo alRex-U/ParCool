@@ -9,6 +9,7 @@ import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.client.sound.SlideDownSoundInstance;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionExtension;
+import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.InteractingWallDirection;
 import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.common.damage.DamageSources;
@@ -29,6 +30,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class SlideDown extends ContinuableAction implements ActionExtension.LeaveFromWallListener {
+    private static final BehaviorEnforcer.ID ID_FALL_FLY_CANCEL = BehaviorEnforcer.newID();
     private final SynchronizedDataHolder dataHolder;
     private final SynchronizedProperty<InteractingWallDirection> propertyDirection;
     private final SynchronizedProperty<Float> propertyBeginningYSpeed;
@@ -108,6 +110,7 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
     @Override
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
+        parkourability.getBehaviorEnforcer().addMarkerEnforcingNoFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
         parkourability.getBehaviorEnforcer().setMarkerEnforcingMovePoint(
                 this::isDoing, () -> {
                     var direction = propertyDirection.get();

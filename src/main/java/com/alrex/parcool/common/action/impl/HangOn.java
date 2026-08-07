@@ -8,6 +8,7 @@ import com.alrex.parcool.client.input.LogicalMovement;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionExtension;
+import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.InteractingWallDirection;
 import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.util.EntityUtil;
@@ -26,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class HangOn extends ContinuableAction implements ActionExtension.LeaveFromWallListener {
+    private static final BehaviorEnforcer.ID ID_FALL_FLY_CANCEL = BehaviorEnforcer.newID();
     private static final double REACH_SCALE = 0.25;
     private final SynchronizedDataHolder dataHolder;
     private final SynchronizedProperty<InteractingWallDirection> propertyDirection;
@@ -70,6 +72,7 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
     @Override
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
+        parkourability.getBehaviorEnforcer().addMarkerEnforcingNoFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
         parkourability.getBehaviorEnforcer().setMarkerEnforcingMovePoint(
                 this::isDoing, () -> {
                     if (currentHangState == null) return null;
