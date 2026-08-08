@@ -78,11 +78,11 @@ public class MarkdownWidget extends AbstractWidget {
             } else if (paragraph instanceof MarkdownParagraph.OrderedList list) {
                 contentRendererWidgets.add(new OrderedListWidget(0, currentY, width, list));
             } else if (paragraph instanceof MarkdownParagraph.Image image) {
-                contentRendererWidgets.add(new ImageWidget(10, currentY, width - 20, image));
+                contentRendererWidgets.add(new ImageWidget(25, currentY, width - 50, image));
             } else if (paragraph instanceof MarkdownParagraph.ExtensionMCRecipe recipe) {
-                contentRendererWidgets.add(new RecipeWidget(10, currentY, width - 20, recipe));
+                contentRendererWidgets.add(new RecipeWidget(25, currentY, width - 50, recipe));
             } else if (paragraph instanceof MarkdownParagraph.ExtensionMCBrewingRecipe recipe) {
-                contentRendererWidgets.add(new BrewingRecipeWidget(10, currentY, width - 20, recipe));
+                contentRendererWidgets.add(new BrewingRecipeWidget(20, currentY, width - 40, recipe));
             }
             if (!contentRendererWidgets.isEmpty())
                 currentY += contentRendererWidgets.get(contentRendererWidgets.size() - 1).getHeight() + font.lineHeight;
@@ -126,7 +126,7 @@ public class MarkdownWidget extends AbstractWidget {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollDelta) {
-        this.scrollY -= (float) (scrollDelta * 8);
+        this.scrollY -= (float) (scrollDelta * 16);
         if (scrollY > maxScrollY) scrollY = maxScrollY;
         if (scrollY < 0) scrollY = 0;
         return true;

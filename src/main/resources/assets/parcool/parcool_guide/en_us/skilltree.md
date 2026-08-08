@@ -2,7 +2,7 @@
 
 I'm sure you are reading this by using <item id="parcool:parcool_guide"/>. Use it when you sneak to open Skill Tree.
 
-You can unlock ParCool features from skill tree by consuming your experience, including following features!
+You can unlock ParCool features from skill tree by consuming your experience.
 Additionally, you can disable and enable whichever you want to.
 
 All unlock-able actions are displayed in the largest area of screen.
