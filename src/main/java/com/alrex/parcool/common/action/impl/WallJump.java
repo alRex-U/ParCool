@@ -89,9 +89,9 @@ public class WallJump extends Action {
             return false;
         }
         var yRot = player.getYHeadRot();
-        var xRot = Mth.clamp(MathUtil.mapLinear(player.getXRot(), -35, 0, -70, -60), -70f, -60f);
+        var xRot = Mth.clamp(MathUtil.mapLinear(player.getXRot(), -35, 0, -80, -70), -80f, -70f);
         var jumpPower = player.getJumpPower() + player.getJumpBoostPower();
-        var jumpVec = VectorUtil.calculateViewVector(xRot, yRot).scale(jumpPower / 1.3);
+        var jumpVec = VectorUtil.calculateViewVector(xRot, yRot).scale(jumpPower);
         if (dot > 0) {
             jumpVec = VectorUtil.calculateReflectVector(jumpVec, wall.asVec().reverse());
         }
