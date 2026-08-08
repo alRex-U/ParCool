@@ -36,7 +36,7 @@ public class BlendingFactors extends BasicRegistry<IBlendingFactor, BlendingFact
     }
 
     private ID<IBlendingFactor> register(String subName, BlendingFactorFactory factor) {
-        return register(new ResourceLocation(ParCool.MOD_ID, subName), factor);
+        return register(ParCool.resourceLocation(subName), factor);
     }
 
     public ID<IBlendingFactor> register(ResourceLocation name, BlendingFactorFactory factor) {

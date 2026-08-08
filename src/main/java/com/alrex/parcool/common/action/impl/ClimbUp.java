@@ -12,6 +12,8 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
@@ -61,6 +63,7 @@ public class ClimbUp extends ContinuableAction implements IRequestable<ClimbUp.R
         return parkourability.player().level.noCollision(destinationBB);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
         final var fStartPos = this.startPos;
@@ -85,6 +88,7 @@ public class ClimbUp extends ContinuableAction implements IRequestable<ClimbUp.R
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().CLIMB_UP);

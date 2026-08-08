@@ -17,6 +17,8 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeMod;
 
 import java.util.List;
@@ -63,6 +65,7 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
         return true;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
         var player = parkourability.player();
@@ -70,6 +73,7 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
         player.setDeltaMovement(deltaMove.x, runSpeed, deltaMove.z);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInClient() {
         var player = parkourability.player();
@@ -99,6 +103,7 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
         parkourability.player().playSound(ParCoolSoundEvents.WALL_RUN.get());
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onTickInLocalClient() {
         tickAfterJump++;

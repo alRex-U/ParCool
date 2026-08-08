@@ -29,7 +29,7 @@ import java.util.TreeSet;
 
 @OnlyIn(Dist.CLIENT)
 public class GuideResourceManager extends SimplePreparableReloadListener<GuideResource> {
-    private static final ResourceLocation PAGES_LOCATION = new ResourceLocation(ParCool.MOD_ID, "parcool_guide/pages.json");
+    private static final ResourceLocation PAGES_LOCATION = ParCool.resourceLocation("parcool_guide/pages.json");
     private static final Logger LOGGER = LogManager.getLogger();
     private static GuideResourceManager INSTANCE = null;
     private static final TypeToken<List<PageGroupJson>> PAGES_TYPE = new TypeToken<>() {

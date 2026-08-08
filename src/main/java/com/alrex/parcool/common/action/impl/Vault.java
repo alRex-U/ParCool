@@ -14,6 +14,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class Vault extends ContinuableAction {
     private enum Type {
@@ -44,6 +46,7 @@ public class Vault extends ContinuableAction {
         return dataHolder;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInClient() {
         switch (propertyVaultType.getOrDefaultIfNull(Type.FORWARD)) {
@@ -60,6 +63,7 @@ public class Vault extends ContinuableAction {
         parkourability.player().playSound(ParCoolSoundEvents.VAULT.get());
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
         final int duration = propertyDuration.getOrDefaultIfNull((byte) MAX_DURATION);

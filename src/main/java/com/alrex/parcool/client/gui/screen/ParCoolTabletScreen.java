@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 
 @OnlyIn(Dist.CLIENT)
 public class ParCoolTabletScreen extends Screen {
-    public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(ParCool.MOD_ID, "textures/gui/parcool_screen.png");
+    public static final ResourceLocation TEXTURE_LOCATION = ParCool.resourceLocation("textures/gui/parcool_screen.png");
     protected static final int FRAME_WIDTH = 256;
     protected static final int FRAME_HEIGHT = 160;
     protected static final int CONTENT_WIDTH = 246;

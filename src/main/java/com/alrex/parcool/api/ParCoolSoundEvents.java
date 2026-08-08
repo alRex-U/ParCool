@@ -1,7 +1,6 @@
 package com.alrex.parcool.api;
 
 import com.alrex.parcool.ParCool;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -31,7 +30,7 @@ public class ParCoolSoundEvents {
     public static final RegistryObject<SoundEvent> SKILLTREE_UNLOCK = register("skilltree.unlock");
 
     private static RegistryObject<SoundEvent> register(String name) {
-        return SOUNDS.register(name, () -> new SoundEvent(new ResourceLocation(ParCool.MOD_ID, name)));
+        return SOUNDS.register(name, () -> new SoundEvent(ParCool.resourceLocation(name)));
     }
 
     public static void register(IEventBus modBus) {

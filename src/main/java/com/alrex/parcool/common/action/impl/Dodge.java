@@ -15,6 +15,8 @@ import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 
 import javax.annotation.Nullable;
@@ -66,6 +68,7 @@ public class Dodge extends ContinuableAction implements ActionExtension.Attacked
         return getDoingTick() < 15;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInClient() {
         switch (propertyAnimationType.getOrDefaultIfNull(AnimationType.FRONT)) {
@@ -85,6 +88,7 @@ public class Dodge extends ContinuableAction implements ActionExtension.Attacked
         parkourability.player().playSound(ParCoolSoundEvents.DODGE.get());
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
         var player = parkourability.player();

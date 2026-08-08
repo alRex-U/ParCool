@@ -2,7 +2,6 @@ package com.alrex.parcool.extern.epicfight;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.extern.ModManager;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkRegistry;
@@ -26,7 +25,7 @@ public class EpicFightManager extends ModManager {
         if (!isInstalled()) return;
         var protocolVersion = "1";
         connection = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation(ParCool.MOD_ID, "epicfight"),
+                ParCool.resourceLocation("epicfight"),
                 () -> protocolVersion,
                 protocolVersion::equals,
                 protocolVersion::equals

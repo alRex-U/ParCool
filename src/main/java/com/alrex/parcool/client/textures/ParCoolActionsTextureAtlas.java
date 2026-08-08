@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 @OnlyIn(Dist.CLIENT)
 public class ParCoolActionsTextureAtlas extends TextureAtlasHolder {
-    public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(ParCool.MOD_ID, "textures/atlas/action_icons.png");
+    public static final ResourceLocation TEXTURE_LOCATION = ParCool.resourceLocation("textures/atlas/action_icons.png");
 
     private final TreeSet<ResourceLocation> registeredLocations = new TreeSet<>();
 

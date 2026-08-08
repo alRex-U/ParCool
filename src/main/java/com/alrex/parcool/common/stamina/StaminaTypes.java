@@ -10,9 +10,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class StaminaTypes {
-    private static final ResourceLocation NONE_ID = new ResourceLocation(ParCool.MOD_ID, "none");
-    private static final ResourceLocation PARCOOL_ID = new ResourceLocation(ParCool.MOD_ID, "parcool");
-    private static final ResourceLocation HUNGER_ID = new ResourceLocation(ParCool.MOD_ID, "hunger");
+    private static final ResourceLocation NONE_ID = ParCool.resourceLocation("none");
+    private static final ResourceLocation PARCOOL_ID = ParCool.resourceLocation("parcool");
+    private static final ResourceLocation HUNGER_ID = ParCool.resourceLocation("hunger");
 
     public static final StaminaTypeEntry<NoneStamina> NONE_STAMINA = new StaminaTypeEntry<>(NONE_ID, NONE_ID.getPath(), NoneStamina::new);
     public static final StaminaTypeEntry<ParCoolStamina> PARCOOL_STAMINA = new StaminaTypeEntry<>(PARCOOL_ID, PARCOOL_ID.getPath(), ParCoolStamina::new);

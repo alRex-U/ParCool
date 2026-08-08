@@ -35,7 +35,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
-    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(ParCool.MOD_ID, "textures/models/equipment/traceur_gloves.png");
+    private static final ResourceLocation TEXTURE_LOCATION = ParCool.resourceLocation("textures/models/equipment/traceur_gloves.png");
     private static final UUID MODIFIER_UUID = UUID.fromString("f757de68-b2f5-4b41-af69-438ae46d15dc");
     private final Multimap<Attribute, AttributeModifier> equipModifier;
     private final Multimap<Attribute, AttributeModifier> inHandModifier;

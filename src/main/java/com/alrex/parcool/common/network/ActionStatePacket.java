@@ -4,6 +4,8 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.common.action.ActionRegistry;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.nio.charset.StandardCharsets;
@@ -57,11 +59,13 @@ public record ActionStatePacket(String groupName, List<Entry> entries) {
             return new ActionStatePacket(namespace, list);
         }
 
+        @OnlyIn(Dist.DEDICATED_SERVER)
         @Override
         public void handleInPhysicalServer(ActionStatePacket actionStatePacket, Supplier<NetworkEvent.Context> contextSupplier) {
             throw new UnsupportedOperationException();
         }
 
+        @OnlyIn(Dist.CLIENT)
         @Override
         public void handleInPhysicalClient(ActionStatePacket actionStatePacket, Supplier<NetworkEvent.Context> contextSupplier) {
             throw new UnsupportedOperationException();

@@ -18,6 +18,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 
@@ -58,6 +60,7 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
         return (ySpeed <= ySpeedO + 1e-4f);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onWorkingTickInClient() {
         ySpeedO = ySpeed;
@@ -91,6 +94,7 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
         return true;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(isStartedInAir()
@@ -99,12 +103,14 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
         );
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
         Minecraft.getInstance().getSoundManager().play(new DiveSoundInstance(player, this));
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStopInClient() {
         if (parkourability.player().isInFluidType()) {

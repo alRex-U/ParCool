@@ -16,6 +16,8 @@ import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class WallJump extends Action {
     private enum Type {
@@ -39,6 +41,7 @@ public class WallJump extends Action {
         return dataHolder;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInClient() {
         switch (propertyJumpType.getOrDefaultIfNull(Type.LEFT)) {
@@ -52,6 +55,7 @@ public class WallJump extends Action {
         parkourability.player().playSound(ParCoolSoundEvents.WALL_JUMP.get());
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
         var deltaMovement = parkourability.player().getDeltaMovement();
@@ -66,6 +70,7 @@ public class WallJump extends Action {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInServer() {
         parkourability.player().fallDistance = 0;

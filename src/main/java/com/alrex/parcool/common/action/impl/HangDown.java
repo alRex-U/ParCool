@@ -21,6 +21,8 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.WallSide;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeMod;
 
 import javax.annotation.Nullable;
@@ -118,6 +120,7 @@ public class HangDown extends ContinuableAction {
         return true;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
@@ -142,6 +145,7 @@ public class HangDown extends ContinuableAction {
         );
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInClient() {
         oldAngularSpeed = 0;
@@ -150,6 +154,7 @@ public class HangDown extends ContinuableAction {
         parkourability.player().playSound(ParCoolSoundEvents.HANG_DOWN.get());
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStopInClient() {
         if (propertyJumpOff.getOrDefaultIfNull(false)) {
@@ -162,6 +167,7 @@ public class HangDown extends ContinuableAction {
 
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStopInLocalClient() {
         var player = parkourability.player();
@@ -196,6 +202,7 @@ public class HangDown extends ContinuableAction {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onWorkingTickInLocalClient() {
         var player = parkourability.player();
@@ -246,6 +253,7 @@ public class HangDown extends ContinuableAction {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onWorkingTickInClient() {
         oldAngle = propertyBodySwingAngleInRad.getOrDefaultIfNull(0f);

@@ -100,6 +100,7 @@ public class RideZipline extends ContinuableAction {
                 && 0 <= currentT && currentT <= 1;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
         if (ridingZipline == null) {
@@ -118,12 +119,14 @@ public class RideZipline extends ContinuableAction {
         Minecraft.getInstance().getSoundManager().play(new ZiplineUseSoundInstance(player, this));
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInClient() {
         currentAngleRadian = oldAngleRadian = 0;
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().RIDE_ZIPLINE);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onWorkingTickInClient() {
         var player = parkourability.player();
@@ -141,6 +144,7 @@ public class RideZipline extends ContinuableAction {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onWorkingTickInLocalClient() {
         if (ridingZipline == null) return;

@@ -19,7 +19,7 @@ public abstract class BasicRegistry<T, E> {
     }
 
     public ID<T> registerItem(String subName, Function<ID<T>, E> entryFunc) {
-        var name = new ResourceLocation(ParCool.MOD_ID, subName);
+        var name = ParCool.resourceLocation(subName);
         return registerItem(name, entryFunc);
     }
 
@@ -30,7 +30,7 @@ public abstract class BasicRegistry<T, E> {
     }
 
     public ID<T> registerItem(String subName, E entry) {
-        var name = new ResourceLocation(ParCool.MOD_ID, subName);
+        var name = ParCool.resourceLocation(subName);
         return registerItem(name, entry);
     }
 

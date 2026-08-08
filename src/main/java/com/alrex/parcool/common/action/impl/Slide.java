@@ -15,6 +15,8 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
@@ -55,6 +57,7 @@ public class Slide extends ContinuableAction implements IRequestable<Slide.Reque
         return true;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
         final var movingDirection = propertyMovingDirection.get();
@@ -70,11 +73,13 @@ public class Slide extends ContinuableAction implements IRequestable<Slide.Reque
         Minecraft.getInstance().getSoundManager().play(new SlideSoundInstance(player, this));
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().SLIDE);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onWorkingTickInClient() {
         var movingDirection = propertyMovingDirection.get();

@@ -4,6 +4,8 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.common.Parkourability;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -24,6 +26,7 @@ public record RequestUnlockActionPacket(ActionEntry<?> action) {
             );
         }
 
+        @OnlyIn(Dist.DEDICATED_SERVER)
         @Override
         public void handleInPhysicalServer(RequestUnlockActionPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
             var player = contextSupplier.get().getSender();
@@ -32,6 +35,7 @@ public record RequestUnlockActionPacket(ActionEntry<?> action) {
             parkourability.getCapabilities().unlock(player, packet.action);
         }
 
+        @OnlyIn(Dist.CLIENT)
         @Override
         public void handleInPhysicalClient(RequestUnlockActionPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
             var player = contextSupplier.get().getSender();

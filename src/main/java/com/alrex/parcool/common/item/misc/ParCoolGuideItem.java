@@ -1,13 +1,8 @@
 package com.alrex.parcool.common.item.misc;
 
-import com.alrex.parcool.api.client.skilltree.PrepareParCoolSkillTreeEvent;
-import com.alrex.parcool.client.gui.screen.ParCoolGuideScreen;
-import com.alrex.parcool.client.gui.screen.SkillTreeScreen;
-import com.alrex.parcool.common.Parkourability;
+import com.alrex.parcool.ParCool;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -15,7 +10,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,20 +28,12 @@ public class ParCoolGuideItem extends Item {
     @Nonnull
     @Override
     public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
-        if (level.isClientSide()) {
-            if (player.isShiftKeyDown()) {
-                var prepareEvent = new PrepareParCoolSkillTreeEvent();
-                MinecraftForge.EVENT_BUS.post(prepareEvent);
-                var parkourability = Parkourability.get(player);
-                Minecraft.getInstance().setScreen(new SkillTreeScreen(
-                        parkourability.getCapabilities(),
-                        parkourability.getEnabledActions(),
-                        prepareEvent.getSkillTrees()
-                ));
-            } else {
-                Minecraft.getInstance().setScreen(new ParCoolGuideScreen(new ResourceLocation("parcool", "welcome.md")));
-            }
+        var itemInHand = player.getItemInHand(hand);
+        if (player.isShiftKeyDown()) {
+            ParCool.PROXY.openSkillTreeGui(player);
+        } else {
+            ParCool.PROXY.openGuideGui();
         }
-        return InteractionResultHolder.success(player.getItemInHand(hand));
+        return InteractionResultHolder.sidedSuccess(itemInHand, level.isClientSide());
     }
 }

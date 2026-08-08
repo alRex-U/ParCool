@@ -25,6 +25,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -84,6 +86,7 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
         return false;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onWorkingTickInClient() {
         currentAnimData = AnimationData.get(this, parkourability.player());
@@ -108,6 +111,7 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
         );
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
@@ -147,11 +151,13 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
         damageCount = (byte) Mth.clamp(5.5 * (-propertyBeginningYSpeed.getOrDefaultIfNull(0f) - 1.) / parkourability.player().getBbHeight(), 0, Byte.MAX_VALUE);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onTickInLocalClient() {
         if (tickSinceCanceled < 255) tickSinceCanceled++;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().SLIDE_DOWN);

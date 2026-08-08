@@ -47,7 +47,7 @@ public class AnimationProgresses extends BasicRegistry<AnimationProgress, Animat
     }
 
     public ID<AnimationProgress> register(String subName, AnimationProgress.Constructor<?> progressProvider) {
-        return registerItem(subName, new RegistrationEntry<>(new ResourceLocation(ParCool.MOD_ID, subName), progressProvider));
+        return registerItem(subName, new RegistrationEntry<>(ParCool.resourceLocation(subName), progressProvider));
     }
 
     public ID<AnimationProgress> register(ResourceLocation name, AnimationProgress.Constructor<?> progressProvider) {

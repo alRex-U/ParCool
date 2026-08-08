@@ -1,5 +1,6 @@
 package com.alrex.parcool.proxy;
 
+import com.alrex.parcool.api.client.skilltree.PrepareParCoolSkillTreeEvent;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.PassiveAnimationProcessor;
 import com.alrex.parcool.client.animation.system.config.AnimationSystemConfig;
@@ -7,14 +8,20 @@ import com.alrex.parcool.client.animation.system.event.RegisterAnimationEntryEve
 import com.alrex.parcool.client.animation.system.handle.AnimationSystemEventHandler;
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.animation.system.resource.AnimationResourceManager;
+import com.alrex.parcool.client.gui.screen.ParCoolGuideScreen;
+import com.alrex.parcool.client.gui.screen.SkillTreeScreen;
 import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.client.md.resource.GuideResourceManager;
 import com.alrex.parcool.client.renderer.entity.layers.ParCoolModelLayers;
 import com.alrex.parcool.client.skilltree.ParCoolSkillTrees;
 import com.alrex.parcool.client.textures.ParCoolTextures;
+import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.handlers.InputHandler;
 import com.alrex.parcool.common.network.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -99,5 +106,22 @@ public class ClientProxy extends CommonProxy {
 				.encoder(EnableActionPacket.HANDLER::encode)
 				.consumerMainThread(EnableActionPacket.HANDLER::handleInPhysicalClient)
 				.add();
+	}
+
+	@Override
+	public void openSkillTreeGui(Player player) {
+		var prepareEvent = new PrepareParCoolSkillTreeEvent();
+		MinecraftForge.EVENT_BUS.post(prepareEvent);
+		var parkourability = Parkourability.get(player);
+		Minecraft.getInstance().setScreen(new SkillTreeScreen(
+				parkourability.getCapabilities(),
+				parkourability.getEnabledActions(),
+				prepareEvent.getSkillTrees()
+		));
+	}
+
+	@Override
+	public void openGuideGui() {
+		Minecraft.getInstance().setScreen(new ParCoolGuideScreen(new ResourceLocation("parcool", "welcome.md")));
 	}
 }

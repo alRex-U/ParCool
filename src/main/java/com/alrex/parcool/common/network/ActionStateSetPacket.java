@@ -7,6 +7,8 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.util.NetworkUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
@@ -48,6 +50,7 @@ public class ActionStateSetPacket extends MultiComposablePacket<ActionStatePacke
             return ActionStateSetPacket.decode(() -> new ActionStateSetPacket(id, byClient), packet);
         }
 
+        @OnlyIn(Dist.DEDICATED_SERVER)
         @Override
         public void handleInPhysicalServer(ActionStateSetPacket actionStateSetPacket, Supplier<NetworkEvent.Context> contextSupplier) {
             var player = NetworkUtil.getPlayerInPhysicalServer(actionStateSetPacket.playerID, contextSupplier.get());
@@ -56,6 +59,7 @@ public class ActionStateSetPacket extends MultiComposablePacket<ActionStatePacke
             ParCool.getActionProcessor().getActionSyncDepot().requestSync(actionStateSetPacket);
         }
 
+        @OnlyIn(Dist.CLIENT)
         @Override
         public void handleInPhysicalClient(ActionStateSetPacket actionStateSetPacket, Supplier<NetworkEvent.Context> contextSupplier) {
             var context = contextSupplier.get();

@@ -44,7 +44,7 @@ public class ParCool {
 	public static final String MOD_ID = "parcool";
 	private static final String PROTOCOL_VERSION = "4.0.0.0";
 	public static final SimpleChannel CONNECTION = NetworkRegistry.newSimpleChannel(
-			new ResourceLocation(ParCool.MOD_ID, "message"),
+			resourceLocation("message"),
 			() -> PROTOCOL_VERSION,
 			PROTOCOL_VERSION::equals,
 			PROTOCOL_VERSION::equals
@@ -58,6 +58,10 @@ public class ParCool {
 	private static final StaminaTypeRegistry staminaTypeRegistry = new StaminaTypeRegistry();
 	private static final ActionProcessor actionProcessor = new ActionProcessor();
 	private static ParCoolConfig config;
+
+	public static ResourceLocation resourceLocation(String path) {
+		return new ResourceLocation(MOD_ID, path);
+	}
 
 	public static ActionRegistry getActionRegistry() {
 		return actionRegistry;

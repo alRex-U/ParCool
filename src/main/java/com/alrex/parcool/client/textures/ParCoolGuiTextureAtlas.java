@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 @OnlyIn(Dist.CLIENT)
 public class ParCoolGuiTextureAtlas extends TextureAtlasHolder {
-    public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(ParCool.MOD_ID, "textures/atlas/gui.png");
+    public static final ResourceLocation TEXTURE_LOCATION = ParCool.resourceLocation("textures/atlas/gui.png");
     private static final ArrayList<ResourceLocation> LOCATIONS = new ArrayList<>();
 
     public static final ResourceLocation BREWING_RECIPE_BOX = register("icon/brewing_recipe_box");
@@ -64,7 +64,7 @@ public class ParCoolGuiTextureAtlas extends TextureAtlasHolder {
     }
 
     private static ResourceLocation register(String path) {
-        var location = new ResourceLocation(ParCool.MOD_ID, path);
+        var location = ParCool.resourceLocation(path);
         LOCATIONS.add(location);
         return location;
     }

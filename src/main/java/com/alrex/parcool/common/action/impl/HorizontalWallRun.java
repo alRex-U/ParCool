@@ -21,6 +21,8 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -81,6 +83,7 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         return true;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
@@ -98,6 +101,7 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         Minecraft.getInstance().getSoundManager().play(new HorizontalWallRunSoundInstance(player, this));
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInClient() {
         var leftToWall = propertyLeftToWall.get();
@@ -109,11 +113,13 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onTickInLocalClient() {
         if (tickSinceCanceled < 255) tickSinceCanceled++;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onWorkingTickInLocalClient() {
         propertyDirection.set(parkourability.getAdditionalProperties().getDefaultWallInteraction());

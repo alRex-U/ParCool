@@ -5,6 +5,8 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.stamina.ReadonlyStamina;
 import com.alrex.parcool.util.NetworkUtil;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -32,6 +34,7 @@ public record StaminaPacket(UUID playerID, boolean fromClient, ReadonlyStamina s
 			);
 		}
 
+		@OnlyIn(Dist.DEDICATED_SERVER)
 		@Override
 		public void handleInPhysicalServer(StaminaPacket staminaPacket, Supplier<NetworkEvent.Context> contextSupplier) {
 			var player = NetworkUtil.getPlayerInPhysicalServer(staminaPacket.playerID, contextSupplier.get());
@@ -42,6 +45,7 @@ public record StaminaPacket(UUID playerID, boolean fromClient, ReadonlyStamina s
 			ParCool.getActionProcessor().getStaminaSyncDepot().requestSync(player.getUUID(), staminaPacket.stamina);
 		}
 
+		@OnlyIn(Dist.CLIENT)
 		@Override
 		public void handleInPhysicalClient(StaminaPacket staminaPacket, Supplier<NetworkEvent.Context> contextSupplier) {
 			var context = contextSupplier.get();

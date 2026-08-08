@@ -10,6 +10,8 @@ import com.alrex.parcool.common.action.ActionExtension;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ChargeJump extends ContinuableAction implements ActionExtension.JumpListener {
     private static final byte CHARGE_DURATION = 10;
@@ -79,12 +81,14 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().JUMP_CHARGING);
         parkourability.player().playSound(ParCoolSoundEvents.CHARGE_JUMP.get());
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
         shouldConsumeCost = false;
@@ -95,6 +99,7 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
         oldChargingTick = chargingTick = 0;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStopInClient() {
         if (shouldConsumeCost)

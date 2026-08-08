@@ -72,6 +72,7 @@ public class HideInBlock extends ContinuableAction implements ActionExtension.Vi
         return dataHolder;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
         RenderBehaviorEnforcer.getInstance().setMarkerEnforcingCameraType(this::isDoing, () -> CameraType.THIRD_PERSON_BACK);
@@ -99,6 +100,7 @@ public class HideInBlock extends ContinuableAction implements ActionExtension.Vi
         player.playSound(player.level.getBlockState(new BlockPos(hidingPoint.add(0, 0.2, 0))).getSoundType().getBreakSound(), 1, 1);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(
@@ -133,6 +135,7 @@ public class HideInBlock extends ContinuableAction implements ActionExtension.Vi
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStopInLocalClient() {
         var hideStartedPoint = propertyHidingStartedPoint.get();
@@ -143,6 +146,7 @@ public class HideInBlock extends ContinuableAction implements ActionExtension.Vi
         );
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStopInClient() {
         var area1 = propertyHidingAreaEdge1.get();

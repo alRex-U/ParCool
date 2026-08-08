@@ -5,17 +5,16 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class ParCoolModelLayers {
-    public static final ModelLayerLocation INNER_EQUIPMENT = new ModelLayerLocation(new ResourceLocation(ParCool.MOD_ID, "equipment"), "equipment");
-    public static final ModelLayerLocation INNER_EQUIPMENT_SLIM = new ModelLayerLocation(new ResourceLocation(ParCool.MOD_ID, "equipment"), "equipment");
-    public static final ModelLayerLocation OUTER_EQUIPMENT = new ModelLayerLocation(new ResourceLocation(ParCool.MOD_ID, "equipment"), "equipment");
-    public static final ModelLayerLocation OUTER_EQUIPMENT_SLIM = new ModelLayerLocation(new ResourceLocation(ParCool.MOD_ID, "equipment"), "equipment");
+    public static final ModelLayerLocation INNER_EQUIPMENT = new ModelLayerLocation(ParCool.resourceLocation("equipment"), "equipment");
+    public static final ModelLayerLocation INNER_EQUIPMENT_SLIM = new ModelLayerLocation(ParCool.resourceLocation("equipment"), "equipment");
+    public static final ModelLayerLocation OUTER_EQUIPMENT = new ModelLayerLocation(ParCool.resourceLocation("equipment"), "equipment");
+    public static final ModelLayerLocation OUTER_EQUIPMENT_SLIM = new ModelLayerLocation(ParCool.resourceLocation("equipment"), "equipment");
 
     public static void register(EntityRenderersEvent.RegisterLayerDefinitions event) {
         var innerEquipmentDefinition = LayerDefinition.create(HumanoidModel.createMesh(new CubeDeformation(0.6f), 0.0F), 64, 32);

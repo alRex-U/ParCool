@@ -31,7 +31,7 @@ public class CodedAnimationComponents extends BasicRegistry<CodedAnimationCompon
     }
 
     public ID<CodedAnimationComponent> register(String subName, CodedAnimationComponent component) {
-        var name = new ResourceLocation(ParCool.MOD_ID, subName);
+        var name = ParCool.resourceLocation(subName);
         return register(name, component);
     }
 

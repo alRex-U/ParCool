@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class TraceurBootsItem extends Item implements EquipAble, DyeAble {
-    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(ParCool.MOD_ID, "textures/models/equipment/traceur_boots.png");
+    private static final ResourceLocation TEXTURE_LOCATION = ParCool.resourceLocation("textures/models/equipment/traceur_boots.png");
     private static final UUID MODIFIER_UUID = UUID.fromString("a2d93ed6-4dba-4fe3-944e-14f9eeff744d");
     private final Multimap<Attribute, AttributeModifier> equipModifier;
 

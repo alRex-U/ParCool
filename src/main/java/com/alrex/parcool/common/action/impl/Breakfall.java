@@ -14,6 +14,8 @@ import com.alrex.parcool.util.MathUtil;
 import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 
@@ -44,6 +46,7 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
         return false;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onTickInLocalClient() {
         propertyInputBreakfallType.set(ParCoolKeyBinds.BREAKFALL.state().isDown() ?
@@ -71,6 +74,7 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInClient() {
         switch (propertyWorkingBreakfallType.getOrDefaultIfNull(BreakfallType.NONE)) {
@@ -87,6 +91,7 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
         );
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
         switch (propertyWorkingBreakfallType.getOrDefaultIfNull(BreakfallType.NONE)) {

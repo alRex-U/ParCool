@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import java.util.stream.Stream;
 
 public class ParCoolGuideImageTextureAtlas extends TextureAtlasHolder {
-    public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(ParCool.MOD_ID, "textures/atlas/parcool_guide_img.png");
+    public static final ResourceLocation TEXTURE_LOCATION = ParCool.resourceLocation("textures/atlas/parcool_guide_img.png");
 
     public ParCoolGuideImageTextureAtlas(TextureManager manager) {
         super(manager, TEXTURE_LOCATION, "parcool_guide");

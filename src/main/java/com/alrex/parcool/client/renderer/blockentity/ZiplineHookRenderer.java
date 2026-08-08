@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 
 @OnlyIn(Dist.CLIENT)
 public class ZiplineHookRenderer implements BlockEntityRenderer<ZiplineHookTileEntity> {
-    public static ResourceLocation TEXTURE_LOCATION = new ResourceLocation(ParCool.MOD_ID, "textures/misc/zipline.png");
+    public static ResourceLocation TEXTURE_LOCATION = ParCool.resourceLocation("textures/misc/zipline.png");
 
     public ZiplineHookRenderer(BlockEntityRendererProvider.Context context) {
     }

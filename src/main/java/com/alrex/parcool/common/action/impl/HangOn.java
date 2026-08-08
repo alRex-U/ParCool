@@ -21,6 +21,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -69,6 +71,7 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
         return cooldown == 0 && ParCoolKeyBinds.HANG.key().isDown() && currentHangState != null && !ParCoolKeyBinds.JUMP.state().isJustPressed();
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
@@ -102,6 +105,7 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
         );
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().HANG_ON);
@@ -109,11 +113,13 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
         oldDirection = propertyDirection.get();
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onWorkingTickInClient() {
         oldDirection = propertyDirection.get();
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onWorkingTickInLocalClient() {
         if (startingHangState != null) {
@@ -128,16 +134,19 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
         onWorkingTickInOtherClient();
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onWorkingTickInOtherClient() {
         currentAnimData = AnimationData.get(this, this.parkourability.player(), currentAnimData);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onTickInLocalClient() {
         if (cooldown > 0) cooldown--;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStopInLocalClient() {
         if (cooldown == 0 && currentHangState != null && ParCoolKeyBinds.JUMP.state().isJustPressed()) {
