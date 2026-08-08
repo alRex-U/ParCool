@@ -83,7 +83,7 @@
   "parcool.gui.text.zipline.type.normal": "ノーマル",
   "parcool.gui.text.zipline.type.loose": "緩め",
   "parcool.gui.text.zipline.type.very_loose": "とても緩い",
-  "parcool.gui.text.dyeable.colored": "染色積み",
+  "parcool.gui.text.dyeable.colored": "染色済み",
   "parcool.gui.text.dyeable.dyeable": "染色可能",
   "parcool.gui.text.glove.tooltip": "手を摩擦のダメージから保護し、パワード・ジップラインを利用できるようになります",
   "parcool.gui.text.guide.tooltip": "使用してガイドを開く\nスニークして使用でスキルツリーを開く",
