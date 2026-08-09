@@ -60,7 +60,7 @@ public class ActionCapabilities {
 
     public void unlock(ServerPlayer player, ActionEntry<?> action) {
         if (can(action)) return;
-        var costExpLevel = action.option().learningCost();
+        var costExpLevel = ParCool.getConfig().server().get(action).learningCost().get();
         if (player.experienceLevel < costExpLevel) return;
         player.giveExperienceLevels(-costExpLevel);
         set(action, true);

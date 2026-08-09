@@ -183,6 +183,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
 
         var selectedItem = this.selectedSkill;
         if (selectedItem != null) {
+            var learnCost = selectedItem.getLearningCost();
             if (selectedItem.isUnlocked(capabilities)) {
                 unlockButton.visible = false;
                 actionUnlockStateViewGroup.visible = false;
@@ -194,14 +195,12 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                 actionUnlockStateViewGroup.visible = true;
                 actionUnlockedViewGroup.visible = false;
                 viewGuideButton.visible = false;
-                var learnCost = selectedItem.getActionEntry().option().learningCost();
                 costView.setMessage(Component.literal(
                         learnCost + "/" + (player.experienceLevel < 100 ? Integer.toString(player.experienceLevel) : "99+")
                 ).withStyle(Style.EMPTY.withColor(player.experienceLevel >= learnCost ? colors.accent() : colors.onSurface())));
             }
             skilltreeWidget.setWidth(190);
             skillViewTabGroup.visible = true;
-            var learnCost = selectedItem.getActionEntry().option().learningCost();
             unlockButton.active = player.experienceLevel >= learnCost;
             toggleActionButton.updateState();
         } else {

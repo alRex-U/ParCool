@@ -39,7 +39,8 @@ public class ParCoolConfig {
 			ForgeConfigSpec.BooleanValue permit,
 			ForgeConfigSpec.IntValue costOnStart,
 			ForgeConfigSpec.IntValue costOnWorking,
-			ForgeConfigSpec.IntValue costOnFinish
+			ForgeConfigSpec.IntValue costOnFinish,
+			ForgeConfigSpec.IntValue learningCost
 	) {
 	}
 
@@ -121,7 +122,8 @@ public class ParCoolConfig {
 									builder.define("available", true),
 									builder.defineInRange("cost_start", action.option().defaultCost().onStart(), 0, Short.MAX_VALUE),
 									builder.defineInRange("cost_working", action.option().defaultCost().onWorking(), 0, Short.MAX_VALUE),
-									builder.defineInRange("cost_finish", action.option().defaultCost().onFinish(), 0, Short.MAX_VALUE)
+									builder.defineInRange("cost_finish", action.option().defaultCost().onFinish(), 0, Short.MAX_VALUE),
+									builder.defineInRange("learn_cost", action.option().learningCost(), 0, Short.MAX_VALUE)
 							)
 					);
 					builder.pop();

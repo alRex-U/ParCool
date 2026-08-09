@@ -1,5 +1,6 @@
 package com.alrex.parcool.api.client.skilltree;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.Action;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.common.action.ActionCapabilities;
@@ -77,6 +78,10 @@ public class SkillTree {
 
         public boolean isUnlocked(ActionCapabilities capabilities) {
             return capabilities.can(actionEntry);
+        }
+
+        public int getLearningCost() {
+            return ParCool.getConfig().server().get(this.actionEntry).learningCost().get();
         }
     }
 }
