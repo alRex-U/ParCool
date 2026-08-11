@@ -1,0 +1,22 @@
+architectury {
+    common 'forge'//, 'fabric'
+}
+
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:$fabric_loader_version"
+    modImplementation "dev.architectury:architectury:$architectury_api_version"
+}
+
+tasks.register("minifyJsonResource", MinifyJsonTask) {
+    inputDir = project.file("src/template/resources-minify")
+    outputDir = project.file("src/generated/resources-minified-json")
+}
+
+sourceSets {
+    main.java {
+        srcDir "src/generated/java"
+    }
+    main.resources {
+        srcDir tasks.named("minifyJsonResource")
+    }
+}

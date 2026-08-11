@@ -1,12 +1,13 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
+        maven { url = "https://maven.architectury.dev/" }
         maven { url = 'https://maven.minecraftforge.net/' }
+        maven { url = "https://maven.fabricmc.net/" }
         maven { url = 'https://repo.spongepowered.org/maven' }
         maven { url = "https://api.modrinth.com/maven" }
     }
 }
 
-plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.7.0'
-}
+rootProject.name = "parcool"
+include "common", "forge"//, "fabric"

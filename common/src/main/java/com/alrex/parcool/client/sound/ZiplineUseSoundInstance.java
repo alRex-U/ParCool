@@ -1,0 +1,26 @@
+package com.alrex.parcool.client.sound;
+
+import com.alrex.parcool.api.ParCoolSoundEvents;
+import com.alrex.parcool.client.animation.system.util.EntityUtil;
+import com.alrex.parcool.common.action.impl.RideZipline;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.util.Mth;
+
+@Environment(EnvType.CLIENT)
+public class ZiplineUseSoundInstance extends ActionLoopSoundInstance<RideZipline> {
+    public ZiplineUseSoundInstance(LocalPlayer player, RideZipline ziplineAbility) {
+        super(player, ziplineAbility, ParCoolSoundEvents.ZIPLINE_USE.get());
+    }
+
+    @Override
+    protected void tickInAlive() {
+        var speed = EntityUtil.getPositionDifference(player).lengthSqr();
+        if (speed >= 1.0e-7) {
+            this.volume = (float) Mth.clamp(speed * 0.8, 0.0, 1.0);
+        } else {
+            this.volume = 0.0F;
+        }
+    }
+}

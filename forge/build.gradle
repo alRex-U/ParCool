@@ -1,0 +1,117 @@
+plugins {
+    id 'com.gradleup.shadow'
+}
+
+loom {
+    forge {
+        mixinConfig "parcool.mixins.json"
+    }
+}
+
+architectury {
+    platformSetupLoomIde()
+    forge()
+}
+
+configurations {
+    common {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentForge.extendsFrom common
+
+    shadowBundle {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+}
+
+repositories {
+    maven { url = 'https://maven.blamejared.com' }
+    maven { url = 'https://www.cursemaven.com' }
+    maven { url = 'https://maven.theillusivec4.top/' }
+}
+
+dependencies {
+    forge "net.minecraftforge:forge:${minecraft_version}-$forge_version"
+    modImplementation "dev.architectury:architectury-forge:${architectury_api_version}"
+    common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
+    shadowBundle project(path: ':common', configuration: 'transformProductionForge')
+
+    compileOnly "top.theillusivec4.curios:curios-forge:${curios_version}:api"
+    //runtimeOnly "top.theillusivec4.curios:curios-forge:${curios_version}"
+
+    modRuntimeOnly "mezz.jei:jei-${minecraft_version}-forge:${jei_version}"
+
+    modCompileOnly "curse.maven:BetterThirdPerson-435044:${betterthirdperson_file_id}"
+    //modRuntimeOnly "curse.maven:BetterThirdPerson-435044:${betterthirdperson_file_id}"
+
+    modCompileOnly "curse.maven:ShoulderSurfing-243190:${shouldersurfing_file_id}"
+    modRuntimeOnly "curse.maven:ShoulderSurfing-243190:${shouldersurfing_file_id}"
+
+    modCompileOnly "curse.maven:feathers-699933:${feathers_file_id}"
+    //modRuntimeOnly "curse.maven:feathers-699933:${feathers_file_id}"
+
+    modCompileOnly "curse.maven:epic-fight-mod-405076:${epicfight_file_id}"
+    //modRuntimeOnly "curse.maven:epic-fight-mod-405076:${epicfight_file_id}"
+}
+
+tasks.register("generateModMetadata", ProcessResources) {
+    var properties = [
+            minecraft_version       : minecraft_version,
+            minecraft_version_range : minecraft_version_range,
+            forge_version           : forge_version,
+            forge_version_range     : forge_version_range,
+            loader_version_range    : forge_loader_version_range,
+            mod_id                  : 'parcool',
+            mod_name                : 'ParCool',
+            mod_license             : 'Lesser General Public License version 3',
+            mod_version             : mod_version,
+            mod_authors             : 'alRex_U',
+            extern_feathers         : [
+                    mod_id       : 'feathers',
+                    version_range: '[1.1.2,)'
+            ],
+            extern_shouldersurfing  : [
+                    mod_id       : 'shouldersurfing',
+                    version_range: '[1.19.2-4.22.1,)'
+            ],
+            extern_betterthirdperson: [
+                    mod_id       : 'betterthirdperson',
+                    version_range: '[1.9.0,)'
+            ],
+            extern_epicfight        : [
+                    mod_id       : 'epicfight',
+                    version_range: '[19.5.26,)'
+            ],
+            extern_curios           : [
+                    mod_id       : 'curios',
+                    version_range: '[5.1.6.4,)'
+            ]
+    ]
+    inputs.properties properties
+    expand properties
+    with copySpec {
+        from("src/template/resources") {
+            include 'META-INF/mods.toml'
+        }
+    }
+    into "src/generated/resources"
+}
+
+sourceSets {
+    main.resources {
+        srcDir tasks.named("generateModMetadata")
+    }
+}
+
+shadowJar {
+    configurations = [project.configurations.shadowBundle]
+    archiveClassifier = 'dev-shadow'
+}
+
+remapJar {
+    inputFile.set shadowJar.archiveFile
+}

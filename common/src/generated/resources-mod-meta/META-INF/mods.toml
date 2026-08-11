@@ -1,0 +1,63 @@
+modLoader = "javafml"
+loaderVersion = "[43,)"
+license = "Lesser General Public License version 3"
+issueTrackerURL = "https://github.com/alRex-U/ParCool/issues"
+[[mods]]
+modId = "parcool" #mandatory
+version = "3.4.3.3" #mandatory
+displayName = "ParCool!" #mandatory
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/parcool" #optional
+logoFile = "parcool_logo.png" #optional
+# credits = "" #optional
+authors = "alRex_U"
+description = '''
+    This enable us act like parkour players.
+    Enjoy Minecraft with cool actions!
+    If Patchouli mod is installed, let's read ParCool Guide!
+'''
+[[dependencies.parcool]] #optional
+modId = "forge" #mandatory
+mandatory = true #mandatory
+versionRange = "[43,)" #mandatory
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.parcool]]
+modId = "minecraft"
+mandatory = true
+# This version range declares a minimum of the current minecraft version up to but not including the next major version
+versionRange = "[1.19.2,1.20)"
+ordering = "NONE"
+side = "BOTH"
+
+# Feathers
+[[dependencies.parcool]]
+modId = "feathers"
+mandatory = false
+versionRange = "[0.1,)"
+ordering = "BEFORE"
+side = "BOTH"
+
+# Better Third Person
+[[dependencies.parcool]]
+modId = "betterthirdperson"
+mandatory = false
+versionRange = "[1.9.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+# Shoulder Surfing
+[[dependencies.parcool]]
+modId = "shouldersurfing"
+mandatory = false
+versionRange = "[1.19.2-4.11.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+# EpicFight
+[[dependencies.parcool]]
+modId = "epicfight"
+mandatory = false
+versionRange = "[19.5.22,)"
+ordering = "NONE"
+side = "BOTH"

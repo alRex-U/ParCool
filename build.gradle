@@ -1,219 +1,51 @@
-import me.modmuss50.mpp.ReleaseType
-
 plugins {
-    id 'java'
-    id 'eclipse'
-    id 'idea'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2]'
-    id 'org.spongepowered.mixin' version '0.7.+'
-    id 'me.modmuss50.mod-publish-plugin' version '1.+'
+    id 'dev.architectury.loom' version '1.17.+' apply false
+    id 'architectury-plugin' version '3.5-SNAPSHOT'
+    id 'com.gradleup.shadow' version '9.4.3' apply false
+    id 'me.modmuss50.mod-publish-plugin' version '1.+' apply false
 }
-
-repositories {
-    maven { url = 'https://maven.blamejared.com' }
-    maven { url = 'https://www.cursemaven.com' }
-    maven { url = "https://maven.theillusivec4.top/" }
-}
-
-compileJava.options.encoding("UTF-8")
-compileTestJava.options.encoding("UTF-8")
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
-version = "${minecraft_version}-${mod_version}"
-group = 'com.alrex'
-
-mixin {
-    add sourceSets.main, 'parcool.refmap.json'
-    config 'parcool.mixins.json'
+architectury {
+    minecraft = minecraft_version
 }
 
-base {
-    archivesName = 'ParCool'
+allprojects {
+    group = 'com.alrex'
+    version = mod_version
 }
 
-minecraft {
-    mappings channel: 'official', version: minecraft_version
-    copyIdeResources = true
-
-    accessTransformer = file('accesstransformer.cfg')
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            mods {
-                parcool {
-                    source sourceSets.main
-                }
-            }
-        }
-        server {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            mods {
-                parcool {
-                    source sourceSets.main
-                }
-            }
-        }
-        data {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            args '--mod', 'parcool', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-            mods {
-                parcool {
-                    source sourceSets.main
-                }
-            }
-        }
+subprojects {
+    pluginManager.with {
+        apply 'java'
+        apply 'eclipse'
+        apply 'idea'
+        apply 'dev.architectury.loom'
+        apply 'architectury-plugin'
+        apply 'me.modmuss50.mod-publish-plugin'
     }
-}
+    base { archivesName = "ParCool-${minecraft_version}-${project.name}" }
 
-dependencies {
-    // Specify the version of Minecraft to use.
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    compileOnly "top.theillusivec4.curios:curios-forge:${curios_version}:api"
-    //runtimeOnly "top.theillusivec4.curios:curios-forge:${curios_version}"
-    //compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
-    runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
+    repositories {}
 
-    compileOnly fg.deobf("curse.maven:BetterThirdPerson-435044:${betterthirdperson_file_id}")
-    //runtimeOnly fg.deobf("curse.maven:BetterThirdPerson-435044:${betterthirdperson_file_id}")
+    loom { silentMojangMappingsLicense() }
 
-    compileOnly fg.deobf("curse.maven:ShoulderSurfing-243190:${shouldersurfing_file_id}")
-    runtimeOnly fg.deobf("curse.maven:ShoulderSurfing-243190:${shouldersurfing_file_id}")
+    dependencies {
+        minecraft "net.minecraft:minecraft:$minecraft_version"
+        mappings loom.officialMojangMappings()
 
-    compileOnly fg.deobf("curse.maven:feathers-699933:${feathers_file_id}")
-    //runtimeOnly fg.deobf("curse.maven:feathers-699933:${feathers_file_id}")
-
-    compileOnly fg.deobf("curse.maven:epic-fight-mod-405076:${epicfight_file_id}")
-    runtimeOnly fg.deobf("curse.maven:epic-fight-mod-405076:${epicfight_file_id}")
-}
-
-tasks.register("minifyJsonResource", MinifyJsonTask) {
-    inputDir = project.file("src/template/resources")
-    outputDir = project.file("src/generated/resources-minified-json")
-}
-
-tasks.register("generateModMetadata", ProcessResources) {
-    var properties = [
-            minecraft_version       : minecraft_version,
-            minecraft_version_range : minecraft_version_range,
-            forge_version           : forge_version,
-            forge_version_range     : forge_version_range,
-            loader_version_range    : loader_version_range,
-            mod_id                  : 'parcool',
-            mod_name                : 'ParCool',
-            mod_license             : 'Lesser General Public License version 3',
-            mod_version             : mod_version,
-            mod_authors             : 'alRex_U',
-            extern_feathers         : [
-                    mod_id: 'feathers',
-                    version_range: '[1.1.2,)'
-            ],
-            extern_shouldersurfing  : [
-                    mod_id: 'shouldersurfing',
-                    version_range: '[1.19.2-4.22.1,)'
-            ],
-            extern_betterthirdperson: [
-                    mod_id: 'betterthirdperson',
-                    version_range: '[1.9.0,)'
-            ],
-            extern_epicfight        : [
-                    mod_id: 'epicfight',
-                    version_range: '[19.5.26,)'
-            ],
-            extern_curios           : [
-                    mod_id       : 'curios',
-                    version_range: '[5.1.6.4,)'
-            ]
-    ]
-    inputs.properties properties
-    expand properties
-    with copySpec {
-        from("src/template/resources") {
-            include 'META-INF/mods.toml'
-        }
+        compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     }
-    into "src/generated/resources"
-}
 
-sourceSets {
-    main.java {
-        srcDir "src/generated/java"
+    compileJava.options.encoding("UTF-8")
+    compileTestJava.options.encoding("UTF-8")
+    java {
+        toolchain.languageVersion = JavaLanguageVersion.of(17)
+        withSourcesJar()
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    main.resources {
-        srcDir tasks.named("generateModMetadata")
-        srcDir tasks.named("minifyJsonResource")
-    }
-}
 
-jar {
-    manifest {
-        attributes([
-                "Specification-Title"     : "ParCool!",
-                "Specification-Vendor" : "alRex-U",
-                "Specification-Version" : "${mod_version}",
-                "Implementation-Title"    : project.name,
-                "Implementation-Version": "${mod_version}",
-                "Implementation-Vendor": "alRex-U",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "TweakClass"              : "org.spongepowered.asm.launch.MixinTweaker",
-                "MixinConfigs"            : "parcool.mixins.json"
-        ])
-    }
-    finalizedBy('reobfJar')
-}
-publishMods {
-    type = ReleaseType.of(release_type)
-    file = jar.archiveFile
-    var changelogText = project.layout.projectDirectory.file("changelog/v_${mod_version}.md").asFile.getText()
-    changelog = changelogText
-    modLoaders.add('forge')
-
-    displayName = "${minecraft_version}-${mod_version}"
-    version = "${minecraft_version}-${mod_version}"
-
-    curseforge {
-        projectId = '482378'
-        accessToken = providers.environmentVariable('API_TOKEN_PARCOOL_CURSEFORGE')
-        minecraftVersions.add(minecraft_version)
-
-        clientRequired = true
-        serverRequired = true
-
-        optional('parcool-compatibility-addon')
-
-        announcementTitle = 'Download from CurseForge'
-    }
-    modrinth {
-        projectId = 'Fsvx2bdR'
-        accessToken = providers.environmentVariable('API_TOKEN_PARCOOL_MODRINTH')
-        minecraftVersions.add(minecraft_version)
-
-        announcementTitle = 'Download from Modrinth'
-    }
-    discord {
-        username.set("Update Notification")
-        avatarUrl.set("https://i.imgur.com/FrxDviN.png")
-        content = """\
-            <@&1074034800849059930>
-            # ParCool: ${minecraft_version}-${mod_version} is released!
-            
-""".stripIndent() + changelogText
-        webhookUrl = providers.environmentVariable('API_TOKEN_PARCOOL_DISCORD_WEBHOOK')
-        dryRunWebhookUrl = providers.environmentVariable('API_TOKEN_PARCOOL_DISCORD_WEBHOOK_DRY_RUN')
-        setPlatforms(publishMods.platforms.curseforge, publishMods.platforms.modrinth)
-        style {
-            look = 'MODERN'
-            link = 'BUTTON'
-            thumbnailUrl = 'https://i.imgur.com/pibqOcC.png'
-        }
-    }
+    tasks.withType(JavaCompile).configureEach { it.options.release = 17 }
 }
