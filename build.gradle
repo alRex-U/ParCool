@@ -115,11 +115,11 @@ tasks.register("generateModMetadata", ProcessResources) {
             mod_authors             : 'alRex_U',
             extern_feathers         : [
                     mod_id: 'feathers',
-                    version_range: '[1.1.2,)'
+                    version_range: '[1.1,)'
             ],
             extern_shouldersurfing  : [
                     mod_id: 'shouldersurfing',
-                    version_range: '[1.19.2-4.22.1,)'
+                    version_range: '[1.20.1-5.0.10,)'
             ],
             extern_betterthirdperson: [
                     mod_id: 'betterthirdperson',
@@ -127,11 +127,11 @@ tasks.register("generateModMetadata", ProcessResources) {
             ],
             extern_epicfight        : [
                     mod_id: 'epicfight',
-                    version_range: '[19.5.26,)'
+                    version_range: '[20.14.17,)'
             ],
             extern_curios           : [
                     mod_id       : 'curios',
-                    version_range: '[5.1.6.4,)'
+                    version_range: '[5.14.1,)'
             ]
     ]
     inputs.properties properties
