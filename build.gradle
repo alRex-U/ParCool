@@ -97,7 +97,7 @@ dependencies {
 }
 
 tasks.register("minifyJsonResource", MinifyJsonTask) {
-    inputDir = project.file("src/template/resources")
+    inputDir = project.file("src/template/resources-minified")
     outputDir = project.file("src/generated/resources-minified-json")
 }
 
