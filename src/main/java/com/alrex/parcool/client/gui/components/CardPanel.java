@@ -1,6 +1,6 @@
 package com.alrex.parcool.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -53,18 +53,18 @@ public class CardPanel extends AbstractWidget {
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
         if (!visible) return;
         if (shadowRight || shadowBottom || shadowTop || shadowLeft) {
-            fill(poseStack,
-                    x + (shadowLeft ? -1 : 0),
-                    y + (shadowTop ? -1 : 0),
-                    x + width + (shadowRight ? 1 : 0),
-                    y + height + (shadowBottom ? 1 : 0),
+            graphics.fill(
+                    getX() + (shadowLeft ? -1 : 0),
+                    getY() + (shadowTop ? -1 : 0),
+                    getX() + width + (shadowRight ? 1 : 0),
+                    getY() + height + (shadowBottom ? 1 : 0),
                     shadowColor
             );
         }
-        fill(poseStack, x, y, x + width, y + height, color);
+        graphics.fill(getX(), getY(), getX() + width, getY() + height, color);
     }
 
     @Override
@@ -73,6 +73,6 @@ public class CardPanel extends AbstractWidget {
     }
 
     @Override
-    public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+    public void updateWidgetNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
     }
 }

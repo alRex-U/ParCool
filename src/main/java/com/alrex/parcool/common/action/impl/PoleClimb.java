@@ -125,7 +125,7 @@ public class PoleClimb extends ContinuableAction {
     private static boolean checkPole(Player player, InteractingWallDirection wallDirection) {
         var playerPos = player.position();
         var playerHalfWidth = player.getBbWidth() / 2. + 0.1;
-        var level = player.level;
+        var level = player.level();
         var wallBlockPos = new BlockPos(
                 Mth.floor(playerPos.x + wallDirection.asVec().x * playerHalfWidth),
                 Mth.floor(playerPos.y + 0.1),

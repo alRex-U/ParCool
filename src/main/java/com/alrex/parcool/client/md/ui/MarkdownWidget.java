@@ -8,17 +8,17 @@ import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolGuideImageTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -27,7 +27,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -36,6 +35,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -92,24 +92,25 @@ public class MarkdownWidget extends AbstractWidget {
     }
 
     @Override
-    public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+    public void updateWidgetNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        var poseStack = graphics.pose();
         poseStack.pushPose();
         {
-            GuiRenderUtil.enableScissorTestInGuiCoordinate(x, y, width, height);
+            GuiRenderUtil.enableScissorTestInGuiCoordinate(getX(), getY(), width, height);
 
-            var mouseXInContent = mouseX - x;
+            var mouseXInContent = mouseX - getX();
             if (mouseXInContent < 0 || width < mouseXInContent) mouseXInContent = -1;
-            var mouseYInContent = mouseY - y;
+            var mouseYInContent = mouseY - getY();
             if (mouseYInContent < 0 || width < mouseYInContent) mouseYInContent = -1;
             else mouseYInContent += (int) scrollY;
 
-            poseStack.translate(x, y - scrollY, 0);
+            poseStack.translate(getX(), getY() - scrollY, 0);
             for (var widget : contentRendererWidgets) {
-                widget.render(poseStack, mouseXInContent, mouseYInContent, partial);
+                widget.render(graphics, mouseXInContent, mouseYInContent, partial);
             }
             RenderSystem.disableScissor();
         }
@@ -119,7 +120,7 @@ public class MarkdownWidget extends AbstractWidget {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int click) {
         for (var widget : contentRendererWidgets) {
-            if (widget.mouseClicked(mouseX - x, mouseY - y + scrollY, click)) return true;
+            if (widget.mouseClicked(mouseX - getX(), mouseY - getY() + scrollY, click)) return true;
         }
         return false;
     }
@@ -147,13 +148,13 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+        public void updateWidgetNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
         }
 
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int click) {
             for (var textWidget : textWidgets) {
-                if (textWidget.x < mouseX && mouseX < textWidget.x + textWidget.getWidth() && textWidget.y < mouseY && mouseY < textWidget.y + textWidget.getHeight()) {
+                if (textWidget.getX() < mouseX && mouseX < textWidget.getX() + textWidget.getWidth() && textWidget.getY() < mouseY && mouseY < textWidget.getY() + textWidget.getHeight()) {
                     if (textWidget.mouseClicked(mouseX, mouseY, click)) return true;
                 }
             }
@@ -161,10 +162,10 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
             if (isActive()) {
                 for (var widget : textWidgets) {
-                    widget.render(poseStack, mouseX, mouseY, partial);
+                    widget.render(graphics, mouseX, mouseY, partial);
                 }
             }
         }
@@ -267,9 +268,11 @@ public class MarkdownWidget extends AbstractWidget {
                         }
                         textStyle = style.withItalic(true);
                     } else if (text instanceof MarkdownText.ExtensionMCItemName itemName) {
-                        var item = Registry.ITEM.get(itemName.id());
-                        str = I18n.get(item.getDescriptionId());
-                        textStyle = style.withItalic(true);
+                        var item = ForgeRegistries.ITEMS.getValue(itemName.id());
+                        if (item != null) {
+                            str = I18n.get(item.getDescriptionId());
+                            textStyle = style.withItalic(true);
+                        }
                     }
                     while (!str.isEmpty()) {
                         int splitPos = splitter.findLineBreak(str, (int) (context.width - context.currentX), textStyle);
@@ -298,9 +301,9 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
-            int relativeMouseX = mouseX - x;
-            int relativeMouseY = mouseY - y;
+        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+            int relativeMouseX = mouseX - getX();
+            int relativeMouseY = mouseY - getY();
             interactingZone = null;
             for (var interaction : interactiveFragments) {
                 var zone = interaction.getB();
@@ -309,14 +312,14 @@ public class MarkdownWidget extends AbstractWidget {
                     interactingZone = zone;
             }
             for (var fragment : fragments) {
-                font.draw(poseStack, fragment.text, x + fragment.x, y + fragment.y, ~0);
+                graphics.drawString(font, fragment.text, (int) (getX() + fragment.x), (int) (getY() + fragment.y), ~0, false);
             }
             for (var interaction : interactiveFragments) {
                 var fragment = interaction.getA();
                 var isHovered = interactingZone != null && interactingZone.idx == interaction.getB().idx;
-                font.draw(
-                        poseStack, fragment.text, x + fragment.x, y + fragment.y,
-                        isHovered ? 0xFFFC9527 : 0xFF6C76FA
+                graphics.drawString(
+                        font, fragment.text, (int) (getX() + fragment.x), (int) (getY() + fragment.y),
+                        isHovered ? 0xFFFC9527 : 0xFF6C76FA, false
                 );
             }
         }
@@ -325,8 +328,8 @@ public class MarkdownWidget extends AbstractWidget {
         public boolean mouseClicked(double mouseX, double mouseY, int click) {
             if (interactingZone == null) return false;
             var zone = interactingZone;
-            var relativeMouseX = mouseX - x;
-            var relativeMouseY = mouseY - y;
+            var relativeMouseX = mouseX - getX();
+            var relativeMouseY = mouseY - getY();
             if (zone.x <= relativeMouseX && relativeMouseX < zone.x + zone.width &&
                     zone.y <= relativeMouseY && relativeMouseY < zone.y + zone.height) {
                 var clickedItem = interactiveText.get(interactingZone.idx);
@@ -340,7 +343,7 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+        public void updateWidgetNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
         }
     }
 
@@ -357,17 +360,18 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+            var poseStack = graphics.pose();
             poseStack.pushPose();
             {
-                poseStack.translate(x, y, 0);
+                poseStack.translate(getX(), getY(), 0);
                 poseStack.scale(scale, scale, 0);
-                widget.render(poseStack, (int) ((mouseX - x) / scale), (int) ((mouseY - y) / scale), partial);
+                widget.render(graphics, (int) ((mouseX - getX()) / scale), (int) ((mouseY - getY()) / scale), partial);
             }
             poseStack.popPose();
             if (bottomLine) {
                 RenderSystem.setShaderColor(1f, 1f, 1f, 0.4f);
-                hLine(poseStack, x, x + width, y + Mth.ceil(widget.getHeight() * scale), textColor());
+                graphics.hLine(getX(), getX() + width, getY() + Mth.ceil(widget.getHeight() * scale), textColor());
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             }
         }
@@ -379,9 +383,9 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
             RenderSystem.setShaderColor(1, 1, 1, 0.5f);
-            hLine(poseStack, x + 5, x + width - 5, y + 1, textColor());
+            graphics.hLine(getX() + 5, getX() + width - 5, getY() + 1, textColor());
             RenderSystem.setShaderColor(1, 1, 1, 1f);
         }
     }
@@ -403,12 +407,12 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
             int i = 0;
             for (var widget : textWidgets) {
-                font.draw(poseStack, (++i) + ".", x, widget.y, textColor());
+                graphics.drawString(font, (++i) + ".", getX(), widget.getY(), textColor(), false);
             }
-            super.render(poseStack, mouseX, mouseY, partial);
+            super.renderWidget(graphics, mouseX, mouseY, partial);
         }
     }
 
@@ -428,12 +432,12 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+        public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
             var offset = font.lineHeight / 2;
             for (var widget : textWidgets) {
-                fill(poseStack, x + offset - 1, widget.y + offset - 1, x + offset + 1, widget.y + offset + 1, textColor());
+                graphics.fill(getX() + offset - 1, widget.getY() + offset - 1, getX() + offset + 1, widget.getY() + offset + 1, textColor());
             }
-            super.render(poseStack, mouseX, mouseY, partial);
+            super.renderWidget(graphics, mouseX, mouseY, partial);
         }
     }
 
@@ -442,15 +446,16 @@ public class MarkdownWidget extends AbstractWidget {
         public ImageWidget(int x, int y, int width, MarkdownParagraph.Image content) {
             super(0, y, 0, 0, content);
             sprite = ParCoolTextures.guideResourceSprite(content.spriteLocation());
-            this.x = x + (width - Math.min(width, sprite.getWidth())) / 2;
-            setWidth(Math.min(width, sprite.getWidth()));
-            setHeight(getWidth() * sprite.getHeight() / sprite.getHeight());
+            var contents = sprite.contents();
+            this.setX(x + (width - Math.min(width, contents.width())) / 2);
+            setWidth(Math.min(width, contents.width()));
+            setHeight(getWidth() * contents.width() / contents.height());
         }
 
         @Override
-        public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
             RenderSystem.setShaderTexture(0, ParCoolGuideImageTextureAtlas.TEXTURE_LOCATION);
-            blit(poseStack, x, y, 0, width, height, sprite);
+            graphics.blit(getX(), getY(), 0, width, height, sprite);
         }
     }
 
@@ -460,6 +465,7 @@ public class MarkdownWidget extends AbstractWidget {
         private final Recipe<?> recipe;
         private final float scale;
         private final ItemRenderer itemRenderer;
+        private final RegistryAccess registryAccess;
 
         public RecipeWidget(int x, int y, int width, MarkdownParagraph.ExtensionMCRecipe content) {
             super(x, y, width, 0, content);
@@ -474,16 +480,17 @@ public class MarkdownWidget extends AbstractWidget {
             itemRenderer = Minecraft.getInstance().getItemRenderer();
             scale = width / 118f;
             setHeight((int) (scale * 56f));
+            registryAccess = new RegistryAccess.ImmutableRegistryAccess(Collections.emptyList());
         }
 
         @Override
-        public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
-            RenderSystem.setShaderTexture(0, CRAFTING_TABLE_LOCATION);
+        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+            var poseStack = graphics.pose();
             poseStack.pushPose();
             {
-                poseStack.translate(x, y, 0);
+                poseStack.translate(getX(), getY(), 0);
                 poseStack.scale(scale, scale, 1);
-                blit(poseStack, 0, 0, 28, 15, 118, 56);
+                graphics.blit(CRAFTING_TABLE_LOCATION, 0, 0, 28, 15, 118, 56);
             }
             poseStack.popPose();
             var time = Util.getMillis() / 1000;
@@ -494,10 +501,10 @@ public class MarkdownWidget extends AbstractWidget {
 
                 if (recipe instanceof ShapelessRecipe craftingRecipe) {
                     ingredients = craftingRecipe.getIngredients();
-                    result = craftingRecipe.getResultItem();
+                    result = craftingRecipe.getResultItem(registryAccess);
                 } else if (recipe instanceof ShapedRecipe craftingRecipe) {
                     ingredients = craftingRecipe.getIngredients();
-                    result = craftingRecipe.getResultItem();
+                    result = craftingRecipe.getResultItem(registryAccess);
                 } else return;
 
                 int i = -1;
@@ -508,9 +515,9 @@ public class MarkdownWidget extends AbstractWidget {
                     var item = items[(int) (time % items.length)];
                     var column = i % craftWidth;
                     var row = i / craftWidth;
-                    GuiRenderUtil.renderScaledGuiItem(itemRenderer, item, MarkdownWidget.this.x + x, MarkdownWidget.this.y - scrollY + y, 2 + 18 * column, 2 + 18 * row, scale);
+                    GuiRenderUtil.renderScaledGuiItem(graphics, item, MarkdownWidget.this.getX() + getX(), MarkdownWidget.this.getY() - scrollY + getY(), 2 + 18 * column, 2 + 18 * row, scale);
                 }
-                GuiRenderUtil.renderScaledGuiItem(itemRenderer, result, MarkdownWidget.this.x + x, MarkdownWidget.this.y - scrollY + y, 96, 20, scale);
+                GuiRenderUtil.renderScaledGuiItem(graphics, result, MarkdownWidget.this.getX() + getX(), MarkdownWidget.this.getY() - scrollY + getY(), 96, 20, scale);
             }
         }
     }
@@ -527,8 +534,8 @@ public class MarkdownWidget extends AbstractWidget {
             scale = width / 127f;
             setHeight((int) (scale * 20f));
             recipe = null;
-            var outputPotion = Registry.POTION.get(content.potionId());
-            if (outputPotion == Potions.EMPTY) return;
+            var outputPotion = ForgeRegistries.POTIONS.getValue(content.potionId());
+            if (outputPotion == null) return;
             for (var brewingRecipe : BrewingRecipeRegistry.getRecipes()) {
                 if (!(brewingRecipe instanceof BrewingRecipe basicRecipe)) continue;
                 var potion = PotionUtils.getPotion(basicRecipe.getOutput());
@@ -539,13 +546,14 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+            var poseStack = graphics.pose();
             RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
             poseStack.pushPose();
             {
-                poseStack.translate(x, y, 0);
+                poseStack.translate(getX(), getY(), 0);
                 poseStack.scale(scale, scale, 1);
-                blit(poseStack, 0, 0, 0, 127, 20, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BREWING_RECIPE_BOX));
+                graphics.blit(0, 0, 0, 127, 20, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BREWING_RECIPE_BOX));
             }
             poseStack.popPose();
             var time = Util.getMillis() / 1000;
@@ -553,14 +561,14 @@ public class MarkdownWidget extends AbstractWidget {
             var inputItems = recipe.getInput().getItems();
             if (inputItems.length != 0) {
                 var input = inputItems[(int) (time % inputItems.length)];
-                GuiRenderUtil.renderScaledGuiItem(itemRenderer, input, MarkdownWidget.this.x + x, MarkdownWidget.this.y - scrollY + y, 2, 2, scale);
+                GuiRenderUtil.renderScaledGuiItem(graphics, input, MarkdownWidget.this.getX() + getX(), MarkdownWidget.this.getY() - scrollY + getY(), 2, 2, scale);
             }
             var ingredientItems = recipe.getIngredient().getItems();
             if (ingredientItems.length != 0) {
                 var ingredient = ingredientItems[(int) (time % ingredientItems.length)];
-                GuiRenderUtil.renderScaledGuiItem(itemRenderer, ingredient, MarkdownWidget.this.x + x, MarkdownWidget.this.y - scrollY + y, 51, 2, scale);
+                GuiRenderUtil.renderScaledGuiItem(graphics, ingredient, MarkdownWidget.this.getX() + getX(), MarkdownWidget.this.getY() - scrollY + getY(), 51, 2, scale);
             }
-            GuiRenderUtil.renderScaledGuiItem(itemRenderer, recipe.getOutput(), MarkdownWidget.this.x + x, MarkdownWidget.this.y - scrollY + y, 109, 2, scale);
+            GuiRenderUtil.renderScaledGuiItem(graphics, recipe.getOutput(), MarkdownWidget.this.getX() + getX(), MarkdownWidget.this.getY() - scrollY + getY(), 109, 2, scale);
         }
     }
 }

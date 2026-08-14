@@ -141,14 +141,18 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         if (direction == null) return;
         var player = parkourability.player();
         var pos = player.position();
-        var blockPos = new BlockPos(pos.x + direction.asVec().x, pos.y, pos.z + direction.asVec().z);
-        var blockState = player.level.getBlockState(blockPos);
+        var blockPos = new BlockPos(
+                Mth.floor(pos.x + direction.asVec().x),
+                Mth.floor(pos.y()),
+                Mth.floor(pos.z + direction.asVec().z)
+        );
+        var blockState = player.level().getBlockState(blockPos);
         if (blockState.isAir()) return;
-        var random = player.level.random;
+        var random = player.level().random;
         var particleMove = EntityUtil.getPositionDifference(player).reverse().scale(2).add(direction.asVec().reverse().scale(0.3));
         var particlePos = pos.add(direction.asVec().scale(player.getBbWidth() * 0.5));
 
-        player.level.addParticle(
+        player.level().addParticle(
                 new BlockParticleOption(ParticleTypes.BLOCK, blockState),
                 particlePos.x + (random.nextDouble() - 0.5) * 0.35,
                 particlePos.y + (random.nextDouble() - 0.5) * 0.35,

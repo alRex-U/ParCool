@@ -1,12 +1,18 @@
 package com.alrex.parcool.client.animation.system.math;
 
-import com.mojang.math.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 
 @OnlyIn(Dist.CLIENT)
 public record Vec3f(float x, float y, float z) {
     public static final Vec3f ZERO = new Vec3f(0f, 0f, 0f);
+    public static final Vec3f XP = new Vec3f(1f, 0f, 0f);
+    public static final Vec3f YP = new Vec3f(0f, 1f, 0f);
+    public static final Vec3f ZP = new Vec3f(0f, 0f, 1f);
+    public static final Vec3f XN = new Vec3f(-1f, 0f, 0f);
+    public static final Vec3f YN = new Vec3f(0f, -1f, 0f);
+    public static final Vec3f ZN = new Vec3f(0f, 0f, -1f);
 
     public Vec3f scale(float v) {
         return new Vec3f(x * v, y * v, z * v);

@@ -6,8 +6,7 @@ import com.alrex.parcool.api.client.gui.StaminaDisplayContext;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.Parkourability;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -18,7 +17,7 @@ import net.minecraftforge.client.gui.overlay.ForgeGui;
 import static com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas.*;
 
 @OnlyIn(Dist.CLIENT)
-public class LightStaminaHUD extends GuiComponent implements IStaminaHUD {
+public class LightStaminaHUD implements IStaminaHUD {
 	private boolean valueChanging;
 	private int tickValueChangingOrNotChanging;
 	private int consumingStaminaVibration;
@@ -39,7 +38,7 @@ public class LightStaminaHUD extends GuiComponent implements IStaminaHUD {
 	}
 
 	@Override
-	public void render(ForgeGui gui, PoseStack stack, Parkourability parkourability, StaminaDisplayContext currentContext, StaminaDisplayContext oldContext, float partialTick, int width, int height) {
+    public void render(ForgeGui forgeGui, GuiGraphics guiGraphics, Parkourability parkourability, StaminaDisplayContext currentContext, StaminaDisplayContext oldContext, float partialTick, int width, int height) {
 		if (!valueChanging && tickValueChangingOrNotChanging > 40 && ParCool.getConfig().client().staminaHud.hideAutomatically().get())
 			return;
 		var player = parkourability.player();
@@ -56,7 +55,7 @@ public class LightStaminaHUD extends GuiComponent implements IStaminaHUD {
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
 		int baseX = width / 2 + 91 + ParCool.getConfig().client().staminaHud.offsetHorizontal().get();
-		int baseY = height - gui.rightHeight + ParCool.getConfig().client().staminaHud.offsetVertical().get();
+        int baseY = height - forgeGui.rightHeight + ParCool.getConfig().client().staminaHud.offsetVertical().get();
 		for (int i = 0; i < 10; i++) {
 			TextureAtlasSprite staminaSprite;
 			int x = baseX - i * 8 - 9;
@@ -97,8 +96,8 @@ public class LightStaminaHUD extends GuiComponent implements IStaminaHUD {
 				offsetY = consumingStaminaVibration;
 			}
 
-			blit(stack, x, baseY + offsetY, 0, 9, 9, staminaSprite);
+            guiGraphics.blit(x, baseY + offsetY, 0, 9, 9, staminaSprite);
 		}
-		gui.rightHeight += 10;
+        forgeGui.rightHeight += 10;
 	}
 }

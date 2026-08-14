@@ -3,10 +3,10 @@ package com.alrex.parcool.client.animation.system.data;
 import com.alrex.parcool.client.animation.system.AnimatableModelPart;
 import com.alrex.parcool.client.animation.system.AnimatableProperty;
 import com.alrex.parcool.client.animation.system.math.Vec3f;
-import com.mojang.math.Quaternion;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Quaternionf;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
@@ -42,7 +42,7 @@ public record StaticAnimationComponent(
 
         var transform = new Transform(
                 new Vec3f(translation[0], translation[1], translation[2]),
-                new Quaternion(rotation[1], rotation[2], rotation[3], rotation[0])
+                new Quaternionf(rotation[1], rotation[2], rotation[3], rotation[0])
         );
         return mirror ? transform.mirror() : transform;
     }

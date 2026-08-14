@@ -2,6 +2,7 @@ package com.alrex.parcool.common.item.recipe.special;
 
 import com.alrex.parcool.common.item.DyeAble;
 import com.alrex.parcool.common.item.recipe.Recipes;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -9,6 +10,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -17,8 +19,8 @@ import javax.annotation.Nonnull;
 import java.util.LinkedList;
 
 public class ParCoolDyeRecipe extends CustomRecipe {
-    public ParCoolDyeRecipe(ResourceLocation p_i48169_1_) {
-        super(p_i48169_1_);
+    public ParCoolDyeRecipe(ResourceLocation location, CraftingBookCategory craftingBookCategory) {
+        super(location, craftingBookCategory);
     }
 
     @Override
@@ -41,7 +43,7 @@ public class ParCoolDyeRecipe extends CustomRecipe {
 
     @Nonnull
     @Override
-    public ItemStack assemble(CraftingContainer craftingContainer) {
+    public ItemStack assemble(CraftingContainer craftingContainer, RegistryAccess registryAccess) {
         ItemStack dyeAbleStack = null;
         DyeAble dyeAbleItem = null;
         LinkedList<DyeItem> dyeItems = new LinkedList<>();

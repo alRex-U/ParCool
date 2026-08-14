@@ -60,7 +60,7 @@ public class ClimbUp extends ContinuableAction implements IRequestable<ClimbUp.R
                 center.z + playerBB.getZsize() * 0.6
         );
 
-        return parkourability.player().level.noCollision(destinationBB);
+        return parkourability.player().level().noCollision(destinationBB);
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -3,11 +3,11 @@ package com.alrex.parcool.mixin.client;
 import com.alrex.parcool.client.animation.system.AnimatableModelPart;
 import com.alrex.parcool.client.animation.system.IPlayerAnimatorHolder;
 import com.alrex.parcool.client.animation.system.data.Transform;
+import com.alrex.parcool.client.animation.system.math.MathUtil;
 import com.alrex.parcool.client.animation.system.math.Vec3f;
 import com.alrex.parcool.client.renderer.entity.layers.ParCoolGeneralEquipmentLayer;
 import com.alrex.parcool.client.renderer.entity.layers.ParCoolModelLayers;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.util.Mth;
+import org.joml.Quaternionf;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -53,13 +54,13 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
 				bodyTransformation = Transform.NO_TRANSFORMATION.morph(bodyTransformation, transform.blendFactor(), true);
 			}
 			var translation = bodyTransformation.translation();
-			stack.mulPose(Vector3f.YP.rotationDegrees(180.0F - yRot));
+			stack.mulPose(MathUtil.rotation(Vec3f.YP, (float) Math.toRadians(180.0F - yRot)));
 
 			var swimAmount = player.getSwimAmount(partial);
-			if (transform.isOverwriting() || swimAmount <= 0f) {
+			if (true) {//if (transform.isOverwriting() || swimAmount <= 0f) {
 				stack.translate(translation.x(), translation.y(), translation.z());
 				stack.translate(0, 0.9, 0);
-				stack.mulPose(bodyTransformation.rotation());
+				stack.mulPose(new Quaternionf(bodyTransformation.rotation()).normalize());
 				stack.translate(0, -0.9, 0);
 			} else {
 				var swimmingXRot = player.isInWater() || player.isInFluidType((fluidType, height) -> player.canSwimInFluidType(fluidType)) ?
@@ -68,7 +69,7 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
 
 				stack.translate(translation.x(), translation.y(), translation.z());
 				stack.translate(0, 0.9 * transform.blendFactor(), 0);
-				stack.mulPose((new Transform(Vec3f.ZERO, Vector3f.XP.rotationDegrees(swimmingActualXRot))).morph(bodyTransformation, transform.blendFactor(), true).rotation());
+				stack.mulPose(new Quaternionf(new Transform(Vec3f.ZERO, MathUtil.rotation(Vec3f.XP, (float) Math.toRadians(swimmingActualXRot))).morph(bodyTransformation, transform.blendFactor(), true).rotation()).normalize());
 				stack.translate(0, -0.9 * transform.blendFactor(), 0);
 				if (player.isVisuallySwimming()) {
 					stack.translate(0, -1.0f * (1f - transform.blendFactor()), 0.3f * (1f - transform.blendFactor()));

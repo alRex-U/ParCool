@@ -53,31 +53,35 @@ public class EasingFunctions {
 
         @Override
         public float easeOut(float t) {
-            return 1f - Mth.cube(1f - t);
+            return 1f - cube(1f - t);
         }
 
         @Override
         public float easeInOut(float t) {
-            return t < 0.5f ? 4f * t * t * t : 1f - Mth.cube(-2f * t + 2f) / 2f;
+            return t < 0.5f ? 4f * t * t * t : 1f - cube(-2f * t + 2f) / 2f;
         }
     }
 
     private static class Circle implements IEasingFunction {
         @Override
         public float easeIn(float t) {
-            return 1f - Mth.sqrt(1f - Mth.cube(t));
+            return 1f - Mth.sqrt(1f - cube(t));
         }
 
         @Override
         public float easeOut(float t) {
-            return Mth.sqrt(1f - Mth.cube(t - 1f));
+            return Mth.sqrt(1f - cube(t - 1f));
         }
 
         @Override
         public float easeInOut(float t) {
             return t < 0.5f
-                    ? (1f - Mth.sqrt(1f - Mth.cube(2f * t))) / 2f
-                    : (Mth.sqrt(1f - Mth.cube(-2f * t + 2f)) + 1f) / 2f;
+                    ? (1f - Mth.sqrt(1f - cube(2f * t))) / 2f
+                    : (Mth.sqrt(1f - cube(-2f * t + 2f)) + 1f) / 2f;
         }
+    }
+
+    private static float cube(float v) {
+        return v * v * v;
     }
 }

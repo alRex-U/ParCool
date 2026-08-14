@@ -9,7 +9,7 @@ import com.alrex.parcool.client.sound.ZiplineUseSoundInstance;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.ParCoolActions;
-import com.alrex.parcool.common.damage.DamageSources;
+import com.alrex.parcool.common.damage.DamageTypes;
 import com.alrex.parcool.common.item.armor.TraceurGlovesItem;
 import com.alrex.parcool.common.zipline.ILoadedZiplineHolderProvider;
 import com.alrex.parcool.common.zipline.Zipline;
@@ -77,7 +77,7 @@ public class RideZipline extends ContinuableAction {
                 || (getNotDoingTick() <= 5 && (ParCoolKeyBinds.JUMP.state().isDown() || previouslyStopByCollision))
         ) return false;
         var player = parkourability.player();
-        if (!(player.getLevel() instanceof ClientLevel clientLevel)) return false;
+        if (!(player.level() instanceof ClientLevel clientLevel)) return false;
         var zipline = Zipline.getHangAbleZipline(clientLevel, player);
         if (zipline == null) return false;
         double t = zipline.shape().getParameter(player.position());
@@ -136,7 +136,7 @@ public class RideZipline extends ContinuableAction {
             var particlePos = new Vec3(player.xo, player.yo + 1.1 * player.getBbHeight(), player.zo);
             var posDiffX = player.xo - playerPos.x;
             var posDiffZ = player.zo - playerPos.z;
-            player.level.addParticle(
+            player.level().addParticle(
                     DustParticleOptions.REDSTONE,
                     particlePos.x, particlePos.y, particlePos.z,
                     -0.5 * posDiffX, 0.25 + Math.hypot(posDiffX, posDiffZ) * propertySlope.getOrDefaultIfNull(0f) * 0.5, -0.5 * posDiffZ
@@ -149,7 +149,7 @@ public class RideZipline extends ContinuableAction {
     public void onWorkingTickInLocalClient() {
         if (ridingZipline == null) return;
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
-        if (player.level instanceof ILoadedZiplineHolderProvider provider) {
+        if (player.level() instanceof ILoadedZiplineHolderProvider provider) {
             if (!provider.getZiplineHolder().checkAlive(ridingZipline)) {
                 ridingZipline = null;
                 return;
@@ -172,7 +172,7 @@ public class RideZipline extends ContinuableAction {
         speed *= player.isInFluidType() ? 0.8 : 0.98;
         speed += (ridingZipline.powered() ? 0.04 : 0) * lookAngle.dot(offsetNormalized)
                 + Math.min(moveInputScale * 0.01 * (speedAttr.getValue() / speedAttr.getBaseValue()), 0.08)
-                - gravity * slope * (Mth.fastInvSqrt(slope * slope + 1));
+                - gravity * slope * (Mth.invSqrt(slope * slope + 1));
         currentT = (float) ridingZipline.shape().getMovedPositionByParameterApproximately(currentT, (float) speed);
         currentPos = ridingZipline.shape().getMidPoint(currentT);
         propertySlope.set(slope);
@@ -188,7 +188,7 @@ public class RideZipline extends ContinuableAction {
         if (player.tickCount % 4 == 0 && !TraceurGlovesItem.isEquipped(player)) {
             var tmp = player.invulnerableTime;
             player.invulnerableTime = 0;
-            player.hurt(DamageSources.FRICTION, 0.3f);
+            player.hurt(player.level().damageSources().source(DamageTypes.FRICTION), 0.3f);
             player.invulnerableTime = tmp;
         }
     }
@@ -206,7 +206,7 @@ public class RideZipline extends ContinuableAction {
         Vec3 speedScale;
         {
             Vec3 pointsOffset = shape.getOffsetFromStartToEnd();
-            double xzLenInvSqrt = Mth.fastInvSqrt(pointsOffset.x() * pointsOffset.x() + pointsOffset.z() * pointsOffset.z());
+            double xzLenInvSqrt = Mth.invSqrt(pointsOffset.x() * pointsOffset.x() + pointsOffset.z() * pointsOffset.z());
             double xScale = pointsOffset.x() * xzLenInvSqrt;
             double zScale = pointsOffset.z() * xzLenInvSqrt;
             speedScale = new Vec3(xScale, slope, zScale).normalize();
@@ -234,7 +234,7 @@ public class RideZipline extends ContinuableAction {
         double acceleration = propertyAcceleration.getOrDefaultIfNull(0f);
         double slope = propertySlope.getOrDefaultIfNull(0f);
         double gravity = parkourability.player().getAttributeValue(ForgeMod.ENTITY_GRAVITY.get());
-        double invSqrt = Mth.fastInvSqrt(slope * slope + 1);
+        double invSqrt = Mth.invSqrt(slope * slope + 1);
         double xz = -acceleration * invSqrt;
         double y = gravity + acceleration * slope * invSqrt;
         currentAngleRadian = (float) Mth.lerp(0.1, oldAngleRadian, Math.atan2(xz, y));

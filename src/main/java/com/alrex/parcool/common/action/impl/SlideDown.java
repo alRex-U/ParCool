@@ -12,7 +12,7 @@ import com.alrex.parcool.common.action.ActionExtension;
 import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.InteractingWallDirection;
 import com.alrex.parcool.common.action.ParCoolActions;
-import com.alrex.parcool.common.damage.DamageSources;
+import com.alrex.parcool.common.damage.DamageTypes;
 import com.alrex.parcool.common.item.armor.TraceurGlovesItem;
 import com.alrex.parcool.util.EntityUtil;
 import com.alrex.parcool.util.MathUtil;
@@ -95,14 +95,18 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
         if (direction == null) return;
         var player = parkourability.player();
         var pos = player.position();
-        var blockPos = new BlockPos(pos.x + direction.asVec().x, pos.y, pos.z + direction.asVec().z);
-        var blockState = player.level.getBlockState(blockPos);
+        var blockPos = new BlockPos(
+                Mth.floor(pos.x + direction.asVec().x),
+                Mth.floor(pos.y),
+                Mth.floor(pos.z + direction.asVec().z)
+        );
+        var blockState = player.level().getBlockState(blockPos);
         if (blockState.isAir()) return;
-        var random = player.level.random;
+        var random = player.level().random;
         var particleMove = com.alrex.parcool.client.animation.system.util.EntityUtil.getPositionDifference(player).reverse().scale(0.1).add(direction.asVec().reverse().scale(0.3));
         var particlePos = pos.add(0, player.getBbHeight() + 0.5, 0).add(direction.asVec().scale(player.getBbWidth() * 0.5));
 
-        player.level.addParticle(
+        player.level().addParticle(
                 new BlockParticleOption(ParticleTypes.BLOCK, blockState),
                 particlePos.x + (random.nextDouble() - 0.5) * 0.35,
                 particlePos.y,
@@ -205,7 +209,7 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
             int invulnerableTime = player.invulnerableTime; // bypass invulnerableTime
             damageCoolTime = 1;
             player.invulnerableTime = 0;
-            player.hurt(DamageSources.FRICTION, 0.3f);
+            player.hurt(player.level().damageSources().source(DamageTypes.FRICTION), 0.3f);
             player.invulnerableTime = invulnerableTime;
         } else {
             damageCoolTime--;

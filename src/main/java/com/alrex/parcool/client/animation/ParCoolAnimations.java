@@ -48,17 +48,17 @@ public class ParCoolAnimations {
     );
     public final ID<AnimationSet> TRICK_JUMP_BACK = AnimationSets.getInstance().register(
             ParCool.resourceLocation("trick_jump_back"),
-            (p) -> !p.isOnGround(),
+            (p) -> !p.onGround(),
             null
     );
     public final ID<AnimationSet> TRICK_JUMP_FORWARD = AnimationSets.getInstance().register(
             ParCool.resourceLocation("trick_jump_forward"),
-            (p) -> !p.isOnGround(),
+            (p) -> !p.onGround(),
             null
     );
     public final ID<AnimationSet> STRIDE_JUMP = AnimationSets.getInstance().register(
             ParCool.resourceLocation("stride"),
-            (p) -> !p.isOnGround(),
+            (p) -> !p.onGround(),
             null
     );
     public final ID<AnimationSet> SLIDE_DOWN = AnimationSets.getInstance().register(
@@ -153,12 +153,12 @@ public class ParCoolAnimations {
     );
     public final ID<AnimationSet> HANG_DOWN_JUMP_FORWARD = AnimationSets.getInstance().register(
             ParCool.resourceLocation("hang_down_jump_forward"),
-            (p) -> !p.isOnGround(),
+            (p) -> !p.onGround(),
             null
     );
     public final ID<AnimationSet> HANG_DOWN_JUMP_BACKWARD = AnimationSets.getInstance().register(
             ParCool.resourceLocation("hang_down_jump_backward"),
-            (p) -> !p.isOnGround(),
+            (p) -> !p.onGround(),
             null
     );
     public final ID<AnimationSet> RIDE_ZIPLINE = AnimationSets.getInstance().register(
@@ -173,7 +173,7 @@ public class ParCoolAnimations {
     );
     public final ID<AnimationSet> CASTAWAY = AnimationSets.getInstance().register(
             ParCool.resourceLocation("castaway"),
-            (p) -> !p.isOnGround(),
+            (p) -> !p.onGround(),
             null
     );
     public final ID<AnimationSet> POLE_CLIMB = AnimationSets.getInstance().register(

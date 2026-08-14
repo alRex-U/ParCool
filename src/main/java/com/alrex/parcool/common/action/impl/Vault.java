@@ -131,7 +131,7 @@ public class Vault extends ContinuableAction {
             this.obstacleDistance = obstacleDistance.normalize().scale(player.getBbWidth() * 1.5);
         }
         this.propertyDuration.set((byte) duration);
-        this.propertyVaultType.set(getVaultType(vaultMovement, player.level.random));
+        this.propertyVaultType.set(getVaultType(vaultMovement, player.level().random));
         return true;
     }
 
@@ -160,6 +160,6 @@ public class Vault extends ContinuableAction {
 
     private static Vec3 getCollisionVec(Player player, Vec3 movement, AABB boundingBox) {
         if (Math.abs(movement.lengthSqr()) < 1e-4) return Vec3.ZERO;
-        return Entity.collideBoundingBox(player, movement, boundingBox, player.level, player.level.getEntityCollisions(player, boundingBox.expandTowards(movement)));
+        return Entity.collideBoundingBox(player, movement, boundingBox, player.level(), player.level().getEntityCollisions(player, boundingBox.expandTowards(movement)));
     }
 }

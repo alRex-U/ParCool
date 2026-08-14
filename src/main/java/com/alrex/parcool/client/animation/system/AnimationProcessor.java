@@ -7,11 +7,11 @@ import com.alrex.parcool.client.animation.system.math.Vec3f;
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.animation.system.registration.ID;
 import com.alrex.parcool.client.animation.system.resource.AnimationResourceManager;
-import com.mojang.math.Quaternion;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Quaternionf;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -141,11 +141,11 @@ public class AnimationProcessor {
                 if (bodyTrans != null) {
                     if (cameraRotation == null) cameraRotation = Vec3f.ZERO;
                     var bodyQ = bodyTrans.rotation();
-                    var rot = new Quaternion(
-                            cameraScale.x() * bodyQ.i(),
-                            cameraScale.y() * bodyQ.j(),
-                            cameraScale.z() * bodyQ.k(),
-                            bodyQ.r()
+                    var rot = new Quaternionf(
+                            cameraScale.x() * bodyQ.x(),
+                            cameraScale.y() * bodyQ.y(),
+                            cameraScale.z() * bodyQ.z(),
+                            bodyQ.w()
                     );
                     rot.normalize();
                     var bodyRot = MathUtil.toCameraRotation(rot);

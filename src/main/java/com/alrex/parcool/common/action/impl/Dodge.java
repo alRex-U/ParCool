@@ -13,6 +13,7 @@ import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.util.EntityUtil;
 import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -108,7 +109,7 @@ public class Dodge extends ContinuableAction implements ActionExtension.Attacked
     @Override
     public void onAttacked(LivingAttackEvent event) {
         if (!isDoing()) return;
-        if (event.getSource().isBypassArmor()) return;
+        if (event.getSource().is(DamageTypeTags.BYPASSES_ARMOR)) return;
         if (getDoingTick() < 7) {
             event.setCanceled(true);
         }

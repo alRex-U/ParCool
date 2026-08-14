@@ -5,8 +5,8 @@ import com.alrex.parcool.api.client.gui.RenderParCoolHUDEvent;
 import com.alrex.parcool.api.client.gui.StaminaDisplayContext;
 import com.alrex.parcool.api.stamina.AbstractLocalStamina;
 import com.alrex.parcool.common.Parkourability;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -45,7 +45,7 @@ public class StaminaHUDController implements IGuiOverlay {
 	}
 
 	@Override
-	public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int width, int height) {
+    public void render(ForgeGui forgeGui, GuiGraphics guiGraphics, float partialTick, int width, int height) {
 		AbstractClientPlayer player = Minecraft.getInstance().player;
 		if (player == null) return;
 		Parkourability parkourability = Parkourability.get(player);
@@ -57,13 +57,13 @@ public class StaminaHUDController implements IGuiOverlay {
 			return;
 		}
 
-		if (MinecraftForge.EVENT_BUS.post(new RenderParCoolHUDEvent.Render.Stamina.Pre(gui, poseStack, partialTick, width, height, currentContext, oldContext)))
+        if (MinecraftForge.EVENT_BUS.post(new RenderParCoolHUDEvent.Render.Stamina.Pre(forgeGui, guiGraphics, partialTick, width, height, currentContext, oldContext)))
 			return;
 
 		if (ParCool.getConfig().client().staminaHud.type().get() == HUDType.Light) {
-			lightStaminaHUD.render(gui, poseStack, parkourability, currentContext, oldContext, partialTick, width, height);
+            lightStaminaHUD.render(forgeGui, guiGraphics, parkourability, currentContext, oldContext, partialTick, width, height);
 		}
 
-		MinecraftForge.EVENT_BUS.post(new RenderParCoolHUDEvent.Render.Stamina.Post(gui, poseStack, partialTick, width, height, currentContext, oldContext));
+        MinecraftForge.EVENT_BUS.post(new RenderParCoolHUDEvent.Render.Stamina.Post(forgeGui, guiGraphics, partialTick, width, height, currentContext, oldContext));
 	}
 }

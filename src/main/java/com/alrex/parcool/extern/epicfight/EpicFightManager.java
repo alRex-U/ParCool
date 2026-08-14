@@ -68,7 +68,7 @@ public class EpicFightManager extends ModManager {
         if (!isInstalled()) return false;
         PlayerPatch<?> patch = getPlayerPatch(player);
         if (patch == null) return false;
-        return patch.isBattleMode();
+        return patch.isEpicFightMode();
     }
 
     @Nullable

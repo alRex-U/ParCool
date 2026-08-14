@@ -50,7 +50,7 @@ public class TrickJump extends Action implements ActionExtension.JumpListener {
         if (parkourability.get(ParCoolActions.FAST_RUN).isDoing()) {
             var player = parkourability.player();
             var vec = EntityUtil.getHorizontalLookAngle(player).scale(3.5);
-            var collideVec = Entity.collideBoundingBox(player, vec, player.getBoundingBox().deflate(0.1), player.level, Collections.emptyList());
+            var collideVec = Entity.collideBoundingBox(player, vec, player.getBoundingBox().deflate(0.1), player.level(), Collections.emptyList());
             if (Math.abs(vec.x - collideVec.x) > 1e-4 || Math.abs(vec.z - collideVec.z) > 1e-4) return false;
             if (parkourability.getAdditionalProperties().getOnGroundDurations().lastDurationDoing() < 3) {
                 propertyTrickType.set(Type.STRIDE);

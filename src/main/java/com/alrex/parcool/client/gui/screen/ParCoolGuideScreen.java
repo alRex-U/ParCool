@@ -7,8 +7,8 @@ import com.alrex.parcool.client.md.CompiledMarkdown;
 import com.alrex.parcool.client.md.resource.GuideResourceManager;
 import com.alrex.parcool.client.md.resource.PageEntry;
 import com.alrex.parcool.client.md.ui.MarkdownWidget;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -90,8 +90,8 @@ public class ParCoolGuideScreen extends ParCoolTabletScreen {
     }
 
     @Override
-    protected void renderContent(PoseStack poseStack, int mouseX, int mouseY, float partial) {
-        super.renderContent(poseStack, mouseX, mouseY, partial);
+    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        super.renderContent(graphics, mouseX, mouseY, partial);
     }
 
     private void pushPage(PageEntry page) {

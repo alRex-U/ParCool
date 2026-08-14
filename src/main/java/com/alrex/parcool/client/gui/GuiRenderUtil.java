@@ -2,7 +2,7 @@ package com.alrex.parcool.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,15 +22,14 @@ public class GuiRenderUtil {
         );
     }
 
-    public static void renderScaledGuiItem(ItemRenderer itemRenderer, ItemStack itemStack, float notScaledX, float notScaledY, int scaledX, int scaledY, float scale) {
-        var modelViewStack = RenderSystem.getModelViewStack();
-        modelViewStack.pushPose();
+    public static void renderScaledGuiItem(GuiGraphics graphics, ItemStack itemStack, float notScaledX, float notScaledY, int scaledX, int scaledY, float scale) {
+        var poseStack = graphics.pose();
+        poseStack.pushPose();
         {
-            modelViewStack.translate(notScaledX, notScaledY, 0);
-            modelViewStack.scale(scale, scale, 1);
-            itemRenderer.renderGuiItem(itemStack, scaledX, scaledY);
+            poseStack.translate(notScaledX, notScaledY, 0);
+            poseStack.scale(scale, scale, 1);
+            graphics.renderItem(itemStack, scaledX, scaledY);
         }
-        modelViewStack.popPose();
-        RenderSystem.applyModelViewMatrix();
+        poseStack.popPose();
     }
 }

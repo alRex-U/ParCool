@@ -1,6 +1,6 @@
 package com.alrex.parcool.api.client.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
@@ -8,14 +8,14 @@ import net.minecraftforge.eventbus.api.Event;
 public class RenderParCoolHUDEvent extends Event {
     public static class Render extends RenderParCoolHUDEvent {
         private final ForgeGui gui;
-        private final PoseStack posestack;
+        private final GuiGraphics graphics;
         private final float partialTick;
         private final float screenWidth;
         private final float screenHeight;
 
-        public Render(ForgeGui gui, PoseStack stack, float partialTick, int width, int height) {
+        public Render(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height) {
             this.gui = gui;
-            this.posestack = stack;
+            this.graphics = graphics;
             this.partialTick = partialTick;
             this.screenWidth = width;
             this.screenHeight = height;
@@ -25,8 +25,8 @@ public class RenderParCoolHUDEvent extends Event {
             return gui;
         }
 
-        public PoseStack getPosestack() {
-            return posestack;
+        public GuiGraphics getGraphics() {
+            return graphics;
         }
 
         public float getPartialTick() {
@@ -45,8 +45,8 @@ public class RenderParCoolHUDEvent extends Event {
             private final StaminaDisplayContext currentContext;
             private final StaminaDisplayContext oldContext;
 
-            public Stamina(ForgeGui gui, PoseStack stack, float partialTick, int width, int height, StaminaDisplayContext currentContext, StaminaDisplayContext oldContext) {
-                super(gui, stack, partialTick, width, height);
+            public Stamina(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height, StaminaDisplayContext currentContext, StaminaDisplayContext oldContext) {
+                super(gui, graphics, partialTick, width, height);
                 this.currentContext = currentContext;
                 this.oldContext = oldContext;
             }
@@ -61,14 +61,14 @@ public class RenderParCoolHUDEvent extends Event {
 
             @Cancelable
             public static class Pre extends Stamina {
-                public Pre(ForgeGui gui, PoseStack stack, float partialTick, int width, int height, StaminaDisplayContext currentContext, StaminaDisplayContext oldContext) {
-                    super(gui, stack, partialTick, width, height, currentContext, oldContext);
+                public Pre(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height, StaminaDisplayContext currentContext, StaminaDisplayContext oldContext) {
+                    super(gui, graphics, partialTick, width, height, currentContext, oldContext);
                 }
             }
 
             public static class Post extends Stamina {
-                public Post(ForgeGui gui, PoseStack stack, float partialTick, int width, int height, StaminaDisplayContext currentContext, StaminaDisplayContext oldContext) {
-                    super(gui, stack, partialTick, width, height, currentContext, oldContext);
+                public Post(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height, StaminaDisplayContext currentContext, StaminaDisplayContext oldContext) {
+                    super(gui, graphics, partialTick, width, height, currentContext, oldContext);
                 }
             }
         }

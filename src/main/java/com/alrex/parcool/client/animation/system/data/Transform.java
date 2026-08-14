@@ -2,34 +2,34 @@ package com.alrex.parcool.client.animation.system.data;
 
 import com.alrex.parcool.client.animation.system.math.MathUtil;
 import com.alrex.parcool.client.animation.system.math.Vec3f;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Quaternionf;
+import org.joml.Quaternionfc;
 
 @OnlyIn(Dist.CLIENT)
-public record Transform(Vec3f translation, Quaternion rotation) {
-    public static final Transform NO_TRANSFORMATION = new Transform(Vec3f.ZERO, Quaternion.ONE.copy());
+public record Transform(Vec3f translation, Quaternionfc rotation) {
+    public static final Transform NO_TRANSFORMATION = new Transform(Vec3f.ZERO, new Quaternionf());
     public static final Transform NO_TRANSFORMATION_INV = NO_TRANSFORMATION.getInverseRotated();
 
     public static Transform fromRotationParams(float xRot, float yRot, float zRot) {
-        var rot = Quaternion.ONE.copy();
+        var rot = new Quaternionf();
         if (zRot != 0f) {
-            rot.mul(Vector3f.ZP.rotation(zRot));
+            rot.mul(MathUtil.rotation(Vec3f.ZP, zRot));
         }
         if (yRot != 0f) {
-            rot.mul(Vector3f.YP.rotation(yRot));
+            rot.mul(MathUtil.rotation(Vec3f.YP, yRot));
         }
         if (xRot != 0f) {
-            rot.mul(Vector3f.XP.rotation(xRot));
+            rot.mul(MathUtil.rotation(Vec3f.XP, xRot));
         }
         return new Transform(Vec3f.ZERO, rot);
     }
 
     public Transform getInverseRotated() {
-        return new Transform(translation, new Quaternion(-rotation.i(), -rotation.j(), -rotation.k(), -rotation.r()));
+        return new Transform(translation, new Quaternionf(-rotation.x(), -rotation.y(), -rotation.z(), -rotation.w()));
     }
 
     /// @param t : blending factor, in [0,1]
@@ -47,12 +47,12 @@ public record Transform(Vec3f translation, Quaternion rotation) {
     public Transform mirror() {
         return new Transform(
                 new Vec3f(-translation.x(), translation().y(), translation().z()),
-                new Quaternion(rotation.i(), -rotation.j(), -rotation.k(), rotation.r())
+                new Quaternionf(rotation.x(), -rotation.y(), -rotation.z(), rotation.w())
         );
     }
 
     public Transform append(Transform after, float t, boolean useShortestPath) {
-        var rot = MathUtil.slerp(t, Quaternion.ONE, after.rotation, useShortestPath);
+        var rot = MathUtil.slerp(t, new Quaternionf(), after.rotation, useShortestPath);
         var translation = MathUtil.rotate(this.translation, rot);
         rot.mul(this.rotation);
         return new Transform(translation.add(after.translation.scale(t)), rot);

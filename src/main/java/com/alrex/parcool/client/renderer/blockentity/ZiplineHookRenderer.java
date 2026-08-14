@@ -8,8 +8,7 @@ import com.alrex.parcool.common.zipline.ZiplineShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -22,6 +21,8 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 
@@ -44,7 +45,7 @@ public class ZiplineHookRenderer implements BlockEntityRenderer<ZiplineHookTileE
     }
 
     @Override
-    public boolean shouldRenderOffScreen(ZiplineHookTileEntity entity) {
+    public boolean shouldRenderOffScreen(@Nonnull ZiplineHookTileEntity entity) {
         return true;
     }
 
@@ -69,8 +70,8 @@ public class ZiplineHookRenderer implements BlockEntityRenderer<ZiplineHookTileE
         BlockPos hookBlockPos = entity.getBlockPos();
         Vec3 endOffsetFromStart = zipline.shape().getOffsetFromStartToEnd();
 
-        RenderSystem.enableTexture();
         RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
+        RenderSystem.setShader(GameRenderer::getPositionTexLightmapColorShader);
 
         poseStack.pushPose();
         {
@@ -80,7 +81,7 @@ public class ZiplineHookRenderer implements BlockEntityRenderer<ZiplineHookTileE
                     hookPoint.z() - hookBlockPos.getZ()
             );
             var vertexConsumer = multiBufferSource.getBuffer(RenderTypes.ZIPLINE_3D);
-            Matrix4f transformMatrix = poseStack.last().pose();
+            var transformMatrix = poseStack.last().pose();
 
             int startBlockLightLevel = level.getBrightness(LightLayer.BLOCK, zipline.start());
             int endBlockLightLevel = level.getBrightness(LightLayer.BLOCK, zipline.end());
@@ -88,7 +89,7 @@ public class ZiplineHookRenderer implements BlockEntityRenderer<ZiplineHookTileE
             int endSkyBrightness = level.getBrightness(LightLayer.SKY, zipline.end());
 
             int divisionCount = Math.max(Mth.ceil(zipline.shape().getLength()), 2);
-            float invLengthSqrtXZ = (float) Mth.fastInvSqrt(endOffsetFromStart.x() * endOffsetFromStart.x() + endOffsetFromStart.z() * endOffsetFromStart.z());
+            float invLengthSqrtXZ = (float) Mth.invSqrt(endOffsetFromStart.x() * endOffsetFromStart.x() + endOffsetFromStart.z() * endOffsetFromStart.z());
             float unitLengthX = (float) (endOffsetFromStart.x() * invLengthSqrtXZ);
             float unitLengthZ = (float) (endOffsetFromStart.z() * invLengthSqrtXZ);
 
@@ -135,7 +136,7 @@ public class ZiplineHookRenderer implements BlockEntityRenderer<ZiplineHookTileE
 
             final float width = 0.09375f;
             float tilt = zipline.getSlope(phase);
-            float tiltInv = Mth.fastInvSqrt(tilt * tilt + 1);
+            float tiltInv = Mth.invSqrt(tilt * tilt + 1);
             float yOffset = width * tiltInv / 1.41421356f /*sqrt(2)*/;
             float xBaseOffset = unitLengthX * width * tilt * tiltInv / 1.41421356f;
             float zBaseOffset = unitLengthZ * width * tilt * tiltInv / 1.41421356f;

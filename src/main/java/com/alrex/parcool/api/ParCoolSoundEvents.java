@@ -30,7 +30,7 @@ public class ParCoolSoundEvents {
     public static final RegistryObject<SoundEvent> SKILLTREE_UNLOCK = register("skilltree.unlock");
 
     private static RegistryObject<SoundEvent> register(String name) {
-        return SOUNDS.register(name, () -> new SoundEvent(ParCool.resourceLocation(name)));
+        return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ParCool.resourceLocation(name)));
     }
 
     public static void register(IEventBus modBus) {

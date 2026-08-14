@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -26,11 +26,11 @@ public class ImageBySpriteWidget extends AbstractWidget {
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
         if (!visible) return;
         if (sprite == null) return;
         RenderSystem.setShaderTexture(0, texLocation);
-        blit(poseStack, x, y, 0, width, height, sprite);
+        graphics.blit(getX(), getY(), 0, width, height, sprite);
     }
 
     @Override
@@ -43,6 +43,6 @@ public class ImageBySpriteWidget extends AbstractWidget {
     }
 
     @Override
-    public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+    public void updateWidgetNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
     }
 }

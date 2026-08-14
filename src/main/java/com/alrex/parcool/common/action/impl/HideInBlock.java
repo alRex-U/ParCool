@@ -17,6 +17,7 @@ import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
@@ -97,7 +98,9 @@ public class HideInBlock extends ContinuableAction implements ActionExtension.Vi
                     return hidingPoint;
                 }
         );
-        player.playSound(player.level.getBlockState(new BlockPos(hidingPoint.add(0, 0.2, 0))).getSoundType().getBreakSound(), 1, 1);
+        player.playSound(player.level().getBlockState(new BlockPos(
+                Mth.floor(hidingPoint.x), Mth.floor(hidingPoint.y + 0.2), Mth.floor(hidingPoint.z)
+        )).getSoundType().getBreakSound(), 1, 1);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -112,7 +115,7 @@ public class HideInBlock extends ContinuableAction implements ActionExtension.Vi
         if (area1 == null) return;
         var area2 = propertyHidingAreaEdge2.get();
         if (area2 == null) return;
-        spawnOnHideParticles(parkourability.player().level, area1, area2);
+        spawnOnHideParticles(parkourability.player().level(), area1, area2);
     }
 
     @Override
@@ -153,7 +156,7 @@ public class HideInBlock extends ContinuableAction implements ActionExtension.Vi
         if (area1 == null) return;
         var area2 = propertyHidingAreaEdge2.get();
         if (area2 == null) return;
-        spawnOnHideParticles(parkourability.player().level, area1, area2);
+        spawnOnHideParticles(parkourability.player().level(), area1, area2);
     }
 
     @Override
@@ -161,7 +164,9 @@ public class HideInBlock extends ContinuableAction implements ActionExtension.Vi
         var player = parkourability.player();
         var hidingPoint = propertyHidingPoint.get();
         if (hidingPoint != null) {
-            player.playSound(player.level.getBlockState(new BlockPos(hidingPoint.add(0, 0.2, 0))).getSoundType().getBreakSound(), 1, 1);
+            player.playSound(player.level().getBlockState(new BlockPos(
+                    Mth.floor(hidingPoint.x), Mth.floor(hidingPoint.y + 0.2), Mth.floor(hidingPoint.z)
+            )).getSoundType().getBreakSound(), 1, 1);
         }
     }
 
@@ -260,7 +265,7 @@ public class HideInBlock extends ContinuableAction implements ActionExtension.Vi
 
     @Nullable
     private static Tuple<BlockPos, BlockPos> getHideAbleSpace(Entity entity, BlockPos base) {
-        var world = entity.level;
+        var world = entity.level();
         if (!world.isLoaded(base)) return null;
         var state = world.getBlockState(base);
         var block = state.getBlock();

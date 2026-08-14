@@ -75,7 +75,7 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
                     || (player.position().y - player.yo) > -0.7
             ) return false;
             if (ParCoolKeyBinds.JUMP.state().getPressedDuration() > 5 || ParCoolKeyBinds.CRAWL.state().isJustPressed()) {
-                if (!checkEnoughSpaceBelow(player.level, player.position())) return false;
+                if (!checkEnoughSpaceBelow(player.level(), player.position())) return false;
                 ySpeed = ySpeedO = (float) (player.position().y - player.yo);
                 propertyYSpeedOnBeginning.set(0.42f);
                 propertyStartInAir.set(true);
@@ -129,7 +129,7 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
 
     private boolean checkEnoughSpace() {
         var player = parkourability.player();
-        var world = player.level;
+        var world = player.level();
         double width = player.getBbWidth() * 1.5;
         double height = player.getBbHeight() * 1.5;
         var center = player.position();

@@ -6,6 +6,7 @@ import com.alrex.parcool.client.animation.system.data.Transform;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Quaternionf;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
@@ -96,12 +97,13 @@ public class WorkingAnimation implements IWorkingAnimation {
                 if (transform == null) transform = Transform.NO_TRANSFORMATION;
                 var componentTransform = component.component.getTransform(player, modelPart, component.progress.getProgress(player, partialTick), partialTick, mirror);
                 if (componentTransform != null) {
-                    componentTransform.rotation().normalize();
+                    componentTransform = new Transform(
+                            componentTransform.translation(),
+                            componentTransform.rotation().normalize(new Quaternionf())
+                    );
                     switch (method) {
-                        case ADD ->
-                                map.put(modelPart, transform.append(componentTransform, blendingValue, modelPart == AnimatableModelPart.BODY));
-                        case SET ->
-                                map.put(modelPart, transform.morph(componentTransform, blendingValue, modelPart == AnimatableModelPart.BODY));
+                        case ADD -> map.put(modelPart, transform.append(componentTransform, blendingValue, true));
+                        case SET -> map.put(modelPart, transform.morph(componentTransform, blendingValue, true));
                     }
                 }
             }

@@ -273,7 +273,7 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
     @Nullable
     private HangState getHangState() {
         var player = parkourability.player();
-        var level = player.level;
+        var level = player.level();
         var playerBB = player.getBoundingBox();
         double xRange = playerBB.getXsize() * 0.25, zRange = playerBB.getZsize() * 0.25;
         var direction = parkourability.getAdditionalProperties().getDefaultWallInteraction();

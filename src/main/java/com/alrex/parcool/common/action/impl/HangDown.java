@@ -297,12 +297,12 @@ public class HangDown extends ContinuableAction {
 
     @Nullable
     private static HangAbleBarInfo getHangAbleBars(LivingEntity entity) {
-        var level = entity.level;
+        var level = entity.level();
         var collideDistY = Entity.collideBoundingBox(
                 entity,
                 new Vec3(0, 1., 0),
                 entity.getBoundingBox().deflate(0.05, 0, 0.05),
-                entity.level,
+                entity.level(),
                 Collections.emptyList()
         ).y;
         if (Math.abs(collideDistY - 1.) < 1e-5) return null;
@@ -326,7 +326,7 @@ public class HangDown extends ContinuableAction {
                 default -> axis;
             };
         } else if (block instanceof EndRodBlock) {
-            if (state.isCollisionShapeFullBlock(entity.level, pos)) {
+            if (state.isCollisionShapeFullBlock(entity.level(), pos)) {
                 return null;
             }
             var direction = state.getValue(DirectionalBlock.FACING);

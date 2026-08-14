@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -41,28 +41,24 @@ public class WrappedTextWidget extends TextWidget {
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
         if (!visible) return;
         var iterator = sequences.iterator();
-        int textY = y;
+        int textY = getY();
         while (iterator.hasNext()) {
             var text = iterator.next();
             var xOffset = switch (alignment) {
-                case START -> x;
-                case END -> x + width - font.width(text);
-                case CENTER -> x + (width - font.width(text)) / 2f;
+                case START -> getX();
+                case END -> getX() + width - font.width(text);
+                case CENTER -> getX() + (width - font.width(text)) / 2f;
             };
-            if (shadow) {
-                font.drawShadow(poseStack, text, xOffset, textY, txtColor);
-            } else {
-                font.draw(poseStack, text, xOffset, textY, txtColor);
-            }
+            graphics.drawString(font, text, (int) xOffset, textY, txtColor, shadow);
             textY += font.lineHeight;
         }
     }
 
     @Override
-    public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+    public void updateWidgetNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
         super.updateNarration(narrationElementOutput);
     }
 }

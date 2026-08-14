@@ -5,8 +5,8 @@ import com.alrex.parcool.client.gui.GuiColorPallet;
 import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
@@ -55,29 +55,30 @@ public class ParCoolTabletScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
-        renderBackground(poseStack);
+    public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        var poseStack = graphics.pose();
+        renderBackground(graphics);
         poseStack.pushPose();
         {
-            renderContent(poseStack, mouseX, mouseY, partial);
-            renderFrame(poseStack, partial);
-            backButton.render(poseStack, mouseX, mouseY, partial);
+            renderContent(graphics, mouseX, mouseY, partial);
+            renderFrame(graphics, partial);
+            backButton.render(graphics, mouseX, mouseY, partial);
         }
         poseStack.popPose();
     }
 
-    private void renderFrame(PoseStack poseStack, float partial) {
+    private void renderFrame(GuiGraphics graphics, float partial) {
+        var poseStack = graphics.pose();
         poseStack.pushPose();
         {
-            RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
-            blit(poseStack, frameOffsetX, frameOffsetY, 0, 0, FRAME_WIDTH, FRAME_HEIGHT);
-            font.draw(poseStack, urlBarText, frameOffsetX + 30, frameOffsetY + 8, 0x37474F);
+            graphics.blit(TEXTURE_LOCATION, frameOffsetX, frameOffsetY, 0, 0, FRAME_WIDTH, FRAME_HEIGHT);
+            graphics.drawString(font, urlBarText, frameOffsetX + 30, frameOffsetY + 8, 0x37474F, false);
         }
         poseStack.popPose();
     }
 
-    protected void renderContent(PoseStack poseStack, int mouseX, int mouseY, float partial) {
-        super.render(poseStack, mouseX, mouseY, partial);
+    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        super.render(graphics, mouseX, mouseY, partial);
     }
 
     protected void setTopBarText(String urlLikeText) {
@@ -97,12 +98,12 @@ public class ParCoolTabletScreen extends Screen {
         }
 
         @Override
-        public void renderButton(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
             if (isHovered) {
                 RenderSystem.setShaderColor(0.8f, 0.8f, 0.8f, 1f);
             }
             RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
-            blit(poseStack, x, y, 0, width, height, sprite);
+            graphics.blit(getX(), getY(), 0, width, height, sprite);
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         }
 
@@ -112,7 +113,7 @@ public class ParCoolTabletScreen extends Screen {
         }
 
         @Override
-        public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+        public void updateWidgetNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
         }
 
         protected static class Back extends IconButton {

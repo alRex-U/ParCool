@@ -9,7 +9,6 @@ import com.alrex.parcool.client.animation.system.registration.CodedAnimationComp
 import com.alrex.parcool.client.animation.system.registration.ID;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ParCoolActions;
-import com.mojang.math.Vector3f;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -20,7 +19,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ParCoolCodedAnimationComponents {
     private static Transform lockBody(Player player, Vec3 direction, float partial) {
         var yaw = Mth.wrapDegrees(MathUtil.toYawRadian(direction) + Math.toRadians(Mth.lerp(partial, player.yBodyRotO, player.yBodyRot)));
-        return new Transform(Vec3f.ZERO, Vector3f.YP.rotation((float) yaw));
+        return new Transform(Vec3f.ZERO, MathUtil.rotation(Vec3f.YP, (float) yaw));
     }
 
     public final ID<CodedAnimationComponent> HANG_ON_LOCK_BODY = CodedAnimationComponents.getInstance().register(
@@ -111,12 +110,12 @@ public class ParCoolCodedAnimationComponents {
                     case BODY -> {
                         var pitch = Parkourability.get(player).get(ParCoolActions.HANG_DOWN).getRotationAngle(partial);
                         return new Transform(
-                                new Vec3f(0, 0.9f - 1.1f * Mth.cos(pitch), -1.1f * Mth.sin(pitch)), Vector3f.XP.rotation(pitch)
+                                new Vec3f(0, 0.9f - 1.1f * Mth.cos(pitch), -1.1f * Mth.sin(pitch)), MathUtil.rotation(Vec3f.XP, pitch)
                         );
                     }
                     case HEAD -> {
                         var pitch = Parkourability.get(player).get(ParCoolActions.HANG_DOWN).getRotationAngle(partial);
-                        return new Transform(Vec3f.ZERO, Vector3f.XN.rotation(Mth.clamp(pitch / 4f, -Mth.PI / 4f, Mth.PI / 4f)));
+                        return new Transform(Vec3f.ZERO, MathUtil.rotation(Vec3f.XN, Mth.clamp(pitch / 4f, -Mth.PI / 4f, Mth.PI / 4f)));
                     }
                     default -> {
                         return null;
@@ -130,7 +129,7 @@ public class ParCoolCodedAnimationComponents {
                 switch (part) {
                     case LEFT_LEG, RIGHT_LEG -> {
                         var angularSpeed = -3f * Parkourability.get(player).get(ParCoolActions.HANG_DOWN).getAngularSpeed(partial);
-                        return new Transform(Vec3f.ZERO, Vector3f.XP.rotation(angularSpeed));
+                        return new Transform(Vec3f.ZERO, MathUtil.rotation(Vec3f.XP, angularSpeed));
                     }
                     default -> {
                         return null;
@@ -151,10 +150,10 @@ public class ParCoolCodedAnimationComponents {
                 var pitch = action.getBodyAngle(partial);
                 switch (part) {
                     case BODY -> {
-                        return new Transform(Vec3f.ZERO, new Vector3f((float) rotationAxis.x, 0, (float) rotationAxis.z).rotation(pitch));
+                        return new Transform(Vec3f.ZERO, MathUtil.rotation(new Vec3f((float) rotationAxis.x, 0, (float) rotationAxis.z), pitch));
                     }
                     case HEAD -> {
-                        return new Transform(Vec3f.ZERO, new Vector3f((float) rotationAxis.x, 0, (float) rotationAxis.z).rotation(-0.5f * pitch));
+                        return new Transform(Vec3f.ZERO, MathUtil.rotation(new Vec3f((float) rotationAxis.x, 0, (float) rotationAxis.z), -0.5f * pitch));
                     }
                     default -> {
                         return null;
@@ -174,7 +173,7 @@ public class ParCoolCodedAnimationComponents {
                         .normalize();
                 var pitch = action.getBodyAngle(partial);
                 return new Transform(
-                        Vec3f.ZERO, new Vector3f((float) rotationAxis.x, 0, (float) rotationAxis.z).rotation(pitch)
+                        Vec3f.ZERO, MathUtil.rotation(new Vec3f((float) rotationAxis.x, 0, (float) rotationAxis.z), pitch)
                 );
             }
     );

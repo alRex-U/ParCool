@@ -9,7 +9,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.ProfilePublicKey;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -28,7 +27,7 @@ public abstract class PlayerMixin extends LivingEntity implements IParkourabilit
     private Parkourability parcool$parkourability = null;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    public void onInit(Level level, BlockPos blockPos, float p_219729_, GameProfile profile, ProfilePublicKey publicKey, CallbackInfo ci) {
+    public void onInit(Level p_250508_, BlockPos p_250289_, float p_251702_, GameProfile p_252153_, CallbackInfo ci) {
         parcool$parkourability = new Parkourability((Player) (Object) this, ParCool.getActionRegistry());
     }
 

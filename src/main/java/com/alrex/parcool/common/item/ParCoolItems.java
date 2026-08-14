@@ -19,12 +19,12 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class ParCoolItems {
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ParCool.MOD_ID);
-    public static final RegistryObject<BlockItem> WOODEN_ZIPLINE_HOOK = ITEMS.register("wooden_zipline_hook", () -> new BlockItem(Blocks.WOODEN_ZIPLINE_HOOK.get(), new Item.Properties().tab(ParCoolItemGroup.INSTANCE)));
-    public static final RegistryObject<BlockItem> IRON_ZIPLINE_HOOK = ITEMS.register("iron_zipline_hook", () -> new BlockItem(Blocks.IRON_ZIPLINE_HOOK.get(), new Item.Properties().tab(ParCoolItemGroup.INSTANCE)));
-    public static final RegistryObject<ZiplineRopeItem> ZIPLINE_ROPE = ITEMS.register("zipline_rope", () -> new ZiplineRopeItem(new Item.Properties().tab(ParCoolItemGroup.INSTANCE)));
-    public static final RegistryObject<TraceurGlovesItem> TRACEUR_GLOVES = ITEMS.register("traceur_gloves", () -> new TraceurGlovesItem(new Item.Properties().tab(ParCoolItemGroup.INSTANCE).stacksTo(1)));
-    public static final RegistryObject<TraceurBootsItem> TRACEUR_BOOTS = ITEMS.register("traceur_boots", () -> new TraceurBootsItem(new Item.Properties().tab(ParCoolItemGroup.INSTANCE).stacksTo(1)));
-    public static final RegistryObject<ParCoolGuideItem> PARCOOL_GUIDE = ITEMS.register("parcool_guide", () -> new ParCoolGuideItem(new Item.Properties().tab(ParCoolItemGroup.INSTANCE).stacksTo(1).rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<BlockItem> WOODEN_ZIPLINE_HOOK = ITEMS.register("wooden_zipline_hook", () -> new BlockItem(Blocks.WOODEN_ZIPLINE_HOOK.get(), new Item.Properties()));
+    public static final RegistryObject<BlockItem> IRON_ZIPLINE_HOOK = ITEMS.register("iron_zipline_hook", () -> new BlockItem(Blocks.IRON_ZIPLINE_HOOK.get(), new Item.Properties()));
+    public static final RegistryObject<ZiplineRopeItem> ZIPLINE_ROPE = ITEMS.register("zipline_rope", () -> new ZiplineRopeItem(new Item.Properties()));
+    public static final RegistryObject<TraceurGlovesItem> TRACEUR_GLOVES = ITEMS.register("traceur_gloves", () -> new TraceurGlovesItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<TraceurBootsItem> TRACEUR_BOOTS = ITEMS.register("traceur_boots", () -> new TraceurBootsItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<ParCoolGuideItem> PARCOOL_GUIDE = ITEMS.register("parcool_guide", () -> new ParCoolGuideItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
 
     public static void register(IEventBus bus) {
         ITEMS.register(bus);

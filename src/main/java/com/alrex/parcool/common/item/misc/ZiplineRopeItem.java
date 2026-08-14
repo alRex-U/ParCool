@@ -10,13 +10,14 @@ import com.alrex.parcool.common.zipline.ZiplineInfo;
 import com.alrex.parcool.common.zipline.ZiplineType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -63,22 +64,6 @@ public class ZiplineRopeItem extends Item implements DyeAble {
         }
         lines.add(Component.translatable("parcool.gui.text.zipline.tension", getZiplineType(stack).getTranslationName()).withStyle(ChatFormatting.GRAY));
         DyeAble.appendHoverText(this, stack, world, lines, flag);
-    }
-
-    @Override
-    public void fillItemCategory(@Nonnull CreativeModeTab tab, @Nonnull NonNullList<ItemStack> list) {
-        if (this.allowedIn(tab)) {
-            list.add(new ItemStack(this));
-            for (var dye : DyeColor.values()) {
-                var itemStack = new ItemStack(this);
-                int r = (int) (dye.getTextureDiffuseColors()[0] * 255f);
-                int g = (int) (dye.getTextureDiffuseColors()[1] * 255f);
-                int b = (int) (dye.getTextureDiffuseColors()[2] * 255f);
-                this.setColor(itemStack, (r << 16) + (g << 8) + b);
-                list.add(itemStack);
-            }
-        }
-
     }
 
     @Nonnull

@@ -81,10 +81,12 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
 
         var pos = player.position();
         var lookVec = EntityUtil.getHorizontalLookAngle(player);
-        var blockPos = new BlockPos(pos.x + lookVec.x, pos.y + 0.1, pos.z + lookVec.z);
-        var blockState = player.level.getBlockState(blockPos);
+        var blockPos = new BlockPos(
+                Mth.floor(pos.x + lookVec.x), Mth.floor(pos.y + 0.1), Mth.floor(pos.z + lookVec.z)
+        );
+        var blockState = player.level().getBlockState(blockPos);
         if (blockState.isAir()) return;
-        var random = player.level.random;
+        var random = player.level().random;
         var rotatedLookVec = lookVec.yRot(Mth.HALF_PI);
         for (var i = 0; i < 5; i++) {
             var particleMove = lookVec
@@ -94,7 +96,7 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
                     .add(lookVec.scale(player.getBbWidth() / 2))
                     .add(rotatedLookVec.scale(player.getBbWidth() * (random.nextDouble() - 0.5)));
 
-            player.level.addParticle(
+            player.level().addParticle(
                     new BlockParticleOption(ParticleTypes.BLOCK, blockState),
                     particlePos.x, particlePos.y + (random.nextDouble() - 0.5) * 0.3, particlePos.z,
                     particleMove.x, particleMove.y, particleMove.z
@@ -117,7 +119,7 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
     private static int getWallRunHeightScale(Player player, InteractingWallDirection wallDirection, double jumpHeight) {
         var wallVec = wallDirection.asVec();
         var playerHalfWidth = player.getBbWidth() / 2.;
-        var level = player.level;
+        var level = player.level();
         var baseBB = player.getBoundingBox().move(wallVec.x * playerHalfWidth, 0, wallVec.z * playerHalfWidth);
         for (var i = 3; i <= 4; i++) {
             if (level.noCollision(baseBB.move(0, jumpHeight * i, 0))) {

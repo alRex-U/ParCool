@@ -43,7 +43,7 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
         if (parkourability.player().isLocalPlayer()) {
             propertyInputActive.set(isInputActive());
         }
-        if (parkourability.player().isOnGround()) {
+        if (parkourability.player().onGround()) {
             if (propertyInputActive.getOrDefaultIfNull(Boolean.FALSE)) {
                 if (chargingTick < CHARGE_DURATION) chargingTick++;
             } else {

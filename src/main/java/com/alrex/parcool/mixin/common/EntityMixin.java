@@ -17,6 +17,10 @@ public abstract class EntityMixin extends CapabilityProvider<Entity> {
     @Shadow
     public boolean noPhysics;
 
+
+    @Shadow
+    protected abstract void setSharedFlag(int p_20116_, boolean p_20117_);
+
     protected EntityMixin(Class<Entity> baseClass) {
         super(baseClass);
     }
@@ -32,4 +36,20 @@ public abstract class EntityMixin extends CapabilityProvider<Entity> {
             noPhysics = true;
         }
     }
+
+    @Inject(method = "setSprinting", at = @At("HEAD"), cancellable = true)
+    public void onSetSprinting(boolean sprint, CallbackInfo ci) {
+        if (!(((Object) this) instanceof Player player)) {
+            return;
+        }
+        Parkourability parkourability = Parkourability.get(player);
+        if (parkourability.getBehaviorEnforcer().enforceNoSprint()) {
+            this.setSharedFlag(3, false);
+            ci.cancel();
+        } else if (parkourability.getBehaviorEnforcer().enforceSprint()) {
+            this.setSharedFlag(3, true);
+            ci.cancel();
+        }
+    }
+
 }

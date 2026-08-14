@@ -1,6 +1,6 @@
 package com.alrex.parcool.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -17,18 +17,19 @@ public class WidgetGroup extends AbstractWidget {
     }
 
     @Override
-    public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+    public void updateWidgetNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
         if (!visible) return;
+        var poseStack = graphics.pose();
         poseStack.pushPose();
-        poseStack.translate(x, y, 0);
-        mouseX -= x;
-        mouseY -= y;
+        poseStack.translate(getX(), getY(), 0);
+        mouseX -= getX();
+        mouseY -= getY();
         for (var widget : widgets) {
-            widget.render(poseStack, mouseX, mouseY, partial);
+            widget.render(graphics, mouseX, mouseY, partial);
         }
         poseStack.popPose();
     }
@@ -36,8 +37,8 @@ public class WidgetGroup extends AbstractWidget {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int click) {
         if (!visible) return false;
-        mouseX -= x;
-        mouseY -= y;
+        mouseX -= getX();
+        mouseY -= getY();
         for (var widget : widgets) {
             if (widget.mouseClicked(mouseX, mouseY, click)) return true;
         }
@@ -47,8 +48,8 @@ public class WidgetGroup extends AbstractWidget {
     @Override
     public void mouseMoved(double mouseX, double mouseY) {
         if (!visible) return;
-        mouseX -= x;
-        mouseY -= y;
+        mouseX -= getX();
+        mouseY -= getY();
         for (var widget : widgets) {
             widget.mouseMoved(mouseX, mouseY);
         }
@@ -57,8 +58,8 @@ public class WidgetGroup extends AbstractWidget {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
         if (!visible) return false;
-        mouseX -= x;
-        mouseY -= y;
+        mouseX -= getX();
+        mouseY -= getY();
         for (var widget : widgets) {
             if (widget.mouseScrolled(mouseX, mouseY, scroll)) return true;
         }
@@ -68,8 +69,8 @@ public class WidgetGroup extends AbstractWidget {
     @Override
     public boolean keyPressed(int mouseX, int mouseY, int key) {
         if (!visible) return false;
-        mouseX -= x;
-        mouseY -= y;
+        mouseX -= getX();
+        mouseY -= getY();
         for (var widget : widgets) {
             if (widget.keyPressed(mouseX, mouseY, key)) return true;
         }
@@ -79,8 +80,8 @@ public class WidgetGroup extends AbstractWidget {
     @Override
     public boolean keyReleased(int mouseX, int mouseY, int key) {
         if (!visible) return false;
-        mouseX -= x;
-        mouseY -= y;
+        mouseX -= getX();
+        mouseY -= getY();
         for (var widget : widgets) {
             if (widget.keyReleased(mouseX, mouseY, key)) return true;
         }

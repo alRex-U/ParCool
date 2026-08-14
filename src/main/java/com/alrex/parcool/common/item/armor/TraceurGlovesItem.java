@@ -54,8 +54,9 @@ public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
         this.inHandModifier = inHandModifiersBuilder.build();
     }
 
+    @Nonnull
     @Override
-    public @Nullable EquipmentSlot getEquipmentSlot(ItemStack stack) {
+    public EquipmentSlot getEquipmentSlot() {
         return EquipmentSlot.CHEST;
     }
 

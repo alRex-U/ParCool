@@ -46,7 +46,7 @@ public abstract class ContinuableAction extends Action {
 
     public void tickOnWorking() {
         onWorkingTick();
-        if (parkourability.player().level.isClientSide) {
+        if (parkourability.player().level().isClientSide) {
             onWorkingTickInClient();
             if (parkourability.player().isLocalPlayer()) {
                 onWorkingTickInLocalClient();
@@ -80,7 +80,7 @@ public abstract class ContinuableAction extends Action {
             onStopInLocalClient();
             onStopInClient();
         } else {
-            if (parkourability.player().level.isClientSide()) {
+            if (parkourability.player().level().isClientSide()) {
                 onStopInOtherClient();
                 onStopInClient();
             } else {

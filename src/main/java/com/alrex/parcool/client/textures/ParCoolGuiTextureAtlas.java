@@ -9,14 +9,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.stream.Stream;
 
 @OnlyIn(Dist.CLIENT)
 public class ParCoolGuiTextureAtlas extends TextureAtlasHolder {
     public static final ResourceLocation TEXTURE_LOCATION = ParCool.resourceLocation("textures/atlas/gui.png");
-    private static final ArrayList<ResourceLocation> LOCATIONS = new ArrayList<>();
 
     public static final ResourceLocation BREWING_RECIPE_BOX = register("icon/brewing_recipe_box");
     public static final ResourceLocation STAMINA_FULL = register("hud/stamina_full");
@@ -47,7 +43,7 @@ public class ParCoolGuiTextureAtlas extends TextureAtlasHolder {
     public static final ResourceLocation BUTTON_HOME = register("icon/button_home");
 
     public ParCoolGuiTextureAtlas(TextureManager manager) {
-        super(manager, TEXTURE_LOCATION, "gui/sprites");
+        super(manager, TEXTURE_LOCATION, ParCool.resourceLocation("gui_sprites"));
     }
 
     @Nonnull
@@ -56,16 +52,7 @@ public class ParCoolGuiTextureAtlas extends TextureAtlasHolder {
         return super.getSprite(spriteId);
     }
 
-    @Nonnull
-    @Override
-    protected Stream<ResourceLocation> getResourcesToLoad() {
-        LOCATIONS.trimToSize();
-        return Collections.unmodifiableList(LOCATIONS).stream();
-    }
-
     private static ResourceLocation register(String path) {
-        var location = ParCool.resourceLocation(path);
-        LOCATIONS.add(location);
-        return location;
+        return ParCool.resourceLocation(path);
     }
 }

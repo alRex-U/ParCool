@@ -51,7 +51,7 @@ public abstract class Action {
 			tickSinceStarted++;
 		}
 		onTick();
-		if (parkourability.player().level.isClientSide) {
+		if (parkourability.player().level().isClientSide) {
 			onTickInClient();
 			if (parkourability.player().isLocalPlayer()) {
 				onTickInLocalClient();
@@ -72,7 +72,7 @@ public abstract class Action {
 			onStartInLocalClient();
 			takeCost(StaminaConsumption.Type.START);
 		} else {
-			if (parkourability.player().level.isClientSide()) {
+			if (parkourability.player().level().isClientSide()) {
 				onStartInClient();
 				onStartInOtherClient();
 			} else {
@@ -89,7 +89,7 @@ public abstract class Action {
 	public void startExplicitly() {
 		start();
 		var player = parkourability.player();
-        var clientSide = player.level.isClientSide();
+		var clientSide = player.level().isClientSide();
         var packet = clientSide
 				? ActionStateSetPacket.fromClient(parkourability.player().getUUID())
 				: ActionStateSetPacket.fromServer(parkourability.player().getUUID());
@@ -108,8 +108,8 @@ public abstract class Action {
                 || (!option.availableInFluid() && player.isInFluidType())
 				|| (!option.availableNotInFluid() && !player.isInFluidType())
 				|| (!option.availableWithFallFlying() && player.isFallFlying())
-				|| (option.needOnGround() && !player.isOnGround())
-				|| (option.needNotOnGround() && player.isOnGround())
+				|| (option.needOnGround() && !player.onGround())
+				|| (option.needNotOnGround() && player.onGround())
 				|| player.getAbilities().flying
 				|| !parkourability.permit(entry)
 		) {

@@ -16,7 +16,7 @@ public class NetworkUtil {
             var player = context.getSender();
             if (player == null) return null;
             if (!player.getUUID().equals(playerID)) {
-                return player.getLevel().getPlayerByUUID(playerID);
+                return player.level().getPlayerByUUID(playerID);
             }
             return player;
         } else {
@@ -35,6 +35,6 @@ public class NetworkUtil {
         if (player.getUUID().equals(playerID)) {
             return player;
         }
-        return player.getLevel().getPlayerByUUID(playerID);
+        return player.level().getPlayerByUUID(playerID);
     }
 }

@@ -7,11 +7,10 @@ import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.action.ActionCapabilities;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
@@ -39,7 +38,7 @@ public class SkillTreeWidget extends AbstractWidget {
     private final int contentWidth;
     private final int contentHeight;
 
-    public SkillTreeWidget(List<SkillTree> skillTrees, ActionCapabilities capabilities, int x, int y, int width, int height, Consumer<SkillTree.Entry<?>> selectionListener) {
+    public SkillTreeWidget(List<SkillTree> skillTrees, ActionCapabilities capabilities, int x, int y, int width, int height, @Nullable Consumer<SkillTree.Entry<?>> selectionListener) {
         super(x, y, width, height, Component.empty());
         this.capabilities = capabilities;
         this.selectionListener = selectionListener;
@@ -88,7 +87,7 @@ public class SkillTreeWidget extends AbstractWidget {
             }
         }
         width -= xMargin;
-        widget.x = xOffset + (width - widget.getWidth()) / 2; // centering the widget to children
+        widget.setX(xOffset + (width - widget.getWidth()) / 2); // centering the widget to children
         iconsList.add(widget);
         connectivities.add(new ConnectivityWidget(widget, childList));
         return new CalculateWidgetResult(widget, width, childMaxHeight + yMargin + widget.getHeight());
@@ -105,30 +104,31 @@ public class SkillTreeWidget extends AbstractWidget {
     }
 
     private double getMouseXInContent(double mouseX) {
-        return scrollX + (mouseX - x) / scale;
+        return scrollX + (mouseX - getX()) / scale;
     }
 
     private double getMouseYInContent(double mouseY) {
-        return scrollY + (mouseY - y) / scale;
+        return scrollY + (mouseY - getY()) / scale;
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        boolean mouseIsOutOfWidget = mouseX < x || x + width < mouseX || mouseY < y || y + height < mouseY;
+    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        var poseStack = graphics.pose();
+        boolean mouseIsOutOfWidget = mouseX < getX() || getX() + width < mouseX || mouseY < getY() || getY() + height < mouseY;
         poseStack.pushPose();
         {
-            GuiRenderUtil.enableScissorTestInGuiCoordinate(x, y, width, height);
+            GuiRenderUtil.enableScissorTestInGuiCoordinate(getX(), getY(), width, height);
             int mouseXScaled = mouseIsOutOfWidget ? -1 : (int) getMouseXInContent(mouseX);
             int mouseYScaled = mouseIsOutOfWidget ? -1 : (int) getMouseYInContent(mouseY);
 
-            poseStack.translate(x, y, 0);
+            poseStack.translate(getX(), getY(), 0);
             poseStack.scale(scale, scale, 0);
             poseStack.translate(-scrollX, -scrollY, 0);
             for (var widget : connectivities) {
-                widget.render(poseStack, mouseXScaled, mouseYScaled, partialTick);
+                widget.render(graphics, mouseXScaled, mouseYScaled, partialTick);
             }
             for (var widget : icons) {
-                widget.render(poseStack, mouseXScaled, mouseYScaled, partialTick);
+                widget.render(graphics, mouseXScaled, mouseYScaled, partialTick);
             }
             RenderSystem.disableScissor();
         }
@@ -136,7 +136,7 @@ public class SkillTreeWidget extends AbstractWidget {
     }
 
     @Override
-    public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+    protected void updateWidgetNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
     }
 
     @Override
@@ -170,7 +170,7 @@ public class SkillTreeWidget extends AbstractWidget {
         return false;
     }
 
-    private class ConnectivityWidget extends GuiComponent implements Widget {
+    private class ConnectivityWidget implements Renderable {
         private final SkillTreeActionIcon root;
         private final List<SkillTreeActionIcon> leaves;
         private final int yOfHLine;
@@ -178,37 +178,37 @@ public class SkillTreeWidget extends AbstractWidget {
         public ConnectivityWidget(SkillTreeActionIcon root, List<SkillTreeActionIcon> leaves) {
             this.root = root;
             this.leaves = Collections.unmodifiableList(leaves);
-            var rootBottom = root.y + root.getHeight();
+            var rootBottom = root.getY() + root.getHeight();
             var leafTop = 1024;
             for (var leaf : leaves) {
-                if (leafTop > leaf.y) leafTop = leaf.y;
+                if (leafTop > leaf.getY()) leafTop = leaf.getY();
             }
             yOfHLine = (rootBottom + leafTop) / 2;
         }
 
         @Override
-        public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
             int color = root.getSkillTreeEntry().isUnlocked(capabilities) ? 0xFFEEEEEE : 0xAA777777;
-            var rootYCenter = root.y + root.getHeight() / 2;
-            var rootXCenter = root.x + root.getWidth() / 2;
+            var rootYCenter = root.getY() + root.getHeight() / 2;
+            var rootXCenter = root.getX() + root.getWidth() / 2;
             if (leaves.isEmpty()) return;
             if (leaves.size() == 1) {
-                fill(poseStack, rootXCenter - 1, rootYCenter, rootXCenter + 2, leaves.get(0).y, 0xFF000000);
-                vLine(poseStack, rootXCenter, rootYCenter, leaves.get(0).y, color);
+                graphics.fill(rootXCenter - 1, rootYCenter, rootXCenter + 2, leaves.get(0).getY(), 0xFF000000);
+                graphics.vLine(rootXCenter, rootYCenter, leaves.get(0).getY(), color);
                 return;
             }
-            int minX = leaves.stream().map(leaf -> leaf.x + leaf.getWidth() / 2).min(Integer::compare).get();
-            int maxX = leaves.stream().map(leaf -> leaf.x + leaf.getWidth() / 2).max(Integer::compare).get();
-            fill(poseStack, minX - 1, yOfHLine - 1, maxX + 1, yOfHLine + 2, 0xFF000000);
-            hLine(poseStack, minX, maxX, yOfHLine, color);
+            int minX = leaves.stream().map(leaf -> leaf.getX() + leaf.getWidth() / 2).min(Integer::compare).get();
+            int maxX = leaves.stream().map(leaf -> leaf.getX() + leaf.getWidth() / 2).max(Integer::compare).get();
+            graphics.fill(minX - 1, yOfHLine - 1, maxX + 1, yOfHLine + 2, 0xFF000000);
+            graphics.hLine(minX, maxX, yOfHLine, color);
             for (var leaf : leaves) {
-                var x = leaf.x + leaf.getWidth() / 2;
-                var y = leaf.y + leaf.getHeight() / 2;
-                fill(poseStack, x - 1, yOfHLine + 1, x + 2, y, 0xFF000000);
-                vLine(poseStack, x, yOfHLine, y, color);
+                var x = leaf.getX() + leaf.getWidth() / 2;
+                var y = leaf.getY() + leaf.getHeight() / 2;
+                graphics.fill(x - 1, yOfHLine + 1, x + 2, y, 0xFF000000);
+                graphics.vLine(x, yOfHLine, y, color);
             }
-            fill(poseStack, rootXCenter - 1, rootYCenter, rootXCenter + 2, yOfHLine, 0xFF000000);
-            vLine(poseStack, rootXCenter, rootYCenter, yOfHLine, color);
+            graphics.fill(rootXCenter - 1, rootYCenter, rootXCenter + 2, yOfHLine, 0xFF000000);
+            graphics.vLine(rootXCenter, rootYCenter, yOfHLine, color);
         }
     }
 
@@ -225,14 +225,14 @@ public class SkillTreeWidget extends AbstractWidget {
         }
 
         @Override
-        public void renderButton(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
             RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
             if (entry.isVisible(capabilities)) {
                 if (isHovered)
                     RenderSystem.setShaderColor(0.9f, 0.9f, 0.9f, 1f);
                 else
                     RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-                blit(poseStack, this.x, this.y, 0, this.width, this.height,
+                graphics.blit(this.getX(), this.getY(), 0, this.width, this.height,
                         ParCoolTextures.guiSprite(entry.isUnlocked(capabilities)
                                 ? ParCoolGuiTextureAtlas.SKILLTREE_ACTION_UNLOCKED
                                 : ParCoolGuiTextureAtlas.SKILLTREE_ACTION_LOCKED
@@ -240,11 +240,11 @@ public class SkillTreeWidget extends AbstractWidget {
                 );
                 if (visible) {
                     RenderSystem.setShaderTexture(0, ParCoolActionsTextureAtlas.TEXTURE_LOCATION);
-                    blit(poseStack, this.x, this.y, 0, this.width, this.height, ParCoolTextures.action(entry.getActionEntry()));
+                    graphics.blit(this.getX(), this.getY(), 0, this.width, this.height, ParCoolTextures.action(entry.getActionEntry()));
                 }
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             } else {
-                blit(poseStack, this.x, this.y, 0, this.width, this.height, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.SKILLTREE_ACTION_UNAVAILABLE));
+                graphics.blit(this.getX(), this.getY(), 0, this.width, this.height, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.SKILLTREE_ACTION_UNAVAILABLE));
             }
         }
 
@@ -254,7 +254,7 @@ public class SkillTreeWidget extends AbstractWidget {
         }
 
         @Override
-        public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+        public void updateWidgetNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
         }
 
         @Override

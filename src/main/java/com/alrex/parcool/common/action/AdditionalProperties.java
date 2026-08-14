@@ -60,7 +60,7 @@ public class AdditionalProperties {
 		tickAfterLastJump++;
 		sprint.update(player.isSprinting());
 		sneak.update(player.isShiftKeyDown());
-		onGround.update(player.isOnGround());
+        onGround.update(player.onGround());
 		flying.update(player.getAbilities().flying);
 		inWater.update(player.isInWater());
 		wallDirectionCached = false;

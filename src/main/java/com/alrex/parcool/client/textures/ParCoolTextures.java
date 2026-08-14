@@ -1,8 +1,6 @@
 package com.alrex.parcool.client.textures;
 
-import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.ActionEntry;
-import com.alrex.parcool.common.action.ActionRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -20,7 +18,7 @@ public class ParCoolTextures {
     private final ParCoolGuideImageTextureAtlas guideImageTextureAtlas;
 
     public static void init(RegisterClientReloadListenersEvent event) {
-        INSTANCE = new ParCoolTextures(Minecraft.getInstance().textureManager, ParCool.getActionRegistry());
+        INSTANCE = new ParCoolTextures(Minecraft.getInstance().textureManager);
         event.registerReloadListener(INSTANCE.actionsTextureAtlas);
         event.registerReloadListener(INSTANCE.guiTextureAtlas);
         event.registerReloadListener(INSTANCE.guideImageTextureAtlas);
@@ -30,8 +28,8 @@ public class ParCoolTextures {
         return INSTANCE;
     }
 
-    protected ParCoolTextures(TextureManager manager, ActionRegistry actionRegistry) {
-        actionsTextureAtlas = new ParCoolActionsTextureAtlas(manager, actionRegistry);
+    protected ParCoolTextures(TextureManager manager) {
+        actionsTextureAtlas = new ParCoolActionsTextureAtlas(manager);
         guiTextureAtlas = new ParCoolGuiTextureAtlas(manager);
         guideImageTextureAtlas = new ParCoolGuideImageTextureAtlas(manager);
     }

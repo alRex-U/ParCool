@@ -12,8 +12,8 @@ import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.action.ActionCapabilities;
 import com.alrex.parcool.common.network.EnableActionPacket;
 import com.alrex.parcool.common.network.RequestUnlockActionPacket;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraftforge.api.distmarker.Dist;
@@ -76,7 +76,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                                 selectedSkillNameWidget = new WrappedTextWidget(
                                         font,
                                         3,
-                                        selectedSkillIconWidget.y + selectedSkillIconWidget.getHeight() + 4,
+                                        selectedSkillIconWidget.getY() + selectedSkillIconWidget.getHeight() + 4,
                                         skillViewTabWidth - 5,
                                         Component.empty(),
                                         TextWidget.HorizontalAlignment.CENTER,
@@ -100,7 +100,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                                 ),
                                 actionUnlockStateViewGroup = new WidgetGroup(
                                         (skillViewTabWidth - 50) / 2,
-                                        viewGuideButton.y - 13,
+                                        viewGuideButton.getY() - 13,
                                         50, 11,
                                         List.of(
                                                 new ImageBySpriteWidget(0, 0, 50, 11, ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.UNLOCK_COST_BOX)),
@@ -109,7 +109,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                                         )
                                 ),
                                 actionUnlockedViewGroup = new WidgetGroup(
-                                        actionUnlockStateViewGroup.x, viewGuideButton.y - 26, 50, 26,
+                                        actionUnlockStateViewGroup.getX(), viewGuideButton.getY() - 26, 50, 26,
                                         List.of(
                                                 new TextWidget(font, 0, 0, 50,
                                                         Component.translatable("parcool.gui.text.unlocked"),
@@ -138,9 +138,9 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
     }
 
     @Override
-    protected void renderContent(PoseStack poseStack, int mouseX, int mouseY, float partial) {
-        fill(poseStack, contentOffsetX, contentOffsetY, contentOffsetX + CONTENT_WIDTH, contentOffsetY + CONTENT_HEIGHT, colors.background());
-        super.renderContent(poseStack, mouseX, mouseY, partial);
+    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        graphics.fill(contentOffsetX, contentOffsetY, contentOffsetX + CONTENT_WIDTH, contentOffsetY + CONTENT_HEIGHT, colors.background());
+        super.renderContent(graphics, mouseX, mouseY, partial);
     }
 
     @Override
@@ -208,7 +208,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
             skillViewTabGroup.visible = false;
         }
         currentExperienceLevelView.setMessage(Component.literal(player.experienceLevel < 100 ? Integer.toString(player.experienceLevel) : "99+").withStyle(Style.EMPTY.withColor(colors.accent())));
-        currentExperienceViewGroup.x = skilltreeWidget.x + skilltreeWidget.getWidth() - 35;
+        currentExperienceViewGroup.setX(skilltreeWidget.getX() + skilltreeWidget.getWidth() - 35);
     }
 
     private void onSkillSelectionChanged(@Nullable SkillTree.Entry<?> selectedItem) {

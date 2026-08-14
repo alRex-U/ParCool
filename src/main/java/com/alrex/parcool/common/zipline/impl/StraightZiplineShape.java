@@ -49,7 +49,7 @@ public class StraightZiplineShape extends ZiplineShape {
 
     @Override
     public double getMovedPositionByParameterApproximately(float currentT, float movement) {
-        float deltaXZ = movement * Mth.fastInvSqrt(slope * slope + 1);
+        float deltaXZ = movement * Mth.invSqrt(slope * slope + 1);
         return currentT + deltaXZ / getHorizontalDistance();
     }
 

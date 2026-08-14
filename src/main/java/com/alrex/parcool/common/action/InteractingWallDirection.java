@@ -87,7 +87,7 @@ public enum InteractingWallDirection {
 
     @Nullable
     private static InteractingWallDirection getAdjacentWall(Player player, AABB playerBB, double xRange, double zRange) {
-        var level = player.level;
+        var level = player.level();
         short signX = 0, signZ = 0;
         boolean protrusion = false;
 

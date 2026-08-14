@@ -85,7 +85,7 @@ public class ParCoolStamina extends AbstractLocalStamina {
             exhausted = false;
             recover(recoverValue * 5.);
         } else if (recoverCooldown <= 0) {
-            recover(owner.isOnGround() ? recoverValue : recoverValue * 0.4);
+            recover(owner.onGround() ? recoverValue : recoverValue * 0.4);
         }
     }
 

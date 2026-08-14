@@ -1,8 +1,8 @@
 package com.alrex.parcool.client.gui.components;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -37,13 +37,13 @@ public class FlatButton extends AbstractButton {
     }
 
     @Override
-    public void renderButton(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
-        renderFlatButton(poseStack, this.backColor, this.txtColor);
+    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        renderFlatButton(graphics, this.backColor, this.txtColor);
     }
 
-    public void renderFlatButton(@Nonnull PoseStack poseStack, int backColor, int txtColor) {
+    public void renderFlatButton(@Nonnull GuiGraphics graphics, int backColor, int txtColor) {
         if (shadow && active) {
-            fill(poseStack, x, y, x + width + 1, y + height + 1, shadowColor);
+            graphics.fill(getX(), getY(), getX() + width + 1, getY() + height + 1, shadowColor);
         }
         if (active) {
             if (isHovered) RenderSystem.setShaderColor(0.85f, 0.85f, 0.85f, 0.85f);
@@ -51,9 +51,9 @@ public class FlatButton extends AbstractButton {
         } else {
             RenderSystem.setShaderColor(0.5f, 0.5f, 0.5f, 0.5f);
         }
-        fill(poseStack, x, y, x + width, y + height, backColor);
+        graphics.fill(getX(), getY(), getX() + width, getY() + height, backColor);
         var message = getMessage();
-        font.draw(poseStack, message, x + (width - font.width(message)) / 2f, 1 + y + (height - font.lineHeight) / 2f, txtColor);
+        graphics.drawString(font, message, (int) (getX() + (width - font.width(message)) / 2f), (int) (1 + getY() + (height - font.lineHeight) / 2f), txtColor, false);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
     }
 
@@ -63,6 +63,6 @@ public class FlatButton extends AbstractButton {
     }
 
     @Override
-    public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+    public void updateWidgetNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
     }
 }

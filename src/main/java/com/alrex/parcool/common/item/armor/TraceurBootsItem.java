@@ -45,8 +45,9 @@ public class TraceurBootsItem extends Item implements EquipAble, DyeAble {
         this.equipModifier = equipModifiersBuilder.build();
     }
 
+    @Nonnull
     @Override
-    public @Nullable EquipmentSlot getEquipmentSlot(ItemStack stack) {
+    public EquipmentSlot getEquipmentSlot() {
         return EquipmentSlot.FEET;
     }
 
