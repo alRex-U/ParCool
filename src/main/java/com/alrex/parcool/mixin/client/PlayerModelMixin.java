@@ -58,6 +58,7 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends HumanoidM
 				if (lLTransform != null) lLTransform.applyInQuaternion(leftLeg, blendingFactor, false);
 				Transform.NO_TRANSFORMATION.applyInQuaternion(body, blendingFactor, true);
 			}
+			hat.copyFrom(head);
 		}
 	}
 
