@@ -29,13 +29,13 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.brewing.BrewingRecipe;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -135,7 +135,7 @@ public class MarkdownWidget extends AbstractWidget {
 
     private int textColor() {
         var color = style.getColor();
-        return color != null ? color.getValue() : ~0;
+        return color != null ? color.getValue() | 0xFF000000 : ~0;
     }
 
     private static class ComponentWidget<T extends MarkdownParagraph> extends AbstractWidget {
