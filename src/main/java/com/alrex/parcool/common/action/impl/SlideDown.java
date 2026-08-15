@@ -27,11 +27,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.InputEvent;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class SlideDown extends ContinuableAction implements ActionExtension.LeaveFromWallListener {
+public class SlideDown extends ContinuableAction implements ActionExtension.LeaveFromWallListener, ActionExtension.KeyMapTriggeredListener {
     private static final BehaviorEnforcer.ID ID_FALL_FLY_CANCEL = BehaviorEnforcer.newID();
     private final SynchronizedDataHolder dataHolder;
     private final SynchronizedProperty<InteractingWallDirection> propertyDirection;
@@ -215,6 +216,14 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
     @Override
     public void onLeaveFromWall() {
         tickSinceCanceled = 0;
+    }
+
+    @Override
+    public void onInput(InputEvent.InteractionKeyMappingTriggered event) {
+        if (isDoing() && (event.isAttack() || event.isUseItem())) {
+            event.setSwingHand(false);
+            event.setCanceled(true);
+        }
     }
 
     private record AnimationData(
