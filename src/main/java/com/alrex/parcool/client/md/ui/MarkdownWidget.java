@@ -515,9 +515,9 @@ public class MarkdownWidget extends AbstractWidget {
                     var item = items[(int) (time % items.length)];
                     var column = i % craftWidth;
                     var row = i / craftWidth;
-                    GuiRenderUtil.renderScaledGuiItem(graphics, item, MarkdownWidget.this.getX() + getX(), MarkdownWidget.this.getY() - scrollY + getY(), 2 + 18 * column, 2 + 18 * row, scale);
+                    GuiRenderUtil.renderScaledGuiItem(graphics, item, getX(), getY(), 2 + 18 * column, 2 + 18 * row, scale);
                 }
-                GuiRenderUtil.renderScaledGuiItem(graphics, result, MarkdownWidget.this.getX() + getX(), MarkdownWidget.this.getY() - scrollY + getY(), 96, 20, scale);
+                GuiRenderUtil.renderScaledGuiItem(graphics, result, getX(), getY(), 96, 20, scale);
             }
         }
     }
@@ -561,14 +561,14 @@ public class MarkdownWidget extends AbstractWidget {
             var inputItems = recipe.getInput().getItems();
             if (inputItems.length != 0) {
                 var input = inputItems[(int) (time % inputItems.length)];
-                GuiRenderUtil.renderScaledGuiItem(graphics, input, MarkdownWidget.this.getX() + getX(), MarkdownWidget.this.getY() - scrollY + getY(), 2, 2, scale);
+                GuiRenderUtil.renderScaledGuiItem(graphics, input, getX(), getY(), 2, 2, scale);
             }
             var ingredientItems = recipe.getIngredient().getItems();
             if (ingredientItems.length != 0) {
                 var ingredient = ingredientItems[(int) (time % ingredientItems.length)];
-                GuiRenderUtil.renderScaledGuiItem(graphics, ingredient, MarkdownWidget.this.getX() + getX(), MarkdownWidget.this.getY() - scrollY + getY(), 51, 2, scale);
+                GuiRenderUtil.renderScaledGuiItem(graphics, ingredient, getX(), getY(), 51, 2, scale);
             }
-            GuiRenderUtil.renderScaledGuiItem(graphics, recipe.getOutput(), MarkdownWidget.this.getX() + getX(), MarkdownWidget.this.getY() - scrollY + getY(), 109, 2, scale);
+            GuiRenderUtil.renderScaledGuiItem(graphics, recipe.getOutput(), getX(), getY(), 109, 2, scale);
         }
     }
 }
