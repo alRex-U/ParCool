@@ -108,30 +108,30 @@ tasks.register("generateModMetadata", ProcessResources) {
             forge_version           : forge_version,
             forge_version_range     : forge_version_range,
             loader_version_range    : loader_version_range,
-            mod_id                  : 'parcool',
+            mod_id                  : mod_id,
             mod_name                : 'ParCool',
             mod_license             : 'Lesser General Public License version 3',
             mod_version             : mod_version,
             mod_authors             : 'alRex_U',
             extern_feathers         : [
                     mod_id: 'feathers',
-                    version_range: '[1.1.2,)'
+                    version_range: feathers_version_range
             ],
             extern_shouldersurfing  : [
                     mod_id: 'shouldersurfing',
-                    version_range: '[1.19.2-4.22.1,)'
+                    version_range: shouldersurfing_version_range
             ],
             extern_betterthirdperson: [
                     mod_id: 'betterthirdperson',
-                    version_range: '[1.9.0,)'
+                    version_range: betterthirdperson_version_range
             ],
             extern_epicfight        : [
                     mod_id: 'epicfight',
-                    version_range: '[19.5.26,)'
+                    version_range: epicfight_version_range
             ],
             extern_curios           : [
                     mod_id       : 'curios',
-                    version_range: '[5.1.6.4,)'
+                    version_range: curios_version_range
             ]
     ]
     inputs.properties properties
