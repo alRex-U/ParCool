@@ -1,7 +1,5 @@
 package com.alrex.parcool.common.network;
 
 public class MultiActionStateSetPacket extends MultiComposablePacket<ActionStateSetPacket> {
-    public MultiActionStateSetPacket() {
-        super(ActionStateSetPacket.HANDLER);
-    }
+    public static final IHandler<MultiActionStateSetPacket> HANDLER = getDefaultHandler(MultiActionStateSetPacket::new, ActionStateSetPacket.HANDLER);
 }

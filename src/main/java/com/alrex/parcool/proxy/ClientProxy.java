@@ -72,9 +72,9 @@ public class ClientProxy extends CommonProxy {
 				.add();
 		instance.messageBuilder(MultiStaminaPacket.class, index++)
 				.noResponse()
-				.decoder((packet) -> MultiStaminaPacket.decode(MultiStaminaPacket::new, packet))
-				.encoder(MultiStaminaPacket::encode)
-				.consumerMainThread(MultiStaminaPacket::handleInPhysicalClient)
+				.decoder(MultiStaminaPacket.HANDLER::decode)
+				.encoder(MultiStaminaPacket.HANDLER::encode)
+				.consumerMainThread(MultiStaminaPacket.HANDLER::handleInPhysicalClient)
 				.add();
 		instance.messageBuilder(ActionStateSetPacket.class, index++)
 				.noResponse()
@@ -84,9 +84,9 @@ public class ClientProxy extends CommonProxy {
 				.add();
 		instance.messageBuilder(MultiActionStateSetPacket.class, index++)
 				.noResponse()
-				.decoder((packet) -> MultiActionStateSetPacket.decode(MultiActionStateSetPacket::new, packet))
-				.encoder(MultiActionStateSetPacket::encode)
-				.consumerMainThread(MultiActionStateSetPacket::handleInPhysicalClient)
+				.decoder(MultiActionStateSetPacket.HANDLER::decode)
+				.encoder(MultiActionStateSetPacket.HANDLER::encode)
+				.consumerMainThread(MultiActionStateSetPacket.HANDLER::handleInPhysicalClient)
 				.add();
         instance.messageBuilder(ActionCapabilitiesPacket.class, index++)
                 .noResponse()

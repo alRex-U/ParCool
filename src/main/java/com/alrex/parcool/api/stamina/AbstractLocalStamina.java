@@ -1,7 +1,10 @@
 package com.alrex.parcool.api.stamina;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolMobEffects;
+import com.alrex.parcool.common.network.StaminaPacket;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.network.PacketDistributor;
 
 public abstract class AbstractLocalStamina implements IReadableStamina {
     public AbstractLocalStamina(Player owner) {
@@ -9,6 +12,7 @@ public abstract class AbstractLocalStamina implements IReadableStamina {
     }
 
     protected final Player owner;
+    private boolean dirty;
 
     public abstract void setValue(double value);
 
@@ -29,5 +33,16 @@ public abstract class AbstractLocalStamina implements IReadableStamina {
 
     public boolean showHud() {
         return false;
+    }
+
+    public void setDirty() {
+        this.dirty = true;
+    }
+
+    public final void sync() {
+        if (dirty) {
+            ParCool.CONNECTION.send(PacketDistributor.SERVER.noArg(), new StaminaPacket(owner.getUUID(), true, this.copyAsReadOnly()));
+            dirty = false;
+        }
     }
 }
