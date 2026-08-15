@@ -63,7 +63,10 @@ public class ActionProcessor {
 			MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.Tick.Post(player, action));
 		}
 		if (!synchronizedData.isEmpty()) {
-			onTick$sendSyncPacket(parkourability, event.side, synchronizedData);
+			onTick$sendActionSyncPacket(parkourability, event.side, synchronizedData);
+		}
+		if (event.side.isClient()) {
+			onTick$sendStaminaSyncPacketInLocal(parkourability);
 		}
 		if (player instanceof ServerPlayer serverPlayer) {
 			if (parkourability.getCapabilities().isDirty()) {
@@ -87,7 +90,14 @@ public class ActionProcessor {
 		}
 	}
 
-	private void onTick$sendSyncPacket(Parkourability parkourability, LogicalSide side, Map<String, LinkedList<ActionStatePacket.Entry>> synchronizedData) {
+	@OnlyIn(Dist.CLIENT)
+	private void onTick$sendStaminaSyncPacketInLocal(Parkourability parkourability) {
+		if ((parkourability.player().tickCount & 0b11) == 0 && parkourability.getStamina() instanceof AbstractLocalStamina localStamina) {
+			localStamina.sync();
+		}
+	}
+
+	private void onTick$sendActionSyncPacket(Parkourability parkourability, LogicalSide side, Map<String, LinkedList<ActionStatePacket.Entry>> synchronizedData) {
 		var list = new LinkedList<ActionStatePacket>();
 		for (var entry : synchronizedData.entrySet()) {
 			if (entry.getValue().isEmpty()) continue;

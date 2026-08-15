@@ -56,6 +56,7 @@ public class EpicFightStamina extends AbstractLocalStamina {
             AdditionalMods.epicFight().getConnection().send(PacketDistributor.SERVER.noArg(), new EpicFightStaminaConsumePacket(consumeBuffer));
         }
         consumeBuffer = 0;
+        setDirty();
     }
 
     @Override

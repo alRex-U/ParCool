@@ -57,6 +57,7 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
 
     @Override
     public void onLand(LivingFallEvent event) {
+        if (parkourability.player().level.isClientSide()) return;
         var breakfallType = propertyInputBreakfallType.get();
         if (breakfallType == null || breakfallType == BreakfallType.NONE) return;
         var attr = parkourability.player().getAttribute(ParCoolAttributes.BREAKFALL_DAMAGE_REDUCTION.get());

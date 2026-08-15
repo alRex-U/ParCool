@@ -18,9 +18,9 @@ public class ServerProxy extends CommonProxy {
 				.add();
 		instance.messageBuilder(MultiStaminaPacket.class, index++)
 				.noResponse()
-				.decoder((packet) -> MultiStaminaPacket.decode(MultiStaminaPacket::new, packet))
-				.encoder(MultiStaminaPacket::encode)
-				.consumerMainThread(MultiStaminaPacket::handleInPhysicalServer)
+				.decoder(MultiStaminaPacket.HANDLER::decode)
+				.encoder(MultiStaminaPacket.HANDLER::encode)
+				.consumerMainThread(MultiStaminaPacket.HANDLER::handleInPhysicalServer)
 				.add();
 		instance.messageBuilder(ActionStateSetPacket.class, index++)
 				.noResponse()
@@ -30,16 +30,16 @@ public class ServerProxy extends CommonProxy {
 				.add();
 		instance.messageBuilder(MultiActionStateSetPacket.class, index++)
 				.noResponse()
-				.decoder((packet) -> MultiActionStateSetPacket.decode(MultiActionStateSetPacket::new, packet))
-				.encoder(MultiActionStateSetPacket::encode)
-				.consumerMainThread(MultiActionStateSetPacket::handleInPhysicalServer)
+				.decoder(MultiActionStateSetPacket.HANDLER::decode)
+				.encoder(MultiActionStateSetPacket.HANDLER::encode)
+				.consumerMainThread(MultiActionStateSetPacket.HANDLER::handleInPhysicalServer)
 				.add();
-        instance.messageBuilder(ActionCapabilitiesPacket.class, index++)
-                .noResponse()
-                .decoder(ActionCapabilitiesPacket.HANDLER::decode)
-                .encoder(ActionCapabilitiesPacket.HANDLER::encode)
-                .consumerMainThread(ActionCapabilitiesPacket.HANDLER::handleInPhysicalServer)
-                .add();
+		instance.messageBuilder(ActionCapabilitiesPacket.class, index++)
+				.noResponse()
+				.decoder(ActionCapabilitiesPacket.HANDLER::decode)
+				.encoder(ActionCapabilitiesPacket.HANDLER::encode)
+				.consumerMainThread(ActionCapabilitiesPacket.HANDLER::handleInPhysicalServer)
+				.add();
 		instance.messageBuilder(RequestUnlockActionPacket.class, index++)
 				.noResponse()
 				.decoder(RequestUnlockActionPacket.HANDLER::decode)

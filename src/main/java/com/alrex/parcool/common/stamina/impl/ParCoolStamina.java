@@ -48,6 +48,7 @@ public class ParCoolStamina extends AbstractLocalStamina {
     @Override
     public void setValue(double value) {
         this.value = value;
+        setDirty();
         if (this.value < 0) this.value = 0;
         if (this.value > max) this.value = max;
     }
@@ -58,6 +59,7 @@ public class ParCoolStamina extends AbstractLocalStamina {
         if (isInfinite()) return;
 
         this.value -= value;
+        setDirty();
         if (this.value <= 0) {
             this.value = 0;
             exhausted = true;
@@ -68,6 +70,7 @@ public class ParCoolStamina extends AbstractLocalStamina {
     @Override
     public void recover(double value) {
         this.value += value;
+        setDirty();
         if (this.value > max) {
             this.value = max;
             exhausted = false;
