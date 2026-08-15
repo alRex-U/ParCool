@@ -70,7 +70,7 @@ public class HangDown extends ContinuableAction {
     private float oldAngularSpeed;
 
     public HangDown(Parkourability parkourability, ActionEntry<? extends Action> entry) {
-        super(parkourability, entry, List.of(ParCoolActions.CLIMB_UP, ParCoolActions.DIVE, ParCoolActions.HANG_ON, ParCoolActions.POLE_CLIMB));
+        super(parkourability, entry, List.of(ParCoolActions.GRAPPLE, ParCoolActions.CLIMB_UP, ParCoolActions.DIVE, ParCoolActions.HANG_ON, ParCoolActions.POLE_CLIMB));
         dataHolder = SynchronizedDataHolder.create(entry,
                 propertyHangingBarAxis = SynchronizedProperty.newEnum(BarAxis.class),
                 propertyBodySwingAngleInRad = SynchronizedProperty.newFloat(),

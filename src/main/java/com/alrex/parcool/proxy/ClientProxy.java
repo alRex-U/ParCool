@@ -8,11 +8,15 @@ import com.alrex.parcool.client.animation.system.event.RegisterAnimationEntryEve
 import com.alrex.parcool.client.animation.system.handle.AnimationSystemEventHandler;
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.animation.system.resource.AnimationResourceManager;
+import com.alrex.parcool.client.GrappleCameraHandler;
+import com.alrex.parcool.client.GrappleTargetOverlay;
 import com.alrex.parcool.client.gui.screen.ParCoolGuideScreen;
 import com.alrex.parcool.client.gui.screen.SkillTreeScreen;
 import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.client.md.resource.GuideResourceManager;
+import com.alrex.parcool.client.renderer.GrappleRopeRenderer;
+import com.alrex.parcool.client.renderer.GrapplingHookItemRenderer;
 import com.alrex.parcool.client.renderer.entity.layers.ParCoolModelLayers;
 import com.alrex.parcool.client.skilltree.ParCoolSkillTrees;
 import com.alrex.parcool.client.textures.ParCoolTextures;
@@ -45,6 +49,7 @@ public class ClientProxy extends CommonProxy {
 		bus.addListener(ParCoolTextures::init);
         bus.addListener(AnimationResourceManager::register);
         bus.addListener(GuideResourceManager::register);
+        bus.addListener(GrapplingHookItemRenderer::registerModels);
 
 		bus = MinecraftForge.EVENT_BUS;
 		bus.addListener(ParCoolKeyBinds::tick);
@@ -52,6 +57,9 @@ public class ClientProxy extends CommonProxy {
 		bus.register(InputHandler.class);
         bus.register(AnimationSystemEventHandler.class);
         bus.register(ParCoolSkillTrees.class);
+        bus.register(GrappleCameraHandler.class);
+        bus.register(GrappleRopeRenderer.class);
+        bus.register(GrappleTargetOverlay.class);
 		bus.register(new PassiveAnimationProcessor());
 
 		var registerAnimationEntryEvent = new RegisterAnimationEntryEvent();

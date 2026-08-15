@@ -53,6 +53,7 @@ public class RideZipline extends ContinuableAction {
 
     public RideZipline(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry, List.of(
+                ParCoolActions.GRAPPLE,
                 ParCoolActions.VAULT,
                 ParCoolActions.HANG_ON,
                 ParCoolActions.HANG_DOWN,

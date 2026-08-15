@@ -20,6 +20,8 @@ public class ActionOption {
             boolean availableInFluid,
             boolean availableNotInFluid,
             boolean availableWithFallFlying,
+            boolean availableWhileExhausted,
+            boolean needLearning,
             LogicalSide triggeredSide
     ) {
     }
@@ -34,13 +36,15 @@ public class ActionOption {
     private boolean availableInFluid = false;
     private boolean availableNotInFluid = true;
     private boolean availableWithFallFlying = false;
+    private boolean availableWhileExhausted = false;
+    private boolean needLearning = true;
     private boolean needOnGround = false;
     private boolean needNotOnGround = false;
     private LogicalSide triggeredSide = LogicalSide.CLIENT;
 
     public Value build() {
         return new Value(
-                staminaConsumption, learningCost, parent, neededPose, beforeProcessedActions, needOnGround, needNotOnGround, availableInFluid, availableNotInFluid, availableWithFallFlying, triggeredSide
+                staminaConsumption, learningCost, parent, neededPose, beforeProcessedActions, needOnGround, needNotOnGround, availableInFluid, availableNotInFluid, availableWithFallFlying, availableWhileExhausted, needLearning, triggeredSide
         );
     }
 
@@ -90,6 +94,16 @@ public class ActionOption {
 
     public ActionOption availableWithFallFlying(boolean availableWithFallFlying) {
         this.availableWithFallFlying = availableWithFallFlying;
+        return this;
+    }
+
+    public ActionOption availableWhileExhausted(boolean availableWhileExhausted) {
+        this.availableWhileExhausted = availableWhileExhausted;
+        return this;
+    }
+
+    public ActionOption needLearning(boolean needLearning) {
+        this.needLearning = needLearning;
         return this;
     }
 

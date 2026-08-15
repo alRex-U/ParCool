@@ -11,8 +11,22 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class RenderTypes {
     public static final RenderType ZIPLINE_3D;
+    public static final RenderType GRAPPLE_ROPE;
 
     static {
+        GRAPPLE_ROPE = RenderType.create(
+                "parcool_grapple_rope",
+                DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
+                VertexFormat.Mode.QUADS, 256,
+                false, false,
+                RenderType.CompositeState.builder()
+                        .setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
+                        .setTextureState(new RenderStateShard.TextureStateShard(GrappleRopeRenderer.TEXTURE_LOCATION, false, false))
+                        .setCullState(RenderStateShard.NO_CULL)
+                        .setLightmapState(RenderStateShard.LIGHTMAP)
+                        .createCompositeState(false)
+        );
+
         ZIPLINE_3D = RenderType.create(
                 "zipline3d",
                 DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,

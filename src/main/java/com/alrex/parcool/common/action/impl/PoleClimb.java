@@ -33,6 +33,7 @@ public class PoleClimb extends ContinuableAction {
 
     public PoleClimb(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry, List.of(
+                ParCoolActions.GRAPPLE,
                 ParCoolActions.HANG_ON,
                 ParCoolActions.HANG_DOWN,
                 ParCoolActions.CLIMB_UP,
