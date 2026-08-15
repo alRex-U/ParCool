@@ -6,13 +6,14 @@ import com.alrex.parcool.api.client.gui.StaminaDisplayContext;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.Parkourability;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import static com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas.*;
 
@@ -38,11 +39,12 @@ public class LightStaminaHUD implements IStaminaHUD {
 	}
 
 	@Override
-    public void render(ForgeGui forgeGui, GuiGraphics guiGraphics, Parkourability parkourability, StaminaDisplayContext currentContext, StaminaDisplayContext oldContext, float partialTick, int width, int height) {
+    public void render(GuiGraphics guiGraphics, Parkourability parkourability, StaminaDisplayContext currentContext, StaminaDisplayContext oldContext, DeltaTracker deltaTracker) {
+        var partialTick = deltaTracker.getGameTimeDeltaPartialTick(true);
 		if (!valueChanging && tickValueChangingOrNotChanging > 40 && ParCool.getConfig().client().staminaHud.hideAutomatically().get())
 			return;
 		var player = parkourability.player();
-		final boolean inexhaustible = player.hasEffect(ParCoolMobEffects.INEXHAUSTIBLE.get());
+        final boolean inexhaustible = player.hasEffect(ParCoolMobEffects.INEXHAUSTIBLE);
 
 		float staminaScale = (float) (Mth.lerp(partialTick, oldContext.value(), currentContext.value()) / currentContext.maxValue());
 		if (staminaScale < 0) staminaScale = 0;
@@ -54,8 +56,10 @@ public class LightStaminaHUD implements IStaminaHUD {
 
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
+        final int width = guiGraphics.guiWidth();
+        final int height = guiGraphics.guiHeight();
 		int baseX = width / 2 + 91 + ParCool.getConfig().client().staminaHud.offsetHorizontal().get();
-        int baseY = height - forgeGui.rightHeight + ParCool.getConfig().client().staminaHud.offsetVertical().get();
+        int baseY = height - Minecraft.getInstance().gui.rightHeight + ParCool.getConfig().client().staminaHud.offsetVertical().get();
 		for (int i = 0; i < 10; i++) {
 			TextureAtlasSprite staminaSprite;
 			int x = baseX - i * 8 - 9;
@@ -98,6 +102,6 @@ public class LightStaminaHUD implements IStaminaHUD {
 
             guiGraphics.blit(x, baseY + offsetY, 0, 9, 9, staminaSprite);
 		}
-        forgeGui.rightHeight += 10;
+        Minecraft.getInstance().gui.rightHeight += 10;
 	}
 }

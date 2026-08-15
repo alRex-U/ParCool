@@ -16,9 +16,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -157,7 +157,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
         if (player != null) {
             player.playSound(ParCoolSoundEvents.SKILLTREE_UNLOCK.get());
         }
-        ParCool.CONNECTION.send(PacketDistributor.SERVER.noArg(), new RequestUnlockActionPacket(selectedSkill.getActionEntry()));
+        PacketDistributor.sendToServer(new RequestUnlockActionPacket(selectedSkill.getActionEntry()));
     }
 
     private void viewGuide() {
@@ -238,7 +238,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
         @Override
         public void onPress() {
             if (selectedSkill == null) return;
-            ParCool.CONNECTION.send(PacketDistributor.SERVER.noArg(), new EnableActionPacket(selectedSkill.getActionEntry(), !on));
+            PacketDistributor.sendToServer(new EnableActionPacket(selectedSkill.getActionEntry(), !on));
         }
 
         public void updateState() {

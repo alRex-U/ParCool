@@ -10,6 +10,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShearsItem;
@@ -37,7 +39,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ZiplineHookBlock extends DirectionalBlock implements EntityBlock {
+public abstract class ZiplineHookBlock extends DirectionalBlock implements EntityBlock {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
     public ZiplineHookBlock(Properties p_i48440_1_) {
@@ -56,7 +58,7 @@ public class ZiplineHookBlock extends DirectionalBlock implements EntityBlock {
     }
 
     @Override
-    public PushReaction getPistonPushReaction(BlockState p_149656_1_) {
+    public PushReaction getPistonPushReaction(@Nonnull BlockState p_149656_1_) {
         return PushReaction.DESTROY;
     }
 
@@ -80,8 +82,9 @@ public class ZiplineHookBlock extends DirectionalBlock implements EntityBlock {
         }
     }
 
+    @Nonnull
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState state1, LevelAccessor levelAccessor, BlockPos pos, BlockPos pos1) {
+    public BlockState updateShape(BlockState state, @Nonnull Direction direction, @Nonnull BlockState state1, @Nonnull LevelAccessor levelAccessor, @Nonnull BlockPos pos, @Nonnull BlockPos pos1) {
         Direction facing = state.getValue(FACING);
         return direction == facing.getOpposite() && !canSurvive(state, levelAccessor, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction, state1, levelAccessor, pos, pos1);
     }
@@ -110,11 +113,11 @@ public class ZiplineHookBlock extends DirectionalBlock implements EntityBlock {
     }
 
     @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChange(@Nonnull BlockState state, @Nonnull LevelReader level, @Nonnull BlockPos pos, @Nonnull BlockPos neighbor) {
     }
 
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource randomSource) {
+    public void animateTick(BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull RandomSource randomSource) {
         if (state.getValue(POWERED) && randomSource.nextInt(7) == 0) {
             if (level.getBlockEntity(pos) instanceof ZiplineHookTileEntity hook) {
                 var hookPos = hook.getHookPoint();
@@ -131,38 +134,38 @@ public class ZiplineHookBlock extends DirectionalBlock implements EntityBlock {
     }
 
     @Override
-    public boolean isPathfindable(BlockState p_60475_, BlockGetter p_60476_, BlockPos p_60477_, PathComputationType p_60478_) {
+    protected boolean isPathfindable(@Nonnull BlockState state, @Nonnull PathComputationType pathComputationType) {
         return false;
     }
 
+    @Nonnull
     @Override
-    public InteractionResult use(BlockState blockState, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockRayTraceResult) {
-        ItemStack stack = player.getItemInHand(hand);
+    protected ItemInteractionResult useItemOn(ItemStack stack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hitResult) {
         if (stack.getItem() instanceof ShearsItem) {
-            var tileEntity = world.getBlockEntity(pos);
+            var tileEntity = level.getBlockEntity(pos);
             if (tileEntity instanceof ZiplineHookTileEntity ziplineHookTileEntity) {
-                if (ziplineHookTileEntity.getConnectionPoints().isEmpty()) return InteractionResult.PASS;
+                if (ziplineHookTileEntity.getConnectionPoints().isEmpty())
+                    return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
                 List<ItemStack> itemStacks = ziplineHookTileEntity.removeAllConnections();
                 if (!itemStacks.isEmpty()) {
                     player.playSound(ParCoolSoundEvents.ZIPLINE_REMOVE.get(), 1, 1);
                 }
-                if (world.isClientSide()) {
-                    return InteractionResult.SUCCESS;
+                if (level.isClientSide()) {
+                    return ItemInteractionResult.SUCCESS;
                 } else {
-                    itemStacks.forEach((it) -> Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), it));
+                    itemStacks.forEach((it) -> Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), it));
                     if (!itemStacks.isEmpty()) {
                         if (stack.isDamageableItem()) {
-                            stack.hurtAndBreak(1, player, (it) -> {
-                            });
+                            stack.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
                         }
                     }
-                    return InteractionResult.CONSUME;
+                    return ItemInteractionResult.CONSUME;
                 }
             }
         }
 
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Nullable

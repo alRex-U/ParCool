@@ -5,10 +5,9 @@ import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.extern.betterthirdperson.BetterThirdPersonManager;
 import com.alrex.parcool.extern.curios.CuriosManager;
 import com.alrex.parcool.extern.epicfight.EpicFightManager;
-import com.alrex.parcool.extern.feathers.FeathersManager;
 import com.alrex.parcool.extern.shouldersurfing.ShoulderSurfingManager;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -18,7 +17,6 @@ public enum AdditionalMods {
     CURIOS(CuriosManager::new),
     BETTER_THIRD_PERSON(BetterThirdPersonManager::new),
     SHOULDER_SURFING(ShoulderSurfingManager::new),
-    FEATHERS(FeathersManager::new),
     EPIC_FIGHT(EpicFightManager::new);
 
     private final ModManager manager;
@@ -41,10 +39,6 @@ public enum AdditionalMods {
 
     public static ShoulderSurfingManager shoulderSurfing() {
         return (ShoulderSurfingManager) SHOULDER_SURFING.get();
-    }
-
-    public static FeathersManager feathers() {
-        return (FeathersManager) FEATHERS.get();
     }
 
     public static EpicFightManager epicFight() {

@@ -2,8 +2,8 @@ package com.alrex.parcool.client.animation.system.data;
 
 import com.alrex.parcool.client.animation.system.AnimatableModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 

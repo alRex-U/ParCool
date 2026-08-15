@@ -3,7 +3,7 @@ package com.alrex.parcool.common.stamina;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.network.MultiStaminaPacket;
 import com.alrex.parcool.common.network.StaminaPacket;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.TreeMap;
 import java.util.UUID;
@@ -22,7 +22,7 @@ public class StaminaSynchronizationDepot {
             syncCooldown--;
         } else {
             if (!map.isEmpty()) {
-                ParCool.CONNECTION.send(PacketDistributor.ALL.noArg(), packToPacket());
+                PacketDistributor.sendToAllPlayers(packToPacket());
             }
             syncCooldown = 20;
         }

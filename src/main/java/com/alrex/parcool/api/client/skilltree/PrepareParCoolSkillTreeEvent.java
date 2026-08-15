@@ -1,6 +1,6 @@
 package com.alrex.parcool.api.client.skilltree;
 
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
 
 import java.util.Collections;
 import java.util.LinkedList;

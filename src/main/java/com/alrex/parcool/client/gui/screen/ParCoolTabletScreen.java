@@ -13,8 +13,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,8 +56,9 @@ public class ParCoolTabletScreen extends Screen {
 
     @Override
     public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        if (minecraft == null) return;
         var poseStack = graphics.pose();
-        renderBackground(graphics);
+        renderBackground(graphics, mouseX, mouseY, partial);
         poseStack.pushPose();
         {
             renderContent(graphics, mouseX, mouseY, partial);

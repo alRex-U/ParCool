@@ -4,7 +4,7 @@ import com.alrex.parcool.api.stamina.AbstractLocalStamina;
 import com.alrex.parcool.common.stamina.impl.ParCoolStamina;
 import com.alrex.parcool.extern.AdditionalMods;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class EpicFightStamina extends AbstractLocalStamina {
     public EpicFightStamina(Player owner) {
@@ -53,7 +53,7 @@ public class EpicFightStamina extends AbstractLocalStamina {
     public void tick() {
         if (!AdditionalMods.epicFight().isBattleMode(owner)) fallback.tick();
         if (consumeBuffer > 0) {
-            AdditionalMods.epicFight().getConnection().send(PacketDistributor.SERVER.noArg(), new EpicFightStaminaConsumePacket(consumeBuffer));
+            PacketDistributor.sendToServer(new EpicFightStaminaConsumePacket(consumeBuffer));
         }
         consumeBuffer = 0;
         setDirty();

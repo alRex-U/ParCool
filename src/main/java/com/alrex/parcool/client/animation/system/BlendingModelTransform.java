@@ -1,8 +1,8 @@
 package com.alrex.parcool.client.animation.system;
 
 import com.alrex.parcool.client.animation.system.math.Vec3f;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 

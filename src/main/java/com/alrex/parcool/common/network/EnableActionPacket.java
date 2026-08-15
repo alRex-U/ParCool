@@ -3,45 +3,52 @@ package com.alrex.parcool.common.network;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.common.Parkourability;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkEvent;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
+import javax.annotation.Nonnull;
+import java.nio.charset.StandardCharsets;
 
-public record EnableActionPacket(ActionEntry<?> action, boolean enable) {
+public record EnableActionPacket(ActionEntry<?> action, boolean enable) implements CustomPacketPayload {
+    public static final Type<EnableActionPacket> TYPE = new Type<>(ParCool.resourceLocation("enable"));
+
+    @Nonnull
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
     public static final IHandler<EnableActionPacket> HANDLER = new IHandler<>() {
         @Override
-        public void encode(EnableActionPacket packet, FriendlyByteBuf buf) {
+        public void encode(ByteBuf buf, EnableActionPacket packet) {
             var groupName = packet.action.id().getNamespace();
-            buf.writeUtf(groupName);
+            buf.writeShort(groupName.length());
+            buf.writeCharSequence(groupName, StandardCharsets.US_ASCII);
             buf.writeShort(packet.action.index());
             buf.writeBoolean(packet.enable);
         }
 
         @Override
-        public EnableActionPacket decode(FriendlyByteBuf packet) {
+        public EnableActionPacket decode(ByteBuf packet) {
             return new EnableActionPacket(
-                    ParCool.getActionRegistry().getRegisteredGroups().get(packet.readUtf()).actions().get(packet.readShort()),
+                    ParCool.getActionRegistry().getRegisteredGroups().get(packet.readCharSequence(packet.readShort(), StandardCharsets.UTF_8).toString()).actions().get(packet.readShort()),
                     packet.readBoolean()
             );
         }
 
-        @OnlyIn(Dist.DEDICATED_SERVER)
         @Override
-        public void handleInPhysicalServer(EnableActionPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
-            var player = contextSupplier.get().getSender();
-            if (player == null) return;
+        public void handleInLogicalServer(EnableActionPacket packet, IPayloadContext context) {
+            var player = context.player();
             var parkourability = Parkourability.get(player);
             parkourability.getEnabledActions().set(packet.action, packet.enable);
         }
 
-        @OnlyIn(Dist.CLIENT)
         @Override
-        public void handleInPhysicalClient(EnableActionPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
-            var player = contextSupplier.get().getSender();
-            if (player == null) return;
+        public void handleInLogicalClient(EnableActionPacket packet, IPayloadContext context) {
+            var player = context.player();
             var parkourability = Parkourability.get(player);
             parkourability.getEnabledActions().set(packet.action, packet.enable);
         }

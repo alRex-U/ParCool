@@ -14,9 +14,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,7 +44,7 @@ public class GuideResourceManager extends SimplePreparableReloadListener<GuideRe
     }
 
     public static ResourceLocation getLocation(ActionEntry<?> action) {
-        return new ResourceLocation(
+        return ResourceLocation.fromNamespaceAndPath(
                 action.id().getNamespace(),
                 "actions/" + action.id().getPath() + ".md"
         );
@@ -93,10 +93,10 @@ public class GuideResourceManager extends SimplePreparableReloadListener<GuideRe
         });
         for (var pageEntry : loadingPages) {
             var location = pageEntry.resourceLocation();
-            var pageLocation = new ResourceLocation(location.getNamespace(), String.format("parcool_guide/%s/%s", langCode, location.getPath()));
+            var pageLocation = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), String.format("parcool_guide/%s/%s", langCode, location.getPath()));
             var pageResource = resourceManager.getResource(pageLocation);
             if (pageResource.isEmpty() && !langCode.equals("en_us")) {
-                pageLocation = new ResourceLocation(location.getNamespace(), String.format("parcool_guide/en_us/%s", location.getPath()));
+                pageLocation = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), String.format("parcool_guide/en_us/%s", location.getPath()));
                 pageResource = resourceManager.getResource(pageLocation);
             }
             ResourceLocation finalPageLocation = pageLocation;

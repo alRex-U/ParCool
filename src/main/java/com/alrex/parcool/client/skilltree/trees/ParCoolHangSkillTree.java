@@ -2,8 +2,8 @@ package com.alrex.parcool.client.skilltree.trees;
 
 import com.alrex.parcool.api.client.skilltree.SkillTree;
 import com.alrex.parcool.common.action.ParCoolActions;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class ParCoolHangSkillTree extends SkillTree {

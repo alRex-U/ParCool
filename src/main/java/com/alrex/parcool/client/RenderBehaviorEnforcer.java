@@ -2,8 +2,8 @@ package com.alrex.parcool.client;
 
 import com.alrex.parcool.common.action.BehaviorEnforcer;
 import net.minecraft.client.CameraType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.TreeMap;

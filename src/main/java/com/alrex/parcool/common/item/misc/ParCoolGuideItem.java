@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.item.misc;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.client.gui.GuiHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -21,7 +22,7 @@ public class ParCoolGuideItem extends Item {
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
+    public void appendHoverText(@Nonnull ItemStack stack, @Nonnull TooltipContext context, @Nonnull List<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
         lines.add(Component.translatable("parcool.gui.text.guide.tooltip").withStyle(ChatFormatting.DARK_GRAY));
     }
 
@@ -30,9 +31,9 @@ public class ParCoolGuideItem extends Item {
     public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
         var itemInHand = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
-            ParCool.PROXY.openSkillTreeGui(player);
+            GuiHelper.openSkillTreeGui(player);
         } else {
-            ParCool.PROXY.openGuideGui();
+            GuiHelper.openGuideGui();
         }
         return InteractionResultHolder.sidedSuccess(itemInHand, level.isClientSide());
     }

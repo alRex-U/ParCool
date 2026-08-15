@@ -4,11 +4,15 @@ import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.common.block.zipline.ZiplineHookBlock;
 import com.alrex.parcool.common.block.zipline.ZiplineHookTileEntity;
 import com.alrex.parcool.common.item.DyeAble;
+import com.alrex.parcool.common.item.ParCoolDataComponents;
 import com.alrex.parcool.common.item.ParCoolItems;
+import com.alrex.parcool.common.item.component.ZiplinePositionComponent;
+import com.alrex.parcool.common.item.component.ZiplineTensionComponent;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.common.zipline.ZiplineInfo;
 import com.alrex.parcool.common.zipline.ZiplineType;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -40,13 +44,12 @@ public class ZiplineRopeItem extends Item implements DyeAble {
         return stack;
     }
 
-    public ZiplineRopeItem(Properties p_i48487_1_) {
-        super(p_i48487_1_);
+    public ZiplineRopeItem(Properties properties) {
+        super(properties);
     }
 
     public static final int DEFAULT_COLOR = 0x4C7FE6;
     private static final DecimalFormat PERCENT_FORMATTER;
-
     static {
         DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
         decimalFormatSymbols.setGroupingSeparator(' ');
@@ -54,26 +57,24 @@ public class ZiplineRopeItem extends Item implements DyeAble {
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> lines, TooltipFlag flag) {
-        var tag = stack.getTag();
-
-        if (tag != null && tag.contains("Tile_X") && tag.contains("Tile_Y") && tag.contains("Tile_Z")) {
-            lines.add(Component.translatable("parcool.gui.text.zipline.bind_pos", tag.getInt("Tile_X") + ", " + tag.getInt("Tile_Y") + ", " + tag.getInt("Tile_Z")).withStyle(ChatFormatting.YELLOW));
+    public void appendHoverText(@Nonnull ItemStack stack, @Nonnull TooltipContext context, @Nonnull List<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
+        var boundPosComp = stack.get(ParCoolDataComponents.ZIPLINE_POSITION);
+        if (boundPosComp != null) {
+            lines.add(Component.translatable("parcool.gui.text.zipline.bind_pos", boundPosComp.pos().toShortString()).withStyle(ChatFormatting.YELLOW));
         } else {
             lines.add(Component.translatable("parcool.gui.text.zipline.not_bound").withStyle(ChatFormatting.DARK_GRAY));
         }
         lines.add(Component.translatable("parcool.gui.text.zipline.tension", getZiplineType(stack).getTranslationName()).withStyle(ChatFormatting.GRAY));
-        DyeAble.appendHoverText(this, stack, world, lines, flag);
+        DyeAble.appendHoverText(this, stack, context, lines, tooltipFlag);
     }
 
     @Nonnull
     @Override
     public InteractionResult useOn(@Nonnull UseOnContext context) {
         ItemStack stack = context.getItemInHand();
-        CompoundTag tag = stack.getTag();
 
         // First Point is already registered
-        if (tag != null && hasBlockPosition(stack)) {
+        if (hasBlockPosition(stack)) {
             // Second Point is Found
             if (context.getLevel().getBlockState(context.getClickedPos()).getBlock() instanceof ZiplineHookBlock) {
                 BlockPos start = getBlockPosition(stack);
@@ -92,7 +93,7 @@ public class ZiplineRopeItem extends Item implements DyeAble {
                     return InteractionResult.FAIL;
                 } else {
                     double verticalDist = Math.abs(end.getY() - start.getY());
-                    if (verticalDist * Mth.fastInvSqrt(horizontalDistSqr) > 1. || verticalDist > Zipline.MAXIMUM_VERTICAL_DISTANCE) {
+                    if (verticalDist * Mth.invSqrt(horizontalDistSqr) > 1. || verticalDist > Zipline.MAXIMUM_VERTICAL_DISTANCE) {
                         if (context.getLevel().isClientSide()) {
                             Player player = context.getPlayer();
                             if (player != null) {
@@ -178,63 +179,33 @@ public class ZiplineRopeItem extends Item implements DyeAble {
     }
 
     public static void setBlockPosition(ItemStack stack, BlockPos pos) {
-        var tag = stack.getTag();
-        if (tag == null) {
-            tag = new CompoundTag();
-            stack.setTag(tag);
-        }
-        tag.putInt("Tile_X", pos.getX());
-        tag.putInt("Tile_Y", pos.getY());
-        tag.putInt("Tile_Z", pos.getZ());
+        stack.set(ParCoolDataComponents.ZIPLINE_POSITION, new ZiplinePositionComponent(pos));
     }
 
     public static void removeBlockPosition(ItemStack stack) {
-        var tag = stack.getTag();
-        if (tag == null) {
-            return;
-        }
-        tag.remove("Tile_X");
-        tag.remove("Tile_Y");
-        tag.remove("Tile_Z");
+        stack.remove(ParCoolDataComponents.ZIPLINE_POSITION);
     }
 
     public static boolean hasBlockPosition(ItemStack stack) {
-        var tag = stack.getTag();
-        return tag != null && tag.contains("Tile_X") && tag.contains("Tile_Y") && tag.contains("Tile_Z");
+        return stack.has(ParCoolDataComponents.ZIPLINE_POSITION);
     }
 
     @Nullable
     public static BlockPos getBlockPosition(ItemStack stack) {
-        var tag = stack.getTag();
-        if (tag == null) {
-            return null;
-        }
-        return new BlockPos(tag.getInt("Tile_X"), tag.getInt("Tile_Y"), tag.getInt("Tile_Z"));
+        var pos = stack.get(ParCoolDataComponents.ZIPLINE_POSITION);
+        return pos == null ? null : pos.pos();
     }
 
     public static ZiplineType getZiplineType(ItemStack stack) {
-        var tag = stack.getTag();
-        if (tag == null || !tag.contains("zipline_type")) {
-            return ZiplineType.STANDARD;
-        }
-        return ZiplineType.values()[tag.getByte("zipline_type") % ZiplineType.values().length];
+        var comp = stack.get(ParCoolDataComponents.ZIPLINE_TENSION);
+        return comp != null ? comp.type() : ZiplineType.STANDARD;
     }
 
     public static void changeZiplineType(ItemStack stack) {
-        var tag = stack.getTag();
-        if (tag == null) {
-            tag = new CompoundTag();
-            stack.setTag(tag);
-        }
-        tag.putByte("zipline_type", (byte) ((getZiplineType(stack).ordinal() + 1) % ZiplineType.values().length));
+        stack.set(ParCoolDataComponents.ZIPLINE_TENSION, new ZiplineTensionComponent(ZiplineType.values()[(byte) ((getZiplineType(stack).ordinal() + 1) % ZiplineType.values().length)]));
     }
 
     public static void setZiplineType(ItemStack stack, ZiplineType type) {
-        var tag = stack.getTag();
-        if (tag == null) {
-            tag = new CompoundTag();
-            stack.setTag(tag);
-        }
-        tag.putByte("zipline_type", (byte) type.ordinal());
+        stack.set(ParCoolDataComponents.ZIPLINE_TENSION, new ZiplineTensionComponent(type));
     }
 }

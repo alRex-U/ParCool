@@ -3,11 +3,12 @@ package com.alrex.parcool.common.action;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.common.network.ActionCapabilitiesPacket;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -72,7 +73,7 @@ public class ActionCapabilities {
 
     public void sync(ServerPlayer owner, ActionCapabilitiesPacket.Target target) {
         this.dirty = false;
-        ParCool.CONNECTION.send(PacketDistributor.PLAYER.with(() -> owner), new ActionCapabilitiesPacket(this, target));
+        PacketDistributor.sendToPlayer(owner, new ActionCapabilitiesPacket(this, target));
     }
 
     public void copyFrom(ActionCapabilities capabilities) {
@@ -101,18 +102,19 @@ public class ActionCapabilities {
         }
     }
 
-    public void write(FriendlyByteBuf buf) {
+    public void write(ByteBuf buf) {
         buf.writeShort(capabilities.size());
         for (var group : capabilities.entrySet()) {
             buf.writeByte(group.getKey().length());
             buf.writeCharSequence(group.getKey(), StandardCharsets.US_ASCII);
             var groupCapabilities = group.getValue();
             var bytes = encodeToByteArray(groupCapabilities);
-            buf.writeByteArray(bytes);
+            buf.writeByte(bytes.length);
+            buf.writeBytes(bytes);
         }
     }
 
-    public void read(FriendlyByteBuf buf) {
+    public void read(ByteBuf buf) {
         var groupSize = buf.readShort();
         for (var i = 0; i < groupSize; i++) {
             var groupName = buf.readCharSequence(buf.readByte(), StandardCharsets.US_ASCII).toString();

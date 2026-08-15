@@ -4,8 +4,8 @@ import com.alrex.parcool.client.animation.system.data.AnimationComponentGroup;
 import com.alrex.parcool.client.animation.system.data.IAnimationComponent;
 import com.alrex.parcool.client.animation.system.data.Transform;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Quaternionf;
 
 import javax.annotation.Nullable;

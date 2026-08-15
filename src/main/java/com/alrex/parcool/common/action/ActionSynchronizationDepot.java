@@ -3,7 +3,7 @@ package com.alrex.parcool.common.action;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.network.ActionStateSetPacket;
 import com.alrex.parcool.common.network.MultiActionStateSetPacket;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.LinkedList;
 
@@ -16,7 +16,7 @@ public class ActionSynchronizationDepot {
 
     public void tick() {
         if (!packets.isEmpty()) {
-            ParCool.CONNECTION.send(PacketDistributor.ALL.noArg(), packToPacket());
+            PacketDistributor.sendToAllPlayers(packToPacket());
         }
     }
 

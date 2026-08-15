@@ -7,15 +7,15 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.Arrays;
 
 public class ParCoolItemGroup {
     private static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ParCool.MOD_ID);
-    public static final RegistryObject<CreativeModeTab> ITEMS = TABS.register("items", () -> CreativeModeTab.builder()
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ITEMS = TABS.register("items", () -> CreativeModeTab.builder()
             .icon(() -> new ItemStack(ParCoolItems.PARCOOL_GUIDE.get()))
             .title(Component.translatable("itemGroup.ParCool"))
             .hideTitle()
@@ -29,9 +29,9 @@ public class ParCoolItemGroup {
                 Arrays.stream(DyeColor.values())
                         .map(color -> {
                             var coloredRope = new ItemStack(ParCoolItems.ZIPLINE_ROPE.get());
-                            int r = Mth.clamp((int) (color.getTextureDiffuseColors()[0] * 255f), 0, 255);
-                            int g = Mth.clamp((int) (color.getTextureDiffuseColors()[1] * 255f), 0, 255);
-                            int b = Mth.clamp((int) (color.getTextureDiffuseColors()[2] * 255f), 0, 255);
+                            int r = Mth.clamp((color.getTextureDiffuseColor() & 0xFF0000) >> 16, 0, 255);
+                            int g = Mth.clamp((color.getTextureDiffuseColor() & 0x00FF00) >> 8, 0, 255);
+                            int b = Mth.clamp(color.getTextureDiffuseColor() & 0x0000FF, 0, 255);
                             if (coloredRope.getItem() instanceof DyeAble dyeAble) {
                                 dyeAble.setColor(coloredRope, (r << 16) + (g << 8) + b);
                             }

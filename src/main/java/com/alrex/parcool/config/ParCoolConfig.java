@@ -7,9 +7,10 @@ import com.alrex.parcool.common.action.ActionRegistry;
 import com.alrex.parcool.common.stamina.StaminaTypeRegistry;
 import com.alrex.parcool.common.stamina.StaminaTypes;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.config.IConfigSpec;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.TreeMap;
 
@@ -19,7 +20,7 @@ public class ParCoolConfig {
 		this.server = new Server(actionRegistry, staminaTypeRegistry);
 	}
 
-	public void register(ModLoadingContext loadingContext) {
+    public void register(ModContainer loadingContext) {
 		loadingContext.registerConfig(ModConfig.Type.CLIENT, client.builtConfig);
 		loadingContext.registerConfig(ModConfig.Type.SERVER, server.builtConfig);
 	}
@@ -36,35 +37,35 @@ public class ParCoolConfig {
 	}
 
 	public record ActionValue(
-			ForgeConfigSpec.BooleanValue permit,
-			ForgeConfigSpec.IntValue costOnStart,
-			ForgeConfigSpec.IntValue costOnWorking,
-			ForgeConfigSpec.IntValue costOnFinish,
-			ForgeConfigSpec.IntValue learningCost
+            ModConfigSpec.BooleanValue permit,
+            ModConfigSpec.IntValue costOnStart,
+            ModConfigSpec.IntValue costOnWorking,
+            ModConfigSpec.IntValue costOnFinish,
+            ModConfigSpec.IntValue learningCost
 	) {
 	}
 
 	public static class Client {
-		private final ForgeConfigSpec builtConfig;
+        private final ModConfigSpec builtConfig;
 
 		public record StaminaHud(
-				ForgeConfigSpec.EnumValue<HUDType> type,
-				ForgeConfigSpec.EnumValue<Position.Horizontal> alignHorizontal,
-				ForgeConfigSpec.EnumValue<Position.Vertical> alignVertical,
-				ForgeConfigSpec.BooleanValue showAlways,
-				ForgeConfigSpec.BooleanValue hideAutomatically,
-				ForgeConfigSpec.IntValue offsetHorizontal,
-				ForgeConfigSpec.IntValue offsetVertical
+                ModConfigSpec.EnumValue<HUDType> type,
+                ModConfigSpec.EnumValue<Position.Horizontal> alignHorizontal,
+                ModConfigSpec.EnumValue<Position.Vertical> alignVertical,
+                ModConfigSpec.BooleanValue showAlways,
+                ModConfigSpec.BooleanValue hideAutomatically,
+                ModConfigSpec.IntValue offsetHorizontal,
+                ModConfigSpec.IntValue offsetVertical
 		) {
 		}
 
-		public final ForgeConfigSpec.BooleanValue enableActionSounds;
-		public final ForgeConfigSpec.BooleanValue parcoolIsActive;
+        public final ModConfigSpec.BooleanValue enableActionSounds;
+        public final ModConfigSpec.BooleanValue parcoolIsActive;
 		public final StaminaHud staminaHud;
 
 
 		public Client() {
-			ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+            var builder = new ModConfigSpec.Builder();
 			builder.push("HUD");
 			{
 				staminaHud = new StaminaHud(
@@ -89,24 +90,24 @@ public class ParCoolConfig {
 	}
 
 	public static class Server {
-		private final ForgeConfigSpec builtConfig;
+        private final ModConfigSpec builtConfig;
 		private final TreeMap<String, TreeMap<ActionEntry<?>, ActionValue>> actionMap;
-        public final ForgeConfigSpec.BooleanValue damageWithoutGlove;
-        public final ForgeConfigSpec.BooleanValue enableSkillTree;
+        public final ModConfigSpec.BooleanValue damageWithoutGlove;
+        public final ModConfigSpec.BooleanValue enableSkillTree;
 
 		public final ResourceLocation getStaminaTypeID() {
 			var id = ResourceLocation.tryParse(staminaType.get());
 			return id != null ? id : StaminaTypes.PARCOOL_STAMINA.id();
 		}
 
-		public final ForgeConfigSpec.ConfigValue<String> staminaType;
+        public final ModConfigSpec.ConfigValue<String> staminaType;
 
 		public ActionValue get(ActionEntry<?> entry) {
 			return actionMap.get(entry.id().getNamespace()).get(entry);
 		}
 
 		public Server(ActionRegistry actionRegistry, StaminaTypeRegistry staminaTypeRegistry) {
-			ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+            ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
 			actionMap = new TreeMap<>();
 

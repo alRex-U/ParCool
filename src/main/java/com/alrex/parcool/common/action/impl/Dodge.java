@@ -16,9 +16,9 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -107,11 +107,11 @@ public class Dodge extends ContinuableAction implements ActionExtension.Attacked
     }
 
     @Override
-    public void onAttacked(LivingAttackEvent event) {
+    public void onAttacked(LivingDamageEvent.Pre event) {
         if (!isDoing()) return;
         if (event.getSource().is(DamageTypeTags.BYPASSES_ARMOR)) return;
         if (getDoingTick() < 7) {
-            event.setCanceled(true);
+            event.setNewDamage(0f);
         }
     }
 

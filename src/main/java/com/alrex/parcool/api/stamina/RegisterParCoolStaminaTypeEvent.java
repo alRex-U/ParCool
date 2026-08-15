@@ -1,8 +1,8 @@
 package com.alrex.parcool.api.stamina;
 
 import com.alrex.parcool.common.stamina.StaminaTypeRegistry;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.fml.event.IModBusEvent;
+import net.neoforged.bus.api.Event;
+import net.neoforged.fml.event.IModBusEvent;
 
 public class RegisterParCoolStaminaTypeEvent extends Event implements IModBusEvent {
     private final StaminaTypeRegistry registry;

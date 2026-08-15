@@ -5,18 +5,25 @@ import com.alrex.parcool.api.action.ContinuableAction;
 import com.alrex.parcool.api.action.ParCoolActionEvent;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.util.NetworkUtil;
-import net.minecraft.network.FriendlyByteBuf;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.fml.LogicalSide;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
-import java.util.function.Supplier;
 
-public class ActionStateSetPacket extends MultiComposablePacket<ActionStatePacket> {
+public class ActionStateSetPacket extends MultiComposablePacket<ActionStatePacket> implements CustomPacketPayload {
+    public static final Type<ActionStateSetPacket> TYPE = new Type<>(ParCool.resourceLocation("action.set"));
+
+    @Nonnull
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
     private final UUID playerID;
     private final boolean castedByClient;
     public static final IHandler<ActionStateSetPacket> HANDLER = new Handler();
@@ -37,36 +44,34 @@ public class ActionStateSetPacket extends MultiComposablePacket<ActionStatePacke
 
     private static class Handler implements IHandler<ActionStateSetPacket> {
         @Override
-        public void encode(ActionStateSetPacket actionStateSetPacket, FriendlyByteBuf packet) {
-            packet.writeUUID(actionStateSetPacket.playerID);
+        public void encode(ByteBuf packet, ActionStateSetPacket actionStateSetPacket) {
+            packet.writeLong(actionStateSetPacket.playerID.getMostSignificantBits());
+            packet.writeLong(actionStateSetPacket.playerID.getLeastSignificantBits());
             packet.writeBoolean(actionStateSetPacket.castedByClient);
             MultiComposablePacket.encode(actionStateSetPacket, packet, ActionStatePacket.HANDLER);
         }
 
         @Override
-        public ActionStateSetPacket decode(FriendlyByteBuf packet) {
-            var id = packet.readUUID();
+        public ActionStateSetPacket decode(ByteBuf packet) {
+            var id = new UUID(packet.readLong(), packet.readLong());
             var byClient = packet.readBoolean();
             return ActionStateSetPacket.decode(new ActionStateSetPacket(id, byClient), packet, ActionStatePacket.HANDLER);
         }
 
-        @OnlyIn(Dist.DEDICATED_SERVER)
         @Override
-        public void handleInPhysicalServer(ActionStateSetPacket actionStateSetPacket, Supplier<NetworkEvent.Context> contextSupplier) {
-            var player = NetworkUtil.getPlayerInPhysicalServer(actionStateSetPacket.playerID, contextSupplier.get());
+        public void handleInLogicalServer(ActionStateSetPacket actionStateSetPacket, IPayloadContext context) {
+            var player = NetworkUtil.getPlayerInPhysicalServer(actionStateSetPacket.playerID, context);
             if (player == null) return;
             processPlayer(actionStateSetPacket, player);
             ParCool.getActionProcessor().getActionSyncDepot().requestSync(actionStateSetPacket);
         }
 
-        @OnlyIn(Dist.CLIENT)
         @Override
-        public void handleInPhysicalClient(ActionStateSetPacket actionStateSetPacket, Supplier<NetworkEvent.Context> contextSupplier) {
-            var context = contextSupplier.get();
+        public void handleInLogicalClient(ActionStateSetPacket actionStateSetPacket, IPayloadContext context) {
             var player = NetworkUtil.getPlayerInPhysicalClient(actionStateSetPacket.playerID, context, actionStateSetPacket.castedByClient);
             if (player == null) return;
             processPlayer(actionStateSetPacket, player);
-            if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
+            if (context.flow().getReceptionSide() == LogicalSide.SERVER) {
                 ParCool.getActionProcessor().getActionSyncDepot().requestSync(actionStateSetPacket);
             }
         }
@@ -78,13 +83,13 @@ public class ActionStateSetPacket extends MultiComposablePacket<ActionStatePacke
                     var action = parkourability.get(syncEntry.entry());
                     action.getSynchronizedData().acceptPacket(syncEntry);
                     if (syncEntry.type() == ActionStatePacket.Type.START) {
-                        MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.Start.Pre(parkourability.player(), action));
+                        NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Start.Pre(parkourability.player(), action));
                         action.start();
-                        MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.Start.Post(parkourability.player(), action));
+                        NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Start.Post(parkourability.player(), action));
                     } else if (syncEntry.type() == ActionStatePacket.Type.FINISH && action instanceof ContinuableAction continuableAction) {
-                        MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.Finish.Pre(parkourability.player(), continuableAction));
+                        NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Finish.Pre(parkourability.player(), continuableAction));
                         continuableAction.finish();
-                        MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.Finish.Post(parkourability.player(), continuableAction));
+                        NeoForge.EVENT_BUS.post(new ParCoolActionEvent.Finish.Post(parkourability.player(), continuableAction));
                     }
                 }
             }

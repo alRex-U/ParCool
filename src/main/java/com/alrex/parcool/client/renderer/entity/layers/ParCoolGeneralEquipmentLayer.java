@@ -2,7 +2,9 @@ package com.alrex.parcool.client.renderer.entity.layers;
 
 import com.alrex.parcool.common.item.armor.EquipAble;
 import com.alrex.parcool.extern.AdditionalMods;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -16,8 +18,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 
@@ -35,8 +37,15 @@ public class ParCoolGeneralEquipmentLayer<T extends LivingEntity, M extends Huma
     @Override
     public void render(
             @Nonnull PoseStack poseStack,
-            @Nonnull MultiBufferSource multiBufferSource,
-            int i, @Nonnull T entity, float v, float v1, float v2, float v3, float v4, float v5
+            @Nonnull MultiBufferSource buffer,
+            int packedLight,
+            @Nonnull T entity,
+            float limbSwing,
+            float limbSwingAmount,
+            float partialTicks,
+            float ageInTicks,
+            float netHeadYaw,
+            float headPitch
     ) {
         if (!shouldRenderModel(entity)) return;
         for (var slot : EquipmentSlot.values()) {
@@ -54,12 +63,9 @@ public class ParCoolGeneralEquipmentLayer<T extends LivingEntity, M extends Huma
                 this.getParentModel().copyPropertiesTo(model);
                 if (equipAble.hasCustomEquipmentColor()) {
                     var color = equipAble.getCustomEquipmentColor(itemStack);
-                    int r = (color & 0xFF0000) >> 16;
-                    int g = (color & 0x00FF00) >> 8;
-                    int b = (color & 0x0000FF);
-                    renderModel(poseStack, multiBufferSource, i, itemStack.hasFoil(), model, r / 255f, g / 255f, b / 255f, texture);
+                    renderModel(poseStack, buffer, packedLight, itemStack.hasFoil(), model, color, texture);
                 } else {
-                    renderModel(poseStack, multiBufferSource, i, itemStack.hasFoil(), model, 1f, 1f, 1f, texture);
+                    renderModel(poseStack, buffer, packedLight, itemStack.hasFoil(), model, ~0, texture);
                 }
             }
         }
@@ -88,9 +94,9 @@ public class ParCoolGeneralEquipmentLayer<T extends LivingEntity, M extends Huma
         }
     }
 
-    private void renderModel(PoseStack stack, MultiBufferSource bufferSource, int p_117109_, boolean hasFoil, Model model, float r, float g, float b, ResourceLocation textureLocation) {
-        var vertexconsumer = ItemRenderer.getArmorFoilBuffer(bufferSource, RenderType.armorCutoutNoCull(textureLocation), false, hasFoil);
-        model.renderToBuffer(stack, vertexconsumer, p_117109_, OverlayTexture.NO_OVERLAY, r, g, b, 1.0F);
+    private void renderModel(PoseStack stack, MultiBufferSource bufferSource, int packedLight, boolean hasFoil, Model model, int color, ResourceLocation textureLocation) {
+        var vertexconsumer = ItemRenderer.getArmorFoilBuffer(bufferSource, RenderType.armorCutoutNoCull(textureLocation), hasFoil);
+        model.renderToBuffer(stack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY, color);
     }
 
     private boolean shouldRenderModel(Entity entity) {

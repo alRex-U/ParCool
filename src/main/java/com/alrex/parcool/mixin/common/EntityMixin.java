@@ -1,11 +1,17 @@
 package com.alrex.parcool.mixin.common;
 
 import com.alrex.parcool.common.Parkourability;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.network.syncher.SyncedDataHolder;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.entity.EntityAccess;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.CapabilityProvider;
+import net.minecraft.world.scores.ScoreHolder;
+import net.neoforged.neoforge.attachment.AttachmentHolder;
+import net.neoforged.neoforge.common.extensions.IEntityExtension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,17 +19,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin extends CapabilityProvider<Entity> {
+public abstract class EntityMixin extends AttachmentHolder implements SyncedDataHolder, EntityAccess, CommandSource, ScoreHolder, IEntityExtension {
     @Shadow
     public boolean noPhysics;
 
-
     @Shadow
     protected abstract void setSharedFlag(int p_20116_, boolean p_20117_);
-
-    protected EntityMixin(Class<Entity> baseClass) {
-        super(baseClass);
-    }
 
     @Inject(method = "move", at = @At("HEAD"))
     public void onMove(MoverType moverType, Vec3 movement, CallbackInfo ci) {

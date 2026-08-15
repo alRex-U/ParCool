@@ -26,10 +26,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -127,7 +127,7 @@ public class HideInBlock extends ContinuableAction implements ActionExtension.Vi
         if (area2 == null) return;
         var areaHeight = Math.abs(area1.getY() - area2.getY()) + 1;
         var player = parkourability.player();
-        var defaultEyeHeight = player.getDimensions(Pose.STANDING).height * 0.85;
+        var defaultEyeHeight = player.getDimensions(Pose.STANDING).height() * 0.85;
         if (player.isLocalPlayer()) {
             player.setShiftKeyDown(false);
             parkourability.getBehaviorEnforcer().addMarkerEnforcingNoSneak(ID_CANCEL_SNEAK, this::isDoing);

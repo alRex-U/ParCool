@@ -10,50 +10,30 @@ import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.renderer.Renderers;
 import com.alrex.parcool.common.action.ActionProcessor;
 import com.alrex.parcool.common.action.ActionRegistry;
-import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.common.block.Blocks;
 import com.alrex.parcool.common.block.TileEntities;
 import com.alrex.parcool.common.entity.EntityTypes;
-import com.alrex.parcool.common.handlers.AddAttributesHandler;
+import com.alrex.parcool.common.item.ParCoolDataComponents;
 import com.alrex.parcool.common.item.ParCoolItemGroup;
 import com.alrex.parcool.common.item.ParCoolItems;
 import com.alrex.parcool.common.item.recipe.Recipes;
-import com.alrex.parcool.common.potion.PotionRecipeRegistry;
+import com.alrex.parcool.common.potion.Potions;
 import com.alrex.parcool.common.stamina.StaminaTypeRegistry;
-import com.alrex.parcool.common.stamina.StaminaTypes;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.extern.AdditionalMods;
-import com.alrex.parcool.proxy.ClientProxy;
-import com.alrex.parcool.proxy.CommonProxy;
-import com.alrex.parcool.proxy.ServerProxy;
+import com.alrex.parcool.registrar.ClientRegistrar;
+import com.alrex.parcool.registrar.CommonRegistrar;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(ParCool.MOD_ID)
 public class ParCool {
 	public static final String MOD_ID = "parcool";
-	private static final String PROTOCOL_VERSION = "4.0.0.0";
-	public static final SimpleChannel CONNECTION = NetworkRegistry.newSimpleChannel(
-			resourceLocation("message"),
-			() -> PROTOCOL_VERSION,
-			PROTOCOL_VERSION::equals,
-			PROTOCOL_VERSION::equals
-	);
-	public static final CommonProxy PROXY = DistExecutor.unsafeRunForDist(
-			() -> ClientProxy::new,
-			() -> ServerProxy::new
-	);
 
 	private static final ActionRegistry actionRegistry = new ActionRegistry();
 	private static final StaminaTypeRegistry staminaTypeRegistry = new StaminaTypeRegistry();
@@ -61,7 +41,7 @@ public class ParCool {
 	private static ParCoolConfig config;
 
 	public static ResourceLocation resourceLocation(String path) {
-		return new ResourceLocation(MOD_ID, path);
+		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
 	}
 
 	public static ActionRegistry getActionRegistry() {
@@ -80,17 +60,20 @@ public class ParCool {
 		return actionProcessor;
 	}
 
-	public ParCool() {
-		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-		eventBus.addListener(this::setup);
+	public ParCool(ModContainer container) {
+		var eventBus = container.getEventBus();
+		assert eventBus != null;
 		eventBus.addListener(this::setupClient);
 		eventBus.addListener(this::loaded);
-		eventBus.register(AddAttributesHandler.class);
-		eventBus.register(ParCoolActions.class);
-		eventBus.register(StaminaTypes.class);
 
-		PROXY.init();
-		MinecraftForge.EVENT_BUS.register(actionProcessor);
+		CommonRegistrar.registerModLoadingEvent(eventBus);
+		CommonRegistrar.registerGameEvent(NeoForge.EVENT_BUS);
+		NeoForge.EVENT_BUS.register(actionProcessor);
+
+		if (FMLEnvironment.dist.isClient()) {
+			ClientRegistrar.registerModLoadingEvent(eventBus);
+			ClientRegistrar.registerGameEvent(NeoForge.EVENT_BUS);
+		}
 
 		ParCoolMobEffects.register(eventBus);
 		ParCoolPotions.register(eventBus);
@@ -102,25 +85,24 @@ public class ParCool {
 		EntityTypes.register(eventBus);
 		TileEntities.register(eventBus);
 		ParCoolItemGroup.register(eventBus);
+		ParCoolDataComponents.register(eventBus);
+		Potions.register(eventBus);
 
 		AdditionalMods.init();
 
-		FMLJavaModLoadingContext.get().getModEventBus().post(new RegisterParCoolStaminaTypeEvent(staminaTypeRegistry));
+		eventBus.post(new RegisterParCoolStaminaTypeEvent(staminaTypeRegistry));
 		staminaTypeRegistry.freeze();
-		FMLJavaModLoadingContext.get().getModEventBus().post(new RegisterParCoolActionEvent(actionRegistry));
+		eventBus.post(new RegisterParCoolActionEvent(actionRegistry));
 		actionRegistry.freeze();
 		config = new ParCoolConfig(actionRegistry, staminaTypeRegistry);
-		config.register(ModLoadingContext.get());
+		config.register(container);
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {
-		PotionRecipeRegistry.register();
-		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> AdditionalMods::initInClient);
-		DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> AdditionalMods::initInDedicatedServer);
-	}
-
-	private void setup(final FMLCommonSetupEvent event) {
-		PROXY.registerMessages(CONNECTION);
+		switch (FMLEnvironment.dist) {
+			case CLIENT -> AdditionalMods.initInClient();
+			case DEDICATED_SERVER -> AdditionalMods.initInDedicatedServer();
+		}
 	}
 
 	private void setupClient(final FMLClientSetupEvent event) {

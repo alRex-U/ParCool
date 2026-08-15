@@ -3,18 +3,18 @@ package com.alrex.parcool.common.block;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.block.zipline.IronZiplineHookBlock;
 import com.alrex.parcool.common.block.zipline.WoodenZiplineHookBlock;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class Blocks {
-    private static final DeferredRegister<Block> REGISTER = DeferredRegister.create(ForgeRegistries.BLOCKS, ParCool.MOD_ID);
-    public static final RegistryObject<Block> WOODEN_ZIPLINE_HOOK = REGISTER.register(
+    private static final DeferredRegister<Block> REGISTER = DeferredRegister.create(Registries.BLOCK, ParCool.MOD_ID);
+    public static final DeferredHolder<Block, WoodenZiplineHookBlock> WOODEN_ZIPLINE_HOOK = REGISTER.register(
             "wooden_zipline_hook",
             () -> new WoodenZiplineHookBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
@@ -22,7 +22,7 @@ public class Blocks {
                     .sound(SoundType.WOOD)
             )
     );
-    public static final RegistryObject<Block> IRON_ZIPLINE_HOOK = REGISTER.register(
+    public static final DeferredHolder<Block, IronZiplineHookBlock> IRON_ZIPLINE_HOOK = REGISTER.register(
             "iron_zipline_hook",
             () -> new IronZiplineHookBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)

@@ -1,19 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "l l",
-    "n n"
+    "nIn",
+    " h "
   ],
   "key": {
     "n": {
       "item": "minecraft:iron_nugget"
     },
-    "l": {
-      "item": "minecraft:leather"
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "h": {
+      "item": "minecraft:tripwire_hook"
     }
   },
   "result": {
-    "item": "parcool:traceur_boots",
+    "id": "parcool:iron_zipline_hook",
     "count": 1
   }
 }

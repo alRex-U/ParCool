@@ -4,8 +4,8 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.common.action.impl.*;
 import net.minecraft.world.entity.Pose;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.LogicalSide;
 
 public class ParCoolActions {
     private static final ActionGroup GROUP;

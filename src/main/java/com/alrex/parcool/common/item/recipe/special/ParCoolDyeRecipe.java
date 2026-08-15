@@ -2,6 +2,7 @@ package com.alrex.parcool.common.item.recipe.special;
 
 import com.alrex.parcool.common.item.DyeAble;
 import com.alrex.parcool.common.item.recipe.Recipes;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -11,6 +12,7 @@ import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -19,16 +21,16 @@ import javax.annotation.Nonnull;
 import java.util.LinkedList;
 
 public class ParCoolDyeRecipe extends CustomRecipe {
-    public ParCoolDyeRecipe(ResourceLocation location, CraftingBookCategory craftingBookCategory) {
-        super(location, craftingBookCategory);
+    public ParCoolDyeRecipe(CraftingBookCategory craftingBookCategory) {
+        super(craftingBookCategory);
     }
 
     @Override
-    public boolean matches(@Nonnull CraftingContainer craftingContainer, @Nonnull Level level) {
+    public boolean matches(@Nonnull CraftingInput input, @Nonnull Level level) {
         boolean dyeAbleItemFound = false;
         boolean dyeItemFound = false;
-        for (int i = 0; i < craftingContainer.getContainerSize(); i++) {
-            ItemStack stack = craftingContainer.getItem(i);
+        for (int i = 0; i < input.size(); i++) {
+            ItemStack stack = input.getItem(i);
             if (stack.getItem() instanceof DyeAble) {
                 if (dyeAbleItemFound) return false;
                 else dyeAbleItemFound = true;
@@ -41,14 +43,13 @@ public class ParCoolDyeRecipe extends CustomRecipe {
         return dyeAbleItemFound && dyeItemFound;
     }
 
-    @Nonnull
     @Override
-    public ItemStack assemble(CraftingContainer craftingContainer, RegistryAccess registryAccess) {
+    public ItemStack assemble(@Nonnull CraftingInput input, @Nonnull HolderLookup.Provider provider) {
         ItemStack dyeAbleStack = null;
         DyeAble dyeAbleItem = null;
         LinkedList<DyeItem> dyeItems = new LinkedList<>();
-        for (int i = 0; i < craftingContainer.getContainerSize(); i++) {
-            ItemStack stack = craftingContainer.getItem(i);
+        for (int i = 0; i < input.size(); i++) {
+            ItemStack stack = input.getItem(i);
             Item item = stack.getItem();
             if (item instanceof DyeAble dyeAble) {
                 dyeAbleStack = stack;
@@ -61,18 +62,15 @@ public class ParCoolDyeRecipe extends CustomRecipe {
         }
         if (dyeAbleStack == null || dyeItems.isEmpty()) return ItemStack.EMPTY;
         ItemStack resultItem = new ItemStack(dyeAbleStack.getItem());
-        var originalTag = dyeAbleStack.getTag();
-        if (originalTag != null) {
-            resultItem.setTag(originalTag.copy());
-        }
+        resultItem.applyComponents(dyeAbleStack.getComponents());
 
         int r = 0, g = 0, b = 0;
         int dyeSize = dyeItems.size();
         for (DyeItem dyeItem : dyeItems) {
             DyeColor color = dyeItem.getDyeColor();
-            r += (int) (color.getTextureDiffuseColors()[0] * 255f);
-            g += (int) (color.getTextureDiffuseColors()[1] * 255f);
-            b += (int) (color.getTextureDiffuseColors()[2] * 255f);
+            r += (color.getTextureDiffuseColor() >> 16);
+            g += (color.getTextureDiffuseColor() >> 8);
+            b += (color.getTextureDiffuseColor());
         }
         if (dyeAbleItem.hasCustomColor(resultItem)) {
             dyeSize++;

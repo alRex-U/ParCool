@@ -11,8 +11,8 @@ import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.ParCoolActions;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.Pose;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class Crawl extends ContinuableAction {
     @Override
     public boolean canContinue() {
         if (ParCoolKeyBinds.CRAWL.key().isDown()) return true;
-        return !parkourability.player().canEnterPose(Pose.CROUCHING) && parkourability.player().hasPose(Pose.SWIMMING);
+        return !parkourability.player().canPlayerFitWithinBlocksAndEntitiesWhen(Pose.CROUCHING) && parkourability.player().hasPose(Pose.SWIMMING);
     }
 
     @OnlyIn(Dist.CLIENT)

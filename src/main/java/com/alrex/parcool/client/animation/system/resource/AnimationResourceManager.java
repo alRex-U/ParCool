@@ -17,9 +17,9 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -60,7 +60,7 @@ public class AnimationResourceManager extends SimplePreparableReloadListener<Ani
         var animationSetRegistrationMap = new TreeMap<ResourceLocation, JsonAnimationSet>();
         var requestedComponentGroups = new TreeSet<ResourceLocation>();
         for (var namespace : resourceManager.getNamespaces()) {
-            var resourceLocation = new ResourceLocation(namespace, "mma/animations.json");
+            var resourceLocation = ResourceLocation.fromNamespaceAndPath(namespace, "mma/animations.json");
             for (var setResource : resourceManager.getResourceStack(resourceLocation)) {
                 try (var reader = setResource.openAsReader()) {
                     var jsonResult = GSON.<List<JsonAnimationSet>>fromJson(reader, ANIMATION_SETS_TYPE.getType());
@@ -82,7 +82,7 @@ public class AnimationResourceManager extends SimplePreparableReloadListener<Ani
         var animationComponentGroupMap = new TreeMap<ResourceLocation, JsonAnimationComponentGroup>();
         var requestedComponents = new TreeSet<ResourceLocation>();
         for (var groupLocation : requestedComponentGroups) {
-            var resourceLocation = new ResourceLocation(groupLocation.getNamespace(), "mma/groups/" + groupLocation.getPath());
+            var resourceLocation = ResourceLocation.fromNamespaceAndPath(groupLocation.getNamespace(), "mma/groups/" + groupLocation.getPath());
             var groupResource = resourceManager.getResource(resourceLocation);
             if (groupResource.isPresent()) {
                 try (var reader = groupResource.get().openAsReader()) {
@@ -108,7 +108,7 @@ public class AnimationResourceManager extends SimplePreparableReloadListener<Ani
         }
         var animationComponentMap = new TreeMap<ResourceLocation, JsonAnimationComponent>();
         for (var compLocation : requestedComponents) {
-            var resourceLocation = new ResourceLocation(compLocation.getNamespace(), "mma/components/" + compLocation.getPath());
+            var resourceLocation = ResourceLocation.fromNamespaceAndPath(compLocation.getNamespace(), "mma/components/" + compLocation.getPath());
             var compResource = resourceManager.getResource(resourceLocation);
             if (compResource.isPresent()) {
                 try (var reader = compResource.get().openAsReader()) {

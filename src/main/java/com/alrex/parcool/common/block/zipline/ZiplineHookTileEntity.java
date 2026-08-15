@@ -5,6 +5,7 @@ import com.alrex.parcool.common.zipline.ILoadedZiplineHolderProvider;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.common.zipline.ZiplineInfo;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -18,8 +19,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -78,11 +79,6 @@ public class ZiplineHookTileEntity extends BlockEntity {
     @OnlyIn(Dist.CLIENT)
     public Iterator<Zipline> getRenderAbleZiplines() {
         return new RenderAbleZiplineIterator();
-    }
-
-    @Override
-    public AABB getRenderBoundingBox() {
-        return INFINITE_EXTENT_AABB;
     }
 
     public Set<BlockPos> getConnectionPoints() {
@@ -149,8 +145,8 @@ public class ZiplineHookTileEntity extends BlockEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    public void saveAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider provider) {
+        super.saveAdditional(nbt, provider);
 
         var connections = new ListTag();
         for (Map.Entry<BlockPos, ZiplineInfo> infoEntry : getConnections().entrySet()) {
@@ -166,8 +162,8 @@ public class ZiplineHookTileEntity extends BlockEntity {
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(@Nonnull CompoundTag nbt, @Nonnull HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
 
         Tag connectionsTag = nbt.get("connection");
         if (!(connectionsTag instanceof ListTag listConnections)) return;
@@ -199,9 +195,9 @@ public class ZiplineHookTileEntity extends BlockEntity {
 
     @Nonnull
     @Override
-    public CompoundTag getUpdateTag() {
-        var nbt = super.getUpdateTag();
-        saveAdditional(nbt);
+    public CompoundTag getUpdateTag(@Nonnull HolderLookup.Provider registries) {
+        var nbt = super.getUpdateTag(registries);
+        saveAdditional(nbt, registries);
         return nbt;
     }
 

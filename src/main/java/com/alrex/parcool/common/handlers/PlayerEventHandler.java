@@ -4,16 +4,16 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionExtension;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.EntityEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 public class PlayerEventHandler {
     @SubscribeEvent
-    public static void onAttack(LivingAttackEvent event) {
+    public static void onAttack(LivingDamageEvent.Pre event) {
         if (!(event.getEntity() instanceof Player player)) return;
         var parkourability = Parkourability.get(player);
         parkourability.getAdditionalProperties().onJump();
@@ -59,7 +59,7 @@ public class PlayerEventHandler {
         if (parkourability == null) return;
         var enforceValue = parkourability.getBehaviorEnforcer().getEnforcedEyeHeight();
         if (enforceValue != null) {
-            sizeEvent.setNewEyeHeight(enforceValue);
+            sizeEvent.setNewSize(sizeEvent.getNewSize().withEyeHeight(enforceValue));
         }
     }
 

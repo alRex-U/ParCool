@@ -17,13 +17,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.WallSide;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeMod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -207,7 +207,7 @@ public class HangDown extends ContinuableAction {
     public void onWorkingTickInLocalClient() {
         var player = parkourability.player();
         if (!(player instanceof LocalPlayer localPlayer)) return;
-        var gravityAttr = localPlayer.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
+        var gravityAttr = localPlayer.getAttribute(Attributes.GRAVITY);
         if (gravityAttr == null) return;
         var barAxis = propertyHangingBarAxis.get();
         if (barAxis == null) return;

@@ -4,7 +4,7 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolMobEffects;
 import com.alrex.parcool.common.network.StaminaPacket;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public abstract class AbstractLocalStamina implements IReadableStamina {
     public AbstractLocalStamina(Player owner) {
@@ -21,7 +21,7 @@ public abstract class AbstractLocalStamina implements IReadableStamina {
     public abstract void recover(double value);
 
     public boolean isInfinite() {
-        return owner.isCreative() || owner.isSpectator() || owner.hasEffect(ParCoolMobEffects.INEXHAUSTIBLE.get());
+        return owner.isCreative() || owner.isSpectator() || owner.hasEffect(ParCoolMobEffects.INEXHAUSTIBLE);
     }
 
     public void tick() {
@@ -41,7 +41,7 @@ public abstract class AbstractLocalStamina implements IReadableStamina {
 
     public final void sync() {
         if (dirty) {
-            ParCool.CONNECTION.send(PacketDistributor.SERVER.noArg(), new StaminaPacket(owner.getUUID(), true, this.copyAsReadOnly()));
+            PacketDistributor.sendToServer(new StaminaPacket(owner.getUUID(), true, this.copyAsReadOnly()));
             dirty = false;
         }
     }

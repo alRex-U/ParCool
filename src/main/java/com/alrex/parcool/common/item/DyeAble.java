@@ -2,10 +2,13 @@ package com.alrex.parcool.common.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
@@ -30,33 +33,22 @@ public interface DyeAble {
     int getDefaultColor();
 
     default void setColor(ItemStack stack, int color) {
-        var tag = stack.getTag();
-        if (tag == null) {
-            tag = new CompoundTag();
-            stack.setTag(tag);
-        }
-        tag.putInt("color", color);
+        stack.set(DataComponents.DYED_COLOR, new DyedItemColor(color, true));
     }
 
     default int getColor(ItemStack stack) {
-        var tag = stack.getTag();
-        if (tag == null || !tag.contains("color")) {
-            return getDefaultColor();
-        }
-        return tag.getInt("color");
+        var colorComp = stack.get(DataComponents.DYED_COLOR);
+        return (colorComp == null ? getDefaultColor() : colorComp.rgb()) | 0xFF000000;
     }
 
     default boolean hasCustomColor(ItemStack stack) {
-        var tag = stack.getTag();
-        if (tag == null) {
-            return false;
-        }
-        return tag.contains("color");
+        return stack.has(DataComponents.DYED_COLOR);
     }
 
-    static void appendHoverText(DyeAble dyeAble, @Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> lines, TooltipFlag flag) {
-        if (dyeAble.hasCustomColor(stack)) {
-            lines.add(Component.translatable("parcool.gui.text.dyeable.colored").withStyle(ChatFormatting.BLUE));
+    static void appendHoverText(DyeAble dyeAble, @Nonnull ItemStack stack, @Nonnull Item.TooltipContext context, @Nonnull List<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
+        var colorComp = stack.get(DataComponents.DYED_COLOR);
+        if (colorComp != null) {
+            colorComp.addToTooltip(context, lines::add, tooltipFlag);
         } else {
             lines.add(Component.translatable("parcool.gui.text.dyeable.dyeable").withStyle(ChatFormatting.DARK_GRAY));
         }

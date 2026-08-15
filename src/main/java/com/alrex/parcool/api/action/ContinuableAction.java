@@ -1,9 +1,9 @@
 package com.alrex.parcool.api.action;
 
 import com.alrex.parcool.common.Parkourability;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.Collection;
 
@@ -92,7 +92,7 @@ public abstract class ContinuableAction extends Action {
 
     public final boolean isPossibleToContinue() {
         if (!isPossible()) return false;
-        if (MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.TryToContinue(parkourability.player(), this)))
+        if (NeoForge.EVENT_BUS.post(new ParCoolActionEvent.TryToContinue(parkourability.player(), this)).isCanceled())
             return false;
         return canContinue();
     }

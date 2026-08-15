@@ -22,9 +22,9 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeMod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.NeoForgeMod;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -160,7 +160,7 @@ public class RideZipline extends ContinuableAction {
         if (speedAttr == null) return;
 
         double oldSpeed = speed;
-        double gravity = player.getAttributeValue(ForgeMod.ENTITY_GRAVITY.get());
+        double gravity = player.getAttributeValue(Attributes.GRAVITY);
         float slope = ridingZipline.shape().getSlope(currentT);
         Vec3 offset = ridingZipline.shape().getOffsetFromStartToEnd();
         Vec3 offsetNormalized = new Vec3(offset.x(), 0, offset.z()).normalize();
@@ -233,7 +233,7 @@ public class RideZipline extends ContinuableAction {
         oldAngleRadian = currentAngleRadian;
         double acceleration = propertyAcceleration.getOrDefaultIfNull(0f);
         double slope = propertySlope.getOrDefaultIfNull(0f);
-        double gravity = parkourability.player().getAttributeValue(ForgeMod.ENTITY_GRAVITY.get());
+        double gravity = parkourability.player().getAttributeValue(Attributes.GRAVITY);
         double invSqrt = Mth.invSqrt(slope * slope + 1);
         double xz = -acceleration * invSqrt;
         double y = gravity + acceleration * slope * invSqrt;

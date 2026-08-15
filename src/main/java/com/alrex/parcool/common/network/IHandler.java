@@ -1,20 +1,29 @@
 package com.alrex.parcool.common.network;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkEvent;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
+public interface IHandler<MSG extends CustomPacketPayload> {
+    default StreamCodec<ByteBuf, MSG> codec() {
+        return StreamCodec.of(this::encode, this::decode);
+    }
 
-public interface IHandler<MSG> {
-    void encode(MSG msg, FriendlyByteBuf packet);
+    default DirectionalPayloadHandler<MSG> payloadHandler() {
+        return new DirectionalPayloadHandler<>(
+                this::handleInLogicalClient, this::handleInLogicalServer
+        );
+    }
 
-    MSG decode(FriendlyByteBuf packet);
+    void encode(ByteBuf packet, MSG msg);
 
-    @OnlyIn(Dist.DEDICATED_SERVER)
-    void handleInPhysicalServer(MSG msg, Supplier<NetworkEvent.Context> contextSupplier);
+    MSG decode(ByteBuf packet);
 
-    @OnlyIn(Dist.CLIENT)
-    void handleInPhysicalClient(MSG msg, Supplier<NetworkEvent.Context> contextSupplier);
+    void handleInLogicalServer(MSG msg, IPayloadContext context);
+
+    void handleInLogicalClient(MSG msg, IPayloadContext context);
 }

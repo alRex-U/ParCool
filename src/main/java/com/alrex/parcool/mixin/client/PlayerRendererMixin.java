@@ -37,8 +37,8 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
 		));
 	}
 
-	@Inject(method = "setupRotations(Lnet/minecraft/client/player/AbstractClientPlayer;Lcom/mojang/blaze3d/vertex/PoseStack;FFF)V", at = @At("HEAD"), cancellable = true)
-	protected void onSetupRotationsHead(AbstractClientPlayer player, PoseStack stack, float xRot, float yRot, float partial, CallbackInfo ci) {
+    @Inject(method = "setupRotations(Lnet/minecraft/client/player/AbstractClientPlayer;Lcom/mojang/blaze3d/vertex/PoseStack;FFFF)V", at = @At("HEAD"), cancellable = true)
+    protected void onSetupRotationsHead(AbstractClientPlayer player, PoseStack stack, float bob, float yRot, float partial, float scale, CallbackInfo ci) {
 		if (player.isFallFlying()) return;
 		if (player instanceof IPlayerAnimatorHolder holder) {
 			if (player.isLocalPlayer()) {

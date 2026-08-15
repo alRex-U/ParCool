@@ -4,10 +4,10 @@ import com.alrex.parcool.extern.AdditionalMods;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -132,8 +132,7 @@ public class ParCoolKeyBinds {
 		};
 	}
 
-	public static void tick(TickEvent.ClientTickEvent event) {
-		if (event.phase == TickEvent.Phase.END) return;
+    public static void onTick(ClientTickEvent.Pre event) {
 		for (var input : REGISTERED_KEYS) {
 			input.update();
 		}

@@ -14,10 +14,10 @@ import com.alrex.parcool.util.MathUtil;
 import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 
 public class Breakfall extends Action implements ActionExtension.LandListener {
     private final SynchronizedDataHolder holder;
@@ -60,9 +60,9 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
         if (parkourability.player().level().isClientSide()) return;
         var breakfallType = propertyInputBreakfallType.get();
         if (breakfallType == null || breakfallType == BreakfallType.NONE) return;
-        var attr = parkourability.player().getAttribute(ParCoolAttributes.BREAKFALL_DAMAGE_REDUCTION.get());
+        var attr = parkourability.player().getAttribute(ParCoolAttributes.BREAKFALL_DAMAGE_REDUCTION);
         if (attr == null) return;
-        if (isPossible() && !MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStart(parkourability.player(), this))) {
+        if (isPossible() && !NeoForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStart(parkourability.player(), this)).isCanceled()) {
             var damageReduction = attr.getValue();
             event.setDamageMultiplier(event.getDamageMultiplier() * (float) (1. - damageReduction));
             if (event.getDistance() < 15 * damageReduction) {

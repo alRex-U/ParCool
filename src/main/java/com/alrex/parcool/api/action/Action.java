@@ -6,10 +6,10 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.IRequestable;
 import com.alrex.parcool.common.network.ActionStatePacket;
 import com.alrex.parcool.common.network.ActionStateSetPacket;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -97,7 +97,11 @@ public abstract class Action {
 				entry.id().getNamespace(),
 				Collections.singletonList(getSynchronizedData().packToEntry(ActionStatePacket.Type.START, entry))
 		));
-        ParCool.CONNECTION.send(clientSide ? PacketDistributor.SERVER.noArg() : PacketDistributor.ALL.noArg(), packet);
+        if (clientSide) {
+            PacketDistributor.sendToServer(packet);
+        } else {
+            PacketDistributor.sendToAllPlayers(packet);
+        }
 	}
 
 	protected final boolean isPossible() {
@@ -131,7 +135,7 @@ public abstract class Action {
 
 	public boolean isReadyToStart() {
 		if (!isPossible()) return false;
-		if (MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStart(parkourability.player(), this)))
+        if (NeoForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStart(parkourability.player(), this)).isCanceled())
 			return false;
 		return (this instanceof IRequestable<?> requestable)
 				? parkourability.canStartByRequest(requestable)

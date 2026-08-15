@@ -5,9 +5,9 @@ import com.alrex.parcool.api.client.skilltree.SkillTree;
 import com.alrex.parcool.client.skilltree.trees.ParCoolCrawlSkillTree;
 import com.alrex.parcool.client.skilltree.trees.ParCoolHangSkillTree;
 import com.alrex.parcool.client.skilltree.trees.ParCoolRunningSkillTree;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
 
 import java.util.List;
 

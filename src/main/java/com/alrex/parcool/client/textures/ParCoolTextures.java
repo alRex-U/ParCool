@@ -5,9 +5,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class ParCoolTextures {
@@ -18,7 +18,7 @@ public class ParCoolTextures {
     private final ParCoolGuideImageTextureAtlas guideImageTextureAtlas;
 
     public static void init(RegisterClientReloadListenersEvent event) {
-        INSTANCE = new ParCoolTextures(Minecraft.getInstance().textureManager);
+        INSTANCE = new ParCoolTextures(Minecraft.getInstance().getTextureManager());
         event.registerReloadListener(INSTANCE.actionsTextureAtlas);
         event.registerReloadListener(INSTANCE.guiTextureAtlas);
         event.registerReloadListener(INSTANCE.guideImageTextureAtlas);

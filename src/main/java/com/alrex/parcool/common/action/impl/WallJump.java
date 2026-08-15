@@ -16,8 +16,8 @@ import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class WallJump extends Action {
     private enum Type {
@@ -90,7 +90,7 @@ public class WallJump extends Action {
         }
         var yRot = player.getYHeadRot();
         var xRot = Mth.clamp(MathUtil.mapLinear(player.getXRot(), -35, 0, -80, -70), -80f, -70f);
-        var jumpPower = player.getJumpPower() + player.getJumpBoostPower();
+        var jumpPower = player.getJumpPower(1.0f);
         var jumpVec = VectorUtil.calculateViewVector(xRot, yRot).scale(jumpPower);
         if (dot > 0) {
             jumpVec = VectorUtil.calculateReflectVector(jumpVec, wall.asVec().reverse());

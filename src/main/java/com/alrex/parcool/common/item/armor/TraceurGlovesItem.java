@@ -15,18 +15,19 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,22 +37,20 @@ import java.util.function.Consumer;
 
 public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
     private static final ResourceLocation TEXTURE_LOCATION = ParCool.resourceLocation("textures/models/equipment/traceur_gloves.png");
-    private static final UUID MODIFIER_UUID = UUID.fromString("f757de68-b2f5-4b41-af69-438ae46d15dc");
-    private final Multimap<Attribute, AttributeModifier> equipModifier;
-    private final Multimap<Attribute, AttributeModifier> inHandModifier;
+    private static final ResourceLocation MODIFIER_ID = ParCool.resourceLocation("traceur_glove");
+    private final ItemAttributeModifiers equipModifier;
 
     public TraceurGlovesItem(Properties properties) {
         super(properties);
-        ImmutableMultimap.Builder<Attribute, AttributeModifier> chestModifiersBuilder = ImmutableMultimap.builder();
-        ImmutableMultimap.Builder<Attribute, AttributeModifier> inHandModifiersBuilder = ImmutableMultimap.builder();
-        var slideDownAttr = new AttributeModifier(MODIFIER_UUID, "Glove Slide down deceleration", 0.1, AttributeModifier.Operation.ADDITION);
-        chestModifiersBuilder.put(ParCoolAttributes.SLIDE_DOWN_DECELERATION.get(), slideDownAttr);
-        inHandModifiersBuilder.put(ParCoolAttributes.SLIDE_DOWN_DECELERATION.get(), slideDownAttr);
+        var modifiersBuilder = ItemAttributeModifiers.builder();
+        var slideDownAttr = new AttributeModifier(MODIFIER_ID, 0.1, AttributeModifier.Operation.ADD_VALUE);
+        modifiersBuilder.add(ParCoolAttributes.SLIDE_DOWN_DECELERATION, slideDownAttr, EquipmentSlotGroup.MAINHAND);
+        modifiersBuilder.add(ParCoolAttributes.SLIDE_DOWN_DECELERATION, slideDownAttr, EquipmentSlotGroup.OFFHAND);
+        modifiersBuilder.add(ParCoolAttributes.SLIDE_DOWN_DECELERATION, slideDownAttr, EquipmentSlotGroup.CHEST);
 
-        chestModifiersBuilder.put(ParCoolAttributes.MAX_STAMINA.get(), new AttributeModifier(MODIFIER_UUID, "Glove stamina bonus", 0.2, AttributeModifier.Operation.MULTIPLY_BASE));
-        chestModifiersBuilder.put(Attributes.ATTACK_SPEED, new AttributeModifier(MODIFIER_UUID, "Glove attack speed", 0.1, AttributeModifier.Operation.MULTIPLY_TOTAL));
-        this.equipModifier = chestModifiersBuilder.build();
-        this.inHandModifier = inHandModifiersBuilder.build();
+        modifiersBuilder.add(ParCoolAttributes.MAX_STAMINA, new AttributeModifier(MODIFIER_ID, 0.2, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.CHEST);
+        modifiersBuilder.add(Attributes.ATTACK_SPEED, new AttributeModifier(MODIFIER_ID, 0.1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL), EquipmentSlotGroup.CHEST);
+        equipModifier = modifiersBuilder.build();
     }
 
     @Nonnull
@@ -61,28 +60,25 @@ public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
     }
 
     @Override
-    public boolean canEquip(ItemStack stack, EquipmentSlot armorType, Entity entity) {
+    public EquipmentSlot getEquipmentSlot(@Nonnull ItemStack stack) {
+        return getEquipmentSlot();
+    }
+
+    @Override
+    public boolean canEquip(@Nonnull ItemStack stack, @Nonnull EquipmentSlot armorType, @Nonnull LivingEntity entity) {
         return getEquipmentSlot(stack) == armorType;
     }
 
+    @Nonnull
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        return switch (slot) {
-            case CHEST -> equipModifier;
-            case MAINHAND, OFFHAND -> inHandModifier;
-            default -> super.getAttributeModifiers(slot, stack);
-        };
+    public ItemAttributeModifiers getDefaultAttributeModifiers(@Nonnull ItemStack stack) {
+        return equipModifier;
     }
 
     @Override
-    public @Nullable String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        return super.getArmorTexture(stack, entity, slot, type);
-    }
-
-    @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> lines, TooltipFlag tooltipFlag) {
+    public void appendHoverText(@Nonnull ItemStack stack, @Nonnull TooltipContext context, @Nonnull List<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
         lines.add(Component.translatable("parcool.gui.text.glove.tooltip").withStyle(ChatFormatting.GRAY));
-        DyeAble.appendHoverText(this, stack, level, lines, tooltipFlag);
+        DyeAble.appendHoverText(this, stack, context, lines, tooltipFlag);
     }
 
     @Override
@@ -90,7 +86,7 @@ public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
         consumer.accept(new IClientItemExtensions() {
             @Override
             @Nullable
-            public HumanoidModel.ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
+            public HumanoidModel.ArmPose getArmPose(@Nonnull LivingEntity entityLiving, @Nonnull InteractionHand hand, @Nonnull ItemStack itemStack) {
                 if (shouldRenderAsEquipment(entityLiving, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND)) {
                     return HumanoidModel.ArmPose.EMPTY;
                 }
@@ -134,8 +130,10 @@ public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
         return 0xFFDD93;
     }
 
+    /*
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         return AdditionalMods.curios().initEquipAbleCapabilities(stack, nbt);
     }
+     */
 }

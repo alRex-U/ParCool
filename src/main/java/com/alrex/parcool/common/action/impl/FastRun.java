@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolAttributes;
 import com.alrex.parcool.api.action.Action;
 import com.alrex.parcool.api.action.ActionEntry;
@@ -12,17 +13,17 @@ import com.alrex.parcool.common.action.ParCoolActions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 import java.util.UUID;
 
 public class FastRun extends ContinuableAction {
-    private static final String FAST_RUNNING_MODIFIER_NAME = "parcool.modifier.fast_run";
-    private static final UUID FAST_RUNNING_MODIFIER_UUID = UUID.randomUUID();
+    private static final ResourceLocation FAST_RUNNING_MODIFIER_ID = ParCool.resourceLocation("modi.fast_run");
     private static final BehaviorEnforcer.ID ENFORCE_SPRINT_ID = BehaviorEnforcer.newID();
 
     public FastRun(Parkourability parkourability, ActionEntry<? extends Action> entry) {
@@ -65,21 +66,20 @@ public class FastRun extends ContinuableAction {
         var player = parkourability.player();
         var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
         if (attr == null) return;
-        var modifierAttr = player.getAttribute(ParCoolAttributes.FAST_RUN_SPEED.get());
+        var modifierAttr = player.getAttribute(ParCoolAttributes.FAST_RUN_SPEED);
         if (modifierAttr == null) return;
-        var modifier = attr.getModifier(FAST_RUNNING_MODIFIER_UUID);
+        var modifier = attr.getModifier(FAST_RUNNING_MODIFIER_ID);
         if (isDoing()) {
             if (modifier == null) {
                 attr.addTransientModifier(new AttributeModifier(
-                        FAST_RUNNING_MODIFIER_UUID,
-                        FAST_RUNNING_MODIFIER_NAME,
+                        FAST_RUNNING_MODIFIER_ID,
                         modifierAttr.getValue(),
-                        AttributeModifier.Operation.ADDITION
+                        AttributeModifier.Operation.ADD_VALUE
                 ));
             }
         } else {
             if (modifier != null) {
-                attr.removeModifier(FAST_RUNNING_MODIFIER_UUID);
+                attr.removeModifier(FAST_RUNNING_MODIFIER_ID);
             }
         }
     }

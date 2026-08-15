@@ -4,8 +4,8 @@ import com.alrex.parcool.client.animation.system.data.AnimationSet;
 import com.alrex.parcool.client.animation.system.math.EasingFunctions;
 import com.alrex.parcool.client.animation.system.math.Vec3f;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 

@@ -7,7 +7,7 @@ modId = "parcool"
 version = "${mod_version}"
 displayName = "ParCool!"
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/parcool"
-logoFile = "parcool_logo.png"
+logoFile = "../parcool_logo.png"
 # credits = "" #optional
 authors = "${mod_authors}"
 description = '''
@@ -15,16 +15,19 @@ description = '''
     Enjoy Minecraft with cool actions!
     If Patchouli mod is installed, let's read ParCool Guide!
 '''
+[[mixins]]
+config = "parcool.mixins.json"
+
 [[dependencies.parcool]]
-modId = "forge"
-mandatory = true
-versionRange = "${forge_version_range}"
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.parcool]]
 modId = "minecraft"
-mandatory = true
+type = "required"
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
 versionRange = "${minecraft_version_range}"
 ordering = "NONE"
@@ -33,7 +36,7 @@ side = "BOTH"
 # Feathers
 [[dependencies.parcool]]
 modId = "${extern_feathers.mod_id}"
-mandatory = false
+type = "optional"
 versionRange = "${extern_feathers.version_range}"
 ordering = "BEFORE"
 side = "BOTH"
@@ -41,7 +44,7 @@ side = "BOTH"
 # Better Third Person
 [[dependencies.parcool]]
 modId = "${extern_betterthirdperson.mod_id}"
-mandatory = false
+type = "optional"
 versionRange = "${extern_betterthirdperson.version_range}"
 ordering = "NONE"
 side = "BOTH"
@@ -49,7 +52,7 @@ side = "BOTH"
 # Shoulder Surfing
 [[dependencies.parcool]]
 modId = "${extern_shouldersurfing.mod_id}"
-mandatory = false
+type = "optional"
 versionRange = "${extern_shouldersurfing.version_range}"
 ordering = "NONE"
 side = "BOTH"
@@ -57,7 +60,7 @@ side = "BOTH"
 # EpicFight
 [[dependencies.parcool]]
 modId = "${extern_epicfight.mod_id}"
-mandatory = false
+type = "optional"
 versionRange = "${extern_epicfight.version_range}"
 ordering = "NONE"
 side = "BOTH"

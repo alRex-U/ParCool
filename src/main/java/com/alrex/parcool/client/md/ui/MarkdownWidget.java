@@ -19,6 +19,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -26,16 +28,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.brewing.BrewingRecipe;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.crafting.*;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.brewing.BrewingRecipe;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -126,7 +126,7 @@ public class MarkdownWidget extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollDelta) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollDelta) {
         this.scrollY -= (float) (scrollDelta * 16);
         if (scrollY > maxScrollY) scrollY = maxScrollY;
         if (scrollY < 0) scrollY = 0;
@@ -268,11 +268,9 @@ public class MarkdownWidget extends AbstractWidget {
                         }
                         textStyle = style.withItalic(true);
                     } else if (text instanceof MarkdownText.ExtensionMCItemName itemName) {
-                        var item = ForgeRegistries.ITEMS.getValue(itemName.id());
-                        if (item != null) {
-                            str = I18n.get(item.getDescriptionId());
-                            textStyle = style.withItalic(true);
-                        }
+                        var item = BuiltInRegistries.ITEM.get(itemName.id());
+                        str = I18n.get(item.getDescriptionId());
+                        textStyle = style.withItalic(true);
                     }
                     while (!str.isEmpty()) {
                         int splitPos = splitter.findLineBreak(str, (int) (context.width - context.currentX), textStyle);
@@ -432,7 +430,7 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
             var offset = font.lineHeight / 2;
             for (var widget : textWidgets) {
                 graphics.fill(getX() + offset - 1, widget.getY() + offset - 1, getX() + offset + 1, widget.getY() + offset + 1, textColor());
@@ -460,9 +458,9 @@ public class MarkdownWidget extends AbstractWidget {
     }
 
     private class RecipeWidget extends ComponentWidget<MarkdownParagraph.ExtensionMCRecipe> {
-        private static final ResourceLocation CRAFTING_TABLE_LOCATION = new ResourceLocation("textures/gui/container/crafting_table.png");
+        private static final ResourceLocation CRAFTING_TABLE_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/container/crafting_table.png");
         @Nullable
-        private final Recipe<?> recipe;
+        private final RecipeHolder<?> recipe;
         private final float scale;
         private final ItemRenderer itemRenderer;
         private final RegistryAccess registryAccess;
@@ -494,55 +492,67 @@ public class MarkdownWidget extends AbstractWidget {
             }
             poseStack.popPose();
             var time = Util.getMillis() / 1000;
-            if (recipe instanceof ShapelessRecipe || recipe instanceof ShapedRecipe) {
-                var craftWidth = 3;
-                NonNullList<Ingredient> ingredients;
-                ItemStack result;
+            if (recipe != null) {
+                var recipeValue = recipe.value();
+                if (recipeValue instanceof ShapelessRecipe || recipeValue instanceof ShapedRecipe) {
+                    var craftWidth = 3;
+                    NonNullList<Ingredient> ingredients;
+                    ItemStack result;
 
-                if (recipe instanceof ShapelessRecipe craftingRecipe) {
-                    ingredients = craftingRecipe.getIngredients();
-                    result = craftingRecipe.getResultItem(registryAccess);
-                } else if (recipe instanceof ShapedRecipe craftingRecipe) {
-                    ingredients = craftingRecipe.getIngredients();
-                    result = craftingRecipe.getResultItem(registryAccess);
-                } else return;
-
-                int i = -1;
-                for (var ingredient : ingredients) {
-                    i++;
-                    var items = ingredient.getItems();
-                    if (items.length == 0) continue;
-                    var item = items[(int) (time % items.length)];
-                    var column = i % craftWidth;
-                    var row = i / craftWidth;
-                    GuiRenderUtil.renderScaledGuiItem(graphics, item, getX(), getY(), 2 + 18 * column, 2 + 18 * row, scale);
+                    if (recipeValue instanceof ShapelessRecipe craftingRecipe) {
+                        ingredients = craftingRecipe.getIngredients();
+                        result = craftingRecipe.getResultItem(registryAccess);
+                    } else if (recipeValue instanceof ShapedRecipe craftingRecipe) {
+                        ingredients = craftingRecipe.getIngredients();
+                        result = craftingRecipe.getResultItem(registryAccess);
+                    } else return;
+                    int i = -1;
+                    for (var ingredient : ingredients) {
+                        i++;
+                        var items = ingredient.getItems();
+                        if (items.length == 0) continue;
+                        var item = items[(int) (time % items.length)];
+                        var column = i % craftWidth;
+                        var row = i / craftWidth;
+                        GuiRenderUtil.renderScaledGuiItem(graphics, item, getX(), getY(), 2 + 18 * column, 2 + 18 * row, scale);
+                    }
+                    GuiRenderUtil.renderScaledGuiItem(graphics, result, getX(), getY(), 96, 20, scale);
                 }
-                GuiRenderUtil.renderScaledGuiItem(graphics, result, getX(), getY(), 96, 20, scale);
             }
         }
     }
 
     private class BrewingRecipeWidget extends ComponentWidget<MarkdownParagraph.ExtensionMCBrewingRecipe> {
-        @Nullable
-        private BrewingRecipe recipe;
         private final float scale;
         private final ItemRenderer itemRenderer;
+        private List<PotionMix> recipes;
+
+        private record PotionMix(ItemStack input, ItemStack ingredient, ItemStack output) {
+        }
 
         public BrewingRecipeWidget(int x, int y, int width, MarkdownParagraph.ExtensionMCBrewingRecipe content) {
             super(x, y, width, 0, content);
             itemRenderer = Minecraft.getInstance().getItemRenderer();
             scale = width / 127f;
             setHeight((int) (scale * 20f));
-            recipe = null;
-            var outputPotion = ForgeRegistries.POTIONS.getValue(content.potionId());
+            recipes = new ArrayList<>();
+            var outputPotion = BuiltInRegistries.POTION.get(content.potionId());
             if (outputPotion == null) return;
-            for (var brewingRecipe : BrewingRecipeRegistry.getRecipes()) {
-                if (!(brewingRecipe instanceof BrewingRecipe basicRecipe)) continue;
-                var potion = PotionUtils.getPotion(basicRecipe.getOutput());
-                if (potion != outputPotion) continue;
-                this.recipe = basicRecipe;
-                break;
+            var connection = Minecraft.getInstance().getConnection();
+            if (connection != null) {
+                for (var brewingRecipe : connection.potionBrewing().potionMixes) {
+                    if (outputPotion == brewingRecipe.to().value()) {
+                        var input = new ItemStack(Items.POTION);
+                        input.set(DataComponents.POTION_CONTENTS, new PotionContents(brewingRecipe.from()));
+                        var output = new ItemStack(Items.POTION);
+                        output.set(DataComponents.POTION_CONTENTS, new PotionContents(brewingRecipe.to()));
+                        for (var ingredient : brewingRecipe.ingredient().getItems()) {
+                            recipes.add(new PotionMix(input, ingredient, output));
+                        }
+                    }
+                }
             }
+            ((ArrayList<?>) recipes).trimToSize();
         }
 
         @Override
@@ -557,18 +567,12 @@ public class MarkdownWidget extends AbstractWidget {
             }
             poseStack.popPose();
             var time = Util.getMillis() / 1000;
-            if (recipe == null) return;
-            var inputItems = recipe.getInput().getItems();
-            if (inputItems.length != 0) {
-                var input = inputItems[(int) (time % inputItems.length)];
-                GuiRenderUtil.renderScaledGuiItem(graphics, input, getX(), getY(), 2, 2, scale);
-            }
-            var ingredientItems = recipe.getIngredient().getItems();
-            if (ingredientItems.length != 0) {
-                var ingredient = ingredientItems[(int) (time % ingredientItems.length)];
-                GuiRenderUtil.renderScaledGuiItem(graphics, ingredient, getX(), getY(), 51, 2, scale);
-            }
-            GuiRenderUtil.renderScaledGuiItem(graphics, recipe.getOutput(), getX(), getY(), 109, 2, scale);
+            if (recipes.isEmpty()) return;
+            int idx = (int) (time % recipes.size());
+            var mix = recipes.get(idx);
+            GuiRenderUtil.renderScaledGuiItem(graphics, mix.input, getX(), getY(), 2, 2, scale);
+            GuiRenderUtil.renderScaledGuiItem(graphics, mix.ingredient, getX(), getY(), 51, 2, scale);
+            GuiRenderUtil.renderScaledGuiItem(graphics, mix.output, getX(), getY(), 109, 2, scale);
         }
     }
 }

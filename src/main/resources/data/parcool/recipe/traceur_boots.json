@@ -1,9 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " n ",
-    "nln",
-    "nn "
+    "l l",
+    "n n"
   ],
   "key": {
     "n": {
@@ -14,7 +13,7 @@
     }
   },
   "result": {
-    "item": "parcool:traceur_gloves",
+    "id": "parcool:traceur_boots",
     "count": 1
   }
 }

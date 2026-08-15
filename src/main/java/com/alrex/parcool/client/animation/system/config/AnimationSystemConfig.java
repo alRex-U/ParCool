@@ -3,7 +3,7 @@ package com.alrex.parcool.client.animation.system.config;
 import com.alrex.parcool.client.animation.system.data.AnimationSet;
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.animation.system.registration.ID;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.TreeMap;
 
@@ -20,13 +20,13 @@ public class AnimationSystemConfig {
         }
     }
 
-    private final ForgeConfigSpec builtConfig;
-    private final TreeMap<ID<AnimationSet>, ForgeConfigSpec.BooleanValue> animationAvailabilities;
-    public final ForgeConfigSpec.BooleanValue enableAnimation;
-    public final ForgeConfigSpec.BooleanValue enableCameraAnimation;
+    private final ModConfigSpec builtConfig;
+    private final TreeMap<ID<AnimationSet>, ModConfigSpec.BooleanValue> animationAvailabilities;
+    public final ModConfigSpec.BooleanValue enableAnimation;
+    public final ModConfigSpec.BooleanValue enableCameraAnimation;
 
     public AnimationSystemConfig(AnimationSets animations) {
-        var builder = new ForgeConfigSpec.Builder();
+        var builder = new ModConfigSpec.Builder();
         if (!animations.isFrozen()) {
             throw new IllegalStateException("It's impossible to create config for unfrozen AnimationSets");
         }
@@ -56,7 +56,7 @@ public class AnimationSystemConfig {
         return config.get();
     }
 
-    public ForgeConfigSpec getBuiltConfig() {
+    public ModConfigSpec getBuiltConfig() {
         return builtConfig;
     }
 }

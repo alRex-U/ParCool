@@ -22,7 +22,7 @@ public class ParCoolStamina extends AbstractLocalStamina {
     }
 
     private void updateMax() {
-        var staminaAttr = owner.getAttribute(ParCoolAttributes.MAX_STAMINA.get());
+        var staminaAttr = owner.getAttribute(ParCoolAttributes.MAX_STAMINA);
         if (staminaAttr == null) return;
         this.max = staminaAttr.getValue();
         if (value > max) {
@@ -81,7 +81,7 @@ public class ParCoolStamina extends AbstractLocalStamina {
     public void tick() {
         recoverCooldown--;
         updateMax();
-        var recoverAttr = owner.getAttribute(ParCoolAttributes.STAMINA_RECOVERY.get());
+        var recoverAttr = owner.getAttribute(ParCoolAttributes.STAMINA_RECOVERY);
         if (recoverAttr == null) return;
         var recoverValue = recoverAttr.getValue();
         if (isInfinite()) {

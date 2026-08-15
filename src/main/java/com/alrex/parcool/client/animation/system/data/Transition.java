@@ -3,8 +3,8 @@ package com.alrex.parcool.client.animation.system.data;
 import com.alrex.parcool.client.animation.system.math.EasingFunctions;
 import com.alrex.parcool.client.animation.system.math.IEasingFunction;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

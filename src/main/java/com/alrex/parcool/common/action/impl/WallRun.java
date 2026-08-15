@@ -16,10 +16,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeMod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 
@@ -52,11 +52,11 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
         var wallDirection = parkourability.getAdditionalProperties().getDefaultWallInteraction();
         if (wallDirection == null || wallDirection.asVec().dot(lookAngle) <= 1. / Mth.SQRT_OF_TWO) return false;
 
-        var gravityAttr = player.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
+        var gravityAttr = player.getAttribute(Attributes.GRAVITY);
         if (gravityAttr == null) return false;
         var gravity = gravityAttr.getValue();
 
-        var jumpHeight = Mth.square(player.getJumpPower() + player.getJumpBoostPower()) / (2.1 * gravity);
+        var jumpHeight = Mth.square(player.getJumpPower(1.0f)) / (2.1 * gravity);
         var jumpScale = getWallRunHeightScale(player, wallDirection, jumpHeight);
         if (jumpScale <= 0) return false;
 

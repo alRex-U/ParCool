@@ -2,36 +2,33 @@ package com.alrex.parcool.client.animation.system.handle;
 
 import com.alrex.parcool.client.animation.system.IPlayerAnimatorHolder;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ViewportEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
+import net.neoforged.neoforge.client.event.ViewportEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class AnimationSystemEventHandler {
     @SubscribeEvent
-    public static void onTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) {
-            var level = Minecraft.getInstance().level;
-            if (level == null) return;
-            for (var p : level.players()) {
-                if (p instanceof IPlayerAnimatorHolder holder) {
-                    holder.getParCoolPlayerAnimator().tick();
-                }
+    public static void onTick(ClientTickEvent.Pre event) {
+        var level = Minecraft.getInstance().level;
+        if (level == null) return;
+        for (var p : level.players()) {
+            if (p instanceof IPlayerAnimatorHolder holder) {
+                holder.getParCoolPlayerAnimator().tick();
             }
         }
     }
 
     @SubscribeEvent
-    public static void onRenderTick(TickEvent.RenderTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            var level = Minecraft.getInstance().level;
-            if (level == null) return;
-            for (var p : level.players()) {
-                if (p instanceof IPlayerAnimatorHolder holder) {
-                    holder.getParCoolPlayerAnimator().onRenderTick(p, event.renderTickTime);
-                }
+    public static void onRenderTick(RenderFrameEvent.Pre event) {
+        var level = Minecraft.getInstance().level;
+        if (level == null) return;
+        for (var p : level.players()) {
+            if (p instanceof IPlayerAnimatorHolder holder) {
+                holder.getParCoolPlayerAnimator().onRenderTick(p, event.getPartialTick().getGameTimeDeltaPartialTick(true));
             }
         }
     }

@@ -4,8 +4,7 @@ plugins {
     id 'java'
     id 'eclipse'
     id 'idea'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2]'
-    id 'org.spongepowered.mixin' version '0.7.+'
+    id 'net.neoforged.moddev' version '1.+'
     id 'me.modmuss50.mod-publish-plugin' version '1.+'
 }
 
@@ -15,85 +14,74 @@ repositories {
     maven { url = "https://maven.theillusivec4.top/" }
 }
 
-compileJava.options.encoding("UTF-8")
-compileTestJava.options.encoding("UTF-8")
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 version = "${minecraft_version}-${mod_version}"
 group = 'com.alrex'
 
-mixin {
-    add sourceSets.main, 'parcool.refmap.json'
-    config 'parcool.mixins.json'
-}
-
 base {
     archivesName = 'ParCool'
 }
 
-minecraft {
-    mappings channel: 'official', version: minecraft_version
-    copyIdeResources = true
+neoForge {
+    version = neoforge_version
 
-    accessTransformer = file('accesstransformer.cfg')
+    validateAccessTransformers = true
+    accessTransformers.from 'accesstransformer.cfg'
 
     runs {
         client {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            mods {
-                parcool {
-                    source sourceSets.main
-                }
-            }
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
+
         server {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            mods {
-                parcool {
-                    source sourceSets.main
-                }
-            }
+            server()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
+
         data {
-            workingDirectory project.file('run')
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            args '--mod', 'parcool', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-            mods {
-                parcool {
-                    source sourceSets.main
-                }
-            }
+            data()
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
         }
     }
 }
 
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
 dependencies {
-    // Specify the version of Minecraft to use.
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    compileOnly "top.theillusivec4.curios:curios-forge:${curios_version}:api"
+    //compileOnly "top.theillusivec4.curios:curios-forge:${curios_version}:api"
     //runtimeOnly "top.theillusivec4.curios:curios-forge:${curios_version}"
     //compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
-    runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
+    //runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
 
-    compileOnly fg.deobf("curse.maven:BetterThirdPerson-435044:${betterthirdperson_file_id}")
-    //runtimeOnly fg.deobf("curse.maven:BetterThirdPerson-435044:${betterthirdperson_file_id}")
+    compileOnly "curse.maven:paraglider-289240:${paraglider_file_id}"
+    runtimeOnly "curse.maven:paraglider-289240:${paraglider_file_id}"
 
-    compileOnly fg.deobf("curse.maven:ShoulderSurfing-243190:${shouldersurfing_file_id}")
-    runtimeOnly fg.deobf("curse.maven:ShoulderSurfing-243190:${shouldersurfing_file_id}")
+    compileOnly "curse.maven:ShoulderSurfing-243190:${shouldersurfing_file_id}"
+    compileOnly "curse.maven:BetterThirdPerson-435044:${betterthirdperson_file_id}"
 
-    compileOnly fg.deobf("curse.maven:feathers-699933:${feathers_file_id}")
-    //runtimeOnly fg.deobf("curse.maven:feathers-699933:${feathers_file_id}")
-
-    compileOnly fg.deobf("curse.maven:epic-fight-mod-405076:${epicfight_file_id}")
-    runtimeOnly fg.deobf("curse.maven:epic-fight-mod-405076:${epicfight_file_id}")
+    compileOnly "curse.maven:EpicFight-405076:${epicfight_file_id}"
+    //runtimeOnly "curse.maven:EpicFight-405076:${epicfight_file_id}"
 }
 
 tasks.register("minifyJsonResource", MinifyJsonTask) {
@@ -105,8 +93,8 @@ tasks.register("generateModMetadata", ProcessResources) {
     var properties = [
             minecraft_version       : minecraft_version,
             minecraft_version_range : minecraft_version_range,
-            forge_version           : forge_version,
-            forge_version_range     : forge_version_range,
+            neoforge_version        : neoforge_version,
+            neoforge_version_range  : neoforge_version_range,
             loader_version_range    : loader_version_range,
             mod_id                  : mod_id,
             mod_name                : 'ParCool',
@@ -114,8 +102,8 @@ tasks.register("generateModMetadata", ProcessResources) {
             mod_version             : mod_version,
             mod_authors             : 'alRex_U',
             extern_feathers         : [
-                    mod_id: 'feathers',
-                    version_range: feathers_version_range
+                    mod_id       : 'paraglider',
+                    version_range: paraglider_version_range
             ],
             extern_shouldersurfing  : [
                     mod_id: 'shouldersurfing',
@@ -138,7 +126,7 @@ tasks.register("generateModMetadata", ProcessResources) {
     expand properties
     with copySpec {
         from("src/template/resources") {
-            include 'META-INF/mods.toml'
+            include 'META-INF/neoforge.mods.toml'
         }
     }
     into "src/generated/resources"

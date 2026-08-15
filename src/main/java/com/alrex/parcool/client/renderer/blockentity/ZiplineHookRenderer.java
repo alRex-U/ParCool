@@ -18,9 +18,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -29,7 +30,7 @@ import javax.annotation.Nonnull;
 
 @OnlyIn(Dist.CLIENT)
 public class ZiplineHookRenderer implements BlockEntityRenderer<ZiplineHookTileEntity> {
-    public static ResourceLocation TEXTURE_LOCATION = ParCool.resourceLocation("textures/misc/zipline.png");
+    public static final ResourceLocation TEXTURE_LOCATION = ParCool.resourceLocation("textures/misc/zipline.png");
 
     public ZiplineHookRenderer(BlockEntityRendererProvider.Context context) {
     }
@@ -54,6 +55,12 @@ public class ZiplineHookRenderer implements BlockEntityRenderer<ZiplineHookTileE
         return !entity.getConnectionPoints().isEmpty();
     }
 
+    @Nonnull
+    @Override
+    public AABB getRenderBoundingBox(@Nonnull ZiplineHookTileEntity blockEntity) {
+        return AABB.INFINITE;
+    }
+
     private void renderRope(
             ZiplineHookTileEntity entity,
             Zipline zipline,
@@ -71,7 +78,7 @@ public class ZiplineHookRenderer implements BlockEntityRenderer<ZiplineHookTileE
         Vec3 endOffsetFromStart = zipline.shape().getOffsetFromStartToEnd();
 
         RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
-        RenderSystem.setShader(GameRenderer::getPositionTexLightmapColorShader);
+        RenderSystem.setShader(GameRenderer::getPositionColorTexLightmapShader);
 
         poseStack.pushPose();
         {
@@ -166,34 +173,30 @@ public class ZiplineHookRenderer implements BlockEntityRenderer<ZiplineHookTileE
         // Render side planes
         for (int i = 0; i < 4; i++) {
             vertexConsumer
-                    .vertex(transformMatrix, vertexList[i].x(), vertexList[i].y(), vertexList[i].z())
-                    .color(r, g, b, 1f).uv(0, (i + (powered ? 4 : 0)) / 8f).uv2(lightLevelList[0])
-                    .endVertex();
+                    .addVertex(transformMatrix, vertexList[i].x(), vertexList[i].y(), vertexList[i].z())
+                    .setColor(r, g, b, 1f).setUv(0, (i + (powered ? 4 : 0)) / 8f).setLight(lightLevelList[0]);
             vertexConsumer
-                    .vertex(transformMatrix, vertexList[(i + 1) % 4].x(), vertexList[(i + 1) % 4].y(), vertexList[(i + 1) % 4].z())
-                    .color(r, g, b, 1f).uv(0, (i + (powered ? 5 : 1)) / 8f).uv2(lightLevelList[0])
-                    .endVertex();
+                    .addVertex(transformMatrix, vertexList[(i + 1) % 4].x(), vertexList[(i + 1) % 4].y(), vertexList[(i + 1) % 4].z())
+                    .setColor(r, g, b, 1f).setUv(0, (i + (powered ? 5 : 1)) / 8f).setLight(lightLevelList[0]);
             vertexConsumer
-                    .vertex(transformMatrix, vertexList[4 + (i + 1) % 4].x(), vertexList[4 + (i + 1) % 4].y(), vertexList[4 + (i + 1) % 4].z())
-                    .color(r, g, b, 1f).uv(1, (i + (powered ? 5 : 1)) / 8f).uv2(lightLevelList[1])
-                    .endVertex();
+                    .addVertex(transformMatrix, vertexList[4 + (i + 1) % 4].x(), vertexList[4 + (i + 1) % 4].y(), vertexList[4 + (i + 1) % 4].z())
+                    .setColor(r, g, b, 1f).setUv(1, (i + (powered ? 5 : 1)) / 8f).setLight(lightLevelList[1]);
             vertexConsumer
-                    .vertex(transformMatrix, vertexList[4 + i].x(), vertexList[4 + i].y(), vertexList[4 + i].z())
-                    .color(r, g, b, 1f).uv(1, (i + (powered ? 4 : 0)) / 8f).uv2(lightLevelList[1])
-                    .endVertex();
+                    .addVertex(transformMatrix, vertexList[4 + i].x(), vertexList[4 + i].y(), vertexList[4 + i].z())
+                    .setColor(r, g, b, 1f).setUv(1, (i + (powered ? 4 : 0)) / 8f).setLight(lightLevelList[1]);
         }
 
         // Render caps
         if (currentCount == 0) {
-            vertexConsumer.vertex(transformMatrix, vertexList[3].x(), vertexList[3].y(), vertexList[3].z()).color(r, g, b, 1f).uv(0, (powered ? 4 : 0) / 8f).uv2(lightLevelList[0]).endVertex();
-            vertexConsumer.vertex(transformMatrix, vertexList[2].x(), vertexList[2].y(), vertexList[2].z()).color(r, g, b, 1f).uv(0, (powered ? 5 : 1) / 8f).uv2(lightLevelList[0]).endVertex();
-            vertexConsumer.vertex(transformMatrix, vertexList[1].x(), vertexList[1].y(), vertexList[1].z()).color(r, g, b, 1f).uv(1f / 16f, (powered ? 5 : 1) / 8f).uv2(lightLevelList[0]).endVertex();
-            vertexConsumer.vertex(transformMatrix, vertexList[0].x(), vertexList[0].y(), vertexList[0].z()).color(r, g, b, 1f).uv(1f / 16f, (powered ? 4 : 0) / 8f).uv2(lightLevelList[0]).endVertex();
+            vertexConsumer.addVertex(transformMatrix, vertexList[3].x(), vertexList[3].y(), vertexList[3].z()).setColor(r, g, b, 1f).setUv(0, (powered ? 4 : 0) / 8f).setLight(lightLevelList[0]);
+            vertexConsumer.addVertex(transformMatrix, vertexList[2].x(), vertexList[2].y(), vertexList[2].z()).setColor(r, g, b, 1f).setUv(0, (powered ? 5 : 1) / 8f).setLight(lightLevelList[0]);
+            vertexConsumer.addVertex(transformMatrix, vertexList[1].x(), vertexList[1].y(), vertexList[1].z()).setColor(r, g, b, 1f).setUv(1f / 16f, (powered ? 5 : 1) / 8f).setLight(lightLevelList[0]);
+            vertexConsumer.addVertex(transformMatrix, vertexList[0].x(), vertexList[0].y(), vertexList[0].z()).setColor(r, g, b, 1f).setUv(1f / 16f, (powered ? 4 : 0) / 8f).setLight(lightLevelList[0]);
         } else if (currentCount == maxCount - 1) {
-            vertexConsumer.vertex(transformMatrix, vertexList[4].x(), vertexList[4].y(), vertexList[4].z()).color(r, g, b, 1f).uv(15f / 16f, (powered ? 4 : 0) / 8f).uv2(lightLevelList[0]).endVertex();
-            vertexConsumer.vertex(transformMatrix, vertexList[5].x(), vertexList[5].y(), vertexList[5].z()).color(r, g, b, 1f).uv(15f / 16f, (powered ? 5 : 1) / 8f).uv2(lightLevelList[0]).endVertex();
-            vertexConsumer.vertex(transformMatrix, vertexList[6].x(), vertexList[6].y(), vertexList[6].z()).color(r, g, b, 1f).uv(1f, (powered ? 5 : 1) / 8f).uv2(lightLevelList[0]).endVertex();
-            vertexConsumer.vertex(transformMatrix, vertexList[7].x(), vertexList[7].y(), vertexList[7].z()).color(r, g, b, 1f).uv(1f, (powered ? 4 : 0) / 8f).uv2(lightLevelList[0]).endVertex();
+            vertexConsumer.addVertex(transformMatrix, vertexList[4].x(), vertexList[4].y(), vertexList[4].z()).setColor(r, g, b, 1f).setUv(15f / 16f, (powered ? 4 : 0) / 8f).setLight(lightLevelList[0]);
+            vertexConsumer.addVertex(transformMatrix, vertexList[5].x(), vertexList[5].y(), vertexList[5].z()).setColor(r, g, b, 1f).setUv(15f / 16f, (powered ? 5 : 1) / 8f).setLight(lightLevelList[0]);
+            vertexConsumer.addVertex(transformMatrix, vertexList[6].x(), vertexList[6].y(), vertexList[6].z()).setColor(r, g, b, 1f).setUv(1f, (powered ? 5 : 1) / 8f).setLight(lightLevelList[0]);
+            vertexConsumer.addVertex(transformMatrix, vertexList[7].x(), vertexList[7].y(), vertexList[7].z()).setColor(r, g, b, 1f).setUv(1f, (powered ? 4 : 0) / 8f).setLight(lightLevelList[0]);
         }
     }
 }

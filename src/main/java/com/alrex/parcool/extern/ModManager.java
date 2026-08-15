@@ -1,6 +1,6 @@
 package com.alrex.parcool.extern;
 
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModList;
 
 import javax.annotation.Nullable;
 

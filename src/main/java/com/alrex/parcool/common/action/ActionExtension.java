@@ -1,10 +1,10 @@
 package com.alrex.parcool.common.action;
 
 import net.minecraft.core.BlockPos;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public interface ActionExtension {
     }
 
     interface AttackedListener extends ActionExtension {
-        void onAttacked(LivingAttackEvent event);
+        void onAttacked(LivingDamageEvent.Pre event);
     }
 
     interface VisibilityListener extends ActionExtension {

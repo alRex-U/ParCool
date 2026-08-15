@@ -25,8 +25,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -189,7 +189,7 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
     @Override
     public void onWorkingTickInLocalClient() {
         var player = parkourability.player();
-        var attr = player.getAttribute(ParCoolAttributes.SLIDE_DOWN_DECELERATION.get());
+        var attr = player.getAttribute(ParCoolAttributes.SLIDE_DOWN_DECELERATION);
         if (attr == null) return;
         parkourability.player().setDeltaMovement(parkourability.player().getDeltaMovement().multiply(0, 1. - attr.getValue(), 0));
     }
@@ -197,7 +197,7 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
     @Override
     public void onWorkingTickInServer() {
         var player = parkourability.player();
-        var attr = player.getAttribute(ParCoolAttributes.SLIDE_DOWN_DECELERATION.get());
+        var attr = player.getAttribute(ParCoolAttributes.SLIDE_DOWN_DECELERATION);
         if (attr == null) return;
         player.fallDistance *= (float) (1. - attr.getValue());
 

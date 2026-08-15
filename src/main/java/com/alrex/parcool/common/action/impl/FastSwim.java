@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolAttributes;
 import com.alrex.parcool.api.action.Action;
 import com.alrex.parcool.api.action.ActionEntry;
@@ -11,17 +12,17 @@ import com.alrex.parcool.common.action.BehaviorEnforcer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.UUID;
 
 public class FastSwim extends ContinuableAction {
     private static final BehaviorEnforcer.ID ENFORCE_SPRINT_ID = BehaviorEnforcer.newID();
-    private static final String FAST_SWIM_MODIFIER_NAME = "parcool.modifier.fast_swim";
-    private static final UUID FAST_SWIM_MODIFIER_UUID = UUID.randomUUID();
+    private static final ResourceLocation FAST_SWIM_MODIFIER_ID = ParCool.resourceLocation("modi.fast_swim");
 
     public FastSwim(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry);
@@ -56,21 +57,20 @@ public class FastSwim extends ContinuableAction {
         var player = parkourability.player();
         var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
         if (attr == null) return;
-        var modifierAttr = player.getAttribute(ParCoolAttributes.FAST_SWIM_SPEED.get());
+        var modifierAttr = player.getAttribute(ParCoolAttributes.FAST_SWIM_SPEED);
         if (modifierAttr == null) return;
-        var modifier = attr.getModifier(FAST_SWIM_MODIFIER_UUID);
+        var modifier = attr.getModifier(FAST_SWIM_MODIFIER_ID);
         if (isDoing()) {
             if (modifier == null) {
                 attr.addTransientModifier(new AttributeModifier(
-                        FAST_SWIM_MODIFIER_UUID,
-                        FAST_SWIM_MODIFIER_NAME,
+                        FAST_SWIM_MODIFIER_ID,
                         modifierAttr.getValue(),
-                        AttributeModifier.Operation.ADDITION
+                        AttributeModifier.Operation.ADD_VALUE
                 ));
             }
         } else {
             if (modifier != null) {
-                attr.removeModifier(FAST_SWIM_MODIFIER_UUID);
+                attr.removeModifier(FAST_SWIM_MODIFIER_ID);
             }
         }
     }

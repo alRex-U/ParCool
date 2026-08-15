@@ -7,7 +7,7 @@ import com.alrex.parcool.common.stamina.impl.HungerStamina;
 import com.alrex.parcool.common.stamina.impl.NoneStamina;
 import com.alrex.parcool.common.stamina.impl.ParCoolStamina;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 
 public class StaminaTypes {
     private static final ResourceLocation NONE_ID = ParCool.resourceLocation("none");

@@ -21,8 +21,8 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -88,7 +88,7 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
         parkourability.getBehaviorEnforcer().addMarkerEnforcingNoFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
-        var durationAttr = player.getAttribute(ParCoolAttributes.HORIZONTAL_WALL_RUN_DURATION.get());
+        var durationAttr = player.getAttribute(ParCoolAttributes.HORIZONTAL_WALL_RUN_DURATION);
         if (durationAttr == null) return;
         var duration = durationAttr.getValue();
         parkourability.getBehaviorEnforcer().setMarkerEnforcingDeltaMovement(this::isDoing, () -> {

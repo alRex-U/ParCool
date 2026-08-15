@@ -1,9 +1,11 @@
 package com.alrex.parcool.common.block.zipline;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -39,6 +41,14 @@ public class WoodenZiplineHookBlock extends ZiplineHookBlock {
                 Block.box(6, 6, 6, 8, 10, 10),
                 Block.box(0, 5, 5, 6, 11, 11)
         );
+    }
+
+    private static final MapCodec<WoodenZiplineHookBlock> CODEC = simpleCodec(WoodenZiplineHookBlock::new);
+
+    @Nonnull
+    @Override
+    protected MapCodec<? extends DirectionalBlock> codec() {
+        return CODEC;
     }
 
     public WoodenZiplineHookBlock(Properties p_i48440_1_) {

@@ -3,8 +3,8 @@ package com.alrex.parcool.client.renderer;
 import com.alrex.parcool.client.renderer.blockentity.ZiplineHookRenderer;
 import com.alrex.parcool.common.block.TileEntities;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class Renderers {

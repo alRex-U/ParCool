@@ -8,8 +8,8 @@ import com.alrex.parcool.client.animation.system.PlayerAnimator;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.IRequestable;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 

@@ -56,12 +56,12 @@ public class WidgetGroup extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (!visible) return false;
         mouseX -= getX();
         mouseY -= getY();
         for (var widget : widgets) {
-            if (widget.mouseScrolled(mouseX, mouseY, scroll)) return true;
+            if (widget.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true;
         }
         return false;
     }

@@ -14,8 +14,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class Vault extends ContinuableAction {
     private enum Type {
@@ -112,7 +112,7 @@ public class Vault extends ContinuableAction {
         var baseBB = player.getBoundingBox();
         baseBB = baseBB.deflate(baseBB.getXsize() * 0.25, 0, baseBB.getZsize() * 0.25);
 
-        var obstacleCollision = getCollisionVec(player, vaultMovement, baseBB.move(0, player.getStepHeight(), 0));
+        var obstacleCollision = getCollisionVec(player, vaultMovement, baseBB.move(0, player.maxUpStep(), 0));
         if (!checkHVecDifferent(obstacleCollision, vaultMovement)) return false; // No obstacles to get over
         var vaultMaxMovement = deltaMovementH.scale(duration);
 

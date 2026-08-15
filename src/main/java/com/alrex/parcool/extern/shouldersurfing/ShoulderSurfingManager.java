@@ -5,8 +5,8 @@ import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.extern.ModManager;
 import com.github.exopandora.shouldersurfing.api.client.ShoulderSurfing;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 

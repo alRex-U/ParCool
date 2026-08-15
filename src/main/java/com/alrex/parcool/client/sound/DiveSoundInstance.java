@@ -5,8 +5,8 @@ import com.alrex.parcool.client.animation.system.util.EntityUtil;
 import com.alrex.parcool.common.action.impl.Dive;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class DiveSoundInstance extends ActionLoopSoundInstance<Dive> {

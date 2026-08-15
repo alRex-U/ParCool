@@ -3,42 +3,49 @@ package com.alrex.parcool.common.network;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionCapabilities;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 
-public record ActionCapabilitiesPacket(ActionCapabilities capabilities, Target target) {
+public record ActionCapabilitiesPacket(ActionCapabilities capabilities, Target target) implements CustomPacketPayload {
+    public static final Type<ActionCapabilitiesPacket> TYPE = new Type<>(ParCool.resourceLocation("caps"));
+
+    @Nonnull
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
     public enum Target {
         CAPABILITY, ENABLED_ACTIONS
     }
     public static final IHandler<ActionCapabilitiesPacket> HANDLER = new IHandler<>() {
         @Override
-        public void encode(ActionCapabilitiesPacket actionCapabilitiesPacket, FriendlyByteBuf packet) {
+        public void encode(ByteBuf packet, ActionCapabilitiesPacket actionCapabilitiesPacket) {
             packet.writeByte(actionCapabilitiesPacket.target.ordinal());
             actionCapabilitiesPacket.capabilities.write(packet);
         }
 
         @Override
-        public ActionCapabilitiesPacket decode(FriendlyByteBuf packet) {
+        public ActionCapabilitiesPacket decode(ByteBuf packet) {
             var target = Target.values()[packet.readByte() % Target.values().length];
             var caps = new ActionCapabilities(ParCool.getActionRegistry());
             caps.read(packet);
             return new ActionCapabilitiesPacket(caps, target);
         }
 
-        @OnlyIn(Dist.DEDICATED_SERVER)
         @Override
-        public void handleInPhysicalServer(ActionCapabilitiesPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
+        public void handleInLogicalServer(ActionCapabilitiesPacket packet, IPayloadContext context) {
             throw new UnsupportedOperationException();
         }
 
-        @OnlyIn(Dist.CLIENT)
         @Override
-        public void handleInPhysicalClient(ActionCapabilitiesPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
+        public void handleInLogicalClient(ActionCapabilitiesPacket packet, IPayloadContext context) {
             var player = Minecraft.getInstance().player;
             if (player == null) return;
             var parkourability = Parkourability.get(player);

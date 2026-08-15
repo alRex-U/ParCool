@@ -2,19 +2,18 @@ package com.alrex.parcool.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.fml.LogicalSide;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class NetworkUtil {
     @Nullable
-    public static Player getPlayerInPhysicalClient(UUID playerID, NetworkEvent.Context context, boolean castByClient) {
-        boolean isInLogicalServer = context.getDirection().getReceptionSide() == LogicalSide.SERVER;
+    public static Player getPlayerInPhysicalClient(UUID playerID, IPayloadContext context, boolean castByClient) {
+        boolean isInLogicalServer = context.flow().getReceptionSide() == LogicalSide.SERVER;
         if (isInLogicalServer) {
-            var player = context.getSender();
-            if (player == null) return null;
+            var player = context.player();
             if (!player.getUUID().equals(playerID)) {
                 return player.level().getPlayerByUUID(playerID);
             }
@@ -29,9 +28,8 @@ public class NetworkUtil {
     }
 
     @Nullable
-    public static Player getPlayerInPhysicalServer(UUID playerID, NetworkEvent.Context context) {
-        var player = context.getSender();
-        if (player == null) return null;
+    public static Player getPlayerInPhysicalServer(UUID playerID, IPayloadContext context) {
+        var player = context.player();
         if (player.getUUID().equals(playerID)) {
             return player;
         }

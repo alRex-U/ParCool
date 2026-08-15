@@ -1,8 +1,8 @@
 package com.alrex.parcool.api.action;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.eventbus.api.Cancelable;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.ICancellableEvent;
 
 public class ParCoolActionEvent extends Event {
     private final Player player;
@@ -21,25 +21,13 @@ public class ParCoolActionEvent extends Event {
         this.action = action;
     }
 
-    public static class TryToStart extends ParCoolActionEvent {
-        @Override
-        public boolean isCancelable() {
-            return true;
-        }
-
+    public static class TryToStart extends ParCoolActionEvent implements ICancellableEvent {
         public TryToStart(Player player, Action action) {
             super(player, action);
         }
     }
 
-    @Cancelable
-    public static class TryToContinue extends ParCoolActionEvent {
-
-        @Override
-        public boolean isCancelable() {
-            return true;
-        }
-
+    public static class TryToContinue extends ParCoolActionEvent implements ICancellableEvent {
         public TryToContinue(Player player, ContinuableAction action) {
             super(player, action);
         }

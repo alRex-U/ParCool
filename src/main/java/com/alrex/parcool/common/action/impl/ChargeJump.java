@@ -10,8 +10,8 @@ import com.alrex.parcool.common.action.ActionExtension;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class ChargeJump extends ContinuableAction implements ActionExtension.JumpListener {
     private static final byte CHARGE_DURATION = 10;
