@@ -60,6 +60,11 @@ public class FeathersStamina extends AbstractLocalStamina {
     }
 
     @Override
+    public void tick() {
+        setDirty();
+    }
+
+    @Override
     public boolean isExhausted() {
         return owner.isLocalPlayer() && !FeathersHelper.checkFeathersRemaining();
     }

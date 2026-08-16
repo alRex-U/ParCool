@@ -25,6 +25,11 @@ public class HungerStamina extends AbstractLocalStamina {
     }
 
     @Override
+    public void tick() {
+        setDirty();
+    }
+
+    @Override
     public double max() {
         return 20;
     }

@@ -10,8 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(PlayerModel.class)
 public abstract class PlayerModelMixin<T extends LivingEntity> extends HumanoidModel<T> {
@@ -20,12 +19,18 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends HumanoidM
 		super(p_i1148_1_);
 	}
 
-	@Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V", at = @At("HEAD"), cancellable = true)
-	protected void onSetupAnimHead(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo info) {
-		if (entity.isFallFlying()) return;
+	@Redirect(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/HumanoidModel;setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V"))
+	protected void onSetupAnimHead(HumanoidModel<?> model, T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		if (entity.isFallFlying()) {
+			super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+			return;
+		}
 		if (entity instanceof IPlayerAnimatorHolder holder) {
 			var transform = holder.getParCoolPlayerAnimator().getCurrentTransformation();
-			if (transform == null) return;
+			if (transform == null) {
+				super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+				return;
+			}
 			parcool$resetModel();
 			if (transform.isOverwriting()) {
 				var headTransform = transform.transformation().transforms().get(AnimatableModelPart.HEAD);
@@ -38,29 +43,22 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends HumanoidM
 				if (lATransform != null) lATransform.apply(leftArm);
 				var lLTransform = transform.transformation().transforms().get(AnimatableModelPart.LEFT_LEG);
 				if (lLTransform != null) lLTransform.apply(leftLeg);
-				info.cancel();
+			} else {
+				super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+				var blendingFactor = transform.blendFactor();
+				var headTransform = transform.transformation().transforms().get(AnimatableModelPart.HEAD);
+				if (headTransform != null) headTransform.applyInQuaternion(head, blendingFactor, true);
+				var rATransform = transform.transformation().transforms().get(AnimatableModelPart.RIGHT_ARM);
+				if (rATransform != null) rATransform.applyInQuaternion(rightArm, blendingFactor, false);
+				var rLTransform = transform.transformation().transforms().get(AnimatableModelPart.RIGHT_LEG);
+				if (rLTransform != null) rLTransform.applyInQuaternion(rightLeg, blendingFactor, false);
+				var lATransform = transform.transformation().transforms().get(AnimatableModelPart.LEFT_ARM);
+				if (lATransform != null) lATransform.applyInQuaternion(leftArm, blendingFactor, false);
+				var lLTransform = transform.transformation().transforms().get(AnimatableModelPart.LEFT_LEG);
+				if (lLTransform != null) lLTransform.applyInQuaternion(leftLeg, blendingFactor, false);
+				Transform.NO_TRANSFORMATION.applyInQuaternion(body, blendingFactor, true);
 			}
-		}
-	}
-
-	@Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V", at = @At("TAIL"))
-	protected void onSetupAnimTail(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo info) {
-		if (entity.isFallFlying()) return;
-		if (entity instanceof IPlayerAnimatorHolder holder) {
-			var transform = holder.getParCoolPlayerAnimator().getCurrentTransformation();
-			if (transform == null) return;
-			var blendingFactor = transform.blendFactor();
-			var headTransform = transform.transformation().transforms().get(AnimatableModelPart.HEAD);
-			if (headTransform != null) headTransform.applyInQuaternion(head, blendingFactor, true);
-			var rATransform = transform.transformation().transforms().get(AnimatableModelPart.RIGHT_ARM);
-			if (rATransform != null) rATransform.applyInQuaternion(rightArm, blendingFactor, false);
-			var rLTransform = transform.transformation().transforms().get(AnimatableModelPart.RIGHT_LEG);
-			if (rLTransform != null) rLTransform.applyInQuaternion(rightLeg, blendingFactor, false);
-			var lATransform = transform.transformation().transforms().get(AnimatableModelPart.LEFT_ARM);
-			if (lATransform != null) lATransform.applyInQuaternion(leftArm, blendingFactor, false);
-			var lLTransform = transform.transformation().transforms().get(AnimatableModelPart.LEFT_LEG);
-			if (lLTransform != null) lLTransform.applyInQuaternion(leftLeg, blendingFactor, false);
-			Transform.NO_TRANSFORMATION.applyInQuaternion(body, blendingFactor, true);
+			hat.copyFrom(head);
 		}
 	}
 

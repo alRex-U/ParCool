@@ -22,7 +22,6 @@
   },
   "mixins": [
     "common.EntityMixin",
-    "common.LivingEntityMixin",
     "common.PlayerMixin",
     "common.ServerGamePacketListenerImplMixin"
   ]

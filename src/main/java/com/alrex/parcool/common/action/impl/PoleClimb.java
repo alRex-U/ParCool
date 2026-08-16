@@ -7,6 +7,7 @@ import com.alrex.parcool.client.animation.system.PlayerAnimator;
 import com.alrex.parcool.client.input.InputUtil;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
+import com.alrex.parcool.common.action.ActionExtension;
 import com.alrex.parcool.common.action.InteractingWallDirection;
 import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.util.EntityUtil;
@@ -26,10 +27,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class PoleClimb extends ContinuableAction {
-
+public class PoleClimb extends ContinuableAction implements ActionExtension.LeaveFromWallListener {
     private final SynchronizedDataHolder dataHolder;
     private final SynchronizedProperty<InteractingWallDirection> propertyWallDirection;
+    private short cooldown = 0;
 
     public PoleClimb(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry, List.of(
@@ -52,7 +53,7 @@ public class PoleClimb extends ContinuableAction {
 
     @Override
     public boolean canContinue() {
-        if (!ParCoolKeyBinds.HANG.key().isDown()) return false;
+        if (!ParCoolKeyBinds.HANG.key().isDown() || cooldown > 0) return false;
         var currentWallDirection = parkourability.getAdditionalProperties().getDefaultWallInteraction();
         if (currentWallDirection == null) return false;
         if (!currentWallDirection.alongToAxis()) return false;
@@ -66,7 +67,7 @@ public class PoleClimb extends ContinuableAction {
 
     @Override
     public boolean canStart() {
-        if (!ParCoolKeyBinds.HANG.key().isDown()) return false;
+        if (!ParCoolKeyBinds.HANG.key().isDown() || cooldown > 0) return false;
         if (Math.abs(parkourability.player().getDeltaMovement().y) > 0.4) return false;
         var currentWallDirection = parkourability.getAdditionalProperties().getDefaultWallInteraction();
         if (currentWallDirection == null) return false;
@@ -103,6 +104,12 @@ public class PoleClimb extends ContinuableAction {
             }
             return moveVec;
         });
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void onTickInLocalClient() {
+        if (cooldown > 0) cooldown--;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -178,4 +185,8 @@ public class PoleClimb extends ContinuableAction {
         return false;
     }
 
+    @Override
+    public void onLeaveFromWall() {
+        cooldown = 5;
+    }
 }

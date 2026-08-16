@@ -30,7 +30,7 @@ public class ActionStateSetPacket extends MultiComposablePacket<ActionStatePacke
     }
 
     private ActionStateSetPacket(UUID playerID, boolean castedByClient) {
-        super(ActionStatePacket.HANDLER);
+        super();
         this.playerID = playerID;
         this.castedByClient = castedByClient;
     }
@@ -40,14 +40,14 @@ public class ActionStateSetPacket extends MultiComposablePacket<ActionStatePacke
         public void encode(ActionStateSetPacket actionStateSetPacket, FriendlyByteBuf packet) {
             packet.writeUUID(actionStateSetPacket.playerID);
             packet.writeBoolean(actionStateSetPacket.castedByClient);
-            MultiComposablePacket.encode(actionStateSetPacket, packet);
+            MultiComposablePacket.encode(actionStateSetPacket, packet, ActionStatePacket.HANDLER);
         }
 
         @Override
         public ActionStateSetPacket decode(FriendlyByteBuf packet) {
             var id = packet.readUUID();
             var byClient = packet.readBoolean();
-            return ActionStateSetPacket.decode(() -> new ActionStateSetPacket(id, byClient), packet);
+            return ActionStateSetPacket.decode(new ActionStateSetPacket(id, byClient), packet, ActionStatePacket.HANDLER);
         }
 
         @OnlyIn(Dist.DEDICATED_SERVER)

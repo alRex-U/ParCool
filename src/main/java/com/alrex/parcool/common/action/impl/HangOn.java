@@ -23,12 +23,13 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.InputEvent;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class HangOn extends ContinuableAction implements ActionExtension.LeaveFromWallListener {
+public class HangOn extends ContinuableAction implements ActionExtension.LeaveFromWallListener, ActionExtension.KeyMapTriggeredListener {
     private static final BehaviorEnforcer.ID ID_FALL_FLY_CANCEL = BehaviorEnforcer.newID();
     private static final double REACH_SCALE = 0.25;
     private final SynchronizedDataHolder dataHolder;
@@ -193,6 +194,14 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
     @Override
     public void onLeaveFromWall() {
         cooldown = 3;
+    }
+
+    @Override
+    public void onInput(InputEvent.InteractionKeyMappingTriggered event) {
+        if (isDoing() && (event.isAttack() || event.isUseItem())) {
+            event.setSwingHand(false);
+            event.setCanceled(true);
+        }
     }
 
     private record AnimationData(

@@ -33,7 +33,7 @@ public class RenderTypes {
                 VertexFormat.Mode.QUADS, 256,
                 false, false,
                 RenderType.CompositeState.builder()
-                        .setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
+                        .setShaderState(RenderStateShard.RENDERTYPE_SOLID_SHADER)
                         .setTextureState(new RenderStateShard.TextureStateShard(ZiplineHookRenderer.TEXTURE_LOCATION, false, false))
                         .setCullState(RenderStateShard.CULL)
                         .setLightmapState(RenderStateShard.LIGHTMAP)
