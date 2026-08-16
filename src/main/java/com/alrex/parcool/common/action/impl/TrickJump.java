@@ -38,6 +38,11 @@ public class TrickJump extends Action implements ActionExtension.JumpListener {
     }
 
     @Override
+    public SynchronizedDataHolder getSynchronizedData() {
+        return dataHolder;
+    }
+
+    @Override
     public boolean canStart() {
         if (!jumped) return false;
         jumped = false;

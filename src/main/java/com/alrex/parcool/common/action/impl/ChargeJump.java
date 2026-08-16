@@ -18,17 +18,18 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
 
     private final SynchronizedDataHolder dataHolder;
     private final SynchronizedProperty<Boolean> propertyInputActive;
+    private final SynchronizedProperty<Boolean> propertyJumpTriggered;
 
     // Only for client
     private boolean jumped = false;
-    private boolean shouldConsumeCost = false;
     private byte oldChargingTick = 0;
     private byte chargingTick = 0;
 
     public ChargeJump(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry);
         dataHolder = SynchronizedDataHolder.create(entry,
-                propertyInputActive = SynchronizedProperty.newBoolean()
+                propertyInputActive = SynchronizedProperty.newBoolean(),
+                propertyJumpTriggered = SynchronizedProperty.newBoolean()
         );
     }
 
@@ -56,6 +57,7 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
 
     @Override
     public boolean canStart() {
+        propertyJumpTriggered.set(Boolean.FALSE);
         return isCharging();
     }
 
@@ -75,7 +77,7 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
     public void onJump() {
         if (isDoing()) {
             jumped = true;
-            shouldConsumeCost = true;
+            propertyJumpTriggered.set(Boolean.TRUE);
             var deltaMove = parkourability.player().getDeltaMovement();
             parkourability.player().setDeltaMovement(deltaMove.x, deltaMove.y + 0.16 * chargingTick / CHARGE_DURATION, deltaMove.z);
         }
@@ -88,12 +90,6 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
         parkourability.player().playSound(ParCoolSoundEvents.CHARGE_JUMP.get());
     }
 
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public void onStartInLocalClient() {
-        shouldConsumeCost = false;
-    }
-
     @Override
     public void onStop() {
         oldChargingTick = chargingTick = 0;
@@ -102,14 +98,14 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
     @OnlyIn(Dist.CLIENT)
     @Override
     public void onStopInClient() {
-        if (shouldConsumeCost)
+        if (propertyJumpTriggered.getOrDefaultIfNull(false))
             PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().CHARGE_JUMP);
     }
 
     @Override
     protected void takeCost(StaminaConsumption.Type type) {
         if (type == StaminaConsumption.Type.FINISH) {
-            if (shouldConsumeCost) {
+            if (propertyJumpTriggered.getOrDefaultIfNull(false)) {
                 super.takeCost(type);
             }
         } else {

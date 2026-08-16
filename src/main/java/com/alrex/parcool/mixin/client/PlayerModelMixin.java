@@ -21,17 +21,13 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends HumanoidM
 
 	@Redirect(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/HumanoidModel;setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V"))
 	protected void onSetupAnimHead(HumanoidModel<?> model, T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		if (entity.isFallFlying()) {
-			super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-			return;
-		}
-		if (entity instanceof IPlayerAnimatorHolder holder) {
+		if (!entity.isFallFlying() && !entity.isPassenger() && entity instanceof IPlayerAnimatorHolder holder) {
 			var transform = holder.getParCoolPlayerAnimator().getCurrentTransformation();
+			parcool$resetModel();
 			if (transform == null) {
 				super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 				return;
 			}
-			parcool$resetModel();
 			if (transform.isOverwriting()) {
 				var headTransform = transform.transformation().transforms().get(AnimatableModelPart.HEAD);
 				if (headTransform != null) headTransform.apply(head);
@@ -59,6 +55,8 @@ public abstract class PlayerModelMixin<T extends LivingEntity> extends HumanoidM
 				Transform.NO_TRANSFORMATION.applyInQuaternion(body, blendingFactor, true);
 			}
 			hat.copyFrom(head);
+		} else {
+			super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		}
 	}
 

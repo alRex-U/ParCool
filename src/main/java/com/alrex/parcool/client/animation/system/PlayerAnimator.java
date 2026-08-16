@@ -28,13 +28,16 @@ public class PlayerAnimator {
         animationProcessor.tick();
     }
 
-    public void onRenderTick(AbstractClientPlayer player, float partialTick) {
-        updateTransformation(player, Minecraft.getInstance().options.getCameraType().isFirstPerson(), partialTick);
+    public void onRenderTick(float partialTick) {
+        updateTransformation(
+                animationProcessor.getOwner().isLocalPlayer()
+                        && Minecraft.getInstance().options.getCameraType().isFirstPerson(),
+                partialTick);
     }
 
-    private void updateTransformation(AbstractClientPlayer player, boolean firstPersonView, float partialTick) {
+    private void updateTransformation(boolean firstPersonView, float partialTick) {
         if (AnimationSystemConfig.getInstance().enableAnimation.get())
-            currentTransformation = animationProcessor.getTransformation(player, firstPersonView, partialTick);
+            currentTransformation = animationProcessor.getTransformation(firstPersonView, partialTick);
         else
             currentTransformation = null;
     }
