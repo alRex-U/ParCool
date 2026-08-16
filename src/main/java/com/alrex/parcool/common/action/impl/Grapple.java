@@ -118,8 +118,7 @@ public class Grapple extends ContinuableAction {
                 ParCoolActions.SLIDE_DOWN,
                 ParCoolActions.CASTAWAY,
                 ParCoolActions.RIDE_ZIPLINE,
-                ParCoolActions.HORIZONTAL_WALL_RUN,
-                ParCoolActions.DIVE
+                ParCoolActions.HORIZONTAL_WALL_RUN
         ));
         dataHolder = SynchronizedDataHolder.create(entry,
                 propertyPhase = SynchronizedProperty.newEnum(GrapplePhase.class, this::onPhaseChanged),
@@ -210,7 +209,7 @@ public class Grapple extends ContinuableAction {
 
     @Override
     public boolean canStart() {
-        if (!(parkourability.player() instanceof LocalPlayer player)) return false;
+        var player = parkourability.player();
         if (!GrapplingHookItem.isHeld(player)) return false;
         if (!ParCoolKeyBinds.ATTACK.state().isJustPressed()) return false;
         prepareThrow(player);
@@ -219,7 +218,7 @@ public class Grapple extends ContinuableAction {
 
     @Override
     public boolean canContinue() {
-        if (!(parkourability.player() instanceof LocalPlayer player)) return false;
+        var player = parkourability.player();
         if (!GrapplingHookItem.isHeld(player)) return false;
         if (ParCoolKeyBinds.JUMP.state().isJustPressed()) {
             releaseWithBoost = true;
