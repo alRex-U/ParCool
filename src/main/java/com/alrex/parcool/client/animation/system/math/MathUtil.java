@@ -117,4 +117,8 @@ public class MathUtil {
         }
         return new Vec3f(-xRot, -yRot, zRot);
     }
+
+    public static boolean isApproximatelyZero(Vec3 vec) {
+        return Math.abs(vec.x) < 1e-4 && Math.abs(vec.y) < 1e-4 && Math.abs(vec.z) < 1e-4;
+    }
 }

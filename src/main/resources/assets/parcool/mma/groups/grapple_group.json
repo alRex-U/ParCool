@@ -1,0 +1,8 @@
+{
+  "infinite": true,
+  "components": [
+    {
+      "name": "parcool:builtin/grapple_swing_body"
+    }
+  ]
+}

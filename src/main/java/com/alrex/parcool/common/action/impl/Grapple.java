@@ -2,6 +2,8 @@ package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.*;
+import com.alrex.parcool.client.animation.AnimationRegistries;
+import com.alrex.parcool.client.animation.system.IPlayerAnimatorHolder;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.client.sound.GrappleSwingSoundInstance;
 import com.alrex.parcool.common.Parkourability;
@@ -14,6 +16,7 @@ import com.alrex.parcool.common.grapple.RopeState;
 import com.alrex.parcool.common.item.misc.GrapplingHookItem;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.util.EntityUtil;
+import com.alrex.parcool.util.MathUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -75,6 +78,7 @@ public class Grapple extends ContinuableAction {
     private final SynchronizedProperty<Vec3> propertyAnchor;
     private final SynchronizedProperty<Vec3> propertyPivot;
     private final SynchronizedProperty<Float> propertyRopeLength;
+    private final SynchronizedProperty<Vec3> propertyAcceleration;
     private final SynchronizedProperty<Byte> propertyFlightDuration;
 
     @Nullable
@@ -109,6 +113,9 @@ public class Grapple extends ContinuableAction {
     @Nullable
     private Vec3 renderFrameTangent = null;
 
+    private float oldAngleRadian;
+    private float currentAngleRadian;
+
     public Grapple(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry, List.of(
                 ParCoolActions.HANG_ON,
@@ -125,6 +132,7 @@ public class Grapple extends ContinuableAction {
                 propertyAnchor = SynchronizedProperty.newVec3(),
                 propertyPivot = SynchronizedProperty.newVec3(),
                 propertyRopeLength = SynchronizedProperty.newFloat(),
+                propertyAcceleration = SynchronizedProperty.newVec3(),
                 propertyFlightDuration = SynchronizedProperty.newByte()
         );
     }
@@ -155,6 +163,14 @@ public class Grapple extends ContinuableAction {
     public Vec3 getPivot() {
         Vec3 pivot = propertyPivot.get();
         return pivot != null ? pivot : propertyAnchor.get();
+    }
+
+    @Nullable
+    public Vec3 getRopeDirection() {
+        var pivot = getPivot();
+        if (pivot == null) return null;
+        Vec3 position = GrapplePhysics.attachmentOf(parkourability.player().position());
+        return GrapplePhysics.ropeDirection(getPivot(), position);
     }
 
     public float getRopeLength() {
@@ -292,9 +308,12 @@ public class Grapple extends ContinuableAction {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInClient() {
+        currentAngleRadian = oldAngleRadian = 0;
         renderFrameSide = null;
         renderFrameTangent = null;
 
+        if (parkourability.player() instanceof IPlayerAnimatorHolder holder)
+            holder.getParCoolPlayerAnimator().start(AnimationRegistries.get().animations().GRAPPLE);
         playSound(parkourability.player(), SoundEvents.CROSSBOW_SHOOT, 0.7f, 1.5f);
     }
 
@@ -340,6 +359,24 @@ public class Grapple extends ContinuableAction {
         }
     }
 
+    public float getBodyAngle(float partial) {
+        return Mth.lerp(partial, oldAngleRadian, currentAngleRadian);
+    }
+
+    public Vec3 getAcceleration() {
+        return propertyAcceleration.getOrDefaultIfNull(Vec3.ZERO);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void updateAngle() {
+        oldAngleRadian = currentAngleRadian;
+        var acceleration = propertyAcceleration.getOrDefaultIfNull(Vec3.ZERO);
+        var xzLen = Math.hypot(acceleration.x, acceleration.z);
+        double gravity = parkourability.player().getAttributeValue(ForgeMod.ENTITY_GRAVITY.get());
+        currentAngleRadian = (float) Mth.lerp(0.5, oldAngleRadian, MathUtil.mapLinear((float) xzLen, 1e-3f, 1e-2f, 0f, (float) Math.atan2(-xzLen, gravity + acceleration.y)));
+    }
+
+
     @OnlyIn(Dist.CLIENT)
     @Override
     public void onStopInLocalClient() {
@@ -379,6 +416,7 @@ public class Grapple extends ContinuableAction {
             ropeWobble = ropeWobbleVelocity = Vec3.ZERO;
             return;
         }
+        updateAngle();
         var player = parkourability.player();
         Vec3 pivot = getPivot();
         if (pivot == null) return;
@@ -529,6 +567,7 @@ public class Grapple extends ContinuableAction {
         if (distance > maxSpeed) delta = delta.scale(maxSpeed / distance);
 
         velocity = GrapplePhysics.clampSpeed(currentVelocity, maxSpeed);
+        propertyAcceleration.set(delta.subtract(plannedDelta));
         plannedDelta = delta;
         plannedPosition = position.add(delta);
         attachedTicks++;
