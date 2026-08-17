@@ -558,8 +558,9 @@ public class Grapple extends ContinuableAction {
         pulling = true;
 
         Vec3 pullDirection = ropeDirection.reverse();
+        double pullVerticallity = Mth.clamp(Math.abs(pullDirection.y / (pullDirection.length() + 1e-5)), 0, 1);
         double againstGravity = Math.max(0, gravity * pullDirection.y);
-        return pullDirection.scale(config.pullStrength().get() + againstGravity);
+        return pullDirection.scale((config.pullStrength().get() + againstGravity) * Mth.lerp(pullVerticallity, 1, 0.2));
     }
 
     @OnlyIn(Dist.CLIENT)
