@@ -8,6 +8,7 @@ import com.alrex.parcool.client.animation.system.math.EasingFunctions;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.IRequestable;
 import com.alrex.parcool.common.action.InteractingWallDirection;
+import com.alrex.parcool.common.action.ParCoolActions;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
@@ -16,6 +17,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class ClimbUp extends ContinuableAction implements IRequestable<ClimbUp.RequestContext> {
     private static final int MAX_TICK = 10;
@@ -27,7 +29,7 @@ public class ClimbUp extends ContinuableAction implements IRequestable<ClimbUp.R
     private final SynchronizedProperty<InteractingWallDirection> propertyDirection;
 
     public ClimbUp(Parkourability parkourability, ActionEntry<? extends Action> entry) {
-        super(parkourability, entry);
+        super(parkourability, entry, List.of(ParCoolActions.GRAPPLE));
         dataHolder = SynchronizedDataHolder.create(entry,
                 propertyDirection = SynchronizedProperty.newEnum(InteractingWallDirection.class)
         );

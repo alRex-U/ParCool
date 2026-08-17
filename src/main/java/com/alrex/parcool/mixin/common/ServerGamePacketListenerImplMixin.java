@@ -26,7 +26,8 @@ public abstract class ServerGamePacketListenerImplMixin implements ServerPlayerC
     private void onHandleMovePlayer(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
         if (clientIsFloating) {
             var parkourability = Parkourability.get(player);
-            if (parkourability.get(ParCoolActions.RIDE_ZIPLINE).isDoing()) {
+            if (parkourability.get(ParCoolActions.RIDE_ZIPLINE).isDoing()
+                    || parkourability.get(ParCoolActions.GRAPPLE).isDoing()) {
                 clientIsFloating = false;
             }
         }

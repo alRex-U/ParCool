@@ -50,6 +50,7 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
 
     public HangOn(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry, List.of(
+                ParCoolActions.GRAPPLE,
                 ParCoolActions.CLIMB_UP,
                 ParCoolActions.DIVE,
                 ParCoolActions.HANG_DOWN,

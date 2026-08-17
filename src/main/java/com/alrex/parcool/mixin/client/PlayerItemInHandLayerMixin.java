@@ -1,6 +1,7 @@
 package com.alrex.parcool.mixin.client;
 
 import com.alrex.parcool.common.item.armor.EquipAble;
+import com.alrex.parcool.common.item.misc.GrapplingHookItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.ArmedModel;
 import net.minecraft.client.model.EntityModel;
@@ -33,6 +34,8 @@ public class PlayerItemInHandLayerMixin<T extends Player, M extends EntityModel<
             if (equipAble.renderWhenIn(entity, arm)) {
                 ci.cancel();
             }
+        } else if (stack.getItem() instanceof GrapplingHookItem && GrapplingHookItem.isDeployed(entity)) {
+            ci.cancel();
         }
     }
 }

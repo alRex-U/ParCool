@@ -112,6 +112,8 @@ public class ParCoolKeyBinds {
     public static final Input HIDE_IN_BLOCK = register(new KeyMapping("key.parcool.hide_in_block", GLFW.GLFW_KEY_C, KEY_CATEGORY));
 
     public static final LogicalInput JUMP = listen(Minecraft.getInstance().options.keyJump::isDown);
+    public static final LogicalInput USE_ITEM = listen(Minecraft.getInstance().options.keyUse::isDown);
+    public static final LogicalInput ATTACK = listen(Minecraft.getInstance().options.keyAttack::isDown);
 	public static final LogicalInput SHIFT = listen(Minecraft.getInstance().options.keyShift::isDown);
     public static final LogicalInput MOVEMENT_FORWARD = listen(Minecraft.getInstance().options.keyUp::isDown);
     public static final LogicalInput MOVEMENT_BACK = listen(Minecraft.getInstance().options.keyDown::isDown);
