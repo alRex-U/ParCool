@@ -36,7 +36,7 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
     private short tickSinceCanceled = 0;
 
     public HorizontalWallRun(Parkourability parkourability, ActionEntry<? extends Action> entry) {
-        super(parkourability, entry, List.of(ParCoolActions.DIVE));
+        super(parkourability, entry, List.of(ParCoolActions.GRAPPLE, ParCoolActions.DIVE));
         dataHolder = SynchronizedDataHolder.create(entry,
                 propertyDirection = SynchronizedProperty.newEnum(InteractingWallDirection.class),
                 propertyLeftToWall = SynchronizedProperty.newBoolean()

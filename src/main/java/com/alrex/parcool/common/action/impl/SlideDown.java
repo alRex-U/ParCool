@@ -46,6 +46,7 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
 
     public SlideDown(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry, List.of(
+                ParCoolActions.GRAPPLE,
                 ParCoolActions.CLIMB_UP,
                 ParCoolActions.VAULT,
                 ParCoolActions.HANG_ON,

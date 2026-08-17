@@ -17,6 +17,8 @@
   "item.parcool.zipline_rope": "Zipline Rope",
   "item.parcool.traceur_gloves": "Traceur's Gloves",
   "item.parcool.traceur_boots": "Traceur's Boots",
+  "item.parcool.hook": "Hook",
+  "item.parcool.grappling_hook": "Grappling Hook",
   "block.parcool.wooden_zipline_hook": "Wooden Zipline Hook",
   "block.parcool.iron_zipline_hook": "Iron Zipline Hook",
 
@@ -71,6 +73,7 @@
   "parcool.action.parcool.horizontal_wall_run": "H Wall Run",
   "parcool.action.parcool.pole_climb": "Pole Climb",
   "parcool.action.parcool.ride_zipline": "Ride Zipline",
+  "parcool.action.parcool.grapple": "Grapple",
   "parcool.action.parcool.skydive": "Skydive",
   "parcool.action.parcool.slide": "Slide",
   "parcool.action.parcool.slide_down": "Slide Down",
@@ -83,6 +86,11 @@
   "parcool.gui.text.action": "Action",
   "parcool.gui.text.actionName": "Action Name",
   "parcool.gui.text.config": "Config",
+  "parcool.gui.text.grappling_hook.throw": "Attack to throw the hook, Attack again to let go",
+  "parcool.gui.text.grappling_hook.reel": "Hold Use to haul yourself along the rope",
+  "parcool.gui.text.grappling_hook.steer": "Move to steer the swing, Sneak to pay rope out",
+  "parcool.gui.text.grappling_hook.release": "Jump to let go with a boost",
+
   "parcool.gui.text.zipline.color": "Zipline Color",
   "parcool.gui.text.zipline.bind_pos": "Position [%s]",
   "parcool.gui.text.zipline.not_bound": "No Bind",

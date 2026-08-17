@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " h ",
+    " s ",
+    "iIi"
+  ],
+  "key": {
+    "h": {
+      "item": "parcool:hook"
+    },
+    "s": {
+      "item": "minecraft:string"
+    },
+    "i": {
+      "item": "minecraft:iron_nugget"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "parcool:grappling_hook",
+    "count": 1
+  }
+}
