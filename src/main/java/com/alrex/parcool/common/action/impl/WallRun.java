@@ -30,6 +30,7 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
 
     public WallRun(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry, List.of(
+                ParCoolActions.GRAPPLE,
                 ParCoolActions.CRAWL,
                 ParCoolActions.HANG_ON,
                 ParCoolActions.SLIDE_DOWN,

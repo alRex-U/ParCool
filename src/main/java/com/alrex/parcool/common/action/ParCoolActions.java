@@ -32,9 +32,18 @@ public class ParCoolActions {
     public static final ActionEntry<RideZipline> RIDE_ZIPLINE;
     public static final ActionEntry<WallRun> WALL_RUN;
     public static final ActionEntry<PoleClimb> POLE_CLIMB;
+    public static final ActionEntry<Grapple> GRAPPLE;
 
     static {
         var builder = new ActionGroup.Builder(ParCool.MOD_ID);
+
+        GRAPPLE = builder.add("grapple", Grapple.class, Grapple::new, new ActionOption()
+                .needPose(null)
+                .availableInFluid(true)
+                .availableWhileExhausted(true)
+                .needLearning(false)
+        );
+
         WALL_JUMP = builder.add("wall_jump", WallJump.class, WallJump::new, new ActionOption()
                 .cost(StaminaConsumption.get(50, 0, 0))
                 .needNotOnGround(true)

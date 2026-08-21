@@ -386,6 +386,16 @@
     ]
   },
   {
+    "name": "parcool:grapple",
+    "animations": [
+      {
+        "main": "parcool:grapple_group.json",
+        "fade_in_duration": 6,
+        "fade_out_duration": 6
+      }
+    ]
+  },
+  {
     "name": "parcool:creative_fly",
     "animations": [
       {

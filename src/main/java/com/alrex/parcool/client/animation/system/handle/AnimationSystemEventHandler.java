@@ -30,7 +30,7 @@ public class AnimationSystemEventHandler {
             if (level == null) return;
             for (var p : level.players()) {
                 if (p instanceof IPlayerAnimatorHolder holder) {
-                    holder.getParCoolPlayerAnimator().onRenderTick(p, event.renderTickTime);
+                    holder.getParCoolPlayerAnimator().onRenderTick(event.renderTickTime);
                 }
             }
         }

@@ -96,7 +96,10 @@ public class Parkourability {
 
 	public boolean permit(ActionEntry<?> actionEntry) {
         var config = ParCool.getConfig().server();
-		return config.get(actionEntry).permit().get() && (!config.enableSkillTree.get() || capabilities.can(actionEntry)) && enabledActionStates.can(actionEntry);
+        boolean learned = !actionEntry.option().needLearning()
+                || !config.enableSkillTree.get()
+                || capabilities.can(actionEntry);
+        return config.get(actionEntry).permit().get() && learned && enabledActionStates.can(actionEntry);
 	}
 
 	/// Request the action start.

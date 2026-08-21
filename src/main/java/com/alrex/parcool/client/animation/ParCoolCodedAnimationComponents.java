@@ -177,4 +177,44 @@ public class ParCoolCodedAnimationComponents {
                 );
             }
     );
+    public final ID<CodedAnimationComponent> GRAPPLE_ANIMATE_BASE = CodedAnimationComponents.getInstance().register(
+            "builtin/grapple_swing_body",
+            (player, part, progress, partial, mirror) -> {
+                var action = Parkourability.get(player).get(ParCoolActions.GRAPPLE);
+                var acceleration = action.getAcceleration();
+                Vec3 rotationAxis = new Vec3(0, 0, 1)
+                        .yRot((float) (Math.toRadians(Mth.lerp(partial, player.yBodyRotO, player.yBodyRot)) + MathUtil.toYawRadian(acceleration) + Math.PI / 2))
+                        .normalize();
+                var pitch = action.getBodyAngle(partial);
+                switch (part) {
+                    case BODY -> {
+                        return new Transform(Vec3f.ZERO, MathUtil.rotation(new Vec3f((float) rotationAxis.x, 0, (float) rotationAxis.z), pitch));
+                    }
+                    case HEAD -> {
+                        return new Transform(Vec3f.ZERO, MathUtil.rotation(new Vec3f((float) rotationAxis.x, 0, (float) rotationAxis.z), -0.5f * pitch));
+                    }
+                    case RIGHT_ARM, LEFT_ARM -> {
+                        Vec3 ropeDirection = action.getRopeDirection();
+                        if (ropeDirection == null) return null;
+                        var horizontalLen = Math.sqrt(ropeDirection.x * ropeDirection.x + ropeDirection.z * ropeDirection.z);
+                        float handTiltScale = part.isMainHandOf(player)
+                                ? 0.125f : 0.25f;
+                        float yRot = MathUtil.warpRadian((float) (Math.toRadians(Mth.lerp(partial, player.yBodyRotO, player.yBodyRot)) + MathUtil.toYawRadian(new Vec3(-ropeDirection.x(), 0, -ropeDirection.z()))));
+                        float xRot = (float) -Math.atan2(ropeDirection.y(), horizontalLen);
+                        var reversed = Mth.abs(yRot) > Mth.HALF_PI;
+                        var rot = MathUtil.rotation(new Vec3f((float) rotationAxis.x, 0, (float) rotationAxis.z), -pitch);
+                        rot.mul(MathUtil.rotation(Vec3f.XP, reversed ? -Mth.PI - xRot : xRot));
+                        rot.mul(MathUtil.rotation(Vec3f.YP, (part == AnimatableModelPart.RIGHT_ARM ? Mth.PI : -Mth.PI) * handTiltScale));
+                        rot.mul(MathUtil.rotation(Vec3f.XP, Mth.HALF_PI));
+                        return new Transform(Vec3f.ZERO, rot);
+                    }
+                    case LEFT_LEG, RIGHT_LEG -> {
+                        return new Transform(Vec3f.ZERO, MathUtil.rotation(new Vec3f((float) rotationAxis.x, 0, (float) rotationAxis.z), 0.5f * pitch));
+                    }
+                    default -> {
+                        return null;
+                    }
+                }
+            }
+    );
 }

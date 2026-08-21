@@ -7,6 +7,7 @@ import com.alrex.parcool.client.animation.system.PlayerAnimator;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.client.sound.ZiplineUseSoundInstance;
 import com.alrex.parcool.common.Parkourability;
+import com.alrex.parcool.common.action.ActionExtension;
 import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.common.damage.DamageTypes;
@@ -24,12 +25,13 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.ForgeMod;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class RideZipline extends ContinuableAction {
+public class RideZipline extends ContinuableAction implements ActionExtension.KeyMapTriggeredListener {
     private static final BehaviorEnforcer.ID ID_FALL_FLY_CANCEL = BehaviorEnforcer.newID();
     private static final BehaviorEnforcer.ID ID_SPRINT_CANCEL = BehaviorEnforcer.newID();
 
@@ -53,6 +55,7 @@ public class RideZipline extends ContinuableAction {
 
     public RideZipline(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry, List.of(
+                ParCoolActions.GRAPPLE,
                 ParCoolActions.VAULT,
                 ParCoolActions.HANG_ON,
                 ParCoolActions.HANG_DOWN,
@@ -238,5 +241,13 @@ public class RideZipline extends ContinuableAction {
         double xz = -acceleration * invSqrt;
         double y = gravity + acceleration * slope * invSqrt;
         currentAngleRadian = (float) Mth.lerp(0.1, oldAngleRadian, Math.atan2(xz, y));
+    }
+
+    @Override
+    public void onInput(InputEvent.InteractionKeyMappingTriggered event) {
+        if (isDoing() && (event.isAttack() || event.isUseItem())) {
+            event.setSwingHand(false);
+            event.setCanceled(true);
+        }
     }
 }

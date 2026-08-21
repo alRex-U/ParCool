@@ -37,7 +37,7 @@ minecraft {
     mappings channel: 'official', version: minecraft_version
     copyIdeResources = true
 
-    accessTransformer = file('accesstransformer.cfg')
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
         client {

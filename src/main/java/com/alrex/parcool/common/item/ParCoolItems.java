@@ -4,6 +4,7 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.block.Blocks;
 import com.alrex.parcool.common.item.armor.TraceurBootsItem;
 import com.alrex.parcool.common.item.armor.TraceurGlovesItem;
+import com.alrex.parcool.common.item.misc.GrapplingHookItem;
 import com.alrex.parcool.common.item.misc.ParCoolGuideItem;
 import com.alrex.parcool.common.item.misc.ZiplineRopeItem;
 import net.minecraft.client.Minecraft;
@@ -22,6 +23,8 @@ public class ParCoolItems {
     public static final RegistryObject<BlockItem> WOODEN_ZIPLINE_HOOK = ITEMS.register("wooden_zipline_hook", () -> new BlockItem(Blocks.WOODEN_ZIPLINE_HOOK.get(), new Item.Properties()));
     public static final RegistryObject<BlockItem> IRON_ZIPLINE_HOOK = ITEMS.register("iron_zipline_hook", () -> new BlockItem(Blocks.IRON_ZIPLINE_HOOK.get(), new Item.Properties()));
     public static final RegistryObject<ZiplineRopeItem> ZIPLINE_ROPE = ITEMS.register("zipline_rope", () -> new ZiplineRopeItem(new Item.Properties()));
+    public static final RegistryObject<Item> HOOK = ITEMS.register("hook", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<GrapplingHookItem> GRAPPLING_HOOK = ITEMS.register("grappling_hook", () -> new GrapplingHookItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<TraceurGlovesItem> TRACEUR_GLOVES = ITEMS.register("traceur_gloves", () -> new TraceurGlovesItem(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<TraceurBootsItem> TRACEUR_BOOTS = ITEMS.register("traceur_boots", () -> new TraceurBootsItem(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<ParCoolGuideItem> PARCOOL_GUIDE = ITEMS.register("parcool_guide", () -> new ParCoolGuideItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));

@@ -1,6 +1,7 @@
 package com.alrex.parcool.mixin.client;
 
 import com.alrex.parcool.common.item.armor.EquipAble;
+import com.alrex.parcool.common.item.misc.GrapplingHookItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
@@ -21,9 +22,11 @@ public abstract class ItemInHandRendererMixin {
 
     @Inject(method = "renderArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;ZLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V"))
     private void onRenderItemInRenderArmWithItem(AbstractClientPlayer player, float p_109373_, float p_109374_, InteractionHand hand, float p_109376_, ItemStack stack, float p_109378_, PoseStack poseStack, MultiBufferSource bufferSource, int p_109381_, CallbackInfo ci) {
-        if (!(stack.getItem() instanceof EquipAble equipAble)) return;
         var arm = hand == InteractionHand.MAIN_HAND ? player.getMainArm() : player.getMainArm().getOpposite();
-        if (equipAble.renderWhenIn(player, arm)) {
+        boolean showBareArm = stack.getItem() instanceof EquipAble equipAble
+                ? equipAble.renderWhenIn(player, arm)
+                : stack.getItem() instanceof GrapplingHookItem && GrapplingHookItem.isDeployed(player);
+        if (showBareArm) {
             poseStack.popPose();
             this.renderPlayerArm(poseStack, bufferSource, p_109381_, p_109378_, p_109376_, arm);
             poseStack.pushPose();
