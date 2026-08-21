@@ -23,6 +23,7 @@ eclipse
 run
 logs
 src/generated/
+.env
 
 # Files from Forge MDK
 forge*changelog.txt
