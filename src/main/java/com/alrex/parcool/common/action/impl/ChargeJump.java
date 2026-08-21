@@ -75,7 +75,7 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
 
     @Override
     public void onJump() {
-        if (isDoing()) {
+        if (isDoing() && parkourability.player().level.isClientSide()) {
             jumped = true;
             propertyJumpTriggered.set(Boolean.TRUE);
             var deltaMove = parkourability.player().getDeltaMovement();

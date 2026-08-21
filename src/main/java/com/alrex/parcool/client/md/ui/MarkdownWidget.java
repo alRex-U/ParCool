@@ -444,7 +444,7 @@ public class MarkdownWidget extends AbstractWidget {
             sprite = ParCoolTextures.guideResourceSprite(content.spriteLocation());
             this.x = x + (width - Math.min(width, sprite.getWidth())) / 2;
             setWidth(Math.min(width, sprite.getWidth()));
-            setHeight(getWidth() * sprite.getHeight() / sprite.getHeight());
+            setHeight(getWidth() * sprite.getHeight() / sprite.getWidth());
         }
 
         @Override

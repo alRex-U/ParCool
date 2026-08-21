@@ -10,6 +10,8 @@ In this page, I'll introduce contents which you should play first!
 
 First I have to introduce Stamina system.
 
+![](parcool:stamina)
+
 Player has a new parameter called Stamina. This expresses player's short-term fatigue.
 
 Stamina is displayed above saturation of hotbar.

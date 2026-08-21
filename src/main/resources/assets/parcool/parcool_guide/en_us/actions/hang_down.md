@@ -1,5 +1,7 @@
 # Hang Down
 
+![](parcool:hang_down)
+
 Don't mistake this for [Hang On](parcool:actions/hang_on.md). These are explicitly different actions.
 You can hang down from bar like blocks, such as horizontally-placed *iron chains* and *wooden fences*.
 
