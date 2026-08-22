@@ -6,6 +6,7 @@ plugins {
     id 'idea'
     id 'net.minecraftforge.gradle' version '[6.0,6.2]'
     id 'org.spongepowered.mixin' version '0.7.+'
+    id "co.uzzu.dotenv.gradle" version '4.+'
     id 'me.modmuss50.mod-publish-plugin' version '1.+'
 }
 
@@ -182,7 +183,7 @@ publishMods {
 
     curseforge {
         projectId = '482378'
-        accessToken = providers.environmentVariable('API_TOKEN_PARCOOL_CURSEFORGE')
+        accessToken = env.fetch("API_TOKEN_PARCOOL_CURSEFORGE")
         minecraftVersions.add(minecraft_version)
 
         clientRequired = true
@@ -194,7 +195,7 @@ publishMods {
     }
     modrinth {
         projectId = 'Fsvx2bdR'
-        accessToken = providers.environmentVariable('API_TOKEN_PARCOOL_MODRINTH')
+        accessToken = env.fetch("API_TOKEN_PARCOOL_MODRINTH")
         minecraftVersions.add(minecraft_version)
 
         announcementTitle = 'Download from Modrinth'
@@ -207,8 +208,8 @@ publishMods {
             # ParCool: ${minecraft_version}-${mod_version} is released!
             
 """.stripIndent() + changelogText
-        webhookUrl = providers.environmentVariable('API_TOKEN_PARCOOL_DISCORD_WEBHOOK')
-        dryRunWebhookUrl = providers.environmentVariable('API_TOKEN_PARCOOL_DISCORD_WEBHOOK_DRY_RUN')
+        webhookUrl = env.fetch("API_TOKEN_PARCOOL_DISCORD_WEBHOOK_URL")
+        dryRunWebhookUrl = env.fetch("API_TOKEN_PARCOOL_DISCORD_WEBHOOK_DRY_RUN_URL")
         setPlatforms(publishMods.platforms.curseforge, publishMods.platforms.modrinth)
         style {
             look = 'MODERN'

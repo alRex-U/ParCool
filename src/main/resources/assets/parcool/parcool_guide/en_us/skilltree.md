@@ -1,5 +1,7 @@
 # Skill Tree
 
+![](parcool:skilltree)
+
 I'm sure you are reading this by using <item id="parcool:parcool_guide"/>. Use it when you sneak to open Skill Tree.
 
 You can unlock ParCool features from skill tree by consuming your experience.

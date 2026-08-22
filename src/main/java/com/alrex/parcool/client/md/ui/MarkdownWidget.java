@@ -449,7 +449,7 @@ public class MarkdownWidget extends AbstractWidget {
             var contents = sprite.contents();
             this.setX(x + (width - Math.min(width, contents.width())) / 2);
             setWidth(Math.min(width, contents.width()));
-            setHeight(getWidth() * contents.width() / contents.height());
+            setHeight(getWidth() * contents.height() / contents.width());
         }
 
         @Override

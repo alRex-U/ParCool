@@ -56,6 +56,7 @@ public class ParCoolTabletScreen extends Screen {
 
     @Override
     public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        if (minecraft == null) return;
         var poseStack = graphics.pose();
         renderBackground(graphics);
         poseStack.pushPose();
