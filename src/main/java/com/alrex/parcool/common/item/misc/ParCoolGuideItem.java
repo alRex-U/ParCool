@@ -22,7 +22,8 @@ public class ParCoolGuideItem extends Item {
 
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
-        lines.add(Component.translatable("parcool.gui.text.guide.tooltip").withStyle(ChatFormatting.DARK_GRAY));
+        lines.add(Component.translatable("parcool.gui.text.guide.tooltip.guide").withStyle(ChatFormatting.GRAY));
+        lines.add(Component.translatable("parcool.gui.text.guide.tooltip.skilltree").withStyle(ChatFormatting.GRAY));
     }
 
     @Nonnull
