@@ -185,6 +185,7 @@ publishMods {
         projectId = '482378'
         accessToken = env.fetch("API_TOKEN_PARCOOL_CURSEFORGE")
         minecraftVersions.add(minecraft_version)
+        projectSlug = 'parcool'
 
         clientRequired = true
         serverRequired = true
@@ -209,11 +210,9 @@ publishMods {
             
 """.stripIndent() + changelogText
         webhookUrl = env.fetch("API_TOKEN_PARCOOL_DISCORD_WEBHOOK_URL")
-        dryRunWebhookUrl = env.fetch("API_TOKEN_PARCOOL_DISCORD_WEBHOOK_DRY_RUN_URL")
         setPlatforms(publishMods.platforms.curseforge, publishMods.platforms.modrinth)
         style {
             look = 'MODERN'
-            link = 'BUTTON'
             thumbnailUrl = 'https://i.imgur.com/pibqOcC.png'
         }
     }
