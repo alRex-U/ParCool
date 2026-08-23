@@ -213,7 +213,6 @@ publishMods {
         setPlatforms(publishMods.platforms.curseforge, publishMods.platforms.modrinth)
         style {
             look = 'MODERN'
-            link = 'BUTTON'
             thumbnailUrl = 'https://i.imgur.com/pibqOcC.png'
         }
     }
