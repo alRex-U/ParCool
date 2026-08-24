@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.ProfilePublicKey;
 import net.minecraft.world.level.Level;
@@ -46,7 +47,7 @@ public abstract class PlayerMixin extends LivingEntity implements IParkourabilit
     public void onTryToStartFallFlying(CallbackInfoReturnable<Boolean> cir) {
         var player = (Player) (Object) this;
         Parkourability parkourability = Parkourability.get(player);
-        if (parkourability != null && parkourability.getBehaviorEnforcer().enforceNoFallFlying()) {
+        if (parkourability != null && parkourability.getBehaviorEnforcer().noFallFlyingMarks.enforce()) {
             cir.setReturnValue(false);
         }
     }
@@ -55,7 +56,7 @@ public abstract class PlayerMixin extends LivingEntity implements IParkourabilit
     public void onJumpFromGround(CallbackInfo ci) {
         Parkourability parkourability = Parkourability.get((Player) (Object) this);
         if (parkourability == null) return;
-        if (parkourability.getBehaviorEnforcer().enforceNoJump()) {
+        if (parkourability.getBehaviorEnforcer().noJumpMarks.enforce()) {
             ci.cancel();
         }
     }
@@ -64,7 +65,7 @@ public abstract class PlayerMixin extends LivingEntity implements IParkourabilit
     public void onIsStayingOnGroundSurface(CallbackInfoReturnable<Boolean> cir) {
         Parkourability parkourability = Parkourability.get((Player) (Object) this);
         if (parkourability == null) return;
-        if (parkourability.getBehaviorEnforcer().enforceNoDescendingFromEdge()) {
+        if (parkourability.getBehaviorEnforcer().noDescendingFromEdgeMarks.enforce()) {
             cir.setReturnValue(true);
         }
     }
@@ -83,9 +84,9 @@ public abstract class PlayerMixin extends LivingEntity implements IParkourabilit
 
     @Inject(method = "updatePlayerPose", at = @At("HEAD"), cancellable = true)
     public void onUpdatePlayerPose(CallbackInfo ci) {
-        var pose = parcool$parkourability.getBehaviorEnforcer().getEnforcedForcedPose();
-        if (pose == null) return;
-        setPose(pose);
-        ci.cancel();
+        if (parcool$parkourability.getBehaviorEnforcer().swimmingPoseMarks.enforce()) {
+            setPose(Pose.SWIMMING);
+            ci.cancel();
+        }
     }
 }

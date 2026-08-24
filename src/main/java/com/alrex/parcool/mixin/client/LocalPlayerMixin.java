@@ -61,11 +61,11 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
     @Inject(method = "setSprinting", at = @At("HEAD"), cancellable = true)
     public void onSetSprinting(boolean sprint, CallbackInfo ci) {
         Parkourability parkourability = Parkourability.get((LocalPlayer) (Object) this);
-        if (parkourability.getBehaviorEnforcer().enforceNoSprint()) {
+        if (parkourability.getBehaviorEnforcer().noSprintMarks.enforce()) {
             super.setSprinting(false);
             sprintTime = 0;
             ci.cancel();
-        } else if (parkourability.getBehaviorEnforcer().enforceSprint()) {
+        } else if (parkourability.getBehaviorEnforcer().sprintMarks.enforce()) {
             super.setSprinting(true);
             sprintTime = 0;
             ci.cancel();

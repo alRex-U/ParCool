@@ -117,8 +117,8 @@ public class RideZipline extends ContinuableAction implements ActionExtension.Ke
                     return new Vec3(currentPos.x, currentPos.y - player.getBbHeight() * 1.1, currentPos.z);
                 }
         );
-        parkourability.getBehaviorEnforcer().addMarkerEnforcingNoSprint(ID_SPRINT_CANCEL, this::isDoing);
-        parkourability.getBehaviorEnforcer().addMarkerEnforcingNoFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
+        parkourability.getBehaviorEnforcer().noSprintMarks.add(ID_SPRINT_CANCEL, this::isDoing);
+        parkourability.getBehaviorEnforcer().noFallFlyingMarks.add(ID_FALL_FLY_CANCEL, this::isDoing);
         Minecraft.getInstance().getSoundManager().play(new ZiplineUseSoundInstance(player, this));
     }
 

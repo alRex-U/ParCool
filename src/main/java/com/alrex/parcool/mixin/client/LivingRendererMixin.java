@@ -24,7 +24,7 @@ public abstract class LivingRendererMixin<T extends LivingEntity, M extends Enti
         if (entity instanceof Player player) {
             Parkourability parkourability = Parkourability.get(player);
             if (parkourability == null) return;
-            if (parkourability.getBehaviorEnforcer().enforceNoShowingName()) {
+            if (parkourability.getBehaviorEnforcer().noShowNameMarks.enforce()) {
                 cir.setReturnValue(false);
             }
         }

@@ -321,7 +321,7 @@ public class Grapple extends ContinuableAction {
     @Override
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
-        parkourability.getBehaviorEnforcer().addMarkerEnforcingNoFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
+        parkourability.getBehaviorEnforcer().noFallFlyingMarks.add(ID_FALL_FLY_CANCEL, this::isDoing);
         Minecraft.getInstance().getSoundManager().play(new GrappleSwingSoundInstance(player, this));
     }
 

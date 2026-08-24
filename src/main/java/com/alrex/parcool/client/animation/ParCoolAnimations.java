@@ -46,6 +46,10 @@ public class ParCoolAnimations {
             (p) -> Parkourability.get(p).get(ParCoolActions.CLIMB_UP).isDoing(),
             null
     );
+    public final ID<AnimationSet> CLIMB_UP_JUMP = AnimationSets.getInstance().registerTimeout(
+            ParCool.resourceLocation("climb_up_jump"),
+            100, null
+    );
     public final ID<AnimationSet> TRICK_JUMP_BACK = AnimationSets.getInstance().register(
             ParCool.resourceLocation("trick_jump_back"),
             (p) -> !p.isOnGround(),

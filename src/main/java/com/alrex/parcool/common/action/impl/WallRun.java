@@ -17,6 +17,7 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeMod;
@@ -51,7 +52,8 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
 
         if (!player.horizontalCollision) return false;
         var wallDirection = parkourability.getAdditionalProperties().getDefaultWallInteraction();
-        if (wallDirection == null || wallDirection.asVec().dot(lookAngle) <= 1. / Mth.SQRT_OF_TWO) return false;
+        if (wallDirection == null || wallDirection.asVec().dot(new Vec3(lookAngle.x, 0, lookAngle.z).normalize()) <= 1. / Mth.SQRT_OF_TWO)
+            return false;
 
         var gravityAttr = player.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
         if (gravityAttr == null) return false;

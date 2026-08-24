@@ -132,6 +132,7 @@ public class ParCoolActions {
 
         CLIMB_UP = builder.add("climb_up", ClimbUp.class, ClimbUp::new, new ActionOption()
                 .processedAfter(HANG_ON)
+                .needPose(null)
                 .cost(StaminaConsumption.get(50, 0, 0))
                 .learningCost(10)
         );

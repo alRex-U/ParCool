@@ -102,7 +102,7 @@ public class Dodge extends ContinuableAction implements ActionExtension.Attacked
         };
         var moveVec = moveDirection.scale(speed);
         parkourability.getBehaviorEnforcer().setMarkerEnforcingDeltaMovement(this::isDoing, () -> new Vec3(moveVec.x, player.getDeltaMovement().y, moveVec.z));
-        parkourability.getBehaviorEnforcer().addMarkerEnforcingNoDescendingFromEdge(ID_CANCEL_GET_OFF_BLOCK, this::isDoing);
+        parkourability.getBehaviorEnforcer().noDescendingFromEdgeMarks.add(ID_CANCEL_GET_OFF_BLOCK, this::isDoing);
     }
 
     @Override

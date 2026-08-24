@@ -28,7 +28,7 @@ public abstract class EntityMixin extends CapabilityProvider<Entity> {
         }
         var parkourability = Parkourability.get(player);
         if (parkourability == null) return;
-        if (parkourability.getBehaviorEnforcer().enforceNoPhysics()) {
+        if (parkourability.getBehaviorEnforcer().noPhysicsMarks.enforce()) {
             noPhysics = true;
         }
     }
