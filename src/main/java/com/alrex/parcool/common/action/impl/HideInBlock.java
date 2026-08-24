@@ -28,6 +28,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 
@@ -35,7 +36,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class HideInBlock extends ContinuableAction implements ActionExtension.VisibilityListener, ActionExtension.LandListener, ActionExtension.BlockChangedInClientListener {
+public class HideInBlock
+        extends ContinuableAction
+        implements
+        ActionExtension.VisibilityListener,
+        ActionExtension.LandListener,
+        ActionExtension.BlockChangedInClientListener,
+        ActionExtension.KeyMapTriggeredListener {
     private static final BehaviorEnforcer.ID ID_CANCEL_SHOW_NAME = BehaviorEnforcer.newID();
     private static final BehaviorEnforcer.ID ID_CANCEL_SNEAK = BehaviorEnforcer.newID();
     private static final BehaviorEnforcer.ID ID_NO_PHYSICS = BehaviorEnforcer.newID();
@@ -376,6 +383,14 @@ public class HideInBlock extends ContinuableAction implements ActionExtension.Vi
             ) {
                 hidingBlockChanged = true;
             }
+        }
+    }
+
+    @Override
+    public void onInput(InputEvent.InteractionKeyMappingTriggered event) {
+        if (isDoing() && (event.isAttack() || event.isUseItem())) {
+            event.setSwingHand(false);
+            event.setCanceled(true);
         }
     }
 }

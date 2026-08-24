@@ -28,6 +28,10 @@ public class AnimationProcessor {
         this.owner = owner;
     }
 
+    public AbstractClientPlayer getOwner() {
+        return owner;
+    }
+
     private final ArrayList<WorkingAnimationEntry> animators = new ArrayList<>();
 
     public void tick() {
@@ -112,7 +116,7 @@ public class AnimationProcessor {
     }
 
     @Nullable
-    public BlendingModelTransform getTransformation(AbstractClientPlayer player, boolean firstPersonView, float partial) {
+    public BlendingModelTransform getTransformation(boolean firstPersonView, float partial) {
         if (animators.isEmpty()) return null;
         var factors = new float[10];
         int i;
@@ -133,7 +137,7 @@ public class AnimationProcessor {
         float vanillaBlend = 1f;
         do {
             var animator = animators.get((animators.size() - 1) - i).animator;
-            var thisAnimatorTransform = animator.getTransform(player, partial);
+            var thisAnimatorTransform = animator.getTransform(owner, partial);
             if (thisAnimatorTransform == null) continue;
             var cameraScale = animator.getCameraAnimationScale();
             if (firstPersonView && cameraScale != null && AnimationSystemConfig.getInstance().enableCameraAnimation.get()) {
@@ -158,7 +162,7 @@ public class AnimationProcessor {
             }
             if (i == maxI) {
                 factors[i] = 1f; // First animation is applied without blending
-                vanillaBlend = animator.getBlendFactorOverVanilla(player, partial);
+                vanillaBlend = animator.getBlendFactorOverVanilla(owner, partial);
             }
             transform = transform.morph(thisAnimatorTransform, factors[i]);
         } while ((--i) >= 0);

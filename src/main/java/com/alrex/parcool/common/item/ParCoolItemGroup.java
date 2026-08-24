@@ -8,8 +8,8 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Arrays;
 
@@ -26,6 +26,8 @@ public class ParCoolItemGroup {
                 output.accept(ParCoolItems.ZIPLINE_ROPE.get());
                 output.accept(ParCoolItems.TRACEUR_BOOTS.get());
                 output.accept(ParCoolItems.TRACEUR_GLOVES.get());
+                output.accept(ParCoolItems.GRAPPLING_HOOK.get());
+                output.accept(ParCoolItems.HOOK.get());
                 Arrays.stream(DyeColor.values())
                         .map(color -> {
                             var coloredRope = new ItemStack(ParCoolItems.ZIPLINE_ROPE.get());

@@ -117,4 +117,8 @@ public class MathUtil {
                 axis.x() * sin, axis.y() * sin, axis.z() * sin, Mth.cos(angle * 0.5f)
         );
     }
+
+    public static boolean isApproximatelyZero(Vec3 vec) {
+        return Math.abs(vec.x) < 1e-4 && Math.abs(vec.y) < 1e-4 && Math.abs(vec.z) < 1e-4;
+    }
 }

@@ -28,7 +28,7 @@ public class AnimationSystemEventHandler {
         if (level == null) return;
         for (var p : level.players()) {
             if (p instanceof IPlayerAnimatorHolder holder) {
-                holder.getParCoolPlayerAnimator().onRenderTick(p, event.getPartialTick().getGameTimeDeltaPartialTick(true));
+                holder.getParCoolPlayerAnimator().onRenderTick(event.getPartialTick().getGameTimeDeltaPartialTick(true));
             }
         }
     }

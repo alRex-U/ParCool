@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " i",
+    "i ",
+    "i "
+  ],
+  "key": {
+    "i": {
+      "id": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "parcool:hook",
+    "count": 1
+  }
+}

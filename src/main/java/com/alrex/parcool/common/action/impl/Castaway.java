@@ -7,11 +7,13 @@ import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.IRequestable;
+import com.alrex.parcool.common.action.ParCoolActions;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class Castaway extends ContinuableAction implements IRequestable<Castaway.RequestContext> {
     private static final int MAX_TICK = 14;
@@ -20,7 +22,7 @@ public class Castaway extends ContinuableAction implements IRequestable<Castaway
     private HangOn.HangState hangState;
 
     public Castaway(Parkourability parkourability, ActionEntry<? extends Action> entry) {
-        super(parkourability, entry);
+        super(parkourability, entry, List.of(ParCoolActions.GRAPPLE));
     }
 
     @Override

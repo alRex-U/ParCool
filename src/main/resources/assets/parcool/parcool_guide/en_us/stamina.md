@@ -2,6 +2,8 @@
 
 Player has a new parameter called Stamina. This expresses player's short-term fatigue.
 
+![](parcool:stamina)
+
 Stamina is displayed above saturation of hotbar.
 
 Almost ParCool actions consume stamina, and it recovers in relatively short time while resting.

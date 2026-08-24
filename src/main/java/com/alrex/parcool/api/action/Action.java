@@ -1,6 +1,5 @@
 package com.alrex.parcool.api.action;
 
-import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.stamina.AbstractLocalStamina;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.IRequestable;
@@ -106,8 +105,9 @@ public abstract class Action {
 
 	protected final boolean isPossible() {
 		var player = parkourability.player();
-		if (parkourability.player().isSpectator() || (parkourability.getStamina().isExhausted())) return false;
 		var option = entry.option();
+        if (player.isSpectator()) return false;
+        if (!option.availableWhileExhausted() && parkourability.getStamina().isExhausted()) return false;
         if ((option.neededPose() != null && option.neededPose() != player.getPose())
                 || (!option.availableInFluid() && player.isInFluidType())
 				|| (!option.availableNotInFluid() && !player.isInFluidType())

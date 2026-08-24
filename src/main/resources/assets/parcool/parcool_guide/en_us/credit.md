@@ -2,8 +2,12 @@
 
 ## Author
 
-- alRex_U
+- [alRex-U](https://github.com/alRex-U)
+
+## Contributors
+
+- [Guilherme](https://github.com/guivnf)
 
 ## Translation - Japanese(ja_jp)
 
-- alRex_U
+- [alRex-U](https://github.com/alRex-U)

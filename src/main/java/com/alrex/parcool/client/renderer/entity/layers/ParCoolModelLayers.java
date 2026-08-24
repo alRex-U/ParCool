@@ -1,6 +1,7 @@
 package com.alrex.parcool.client.renderer.entity.layers;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.client.renderer.entity.GrappleTipModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -16,6 +17,7 @@ public class ParCoolModelLayers {
     public static final ModelLayerLocation INNER_EQUIPMENT_SLIM = new ModelLayerLocation(ResourceLocation.withDefaultNamespace("player_slim"), "parcool.equipment_in");
     public static final ModelLayerLocation OUTER_EQUIPMENT = new ModelLayerLocation(ResourceLocation.withDefaultNamespace("player"), "parcool.equipment_out");
     public static final ModelLayerLocation OUTER_EQUIPMENT_SLIM = new ModelLayerLocation(ParCool.resourceLocation("player_slim"), "parcool.equipment_out");
+    public static final ModelLayerLocation GRAPPLE_TIP = new ModelLayerLocation(ParCool.resourceLocation("grapple_tip"), "main");
 
     public static void register(EntityRenderersEvent.RegisterLayerDefinitions event) {
         var innerEquipmentDefinition = LayerDefinition.create(HumanoidModel.createMesh(new CubeDeformation(0.1f), 0.0F), 64, 32);
@@ -24,5 +26,6 @@ public class ParCoolModelLayers {
         event.registerLayerDefinition(INNER_EQUIPMENT_SLIM, () -> innerEquipmentDefinition);
         event.registerLayerDefinition(OUTER_EQUIPMENT, () -> outerEquipmentDefinition);
         event.registerLayerDefinition(OUTER_EQUIPMENT_SLIM, () -> outerEquipmentDefinition);
+        event.registerLayerDefinition(GRAPPLE_TIP, GrappleTipModel::createLayer);
     }
 }

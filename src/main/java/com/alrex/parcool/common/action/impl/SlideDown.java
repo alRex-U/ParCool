@@ -27,11 +27,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.InputEvent;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class SlideDown extends ContinuableAction implements ActionExtension.LeaveFromWallListener {
+public class SlideDown extends ContinuableAction implements ActionExtension.LeaveFromWallListener, ActionExtension.KeyMapTriggeredListener {
     private static final BehaviorEnforcer.ID ID_FALL_FLY_CANCEL = BehaviorEnforcer.newID();
     private final SynchronizedDataHolder dataHolder;
     private final SynchronizedProperty<InteractingWallDirection> propertyDirection;
@@ -45,6 +46,7 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
 
     public SlideDown(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry, List.of(
+                ParCoolActions.GRAPPLE,
                 ParCoolActions.CLIMB_UP,
                 ParCoolActions.VAULT,
                 ParCoolActions.HANG_ON,
@@ -219,6 +221,14 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
     @Override
     public void onLeaveFromWall() {
         tickSinceCanceled = 0;
+    }
+
+    @Override
+    public void onInput(InputEvent.InteractionKeyMappingTriggered event) {
+        if (isDoing() && (event.isAttack() || event.isUseItem())) {
+            event.setSwingHand(false);
+            event.setCanceled(true);
+        }
     }
 
     private record AnimationData(

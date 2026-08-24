@@ -186,6 +186,11 @@ public class ParCoolAnimations {
             (p) -> Parkourability.get(p).get(ParCoolActions.FAST_SWIM).isDoing(),
             null
     );
+    public final ID<AnimationSet> GRAPPLE = AnimationSets.getInstance().register(
+            ParCool.resourceLocation("grapple"),
+            (p) -> Parkourability.get(p).get(ParCoolActions.GRAPPLE).isDoing(),
+            null
+    );
     public final ID<AnimationSet> CREATIVE_FLY = AnimationSets.getInstance().register(
             ParCool.resourceLocation("creative_fly"),
             (p) -> p.getAbilities().flying,

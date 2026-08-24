@@ -28,6 +28,10 @@
         "location": "parcool:zipline.md"
       },
       {
+        "title": "parcool.guide.page.grapple",
+        "location": "parcool:grapple.md"
+      },
+      {
         "title": "parcool.guide.page.potion",
         "location": "parcool:potions.md"
       },

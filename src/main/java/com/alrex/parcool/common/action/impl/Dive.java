@@ -34,7 +34,7 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
     private boolean jumped;
 
     public Dive(Parkourability parkourability, ActionEntry<? extends Action> entry) {
-        super(parkourability, entry, List.of(ParCoolActions.RIDE_ZIPLINE));
+        super(parkourability, entry, List.of(ParCoolActions.GRAPPLE, ParCoolActions.RIDE_ZIPLINE));
         dataHolder = SynchronizedDataHolder.create(entry,
                 propertyYSpeedOnBeginning = SynchronizedProperty.newFloat(),
                 propertyStartInAir = SynchronizedProperty.newBoolean()

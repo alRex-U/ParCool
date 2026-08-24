@@ -12,6 +12,10 @@ public class InputHandler {
     public static void onInput(InputEvent.InteractionKeyMappingTriggered event) {
         var player = Minecraft.getInstance().player;
         if (player == null) return;
+        if (event.isAttack() && com.alrex.parcool.common.item.misc.GrapplingHookItem.isHeld(player)) {
+            event.setSwingHand(false);
+            event.setCanceled(true);
+        }
         var parkourability = Parkourability.get(player);
         parkourability.getAdditionalProperties().onJump();
         for (var listener : parkourability.getActions().getExtensionListeners(ActionExtension.KeyMapTriggeredListener.class)) {

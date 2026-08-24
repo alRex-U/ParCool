@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.animation.system;
 
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -16,6 +17,13 @@ public enum AnimatableModelPart {
         );
     }
 
+    public boolean isMainHandOf(Player player) {
+        return switch (player.getMainArm()) {
+            case RIGHT -> this == RIGHT_ARM;
+            case LEFT -> this == LEFT_ARM;
+            default -> false;
+        };
+    }
     public AnimatableModelPart getMirrorPart() {
         return MIRROR.get(this.ordinal());
     }

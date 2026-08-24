@@ -1,5 +1,7 @@
 # Zipline
 
+![](parcool:zipline)
+
 ParCool provides facility named **Zipline**.
 Zipline is a rope bound to two **zipline hooks**. You can use it to move along the rope.
 

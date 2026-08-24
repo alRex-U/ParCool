@@ -5,6 +5,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'net.neoforged.moddev' version '1.+'
+    id "co.uzzu.dotenv.gradle" version '4.+'
     id 'me.modmuss50.mod-publish-plugin' version '1.+'
 }
 
@@ -32,7 +33,7 @@ neoForge {
     version = neoforge_version
 
     validateAccessTransformers = true
-    accessTransformers.from 'accesstransformer.cfg'
+    accessTransformers.from 'src/main/resources/META-INF/accesstransformer.cfg'
 
     runs {
         client {
@@ -156,22 +157,22 @@ jar {
                 "MixinConfigs"            : "parcool.mixins.json"
         ])
     }
-    finalizedBy('reobfJar')
 }
 publishMods {
     type = ReleaseType.of(release_type)
     file = jar.archiveFile
     var changelogText = project.layout.projectDirectory.file("changelog/v_${mod_version}.md").asFile.getText()
     changelog = changelogText
-    modLoaders.add('forge')
+    modLoaders.add('neoforge')
 
     displayName = "${minecraft_version}-${mod_version}"
     version = "${minecraft_version}-${mod_version}"
 
     curseforge {
         projectId = '482378'
-        accessToken = providers.environmentVariable('API_TOKEN_PARCOOL_CURSEFORGE')
+        accessToken = env.fetch("API_TOKEN_PARCOOL_CURSEFORGE")
         minecraftVersions.add(minecraft_version)
+        projectSlug = 'parcool'
 
         clientRequired = true
         serverRequired = true
@@ -182,7 +183,7 @@ publishMods {
     }
     modrinth {
         projectId = 'Fsvx2bdR'
-        accessToken = providers.environmentVariable('API_TOKEN_PARCOOL_MODRINTH')
+        accessToken = env.fetch("API_TOKEN_PARCOOL_MODRINTH")
         minecraftVersions.add(minecraft_version)
 
         announcementTitle = 'Download from Modrinth'
@@ -195,12 +196,10 @@ publishMods {
             # ParCool: ${minecraft_version}-${mod_version} is released!
             
 """.stripIndent() + changelogText
-        webhookUrl = providers.environmentVariable('API_TOKEN_PARCOOL_DISCORD_WEBHOOK')
-        dryRunWebhookUrl = providers.environmentVariable('API_TOKEN_PARCOOL_DISCORD_WEBHOOK_DRY_RUN')
+        webhookUrl = env.fetch("API_TOKEN_PARCOOL_DISCORD_WEBHOOK_URL")
         setPlatforms(publishMods.platforms.curseforge, publishMods.platforms.modrinth)
         style {
             look = 'MODERN'
-            link = 'BUTTON'
             thumbnailUrl = 'https://i.imgur.com/pibqOcC.png'
         }
     }
