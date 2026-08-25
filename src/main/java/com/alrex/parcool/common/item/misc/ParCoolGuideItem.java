@@ -30,10 +30,12 @@ public class ParCoolGuideItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
         var itemInHand = player.getItemInHand(hand);
-        if (player.isShiftKeyDown()) {
-            ParCool.PROXY.openSkillTreeGui(player);
-        } else {
-            ParCool.PROXY.openGuideGui();
+        if (level.isClientSide()) {
+            if (player.isShiftKeyDown()) {
+                ParCool.PROXY.openSkillTreeGui(player);
+            } else {
+                ParCool.PROXY.openGuideGui();
+            }
         }
         return InteractionResultHolder.sidedSuccess(itemInHand, level.isClientSide());
     }

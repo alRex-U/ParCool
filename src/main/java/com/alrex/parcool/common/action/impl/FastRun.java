@@ -57,7 +57,7 @@ public class FastRun extends ContinuableAction {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
-        parkourability.getBehaviorEnforcer().addMarkerEnforcingSprint(ENFORCE_SPRINT_ID, this::isDoing);
+        parkourability.getBehaviorEnforcer().sprintMarks.add(ENFORCE_SPRINT_ID, this::isDoing);
     }
 
     @Override

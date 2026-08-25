@@ -17,7 +17,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.List;
 
 public class Crawl extends ContinuableAction {
-    private static final BehaviorEnforcer.ID CANCEL_SPRINT_ID = BehaviorEnforcer.newID();
+    private static final BehaviorEnforcer.ID ID_CANCEL_SPRINT = BehaviorEnforcer.newID();
+    private static final BehaviorEnforcer.ID ID_ENFORCE_SWIM = BehaviorEnforcer.newID();
 
     public Crawl(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry, List.of(
@@ -38,7 +39,9 @@ public class Crawl extends ContinuableAction {
 
     @Override
     public boolean canContinue() {
-        if (ParCoolKeyBinds.CRAWL.key().isDown()) return true;
+        if (ParCoolKeyBinds.CRAWL.key().isDown() || parkourability.player().getForcedPose() == Pose.SWIMMING)
+            return true;
+        if (parkourability.getBehaviorEnforcer().swimmingPoseMarks.remainExcept(ID_ENFORCE_SWIM)) return true;
         return !parkourability.player().canEnterPose(Pose.CROUCHING) && parkourability.player().hasPose(Pose.SWIMMING);
     }
 
@@ -51,7 +54,7 @@ public class Crawl extends ContinuableAction {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
-        parkourability.getBehaviorEnforcer().addMarkerEnforcingNoSprint(CANCEL_SPRINT_ID, this::isDoing);
+        parkourability.getBehaviorEnforcer().noSprintMarks.add(ID_CANCEL_SPRINT, this::isDoing);
         if (parkourability.get(ParCoolActions.FAST_RUN).isDoing()) {
             parkourability.request(ParCoolActions.SLIDE, new Slide.RequestContext());
         }
@@ -59,6 +62,6 @@ public class Crawl extends ContinuableAction {
 
     @Override
     public void onStart() {
-        parkourability.getBehaviorEnforcer().setMarkerEnforcingForcedPose(this::isDoing, () -> Pose.SWIMMING);
+        parkourability.getBehaviorEnforcer().swimmingPoseMarks.add(ID_ENFORCE_SWIM, this::isDoing);
     }
 }

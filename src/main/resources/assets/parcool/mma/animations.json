@@ -71,6 +71,16 @@
     ]
   },
   {
+    "name": "parcool:climb_up_jump",
+    "animations": [
+      {
+        "main": "parcool:climb_up_jump_group.json",
+        "fade_in_duration": 3,
+        "fade_out_duration": 5
+      }
+    ]
+  },
+  {
     "name": "parcool:trick_jump_back",
     "animations": [
       {
