@@ -4,23 +4,16 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolAttributes;
 import com.alrex.parcool.client.renderer.entity.layers.EquipmentRenderLayer;
 import com.alrex.parcool.common.item.DyeAble;
-import com.alrex.parcool.extern.AdditionalMods;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -32,7 +25,6 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
@@ -57,11 +49,6 @@ public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
     @Override
     public EquipmentSlot getEquipmentSlot() {
         return EquipmentSlot.CHEST;
-    }
-
-    @Override
-    public @Nullable EquipmentSlot getEquipmentSlot(ItemStack stack) {
-        return getEquipmentSlot();
     }
 
     @Override
