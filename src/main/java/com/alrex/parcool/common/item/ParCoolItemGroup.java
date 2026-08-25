@@ -26,6 +26,8 @@ public class ParCoolItemGroup {
                 output.accept(ParCoolItems.ZIPLINE_ROPE.get());
                 output.accept(ParCoolItems.TRACEUR_BOOTS.get());
                 output.accept(ParCoolItems.TRACEUR_GLOVES.get());
+                output.accept(ParCoolItems.GRAPPLING_HOOK.get());
+                output.accept(ParCoolItems.HOOK.get());
                 Arrays.stream(DyeColor.values())
                         .map(color -> {
                             var coloredRope = new ItemStack(ParCoolItems.ZIPLINE_ROPE.get());
