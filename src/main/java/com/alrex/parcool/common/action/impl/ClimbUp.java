@@ -12,6 +12,7 @@ import com.alrex.parcool.common.action.InteractingWallDirection;
 import com.alrex.parcool.common.action.ParCoolActions;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -154,7 +155,7 @@ public class ClimbUp extends ContinuableAction implements IRequestable<ClimbUp.R
             var player = parkourability.player();
             var delta = player.getDeltaMovement();
             var destYHeight = destination.y - player.position().y + 0.1;
-            var gravityAttr = player.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
+            var gravityAttr = player.getAttribute(Attributes.GRAVITY);
             if (gravityAttr == null) return;
             var gravity = gravityAttr.getValue();
             player.setDeltaMovement(delta.x, Math.sqrt(Math.abs(2 * gravity * destYHeight)), delta.z);

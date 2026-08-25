@@ -42,7 +42,7 @@ public class Crawl extends ContinuableAction {
         if (ParCoolKeyBinds.CRAWL.key().isDown() || parkourability.player().getForcedPose() == Pose.SWIMMING)
             return true;
         if (parkourability.getBehaviorEnforcer().swimmingPoseMarks.remainExcept(ID_ENFORCE_SWIM)) return true;
-        return !parkourability.player().canEnterPose(Pose.CROUCHING) && parkourability.player().hasPose(Pose.SWIMMING);
+        return !parkourability.player().canPlayerFitWithinBlocksAndEntitiesWhen(Pose.CROUCHING) && parkourability.player().hasPose(Pose.SWIMMING);
     }
 
     @OnlyIn(Dist.CLIENT)

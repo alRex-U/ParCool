@@ -88,7 +88,7 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
         parkourability.getBehaviorEnforcer().noFallFlyingMarks.add(ID_FALL_FLY_CANCEL, this::isDoing);
-        var durationAttr = player.getAttribute(ParCoolAttributes.HORIZONTAL_WALL_RUN_DURATION.get());
+        var durationAttr = player.getAttribute(ParCoolAttributes.HORIZONTAL_WALL_RUN_DURATION);
         if (durationAttr == null) return;
         var duration = durationAttr.getValue();
         parkourability.getBehaviorEnforcer().setMarkerEnforcingDeltaMovement(this::isDoing, () -> {
