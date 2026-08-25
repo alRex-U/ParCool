@@ -63,7 +63,7 @@ public class ClimbUp extends ContinuableAction implements IRequestable<ClimbUp.R
         startPos = parkourability.player().position();
         propertyDirection.set(requestContext.hangState.direction());
         Type type;
-        if (parkourability.player().level.noCollision(new AABB(
+        if (parkourability.player().level().noCollision(new AABB(
                 destination.x - playerBB.getXsize() * 0.6,
                 destination.y,
                 destination.z - playerBB.getZsize() * 0.6,
@@ -73,7 +73,7 @@ public class ClimbUp extends ContinuableAction implements IRequestable<ClimbUp.R
         ))) {
             duration = MAX_TICK;
             type = Type.CLIMB;
-        } else if (parkourability.player().level.noCollision(new AABB(
+        } else if (parkourability.player().level().noCollision(new AABB(
                 destination.x - playerBB.getXsize() * 0.6,
                 destination.y,
                 destination.z - playerBB.getZsize() * 0.6,

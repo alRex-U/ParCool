@@ -43,10 +43,10 @@ public abstract class EntityMixin extends CapabilityProvider<Entity> {
             return;
         }
         Parkourability parkourability = Parkourability.get(player);
-        if (parkourability.getBehaviorEnforcer().enforceNoSprint()) {
+        if (parkourability.getBehaviorEnforcer().noSprintMarks.enforce()) {
             this.setSharedFlag(3, false);
             ci.cancel();
-        } else if (parkourability.getBehaviorEnforcer().enforceSprint()) {
+        } else if (parkourability.getBehaviorEnforcer().sprintMarks.enforce()) {
             this.setSharedFlag(3, true);
             ci.cancel();
         }
