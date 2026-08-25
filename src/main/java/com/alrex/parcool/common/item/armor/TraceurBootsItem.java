@@ -51,6 +51,11 @@ public class TraceurBootsItem extends Item implements EquipAble, DyeAble {
     }
 
     @Override
+    public @Nullable EquipmentSlot getEquipmentSlot(ItemStack stack) {
+        return getEquipmentSlot();
+    }
+
+    @Override
     public EquipmentSlot getEquipmentSlot(@Nonnull ItemStack stack) {
         return getEquipmentSlot();
     }
