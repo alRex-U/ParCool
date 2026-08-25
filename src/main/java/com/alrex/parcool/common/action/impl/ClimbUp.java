@@ -68,7 +68,7 @@ public class ClimbUp extends ContinuableAction implements IRequestable<ClimbUp.R
                 destination.y,
                 destination.z - playerBB.getZsize() * 0.6,
                 destination.x + playerBB.getXsize() * 0.6,
-                destination.y + playerBB.getYsize() * 1.2,
+                destination.y + playerBB.getYsize() * 1.0833,
                 destination.z + playerBB.getZsize() * 0.6
         ))) {
             duration = MAX_TICK;
