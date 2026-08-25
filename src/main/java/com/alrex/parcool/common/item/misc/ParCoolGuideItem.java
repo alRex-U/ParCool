@@ -29,7 +29,7 @@ public class ParCoolGuideItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
         var itemInHand = player.getItemInHand(hand);
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             if (player.isShiftKeyDown()) {
                 GuiHelper.openSkillTreeGui(player);
             } else {

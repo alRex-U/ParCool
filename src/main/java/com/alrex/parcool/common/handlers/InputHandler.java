@@ -30,7 +30,7 @@ public class InputHandler {
         var parkourability = Parkourability.get(event.getEntity());
         if (parkourability == null) return;
 
-        if (parkourability.getBehaviorEnforcer().enforceNoSneak()) {
+        if (parkourability.getBehaviorEnforcer().noSneakMarks.enforce()) {
             event.getInput().shiftKeyDown = false;
         }
     }

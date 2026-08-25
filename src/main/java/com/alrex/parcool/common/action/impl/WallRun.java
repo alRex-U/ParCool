@@ -51,7 +51,8 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
 
         if (!player.horizontalCollision) return false;
         var wallDirection = parkourability.getAdditionalProperties().getDefaultWallInteraction();
-        if (wallDirection == null || wallDirection.asVec().dot(lookAngle) <= 1. / Mth.SQRT_OF_TWO) return false;
+        if (wallDirection == null || wallDirection.asVec().dot(new Vec3(lookAngle.x, 0, lookAngle.z).normalize()) <= 1. / Mth.SQRT_OF_TWO)
+            return false;
 
         var gravityAttr = player.getAttribute(Attributes.GRAVITY);
         if (gravityAttr == null) return false;

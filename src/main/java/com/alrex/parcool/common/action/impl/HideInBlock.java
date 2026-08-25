@@ -87,7 +87,7 @@ public class HideInBlock
         RenderBehaviorEnforcer.getInstance().addMarkerEnforcingImmediateEyeHeightChange(
                 ID_ENFORCE_IMMEDIATE_EYE_HEIGHT, () -> this.isDoing() || getNotDoingTick() < 2
         );
-        parkourability.getBehaviorEnforcer().addMarkerEnforcingNoShowName(ID_CANCEL_SHOW_NAME, this::isDoing);
+        parkourability.getBehaviorEnforcer().noShowNameMarks.add(ID_CANCEL_SHOW_NAME, this::isDoing);
 
         var hidingPoint = propertyHidingPoint.get();
         if (hidingPoint == null) return;
@@ -127,7 +127,7 @@ public class HideInBlock
 
     @Override
     public void onStart() {
-        parkourability.getBehaviorEnforcer().addMarkerEnforcingNoPhysics(ID_NO_PHYSICS, this::isDoing);
+        parkourability.getBehaviorEnforcer().noPhysicsMarks.add(ID_NO_PHYSICS, this::isDoing);
         var area1 = propertyHidingAreaEdge1.get();
         if (area1 == null) return;
         var area2 = propertyHidingAreaEdge2.get();
@@ -137,7 +137,7 @@ public class HideInBlock
         var defaultEyeHeight = player.getDimensions(Pose.STANDING).height() * 0.85;
         if (player.isLocalPlayer()) {
             player.setShiftKeyDown(false);
-            parkourability.getBehaviorEnforcer().addMarkerEnforcingNoSneak(ID_CANCEL_SNEAK, this::isDoing);
+            parkourability.getBehaviorEnforcer().noSneakMarks.add(ID_CANCEL_SNEAK, this::isDoing);
         }
         if (defaultEyeHeight < areaHeight) {
             parkourability.getBehaviorEnforcer().setMarkerEnforcingEyeHeight(() -> this.isDoing() || this.getNotDoingTick() < 1, () -> areaHeight + 0.2f);
