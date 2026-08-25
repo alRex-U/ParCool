@@ -17,7 +17,6 @@ import com.alrex.parcool.common.item.ParCoolDataComponents;
 import com.alrex.parcool.common.item.ParCoolItemGroup;
 import com.alrex.parcool.common.item.ParCoolItems;
 import com.alrex.parcool.common.item.recipe.Recipes;
-import com.alrex.parcool.common.potion.Potions;
 import com.alrex.parcool.common.stamina.StaminaTypeRegistry;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.extern.AdditionalMods;
@@ -86,7 +85,6 @@ public class ParCool {
 		TileEntities.register(eventBus);
 		ParCoolItemGroup.register(eventBus);
 		ParCoolDataComponents.register(eventBus);
-		Potions.register(eventBus);
 
 		AdditionalMods.init();
 
