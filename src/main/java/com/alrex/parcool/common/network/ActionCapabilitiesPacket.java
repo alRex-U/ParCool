@@ -4,10 +4,7 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionCapabilities;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import javax.annotation.Nonnull;
@@ -46,9 +43,7 @@ public record ActionCapabilitiesPacket(ActionCapabilities capabilities, Target t
 
         @Override
         public void handleInLogicalClient(ActionCapabilitiesPacket packet, IPayloadContext context) {
-            var player = Minecraft.getInstance().player;
-            if (player == null) return;
-            var parkourability = Parkourability.get(player);
+            var parkourability = Parkourability.get(context.player());
             if (packet.target == Target.CAPABILITY) {
                 parkourability.updateActionCapability(packet.capabilities);
             } else {
