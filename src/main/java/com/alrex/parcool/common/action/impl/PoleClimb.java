@@ -152,7 +152,7 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
                 var pos = wallBlockPos.above(i);
                 if (level.getMaxBuildHeight() < pos.getY()) return false;
                 blockState = level.getBlockState(pos);
-                if (!(blockState.getBlock() instanceof CrossCollisionBlock) && ((i + 1) < playerHeight || !blockState.isAir()))
+                if (!(blockState.getBlock() instanceof CrossCollisionBlock))
                     return false;
 
                 byte xCollision = 0, zCollision = 0;
