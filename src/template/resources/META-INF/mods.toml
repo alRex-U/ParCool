@@ -61,3 +61,11 @@ mandatory = false
 versionRange = "${extern_epicfight.version_range}"
 ordering = "NONE"
 side = "BOTH"
+
+# Curios
+[[dependencies.parcool]]
+modId = "${extern_curios.mod_id}"
+mandatory = false
+versionRange = "${extern_curios.version_range}"
+ordering = "NONE"
+side = "BOTH"

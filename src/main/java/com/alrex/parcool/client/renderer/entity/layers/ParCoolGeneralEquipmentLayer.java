@@ -16,6 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -36,32 +37,60 @@ public class ParCoolGeneralEquipmentLayer<T extends LivingEntity, M extends Huma
     public void render(
             @Nonnull PoseStack poseStack,
             @Nonnull MultiBufferSource multiBufferSource,
-            int i, @Nonnull T entity, float v, float v1, float v2, float v3, float v4, float v5
+            int light,
+            @Nonnull T entity,
+            float limbSwing,
+            float limbSwingAmount,
+            float partialTicks,
+            float ageInTicks,
+            float netHeadYaw,
+            float headPitch
     ) {
         if (!shouldRenderModel(entity)) return;
         for (var slot : EquipmentSlot.values()) {
             var itemStack = entity.getItemBySlot(slot);
-            var item = itemStack.getItem();
-            if (!(item instanceof EquipAble equipAble)) continue;
+            if (!(itemStack.getItem() instanceof EquipAble equipAble)) continue;
             for (var layer : EquipmentRenderLayer.values()) {
-                var texture = equipAble.getEquipmentTexture(entity, slot, layer);
-                if (texture == null) continue;
-                var model = switch (layer) {
-                    case INNER -> innerLayer;
-                    case OUTER -> outerLayer;
-                };
-                setPartVisibility(model, slot);
-                this.getParentModel().copyPropertiesTo(model);
-                if (equipAble.hasCustomEquipmentColor()) {
-                    var color = equipAble.getCustomEquipmentColor(itemStack);
-                    int r = (color & 0xFF0000) >> 16;
-                    int g = (color & 0x00FF00) >> 8;
-                    int b = (color & 0x0000FF);
-                    renderModel(poseStack, multiBufferSource, i, itemStack.hasFoil(), model, r / 255f, g / 255f, b / 255f, texture);
-                } else {
-                    renderModel(poseStack, multiBufferSource, i, itemStack.hasFoil(), model, 1f, 1f, 1f, texture);
-                }
+                renderEquipment(poseStack, multiBufferSource, equipAble, itemStack, entity, slot, layer, light);
             }
+        }
+        if (entity instanceof Player player && AdditionalMods.curios().isInstalled()) {
+            AdditionalMods.curios().getGeneralEquipments(player).forEach(itemStack -> {
+                if (!(itemStack.getItem() instanceof EquipAble equipAble)) return;
+                var slot = equipAble.getEquipmentSlot();
+                for (var layer : EquipmentRenderLayer.values()) {
+                    renderEquipment(poseStack, multiBufferSource, equipAble, itemStack, entity, slot, layer, light);
+                }
+            });
+        }
+    }
+
+    private void renderEquipment(
+            PoseStack poseStack,
+            MultiBufferSource multiBufferSource,
+            EquipAble equipAble,
+            ItemStack itemStack,
+            T entity,
+            EquipmentSlot slot,
+            EquipmentRenderLayer layer,
+            int light
+    ) {
+        var texture = equipAble.getEquipmentTexture(entity, slot, layer);
+        if (texture == null) return;
+        var model = switch (layer) {
+            case INNER -> innerLayer;
+            case OUTER -> outerLayer;
+        };
+        setPartVisibility(model, slot);
+        this.getParentModel().copyPropertiesTo(model);
+        if (equipAble.hasCustomEquipmentColor()) {
+            var color = equipAble.getCustomEquipmentColor(itemStack);
+            int r = (color & 0xFF0000) >> 16;
+            int g = (color & 0x00FF00) >> 8;
+            int b = (color & 0x0000FF);
+            renderModel(poseStack, multiBufferSource, light, itemStack.hasFoil(), model, r / 255f, g / 255f, b / 255f, texture);
+        } else {
+            renderModel(poseStack, multiBufferSource, light, itemStack.hasFoil(), model, 1f, 1f, 1f, texture);
         }
     }
 
