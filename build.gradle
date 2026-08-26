@@ -70,8 +70,9 @@ configurations {
 }
 
 dependencies {
-    //compileOnly "top.theillusivec4.curios:curios-forge:${curios_version}:api"
-    //runtimeOnly "top.theillusivec4.curios:curios-forge:${curios_version}"
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
+    runtimeOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+
     //compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
     //runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
 

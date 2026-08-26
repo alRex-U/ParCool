@@ -82,11 +82,4 @@ public class TraceurBootsItem extends Item implements EquipAble, DyeAble {
     public int getDefaultColor() {
         return 0xE0BD70;
     }
-
-    /*
-    @Override
-    public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return AdditionalMods.curios().initEquipAbleCapabilities(stack, nbt);
-    }
-     */
 }

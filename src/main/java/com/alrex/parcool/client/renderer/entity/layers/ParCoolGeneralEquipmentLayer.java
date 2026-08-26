@@ -2,9 +2,7 @@ package com.alrex.parcool.client.renderer.entity.layers;
 
 import com.alrex.parcool.common.item.armor.EquipAble;
 import com.alrex.parcool.extern.AdditionalMods;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -18,6 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -50,24 +49,45 @@ public class ParCoolGeneralEquipmentLayer<T extends LivingEntity, M extends Huma
         if (!shouldRenderModel(entity)) return;
         for (var slot : EquipmentSlot.values()) {
             var itemStack = entity.getItemBySlot(slot);
-            var item = itemStack.getItem();
-            if (!(item instanceof EquipAble equipAble)) continue;
+            if (!(itemStack.getItem() instanceof EquipAble equipAble)) continue;
             for (var layer : EquipmentRenderLayer.values()) {
-                var texture = equipAble.getEquipmentTexture(entity, slot, layer);
-                if (texture == null) continue;
-                var model = switch (layer) {
-                    case INNER -> innerLayer;
-                    case OUTER -> outerLayer;
-                };
-                setPartVisibility(model, slot);
-                this.getParentModel().copyPropertiesTo(model);
-                if (equipAble.hasCustomEquipmentColor()) {
-                    var color = equipAble.getCustomEquipmentColor(itemStack);
-                    renderModel(poseStack, buffer, packedLight, itemStack.hasFoil(), model, color, texture);
-                } else {
-                    renderModel(poseStack, buffer, packedLight, itemStack.hasFoil(), model, ~0, texture);
-                }
+                renderEquipment(poseStack, buffer, equipAble, itemStack, entity, slot, layer, packedLight);
             }
+        }
+        if (entity instanceof Player player && AdditionalMods.curios().isInstalled()) {
+            AdditionalMods.curios().getGeneralEquipments(player).forEach(itemStack -> {
+                if (!(itemStack.getItem() instanceof EquipAble equipAble)) return;
+                var slot = equipAble.getEquipmentSlot();
+                for (var layer : EquipmentRenderLayer.values()) {
+                    renderEquipment(poseStack, buffer, equipAble, itemStack, entity, slot, layer, packedLight);
+                }
+            });
+        }
+    }
+
+    private void renderEquipment(
+            PoseStack poseStack,
+            MultiBufferSource multiBufferSource,
+            EquipAble equipAble,
+            ItemStack itemStack,
+            T entity,
+            EquipmentSlot slot,
+            EquipmentRenderLayer layer,
+            int light
+    ) {
+        var texture = equipAble.getEquipmentTexture(entity, slot, layer);
+        if (texture == null) return;
+        var model = switch (layer) {
+            case INNER -> innerLayer;
+            case OUTER -> outerLayer;
+        };
+        setPartVisibility(model, slot);
+        this.getParentModel().copyPropertiesTo(model);
+        if (equipAble.hasCustomEquipmentColor()) {
+            var color = equipAble.getCustomEquipmentColor(itemStack);
+            renderModel(poseStack, multiBufferSource, light, itemStack.hasFoil(), model, color, texture);
+        } else {
+            renderModel(poseStack, multiBufferSource, light, itemStack.hasFoil(), model, ~0, texture);
         }
     }
 

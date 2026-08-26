@@ -4,6 +4,8 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolAttributes;
 import com.alrex.parcool.client.renderer.entity.layers.EquipmentRenderLayer;
 import com.alrex.parcool.common.item.DyeAble;
+import com.alrex.parcool.common.item.ParCoolItems;
+import com.alrex.parcool.extern.AdditionalMods;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.network.chat.Component;
@@ -14,6 +16,7 @@ import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -36,8 +39,7 @@ public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
         super(properties);
         var modifiersBuilder = ItemAttributeModifiers.builder();
         var slideDownAttr = new AttributeModifier(MODIFIER_ID, 0.1, AttributeModifier.Operation.ADD_VALUE);
-        modifiersBuilder.add(ParCoolAttributes.SLIDE_DOWN_DECELERATION, slideDownAttr, EquipmentSlotGroup.MAINHAND);
-        modifiersBuilder.add(ParCoolAttributes.SLIDE_DOWN_DECELERATION, slideDownAttr, EquipmentSlotGroup.OFFHAND);
+        modifiersBuilder.add(ParCoolAttributes.SLIDE_DOWN_DECELERATION, slideDownAttr, EquipmentSlotGroup.HAND);
         modifiersBuilder.add(ParCoolAttributes.SLIDE_DOWN_DECELERATION, slideDownAttr, EquipmentSlotGroup.CHEST);
 
         modifiersBuilder.add(ParCoolAttributes.MAX_STAMINA, new AttributeModifier(MODIFIER_ID, 0.2, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.CHEST);
@@ -109,7 +111,9 @@ public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
             var item = entity.getItemBySlot(slot).getItem();
             if (item instanceof TraceurGlovesItem) return true;
         }
-        return false;
+        return entity instanceof Player player
+                && AdditionalMods.curios().isInstalled()
+                && AdditionalMods.curios().isEquipped(player, ParCoolItems.TRACEUR_GLOVES.get());
     }
 
     @Override
@@ -121,11 +125,4 @@ public class TraceurGlovesItem extends Item implements EquipAble, DyeAble {
     public int getDefaultColor() {
         return 0xFFDD93;
     }
-
-    /*
-    @Override
-    public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return AdditionalMods.curios().initEquipAbleCapabilities(stack, nbt);
-    }
-     */
 }

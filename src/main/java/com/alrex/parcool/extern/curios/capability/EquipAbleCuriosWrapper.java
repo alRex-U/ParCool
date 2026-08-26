@@ -1,22 +1,35 @@
 package com.alrex.parcool.extern.curios.capability;
 
-import net.minecraft.core.Direction;
+import com.alrex.parcool.common.item.armor.EquipAble;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.type.capability.ICurio;
 
-/*
-public class EquipAbleCuriosWrapper implements ICurio, ICapabilityProvider {
-    private final LazyOptional<ICurio> holder = LazyOptional.of(() -> this);
+public class EquipAbleCuriosWrapper implements ICurio {
+
     private final ItemStack itemStack;
-
+    private final Multimap<Holder<Attribute>, AttributeModifier> modifiers;
     public EquipAbleCuriosWrapper(ItemStack itemStack) {
         this.itemStack = itemStack;
+        this.modifiers = HashMultimap.create();
+        if (itemStack.getItem() instanceof EquipAble equipAble) {
+            for (var attrEntry : itemStack.getAttributeModifiers().modifiers()) {
+                if (attrEntry.slot().test(equipAble.getEquipmentSlot())) {
+                    modifiers.put(attrEntry.attribute(), attrEntry.modifier());
+                }
+            }
+        }
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction direction) {
-        return CuriosCapability.ITEM.orEmpty(capability, holder);
+    public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, ResourceLocation id) {
+        return modifiers;
     }
 
     @Override
@@ -24,5 +37,3 @@ public class EquipAbleCuriosWrapper implements ICurio, ICapabilityProvider {
         return itemStack;
     }
 }
-
- */

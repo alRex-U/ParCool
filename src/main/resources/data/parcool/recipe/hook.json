@@ -7,11 +7,11 @@
   ],
   "key": {
     "i": {
-      "id": "minecraft:iron_ingot"
+      "item": "minecraft:iron_ingot"
     }
   },
   "result": {
-    "item": "parcool:hook",
+    "id": "parcool:hook",
     "count": 1
   }
 }
