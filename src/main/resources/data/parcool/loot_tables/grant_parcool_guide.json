@@ -6,13 +6,7 @@
       "entries": [
         {
           "type": "item",
-          "name": "patchouli:guide_book",
-          "functions": [
-            {
-              "function": "set_nbt",
-              "tag": "{\"patchouli:book\": \"parcool:parcool_guide\"}"
-            }
-          ]
+          "name": "parcool:parcool_guide"
         }
       ]
     }
