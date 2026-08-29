@@ -32,6 +32,18 @@ public class CuriosManager extends ModManager {
                 .orElseGet(Stream::empty);
     }
 
+    public Stream<ItemStack> getRenderAbleGeneralEquipments(Player player) {
+        if (!isInstalled()) return Stream.empty();
+        return CuriosApi.getCuriosInventory(player)
+                .map(it -> it
+                        .findCurios(curio -> curio.getItem() instanceof EquipAble)
+                        .stream()
+                        .filter(slot -> slot.slotContext().visible())
+                        .map(SlotResult::stack)
+                )
+                .orElseGet(Stream::empty);
+    }
+
     public boolean isEquipped(Player player, Item item) {
         if (!isInstalled()) return false;
         return CuriosApi.getCuriosInventory(player).map(it -> it.isEquipped(item)).orElse(Boolean.FALSE);
