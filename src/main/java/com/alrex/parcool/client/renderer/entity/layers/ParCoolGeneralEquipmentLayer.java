@@ -55,7 +55,7 @@ public class ParCoolGeneralEquipmentLayer<T extends LivingEntity, M extends Huma
             }
         }
         if (entity instanceof Player player && AdditionalMods.curios().isInstalled()) {
-            AdditionalMods.curios().getGeneralEquipments(player).forEach(itemStack -> {
+            AdditionalMods.curios().getRenderAbleGeneralEquipments(player).forEach(itemStack -> {
                 if (!(itemStack.getItem() instanceof EquipAble equipAble)) return;
                 var slot = equipAble.getEquipmentSlot();
                 for (var layer : EquipmentRenderLayer.values()) {

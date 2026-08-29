@@ -80,7 +80,7 @@ public class ClimbUp extends ContinuableAction implements IRequestable<ClimbUp.R
                 destination.x + playerBB.getXsize() * 0.6,
                 destination.y + playerBB.getYsize() * 0.5,
                 destination.z + playerBB.getZsize() * 0.6
-        ))) {
+        )) && parkourability.permit(ParCoolActions.CRAWL)) {
             duration = MAX_TICK;
             type = Type.SWOOCE;
         } else {
