@@ -80,6 +80,7 @@ public class ActionCapabilities {
         for (var group : capabilities.capabilities.entrySet()) {
             this.capabilities.put(group.getKey(), group.getValue().clone());
         }
+        this.dirty = true;
     }
 
     public CompoundTag saveToTag() {
