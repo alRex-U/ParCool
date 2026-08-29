@@ -122,11 +122,9 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
         var playerHalfWidth = player.getBbWidth() / 2.;
         var level = player.level;
         var baseBB = player.getBoundingBox().move(wallVec.x * playerHalfWidth, 0, wallVec.z * playerHalfWidth);
-        for (var i = 3; i <= 4; i++) {
-            if (level.noCollision(baseBB.move(0, jumpHeight * i, 0))) {
-                return i - 2;
-            }
+        if (level.noCollision(baseBB.move(0, jumpHeight * 3, 0))) {
+            return 1;
         }
-        return 0;
+        return 2;
     }
 }
