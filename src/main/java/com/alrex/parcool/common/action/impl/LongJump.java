@@ -11,6 +11,14 @@ import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.util.VectorUtil;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 
@@ -83,6 +91,39 @@ public class LongJump extends Action {
     public void onStartInClient() {
         if (parkourability.player() instanceof IPlayerAnimatorHolder holder) {
             holder.getParCoolPlayerAnimator().start(AnimationRegistries.get().animations().LONG_JUMP);
+        }
+        var jumpDirectionYaw = propertyJumpDirectionYaw.get();
+        if (jumpDirectionYaw != null) {
+            spawnJumpEffect(parkourability.player(), VectorUtil.fromYawDegree(jumpDirectionYaw));
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static void spawnJumpEffect(Player player, Vec3 jumpDirection) {
+        var level = player.level;
+        var pos = player.position();
+        var blockpos = new BlockPos(pos.add(0, -0.2, 0));
+        if (!level.isLoaded(blockpos)) return;
+        float width = player.getBbWidth();
+        var blockstate = level.getBlockState(blockpos);
+        if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
+            for (int i = 0; i < 20; i++) {
+                var particlePos = new Vec3(
+                        pos.x() + (jumpDirection.x() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width,
+                        pos.y() + 0.1D,
+                        pos.z() + (jumpDirection.z() * -0.5 + player.getRandom().nextDouble() - 0.5D) * width
+                );
+                var particleSpeed = particlePos.subtract(pos).normalize().scale(2.5 + 8 * player.getRandom().nextDouble()).add(0, 1.5, 0);
+                level.addParticle(
+                        new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(blockpos),
+                        particlePos.x(),
+                        particlePos.y(),
+                        particlePos.z(),
+                        particleSpeed.x(),
+                        particleSpeed.y(),
+                        particleSpeed.z()
+                );
+            }
         }
     }
 }
