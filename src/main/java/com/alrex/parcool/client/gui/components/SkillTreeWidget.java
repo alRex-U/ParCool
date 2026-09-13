@@ -29,6 +29,7 @@ public class SkillTreeWidget extends AbstractWidget {
     private final List<SkillTreeActionIcon> icons;
     private final List<ConnectivityWidget> connectivities;
     private final ActionCapabilities capabilities;
+    private final ActionCapabilities enabledActions;
     @Nullable
     private SkillTree.Entry<?> selectedSkill;
     @Nullable
@@ -39,9 +40,10 @@ public class SkillTreeWidget extends AbstractWidget {
     private final int contentWidth;
     private final int contentHeight;
 
-    public SkillTreeWidget(List<SkillTree> skillTrees, ActionCapabilities capabilities, int x, int y, int width, int height, Consumer<SkillTree.Entry<?>> selectionListener) {
+    public SkillTreeWidget(List<SkillTree> skillTrees, ActionCapabilities capabilities, ActionCapabilities enabledActions, int x, int y, int width, int height, Consumer<SkillTree.Entry<?>> selectionListener) {
         super(x, y, width, height, Component.empty());
         this.capabilities = capabilities;
+        this.enabledActions = enabledActions;
         this.selectionListener = selectionListener;
         this.icons = new ArrayList<>();
         this.connectivities = new ArrayList<>();
@@ -241,6 +243,19 @@ public class SkillTreeWidget extends AbstractWidget {
                 if (visible) {
                     RenderSystem.setShaderTexture(0, ParCoolActionsTextureAtlas.TEXTURE_LOCATION);
                     blit(poseStack, this.x, this.y, 0, this.width, this.height, ParCoolTextures.action(entry.getActionEntry()));
+                }
+                if (entry.isUnlocked(capabilities)) {
+                    var sprite = ParCoolTextures.guiSprite(
+                            entry.isUnlocked(enabledActions)
+                                    ? ParCoolGuiTextureAtlas.SKILLTREE_ACTION_MARK_ENABLED
+                                    : ParCoolGuiTextureAtlas.SKILLTREE_ACTION_MARK_DISABLED
+                    );
+                    RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
+                    blit(poseStack,
+                            this.x + this.width - 3,
+                            this.y - 3, 0, 6, 6,
+                            sprite
+                    );
                 }
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             } else {
