@@ -1,0 +1,18 @@
+{
+  "duration": 26,
+  "components": [
+    {
+      "name": "parcool:builtin/lock_head_front"
+    },
+    {
+      "name": "parcool:long_jump.json",
+      "progress": {
+        "name": "parcool:time",
+        "args": {
+          "max": 30,
+          "scale": 1.5
+        }
+      }
+    }
+  ]
+}

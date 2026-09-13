@@ -4,6 +4,8 @@ import com.alrex.parcool.api.action.Action;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.api.action.SynchronizedDataHolder;
 import com.alrex.parcool.api.action.SynchronizedProperty;
+import com.alrex.parcool.client.animation.AnimationRegistries;
+import com.alrex.parcool.client.animation.system.IPlayerAnimatorHolder;
 import com.alrex.parcool.client.animation.system.math.MathUtil;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
@@ -13,7 +15,7 @@ import com.alrex.parcool.util.VectorUtil;
 import java.util.List;
 
 public class LongJump extends Action {
-    private static final int INPUT_ACCEPTANCE_TICK = 8;
+    private static final int INPUT_ACCEPTANCE_TICK = 10;
     private static final int COOLDOWN = 30;
 
     private final SynchronizedDataHolder dataHolder;
@@ -68,11 +70,19 @@ public class LongJump extends Action {
         if (jumpDirectionYaw == null) return;
         var jumpDirection = VectorUtil.fromYawDegree(jumpDirectionYaw);
         player.jumpFromGround();
+        player.setOnGround(false);
         player.setDeltaMovement(
-                jumpDirection.x(),
+                jumpDirection.x() * 0.7,
                 player.getDeltaMovement().y() * 1.16667,
-                jumpDirection.z()
+                jumpDirection.z() * 0.7
         );
         cooldownTick = COOLDOWN;
+    }
+
+    @Override
+    public void onStartInClient() {
+        if (parkourability.player() instanceof IPlayerAnimatorHolder holder) {
+            holder.getParCoolPlayerAnimator().start(AnimationRegistries.get().animations().LONG_JUMP);
+        }
     }
 }

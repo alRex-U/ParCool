@@ -99,7 +99,7 @@ public class ParCoolActions {
         );
 
         DIVE = builder.add("dive", Dive.class, Dive::new, new ActionOption()
-                .processedAfter(FAST_RUN)
+                .processedAfter(FAST_RUN, LONG_JUMP)
                 .needNotOnGround(true)
                 .learningCost(3)
         );

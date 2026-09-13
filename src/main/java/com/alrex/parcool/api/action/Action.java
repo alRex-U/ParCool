@@ -32,7 +32,7 @@ public abstract class Action {
 	protected final ActionEntry<? extends Action> entry;
 	@Nullable
 	protected final Collection<ActionEntry<? extends ContinuableAction>> exclusiveActions;
-	private int tickSinceStarted = -1;
+	private int tickSinceStarted = 100;
 
 	public int getTickSinceStarted() {
 		return tickSinceStarted;

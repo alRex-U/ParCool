@@ -89,6 +89,8 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
         }
         jumped = false;
         if (!player.isSprinting()) return false;
+        var longJump = parkourability.get(ParCoolActions.LONG_JUMP);
+        if (longJump.getTickSinceStarted() < 2) return false;
         if (!checkEnoughSpace()) return false;
         propertyYSpeedOnBeginning.set(ySpeed = ySpeedO = (float) (player.position().y - player.yo));
         propertyStartInAir.set(false);
