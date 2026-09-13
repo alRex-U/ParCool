@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -133,11 +134,12 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
         double width = player.getBbWidth() * 1.5;
         double height = player.getBbHeight() * 1.5;
         var center = player.position();
-        if (!world.isLoaded(new BlockPos(
-                Mth.floor(center.x()),
-                Mth.floor(center.y()),
-                Mth.floor(center.z())
-        ))) return false;
+        if (!world.getChunkSource()
+                .hasChunk(
+                        SectionPos.blockToSectionCoord(Mth.floor(center.x())),
+                        SectionPos.blockToSectionCoord(Mth.floor(center.z()))
+                )
+        ) return false;
         var diveDirection = VectorUtil.fromYawDegree(player.getYHeadRot());
         for (int i = 0; i < 4; i++) {
             var centerPoint = center.add(diveDirection.scale(width * i));
@@ -174,13 +176,18 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
                 Mth.floor(center.z())
         );
         // check if water pool exists
-        if (!world.isLoaded(centerBlockPos)) return false;
+        if (!world.getChunkSource()
+                .hasChunk(
+                        SectionPos.blockToSectionCoord(centerBlockPos.getX()),
+                        SectionPos.blockToSectionCoord(centerBlockPos.getZ())
+                )
+        ) return false;
         int i = 0;
         int waterLevel = -1;
         for (; i < 6; i++) {
-            var block = world.getBlockState(centerBlockPos.below(i)).getBlock();
-            if (block == Blocks.AIR) continue;
-            if (block == Blocks.WATER) {
+            var blockState = world.getBlockState(centerBlockPos.below(i));
+            if (blockState.isAir()) continue;
+            if (blockState.is(Blocks.WATER)) {
                 waterLevel = i;
                 break;
             }
@@ -190,7 +197,7 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
         boolean filledWithWater = true;
         for (; i < waterLevel + 3; i++) {
             var state = world.getBlockState(centerBlockPos.below(i));
-            if (state.getBlock() != Blocks.WATER) {
+            if (!state.is(Blocks.WATER)) {
                 filledWithWater = false;
                 break;
             }
