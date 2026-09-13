@@ -15,6 +15,7 @@ public class ParCoolRunningSkillTree extends SkillTree {
                         new Entry<>(ParCoolActions.BREAKFALL)
                 ),
                 new Entry<>(ParCoolActions.TRICK_JUMP,
+                        new Entry<>(ParCoolActions.LONG_JUMP),
                         new Entry<>(ParCoolActions.DODGE)
                 ),
                 new Entry<>(ParCoolActions.DIVE,

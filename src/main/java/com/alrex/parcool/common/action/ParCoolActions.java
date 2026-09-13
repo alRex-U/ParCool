@@ -12,6 +12,7 @@ public class ParCoolActions {
 
     public static final ActionEntry<FastRun> FAST_RUN;
     public static final ActionEntry<FastSwim> FAST_SWIM;
+    public static final ActionEntry<LongJump> LONG_JUMP;
     public static final ActionEntry<Vault> VAULT;
     public static final ActionEntry<Dive> DIVE;
     public static final ActionEntry<Skydive> SKYDIVE;
@@ -88,6 +89,13 @@ public class ParCoolActions {
                 .needPose(Pose.SWIMMING)
                 .cost(StaminaConsumption.get(0, 2, 0))
                 .learningCost(3)
+        );
+
+        LONG_JUMP = builder.add("long_jump", LongJump.class, LongJump::new, new ActionOption()
+                .needPose(null)
+                .needOnGround(true)
+                .cost(StaminaConsumption.get(50, 0, 0))
+                .learningCost(5)
         );
 
         DIVE = builder.add("dive", Dive.class, Dive::new, new ActionOption()
