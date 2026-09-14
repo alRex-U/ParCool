@@ -23,7 +23,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.List;
 
 public class LongJump extends Action {
-    private static final int INPUT_ACCEPTANCE_TICK = 10;
+    private static final int INPUT_ACCEPTANCE_TICK = 11;
     private static final int COOLDOWN = 30;
 
     private final SynchronizedDataHolder dataHolder;
@@ -55,8 +55,11 @@ public class LongJump extends Action {
         var shiftKey = ParCoolKeyBinds.SHIFT;
         if (shiftKey.state().isJustReleased()
                 && shiftKey.state().getPreviousPressedDurationTick() < INPUT_ACCEPTANCE_TICK
-                && parkourability.get(ParCoolActions.FAST_RUN).getNotDoingTick() < INPUT_ACCEPTANCE_TICK
         ) {
+            var fastRun = parkourability.get(ParCoolActions.FAST_RUN);
+            if (fastRun.getNotDoingTick() >= INPUT_ACCEPTANCE_TICK
+                    || (fastRun.getTickSinceStarted() - fastRun.getNotDoingTick()) < 20
+            ) return false;
             var deltaMove = parkourability.player().getDeltaMovement();
             if (deltaMove.lengthSqr() < 1e-5) return false;
             var deltaMoveYaw = (float) VectorUtil.toYawDegree(deltaMove);
