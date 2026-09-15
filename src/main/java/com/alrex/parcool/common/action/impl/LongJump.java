@@ -39,6 +39,7 @@ public class LongJump extends Action {
         );
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onTickInLocalClient() {
         if (cooldownTick > 0) cooldownTick--;
@@ -74,6 +75,7 @@ public class LongJump extends Action {
         return false;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInLocalClient() {
         var player = parkourability.player();
@@ -90,6 +92,7 @@ public class LongJump extends Action {
         cooldownTick = COOLDOWN;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onStartInClient() {
         if (parkourability.player() instanceof IPlayerAnimatorHolder holder) {

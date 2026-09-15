@@ -18,6 +18,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -284,7 +285,8 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
     private HangState getHangState() {
         var player = parkourability.player();
         var level = player.level;
-        var playerBB = player.getBoundingBox();
+        var pos = player.position();
+        var playerBB = player.getLocalBoundsForPose(Pose.STANDING).move(pos.x, pos.y, pos.z);
         double xRange = playerBB.getXsize() * 0.25, zRange = playerBB.getZsize() * 0.25;
         var direction = parkourability.getAdditionalProperties().getDefaultWallInteraction();
 
@@ -295,7 +297,7 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
                 direction.getSignZ() * REACH_SCALE * playerBB.getZsize()
         );
         if (level.noCollision(player, bb)) return null;
-        var grabbingBB = getGrabbingHandAABB(direction);
+        var grabbingBB = getGrabbingHandAABB(playerBB, direction);
         if (!level.noCollision(player, grabbingBB)) return null;
         var downReach = -playerBB.getYsize() * 0.2;
         var collision = Entity.collideBoundingBox(player, new Vec3(0, downReach, 0), grabbingBB, level, Collections.emptyList());
@@ -306,9 +308,7 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
         return null;
     }
 
-    private AABB getGrabbingHandAABB(InteractingWallDirection direction) {
-        var player = parkourability.player();
-        var playerBB = player.getBoundingBox();
+    private static AABB getGrabbingHandAABB(AABB playerBB, InteractingWallDirection direction) {
         var center = playerBB.getCenter();
         double x1, x2;
         if (direction.getSignX() != 0) {

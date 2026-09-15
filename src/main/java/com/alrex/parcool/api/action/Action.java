@@ -105,13 +105,14 @@ public abstract class Action {
 		var option = entry.option();
 		if (player.isSpectator()) return false;
 		if (!option.availableWhileExhausted() && parkourability.getStamina().isExhausted()) return false;
-        if ((option.neededPose() != null && option.neededPose() != player.getPose())
-                || (!option.availableInFluid() && player.isInFluidType())
+		var currentPose = player.getPose();
+		if ((!option.availableInFluid() && player.isInFluidType())
 				|| (!option.availableNotInFluid() && !player.isInFluidType())
 				|| (!option.availableWithFallFlying() && player.isFallFlying())
 				|| (option.needOnGround() && !player.isOnGround())
 				|| (option.needNotOnGround() && player.isOnGround())
 				|| player.getAbilities().flying
+				|| (!option.neededPoses().isEmpty() && option.neededPoses().stream().noneMatch(currentPose::equals))
 				|| !parkourability.permit(entry)
 		) {
 			return false;

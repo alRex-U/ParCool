@@ -18,6 +18,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.WallSide;
 import net.minecraft.world.phys.Vec2;
@@ -309,25 +310,27 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
     @Nullable
     private static HangAbleBarInfo getHangAbleBars(LivingEntity entity) {
         var level = entity.level;
+        var entityPos = entity.position();
+        var entityBB = entity.getLocalBoundsForPose(Pose.STANDING).move(entityPos.x, entityPos.y, entityPos.z);
         var collideDistY = Entity.collideBoundingBox(
                 entity,
                 new Vec3(0, 1., 0),
-                entity.getBoundingBox().deflate(0.05, 0, 0.05),
-                entity.level,
+                entityBB.deflate(0.05, 0, 0.05),
+                level,
                 Collections.emptyList()
         ).y;
         if (Math.abs(collideDistY - 1.) < 1e-5) return null;
-        var pos = new BlockPos(
+        var entityBlockPos = new BlockPos(
                 Mth.floor(entity.getX()),
-                Mth.floor(entity.getY() + entity.getBbHeight() + collideDistY + 0.1),
+                Mth.floor(entity.getY() + entityBB.getYsize() + collideDistY + 0.1),
                 Mth.floor(entity.getZ())
         );
-        if (!level.isLoaded(pos)) return null;
-        var state = level.getBlockState(pos);
+        if (!level.isLoaded(entityBlockPos)) return null;
+        var state = level.getBlockState(entityBlockPos);
         var block = state.getBlock();
         HangDown.BarAxis axis = null;
         if (block instanceof RotatedPillarBlock) {
-            if (state.isCollisionShapeFullBlock(level, pos)) {
+            if (state.isCollisionShapeFullBlock(level, entityBlockPos)) {
                 return null;
             }
             var pillarAxis = state.getValue(RotatedPillarBlock.AXIS);
@@ -337,7 +340,7 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
                 default -> axis;
             };
         } else if (block instanceof EndRodBlock) {
-            if (state.isCollisionShapeFullBlock(entity.level, pos)) {
+            if (state.isCollisionShapeFullBlock(level, entityBlockPos)) {
                 return null;
             }
             var direction = state.getValue(DirectionalBlock.FACING);
@@ -366,6 +369,6 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
             if (xCount > 0 && zCount == 0) axis = HangDown.BarAxis.X;
         }
 
-        return axis != null ? new HangAbleBarInfo(pos, axis, collideDistY) : null;
+        return axis != null ? new HangAbleBarInfo(entityBlockPos, axis, collideDistY) : null;
     }
 }

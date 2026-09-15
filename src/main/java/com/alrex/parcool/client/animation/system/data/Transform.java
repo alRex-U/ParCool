@@ -64,7 +64,7 @@ public record Transform(Vec3f translation, Quaternion rotation) {
 
         applyTransformation(
                 part,
-                translation.scale(blendingFactor),
+                lerpTranslation(part, translation, blendingFactor),
                 MathUtil.toModelPartRotation(appliedRotation)
         );
     }
@@ -73,7 +73,7 @@ public record Transform(Vec3f translation, Quaternion rotation) {
         var appliedRot = MathUtil.toModelPartRotation(rotation);
         applyTransformation(
                 part,
-                translation.scale(blendingFactor),
+                lerpTranslation(part, translation, blendingFactor),
                 new Vec3f(
                         MathUtil.rotLerp(blendingFactor, part.xRot, appliedRot.x()),
                         MathUtil.rotLerp(blendingFactor, part.yRot, appliedRot.y()),
@@ -83,15 +83,32 @@ public record Transform(Vec3f translation, Quaternion rotation) {
     }
 
     public void apply(ModelPart part) {
-        applyTransformation(part, translation, MathUtil.toModelPartRotation(rotation));
+        var initialPose = part.getInitialPose();
+        applyTransformation(
+                part,
+                new Vec3f(
+                        initialPose.x - 16f * translation.x(),
+                        initialPose.y - 16f * translation.y(),
+                        initialPose.z + 16f * translation.z()),
+                MathUtil.toModelPartRotation(rotation)
+        );
     }
 
     private static void applyTransformation(ModelPart part, Vec3f translation, Vec3f rotParams) {
         part.xRot = rotParams.x();
         part.yRot = rotParams.y();
         part.zRot = rotParams.z();
-        part.x += -translation.x() * 16f;
-        part.y += -translation.y() * 16f;
-        part.z += translation.z() * 16f;
+        part.x = translation.x();
+        part.y = translation.y();
+        part.z = translation.z();
+    }
+
+    private static Vec3f lerpTranslation(ModelPart part, Vec3f newTranslation, float factor) {
+        var initialPose = part.getInitialPose();
+        return new Vec3f(
+                Mth.lerp(factor, part.x, initialPose.x - 16f * newTranslation.x()),
+                Mth.lerp(factor, part.y, initialPose.y - 16f * newTranslation.y()),
+                Mth.lerp(factor, part.z, initialPose.z + 16f * newTranslation.z())
+        );
     }
 }

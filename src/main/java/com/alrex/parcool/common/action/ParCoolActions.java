@@ -52,6 +52,7 @@ public class ParCoolActions {
         );
 
         RIDE_ZIPLINE = builder.add("ride_zipline", RideZipline.class, RideZipline::new, new ActionOption()
+                .needPoses(Pose.STANDING, Pose.CROUCHING)
                 .cost(StaminaConsumption.get(0, 2, 0))
                 .needNotOnGround(true)
                 .availableInFluid(true)
@@ -134,6 +135,7 @@ public class ParCoolActions {
         }
 
         HANG_ON = builder.add("hang_on", HangOn.class, HangOn::new, new ActionOption()
+                .needPoses(Pose.STANDING, Pose.CROUCHING)
                 .cost(StaminaConsumption.get(0, 3, 0))
                 .learningCost(1)
         );
@@ -153,6 +155,7 @@ public class ParCoolActions {
         );
 
         HANG_DOWN = builder.add("hang_down", HangDown.class, HangDown::new, new ActionOption()
+                .needPoses(Pose.STANDING, Pose.CROUCHING)
                 .processedAfter(HANG_ON)
                 .needNotOnGround(true)
                 .learningCost(8)
