@@ -197,7 +197,7 @@ public class ParCoolAnimations {
     );
     public final ID<AnimationSet> LONG_JUMP = AnimationSets.getInstance().register(
             ParCool.resourceLocation("long_jump"),
-            (p) -> !p.isOnGround(),
+            (p) -> !p.onGround(),
             null
     );
     public final ID<AnimationSet> CREATIVE_FLY = AnimationSets.getInstance().register(

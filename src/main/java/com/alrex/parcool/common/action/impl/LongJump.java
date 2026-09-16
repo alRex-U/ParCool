@@ -14,6 +14,7 @@ import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.phys.Vec3;
@@ -106,9 +107,13 @@ public class LongJump extends Action {
 
     @OnlyIn(Dist.CLIENT)
     private static void spawnJumpEffect(Player player, Vec3 jumpDirection) {
-        var level = player.level;
+        var level = player.level();
         var pos = player.position();
-        var blockpos = new BlockPos(pos.add(0, -0.2, 0));
+        var blockpos = new BlockPos(
+                Mth.floor(pos.x),
+                Mth.floor(pos.y - 0.2),
+                Mth.floor(pos.z)
+        );
         if (!level.isLoaded(blockpos)) return;
         float width = player.getBbWidth();
         var blockstate = level.getBlockState(blockpos);

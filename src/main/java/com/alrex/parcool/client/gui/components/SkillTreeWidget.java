@@ -251,11 +251,7 @@ public class SkillTreeWidget extends AbstractWidget {
                                     : ParCoolGuiTextureAtlas.SKILLTREE_ACTION_MARK_DISABLED
                     );
                     RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
-                    blit(poseStack,
-                            this.x + this.width - 3,
-                            this.y - 3, 0, 6, 6,
-                            sprite
-                    );
+                    graphics.blit(this.getX() + this.width - 3, this.getY() - 3, 0, 6, 6, sprite);
                 }
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             } else {
