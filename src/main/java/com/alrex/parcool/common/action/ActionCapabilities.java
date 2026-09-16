@@ -71,6 +71,10 @@ public class ActionCapabilities {
         return dirty;
     }
 
+    public void setDirty() {
+        dirty = true;
+    }
+
     public void sync(ServerPlayer owner, ActionCapabilitiesPacket.Target target) {
         this.dirty = false;
         PacketDistributor.sendToPlayer(owner, new ActionCapabilitiesPacket(this, target));

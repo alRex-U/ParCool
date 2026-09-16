@@ -43,6 +43,7 @@ public class ParCoolKeyBinds {
         private boolean down;
 		private int pressedDurationTick = 0;
 		private int notPressedDurationTick = 0;
+		private int previousPressedDurationTick = 0;
 		private int previousNotPressedDurationTick = 0;
 
 		private void update(KeyMapping key) {
@@ -56,8 +57,9 @@ public class ParCoolKeyBinds {
 				if (pressedDurationTick == 0) previousNotPressedDurationTick = notPressedDurationTick;
 				notPressedDurationTick = -1;
 			} else {
-				pressedDurationTick = -1;
 				notPressedDurationTick++;
+				if (notPressedDurationTick == 0) previousPressedDurationTick = pressedDurationTick;
+				pressedDurationTick = -1;
 			}
 		}
 
@@ -75,6 +77,10 @@ public class ParCoolKeyBinds {
 
 		public int getPreviousNotPressedDurationTick() {
 			return previousNotPressedDurationTick;
+		}
+
+		public int getPreviousPressedDurationTick() {
+			return previousPressedDurationTick;
 		}
 
 		public boolean isJustPressed() {

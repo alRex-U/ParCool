@@ -3,6 +3,7 @@ package com.alrex.parcool.common.zipline;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -23,7 +24,7 @@ public record Zipline(ZiplineShape shape, ZiplineInfo info, BlockPos start, Bloc
         double catchRange = player.getBbWidth();
         double yDeltaMovement = player.getDeltaMovement().y();
         double yDistanceScale = Mth.clamp(0.7 / (Math.abs(yDeltaMovement) + 0.7), 0.4d, 1d);
-        var grabPos = player.position().add(0, player.getBbHeight() * 1.11, 0);
+        var grabPos = player.position().add(0, player.getLocalBoundsForPose(Pose.STANDING).getYsize() * 1.11, 0);
         for (var zipline : provider.getZiplineHolder().getLivingZiplines()) {
             var shape = zipline.shape();
             if (shape.isPossiblyHangAble(grabPos)) {

@@ -4,16 +4,14 @@ import net.minecraft.world.entity.Pose;
 import net.neoforged.fml.LogicalSide;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class ActionOption {
     public record Value(
             StaminaConsumption defaultCost,
             int learningCost,
             @Nullable ActionEntry<? extends ContinuableAction> parent,
-            @Nullable Pose neededPose,
+            List<Pose> neededPoses,
             Set<ActionEntry<? extends Action>> beforeProcessedActions,
             boolean needOnGround,
             boolean needNotOnGround,
@@ -31,8 +29,7 @@ public class ActionOption {
     @Nullable
     private ActionEntry<? extends ContinuableAction> parent = null;
     private final TreeSet<ActionEntry<? extends Action>> beforeProcessedActions = new TreeSet<>();
-    @Nullable
-    private Pose neededPose = Pose.STANDING;
+    private List<Pose> neededPoses = Collections.singletonList(Pose.STANDING);
     private boolean availableInFluid = false;
     private boolean availableNotInFluid = true;
     private boolean availableWithFallFlying = false;
@@ -44,7 +41,7 @@ public class ActionOption {
 
     public Value build() {
         return new Value(
-                staminaConsumption, learningCost, parent, neededPose, beforeProcessedActions, needOnGround, needNotOnGround, availableInFluid, availableNotInFluid, availableWithFallFlying, availableWhileExhausted, needLearning, triggeredSide
+                staminaConsumption, learningCost, parent, Collections.unmodifiableList(neededPoses), beforeProcessedActions, needOnGround, needNotOnGround, availableInFluid, availableNotInFluid, availableWithFallFlying, availableWhileExhausted, needLearning, triggeredSide
         );
     }
 
@@ -68,7 +65,14 @@ public class ActionOption {
     }
 
     public ActionOption needPose(@Nullable Pose pose) {
-        this.neededPose = pose;
+        if (pose == null) {
+            neededPoses = Collections.emptyList();
+        }
+        return this;
+    }
+
+    public ActionOption needPoses(Pose... pose) {
+        neededPoses = Arrays.stream(pose).toList();
         return this;
     }
 
