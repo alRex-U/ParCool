@@ -70,6 +70,10 @@ public class ActionCapabilities {
         return dirty;
     }
 
+    public void setDirty() {
+        dirty = true;
+    }
+
     public void sync(ServerPlayer owner, ActionCapabilitiesPacket.Target target) {
         this.dirty = false;
         ParCool.CONNECTION.send(PacketDistributor.PLAYER.with(() -> owner), new ActionCapabilitiesPacket(this, target));

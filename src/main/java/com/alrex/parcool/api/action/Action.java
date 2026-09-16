@@ -32,7 +32,7 @@ public abstract class Action {
 	protected final ActionEntry<? extends Action> entry;
 	@Nullable
 	protected final Collection<ActionEntry<? extends ContinuableAction>> exclusiveActions;
-	private int tickSinceStarted = -1;
+	private int tickSinceStarted = 100;
 
 	public int getTickSinceStarted() {
 		return tickSinceStarted;
@@ -103,15 +103,16 @@ public abstract class Action {
 	protected final boolean isPossible() {
 		var player = parkourability.player();
 		var option = entry.option();
-        if (player.isSpectator()) return false;
-        if (!option.availableWhileExhausted() && parkourability.getStamina().isExhausted()) return false;
-        if ((option.neededPose() != null && option.neededPose() != player.getPose())
-                || (!option.availableInFluid() && player.isInFluidType())
+		if (player.isSpectator()) return false;
+		if (!option.availableWhileExhausted() && parkourability.getStamina().isExhausted()) return false;
+		var currentPose = player.getPose();
+		if ((!option.availableInFluid() && player.isInFluidType())
 				|| (!option.availableNotInFluid() && !player.isInFluidType())
 				|| (!option.availableWithFallFlying() && player.isFallFlying())
 				|| (option.needOnGround() && !player.onGround())
 				|| (option.needNotOnGround() && player.onGround())
 				|| player.getAbilities().flying
+				|| (!option.neededPoses().isEmpty() && option.neededPoses().stream().noneMatch(currentPose::equals))
 				|| !parkourability.permit(entry)
 		) {
 			return false;

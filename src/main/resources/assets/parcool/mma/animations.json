@@ -21,6 +21,16 @@
     ]
   },
   {
+    "name": "parcool:long_jump",
+    "animations": [
+      {
+        "main": "parcool:long_jump_group.json",
+        "fade_in_duration": 0,
+        "fade_out_duration": 6
+      }
+    ]
+  },
+  {
     "name": "parcool:dodge_right",
     "animations": [
       {

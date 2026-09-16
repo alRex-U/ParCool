@@ -21,6 +21,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -114,7 +115,11 @@ public class RideZipline extends ContinuableAction implements ActionExtension.Ke
                 this::isDoing,
                 () -> {
                     if (currentPos == null) return null;
-                    return new Vec3(currentPos.x, currentPos.y - player.getBbHeight() * 1.1, currentPos.z);
+                    return new Vec3(
+                            currentPos.x,
+                            currentPos.y - player.getLocalBoundsForPose(Pose.STANDING).getYsize() * 1.1,
+                            currentPos.z
+                    );
                 }
         );
         parkourability.getBehaviorEnforcer().noSprintMarks.add(ID_SPRINT_CANCEL, this::isDoing);
@@ -136,7 +141,7 @@ public class RideZipline extends ContinuableAction implements ActionExtension.Ke
         updateAngle();
         if (propertyZiplinePowered.getOrDefaultIfNull(false)) {
             var playerPos = player.position();
-            var particlePos = new Vec3(player.xo, player.yo + 1.1 * player.getBbHeight(), player.zo);
+            var particlePos = new Vec3(player.xo, player.yo + 1.1 * player.getLocalBoundsForPose(Pose.STANDING).getYsize(), player.zo);
             var posDiffX = player.xo - playerPos.x;
             var posDiffZ = player.zo - playerPos.z;
             player.level().addParticle(

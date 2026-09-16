@@ -12,6 +12,7 @@ public class ParCoolActions {
 
     public static final ActionEntry<FastRun> FAST_RUN;
     public static final ActionEntry<FastSwim> FAST_SWIM;
+    public static final ActionEntry<LongJump> LONG_JUMP;
     public static final ActionEntry<Vault> VAULT;
     public static final ActionEntry<Dive> DIVE;
     public static final ActionEntry<Skydive> SKYDIVE;
@@ -51,6 +52,7 @@ public class ParCoolActions {
         );
 
         RIDE_ZIPLINE = builder.add("ride_zipline", RideZipline.class, RideZipline::new, new ActionOption()
+                .needPoses(Pose.STANDING, Pose.CROUCHING)
                 .cost(StaminaConsumption.get(0, 2, 0))
                 .needNotOnGround(true)
                 .availableInFluid(true)
@@ -90,8 +92,15 @@ public class ParCoolActions {
                 .learningCost(3)
         );
 
+        LONG_JUMP = builder.add("long_jump", LongJump.class, LongJump::new, new ActionOption()
+                .needPose(null)
+                .needOnGround(true)
+                .cost(StaminaConsumption.get(50, 0, 0))
+                .learningCost(5)
+        );
+
         DIVE = builder.add("dive", Dive.class, Dive::new, new ActionOption()
-                .processedAfter(FAST_RUN)
+                .processedAfter(FAST_RUN, LONG_JUMP)
                 .needNotOnGround(true)
                 .learningCost(3)
         );
@@ -126,6 +135,7 @@ public class ParCoolActions {
         }
 
         HANG_ON = builder.add("hang_on", HangOn.class, HangOn::new, new ActionOption()
+                .needPoses(Pose.STANDING, Pose.CROUCHING)
                 .cost(StaminaConsumption.get(0, 3, 0))
                 .learningCost(1)
         );
@@ -145,6 +155,7 @@ public class ParCoolActions {
         );
 
         HANG_DOWN = builder.add("hang_down", HangDown.class, HangDown::new, new ActionOption()
+                .needPoses(Pose.STANDING, Pose.CROUCHING)
                 .processedAfter(HANG_ON)
                 .needNotOnGround(true)
                 .learningCost(8)

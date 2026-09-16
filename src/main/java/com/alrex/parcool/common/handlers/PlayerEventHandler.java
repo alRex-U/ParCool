@@ -75,4 +75,11 @@ public class PlayerEventHandler {
             }
         }
     }
+
+    @SubscribeEvent
+    public static void onChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        var parkourability = Parkourability.get(event.getEntity());
+        parkourability.getEnabledActions().setDirty();
+        parkourability.getCapabilities().setDirty();
+    }
 }

@@ -9,6 +9,10 @@ public class VectorUtil {
 		return new Vec3(-Math.sin(Math.toRadians(degree)), 0, Math.cos(Math.toRadians(degree)));
 	}
 
+    public static double toYawDegree(Vec3 vec) {
+        return Math.toDegrees(Math.atan2(-vec.x, vec.z));
+    }
+
     public static boolean isZero(Vec3 vector) {
         return vector.x == 0 && vector.y == 0 && vector.z == 0;
     }

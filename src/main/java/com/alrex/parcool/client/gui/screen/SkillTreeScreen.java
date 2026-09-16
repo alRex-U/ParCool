@@ -64,7 +64,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
         int skillViewTabOffsetX = contentOffsetX + CONTENT_WIDTH - skillViewTabWidth;
         int skillViewTabOffsetY = contentOffsetY;
         skilltreeWidget = addRenderableWidget(
-                new SkillTreeWidget(trees, capabilities, contentOffsetX, contentOffsetY, 190, CONTENT_HEIGHT, this::onSkillSelectionChanged)
+                new SkillTreeWidget(trees, capabilities, enabledActions, contentOffsetX, contentOffsetY, 190, CONTENT_HEIGHT, this::onSkillSelectionChanged)
         );
         skillViewTabGroup = addRenderableWidget(
                 new WidgetGroup(
