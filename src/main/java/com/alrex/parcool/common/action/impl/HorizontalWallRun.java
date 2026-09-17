@@ -94,9 +94,13 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         parkourability.getBehaviorEnforcer().setMarkerEnforcingDeltaMovement(this::isDoing, () -> {
             var wallDirection = propertyDirection.get();
             if (wallDirection == null) return null;
-            return player.getDeltaMovement()
-                    .add(wallDirection.asVec().scale(1 / 16d))
-                    .multiply(1, getDoingTick() < duration ? 0 : Math.min(1f, (getDoingTick() - duration) / duration), 1);
+            var currentDelta = player.getDeltaMovement();
+            var wallVec = wallDirection.asVec();
+            return new Vec3(
+                    currentDelta.x + wallVec.x / 16.,
+                    getDoingTick() < duration ? Math.max(0, currentDelta.y) : currentDelta.y * Math.min(1f, (getDoingTick() - duration) / duration),
+                    currentDelta.z + wallVec.z / 16.
+            );
         });
         Minecraft.getInstance().getSoundManager().play(new HorizontalWallRunSoundInstance(player, this));
     }
