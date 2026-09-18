@@ -30,6 +30,7 @@
   "key.parcool.breakfall": "Breakfall",
   "key.parcool.horizontal_wall_run": "Horizontal Wall Run",
   "key.parcool.hide_in_block": "Hide in block",
+  "key.parcool.enable": "Enable/Disable ParCool",
 
   "subtitle.parcool.action.breakfall": "Player does breakfall",
   "subtitle.parcool.action.charge_jump": "Player does charge jump",

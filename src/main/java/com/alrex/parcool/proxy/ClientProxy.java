@@ -1,6 +1,8 @@
 package com.alrex.parcool.proxy;
 
 import com.alrex.parcool.api.client.skilltree.PrepareParCoolSkillTreeEvent;
+import com.alrex.parcool.client.GrappleCameraHandler;
+import com.alrex.parcool.client.GrappleTargetOverlay;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.PassiveAnimationProcessor;
 import com.alrex.parcool.client.animation.system.config.AnimationSystemConfig;
@@ -8,8 +10,6 @@ import com.alrex.parcool.client.animation.system.event.RegisterAnimationEntryEve
 import com.alrex.parcool.client.animation.system.handle.AnimationSystemEventHandler;
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.animation.system.resource.AnimationResourceManager;
-import com.alrex.parcool.client.GrappleCameraHandler;
-import com.alrex.parcool.client.GrappleTargetOverlay;
 import com.alrex.parcool.client.gui.screen.ParCoolGuideScreen;
 import com.alrex.parcool.client.gui.screen.SkillTreeScreen;
 import com.alrex.parcool.client.hud.HUDRegistry;
@@ -112,7 +112,12 @@ public class ClientProxy extends CommonProxy {
 				.noResponse()
 				.decoder(EnableActionPacket.HANDLER::decode)
 				.encoder(EnableActionPacket.HANDLER::encode)
-				.consumerMainThread(EnableActionPacket.HANDLER::handleInPhysicalClient)
+				.consumerMainThread(EnableActionPacket.HANDLER::handleInPhysicalClient);
+		instance.messageBuilder(ChangeActivationPacket.class, index++)
+				.noResponse()
+				.decoder(ChangeActivationPacket.HANDLER::decode)
+				.encoder(ChangeActivationPacket.HANDLER::encode)
+				.consumerMainThread(ChangeActivationPacket.HANDLER::handleInPhysicalClient)
 				.add();
 	}
 

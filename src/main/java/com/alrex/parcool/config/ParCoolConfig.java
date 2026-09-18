@@ -66,7 +66,6 @@ public class ParCoolConfig {
 		}
 
 		public final ForgeConfigSpec.BooleanValue enableActionSounds;
-		public final ForgeConfigSpec.BooleanValue parcoolIsActive;
 		public final ForgeConfigSpec.BooleanValue showTargetIndicator;
 		public final ForgeConfigSpec.IntValue targetIndicatorSize;
 		public final ForgeConfigSpec.BooleanValue debugRope;
@@ -110,7 +109,6 @@ public class ParCoolConfig {
 			builder.push("Other");
 			{
 				enableActionSounds = builder.define("enable_sounds", true);
-				parcoolIsActive = builder.define("parcool_is_active", true);
 			}
 			builder.pop();
 			builtConfig = builder.build();

@@ -5,11 +5,13 @@ import com.alrex.parcool.api.action.Action;
 import com.alrex.parcool.api.action.ContinuableAction;
 import com.alrex.parcool.api.action.ParCoolActionEvent;
 import com.alrex.parcool.api.stamina.AbstractLocalStamina;
+import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.network.ActionCapabilitiesPacket;
 import com.alrex.parcool.common.network.ActionStatePacket;
 import com.alrex.parcool.common.network.ActionStateSetPacket;
 import com.alrex.parcool.common.stamina.StaminaSynchronizationDepot;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -55,6 +57,7 @@ public class ActionProcessor {
 		} else {
 			onTick$doPreprocessInServer(parkourability);
 		}
+		parkourability.sendActivationPacket();
 
         parkourability.getAdditionalProperties().onTick();
 		for (Action action : parkourability.getActions()) {
@@ -87,6 +90,13 @@ public class ActionProcessor {
 	private void onTick$doPreprocessInClient(Parkourability parkourability) {
 		if (parkourability.getStamina() instanceof AbstractLocalStamina stamina) {
 			stamina.tick();
+		}
+		if (ParCoolKeyBinds.ENABLE.state().isJustPressed()) {
+			parkourability.setActive(!parkourability.isActive());
+			parkourability.player().displayClientMessage(
+					Component.translatable(parkourability.isActive() ? "parcool.message.enabled" : "parcool.message.disabled"),
+					true
+			);
 		}
 	}
 

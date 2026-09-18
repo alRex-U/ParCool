@@ -7,6 +7,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.settings.KeyConflictContext;
+import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.event.TickEvent;
 import org.lwjgl.glfw.GLFW;
 
@@ -116,6 +118,13 @@ public class ParCoolKeyBinds {
     public static final Input BREAKFALL = register(new KeyMapping("key.parcool.breakfall", GLFW.GLFW_KEY_R, KEY_CATEGORY));
 	public static final Input HORIZONTAL_WALL_RUN = register(new KeyMapping("key.parcool.horizontal_wall_run", GLFW.GLFW_KEY_R, KEY_CATEGORY));
     public static final Input HIDE_IN_BLOCK = register(new KeyMapping("key.parcool.hide_in_block", GLFW.GLFW_KEY_C, KEY_CATEGORY));
+	public static final Input ENABLE = register(new KeyMapping(
+			"key.parcool.enable",
+			KeyConflictContext.UNIVERSAL,
+			KeyModifier.CONTROL,
+			InputConstants.Type.KEYSYM,
+			GLFW.GLFW_KEY_P, KEY_CATEGORY
+	));
 
     public static final LogicalInput JUMP = listen(Minecraft.getInstance().options.keyJump::isDown);
     public static final LogicalInput USE_ITEM = listen(Minecraft.getInstance().options.keyUse::isDown);
