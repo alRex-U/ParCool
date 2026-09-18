@@ -1,6 +1,10 @@
 package com.alrex.parcool.util;
 
 public class ColorUtil {
+	public static int withAlpha(int color, int a) {
+		return (color & 0xFFFFFF) | (a * 0x1000000);
+	}
+
 	public static int getColorCodeFromARGB(int a, int r, int g, int b) {
 		return a * 0x1000000 + r * 0x10000 + g * 0x100 + b;
 	}

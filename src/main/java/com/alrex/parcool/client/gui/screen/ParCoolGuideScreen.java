@@ -3,9 +3,7 @@ package com.alrex.parcool.client.gui.screen;
 import com.alrex.parcool.client.gui.GuiColorPallet;
 import com.alrex.parcool.client.gui.components.CardPanel;
 import com.alrex.parcool.client.gui.components.ParCoolGuidePageList;
-import com.alrex.parcool.client.md.CompiledMarkdown;
 import com.alrex.parcool.client.md.resource.GuideResourceManager;
-import com.alrex.parcool.client.md.resource.PageEntry;
 import com.alrex.parcool.client.md.ui.MarkdownWidget;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -17,33 +15,36 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import java.util.Stack;
 
 @OnlyIn(Dist.CLIENT)
 public class ParCoolGuideScreen extends ParCoolTabletScreen {
-    private static final int SIDE_PANEL_WIDTH_OPENED = 90;
-    private static final int SIDE_PANEL_WIDTH_CLOSED = 13;
+    public static final int SIDE_PANEL_WIDTH_OPENED = 90;
+    public static final int SIDE_PANEL_WIDTH_CLOSED = 13;
 
-    private record PageStackEntry(ResourceLocation page, @Nullable CompiledMarkdown content) {
-    }
+    private final GuidePageStack pageStack;
 
-    private final Stack<PageStackEntry> pageStack = new Stack<>();
     @Nullable
     private ParCoolGuidePageList pageList;
     private boolean openSidePanel;
 
     public ParCoolGuideScreen(ResourceLocation dataLocation) {
+        this(dataLocation, new GuidePageStack(null));
+    }
+
+    public ParCoolGuideScreen(ResourceLocation dataLocation, GuidePageStack pageStack) {
         super(Component.empty(), GuiColorPallet.DEFAULT_LIGHT);
         var content = GuideResourceManager.getInstance().getResource().get(dataLocation);
         if (content == null) openSidePanel = true;
-        pageStack.push(new PageStackEntry(dataLocation, content));
+        this.pageStack = pageStack;
+        this.pageStack.pushPage(dataLocation);
+        this.pageStack.setContentChangedListener(this::rebuildWidgets);
     }
 
     @Override
     protected void init() {
         super.init();
         updateTopBarText();
-        var content = getCurrentContent();
+        var content = pageStack.getCurrentContent();
         addRenderableOnly(new CardPanel(contentOffsetX, contentOffsetY, CONTENT_WIDTH, CONTENT_HEIGHT, content != null ? colors.surface() : colors.background()));
         int sideBarWidth = openSidePanel ? SIDE_PANEL_WIDTH_OPENED : SIDE_PANEL_WIDTH_CLOSED;
         if (content != null) {
@@ -77,7 +78,7 @@ public class ParCoolGuideScreen extends ParCoolTabletScreen {
                             sideBarWidth,
                             CONTENT_HEIGHT - 13,
                             colors.separator(),
-                            this::pushPage
+                            (page) -> pageStack.pushPage(page.resourceLocation())
                     )
             );
             if (oldPageList != null) {
@@ -86,6 +87,7 @@ public class ParCoolGuideScreen extends ParCoolTabletScreen {
         } else {
             addRenderableOnly(new CardPanel(contentOffsetX, contentOffsetY, sideBarWidth, CONTENT_HEIGHT, colors.surface(), colors.shadow()));
             addRenderableWidget(new IconButton.Hamburger(contentOffsetX + 1, contentOffsetY + 1, this::openOrCloseSidePanel));
+            addRenderableWidget(new IconButton.Expand(contentOffsetX + 1, contentOffsetY + CONTENT_HEIGHT - 13, this::openAsFullScreen));
         }
     }
 
@@ -94,53 +96,32 @@ public class ParCoolGuideScreen extends ParCoolTabletScreen {
         super.renderContent(poseStack, mouseX, mouseY, partial);
     }
 
-    private void pushPage(PageEntry page) {
-        if (!pageStack.isEmpty()) {
-            var currentPage = pageStack.lastElement();
-            if (currentPage != null && currentPage.page.equals(page.resourceLocation())) return;
-        }
-        var pageLocation = page.resourceLocation();
-        pageStack.push(new PageStackEntry(pageLocation, GuideResourceManager.getInstance().getResource().get(page)));
-        rebuildWidgets();
-        updateTopBarText();
-    }
-
-    private void popPage() {
-        if (!pageStack.isEmpty()) pageStack.pop();
-        if (pageStack.isEmpty()) {
-            Minecraft.getInstance().setScreen(null);
-        } else {
-            rebuildWidgets();
-            updateTopBarText();
-        }
-    }
-
-    public ResourceLocation getCurrentPageId() {
-        return pageStack.lastElement().page();
-    }
-
-    @Nullable
-    public CompiledMarkdown getCurrentContent() {
-        if (pageStack.isEmpty()) return null;
-        return pageStack.lastElement().content();
-    }
-
     private void updateTopBarText() {
-        if (getCurrentContent() == null || pageStack.isEmpty()) {
+        if (pageStack.getCurrentContent() == null || pageStack.isEmpty()) {
             setTopBarText("prcl://guide/not_found");
         } else {
-            var currentPage = getCurrentPageId();
-            setTopBarText(String.format("prcl://guide/%s/%s", currentPage.getNamespace(), currentPage.getPath()));
+            var currentPage = pageStack.getCurrentPageID();
+            if (currentPage != null)
+                setTopBarText(String.format("prcl://guide/%s/%s", currentPage.getNamespace(), currentPage.getPath()));
         }
     }
 
     @Override
     protected void onPressTobBarButton() {
-        popPage();
+        pageStack.popPage();
     }
 
     private void openOrCloseSidePanel() {
         openSidePanel = !openSidePanel;
         rebuildWidgets();
+    }
+
+    private void openAsFullScreen() {
+        if (minecraft != null) {
+            var currentPage = pageStack.getCurrentPageID();
+            if (currentPage != null) {
+                minecraft.setScreen(new ParCoolGuideFullScreen(currentPage, pageStack));
+            }
+        }
     }
 }
