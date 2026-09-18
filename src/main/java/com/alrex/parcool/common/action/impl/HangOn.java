@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
@@ -112,7 +113,9 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().HANG_ON);
-        parkourability.player().playSound(ParCoolSoundEvents.HANG_ON.get());
+        if (ParCool.getConfig().client().enableActionSounds.get()) {
+            parkourability.player().playSound(ParCoolSoundEvents.HANG_ON.get());
+        }
         oldDirection = propertyDirection.get();
     }
 

@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
@@ -85,7 +86,9 @@ public class Dodge extends ContinuableAction implements ActionExtension.Attacked
                 PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().DODGE_RIGHT, true);
                 break;
         }
-        parkourability.player().playSound(ParCoolSoundEvents.DODGE.get());
+        if (ParCool.getConfig().client().enableActionSounds.get()) {
+            parkourability.player().playSound(ParCoolSoundEvents.DODGE.get());
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

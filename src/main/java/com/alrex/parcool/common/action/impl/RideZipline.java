@@ -124,7 +124,9 @@ public class RideZipline extends ContinuableAction implements ActionExtension.Ke
         );
         parkourability.getBehaviorEnforcer().noSprintMarks.add(ID_SPRINT_CANCEL, this::isDoing);
         parkourability.getBehaviorEnforcer().noFallFlyingMarks.add(ID_FALL_FLY_CANCEL, this::isDoing);
-        Minecraft.getInstance().getSoundManager().play(new ZiplineUseSoundInstance(player, this));
+        if (ParCool.getConfig().client().enableActionSounds.get()) {
+            Minecraft.getInstance().getSoundManager().play(new ZiplineUseSoundInstance(player, this));
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

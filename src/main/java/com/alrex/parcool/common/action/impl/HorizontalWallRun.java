@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolAttributes;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
@@ -102,7 +103,9 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
                     currentDelta.z + wallVec.z / 16.
             );
         });
-        Minecraft.getInstance().getSoundManager().play(new HorizontalWallRunSoundInstance(player, this));
+        if (ParCool.getConfig().client().enableActionSounds.get()) {
+            Minecraft.getInstance().getSoundManager().play(new HorizontalWallRunSoundInstance(player, this));
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

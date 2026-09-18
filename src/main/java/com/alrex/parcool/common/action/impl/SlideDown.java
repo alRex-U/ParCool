@@ -145,7 +145,9 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
                     }
                 }
         );
-        Minecraft.getInstance().getSoundManager().play(new SlideDownSoundInstance(player, this));
+        if (ParCool.getConfig().client().enableActionSounds.get()) {
+            Minecraft.getInstance().getSoundManager().play(new SlideDownSoundInstance(player, this));
+        }
     }
 
     @Override

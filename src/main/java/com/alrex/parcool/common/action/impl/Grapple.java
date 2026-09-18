@@ -322,7 +322,9 @@ public class Grapple extends ContinuableAction {
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
         parkourability.getBehaviorEnforcer().noFallFlyingMarks.add(ID_FALL_FLY_CANCEL, this::isDoing);
-        Minecraft.getInstance().getSoundManager().play(new GrappleSwingSoundInstance(player, this));
+        if (ParCool.getConfig().client().enableActionSounds.get()) {
+            Minecraft.getInstance().getSoundManager().play(new GrappleSwingSoundInstance(player, this));
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
