@@ -23,6 +23,7 @@
   "block.parcool.iron_zipline_hook": "Iron Zipline Hook",
 
   "key.category.parcool": "ParCool",
+  "key.parcool.fast_move": "Fast Run / Fast Swim",
   "key.parcool.crawl": "Crawl",
   "key.parcool.hang": "Hang / Use Zipline",
   "key.parcool.slide_down": "Slide Down",
@@ -30,6 +31,8 @@
   "key.parcool.breakfall": "Breakfall",
   "key.parcool.horizontal_wall_run": "Horizontal Wall Run",
   "key.parcool.hide_in_block": "Hide in block",
+  "key.parcool.open_skilltree": "Open Skilltree",
+  "key.parcool.enable": "Enable/Disable ParCool",
 
   "subtitle.parcool.action.breakfall": "Player does breakfall",
   "subtitle.parcool.action.charge_jump": "Player does charge jump",

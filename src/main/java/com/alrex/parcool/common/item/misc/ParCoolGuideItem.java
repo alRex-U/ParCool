@@ -32,7 +32,7 @@ public class ParCoolGuideItem extends Item {
         var itemInHand = player.getItemInHand(hand);
         if (level.isClientSide()) {
             if (player.isShiftKeyDown()) {
-                ParCool.PROXY.openSkillTreeGui(player);
+                ParCool.PROXY.openSkillTreeGui(player, true);
             } else {
                 ParCool.PROXY.openGuideGui();
             }

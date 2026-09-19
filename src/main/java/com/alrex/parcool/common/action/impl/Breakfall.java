@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolAttributes;
 import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.*;
@@ -18,6 +19,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+
+import javax.annotation.Nullable;
 
 public class Breakfall extends Action implements ActionExtension.LandListener {
     private final SynchronizedDataHolder holder;
@@ -47,9 +50,16 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
     }
 
     @OnlyIn(Dist.CLIENT)
+    @Nullable
+    @Override
+    public ParCoolKeyBinds.IStateProvider getKeyBind() {
+        return ParCoolKeyBinds.BREAKFALL;
+    }
+
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onTickInLocalClient() {
-        propertyInputBreakfallType.set(ParCoolKeyBinds.BREAKFALL.state().isDown() ?
+        propertyInputBreakfallType.set(input.isActive() ?
                 (ParCoolKeyBinds.getMovementInput(LogicalMovement.FORWARD).isDown() ? BreakfallType.ROLL : BreakfallType.TAP)
                 : BreakfallType.NONE
         );
@@ -85,11 +95,13 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
             case ROLL:
                 PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().BREAKFALL_FORWARD);
         }
-        parkourability.player().playSound(
-                ParCoolSoundEvents.BREAKFALL.get(),
-                MathUtil.mapLinear(propertyFallDist.getOrDefaultIfNull(0f), 3f, 10f, 0f, 1f),
-                1f
-        );
+        if (ParCool.getConfig().client().enableActionSounds.get()) {
+            parkourability.player().playSound(
+                    ParCoolSoundEvents.BREAKFALL.get(),
+                    MathUtil.mapLinear(propertyFallDist.getOrDefaultIfNull(0f), 3f, 10f, 0f, 1f),
+                    1f
+            );
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

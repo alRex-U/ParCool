@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
@@ -110,7 +111,9 @@ public class Dive extends ContinuableAction implements ActionExtension.JumpListe
     @Override
     public void onStartInLocalClient() {
         if (!(parkourability.player() instanceof LocalPlayer player)) return;
-        Minecraft.getInstance().getSoundManager().play(new DiveSoundInstance(player, this));
+        if (ParCool.getConfig().client().enableActionSounds.get()) {
+            Minecraft.getInstance().getSoundManager().play(new DiveSoundInstance(player, this));
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

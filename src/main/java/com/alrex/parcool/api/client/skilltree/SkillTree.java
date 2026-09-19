@@ -77,6 +77,12 @@ public class SkillTree {
         }
 
         public boolean isUnlocked(ActionCapabilities capabilities) {
+            return !ParCool.getConfig().server().enableSkillTree.get()
+                    || !actionEntry.option().needLearning()
+                    || capabilities.can(actionEntry);
+        }
+
+        public boolean isEnabled(ActionCapabilities capabilities) {
             return capabilities.can(actionEntry);
         }
 

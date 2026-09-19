@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
@@ -46,6 +47,13 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
         );
     }
 
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    @Override
+    public ParCoolKeyBinds.IStateProvider getKeyBind() {
+        return ParCoolKeyBinds.HANG;
+    }
+
     @Override
     public SynchronizedDataHolder getSynchronizedData() {
         return dataHolder;
@@ -53,7 +61,7 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
 
     @Override
     public boolean canContinue() {
-        if (!ParCoolKeyBinds.HANG.key().isDown() || cooldown > 0) return false;
+        if (!input.isActive() || cooldown > 0) return false;
         var currentWallDirection = parkourability.getAdditionalProperties().getDefaultWallInteraction();
         if (currentWallDirection == null) return false;
         if (!currentWallDirection.alongToAxis()) return false;
@@ -67,7 +75,7 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
 
     @Override
     public boolean canStart() {
-        if (!ParCoolKeyBinds.HANG.key().isDown() || cooldown > 0) return false;
+        if (!input.isActive() || cooldown > 0) return false;
         if (Math.abs(parkourability.player().getDeltaMovement().y) > 0.4) return false;
         var currentWallDirection = parkourability.getAdditionalProperties().getDefaultWallInteraction();
         if (currentWallDirection == null) return false;
@@ -116,7 +124,9 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().POLE_CLIMB);
-        parkourability.player().playSound(ParCoolSoundEvents.POLE_CLIMB.get());
+        if (ParCool.getConfig().client().enableActionSounds.get()) {
+            parkourability.player().playSound(ParCoolSoundEvents.POLE_CLIMB.get());
+        }
     }
 
     @Override

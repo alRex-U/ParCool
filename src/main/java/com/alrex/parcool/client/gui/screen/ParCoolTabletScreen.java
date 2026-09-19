@@ -87,7 +87,7 @@ public class ParCoolTabletScreen extends Screen {
         this.urlBarText = urlLikeText;
     }
 
-    protected static class IconButton extends AbstractButton {
+    public static class IconButton extends AbstractButton {
         private final TextureAtlasSprite sprite;
         @Nullable
         private final Runnable pressListener;
@@ -117,27 +117,51 @@ public class ParCoolTabletScreen extends Screen {
         public void updateWidgetNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
         }
 
-        protected static class Back extends IconButton {
+        public static class Back extends IconButton {
             public Back(int x, int y, @Nullable Runnable listener) {
                 super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_BACK), listener);
             }
         }
 
-        protected static class Home extends IconButton {
+        public static class Home extends IconButton {
             public Home(int x, int y, @Nullable Runnable listener) {
                 super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_HOME), listener);
             }
         }
 
-        protected static class Hamburger extends IconButton {
+        public static class Hamburger extends IconButton {
             public Hamburger(int x, int y, @Nullable Runnable listener) {
                 super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_HAMBURGER), listener);
             }
         }
 
-        protected static class SlideToLeft extends IconButton {
+        public static class SlideToLeft extends IconButton {
             public SlideToLeft(int x, int y, @Nullable Runnable listener) {
                 super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_CLOSE), listener);
+            }
+        }
+
+        public static class Expand extends IconButton {
+            public Expand(int x, int y, @Nullable Runnable listener) {
+                super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_EXPAND), listener);
+            }
+        }
+
+        public static class Shrink extends IconButton {
+            public Shrink(int x, int y, @Nullable Runnable listener) {
+                super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_SHRINK), listener);
+            }
+        }
+
+        public static class ExpandDark extends IconButton {
+            public ExpandDark(int x, int y, @Nullable Runnable listener) {
+                super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_EXPAND_DARK), listener);
+            }
+        }
+
+        public static class ShrinkDark extends IconButton {
+            public ShrinkDark(int x, int y, @Nullable Runnable listener) {
+                super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_SHRINK_DARK), listener);
             }
         }
     }

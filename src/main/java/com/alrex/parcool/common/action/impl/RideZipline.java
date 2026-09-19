@@ -70,6 +70,13 @@ public class RideZipline extends ContinuableAction implements ActionExtension.Ke
         );
     }
 
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    @Override
+    public ParCoolKeyBinds.IStateProvider getKeyBind() {
+        return ParCoolKeyBinds.HANG;
+    }
+
     @Override
     public SynchronizedDataHolder getSynchronizedData() {
         return dataHolder;
@@ -77,7 +84,7 @@ public class RideZipline extends ContinuableAction implements ActionExtension.Ke
 
     @Override
     public boolean canStart() {
-        if (!ParCoolKeyBinds.HANG.key().isDown()
+        if (!input.isActive()
                 || (getNotDoingTick() <= 5 && (ParCoolKeyBinds.JUMP.state().isDown() || previouslyStopByCollision))
         ) return false;
         var player = parkourability.player();
@@ -98,7 +105,7 @@ public class RideZipline extends ContinuableAction implements ActionExtension.Ke
             return false;
         }
 
-        return ParCoolKeyBinds.HANG.state().isDown()
+        return input.isActive()
                 && !ParCoolKeyBinds.JUMP.state().isJustPressed()
                 && ridingZipline != null
                 && 0 <= currentT && currentT <= 1;
@@ -124,7 +131,9 @@ public class RideZipline extends ContinuableAction implements ActionExtension.Ke
         );
         parkourability.getBehaviorEnforcer().noSprintMarks.add(ID_SPRINT_CANCEL, this::isDoing);
         parkourability.getBehaviorEnforcer().noFallFlyingMarks.add(ID_FALL_FLY_CANCEL, this::isDoing);
-        Minecraft.getInstance().getSoundManager().play(new ZiplineUseSoundInstance(player, this));
+        if (ParCool.getConfig().client().enableActionSounds.get()) {
+            Minecraft.getInstance().getSoundManager().play(new ZiplineUseSoundInstance(player, this));
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
