@@ -6,9 +6,9 @@ import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.api.action.ContinuableAction;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.PlayerAnimator;
+import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.BehaviorEnforcer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -16,6 +16,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class FastSwim extends ContinuableAction {
@@ -27,11 +28,18 @@ public class FastSwim extends ContinuableAction {
         super(parkourability, entry);
     }
 
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    @Override
+    public ParCoolKeyBinds.IStateProvider getKeyBind() {
+        return ParCoolKeyBinds.FAST_MOVE;
+    }
+
     @Override
     public boolean canStart() {
         return parkourability.player().isSwimming()
                 && !((LocalPlayer) parkourability.player()).isMovingSlowly()
-                && Minecraft.getInstance().options.keySprint.isDown();
+                && input.isActive();
     }
 
     @Override

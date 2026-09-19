@@ -111,6 +111,7 @@ public class ParCoolKeyBinds {
 
 	public static final String KEY_CATEGORY = "key.category.parcool";
 
+	public static final Input FAST_MOVE = register(new KeyMapping("key.parcool.fast_move", GLFW.GLFW_KEY_LEFT_CONTROL, KEY_CATEGORY));
 	public static final Input CRAWL = register(new KeyMapping("key.parcool.crawl", GLFW.GLFW_KEY_C, KEY_CATEGORY));
     public static final Input HANG = register(new KeyMapping("key.parcool.hang", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, KEY_CATEGORY));
 	public static final Input SLIDE_DOWN = register(new KeyMapping("key.parcool.slide_down", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, KEY_CATEGORY));

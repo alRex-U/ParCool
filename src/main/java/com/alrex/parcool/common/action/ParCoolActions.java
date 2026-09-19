@@ -68,6 +68,7 @@ public class ParCoolActions {
 
         FAST_RUN = builder.add("fast_run", FastRun.class, FastRun::new, new ActionOption()
                 .processedAfter(WALL_RUN)
+                .inputType(GeneralInputType.CONTINUOUS)
                 .cost(StaminaConsumption.get(0, 2, 0))
                 .learningCost(1)
         );
@@ -90,6 +91,7 @@ public class ParCoolActions {
                 .availableInFluid(true)
                 .availableNotInFluid(false)
                 .needPose(Pose.SWIMMING)
+                .inputType(GeneralInputType.CONTINUOUS)
                 .cost(StaminaConsumption.get(0, 2, 0))
                 .learningCost(3)
         );
