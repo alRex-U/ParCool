@@ -1,5 +1,5 @@
 {
-  "duration": 20,
+  "duration": 17,
   "components": [
     {
       "name": "parcool:dodge_back.json",
@@ -7,7 +7,7 @@
         "name": "parcool:time",
         "args": {
           "max": 20,
-          "scale": 1.176
+          "scale": 1.25
         }
       }
     },

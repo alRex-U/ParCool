@@ -45,8 +45,8 @@
     "animations": [
       {
         "main": "parcool:dodge_front_group.json",
-        "fade_in_duration": 5,
-        "fade_out_duration": 2
+        "fade_in_duration": 2,
+        "fade_out_duration": 4
       }
     ]
   },

@@ -1,5 +1,5 @@
 {
-  "duration": 18,
+  "duration": 16,
   "components": [
     {
       "name": "parcool:dodge_front.json",
@@ -7,7 +7,7 @@
         "name": "parcool:time",
         "args": {
           "max": 20,
-          "scale": 1.333
+          "scale": 1.5
         }
       }
     },

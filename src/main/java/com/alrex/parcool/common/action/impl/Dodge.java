@@ -10,7 +10,6 @@ import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionExtension;
 import com.alrex.parcool.common.action.BehaviorEnforcer;
-import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.util.EntityUtil;
 import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -21,7 +20,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class Dodge extends ContinuableAction implements ActionExtension.AttackedListener {
     private static final BehaviorEnforcer.ID ID_CANCEL_GET_OFF_BLOCK = BehaviorEnforcer.newID();
@@ -31,7 +29,7 @@ public class Dodge extends ContinuableAction implements ActionExtension.Attacked
     private final SynchronizedProperty<Float> propertyStartedYRot;
 
     public Dodge(Parkourability parkourability, ActionEntry<? extends Action> entry) {
-        super(parkourability, entry, List.of(ParCoolActions.FAST_RUN));
+        super(parkourability, entry);
         dataHolder = SynchronizedDataHolder.create(entry,
                 propertyAnimationType = SynchronizedProperty.newEnum(AnimationType.class),
                 propertyStartedYRot = SynchronizedProperty.newFloat()
@@ -66,7 +64,7 @@ public class Dodge extends ContinuableAction implements ActionExtension.Attacked
 
     @Override
     public boolean canContinue() {
-        return getDoingTick() < 15;
+        return getDoingTick() < 12;
     }
 
     @OnlyIn(Dist.CLIENT)
