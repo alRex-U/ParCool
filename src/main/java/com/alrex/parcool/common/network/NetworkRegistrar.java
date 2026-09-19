@@ -47,5 +47,10 @@ public class NetworkRegistrar {
                 RequestUnlockActionPacket.HANDLER.codec(),
                 RequestUnlockActionPacket.HANDLER.payloadHandler()
         );
+        r.playBidirectional(
+                ChangeActivationPacket.TYPE,
+                ChangeActivationPacket.HANDLER.codec(),
+                ChangeActivationPacket.HANDLER.payloadHandler()
+        );
     }
 }

@@ -5,16 +5,12 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.stamina.ReadonlyStamina;
 import com.alrex.parcool.util.NetworkUtil;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public record StaminaPacket(UUID playerID, boolean fromClient, ReadonlyStamina stamina) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<StaminaPacket> TYPE = new CustomPacketPayload.Type<>(ParCool.resourceLocation("stamina"));
@@ -48,7 +44,7 @@ public record StaminaPacket(UUID playerID, boolean fromClient, ReadonlyStamina s
 
 		@Override
         public void handleInLogicalServer(StaminaPacket staminaPacket, IPayloadContext context) {
-            var player = NetworkUtil.getPlayerInPhysicalServer(staminaPacket.playerID, context);
+			var player = NetworkUtil.getPlayerInLogicalServer(staminaPacket.playerID, context);
 			if (player == null) return;
 			var parkourability = Parkourability.get(player);
 			parkourability.updateStaminaInRemote(staminaPacket.stamina);
@@ -58,7 +54,7 @@ public record StaminaPacket(UUID playerID, boolean fromClient, ReadonlyStamina s
 
 		@Override
         public void handleInLogicalClient(StaminaPacket staminaPacket, IPayloadContext context) {
-			var player = NetworkUtil.getPlayerInPhysicalClient(staminaPacket.playerID, context, staminaPacket.fromClient);
+			var player = NetworkUtil.getPlayerInLogicalClient(staminaPacket.playerID, context, staminaPacket.fromClient);
 			if (player == null) return;
 			var parkourability = Parkourability.get(player);
 			parkourability.updateStaminaInRemote(staminaPacket.stamina);

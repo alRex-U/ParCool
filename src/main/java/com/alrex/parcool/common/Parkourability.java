@@ -11,7 +11,7 @@ import com.alrex.parcool.common.stamina.ReadonlyStamina;
 import com.alrex.parcool.common.stamina.StaminaTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import java.util.TreeMap;
@@ -101,9 +101,9 @@ public class Parkourability {
 		if (activationDirty) {
 			activationDirty = false;
 			if (player.level().isClientSide) {
-				ParCool.CONNECTION.send(PacketDistributor.SERVER.noArg(), new ChangeActivationPacket(player.getUUID(), active, true));
+				PacketDistributor.sendToServer(new ChangeActivationPacket(player.getUUID(), active, true));
 			} else {
-				ParCool.CONNECTION.send(PacketDistributor.ALL.noArg(), new ChangeActivationPacket(player.getUUID(), active, false));
+				PacketDistributor.sendToAllPlayers(new ChangeActivationPacket(player.getUUID(), active, false));
 			}
 		}
 	}

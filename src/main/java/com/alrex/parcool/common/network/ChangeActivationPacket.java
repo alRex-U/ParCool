@@ -3,53 +3,53 @@ package com.alrex.parcool.common.network;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.util.NetworkUtil;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.PacketDistributor;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
-import java.util.function.Supplier;
 
-public record ChangeActivationPacket(UUID playerID, boolean value, boolean fromClient) {
+public record ChangeActivationPacket(UUID playerID, boolean value, boolean fromClient) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<ChangeActivationPacket> TYPE = new CustomPacketPayload.Type<>(ParCool.resourceLocation("activate"));
+
+    @Nonnull
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
     public static final IHandler<ChangeActivationPacket> HANDLER = new IHandler<>() {
         @Override
-        public void encode(ChangeActivationPacket changeActivationPacket, FriendlyByteBuf packet) {
-            packet.writeUUID(changeActivationPacket.playerID);
-            packet.writeBoolean(changeActivationPacket.value);
-            packet.writeBoolean(changeActivationPacket.fromClient);
+        public void encode(ByteBuf buf, ChangeActivationPacket packet) {
+            buf.writeLong(packet.playerID.getMostSignificantBits());
+            buf.writeLong(packet.playerID.getLeastSignificantBits());
+            buf.writeBoolean(packet.value);
+            buf.writeBoolean(packet.fromClient);
         }
 
         @Override
-        public ChangeActivationPacket decode(FriendlyByteBuf packet) {
-            return new ChangeActivationPacket(packet.readUUID(), packet.readBoolean(), packet.readBoolean());
+        public ChangeActivationPacket decode(ByteBuf packet) {
+            return new ChangeActivationPacket(new UUID(packet.readLong(), packet.readLong()), packet.readBoolean(), packet.readBoolean());
         }
 
-        @OnlyIn(Dist.DEDICATED_SERVER)
         @Override
-        public void handleInPhysicalServer(ChangeActivationPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
-            var player = NetworkUtil.getPlayerInPhysicalServer(packet.playerID, contextSupplier.get());
+        public void handleInLogicalServer(ChangeActivationPacket packet, IPayloadContext context) {
+            var player = NetworkUtil.getPlayerInLogicalServer(packet.playerID, context);
             if (player == null) return;
             var parkourability = Parkourability.get(player);
             parkourability.syncActive(packet.value);
 
-            ParCool.CONNECTION.send(PacketDistributor.ALL.noArg(), packet);
+            PacketDistributor.sendToAllPlayers(packet);
         }
 
-        @OnlyIn(Dist.CLIENT)
         @Override
-        public void handleInPhysicalClient(ChangeActivationPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
-            var context = contextSupplier.get();
-            var player = NetworkUtil.getPlayerInPhysicalClient(packet.playerID, context, packet.fromClient);
+        public void handleInLogicalClient(ChangeActivationPacket packet, IPayloadContext context) {
+            var player = NetworkUtil.getPlayerInLogicalClient(packet.playerID, context, packet.fromClient);
             if (player == null) return;
             var parkourability = Parkourability.get(player);
             parkourability.syncActive(packet.value);
-
-            if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
-                ParCool.CONNECTION.send(PacketDistributor.ALL.noArg(), packet);
-            }
         }
     };
 }

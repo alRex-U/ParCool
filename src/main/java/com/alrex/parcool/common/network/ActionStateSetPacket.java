@@ -60,7 +60,7 @@ public class ActionStateSetPacket extends MultiComposablePacket<ActionStatePacke
 
         @Override
         public void handleInLogicalServer(ActionStateSetPacket actionStateSetPacket, IPayloadContext context) {
-            var player = NetworkUtil.getPlayerInPhysicalServer(actionStateSetPacket.playerID, context);
+            var player = NetworkUtil.getPlayerInLogicalServer(actionStateSetPacket.playerID, context);
             if (player == null) return;
             processPlayer(actionStateSetPacket, player);
             ParCool.getActionProcessor().getActionSyncDepot().requestSync(actionStateSetPacket);
@@ -68,7 +68,7 @@ public class ActionStateSetPacket extends MultiComposablePacket<ActionStatePacke
 
         @Override
         public void handleInLogicalClient(ActionStateSetPacket actionStateSetPacket, IPayloadContext context) {
-            var player = NetworkUtil.getPlayerInPhysicalClient(actionStateSetPacket.playerID, context, actionStateSetPacket.castedByClient);
+            var player = NetworkUtil.getPlayerInLogicalClient(actionStateSetPacket.playerID, context, actionStateSetPacket.castedByClient);
             if (player == null) return;
             processPlayer(actionStateSetPacket, player);
             if (context.flow().getReceptionSide() == LogicalSide.SERVER) {

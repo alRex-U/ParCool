@@ -59,8 +59,8 @@ public class ParCoolConfig {
         }
 
 		public record ActionValue(
-				@Nullable ForgeConfigSpec.EnumValue<GeneralInputType.Continuation> continuousInputType,
-				@Nullable ForgeConfigSpec.EnumValue<GeneralInputType.Instant> instantInputType
+				@Nullable ModConfigSpec.EnumValue<GeneralInputType.Continuation> continuousInputType,
+				@Nullable ModConfigSpec.EnumValue<GeneralInputType.Instant> instantInputType
 		) {
 		}
 
@@ -169,15 +169,14 @@ public class ParCoolConfig {
         }
 
 		public record ActionValue(
-				ForgeConfigSpec.BooleanValue permit,
-				ForgeConfigSpec.IntValue costOnStart,
-				ForgeConfigSpec.IntValue costOnWorking,
-				ForgeConfigSpec.IntValue costOnFinish,
-				ForgeConfigSpec.IntValue learningCost
+				ModConfigSpec.BooleanValue permit,
+				ModConfigSpec.IntValue costOnStart,
+				ModConfigSpec.IntValue costOnWorking,
+				ModConfigSpec.IntValue costOnFinish,
+				ModConfigSpec.IntValue learningCost
 		) {
 		}
 
-		private final ForgeConfigSpec builtConfig;
 		private final TreeMap<String, TreeMap<ActionEntry<?>, ActionValue>> actionMap;
         public final ModConfigSpec.BooleanValue damageWithoutGlove;
         public final ModConfigSpec.BooleanValue enableSkillTree;

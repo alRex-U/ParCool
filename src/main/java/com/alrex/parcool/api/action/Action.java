@@ -1,5 +1,6 @@
 package com.alrex.parcool.api.action;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.stamina.AbstractLocalStamina;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;

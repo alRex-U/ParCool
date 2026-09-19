@@ -1,8 +1,8 @@
 package com.alrex.parcool.api.action;
 
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public enum GeneralInputType {
     NONE, INSTANT, CONTINUOUS;

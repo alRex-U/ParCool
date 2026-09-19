@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class NetworkUtil {
     @Nullable
-    public static Player getPlayerInPhysicalClient(UUID playerID, IPayloadContext context, boolean castByClient) {
+    public static Player getPlayerInLogicalClient(UUID playerID, IPayloadContext context, boolean castByClient) {
         boolean isInLogicalServer = context.flow().getReceptionSide() == LogicalSide.SERVER;
         if (isInLogicalServer) {
             var player = context.player();
@@ -28,7 +28,7 @@ public class NetworkUtil {
     }
 
     @Nullable
-    public static Player getPlayerInPhysicalServer(UUID playerID, IPayloadContext context) {
+    public static Player getPlayerInLogicalServer(UUID playerID, IPayloadContext context) {
         var player = context.player();
         if (player.getUUID().equals(playerID)) {
             return player;

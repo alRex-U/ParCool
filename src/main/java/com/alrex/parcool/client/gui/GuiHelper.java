@@ -7,19 +7,18 @@ import com.alrex.parcool.common.Parkourability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.NeoForge;
 
 public class GuiHelper {
-    public static void openSkillTreeGui(Player player) {
+    public static void openSkillTreeGui(Player player, boolean openedByGuideItem) {
         var prepareEvent = new PrepareParCoolSkillTreeEvent();
         NeoForge.EVENT_BUS.post(prepareEvent);
         var parkourability = Parkourability.get(player);
         Minecraft.getInstance().setScreen(new SkillTreeScreen(
                 parkourability.getCapabilities(),
                 parkourability.getEnabledActions(),
-                prepareEvent.getSkillTrees()
+                prepareEvent.getSkillTrees(),
+                openedByGuideItem
         ));
     }
 
