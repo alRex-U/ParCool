@@ -217,3 +217,23 @@ publishMods {
         }
     }
 }
+
+tasks.register("addGitTagForRelease") {
+    group = 'publishing'
+    mustRunAfter 'publishMods'
+    doLast {
+        var tagName = "v${mod_version}/${minecraft_version}"
+        var result = exec {
+            executable 'git'
+            args(['tag', '-a', "\"${tagName}\"", '-m', "Release:${minecraft_version}-${mod_version}/state:${release_type}"])
+        }
+        result.assertNormalExitValue()
+        println "Tag:[${tagName}] is applied to current commit"
+    }
+}
+
+tasks.register("releaseModVersion") {
+    group = 'publishing'
+    dependsOn('publishMods', 'addGitTagForRelease')
+}
+
