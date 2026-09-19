@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.Action;
 import com.alrex.parcool.api.action.ActionEntry;
@@ -105,7 +106,9 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
                     particleMove.x, particleMove.y, particleMove.z
             );
         }
-        parkourability.player().playSound(ParCoolSoundEvents.WALL_RUN.get());
+        if (ParCool.getConfig().client().enableActionSounds.get()) {
+            parkourability.player().playSound(ParCoolSoundEvents.WALL_RUN.get());
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

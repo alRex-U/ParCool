@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
@@ -64,14 +65,21 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
         );
     }
 
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    @Override
+    public ParCoolKeyBinds.IStateProvider getKeyBind() {
+        return ParCoolKeyBinds.HANG;
+    }
+
     @Override
     public boolean canStart() {
-        return cooldown == 0 && ParCoolKeyBinds.HANG.key().isDown() && (startingHangState = getHangState()) != null;
+        return cooldown == 0 && input.isActive() && (startingHangState = getHangState()) != null;
     }
 
     @Override
     public boolean canContinue() {
-        return cooldown == 0 && ParCoolKeyBinds.HANG.key().isDown() && currentHangState != null && !ParCoolKeyBinds.JUMP.state().isJustPressed();
+        return cooldown == 0 && input.isActive() && currentHangState != null && !ParCoolKeyBinds.JUMP.state().isJustPressed();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -112,7 +120,9 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
     @Override
     public void onStartInClient() {
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().HANG_ON);
-        parkourability.player().playSound(ParCoolSoundEvents.HANG_ON.get());
+        if (ParCool.getConfig().client().enableActionSounds.get()) {
+            parkourability.player().playSound(ParCoolSoundEvents.HANG_ON.get());
+        }
         oldDirection = propertyDirection.get();
     }
 

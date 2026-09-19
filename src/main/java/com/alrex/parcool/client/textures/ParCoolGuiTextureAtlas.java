@@ -43,6 +43,10 @@ public class ParCoolGuiTextureAtlas extends TextureAtlasHolder {
     public static final ResourceLocation BUTTON_CLOSE = register("icon/button_close");
     public static final ResourceLocation BUTTON_HAMBURGER = register("icon/button_hamburger");
     public static final ResourceLocation BUTTON_HOME = register("icon/button_home");
+    public static final ResourceLocation BUTTON_EXPAND = register("icon/button_expand");
+    public static final ResourceLocation BUTTON_SHRINK = register("icon/button_shrink");
+    public static final ResourceLocation BUTTON_EXPAND_DARK = register("icon/button_expand_dark");
+    public static final ResourceLocation BUTTON_SHRINK_DARK = register("icon/button_shrink_dark");
 
     public ParCoolGuiTextureAtlas(TextureManager manager) {
         super(manager, TEXTURE_LOCATION, ParCool.resourceLocation("gui_sprites"));

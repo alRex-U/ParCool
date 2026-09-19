@@ -109,6 +109,7 @@ public class ParCoolKeyBinds {
 
 	public static final String KEY_CATEGORY = "key.category.parcool";
 
+	public static final Input FAST_MOVE = register(new KeyMapping("key.parcool.fast_move", GLFW.GLFW_KEY_LEFT_CONTROL, KEY_CATEGORY));
 	public static final Input CRAWL = register(new KeyMapping("key.parcool.crawl", GLFW.GLFW_KEY_C, KEY_CATEGORY));
     public static final Input HANG = register(new KeyMapping("key.parcool.hang", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, KEY_CATEGORY));
 	public static final Input SLIDE_DOWN = register(new KeyMapping("key.parcool.slide_down", InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, KEY_CATEGORY));
@@ -116,6 +117,20 @@ public class ParCoolKeyBinds {
     public static final Input BREAKFALL = register(new KeyMapping("key.parcool.breakfall", GLFW.GLFW_KEY_R, KEY_CATEGORY));
 	public static final Input HORIZONTAL_WALL_RUN = register(new KeyMapping("key.parcool.horizontal_wall_run", GLFW.GLFW_KEY_R, KEY_CATEGORY));
     public static final Input HIDE_IN_BLOCK = register(new KeyMapping("key.parcool.hide_in_block", GLFW.GLFW_KEY_C, KEY_CATEGORY));
+	public static final Input OPEN_SKILLTREE = register(new KeyMapping(
+			"key.parcool.open_skilltree",
+			KeyConflictContext.UNIVERSAL,
+			KeyModifier.ALT,
+			InputConstants.Type.KEYSYM,
+			GLFW.GLFW_KEY_P, KEY_CATEGORY
+	));
+	public static final Input ENABLE = register(new KeyMapping(
+			"key.parcool.enable",
+			KeyConflictContext.UNIVERSAL,
+			KeyModifier.CONTROL,
+			InputConstants.Type.KEYSYM,
+			GLFW.GLFW_KEY_P, KEY_CATEGORY
+	));
 
     public static final LogicalInput JUMP = listen(Minecraft.getInstance().options.keyJump::isDown);
     public static final LogicalInput USE_ITEM = listen(Minecraft.getInstance().options.keyUse::isDown);

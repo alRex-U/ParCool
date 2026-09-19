@@ -6,10 +6,12 @@ import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.api.action.StaminaConsumption;
 import com.alrex.parcool.api.stamina.IReadableStamina;
 import com.alrex.parcool.common.action.*;
+import com.alrex.parcool.common.network.ChangeActivationPacket;
 import com.alrex.parcool.common.stamina.ReadonlyStamina;
 import com.alrex.parcool.common.stamina.StaminaTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import java.util.TreeMap;
@@ -30,6 +32,8 @@ public class Parkourability {
 	private final ActionCapabilities capabilities;
 	private final ActionCapabilities enabledActionStates;
 	private IReadableStamina stamina;
+	private boolean active = true;
+	private boolean activationDirty = false;
 
 	public Parkourability(Player player, ActionRegistry registry) {
 		this.player = player;
@@ -80,6 +84,30 @@ public class Parkourability {
 		return enabledActionStates;
 	}
 
+	public void setActive(boolean value) {
+		this.active = value;
+		activationDirty = true;
+	}
+
+	public void syncActive(boolean value) {
+		this.active = value;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void sendActivationPacket() {
+		if (activationDirty) {
+			activationDirty = false;
+			if (player.level().isClientSide) {
+				ParCool.CONNECTION.send(PacketDistributor.SERVER.noArg(), new ChangeActivationPacket(player.getUUID(), active, true));
+			} else {
+				ParCool.CONNECTION.send(PacketDistributor.ALL.noArg(), new ChangeActivationPacket(player.getUUID(), active, false));
+			}
+		}
+	}
+
 	public void updateStaminaInRemote(ReadonlyStamina newStamina) {
 		if (stamina instanceof ReadonlyStamina) {
 			stamina = newStamina;
@@ -96,7 +124,10 @@ public class Parkourability {
 
 	public boolean permit(ActionEntry<?> actionEntry) {
         var config = ParCool.getConfig().server();
-		boolean learned = !actionEntry.option().needLearning()
+		if (!active && actionEntry.option().needLearning()) {
+			return false;
+		}
+		boolean learned = (!actionEntry.option().needLearning())
 				|| !config.enableSkillTree.get()
 				|| capabilities.can(actionEntry);
 		return config.get(actionEntry).permit().get() && learned && enabledActionStates.can(actionEntry);
@@ -134,17 +165,23 @@ public class Parkourability {
     public void copyFrom(Parkourability original) {
 		this.capabilities.copyFrom(original.capabilities);
 		this.enabledActionStates.copyFrom(original.enabledActionStates);
+		this.active = original.active;
     }
 
     public CompoundTag saveToTag() {
         var tag = new CompoundTag();
         tag.put("caps", capabilities.saveToTag());
 		tag.put("enabled", enabledActionStates.saveToTag());
+		tag.putBoolean("active", active);
         return tag;
     }
 
     public void readFrom(CompoundTag tag) {
         if (tag.get("caps") instanceof CompoundTag compoundCapTag) capabilities.readFromTag(compoundCapTag);
 		if (tag.get("enabled") instanceof CompoundTag compoundCapTag) enabledActionStates.readFromTag(compoundCapTag);
+		if (tag.contains("active")) {
+			active = tag.getBoolean("active");
+			activationDirty = true;
+		}
     }
 }

@@ -1,6 +1,7 @@
 package com.alrex.parcool.config;
 
 import com.alrex.parcool.api.action.ActionEntry;
+import com.alrex.parcool.api.action.GeneralInputType;
 import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.client.hud.stamina.HUDType;
 import com.alrex.parcool.common.action.ActionRegistry;
@@ -11,11 +12,12 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
+import javax.annotation.Nullable;
 import java.util.TreeMap;
 
 public class ParCoolConfig {
 	public ParCoolConfig(ActionRegistry actionRegistry, StaminaTypeRegistry staminaTypeRegistry) {
-		this.client = new Client();
+		this.client = new Client(actionRegistry);
 		this.server = new Server(actionRegistry, staminaTypeRegistry);
 	}
 
@@ -33,15 +35,6 @@ public class ParCoolConfig {
 
 	public Server server() {
 		return server;
-	}
-
-	public record ActionValue(
-            ModConfigSpec.BooleanValue permit,
-            ModConfigSpec.IntValue costOnStart,
-            ModConfigSpec.IntValue costOnWorking,
-            ModConfigSpec.IntValue costOnFinish,
-            ModConfigSpec.IntValue learningCost
-	) {
 	}
 
 	public static class Client {
@@ -65,16 +58,48 @@ public class ParCoolConfig {
         ) {
         }
 
-        public final ModConfigSpec.BooleanValue enableActionSounds;
-        public final ModConfigSpec.BooleanValue parcoolIsActive;
-        public final ModConfigSpec.BooleanValue showTargetIndicator;
-        public final ModConfigSpec.IntValue targetIndicatorSize;
-        public final ModConfigSpec.BooleanValue debugRope;
-		public final StaminaHud staminaHud;
-        public final GrapplingHookView grapplingHook;
+		public record ActionValue(
+				@Nullable ForgeConfigSpec.EnumValue<GeneralInputType.Continuation> continuousInputType,
+				@Nullable ForgeConfigSpec.EnumValue<GeneralInputType.Instant> instantInputType
+		) {
+		}
 
-		public Client() {
-            var builder = new ModConfigSpec.Builder();
+		public final ModConfigSpec.BooleanValue enableActionSounds;
+		public final ModConfigSpec.BooleanValue showTargetIndicator;
+		public final ModConfigSpec.IntValue targetIndicatorSize;
+		public final ModConfigSpec.BooleanValue debugRope;
+		public final StaminaHud staminaHud;
+		public final GrapplingHookView grapplingHook;
+		private final TreeMap<String, TreeMap<ActionEntry<?>, ActionValue>> actionMap;
+
+		public ActionValue get(ActionEntry<?> entry) {
+			return actionMap.get(entry.id().getNamespace()).get(entry);
+		}
+
+		public Client(ActionRegistry actionRegistry) {
+			var builder = new ModConfigSpec.Builder();
+
+			actionMap = new TreeMap<>();
+
+			builder.push("Action");
+			for (var group : actionRegistry.getRegisteredGroups().entrySet()) {
+				builder.push(group.getKey());
+				var inGroupMap = new TreeMap<ActionEntry<?>, ActionValue>();
+				for (var action : group.getValue().actions()) {
+					builder.push(action.id().getPath());
+					inGroupMap.put(action, switch (action.option().inputType()) {
+						case NONE -> new ActionValue(null, null);
+						case INSTANT ->
+								new ActionValue(null, builder.defineEnum("input", GeneralInputType.Instant.PRESS_KEY));
+						case CONTINUOUS ->
+								new ActionValue(builder.defineEnum("input", GeneralInputType.Continuation.DOWN_KEY), null);
+					});
+					builder.pop();
+				}
+				actionMap.put(group.getKey(), inGroupMap);
+				builder.pop();
+			}
+			builder.pop();
 			builder.push("HUD");
 			{
 				staminaHud = new StaminaHud(
@@ -109,7 +134,6 @@ public class ParCoolConfig {
 			builder.push("Other");
 			{
 				enableActionSounds = builder.define("enable_sounds", true);
-				parcoolIsActive = builder.define("parcool_is_active", true);
 			}
 			builder.pop();
 			builtConfig = builder.build();
@@ -144,6 +168,16 @@ public class ParCoolConfig {
         ) {
         }
 
+		public record ActionValue(
+				ForgeConfigSpec.BooleanValue permit,
+				ForgeConfigSpec.IntValue costOnStart,
+				ForgeConfigSpec.IntValue costOnWorking,
+				ForgeConfigSpec.IntValue costOnFinish,
+				ForgeConfigSpec.IntValue learningCost
+		) {
+		}
+
+		private final ForgeConfigSpec builtConfig;
 		private final TreeMap<String, TreeMap<ActionEntry<?>, ActionValue>> actionMap;
         public final ModConfigSpec.BooleanValue damageWithoutGlove;
         public final ModConfigSpec.BooleanValue enableSkillTree;

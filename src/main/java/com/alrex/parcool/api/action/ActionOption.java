@@ -12,6 +12,7 @@ public class ActionOption {
             int learningCost,
             @Nullable ActionEntry<? extends ContinuableAction> parent,
             List<Pose> neededPoses,
+            GeneralInputType inputType,
             Set<ActionEntry<? extends Action>> beforeProcessedActions,
             boolean needOnGround,
             boolean needNotOnGround,
@@ -30,6 +31,7 @@ public class ActionOption {
     private ActionEntry<? extends ContinuableAction> parent = null;
     private final TreeSet<ActionEntry<? extends Action>> beforeProcessedActions = new TreeSet<>();
     private List<Pose> neededPoses = Collections.singletonList(Pose.STANDING);
+    private GeneralInputType inputType = GeneralInputType.NONE;
     private boolean availableInFluid = false;
     private boolean availableNotInFluid = true;
     private boolean availableWithFallFlying = false;
@@ -41,7 +43,20 @@ public class ActionOption {
 
     public Value build() {
         return new Value(
-                staminaConsumption, learningCost, parent, Collections.unmodifiableList(neededPoses), beforeProcessedActions, needOnGround, needNotOnGround, availableInFluid, availableNotInFluid, availableWithFallFlying, availableWhileExhausted, needLearning, triggeredSide
+                staminaConsumption,
+                learningCost,
+                parent,
+                Collections.unmodifiableList(neededPoses),
+                inputType,
+                beforeProcessedActions,
+                needOnGround,
+                needNotOnGround,
+                availableInFluid,
+                availableNotInFluid,
+                availableWithFallFlying,
+                availableWhileExhausted,
+                needLearning,
+                triggeredSide
         );
     }
 
@@ -72,7 +87,12 @@ public class ActionOption {
     }
 
     public ActionOption needPoses(Pose... pose) {
-        neededPoses = Arrays.stream(pose).toList();
+        neededPoses = Arrays.asList(pose);
+        return this;
+    }
+
+    public final ActionOption inputType(GeneralInputType inputType) {
+        this.inputType = inputType;
         return this;
     }
 

@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
@@ -91,6 +92,13 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
         );
     }
 
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    @Override
+    public ParCoolKeyBinds.IStateProvider getKeyBind() {
+        return ParCoolKeyBinds.HANG;
+    }
+
     @Override
     public SynchronizedDataHolder getSynchronizedData() {
         return dataHolder;
@@ -98,7 +106,7 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
 
     @Override
     public boolean canContinue() {
-        var continuing = !barNotFound && ParCoolKeyBinds.HANG.key().isDown() && !ParCoolKeyBinds.JUMP.state().isJustPressed();
+        var continuing = !barNotFound && input.isActive() && !ParCoolKeyBinds.JUMP.state().isJustPressed();
         if (continuing) {
             if (Math.abs(propertyBodyAngularSpeedInRad.getOrDefaultIfNull(0f)) > Mth.PI / 20f) {
                 propertyJumpOff.set(true);
@@ -111,7 +119,7 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
     public boolean canStart() {
         var player = parkourability.player();
         if (0 <= getNotDoingTick() && getNotDoingTick() < 7) return false;
-        if (Math.abs(player.getDeltaMovement().y) > 0.2 || !ParCoolKeyBinds.HANG.key().isDown()) return false;
+        if (Math.abs(player.getDeltaMovement().y) > 0.2 || !input.isActive()) return false;
         var hangingBar = getHangAbleBars(player);
         if (hangingBar == null) return false;
 
@@ -163,7 +171,9 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
         oldAngularSpeed = 0;
         oldAngle = 0;
         PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().HANG_DOWN);
-        parkourability.player().playSound(ParCoolSoundEvents.HANG_DOWN.get());
+        if (ParCool.getConfig().client().enableActionSounds.get()) {
+            parkourability.player().playSound(ParCoolSoundEvents.HANG_DOWN.get());
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

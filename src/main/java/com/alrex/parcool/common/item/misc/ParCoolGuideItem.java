@@ -31,7 +31,7 @@ public class ParCoolGuideItem extends Item {
         var itemInHand = player.getItemInHand(hand);
         if (level.isClientSide()) {
             if (player.isShiftKeyDown()) {
-                GuiHelper.openSkillTreeGui(player);
+                GuiHelper.openSkillTreeGui(player,true);
             } else {
                 GuiHelper.openGuideGui();
             }

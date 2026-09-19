@@ -104,7 +104,7 @@ public class GuideResourceManager extends SimplePreparableReloadListener<GuideRe
                 try (var reader = resource.openAsReader()) {
                     map.put(pageEntry, MarkdownParser.parse(reader));
                 } catch (IOException e) {
-                    LOGGER.error("{} at loading guide page [{}]", e.getClass().getSimpleName(), finalPageLocation);
+                    LOGGER.error("{} at loading guide pageId [{}]", e.getClass().getSimpleName(), finalPageLocation);
                 }
             });
         }

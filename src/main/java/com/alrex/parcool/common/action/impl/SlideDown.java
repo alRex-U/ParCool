@@ -60,6 +60,13 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
         );
     }
 
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    @Override
+    public ParCoolKeyBinds.IStateProvider getKeyBind() {
+        return ParCoolKeyBinds.SLIDE_DOWN;
+    }
+
     @Override
     public SynchronizedDataHolder getSynchronizedData() {
         return dataHolder;
@@ -78,7 +85,7 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
         if (tickSinceCanceled < 3 || parkourability.player().getDeltaMovement().y >= -1e-4) {
             return false;
         }
-        if (ParCoolKeyBinds.SLIDE_DOWN.key().isDown()) {
+        if (input.isActive()) {
             var direction = parkourability.getAdditionalProperties().getDefaultWallInteraction();
             if (direction == null) return false;
             propertyDirection.set(direction);
@@ -149,7 +156,9 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
                     }
                 }
         );
-        Minecraft.getInstance().getSoundManager().play(new SlideDownSoundInstance(player, this));
+        if (ParCool.getConfig().client().enableActionSounds.get()) {
+            Minecraft.getInstance().getSoundManager().play(new SlideDownSoundInstance(player, this));
+        }
     }
 
     @Override
