@@ -14,6 +14,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class Crawl extends ContinuableAction {
@@ -30,16 +31,23 @@ public class Crawl extends ContinuableAction {
         ));
     }
 
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    @Override
+    public ParCoolKeyBinds.IStateProvider getKeyBind() {
+        return ParCoolKeyBinds.CRAWL;
+    }
+
     @Override
     public boolean canStart() {
         if (parkourability.player().getForcedPose() != null) return false;
-        if (ParCoolKeyBinds.CRAWL.key().isDown()) return true;
+        if (input.isActive()) return true;
         return parkourability.player().hasPose(Pose.SWIMMING);
     }
 
     @Override
     public boolean canContinue() {
-        if (ParCoolKeyBinds.CRAWL.key().isDown() || parkourability.player().getForcedPose() == Pose.SWIMMING)
+        if (input.isActive() || parkourability.player().getForcedPose() == Pose.SWIMMING)
             return true;
         if (parkourability.getBehaviorEnforcer().swimmingPoseMarks.remainExcept(ID_ENFORCE_SWIM)) return true;
         return !parkourability.player().canEnterPose(Pose.CROUCHING) && parkourability.player().hasPose(Pose.SWIMMING);

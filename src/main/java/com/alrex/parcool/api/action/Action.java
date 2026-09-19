@@ -2,6 +2,7 @@ package com.alrex.parcool.api.action;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.stamina.AbstractLocalStamina;
+import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.IRequestable;
 import com.alrex.parcool.common.network.ActionStatePacket;
@@ -17,21 +18,33 @@ import java.util.Collections;
 
 public abstract class Action {
 	public Action(Parkourability parkourability, ActionEntry<? extends Action> entry) {
-		this.entry = entry;
-		this.parkourability = parkourability;
-		exclusiveActions = null;
+		this(parkourability, entry, null);
 	}
 
 	public Action(Parkourability parkourability, ActionEntry<? extends Action> entry, Collection<ActionEntry<? extends ContinuableAction>> exclusiveActions) {
 		this.entry = entry;
 		this.parkourability = parkourability;
 		this.exclusiveActions = exclusiveActions;
+		if (parkourability.player().isLocalPlayer()) {
+			var actionConfig = ParCool.getConfig().client().get(entry);
+			if (actionConfig.instantInputType() != null) {
+				input = actionConfig.instantInputType().get().newInput();
+			} else if (actionConfig.continuousInputType() != null) {
+				input = actionConfig.continuousInputType().get().newInput();
+			} else {
+				input = null;
+			}
+		} else {
+			input = null;
+		}
 	}
 
 	protected final Parkourability parkourability;
 	protected final ActionEntry<? extends Action> entry;
 	@Nullable
 	protected final Collection<ActionEntry<? extends ContinuableAction>> exclusiveActions;
+	@Nullable
+	protected final GeneralInputType.Input input;
 	private int tickSinceStarted = 100;
 
 	public int getTickSinceStarted() {
@@ -46,9 +59,19 @@ public abstract class Action {
 		return SynchronizedDataHolder.empty();
 	}
 
+	@OnlyIn(Dist.CLIENT)
+	@Nullable
+	public ParCoolKeyBinds.IStateProvider getKeyBind() {
+		return null;
+	}
+
 	public void tick() {
 		if (tickSinceStarted >= 0) {
 			tickSinceStarted++;
+		}
+		if (input != null) {
+			var key = getKeyBind();
+			if (key != null) input.tick(key);
 		}
 		onTick();
 		if (parkourability.player().level.isClientSide) {

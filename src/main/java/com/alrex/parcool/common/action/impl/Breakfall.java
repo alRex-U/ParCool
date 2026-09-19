@@ -20,6 +20,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 
+import javax.annotation.Nullable;
+
 public class Breakfall extends Action implements ActionExtension.LandListener {
     private final SynchronizedDataHolder holder;
     // Local -> Server
@@ -48,9 +50,16 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
     }
 
     @OnlyIn(Dist.CLIENT)
+    @Nullable
+    @Override
+    public ParCoolKeyBinds.IStateProvider getKeyBind() {
+        return ParCoolKeyBinds.BREAKFALL;
+    }
+
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onTickInLocalClient() {
-        propertyInputBreakfallType.set(ParCoolKeyBinds.BREAKFALL.state().isDown() ?
+        propertyInputBreakfallType.set(input.isActive() ?
                 (ParCoolKeyBinds.getMovementInput(LogicalMovement.FORWARD).isDown() ? BreakfallType.ROLL : BreakfallType.TAP)
                 : BreakfallType.NONE
         );

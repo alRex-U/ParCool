@@ -65,14 +65,21 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
         );
     }
 
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    @Override
+    public ParCoolKeyBinds.IStateProvider getKeyBind() {
+        return ParCoolKeyBinds.HANG;
+    }
+
     @Override
     public boolean canStart() {
-        return cooldown == 0 && ParCoolKeyBinds.HANG.key().isDown() && (startingHangState = getHangState()) != null;
+        return cooldown == 0 && input.isActive() && (startingHangState = getHangState()) != null;
     }
 
     @Override
     public boolean canContinue() {
-        return cooldown == 0 && ParCoolKeyBinds.HANG.key().isDown() && currentHangState != null && !ParCoolKeyBinds.JUMP.state().isJustPressed();
+        return cooldown == 0 && input.isActive() && currentHangState != null && !ParCoolKeyBinds.JUMP.state().isJustPressed();
     }
 
     @OnlyIn(Dist.CLIENT)

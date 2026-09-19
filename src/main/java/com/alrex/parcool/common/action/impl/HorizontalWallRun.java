@@ -44,6 +44,13 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         );
     }
 
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    @Override
+    public ParCoolKeyBinds.IStateProvider getKeyBind() {
+        return ParCoolKeyBinds.HORIZONTAL_WALL_RUN;
+    }
+
     @Override
     public SynchronizedDataHolder getSynchronizedData() {
         return dataHolder;
@@ -54,7 +61,7 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         if (tickSinceCanceled < 3) {
             return false;
         }
-        if (!ParCoolKeyBinds.HORIZONTAL_WALL_RUN.state().isDown()) return false;
+        if (!input.isActive()) return false;
 
         var wallDirection = parkourability.getAdditionalProperties().getDefaultWallInteraction();
         if (wallDirection == null) return false;
@@ -71,7 +78,7 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         if (tickSinceCanceled < 3) {
             return false;
         }
-        if (!ParCoolKeyBinds.HORIZONTAL_WALL_RUN.state().isDown()) return false;
+        if (!input.isActive()) return false;
 
         var wallDirection = parkourability.getAdditionalProperties().getDefaultWallInteraction();
         if (wallDirection == null) return false;

@@ -53,6 +53,7 @@ public class ParCoolActions {
 
         RIDE_ZIPLINE = builder.add("ride_zipline", RideZipline.class, RideZipline::new, new ActionOption()
                 .needPoses(Pose.STANDING, Pose.CROUCHING)
+                .inputType(GeneralInputType.CONTINUOUS)
                 .cost(StaminaConsumption.get(0, 2, 0))
                 .needNotOnGround(true)
                 .availableInFluid(true)
@@ -78,6 +79,7 @@ public class ParCoolActions {
             );
             HORIZONTAL_WALL_RUN = builder.add("horizontal_wall_run", HorizontalWallRun.class, HorizontalWallRun::new, new ActionOption()
                     .parent(FAST_RUN)
+                    .inputType(GeneralInputType.CONTINUOUS)
                     .needNotOnGround(true)
                     .cost(StaminaConsumption.get(0, 3, 0))
                     .learningCost(7)
@@ -123,6 +125,7 @@ public class ParCoolActions {
 
         CRAWL = builder.add("crawl", Crawl.class, Crawl::new, new ActionOption()
                 .processedAfter(HIDE_IN_BLOCK)
+                .inputType(GeneralInputType.CONTINUOUS)
                 .needPose(null)
                 .learningCost(1)
         );
@@ -136,6 +139,7 @@ public class ParCoolActions {
 
         HANG_ON = builder.add("hang_on", HangOn.class, HangOn::new, new ActionOption()
                 .needPoses(Pose.STANDING, Pose.CROUCHING)
+                .inputType(GeneralInputType.CONTINUOUS)
                 .cost(StaminaConsumption.get(0, 3, 0))
                 .learningCost(1)
         );
@@ -156,6 +160,7 @@ public class ParCoolActions {
 
         HANG_DOWN = builder.add("hang_down", HangDown.class, HangDown::new, new ActionOption()
                 .needPoses(Pose.STANDING, Pose.CROUCHING)
+                .inputType(GeneralInputType.CONTINUOUS)
                 .processedAfter(HANG_ON)
                 .needNotOnGround(true)
                 .learningCost(8)
@@ -163,12 +168,14 @@ public class ParCoolActions {
 
         POLE_CLIMB = builder.add("pole_climb", PoleClimb.class, PoleClimb::new, new ActionOption()
                 .processedAfter(HANG_ON)
+                .inputType(GeneralInputType.CONTINUOUS)
                 .cost(StaminaConsumption.get(0, 1, 0))
                 .learningCost(10)
         );
 
         SLIDE_DOWN = builder.add("slide_down", SlideDown.class, SlideDown::new, new ActionOption()
                 .processedAfter(HANG_ON, CLIMB_UP, CASTAWAY, POLE_CLIMB)
+                .inputType(GeneralInputType.CONTINUOUS)
                 .needNotOnGround(true)
                 .cost(StaminaConsumption.get(0, 1, 0))
                 .learningCost(10)
@@ -176,12 +183,14 @@ public class ParCoolActions {
 
         DODGE = builder.add("dodge", Dodge.class, Dodge::new, new ActionOption()
                 .needOnGround(true)
+                .inputType(GeneralInputType.INSTANT)
                 .cost(StaminaConsumption.get(50, 0, 0))
                 .learningCost(12)
         );
 
         BREAKFALL = builder.add("breakfall", Breakfall.class, Breakfall::new, new ActionOption()
                 .triggeredSide(LogicalSide.SERVER)
+                .inputType(GeneralInputType.CONTINUOUS)
                 .cost(StaminaConsumption.get(50, 0, 0))
                 .learningCost(10)
         );

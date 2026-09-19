@@ -41,9 +41,16 @@ public class Dodge extends ContinuableAction implements ActionExtension.Attacked
         return dataHolder;
     }
 
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    @Override
+    public ParCoolKeyBinds.IStateProvider getKeyBind() {
+        return ParCoolKeyBinds.DODGE;
+    }
+
     @Override
     public boolean canStart() {
-        if (ParCoolKeyBinds.DODGE.state().isJustPressed()) {
+        if (input.isActive()) {
             AnimationType type = null;
             if (ParCoolKeyBinds.getMovementInput(LogicalMovement.BACKWARD).isDown()) {
                 type = AnimationType.BACK;

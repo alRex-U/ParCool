@@ -47,6 +47,13 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
         );
     }
 
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    @Override
+    public ParCoolKeyBinds.IStateProvider getKeyBind() {
+        return ParCoolKeyBinds.HANG;
+    }
+
     @Override
     public SynchronizedDataHolder getSynchronizedData() {
         return dataHolder;
@@ -54,7 +61,7 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
 
     @Override
     public boolean canContinue() {
-        if (!ParCoolKeyBinds.HANG.key().isDown() || cooldown > 0) return false;
+        if (!input.isActive() || cooldown > 0) return false;
         var currentWallDirection = parkourability.getAdditionalProperties().getDefaultWallInteraction();
         if (currentWallDirection == null) return false;
         if (!currentWallDirection.alongToAxis()) return false;
@@ -68,7 +75,7 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
 
     @Override
     public boolean canStart() {
-        if (!ParCoolKeyBinds.HANG.key().isDown() || cooldown > 0) return false;
+        if (!input.isActive() || cooldown > 0) return false;
         if (Math.abs(parkourability.player().getDeltaMovement().y) > 0.4) return false;
         var currentWallDirection = parkourability.getAdditionalProperties().getDefaultWallInteraction();
         if (currentWallDirection == null) return false;
