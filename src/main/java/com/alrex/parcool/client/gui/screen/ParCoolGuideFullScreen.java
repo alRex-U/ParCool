@@ -26,6 +26,7 @@ public class ParCoolGuideFullScreen extends Screen {
         var content = GuideResourceManager.getInstance().getResource().get(dataLocation);
         if (content == null) openSidePanel = true;
         this.pageStack = pageStack;
+        this.pageStack.setContentChangedListener(null);
         this.pageStack.pushPage(dataLocation);
         this.pageStack.setContentChangedListener(this::rebuildWidgets);
     }
@@ -52,7 +53,7 @@ public class ParCoolGuideFullScreen extends Screen {
                             height,
                             content,
                             colors.onSurface(),
-                            (location) -> Minecraft.getInstance().setScreen(new ParCoolGuideFullScreen(location)),
+                            (location) -> Minecraft.getInstance().setScreen(new ParCoolGuideFullScreen(location, pageStack)),
                             (url) -> Minecraft.getInstance().setScreen(new ConfirmLinkScreen((b) -> this.confirmLink(b, url), url, false))
                     )
             );
