@@ -31,7 +31,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ public class GrappleRopeRenderer {
 
     @SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) return;
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) return;
         Minecraft minecraft = Minecraft.getInstance();
         Level level = minecraft.level;
         if (level == null) return;
@@ -77,11 +76,9 @@ public class GrappleRopeRenderer {
 
         PoseStack poseStack = event.getPoseStack();
         Vec3 cameraPosition = camera.getPosition();
-        var cameraRot = camera.rotation();
         VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.GRAPPLE_ROPE);
 
         poseStack.pushPose();
-        poseStack.mulPose(new Quaternionf(-cameraRot.x, -cameraRot.y, -cameraRot.z, cameraRot.w));
         poseStack.translate(-cameraPosition.x, -cameraPosition.y, -cameraPosition.z);
         var matrix = poseStack.last().pose();
         for (RopePath path : paths) {
