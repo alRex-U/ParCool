@@ -13,7 +13,6 @@ import com.alrex.parcool.common.action.ActionCapabilities;
 import com.alrex.parcool.common.network.EnableActionPacket;
 import com.alrex.parcool.common.network.RequestUnlockActionPacket;
 import com.alrex.parcool.util.ColorUtil;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -167,17 +166,17 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
         if (fullScreen) {
-            renderContent(poseStack, mouseX, mouseY, partial);
+            renderContent(graphics, mouseX, mouseY, partial);
             return;
         }
-        super.render(poseStack, mouseX, mouseY, partial);
+        super.render(graphics, mouseX, mouseY, partial);
     }
 
     @Override
     protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY, float partial) {
-        graphicis.fill(
+        graphics.fill(
                 offsetX, offsetY,
                 offsetX + viewWidth, offsetY + viewHeight,
                 fullScreen ? ColorUtil.withAlpha(colors.background(), 0xE8) : colors.background()

@@ -100,7 +100,7 @@ public class Parkourability {
 	public void sendActivationPacket() {
 		if (activationDirty) {
 			activationDirty = false;
-			if (player.level.isClientSide) {
+			if (player.level().isClientSide) {
 				ParCool.CONNECTION.send(PacketDistributor.SERVER.noArg(), new ChangeActivationPacket(player.getUUID(), active, true));
 			} else {
 				ParCool.CONNECTION.send(PacketDistributor.ALL.noArg(), new ChangeActivationPacket(player.getUUID(), active, false));
