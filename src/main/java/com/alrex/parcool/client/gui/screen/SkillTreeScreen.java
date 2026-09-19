@@ -250,6 +250,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
         }
         currentExperienceLevelView.setMessage(Component.literal(player.experienceLevel < 100 ? Integer.toString(player.experienceLevel) : "99+").withStyle(Style.EMPTY.withColor(colors.accent())));
         currentExperienceViewGroup.x = skilltreeWidget.x + skilltreeWidget.getWidth() - 35;
+        currentExperienceViewGroup.visible = ParCool.getConfig().server().enableSkillTree.get();
     }
 
     private void onSkillSelectionChanged(@Nullable SkillTree.Entry<?> selectedItem) {
