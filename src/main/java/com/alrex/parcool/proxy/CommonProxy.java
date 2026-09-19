@@ -16,7 +16,7 @@ public abstract class CommonProxy {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(CommandRegistry::registerArgumentTypes);
 	}
 
-	public void openSkillTreeGui(Player player) {
+	public void openSkillTreeGui(Player player, boolean openByGuideItem) {
 	}
 
 	public void openGuideGui() {

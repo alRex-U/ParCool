@@ -112,7 +112,8 @@ public class ClientProxy extends CommonProxy {
 				.noResponse()
 				.decoder(EnableActionPacket.HANDLER::decode)
 				.encoder(EnableActionPacket.HANDLER::encode)
-				.consumerMainThread(EnableActionPacket.HANDLER::handleInPhysicalClient);
+				.consumerMainThread(EnableActionPacket.HANDLER::handleInPhysicalClient)
+				.add();
 		instance.messageBuilder(ChangeActivationPacket.class, index++)
 				.noResponse()
 				.decoder(ChangeActivationPacket.HANDLER::decode)
@@ -122,14 +123,15 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
-	public void openSkillTreeGui(Player player) {
+	public void openSkillTreeGui(Player player, boolean openByGuideItem) {
 		var prepareEvent = new PrepareParCoolSkillTreeEvent();
 		MinecraftForge.EVENT_BUS.post(prepareEvent);
 		var parkourability = Parkourability.get(player);
 		Minecraft.getInstance().setScreen(new SkillTreeScreen(
 				parkourability.getCapabilities(),
 				parkourability.getEnabledActions(),
-				prepareEvent.getSkillTrees()
+				prepareEvent.getSkillTrees(),
+				openByGuideItem
 		));
 	}
 

@@ -246,7 +246,7 @@ public class SkillTreeWidget extends AbstractWidget {
                 }
                 if (entry.isUnlocked(capabilities)) {
                     var sprite = ParCoolTextures.guiSprite(
-                            entry.isUnlocked(enabledActions)
+                            entry.isEnabled(enabledActions)
                                     ? ParCoolGuiTextureAtlas.SKILLTREE_ACTION_MARK_ENABLED
                                     : ParCoolGuiTextureAtlas.SKILLTREE_ACTION_MARK_DISABLED
                     );

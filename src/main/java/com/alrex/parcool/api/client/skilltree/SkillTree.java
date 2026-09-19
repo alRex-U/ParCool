@@ -82,6 +82,10 @@ public class SkillTree {
                     || capabilities.can(actionEntry);
         }
 
+        public boolean isEnabled(ActionCapabilities capabilities) {
+            return capabilities.can(actionEntry);
+        }
+
         public int getLearningCost() {
             return ParCool.getConfig().server().get(this.actionEntry).learningCost().get();
         }

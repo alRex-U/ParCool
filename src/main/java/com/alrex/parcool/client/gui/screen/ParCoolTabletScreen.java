@@ -151,6 +151,18 @@ public class ParCoolTabletScreen extends Screen {
                 super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_SHRINK), listener);
             }
         }
+
+        public static class ExpandDark extends IconButton {
+            public ExpandDark(int x, int y, @Nullable Runnable listener) {
+                super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_EXPAND_DARK), listener);
+            }
+        }
+
+        public static class ShrinkDark extends IconButton {
+            public ShrinkDark(int x, int y, @Nullable Runnable listener) {
+                super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_SHRINK_DARK), listener);
+            }
+        }
     }
 
     protected void confirmLink(boolean confirmed, String uri) {
