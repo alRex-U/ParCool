@@ -9,9 +9,9 @@ type: Bug
 ---
 
 **Caution**
-+ Don't include reports of multiple issues in a single issue
-  - It prevents to manage issues correctly in many aspects.
-  - Please create same number of issues as you want to report
++ _Don't include reports of multiple issues in a single issue_
+  - _It prevents to manage issues correctly in many aspects_
+  - _Please create same number of issues as you want to report_
 
 # Summary
 
@@ -25,11 +25,11 @@ _Simple summary about the bug_
 
 ## Detail
 
-__Details about your issue__
-- What the issue is, what it causes
-- When it occurs
+_Details about your issue_
+- _What the issue is, what it causes_
+- _When it occurs_
 
 ### Additional Data
 
-Such as screenshots or crash reports, logs
-(I am happy and fix the bug more easily if you send me these)
+_Such as screenshots or crash reports, logs_
+_(I am happy and fix the bug more easily if you send me these)_
