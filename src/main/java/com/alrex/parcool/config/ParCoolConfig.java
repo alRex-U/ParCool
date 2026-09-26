@@ -2,7 +2,6 @@ package com.alrex.parcool.config;
 
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.api.action.GeneralInputType;
-import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.client.hud.stamina.HUDType;
 import com.alrex.parcool.common.action.ActionRegistry;
 import com.alrex.parcool.common.stamina.StaminaTypeRegistry;
@@ -42,8 +41,6 @@ public class ParCoolConfig {
 
 		public record StaminaHud(
 				ForgeConfigSpec.EnumValue<HUDType> type,
-				ForgeConfigSpec.EnumValue<Position.Horizontal> alignHorizontal,
-				ForgeConfigSpec.EnumValue<Position.Vertical> alignVertical,
 				ForgeConfigSpec.BooleanValue showAlways,
 				ForgeConfigSpec.BooleanValue hideAutomatically,
 				ForgeConfigSpec.IntValue offsetHorizontal,
@@ -104,8 +101,6 @@ public class ParCoolConfig {
 			{
 				staminaHud = new StaminaHud(
 						builder.defineEnum("stamina_hud_type", HUDType.Light),
-						builder.comment("horizontal alignment").defineEnum("hud_align_h_s", Position.Horizontal.Right),
-						builder.comment("vertical alignment").defineEnum("hud_align_v_s", Position.Vertical.Bottom),
 						builder.define("show_always", false),
 						builder.define("hide_automatically", true),
 						builder.defineInRange("hud_offset_h", 0, -100, 100),
