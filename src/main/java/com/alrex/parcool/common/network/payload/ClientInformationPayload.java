@@ -54,7 +54,8 @@ public record ClientInformationPayload(UUID playerID, boolean requestLimitation,
     public static void handleServer(ClientInformationPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             Player player = context.player();
-            PacketDistributor.sendToAllPlayers(payload);
+            // Rebroadcast under the sender's UUID: playerID is client-supplied and would overwrite another player's settings.
+            PacketDistributor.sendToAllPlayers(new ClientInformationPayload(player.getUUID(), payload.requestLimitation(), payload.information()));
 
             Parkourability parkourability = Parkourability.get(player);
             if (parkourability == null) return;

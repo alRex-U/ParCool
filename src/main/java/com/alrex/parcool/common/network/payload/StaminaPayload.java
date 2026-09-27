@@ -44,8 +44,10 @@ public record StaminaPayload(UUID playerID, ReadonlyStamina stamina) implements 
 
     public static void handleServer(StaminaPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
-            payload.processPlayer(context);
-            StaminaSynchronizationBroadcaster.add(payload.playerID, payload.stamina);
+            // playerID is client-supplied: a client may only set its own stamina, never another player's.
+            Player sender = context.player();
+            sender.setAttached(Attachments.STAMINA, payload.stamina);
+            StaminaSynchronizationBroadcaster.add(sender.getUUID(), payload.stamina);
         });
     }
 }
