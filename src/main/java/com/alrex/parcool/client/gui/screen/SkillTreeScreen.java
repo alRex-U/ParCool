@@ -15,28 +15,30 @@ import com.alrex.parcool.common.network.RequestUnlockActionPacket;
 import com.alrex.parcool.util.ColorUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.Tuple;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class SkillTreeScreen extends ParCoolTabletScreen {
     private static final int SKILL_VIEW_TAB_WIDTH = 56;
-    private static final int LEFT_BAR_WIDTH = 13;
     private SkillTreeWidget skilltreeWidget;
     private ImageBySpriteWidget selectedSkillIconWidget;
     private WrappedTextWidget selectedSkillNameWidget;
-    private ImageBySpriteButton unlockButton;
-    private ImageBySpriteButton viewGuideButton;
+    private AbstractButton unlockButton;
+    private AbstractButton viewGuideButton;
     private TextWidget costView;
     private TextWidget currentExperienceLevelView;
-    private ToggleActionButton toggleActionButton;
+    private ExtendableSpriteToggleButton toggleActionButton;
     private WidgetGroup actionUnlockedViewGroup;
     private WidgetGroup actionUnlockStateViewGroup;
     private WidgetGroup skillViewTabGroup;
@@ -46,19 +48,12 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
     private final ActionCapabilities capabilities;
     private final ActionCapabilities enabledActions;
     private final List<SkillTree> trees;
-    private int offsetX, offsetY, viewWidth, viewHeight;
-    private final boolean openedByGuideItem;
-    private boolean fullScreen;
-    private final int leftBarWidth;
 
     public SkillTreeScreen(ActionCapabilities capabilities, ActionCapabilities enabledActions, List<SkillTree> trees, boolean openByGuideItem) {
-        super(Component.empty(), GuiColorPallet.DEFAULT_DARK, "prcl://skilltree");
+        super(Component.empty(), GuiColorPallet.DEFAULT_DARK, openByGuideItem);
         this.trees = trees;
         this.capabilities = capabilities;
         this.enabledActions = enabledActions;
-        this.openedByGuideItem = openByGuideItem;
-        this.fullScreen = !openedByGuideItem;
-        this.leftBarWidth = this.openedByGuideItem ? LEFT_BAR_WIDTH : 0;
     }
 
     @Override
@@ -67,32 +62,20 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
     }
 
     @Override
-    protected void init() {
-        super.init();
+    protected void initWidgets() {
         var player = Minecraft.getInstance().player;
         if (player == null) return;
-        if (fullScreen) {
-            offsetX = 0;
-            offsetY = 0;
-            viewWidth = width;
-            viewHeight = height;
-        } else {
-            offsetX = contentOffsetX;
-            offsetY = contentOffsetY;
-            viewWidth = CONTENT_WIDTH;
-            viewHeight = CONTENT_HEIGHT;
-        }
-        int skillViewTabOffsetX = offsetX + viewWidth - SKILL_VIEW_TAB_WIDTH;
-        int skillViewTabOffsetY = offsetY;
+        int skillViewTabOffsetX = contentOffsetX + contentWidth - SKILL_VIEW_TAB_WIDTH;
+        int skillViewTabOffsetY = contentOffsetY;
         skilltreeWidget = addRenderableWidget(
-                new SkillTreeWidget(trees, capabilities, enabledActions, offsetX + leftBarWidth, offsetY, 190 - leftBarWidth, viewHeight, this::onSkillSelectionChanged)
+                new SkillTreeWidget(trees, capabilities, enabledActions, contentOffsetX, contentOffsetY, contentWidth, contentHeight, this::onSkillSelectionChanged)
         );
         skillViewTabGroup = addRenderableWidget(
                 new WidgetGroup(
-                        skillViewTabOffsetX, skillViewTabOffsetY, offsetX + viewWidth - skillViewTabOffsetX, viewHeight,
+                        skillViewTabOffsetX, skillViewTabOffsetY, contentOffsetX + contentWidth - skillViewTabOffsetX, contentHeight,
                         List.of(
-                                new CardPanel(0, 0, SKILL_VIEW_TAB_WIDTH, viewHeight, colors.surface(), colors.shadow()).shadowLeft(true),
-                                new CardPanel(2, 3, SKILL_VIEW_TAB_WIDTH - 4, viewHeight - 50, colors.surface(), colors.shadow()).shadowLeft(true).shadowRight(true).shadowTop(true).shadowBottom(true),
+                                new CardPanel(0, 0, SKILL_VIEW_TAB_WIDTH, contentHeight, colors.surface(), colors.shadow()).shadowLeft(true),
+                                new CardPanel(2, 3, SKILL_VIEW_TAB_WIDTH - 4, contentHeight - 50, colors.surface(), colors.shadow()).shadowLeft(true).shadowRight(true).shadowTop(true).shadowBottom(true),
                                 selectedSkillIconWidget = new ImageBySpriteWidget(4, 4, SKILL_VIEW_TAB_WIDTH - 8, SKILL_VIEW_TAB_WIDTH - 8, ParCoolActionsTextureAtlas.TEXTURE_LOCATION, null),
                                 selectedSkillNameWidget = new WrappedTextWidget(
                                         font,
@@ -103,20 +86,14 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                                         TextWidget.HorizontalAlignment.CENTER,
                                         colors.onSurface()
                                 ).withShadow(true),
-                                unlockButton = new ImageBySpriteButton(
-                                        font, 3, viewHeight - 17, 50, 15,
+                                unlockButton = new ExtendableSpriteButton.Basic(
+                                        font, 3, contentHeight - 17, 50, 15,
                                         Component.translatable("parcool.gui.text.unlock"),
-                                        colors.onPrimary(),
-                                        ParCoolGuiTextureAtlas.TEXTURE_LOCATION,
-                                        ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BASIC_BUTTON),
                                         this::unlockSkill
                                 ),
-                                viewGuideButton = new ImageBySpriteButton(
-                                        font, 3, viewHeight - 17, 50, 15,
+                                viewGuideButton = new ExtendableSpriteButton.Basic(
+                                        font, 3, contentHeight - 17, 50, 15,
                                         Component.translatable("parcool.gui.text.open_guide"),
-                                        colors.onPrimary(),
-                                        ParCoolGuiTextureAtlas.TEXTURE_LOCATION,
-                                        ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BASIC_BUTTON),
                                         this::viewGuide
                                 ),
                                 actionUnlockStateViewGroup = new WidgetGroup(
@@ -137,7 +114,12 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                                                         TextWidget.HorizontalAlignment.CENTER,
                                                         colors.accent()
                                                 ).withShadow(true),
-                                                toggleActionButton = new ToggleActionButton(0, 11)
+                                                toggleActionButton = new ExtendableSpriteToggleButton.Basic(
+                                                        font, 0, 11, 50, 13,
+                                                        Component.translatable("parcool.gui.text.enabled"),
+                                                        Component.translatable("parcool.gui.text.disabled"),
+                                                        this::onToggleAction
+                                                )
                                         )
                                 )
                         )
@@ -146,7 +128,7 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
         currentExperienceViewGroup = addRenderableWidget(
                 new WidgetGroup(
                         skillViewTabOffsetX - 35,
-                        offsetY + 3,
+                        contentOffsetY + 3,
                         33, 11,
                         List.of(
                                 new ImageBySpriteWidget(0, 0, 33, 11, ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.EXPERIENCE_BOX)),
@@ -155,31 +137,30 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                         )
                 )
         );
-        if (openedByGuideItem) {
-            addRenderableOnly(new CardPanel(offsetX, offsetY, leftBarWidth, viewHeight, colors.surface(), colors.shadow()));
-            addRenderableWidget(fullScreen
-                    ? new IconButton.ShrinkDark(offsetX + 1, offsetY + viewHeight - 13, this::shrinkToTabletUi)
-                    : new IconButton.ExpandDark(offsetX + 1, offsetY + viewHeight - 13, this::expandFullScreen)
-            );
-        }
         onSkillSelectionChanged(selectedSkill);
+        skilltreeWidget.center(true);
     }
 
+    @Nullable
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
-        if (fullScreen) {
-            renderContent(poseStack, mouseX, mouseY, partial);
-            return;
-        }
-        super.render(poseStack, mouseX, mouseY, partial);
+    protected SideBarButtons getSideBarButtons() {
+        if (!openedByGuideItem) return new SideBarButtons(Collections.emptyList(), Collections.emptyList());
+        return new SideBarButtons(
+                Collections.emptyList(),
+                List.of(
+                        isFullscreen()
+                                ? new Tuple<>(IconButton.ShrinkDark::new, () -> this.setFullscreen(false))
+                                : new Tuple<>(IconButton.ExpandDark::new, () -> this.setFullscreen(true))
+                )
+        );
     }
 
     @Override
     protected void renderContent(PoseStack poseStack, int mouseX, int mouseY, float partial) {
         fill(poseStack,
-                offsetX, offsetY,
-                offsetX + viewWidth, offsetY + viewHeight,
-                fullScreen ? ColorUtil.withAlpha(colors.background(), 0xE8) : colors.background()
+                contentOffsetX, contentOffsetY,
+                contentOffsetX + contentWidth, contentOffsetY + contentHeight,
+                isFullscreen() ? ColorUtil.withAlpha(colors.background(), 0xE8) : colors.background()
         );
         super.renderContent(poseStack, mouseX, mouseY, partial);
     }
@@ -240,12 +221,12 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                         learnCost + "/" + (player.experienceLevel < 100 ? Integer.toString(player.experienceLevel) : "99+")
                 ).withStyle(Style.EMPTY.withColor(player.experienceLevel >= learnCost ? colors.accent() : colors.onSurface())));
             }
-            skilltreeWidget.setWidth(viewWidth - SKILL_VIEW_TAB_WIDTH - leftBarWidth);
+            skilltreeWidget.setWidth(contentWidth - SKILL_VIEW_TAB_WIDTH);
             skillViewTabGroup.visible = true;
             unlockButton.active = player.experienceLevel >= learnCost;
-            toggleActionButton.updateState();
+            toggleActionButton.setState(enabledActions.can(selectedSkill.getActionEntry()));
         } else {
-            skilltreeWidget.setWidth(viewWidth - leftBarWidth);
+            skilltreeWidget.setWidth(contentWidth);
             skillViewTabGroup.visible = false;
         }
         currentExperienceLevelView.setMessage(Component.literal(player.experienceLevel < 100 ? Integer.toString(player.experienceLevel) : "99+").withStyle(Style.EMPTY.withColor(colors.accent())));
@@ -261,48 +242,15 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
         var action = selectedItem != null ? selectedItem.getActionEntry() : null;
         selectedSkillIconWidget.setImage(action != null ? ParCoolTextures.action(action) : null);
         selectedSkillNameWidget.setMessage(action != null ? Component.translatable(action.getTranslationKey()) : Component.empty());
-        if (action != null) {
-            setTopBarText("prcl://skilltree?a=" + action.id().getNamespace() + "." + action.id().getPath());
-        } else {
-            setTopBarText("prcl://skilltree");
-        }
+        if (selectedSkill == null)
+            setTopBarText(Component.translatable("parcool.gui.top.skilltree"));
+        else
+            setTopBarText(Component.translatable("parcool.gui.top.skilltree.skill", I18n.get(selectedSkill.getActionEntry().getTranslationKey())));
         updateWidgetVisibility();
     }
 
-    private void expandFullScreen() {
-        fullScreen = true;
-        rebuildWidgets();
-    }
-
-    private void shrinkToTabletUi() {
-        fullScreen = false;
-        rebuildWidgets();
-    }
-
-    private class ToggleActionButton extends ImageBySpriteButton {
-        private boolean on;
-
-        public ToggleActionButton(int x, int y) {
-            super(font, x, y, 50, 13, Component.translatable("parcool.gui.text.enabled"), colors.onSurface(), ParCoolGuiTextureAtlas.TEXTURE_LOCATION, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.TOGGLE_BUTTON_ON), null);
-            on = true;
-        }
-
-        @Override
-        public void onPress() {
-            if (selectedSkill == null) return;
-            ParCool.CONNECTION.send(PacketDistributor.SERVER.noArg(), new EnableActionPacket(selectedSkill.getActionEntry(), !on));
-        }
-
-        public void updateState() {
-            if (selectedSkill == null) return;
-            on = enabledActions.can(selectedSkill.getActionEntry());
-            if (on) {
-                setMessage(Component.translatable("parcool.gui.text.enabled"));
-                setSprite(ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.TOGGLE_BUTTON_ON));
-            } else {
-                setMessage(Component.translatable("parcool.gui.text.disabled"));
-                setSprite(ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.TOGGLE_BUTTON_OFF));
-            }
-        }
+    private void onToggleAction(boolean state) {
+        if (selectedSkill == null) return;
+        ParCool.CONNECTION.send(PacketDistributor.SERVER.noArg(), new EnableActionPacket(selectedSkill.getActionEntry(), state));
     }
 }

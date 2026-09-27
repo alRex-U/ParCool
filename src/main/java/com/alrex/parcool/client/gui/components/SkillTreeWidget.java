@@ -96,6 +96,32 @@ public class SkillTreeWidget extends AbstractWidget {
         return new CalculateWidgetResult(widget, width, childMaxHeight + yMargin + widget.getHeight());
     }
 
+    private void limitScroll() {
+        if (scrollX < -width) scrollX = -width;
+        else if (scrollX > contentWidth) scrollX = contentWidth;
+        if (scrollY < -height) scrollY = -height;
+        else if (scrollY > contentHeight) scrollY = contentHeight;
+    }
+
+    private void limitScale() {
+        if (this.scale < 0.5f) this.scale = 0.5f;
+        else if (this.scale > 2.0f) this.scale = 2.0f;
+    }
+
+    public void center() {
+        scrollX = (contentWidth - width / scale) / 2.;
+        scrollY = (contentHeight - height / scale) / 2.;
+        limitScroll();
+    }
+
+    public void center(boolean autoScale) {
+        if (autoScale) {
+            scale = (width - 20) / (contentWidth + 1f);
+            limitScale();
+        }
+        center();
+    }
+
     @Nullable
     public SkillTree.Entry<?> getSelectedSkill() {
         return selectedSkill;
@@ -145,18 +171,14 @@ public class SkillTreeWidget extends AbstractWidget {
     public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
         scrollX -= dragX / scale;
         scrollY -= dragY / scale;
-        if (scrollX < -width) scrollX = -width;
-        else if (scrollX > contentWidth) scrollX = contentWidth;
-        if (scrollY < -height) scrollY = -height;
-        else if (scrollY > contentHeight) scrollY = contentHeight;
+        limitScroll();
         return true;
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollDelta) {
         this.scale += (float) scrollDelta / 4f;
-        if (this.scale < 0.5f) this.scale = 0.5f;
-        else if (this.scale > 2.0f) this.scale = 2.0f;
+        limitScale();
         return true;
     }
 

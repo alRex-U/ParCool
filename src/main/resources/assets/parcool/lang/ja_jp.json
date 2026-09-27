@@ -86,6 +86,10 @@
   "parcool.gui.text.grappling_hook.reel": "使用キーを押し続けるとロープを手繰り寄せます",
   "parcool.gui.text.grappling_hook.steer": "移動キーでスイングを操作し、スニークでロープを繰り出します",
   "parcool.gui.text.grappling_hook.release": "ジャンプで勢いをつけて離れます",
+  "parcool.gui.top.guide.not_found": "ガイド > 不明なページ",
+  "parcool.gui.top.guide.page": "ガイド > %s > %s",
+  "parcool.gui.top.skilltree": "スキルツリー",
+  "parcool.gui.top.skilltree.skill": "スキルツリー > %s",
 
   "parcool.gui.text.zipline.color": "ジップラインの色",
   "parcool.gui.text.zipline.bind_pos": "座標 [%s]",

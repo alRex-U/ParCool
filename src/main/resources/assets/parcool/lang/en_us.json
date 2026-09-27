@@ -113,6 +113,10 @@
   "parcool.gui.text.open_guide": "Guide",
   "parcool.gui.text.enabled": "Enabled",
   "parcool.gui.text.disabled": "Disabled",
+  "parcool.gui.top.guide.not_found": "Guide > Not Found",
+  "parcool.gui.top.guide.page": "Guide > %s > %s",
+  "parcool.gui.top.skilltree": "Skilltree",
+  "parcool.gui.top.skilltree.skill": "Skilltree > %s",
 
   "parcool.message.enabled": "ParCool : Enabled",
   "parcool.message.disabled": "ParCool : Disabled",

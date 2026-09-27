@@ -322,8 +322,8 @@ public class MarkdownWidget extends AbstractWidget {
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int click) {
-            if (interactingZone == null) return false;
+        public void onClick(double mouseX, double mouseY) {
+            if (interactingZone == null) return;
             var zone = interactingZone;
             var relativeMouseX = mouseX - x;
             var relativeMouseY = mouseY - y;
@@ -336,7 +336,6 @@ public class MarkdownWidget extends AbstractWidget {
                     if (openLinkListener != null) openLinkListener.accept(link.location());
                 }
             }
-            return false;
         }
 
         @Override
