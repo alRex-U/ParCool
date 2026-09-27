@@ -10,7 +10,7 @@
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/parcool",
     "issues": "https://github.com/alRex-U/ParCool/issues",
-    "sources": "https://github.com/netherg-io/parcool-fabric"
+    "sources": "https://github.com/Blockfield/parcool-fabric"
   },
   "license": "LGPL-3.0",
   "icon": "parcool_logo.png",
