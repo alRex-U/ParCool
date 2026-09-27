@@ -94,7 +94,8 @@ public record ActionStatePayload(UUID playerID, List<Entry> states) implements C
     public static void handleServer(ActionStatePayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             Player player = context.player();
-            ActionSynchronizationBroadcaster.add(payload);
+            // Rebroadcast under the sender's UUID: playerID is client-supplied and would let a client act as someone else.
+            ActionSynchronizationBroadcaster.add(new ActionStatePayload(player.getUUID(), payload.states()));
 
             payload.processPlayer(player);
         });
