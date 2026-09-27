@@ -37,4 +37,8 @@ jobs:
           [ "$(printf '%s\n' "$jars" | wc -l)" -eq 1 ] || { echo "ожидался один jar, есть: $jars"; exit 1; }
           out="${jars%.jar}-$GITHUB_REF_NAME.jar"
           mv "$jars" "$out"
-          gh release create "$GITHUB_REF_NAME" "$out" --title "$(basename "$out" .jar)" --notes "commit $GITHUB_SHA"
+          test -f "release-notes/$GITHUB_REF_NAME.md" || { echo "missing release-notes/$GITHUB_REF_NAME.md: prepare it in the release PR"; exit 1; }
+          python3 scripts/release-notes-tool.py "release-notes/$GITHUB_REF_NAME.md" \
+            --repository Blockfield/parcool-fabric --version "$GITHUB_REF_NAME"
+          cp "release-notes/$GITHUB_REF_NAME.md" release-notes.md
+          gh release create "$GITHUB_REF_NAME" "$out" release-notes.md --title "$(basename "$out" .jar)" --notes-file release-notes.md
