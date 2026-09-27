@@ -33,7 +33,9 @@ public record ActionStateBroadcastPayload(List<ActionStatePayload> payloads) imp
             Level world = context.player().level();
             for (var statePayload : payload.payloads()) {
                 player = world.getPlayerByUUID(statePayload.playerID());
-                if (player == null || player.isLocalPlayer()) return;
+                // continue, not return: the batch holds every player's states, including our own
+                // and those of players in other dimensions; one of them must not drop the rest.
+                if (player == null || player.isLocalPlayer()) continue;
 
                 statePayload.processPlayer(player);
             }
