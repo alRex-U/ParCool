@@ -1,44 +1,32 @@
-> **Blockfield:** этот форк попадает в пак так: закоммитить в `main`, затем в `blockfield-modpack` выполнить `scripts/bump-fork.sh parcool`. Скрипт сам ставит тег `bfN`, ждёт сборку и закрепляет релиз. Версию руками не менять.
+# ParCool — Fabric 1.21.1
 
-![ParCool_Logo](./parcool_logo.png)
+![ParCool](parcool_logo.png)
 
-# ParCool MOD
+ParCool adds parkour movements to Minecraft: climbing, rolls, wall jumps and faster running.
+This Fabric 1.21.1 fork is based on [ParCool by alRex-U](https://github.com/alRex-U/ParCool).
+Blockfield maintains the fork, including fixes to sprint cancellation when stamina is exhausted.
 
-**Welcome to this project!**
+## Build and checks
 
-_ParCool_ is a mod of Minecraft, for more _Cool_ Actions like _Parkour_.\
-It's inspired by [SmartMoving](https://www.curseforge.com/minecraft/mc-mods/smart-moving). That was a very great mod.
-
-Players can do more actions such as...
-
-- Grabbing Cliffs
-- Running Faster
-- Roll
-- Backflip
-- WallJump
-- CatLeap\
-  etc
-
-If it made you traceurs or traceuses ; parkour practitioners, I couldn't be happier!!
-
-This project is always ready to accept your contribution.
-
-### For Developers
-
-This mod provides some features for mod developers, server-hosts and mod-packers.
-Please read [ParCool Guide](docs/parcool-guide-on-web-v3.1.0.0/Introduction.md).
-
-_ParCool_ is licensed with\
-**GNU LESSER GENERAL PUBLIC LICENSE Version 3**.
-
-## Developer checks
-
-Install Python 3.12+, Node.js 22 and Just 1.57.0, native JDK 21 (`JAVA_HOME`) on Linux or Windows. Quality tools stay in the project cache.
+Requires JDK 21 (`JAVA_HOME`), Python 3.12+, Node.js 22 and Just 1.57.0.
+Tools are cached inside the project; the commands work on Linux and Windows.
 
 ```sh
 just setup
 just check
-just format
+just build
 ```
 
-`just --list` lists supported build and application commands.
+`just format` applies formatting. The mod JAR is written to `build/libs/`.
+
+## Releases
+
+After committing to `main`, run `scripts/bump-fork.sh parcool` from
+[blockfield-client](https://github.com/Blockfield/blockfield-client). It creates a
+`bfN` tag, waits for the build and pins the released JAR. Passing an existing `bfN`
+as the second argument only updates the pin. Do not change the mod version by hand.
+Shared mods also need the corresponding server pin and a coordinated server/client release.
+
+[ParCool Guide](docs/parcool-guide-on-web-v3.1.0.0/Introduction.md) describes the
+features available to mod developers and server operators.
+License: [GNU LGPL v3](LICENSE).
