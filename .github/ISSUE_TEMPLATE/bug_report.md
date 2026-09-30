@@ -1,19 +1,19 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ''
+title: ""
 labels: bug
-assignees: ''
-
+assignees: ""
 ---
 
 **Summary**
 Simple summary about the bug
 
 **Running Environment**
-+ Minecraft Version:
-+ ParCool Version:
-+ Forge Version (optional):
+
+- Minecraft Version:
+- ParCool Version:
+- Forge Version (optional):
 
 **Detail**
 Detail about the bug

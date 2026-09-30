@@ -3,9 +3,9 @@ package com.alrex.parcool.fabric;
 import net.minecraft.client.DeltaTracker;
 
 /**
- * Аналог net.neoforged.neoforge.client.event.RenderFrameEvent: Fabric API кадрового события
- * не даёт, а Porting Lib его не портировал. Шлёт MinecraftRenderFrameMixin вокруг
- * gameRenderer.render, ровно там же, где его шлёт NeoForge.
+ * Аналог net.neoforged.neoforge.client.event.RenderFrameEvent: Fabric API кадрового события не
+ * даёт, а Porting Lib его не портировал. Шлёт MinecraftRenderFrameMixin вокруг gameRenderer.render,
+ * ровно там же, где его шлёт NeoForge.
  */
 public abstract class RenderFrameEvent {
     private final DeltaTracker partialTick;

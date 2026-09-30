@@ -5,6 +5,7 @@ import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.utilities.Easing;
+
 import net.minecraft.world.entity.player.Player;
 
 public class DiveIntoWaterAnimator extends Animator {
@@ -21,47 +22,42 @@ public class DiveIntoWaterAnimator extends Animator {
     }
 
     @Override
-    public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
+    public void animatePost(
+            Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
         float phase = (getTick() + transformer.getPartialTick()) / MAX_ANIMATION_TICK;
         if (phase > 1) return;
-        float animationFactor = new Easing(phase)
-                .sinInOut(0, 0.1f, 0, 1)
-                .linear(0.1f, 0.7f, 1, 1)
-                .sinInOut(0.7f, 1, 1, 0)
-                .get();
-        float headPitchFactor = new Easing(phase)
-                .squareOut(0, 0.5f, 0, 1)
-                .sinInOut(0.5f, 1, 1, 0)
-                .get();
-        float legPitchFactor = new Easing(phase)
-                .squareOut(0, 0.65f, 0, 1)
-                .sinInOut(0.65f, 1, 1, 0)
-                .get();
-        float armRollFactor = new Easing(phase)
-                .squareOut(0, 1, 1, 0)
-                .get();
+        float animationFactor =
+                new Easing(phase)
+                        .sinInOut(0, 0.1f, 0, 1)
+                        .linear(0.1f, 0.7f, 1, 1)
+                        .sinInOut(0.7f, 1, 1, 0)
+                        .get();
+        float headPitchFactor =
+                new Easing(phase).squareOut(0, 0.5f, 0, 1).sinInOut(0.5f, 1, 1, 0).get();
+        float legPitchFactor =
+                new Easing(phase).squareOut(0, 0.65f, 0, 1).sinInOut(0.65f, 1, 1, 0).get();
+        float armRollFactor = new Easing(phase).squareOut(0, 1, 1, 0).get();
         transformer
                 .rotateLeftArm(0, 0, (float) Math.toRadians(-170 * armRollFactor), animationFactor)
                 .rotateRightArm(0, 0, (float) Math.toRadians(170 * armRollFactor), animationFactor)
                 .rotateLeftLeg((float) Math.toRadians(-75 * legPitchFactor), 0, 0, animationFactor)
-                .rotateRightLeg((float) Math.toRadians(20 - 95 * legPitchFactor), 0, 0, animationFactor)
+                .rotateRightLeg(
+                        (float) Math.toRadians(20 - 95 * legPitchFactor), 0, 0, animationFactor)
                 .makeLegsLittleMoving()
                 .makeArmsNatural()
                 .rotateAdditionallyHeadPitch((float) Math.toRadians(30 * headPitchFactor));
     }
 
     @Override
-    public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(
+            Player player, Parkourability parkourability, PlayerModelRotator rotator) {
         float phase = (getTick() + rotator.getPartialTick()) / MAX_ANIMATION_TICK;
         if (phase > 1) return;
-        float pitchFactor = new Easing(phase)
-                .linear(0, 0.10f, 0, 0)
-                .squareOut(0.10f, 1, 0, 1)
-                .get();
+        float pitchFactor =
+                new Easing(phase).linear(0, 0.10f, 0, 0).squareOut(0.10f, 1, 0, 1).get();
         rotator.startBasedCenter()
                 .rotatePitchFrontward(
-                        fromSkyDive ? 90f + 270f * pitchFactor : 180f + 180f * pitchFactor
-                )
+                        fromSkyDive ? 90f + 270f * pitchFactor : 180f + 180f * pitchFactor)
                 .end();
     }
 }

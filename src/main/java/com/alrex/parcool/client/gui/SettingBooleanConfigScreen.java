@@ -5,12 +5,13 @@ import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.network.payload.ClientInformationPayload;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.fabric.PacketDistributor;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import com.alrex.parcool.fabric.PacketDistributor;
 
 import java.util.Collections;
 
@@ -22,11 +23,13 @@ public class SettingBooleanConfigScreen extends ParCoolSettingScreen {
         super(titleIn, info, theme);
         currentScreen = 1;
         for (int i = 0; i < booleans.length; i++) {
-            configButtons[i] = Checkbox
-                    .builder(Component.translatable(booleans[i].Path), Minecraft.getInstance().font)
-                    .pos(0, 0)
-                    .selected(booleans[i].get())
-                    .build();
+            configButtons[i] =
+                    Checkbox.builder(
+                                    Component.translatable(booleans[i].Path),
+                                    Minecraft.getInstance().font)
+                            .pos(0, 0)
+                            .selected(booleans[i].get())
+                            .build();
             configButtons[i].setHeight(Checkbox_Item_Height);
         }
     }
@@ -37,7 +40,13 @@ public class SettingBooleanConfigScreen extends ParCoolSettingScreen {
     }
 
     @Override
-    protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, int topOffset, int bottomOffset) {
+    protected void renderContents(
+            GuiGraphics graphics,
+            int mouseX,
+            int mouseY,
+            float partialTick,
+            int topOffset,
+            int bottomOffset) {
         final int offsetX = 40;
         int contentWidth = width - offsetX * 2;
         int contentHeight = height - topOffset - bottomOffset;
@@ -52,17 +61,33 @@ public class SettingBooleanConfigScreen extends ParCoolSettingScreen {
             button.setWidth(contentWidth);
             button.setHeight(Checkbox_Item_Height - 1);
             button.render(graphics, mouseX, mouseY, partialTick);
-            graphics.fill(offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
+            graphics.fill(
+                    offsetX,
+                    button.getY() + button.getHeight(),
+                    width - offsetX,
+                    button.getY() + button.getHeight() + 1,
+                    color.getSubSeparator());
             String comment = booleans[i + topIndex].Comment;
-            if (comment != null && button.getX() < mouseX && mouseX < button.getX() + contentWidth && button.getY() < mouseY && mouseY < button.getY() + 20) {
+            if (comment != null
+                    && button.getX() < mouseX
+                    && mouseX < button.getX() + contentWidth
+                    && button.getY() < mouseY
+                    && mouseY < button.getY() + 20) {
                 graphics.renderComponentTooltip(
                         font,
                         Collections.singletonList(Component.literal(comment)),
-                        mouseX, mouseY);
+                        mouseX,
+                        mouseY);
             }
         }
-        graphics.fill(width - offsetX, topOffset, width - offsetX - 1, topOffset + contentHeight, color.getSeparator());
-        graphics.fill(offsetX, topOffset, offsetX + 1, topOffset + contentHeight, color.getSeparator());
+        graphics.fill(
+                width - offsetX,
+                topOffset,
+                width - offsetX - 1,
+                topOffset + contentHeight,
+                color.getSeparator());
+        graphics.fill(
+                offsetX, topOffset, offsetX + 1, topOffset + contentHeight, color.getSeparator());
     }
 
     @Override
@@ -93,6 +118,8 @@ public class SettingBooleanConfigScreen extends ParCoolSettingScreen {
         if (player == null) return;
         Parkourability parkourability = Parkourability.get(player);
         parkourability.getActionInfo().setClientSetting(ClientSetting.readFromLocalConfig());
-        PacketDistributor.sendToServer(new ClientInformationPayload(player.getUUID(), true, parkourability.getClientInfo()));
+        PacketDistributor.sendToServer(
+                new ClientInformationPayload(
+                        player.getUUID(), true, parkourability.getClientInfo()));
     }
 }

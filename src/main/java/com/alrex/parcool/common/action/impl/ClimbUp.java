@@ -8,51 +8,54 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.attachment.client.Animation;
 import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 import java.nio.ByteBuffer;
 
 public class ClimbUp extends Action {
-	@Environment(EnvType.CLIENT)
-	@Override
+    @Environment(EnvType.CLIENT)
+    @Override
     public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
-		ClingToCliff cling = parkourability.get(ClingToCliff.class);
-		return cling.isDoing()
-				&& cling.getDoingTick() > 2
-				&& cling.getFacingDirection() == ClingToCliff.FacingDirection.ToWall
-				&& KeyRecorder.keyJumpState.isPressed();
-	}
+        ClingToCliff cling = parkourability.get(ClingToCliff.class);
+        return cling.isDoing()
+                && cling.getDoingTick() > 2
+                && cling.getFacingDirection() == ClingToCliff.FacingDirection.ToWall
+                && KeyRecorder.keyJumpState.isPressed();
+    }
 
-	@Environment(EnvType.CLIENT)
-	@Override
+    @Environment(EnvType.CLIENT)
+    @Override
     public boolean canContinue(Player player, Parkourability parkourability) {
-		return getDoingTick() < 2;
-	}
+        return getDoingTick() < 2;
+    }
 
-	@Environment(EnvType.CLIENT)
-	@Override
-    public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
+    @Environment(EnvType.CLIENT)
+    @Override
+    public void onStartInLocalClient(
+            Player player, Parkourability parkourability, ByteBuffer startData) {
         Vec3 speed = player.getDeltaMovement();
         player.setDeltaMovement(speed.x(), 0.6, speed.z());
-		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-            player.playSound(SoundEvents.CLING_TO_CLIFF_JUMP.get(), 1f, 1f);
-		Animation animation = Animation.get(player);
-		if (animation != null) animation.setAnimator(new ClimbUpAnimator());
-	}
-
-	@Override
-	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
         if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.CLING_TO_CLIFF_JUMP.get(), 1f, 1f);
-		Animation animation = Animation.get(player);
-		if (animation != null) animation.setAnimator(new ClimbUpAnimator());
-	}
+        Animation animation = Animation.get(player);
+        if (animation != null) animation.setAnimator(new ClimbUpAnimator());
+    }
 
-	@Override
-	public StaminaConsumeTiming getStaminaConsumeTiming() {
-		return StaminaConsumeTiming.OnStart;
-	}
+    @Override
+    public void onStartInOtherClient(
+            Player player, Parkourability parkourability, ByteBuffer startData) {
+        if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+            player.playSound(SoundEvents.CLING_TO_CLIFF_JUMP.get(), 1f, 1f);
+        Animation animation = Animation.get(player);
+        if (animation != null) animation.setAnimator(new ClimbUpAnimator());
+    }
+
+    @Override
+    public StaminaConsumeTiming getStaminaConsumeTiming() {
+        return StaminaConsumeTiming.OnStart;
+    }
 }

@@ -3,7 +3,6 @@ package com.alrex.parcool.common.action;
 import com.alrex.parcool.common.action.impl.*;
 import com.alrex.parcool.common.action.instant.StartSwimByCrawl;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -11,93 +10,100 @@ import java.util.TreeMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
+
 public class Actions {
-	public static final List<ActionRegistry<? extends Action>> ACTION_REGISTRIES = Arrays.asList(
-			new ActionRegistry<>(BreakfallReady.class, BreakfallReady::new, 0),
-            new ActionRegistry<>(CatLeap.class, CatLeap::new, 200),
-            new ActionRegistry<>(ChargeJump.class, ChargeJump::new, 100),
-			new ActionRegistry<>(ClimbPoles.class, ClimbPoles::new, 0),
-			new ActionRegistry<>(ClimbUp.class, ClimbUp::new, 150),
-			new ActionRegistry<>(ClingToCliff.class, ClingToCliff::new, 2),
-            new ActionRegistry<>(HideInBlock.class, HideInBlock::new, 0),
-			new ActionRegistry<>(Crawl.class, Crawl::new, 0),
-			new ActionRegistry<>(Dive.class, Dive::new, 0),
-			new ActionRegistry<>(Dodge.class, Dodge::new, 80),
-			new ActionRegistry<>(FastRun.class, FastRun::new, 2),
-            new ActionRegistry<>(FastSwim.class, FastSwim::new, 3),
-			new ActionRegistry<>(Flipping.class, Flipping::new, 80),
-			new ActionRegistry<>(HangDown.class, HangDown::new, 3),
-			new ActionRegistry<>(HorizontalWallRun.class, HorizontalWallRun::new, 2),
-			new ActionRegistry<>(JumpFromBar.class, JumpFromBar::new, 100),
-			new ActionRegistry<>(QuickTurn.class, QuickTurn::new, 0),
-            new ActionRegistry<>(RideZipline.class, RideZipline::new, 2),
-			new ActionRegistry<>(Roll.class, Roll::new, 100),
-			new ActionRegistry<>(SkyDive.class, SkyDive::new, 0),
-			new ActionRegistry<>(Slide.class, Slide::new, 0),
-			new ActionRegistry<>(Tap.class, Tap::new, 100),
-			new ActionRegistry<>(Vault.class, Vault::new, 50),
-			new ActionRegistry<>(VerticalWallRun.class, VerticalWallRun::new, 150),
-			new ActionRegistry<>(WallJump.class, WallJump::new, 120),
-            new ActionRegistry<>(WallSlide.class, WallSlide::new, 8),
+    public static final List<ActionRegistry<? extends Action>> ACTION_REGISTRIES =
+            Arrays.asList(
+                    new ActionRegistry<>(BreakfallReady.class, BreakfallReady::new, 0),
+                    new ActionRegistry<>(CatLeap.class, CatLeap::new, 200),
+                    new ActionRegistry<>(ChargeJump.class, ChargeJump::new, 100),
+                    new ActionRegistry<>(ClimbPoles.class, ClimbPoles::new, 0),
+                    new ActionRegistry<>(ClimbUp.class, ClimbUp::new, 150),
+                    new ActionRegistry<>(ClingToCliff.class, ClingToCliff::new, 2),
+                    new ActionRegistry<>(HideInBlock.class, HideInBlock::new, 0),
+                    new ActionRegistry<>(Crawl.class, Crawl::new, 0),
+                    new ActionRegistry<>(Dive.class, Dive::new, 0),
+                    new ActionRegistry<>(Dodge.class, Dodge::new, 80),
+                    new ActionRegistry<>(FastRun.class, FastRun::new, 2),
+                    new ActionRegistry<>(FastSwim.class, FastSwim::new, 3),
+                    new ActionRegistry<>(Flipping.class, Flipping::new, 80),
+                    new ActionRegistry<>(HangDown.class, HangDown::new, 3),
+                    new ActionRegistry<>(HorizontalWallRun.class, HorizontalWallRun::new, 2),
+                    new ActionRegistry<>(JumpFromBar.class, JumpFromBar::new, 100),
+                    new ActionRegistry<>(QuickTurn.class, QuickTurn::new, 0),
+                    new ActionRegistry<>(RideZipline.class, RideZipline::new, 2),
+                    new ActionRegistry<>(Roll.class, Roll::new, 100),
+                    new ActionRegistry<>(SkyDive.class, SkyDive::new, 0),
+                    new ActionRegistry<>(Slide.class, Slide::new, 0),
+                    new ActionRegistry<>(Tap.class, Tap::new, 100),
+                    new ActionRegistry<>(Vault.class, Vault::new, 50),
+                    new ActionRegistry<>(VerticalWallRun.class, VerticalWallRun::new, 150),
+                    new ActionRegistry<>(WallJump.class, WallJump::new, 120),
+                    new ActionRegistry<>(WallSlide.class, WallSlide::new, 8),
+                    new ActionRegistry<>(StartSwimByCrawl.class, StartSwimByCrawl::new, 0));
+    private static final HashMap<Class<? extends Action>, Short> INDEX_MAP;
+    private static final TreeMap<String, Short> NAME_2_INDEX_MAP;
+    public static final List<Class<? extends Action>> LIST =
+            ACTION_REGISTRIES.stream()
+                    .map(ActionRegistry::getClassInstance)
+                    .collect(Collectors.toList());
+    public static final List<String> NAMES =
+            LIST.stream().map(Class::getSimpleName).collect(Collectors.toList());
 
-            new ActionRegistry<>(StartSwimByCrawl.class, StartSwimByCrawl::new, 0)
-	);
-	private static final HashMap<Class<? extends Action>, Short> INDEX_MAP;
-	private static final TreeMap<String, Short> NAME_2_INDEX_MAP;
-    public static final List<Class<? extends Action>> LIST
-			= ACTION_REGISTRIES.stream().map(ActionRegistry::getClassInstance).collect(Collectors.toList());
-    public static final List<String> NAMES = LIST.stream().map(Class::getSimpleName).collect(Collectors.toList());
-
-	static {
+    static {
         INDEX_MAP = new HashMap<>((int) (LIST.size() * 1.5));
-		NAME_2_INDEX_MAP = new TreeMap<>();
+        NAME_2_INDEX_MAP = new TreeMap<>();
         for (Class<? extends Action> action : LIST) {
             short index = (short) LIST.indexOf(action);
-			INDEX_MAP.put(action, index);
-			NAME_2_INDEX_MAP.put(action.getSimpleName(), index);
-		}
-	}
+            INDEX_MAP.put(action, index);
+            NAME_2_INDEX_MAP.put(action.getSimpleName(), index);
+        }
+    }
 
-	public static short getIndexOf(Class<? extends Action> action) {
-		return INDEX_MAP.getOrDefault(action, (short) -1);
-	}
+    public static short getIndexOf(Class<? extends Action> action) {
+        return INDEX_MAP.getOrDefault(action, (short) -1);
+    }
 
-	public static Class<? extends Action> getByIndex(int index) {
+    public static Class<? extends Action> getByIndex(int index) {
         return LIST.get(index);
-	}
+    }
 
-	@Nullable
-	public static Class<? extends Action> getByName(String name) {
-		short index = NAME_2_INDEX_MAP.getOrDefault(name, (short) -1);
-		if (index == -1) return null;
+    @Nullable
+    public static Class<? extends Action> getByName(String name) {
+        short index = NAME_2_INDEX_MAP.getOrDefault(name, (short) -1);
+        if (index == -1) return null;
         return LIST.get(index);
-	}
+    }
 
-	public static List<Action> constructActionsList() {
-		return ACTION_REGISTRIES.stream().map(ActionRegistry::createInstance).collect(Collectors.toList());
-	}
+    public static List<Action> constructActionsList() {
+        return ACTION_REGISTRIES.stream()
+                .map(ActionRegistry::createInstance)
+                .collect(Collectors.toList());
+    }
 
-	public static class ActionRegistry<T extends Action> {
-		private final Class<T> classInstance;
-		private final Supplier<T> factory;
-		private final int defaultStaminaConsumption;
+    public static class ActionRegistry<T extends Action> {
+        private final Class<T> classInstance;
+        private final Supplier<T> factory;
+        private final int defaultStaminaConsumption;
 
-		public ActionRegistry(Class<T> action, Supplier<T> constructor, int defaultStaminaConsumption) {
-			classInstance = action;
-			factory = constructor;
-			this.defaultStaminaConsumption = defaultStaminaConsumption;
-		}
+        public ActionRegistry(
+                Class<T> action, Supplier<T> constructor, int defaultStaminaConsumption) {
+            classInstance = action;
+            factory = constructor;
+            this.defaultStaminaConsumption = defaultStaminaConsumption;
+        }
 
-		public Class<T> getClassInstance() {
-			return classInstance;
-		}
+        public Class<T> getClassInstance() {
+            return classInstance;
+        }
 
-		public T createInstance() {
-			return factory.get();
-		}
+        public T createInstance() {
+            return factory.get();
+        }
 
-		public int getDefaultStaminaConsumption() {
-			return defaultStaminaConsumption;
-		}
-	}
+        public int getDefaultStaminaConsumption() {
+            return defaultStaminaConsumption;
+        }
+    }
 }

@@ -2,8 +2,10 @@ package com.alrex.parcool.mixin.client;
 
 import com.alrex.parcool.client.ClientRenderProcessor;
 import com.alrex.parcool.fabric.RenderFrameEvent;
+
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.renderer.GameRenderer;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

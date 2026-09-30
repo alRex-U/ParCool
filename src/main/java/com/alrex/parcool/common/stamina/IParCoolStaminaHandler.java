@@ -1,10 +1,11 @@
 package com.alrex.parcool.common.stamina;
 
 import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.world.entity.player.Player;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.player.Player;
 
 public interface IParCoolStaminaHandler {
     @Environment(EnvType.CLIENT)
@@ -27,12 +28,12 @@ public interface IParCoolStaminaHandler {
     }
 
     @Environment(EnvType.CLIENT)
-    public default boolean shouldImposeExhaustionPenalty(LocalPlayer player, ReadonlyStamina current) {
+    public default boolean shouldImposeExhaustionPenalty(
+            LocalPlayer player, ReadonlyStamina current) {
         return true;
     }
 
-    public default void processOnServer(Player player, int value) {
-    }
+    public default void processOnServer(Player player, int value) {}
 
     public default boolean isExternalStamina() {
         return false;

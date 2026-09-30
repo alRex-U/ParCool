@@ -10,23 +10,23 @@ import com.alrex.parcool.common.attachment.client.Animation;
 import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
+
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 
 import java.nio.ByteBuffer;
 
 public class FastSwim extends Action {
-    private static final ResourceLocation FAST_SWIM_MODIFIER = ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "modifier.speed.fastswim");
+    private static final ResourceLocation FAST_SWIM_MODIFIER =
+            ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "modifier.speed.fastswim");
     private double speedModifier = 0;
     private boolean toggleStatus;
 
     public double getSpeedModifier(ActionInfo info) {
         return Math.min(
                 info.getClientSetting().get(ParCoolConfig.Client.Doubles.FastSwimSpeedModifier),
-                info.getServerLimitation().get(ParCoolConfig.Server.Doubles.MaxFastSwimSpeedModifier)
-        );
+                info.getServerLimitation()
+                        .get(ParCoolConfig.Server.Doubles.MaxFastSwimSpeedModifier));
     }
 
     @Override
@@ -42,22 +42,25 @@ public class FastSwim extends Action {
                 && player.isSprinting()
                 && player.isSwimming()
                 && !parkourability.get(FastRun.class).isDoing()
-                && ((ParCoolConfig.Client.getInstance().FastRunControl.get() == FastRun.ControlType.PressKey && KeyBindings.getKeyFastRunning().isDown())
-                || (ParCoolConfig.Client.getInstance().FastRunControl.get() == FastRun.ControlType.Toggle && toggleStatus)
-                || ParCoolConfig.Client.getInstance().FastRunControl.get() == FastRun.ControlType.Auto)
-        );
+                && ((ParCoolConfig.Client.getInstance().FastRunControl.get()
+                                        == FastRun.ControlType.PressKey
+                                && KeyBindings.getKeyFastRunning().isDown())
+                        || (ParCoolConfig.Client.getInstance().FastRunControl.get()
+                                        == FastRun.ControlType.Toggle
+                                && toggleStatus)
+                        || ParCoolConfig.Client.getInstance().FastRunControl.get()
+                                == FastRun.ControlType.Auto));
     }
 
     @Override
     public void onClientTick(Player player, Parkourability parkourability) {
         if (player.isLocalPlayer()) {
-            if (ParCoolConfig.Client.getInstance().FastRunControl.get() == FastRun.ControlType.Toggle
+            if (ParCoolConfig.Client.getInstance().FastRunControl.get()
+                            == FastRun.ControlType.Toggle
                     && parkourability.getAdditionalProperties().getSprintingTick() > 3
                     && player.isInWaterOrBubble()
-                    && player.isSwimming()
-            ) {
-                if (KeyRecorder.keyFastRunning.isPressed())
-                    toggleStatus = !toggleStatus;
+                    && player.isSwimming()) {
+                if (KeyRecorder.keyFastRunning.isPressed()) toggleStatus = !toggleStatus;
             } else {
                 toggleStatus = false;
             }
@@ -73,14 +76,17 @@ public class FastSwim extends Action {
     }
 
     @Override
-    public void onStartInServer(Player player, Parkourability parkourability, ByteBuffer startData) {
-        speedModifier = parkourability.get(FastSwim.class).getSpeedModifier(parkourability.getActionInfo());
+    public void onStartInServer(
+            Player player, Parkourability parkourability, ByteBuffer startData) {
+        speedModifier =
+                parkourability.get(FastSwim.class).getSpeedModifier(parkourability.getActionInfo());
     }
 
     @Override
     public void onServerTick(Player player, Parkourability parkourability) {
         // ponytail: у NeoForge скорость плавания -- отдельный атрибут (NeoForgeMod.SWIM_SPEED),
-        // под Fabric его нет; остаётся только спринт в воде. Вернуть, если Porting Lib заведёт аналог
+        // под Fabric его нет; остаётся только спринт в воде. Вернуть, если Porting Lib заведёт
+        // аналог
         // или если игроки заметят, что быстрое плавание не быстрее обычного.
         if (isDoing()) {
             player.setSprinting(true);

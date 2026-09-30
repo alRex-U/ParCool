@@ -14,12 +14,15 @@ import java.util.List;
 
 public class Limitation {
 
-    //Whether this limitation is applied
+    // Whether this limitation is applied
     private boolean enabled = false;
     private final ID id;
-    private final EnumMap<ParCoolConfig.Server.Booleans, Boolean> booleans = new EnumMap<>(ParCoolConfig.Server.Booleans.class);
-    private final EnumMap<ParCoolConfig.Server.Integers, Integer> integers = new EnumMap<>(ParCoolConfig.Server.Integers.class);
-    private final EnumMap<ParCoolConfig.Server.Doubles, Double> doubles = new EnumMap<>(ParCoolConfig.Server.Doubles.class);
+    private final EnumMap<ParCoolConfig.Server.Booleans, Boolean> booleans =
+            new EnumMap<>(ParCoolConfig.Server.Booleans.class);
+    private final EnumMap<ParCoolConfig.Server.Integers, Integer> integers =
+            new EnumMap<>(ParCoolConfig.Server.Integers.class);
+    private final EnumMap<ParCoolConfig.Server.Doubles, Double> doubles =
+            new EnumMap<>(ParCoolConfig.Server.Doubles.class);
     private final ActionLimitation[] actionLimitations = new ActionLimitation[Actions.LIST.size()];
     private StaminaType forcedStamina = StaminaType.NONE;
 
@@ -29,7 +32,6 @@ public class Limitation {
             actionLimitations[i] = new ActionLimitation(true, 0);
         }
     }
-
 
     public boolean isEnabled() {
         return enabled;
@@ -85,10 +87,7 @@ public class Limitation {
     public void setPossibilityOf(Class<? extends Action> action, boolean value) {
         int index = Actions.getIndexOf(action);
         actionLimitations[index] =
-                new ActionLimitation(
-                        value,
-                        actionLimitations[index].getLeastStaminaConsumption()
-                );
+                new ActionLimitation(value, actionLimitations[index].getLeastStaminaConsumption());
     }
 
     public void setForcedStamina(StaminaType forcedStamina) {
@@ -98,10 +97,7 @@ public class Limitation {
     public void setLeastStaminaConsumption(Class<? extends Action> action, int value) {
         int index = Actions.getIndexOf(action);
         actionLimitations[index] =
-                new ActionLimitation(
-                        actionLimitations[index].isPossible(),
-                        value
-                );
+                new ActionLimitation(actionLimitations[index].isPossible(), value);
     }
 
     public void setAllDefault() {
@@ -129,10 +125,12 @@ public class Limitation {
             doubles.put(item, item.get());
         }
         for (int i = 0; i < actionLimitations.length; i++) {
-            actionLimitations[i] = new ActionLimitation(
-                    ParCoolConfig.Server.getInstance().getPermissionOf(Actions.getByIndex(i)),
-                    ParCoolConfig.Server.getInstance().getLeastStaminaConsumptionOf(Actions.getByIndex(i))
-            );
+            actionLimitations[i] =
+                    new ActionLimitation(
+                            ParCoolConfig.Server.getInstance()
+                                    .getPermissionOf(Actions.getByIndex(i)),
+                            ParCoolConfig.Server.getInstance()
+                                    .getLeastStaminaConsumptionOf(Actions.getByIndex(i)));
         }
         forcedStamina = ParCoolConfig.Server.getInstance().StaminaType.get();
     }
@@ -182,7 +180,8 @@ public class Limitation {
         LimitationJson parsed = gson.fromJson(reader, LimitationJson.class);
         enabled = parsed.imposed;
         for (LimitationJson.BooleanItem item : parsed.booleans) {
-            for (ParCoolConfig.Server.Booleans configItem : ParCoolConfig.Server.Booleans.values()) {
+            for (ParCoolConfig.Server.Booleans configItem :
+                    ParCoolConfig.Server.Booleans.values()) {
                 if (configItem.getPath().equals(item.name)) {
                     booleans.put(configItem, item.value);
                     break;
@@ -190,7 +189,8 @@ public class Limitation {
             }
         }
         for (LimitationJson.IntegerItem item : parsed.integers) {
-            for (ParCoolConfig.Server.Integers configItem : ParCoolConfig.Server.Integers.values()) {
+            for (ParCoolConfig.Server.Integers configItem :
+                    ParCoolConfig.Server.Integers.values()) {
                 if (configItem.getPath().equals(item.name)) {
                     integers.put(configItem, item.value);
                     break;
@@ -208,7 +208,8 @@ public class Limitation {
         for (LimitationJson.ActionPermission item : parsed.actions) {
             for (int i = 0; i < Actions.LIST.size(); i++) {
                 if (Actions.LIST.get(i).getSimpleName().equals(item.name)) {
-                    actionLimitations[i] = new ActionLimitation(item.permitted, item.stamina_consumption);
+                    actionLimitations[i] =
+                            new ActionLimitation(item.permitted, item.stamina_consumption);
                 }
             }
         }

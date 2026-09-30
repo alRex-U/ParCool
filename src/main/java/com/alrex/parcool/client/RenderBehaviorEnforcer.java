@@ -1,11 +1,12 @@
 package com.alrex.parcool.client;
 
-import net.minecraft.client.CameraType;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.CameraType;
+
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
-import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
 public final class RenderBehaviorEnforcer {
@@ -32,11 +33,11 @@ public final class RenderBehaviorEnforcer {
         }
     }
 
-    @Nullable
-    private static Enforcer<CameraType> cameraTypeEnforcer = null;
+    @Nullable private static Enforcer<CameraType> cameraTypeEnforcer = null;
 
     @Environment(EnvType.CLIENT)
-    public static void serMarkerEnforceCameraType(Marker marker, Supplier<CameraType> cameraTypeSupplier) {
+    public static void serMarkerEnforceCameraType(
+            Marker marker, Supplier<CameraType> cameraTypeSupplier) {
         cameraTypeEnforcer = new Enforcer<>(marker, cameraTypeSupplier);
     }
 

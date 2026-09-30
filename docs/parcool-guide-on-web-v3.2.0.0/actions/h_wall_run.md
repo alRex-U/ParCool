@@ -2,7 +2,7 @@
 
 You can do wall-running horizontally. But if wall is slippery, you cannot do this.
 
-Sometimes misunderstood, but the technique of *Wall Run* is vertical one, not horizontal.
+Sometimes misunderstood, but the technique of _Wall Run_ is vertical one, not horizontal.
 
 ### How to use
 

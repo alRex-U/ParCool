@@ -1,6 +1,7 @@
 package com.alrex.parcool.client.hud;
 
 import com.alrex.parcool.client.hud.impl.StaminaHUDController;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -15,8 +16,7 @@ public class HUDManager {
         return instance;
     }
 
-    public void onSetup() {
-    }
+    public void onSetup() {}
 
     public StaminaHUDController getStaminaHUD() {
         return staminaHUD;

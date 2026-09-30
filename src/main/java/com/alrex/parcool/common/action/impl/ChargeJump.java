@@ -10,11 +10,12 @@ import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.attachment.client.Animation;
 import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.fabric.ParCoolEvents;
 import com.alrex.parcool.utilities.VectorUtil;
+
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import com.alrex.parcool.fabric.ParCoolEvents;
 
 import java.nio.ByteBuffer;
 
@@ -45,7 +46,8 @@ public class ChargeJump extends Action {
     }
 
     @Override
-    public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
+    public void onStartInLocalClient(
+            Player player, Parkourability parkourability, ByteBuffer startData) {
         coolTimeTick = 30;
         if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.CHARGE_JUMP.get(), 1, 1);
@@ -56,7 +58,8 @@ public class ChargeJump extends Action {
     }
 
     @Override
-    public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
+    public void onStartInOtherClient(
+            Player player, Parkourability parkourability, ByteBuffer startData) {
         if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
             player.playSound(SoundEvents.CHARGE_JUMP.get(), 1, 1);
         Animation animation = Animation.get(player);
@@ -79,9 +82,10 @@ public class ChargeJump extends Action {
                     && !cp.input.right
                     && !cp.input.left
                     && !parkourability.get(Crawl.class).isDoing()
-                    && !ParCoolEvents.post(new ParCoolActionEvent.TryToStartEvent(player, this)).isCanceled()
-                    && !ParCoolEvents.post(new ParCoolActionEvent.TryToStart(player, this)).isCanceled()
-            ) {
+                    && !ParCoolEvents.post(new ParCoolActionEvent.TryToStartEvent(player, this))
+                            .isCanceled()
+                    && !ParCoolEvents.post(new ParCoolActionEvent.TryToStart(player, this))
+                            .isCanceled()) {
                 if (cp.isShiftKeyDown() && KeyRecorder.keySneak.getPreviousTickNotKeyDown() > 5) {
                     chargeTick++;
                     if (chargeTick > JUMP_MAX_CHARGE_TICK) chargeTick = JUMP_MAX_CHARGE_TICK;
@@ -95,11 +99,16 @@ public class ChargeJump extends Action {
                 if (isCharging()) {
                     Vec3 targetAngle = VectorUtil.fromYawDegree(player.yHeadRot);
                     Vec3 currentAngle = VectorUtil.fromYawDegree(player.yBodyRot);
-                    double differenceAngle = Math.atan(
-                            (currentAngle.x() * targetAngle.z() - targetAngle.x() * currentAngle.z())
-                                    / (targetAngle.x() * currentAngle.x() + targetAngle.z() * currentAngle.z())
-                    );
-                    player.setYBodyRot((float) VectorUtil.toYawDegree(currentAngle.yRot((float) (-differenceAngle / 2))));
+                    double differenceAngle =
+                            Math.atan(
+                                    (currentAngle.x() * targetAngle.z()
+                                                    - targetAngle.x() * currentAngle.z())
+                                            / (targetAngle.x() * currentAngle.x()
+                                                    + targetAngle.z() * currentAngle.z()));
+                    player.setYBodyRot(
+                            (float)
+                                    VectorUtil.toYawDegree(
+                                            currentAngle.yRot((float) (-differenceAngle / 2))));
                 }
             } else {
                 if (coolTimeTick > 0) coolTimeTick--;
@@ -132,15 +141,16 @@ public class ChargeJump extends Action {
 
     public void onLand(Player player, Parkourability parkourability) {
         if (player.isLocalPlayer() && player instanceof LocalPlayer cp) {
-            if (
-                    parkourability.getActionInfo().can(ChargeJump.class)
-                            && coolTimeTick <= 0
-                            && !cp.input.up
-                            && !cp.input.down
-                            && !cp.input.right
-                            && !cp.input.left
-                            && (parkourability.get(FastRun.class).getNotDashTick(parkourability.getAdditionalProperties()) < 15)
-            ) {
+            if (parkourability.getActionInfo().can(ChargeJump.class)
+                    && coolTimeTick <= 0
+                    && !cp.input.up
+                    && !cp.input.down
+                    && !cp.input.right
+                    && !cp.input.left
+                    && (parkourability
+                                    .get(FastRun.class)
+                                    .getNotDashTick(parkourability.getAdditionalProperties())
+                            < 15)) {
                 chargeTick = JUMP_MAX_CHARGE_TICK + 5;
                 lastChargeTick = chargeTick;
                 notChargeTick = 0;

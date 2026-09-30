@@ -1,20 +1,19 @@
 package com.alrex.parcool.server.limitation;
 
-import net.minecraft.server.MinecraftServer;
-
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.info.ServerLimitation;
 import com.alrex.parcool.common.network.payload.LimitationPayload;
+import com.alrex.parcool.fabric.PacketDistributor;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.LevelResource;
-import com.alrex.parcool.fabric.PacketDistributor;
+
 import org.apache.commons.io.FileUtils;
 
-import javax.annotation.Nullable;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -22,14 +21,17 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
+import javax.annotation.Nullable;
+
 public class Limitations {
     private static final Limitation.ID GLOBAL_ID = new Limitation.ID(ParCool.MOD_ID, "global");
-    public static final Limitation.ID INDIVIDUAL_ID = new Limitation.ID(ParCool.MOD_ID, "individual");
-    private static final SortedMap<UUID, SortedMap<Limitation.ID, Limitation>> Loaded = new TreeMap<>();
+    public static final Limitation.ID INDIVIDUAL_ID =
+            new Limitation.ID(ParCool.MOD_ID, "individual");
+    private static final SortedMap<UUID, SortedMap<Limitation.ID, Limitation>> Loaded =
+            new TreeMap<>();
     private static final SortedSet<Limitation.ID> RegisteredID = new TreeSet<>();
     private static final Limitation GlobalLimitation = new Limitation(GLOBAL_ID);
-    @Nullable
-    private static Path LimitationFolderRootPath = null;
+    @Nullable private static Path LimitationFolderRootPath = null;
 
     private static SortedMap<Limitation.ID, Limitation> getLimitationMapOf(UUID playerID) {
         SortedMap<Limitation.ID, Limitation> map = Loaded.get(playerID);
@@ -84,22 +86,25 @@ public class Limitations {
     public static void update(ServerPlayer player) {
         Parkourability parkourability = Parkourability.get(player);
         parkourability.getActionInfo().setServerLimitation(ServerLimitation.get(player));
-        PacketDistributor.sendToPlayer(player, new LimitationPayload(parkourability.getActionInfo().getServerLimitation()));
+        PacketDistributor.sendToPlayer(
+                player,
+                new LimitationPayload(parkourability.getActionInfo().getServerLimitation()));
     }
 
     public static void updateOnlyLimitation(ServerPlayer player) {
         Parkourability parkourability = Parkourability.get(player);
         parkourability.getActionInfo().setServerLimitation(ServerLimitation.get(player));
-        PacketDistributor.sendToPlayer(player, new LimitationPayload(parkourability.getActionInfo().getServerLimitation()));
+        PacketDistributor.sendToPlayer(
+                player,
+                new LimitationPayload(parkourability.getActionInfo().getServerLimitation()));
     }
 
     public static SortedMap<Limitation.ID, Limitation> load(UUID playerID) {
         if (LimitationFolderRootPath == null) {
             throw new IllegalStateException(
-                    "When loading Limitation Player:" +
-                            playerID.toString() +
-                            ", Initialization is not completed yet"
-            );
+                    "When loading Limitation Player:"
+                            + playerID.toString()
+                            + ", Initialization is not completed yet");
         }
         File limitationFolder = LimitationFolderRootPath.toFile();
         File[] directories = limitationFolder.listFiles(File::isDirectory);
@@ -107,7 +112,8 @@ public class Limitations {
             ParCool.LOGGER.error("Cannot get Limitation folders");
             return null;
         }
-        SortedMap<Limitation.ID, Limitation> playerData = Loaded.computeIfAbsent(playerID, k -> new TreeMap<>());
+        SortedMap<Limitation.ID, Limitation> playerData =
+                Loaded.computeIfAbsent(playerID, k -> new TreeMap<>());
         for (File dir : directories) {
             File[] limitationGroups = dir.listFiles(File::isDirectory);
             if (limitationGroups == null) {
@@ -115,35 +121,42 @@ public class Limitations {
                 continue;
             }
             for (File limitationGroup : limitationGroups) {
-                File[] limitationFiles = limitationGroup.listFiles((file) -> file.isFile() && file.canRead() && file.getName().endsWith(".json"));
+                File[] limitationFiles =
+                        limitationGroup.listFiles(
+                                (file) ->
+                                        file.isFile()
+                                                && file.canRead()
+                                                && file.getName().endsWith(".json"));
                 if (limitationFiles == null) {
                     ParCool.LOGGER.error("Cannot get Limitation files of '" + dir.getName() + "'");
                     continue;
                 }
-                Limitation.ID limitationID = new Limitation.ID(dir.getName(), limitationGroup.getName());
+                Limitation.ID limitationID =
+                        new Limitation.ID(dir.getName(), limitationGroup.getName());
                 RegisteredID.add(limitationID);
                 for (File limitationFile : limitationFiles) {
                     String limitationFilename = limitationFile.getName();
-                    String uuidString = limitationFilename.substring(0, limitationFilename.length() - ".json".length());
+                    String uuidString =
+                            limitationFilename.substring(
+                                    0, limitationFilename.length() - ".json".length());
                     UUID playerUUID = UUID.fromString(uuidString);
                     if (!playerUUID.equals(playerID)) {
                         continue;
                     }
                     try (JsonReader reader =
-                                 new JsonReader(
-                                         new InputStreamReader(
-                                                 new BufferedInputStream(
-                                                         new FileInputStream(limitationFile)
-                                                 ),
-                                                 StandardCharsets.UTF_8
-                                         )
-                                 )
-                    ) {
+                            new JsonReader(
+                                    new InputStreamReader(
+                                            new BufferedInputStream(
+                                                    new FileInputStream(limitationFile)),
+                                            StandardCharsets.UTF_8))) {
                         Limitation limitation = new Limitation(limitationID);
                         limitation.loadFrom(reader);
                         playerData.put(limitation.getID(), limitation);
                     } catch (FileNotFoundException e) {
-                        ParCool.LOGGER.error("Could not read '" + limitationFile.getAbsolutePath() + "', skipped.");
+                        ParCool.LOGGER.error(
+                                "Could not read '"
+                                        + limitationFile.getAbsolutePath()
+                                        + "', skipped.");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -157,14 +170,14 @@ public class Limitations {
     public static void unload(UUID playerID) {
         if (LimitationFolderRootPath == null) {
             throw new IllegalStateException(
-                    "When loading Limitation Player:" +
-                            playerID.toString() +
-                            ", Initialization is not completed yet"
-            );
+                    "When loading Limitation Player:"
+                            + playerID.toString()
+                            + ", Initialization is not completed yet");
         }
         SortedMap<Limitation.ID, Limitation> map = Loaded.remove(playerID);
         if (map == null) {
-            ParCool.LOGGER.warn("Limitation entry is not loaded for UUID:" + playerID + ". Skipped.");
+            ParCool.LOGGER.warn(
+                    "Limitation entry is not loaded for UUID:" + playerID + ". Skipped.");
             return;
         }
         for (Limitation limitation : map.values()) {
@@ -173,21 +186,17 @@ public class Limitations {
                 limitationFile.getParentFile().mkdirs();
             }
             try (JsonWriter writer =
-                         new JsonWriter(
-                                 new OutputStreamWriter(
-                                         new BufferedOutputStream(
-                                                 Files.newOutputStream(limitationFile.toPath(), StandardOpenOption.CREATE, StandardOpenOption.WRITE)
-                                         ),
-                                         StandardCharsets.UTF_8
-                                 )
-                         )
-            ) {
+                    new JsonWriter(
+                            new OutputStreamWriter(
+                                    new BufferedOutputStream(
+                                            Files.newOutputStream(
+                                                    limitationFile.toPath(),
+                                                    StandardOpenOption.CREATE,
+                                                    StandardOpenOption.WRITE)),
+                                    StandardCharsets.UTF_8))) {
                 limitation.saveTo(writer);
             } catch (IOException e) {
-                ParCool.LOGGER.error(
-                        "IOException during saving limitation : "
-                                + e.getMessage()
-                );
+                ParCool.LOGGER.error("IOException during saving limitation : " + e.getMessage());
             }
         }
         ParCool.LOGGER.info("Limitation of " + playerID + " was unloaded");
@@ -206,30 +215,30 @@ public class Limitations {
     public static void save(MinecraftServer server) {
         Path configPath = getServerConfigPath(server);
         Path limitationRootPath = configPath.resolve("parcool").resolve("limitations");
-        for (Map.Entry<UUID, SortedMap<Limitation.ID, Limitation>> limitationEntry : Loaded.entrySet()) {
+        for (Map.Entry<UUID, SortedMap<Limitation.ID, Limitation>> limitationEntry :
+                Loaded.entrySet()) {
             UUID playerID = limitationEntry.getKey();
             for (Limitation limitation : limitationEntry.getValue().values()) {
-                File limitationFile = getFolderPath(limitationRootPath, limitation.getID())
-                        .resolve(playerID.toString() + ".json").toFile();
+                File limitationFile =
+                        getFolderPath(limitationRootPath, limitation.getID())
+                                .resolve(playerID.toString() + ".json")
+                                .toFile();
                 if (!limitationFile.getParentFile().exists()) {
                     limitationFile.getParentFile().mkdirs();
                 }
                 try (JsonWriter writer =
-                             new JsonWriter(
-                                     new OutputStreamWriter(
-                                             new BufferedOutputStream(
-                                                     Files.newOutputStream(limitationFile.toPath(), StandardOpenOption.CREATE, StandardOpenOption.WRITE)
-                                             ),
-                                             StandardCharsets.UTF_8
-                                     )
-                             )
-                ) {
+                        new JsonWriter(
+                                new OutputStreamWriter(
+                                        new BufferedOutputStream(
+                                                Files.newOutputStream(
+                                                        limitationFile.toPath(),
+                                                        StandardOpenOption.CREATE,
+                                                        StandardOpenOption.WRITE)),
+                                        StandardCharsets.UTF_8))) {
                     limitation.saveTo(writer);
                 } catch (IOException e) {
                     ParCool.LOGGER.error(
-                            "IOException during saving limitation : "
-                                    + e.getMessage()
-                    );
+                            "IOException during saving limitation : " + e.getMessage());
                 }
             }
         }
@@ -250,9 +259,7 @@ public class Limitations {
     }
 
     public static Path getFolderPath(Path limitationRootPath, Limitation.ID id) {
-        return limitationRootPath
-                .resolve(id.getGroup())
-                .resolve(id.getName());
+        return limitationRootPath.resolve(id.getGroup()).resolve(id.getName());
     }
 
     @Nullable

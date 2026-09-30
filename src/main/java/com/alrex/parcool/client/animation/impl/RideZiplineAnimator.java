@@ -5,12 +5,14 @@ import com.alrex.parcool.client.animation.PlayerModelRotator;
 import com.alrex.parcool.client.animation.PlayerModelTransformer;
 import com.alrex.parcool.common.action.impl.RideZipline;
 import com.alrex.parcool.common.attachment.common.Parkourability;
+import com.alrex.parcool.fabric.RenderFrameEvent;
 import com.alrex.parcool.utilities.VectorUtil;
+
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import com.alrex.parcool.fabric.RenderFrameEvent;
+
 import org.joml.Vector3f;
 
 public class RideZiplineAnimator extends Animator {
@@ -41,20 +43,35 @@ public class RideZiplineAnimator extends Animator {
     }
 
     @Override
-    public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
+    public void animatePost(
+            Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
         var offset = parkourability.get(RideZipline.class).getEndOffsetFromStart();
         if (offset == null) return;
-        double angleDifference = VectorUtil.toYawRadian(player.getLookAngle()) - VectorUtil.toYawRadian(new Vec3(offset.x(), 0, offset.z()));
+        double angleDifference =
+                VectorUtil.toYawRadian(player.getLookAngle())
+                        - VectorUtil.toYawRadian(new Vec3(offset.x(), 0, offset.z()));
         double angleCos = Math.cos(angleDifference);
         double angleSin = Math.sin(angleDifference);
         double angleCosAbs = Math.abs(angleCos);
         transformer
                 .translateRightArm(0.6f, -2.2f, 0)
                 .translateLeftArm(-0.6f, -2.2f, 0)
-                .rotateRightArm((float) -Math.PI, 0f, (float) Math.toRadians(Mth.lerp(angleCosAbs, 10., 15.)))
-                .rotateLeftArm((float) -Math.PI, 0f, (float) Math.toRadians(Mth.lerp(angleCosAbs, -10., -15.)))
-                .rotateRightLeg((float) (-currentAngleRadian * angleCos), 0, (float) (-currentAngleRadian * angleSin))
-                .rotateLeftLeg((float) (-currentAngleRadian * angleCos), 0, (float) (-currentAngleRadian * angleSin))
+                .rotateRightArm(
+                        (float) -Math.PI,
+                        0f,
+                        (float) Math.toRadians(Mth.lerp(angleCosAbs, 10., 15.)))
+                .rotateLeftArm(
+                        (float) -Math.PI,
+                        0f,
+                        (float) Math.toRadians(Mth.lerp(angleCosAbs, -10., -15.)))
+                .rotateRightLeg(
+                        (float) (-currentAngleRadian * angleCos),
+                        0,
+                        (float) (-currentAngleRadian * angleSin))
+                .rotateLeftLeg(
+                        (float) (-currentAngleRadian * angleCos),
+                        0,
+                        (float) (-currentAngleRadian * angleSin))
                 .makeLegsLittleMoving()
                 .end();
     }
@@ -66,15 +83,24 @@ public class RideZiplineAnimator extends Animator {
     }
 
     @Override
-    public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+    public void rotatePost(
+            Player player, Parkourability parkourability, PlayerModelRotator rotator) {
         Vec3 offset = parkourability.get(RideZipline.class).getEndOffsetFromStart();
         if (offset == null) return;
-        Vec3 rotationAxis = new Vec3(0, 0, 1)
-                .yRot((float) (Math.PI / 2 + VectorUtil.toYawRadian(player.getLookAngle()) - VectorUtil.toYawRadian(new Vec3(offset.x(), 0, offset.z()))))
-                .normalize();
+        Vec3 rotationAxis =
+                new Vec3(0, 0, 1)
+                        .yRot(
+                                (float)
+                                        (Math.PI / 2
+                                                + VectorUtil.toYawRadian(player.getLookAngle())
+                                                - VectorUtil.toYawRadian(
+                                                        new Vec3(offset.x(), 0, offset.z()))))
+                        .normalize();
         double angle = Mth.lerp(rotator.getPartialTick(), oldAngleRadian, currentAngleRadian);
         rotator.startBasedTop()
-                .rotate((float) angle, new Vector3f((float) rotationAxis.x(), 0f, (float) rotationAxis.z()))
+                .rotate(
+                        (float) angle,
+                        new Vector3f((float) rotationAxis.x(), 0f, (float) rotationAxis.z()))
                 .end();
     }
 }

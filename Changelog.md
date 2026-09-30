@@ -15,37 +15,37 @@
 ### Modified
 
 - Stamina
-    - Saved and restored when player re-login
+  - Saved and restored when player re-login
 - Charge Jump
-    - Disabled to charge when player tap sneaking repeatedly
+  - Disabled to charge when player tap sneaking repeatedly
 - Dodge
-    - Provide invulnerable time
-    - Able to be triggered soon after get off small steps
+  - Provide invulnerable time
+  - Able to be triggered soon after get off small steps
 - Hang Down
-    - Animation Modified
+  - Animation Modified
 - Wall Jump
-    - Modifiable sensitivity to trigger
+  - Modifiable sensitivity to trigger
 
 ### Translation
 
 - Translation keys are added for client config entries
 - Chinese (zh_cn) (Modified)
-    - by *CatalystGinger*
+  - by _CatalystGinger_
 - Traditional Chinese (zh_tw) (Added)
-    - by *notlin4* and *CatalystGinger*
+  - by _notlin4_ and _CatalystGinger_
 - Turkish (tr_tr) (Modified)
-    - by *FurkenSenpainiz*
+  - by _FurkenSenpainiz_
 - Brazilian Portuguese (pt_br) (Added)
-    - by *Sulvosson*
+  - by _Sulvosson_
 - Spanish (es_es) (Modified)
-    - by *ElTormakzXD*
+  - by _ElTormakzXD_
 - Spanish (es_ve) (Added)
-    - by *ElTormakzXD*
+  - by _ElTormakzXD_
 
 ### Bugfix
 
 - #237
-    - by *Vaso64*
+  - by _Vaso64_
 - #212
 - Internal BehaviorEnforcer's list get too large in server
 - FastRun works even when sneaking
@@ -128,9 +128,9 @@
 - Action : Fast Swim
 - Animation : Particles are added for some animations
 - Sound : New sounds for its own Resource Pack
-    - by *SquARzY*
+  - by _SquARzY_
 - Keybind : Enabling / Disabling ParCool
-    - by *Kasualix*
+  - by _Kasualix_
 - API : Attributes
 - API : Effects
 - API : SoundEvents
@@ -139,39 +139,39 @@
 
 - ParCool Logo
 - Fast Run
-    - Animation was modified
+  - Animation was modified
 - Dodge
-    - Players don't get off blocks while doing dodge(configurable)
-    - Animation was modified
+  - Players don't get off blocks while doing dodge(configurable)
+  - Animation was modified
 - Flipping
-    - Possible to trigger Flipping by pressing jump and forward or backward movement key
-    - Which control is used is selectable
+  - Possible to trigger Flipping by pressing jump and forward or backward movement key
+  - Which control is used is selectable
 - Wall Slide
-    - Consume more damage by default
-    - Take damage while declining falling speed
+  - Consume more damage by default
+  - Take damage while declining falling speed
 - Wall Jump
-    - The height of jump changes depend on camera angle
+  - The height of jump changes depend on camera angle
 - Horizontal Wall Run
-    - Easier to perform sequentially
+  - Easier to perform sequentially
 - Dive
-    - Activation conditions was relaxed
-    - Possible to start in air by pressing jump key long time
-    - Impossible to jump while performing
-    - New Animation for Diving into water
+  - Activation conditions was relaxed
+  - Possible to start in air by pressing jump key long time
+  - Impossible to jump while performing
+  - New Animation for Diving into water
 - Roll
-    - Animation was modified
+  - Animation was modified
 - Stamina
-    - Max value and recovery speed was changed into attributes
-    - Recovery speed in air was decreased
+  - Max value and recovery speed was changed into attributes
+  - Recovery speed in air was decreased
 
 ### Translation
 
 - Turkish (tr_tr) (Added)
-    - by *furkenisnice*
+  - by _furkenisnice_
 - Spanish (es_es) (Modified)
-    - by *elAltrex*
+  - by _elAltrex_
 - English (en_us) (Modified)
-    - by *EternalAdministrator*
+  - by _EternalAdministrator_
 
 ### Bugfix
 
@@ -187,16 +187,16 @@
 
 ### Translation
 
-- Russian (ru_ru) *(Added)*
-  - by *[ Master Xort ]*
-- Chinese (zh_cn) *(Modified)*
-    - by *njt-233*
+- Russian (ru*ru) *(Added)\_
+  - by _[ Master Xort ]_
+- Chinese (zh*cn) *(Modified)\_
+  - by _njt-233_
 
 ### Bugfix
 
 - Global Limitation is not synchronized correctly
 - There is a spelling mistake in the translation
-  - contributed by *Marc-Antoine Sauvé*
+  - contributed by _Marc-Antoine Sauvé_
 
 ---
 

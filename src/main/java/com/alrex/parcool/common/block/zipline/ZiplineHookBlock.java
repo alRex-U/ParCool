@@ -2,6 +2,7 @@ package com.alrex.parcool.common.block.zipline;
 
 import com.alrex.parcool.api.SoundEvents;
 import com.alrex.parcool.common.block.TileEntities;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Containers;
@@ -28,9 +29,10 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 public abstract class ZiplineHookBlock extends DirectionalBlock implements EntityBlock {
 
@@ -44,7 +46,8 @@ public abstract class ZiplineHookBlock extends DirectionalBlock implements Entit
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
+    protected void createBlockStateDefinition(
+            StateDefinition.Builder<Block, BlockState> stateBuilder) {
         stateBuilder.add(FACING);
     }
 
@@ -55,24 +58,39 @@ public abstract class ZiplineHookBlock extends DirectionalBlock implements Entit
     }
 
     @Override
-    public void onRemove(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState p_196243_4_, boolean p_196243_5_) {
+    public void onRemove(
+            @Nonnull BlockState state,
+            @Nonnull Level world,
+            @Nonnull BlockPos pos,
+            @Nonnull BlockState p_196243_4_,
+            boolean p_196243_5_) {
         if (!world.isClientSide()) {
             var tileEntity = world.getBlockEntity(pos);
             if (tileEntity instanceof ZiplineHookTileEntity) {
                 ZiplineHookTileEntity ziplineHookTileEntity = (ZiplineHookTileEntity) tileEntity;
                 List<ItemStack> itemStacks = ziplineHookTileEntity.removeAllConnection();
-                itemStacks.forEach((it) -> Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), it));
+                itemStacks.forEach(
+                        (it) ->
+                                Containers.dropItemStack(
+                                        world, pos.getX(), pos.getY(), pos.getZ(), it));
             }
         }
         super.onRemove(state, world, pos, p_196243_4_, p_196243_5_);
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState state1, LevelAccessor levelAccessor, BlockPos pos, BlockPos pos1) {
+    public BlockState updateShape(
+            BlockState state,
+            Direction direction,
+            BlockState state1,
+            LevelAccessor levelAccessor,
+            BlockPos pos,
+            BlockPos pos1) {
         Direction facing = state.getValue(FACING);
-        return direction == facing.getOpposite() && !canSurvive(state, levelAccessor, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction, state1, levelAccessor, pos, pos1);
+        return direction == facing.getOpposite() && !canSurvive(state, levelAccessor, pos)
+                ? Blocks.AIR.defaultBlockState()
+                : super.updateShape(state, direction, state1, levelAccessor, pos, pos1);
     }
-
 
     @Override
     public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
@@ -87,7 +105,14 @@ public abstract class ZiplineHookBlock extends DirectionalBlock implements Entit
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, @Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hitResult) {
+    protected ItemInteractionResult useItemOn(
+            ItemStack stack,
+            @Nonnull BlockState state,
+            @Nonnull Level level,
+            @Nonnull BlockPos pos,
+            @Nonnull Player player,
+            @Nonnull InteractionHand hand,
+            @Nonnull BlockHitResult hitResult) {
         if (stack.getItem() instanceof ShearsItem) {
             var tileEntity = player.level().getBlockEntity(pos);
             if (tileEntity instanceof ZiplineHookTileEntity ziplineHookTileEntity) {
@@ -101,10 +126,22 @@ public abstract class ZiplineHookBlock extends DirectionalBlock implements Entit
                 if (player.level().isClientSide()) {
                     return ItemInteractionResult.SUCCESS;
                 } else {
-                    itemStacks.forEach((it) -> Containers.dropItemStack(player.level(), pos.getX(), pos.getY(), pos.getZ(), it));
+                    itemStacks.forEach(
+                            (it) ->
+                                    Containers.dropItemStack(
+                                            player.level(),
+                                            pos.getX(),
+                                            pos.getY(),
+                                            pos.getZ(),
+                                            it));
                     if (!itemStacks.isEmpty()) {
                         if (stack.isDamageableItem()) {
-                            stack.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+                            stack.hurtAndBreak(
+                                    1,
+                                    player,
+                                    hand == InteractionHand.MAIN_HAND
+                                            ? EquipmentSlot.MAINHAND
+                                            : EquipmentSlot.OFFHAND);
                         }
                     }
                     return ItemInteractionResult.CONSUME;
@@ -123,7 +160,8 @@ public abstract class ZiplineHookBlock extends DirectionalBlock implements Entit
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@Nonnull Level level, @Nonnull BlockState state, @Nonnull BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            @Nonnull Level level, @Nonnull BlockState state, @Nonnull BlockEntityType<T> type) {
         return type == TileEntities.ZIPLINE_HOOK.get() ? ZiplineHookTileEntity::tick : null;
     }
 }

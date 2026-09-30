@@ -2,10 +2,11 @@ package com.alrex.parcool.common.action;
 
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
 
 public class BehaviorEnforcer {
     public static class ID implements Comparable<ID> {
@@ -55,14 +56,13 @@ public class BehaviorEnforcer {
 
     private final TreeMap<ID, Marker> jumpCancelMarks = new TreeMap<>();
     private final TreeMap<ID, Marker> descendFromEdgeCancelMarks = new TreeMap<>();
-    private final ConcurrentSkipListMap<ID, Marker> sneakCancelMarks = new ConcurrentSkipListMap<>();
+    private final ConcurrentSkipListMap<ID, Marker> sneakCancelMarks =
+            new ConcurrentSkipListMap<>();
     private final TreeMap<ID, Marker> sprintCancelMarks = new TreeMap<>();
     private final TreeMap<ID, Marker> fallFlyingCancelMarks = new TreeMap<>();
     private final TreeMap<ID, Marker> showNameCancelMarks = new TreeMap<>();
-    @Nullable
-    private Enforcer<Vec3> movementEnforcer = null;
-    @Nullable
-    private Enforcer<Vec3> positionEnforcer = null;
+    @Nullable private Enforcer<Vec3> movementEnforcer = null;
+    @Nullable private Enforcer<Vec3> positionEnforcer = null;
 
     public void addMarkerCancellingJump(ID id, Marker marker) {
         jumpCancelMarks.put(id, marker);

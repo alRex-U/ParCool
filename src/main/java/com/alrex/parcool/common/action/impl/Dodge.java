@@ -13,43 +13,46 @@ import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.utilities.VectorUtil;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 import java.nio.ByteBuffer;
 
 public class Dodge extends Action {
-	public static final int MAX_TICK = 11;
+    public static final int MAX_TICK = 11;
     private static final BehaviorEnforcer.ID ID_JUMP_CANCEL = BehaviorEnforcer.newID();
     private static final BehaviorEnforcer.ID ID_DESCEND_EDGE = BehaviorEnforcer.newID();
 
-	private static int getMaxCoolTime(ActionInfo info) {
-		return Math.max(
-				info.getClientSetting().get(ParCoolConfig.Client.Integers.DodgeCoolTime),
-				info.getServerLimitation().get(ParCoolConfig.Server.Integers.DodgeCoolTime)
-		);
-	}
+    private static int getMaxCoolTime(ActionInfo info) {
+        return Math.max(
+                info.getClientSetting().get(ParCoolConfig.Client.Integers.DodgeCoolTime),
+                info.getServerLimitation().get(ParCoolConfig.Server.Integers.DodgeCoolTime));
+    }
 
-	private static int getMaxSuccessiveDodge(ActionInfo info) {
-		return Math.min(
-				info.getClientSetting().get(ParCoolConfig.Client.Integers.MaxSuccessiveDodgeCount),
-				info.getServerLimitation().get(ParCoolConfig.Server.Integers.MaxSuccessiveDodgeCount)
-		);
-	}
+    private static int getMaxSuccessiveDodge(ActionInfo info) {
+        return Math.min(
+                info.getClientSetting().get(ParCoolConfig.Client.Integers.MaxSuccessiveDodgeCount),
+                info.getServerLimitation()
+                        .get(ParCoolConfig.Server.Integers.MaxSuccessiveDodgeCount));
+    }
 
-	private static int getSuccessiveCoolTime(ActionInfo info) {
-		return Math.max(
-				info.getClientSetting().get(ParCoolConfig.Client.Integers.SuccessiveDodgeCoolTime),
-				info.getServerLimitation().get(ParCoolConfig.Server.Integers.SuccessiveDodgeCoolTime)
-		);
-	}
+    private static int getSuccessiveCoolTime(ActionInfo info) {
+        return Math.max(
+                info.getClientSetting().get(ParCoolConfig.Client.Integers.SuccessiveDodgeCoolTime),
+                info.getServerLimitation()
+                        .get(ParCoolConfig.Server.Integers.SuccessiveDodgeCoolTime));
+    }
 
-	public enum DodgeDirection {
-        Front, Back, Left, Right;
+    public enum DodgeDirection {
+        Front,
+        Back,
+        Left,
+        Right;
 
         public DodgeDirection inverse() {
             switch (this) {
@@ -92,158 +95,165 @@ public class Dodge extends Action {
             }
             return Front;
         }
-	}
+    }
 
-	private DodgeDirection dodgeDirection = null;
-	private int coolTime = 0;
-	private int successivelyCount = 0;
-	private int successivelyCoolTick = 0;
+    private DodgeDirection dodgeDirection = null;
+    private int coolTime = 0;
+    private int successivelyCount = 0;
+    private int successivelyCoolTick = 0;
 
-	@Environment(EnvType.CLIENT)
-	@Override
+    @Environment(EnvType.CLIENT)
+    @Override
     public void onClientTick(Player player, Parkourability parkourability) {
-		if (coolTime > 0) coolTime--;
-		if (successivelyCoolTick > 0) {
-			successivelyCoolTick--;
-		} else {
-			successivelyCount = 0;
-		}
-	}
+        if (coolTime > 0) coolTime--;
+        if (successivelyCoolTick > 0) {
+            successivelyCoolTick--;
+        } else {
+            successivelyCount = 0;
+        }
+    }
 
-	@Override
-	public StaminaConsumeTiming getStaminaConsumeTiming() {
-		return StaminaConsumeTiming.OnStart;
-	}
+    @Override
+    public StaminaConsumeTiming getStaminaConsumeTiming() {
+        return StaminaConsumeTiming.OnStart;
+    }
 
-	public double getSpeedModifier(ActionInfo info) {
-		return Math.min(
-				info.getClientSetting().get(ParCoolConfig.Client.Doubles.DodgeSpeedModifier),
-				info.getServerLimitation().get(ParCoolConfig.Server.Doubles.MaxDodgeSpeedModifier)
-		);
-	}
+    public double getSpeedModifier(ActionInfo info) {
+        return Math.min(
+                info.getClientSetting().get(ParCoolConfig.Client.Doubles.DodgeSpeedModifier),
+                info.getServerLimitation().get(ParCoolConfig.Server.Doubles.MaxDodgeSpeedModifier));
+    }
 
-	@Environment(EnvType.CLIENT)
-	@Override
+    @Environment(EnvType.CLIENT)
+    @Override
     public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
-		boolean enabledDoubleTap = ParCoolConfig.Client.Booleans.EnableDoubleTappingForDodge.get();
-		DodgeDirection direction = null;
-		var dodgeVec = KeyRecorder.getLastMoveVector();
-		if (enabledDoubleTap) {
-			if (KeyRecorder.keyBack.isDoubleTapped()) direction = DodgeDirection.Back;
-			if (KeyRecorder.keyLeft.isDoubleTapped()) direction = DodgeDirection.Left;
-			if (KeyRecorder.keyRight.isDoubleTapped()) direction = DodgeDirection.Right;
-		}
-		if (direction == null && KeyRecorder.keyDodge.isPressed()) {
-			if (KeyBindings.isKeyBackDown()) direction = DodgeDirection.Back;
-			if (KeyBindings.isKeyForwardDown()) direction = DodgeDirection.Front;
-			if (KeyBindings.isKeyLeftDown()) direction = DodgeDirection.Left;
-			if (KeyBindings.isKeyRightDown()) direction = DodgeDirection.Right;
-			if (direction != null) dodgeVec = KeyBindings.getCurrentMoveVector();
-		}
-		if (direction == null || dodgeVec == null) return false;
-		startInfo.putInt(direction.ordinal());
-		startInfo.putDouble(dodgeVec.x);
-		startInfo.putDouble(dodgeVec.z);
-		return ((parkourability.getAdditionalProperties().getLandingTick() > 5 || parkourability.getAdditionalProperties().getPreviousNotLandingTick() < 2)
-				&& player.onGround()
-				&& !isInSuccessiveCoolDown(parkourability.getActionInfo())
-				&& coolTime <= 0
+        boolean enabledDoubleTap = ParCoolConfig.Client.Booleans.EnableDoubleTappingForDodge.get();
+        DodgeDirection direction = null;
+        var dodgeVec = KeyRecorder.getLastMoveVector();
+        if (enabledDoubleTap) {
+            if (KeyRecorder.keyBack.isDoubleTapped()) direction = DodgeDirection.Back;
+            if (KeyRecorder.keyLeft.isDoubleTapped()) direction = DodgeDirection.Left;
+            if (KeyRecorder.keyRight.isDoubleTapped()) direction = DodgeDirection.Right;
+        }
+        if (direction == null && KeyRecorder.keyDodge.isPressed()) {
+            if (KeyBindings.isKeyBackDown()) direction = DodgeDirection.Back;
+            if (KeyBindings.isKeyForwardDown()) direction = DodgeDirection.Front;
+            if (KeyBindings.isKeyLeftDown()) direction = DodgeDirection.Left;
+            if (KeyBindings.isKeyRightDown()) direction = DodgeDirection.Right;
+            if (direction != null) dodgeVec = KeyBindings.getCurrentMoveVector();
+        }
+        if (direction == null || dodgeVec == null) return false;
+        startInfo.putInt(direction.ordinal());
+        startInfo.putDouble(dodgeVec.x);
+        startInfo.putDouble(dodgeVec.z);
+        return ((parkourability.getAdditionalProperties().getLandingTick() > 5
+                        || parkourability.getAdditionalProperties().getPreviousNotLandingTick() < 2)
+                && player.onGround()
+                && !isInSuccessiveCoolDown(parkourability.getActionInfo())
+                && coolTime <= 0
                 && !player.isInWaterOrBubble()
-				&& player.onGround()
+                && player.onGround()
                 && !player.isInWaterOrBubble()
-				&& !player.isShiftKeyDown()
-				&& !parkourability.get(Crawl.class).isDoing()
-				&& !parkourability.get(Roll.class).isDoing()
-				&& !parkourability.get(Tap.class).isDoing()
-		);
-	}
+                && !player.isShiftKeyDown()
+                && !parkourability.get(Crawl.class).isDoing()
+                && !parkourability.get(Roll.class).isDoing()
+                && !parkourability.get(Tap.class).isDoing());
+    }
 
-	@Environment(EnvType.CLIENT)
-	@Override
+    @Environment(EnvType.CLIENT)
+    @Override
     public boolean canContinue(Player player, Parkourability parkourability) {
-		return !(parkourability.get(Roll.class).isDoing()
-				|| parkourability.get(ClingToCliff.class).isDoing()
-				|| getDoingTick() >= MAX_TICK
-				|| player.isInWaterOrBubble()
-				|| player.isFallFlying()
-				|| player.getAbilities().flying
-		);
-	}
+        return !(parkourability.get(Roll.class).isDoing()
+                || parkourability.get(ClingToCliff.class).isDoing()
+                || getDoingTick() >= MAX_TICK
+                || player.isInWaterOrBubble()
+                || player.isFallFlying()
+                || player.getAbilities().flying);
+    }
 
-	@Environment(EnvType.CLIENT)
-	@Override
-    public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
-		dodgeDirection = DodgeDirection.values()[startData.getInt()];
-		var dodgeVec = new Vec3(startData.getDouble(), 0, startData.getDouble());
-		coolTime = getMaxCoolTime(parkourability.getActionInfo());
-		if (successivelyCount < getMaxSuccessiveDodge(parkourability.getActionInfo())) {
-			successivelyCount++;
-		}
-		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get()) {
-			player.playSound(SoundEvents.DODGE.get(), 1f, 1f);
-		}
-		successivelyCoolTick = getSuccessiveCoolTime(parkourability.getActionInfo());
+    @Environment(EnvType.CLIENT)
+    @Override
+    public void onStartInLocalClient(
+            Player player, Parkourability parkourability, ByteBuffer startData) {
+        dodgeDirection = DodgeDirection.values()[startData.getInt()];
+        var dodgeVec = new Vec3(startData.getDouble(), 0, startData.getDouble());
+        coolTime = getMaxCoolTime(parkourability.getActionInfo());
+        if (successivelyCount < getMaxSuccessiveDodge(parkourability.getActionInfo())) {
+            successivelyCount++;
+        }
+        if (ParCoolConfig.Client.Booleans.EnableActionSounds.get()) {
+            player.playSound(SoundEvents.DODGE.get(), 1f, 1f);
+        }
+        successivelyCoolTick = getSuccessiveCoolTime(parkourability.getActionInfo());
 
-		if (!player.onGround()) return;
-		var cameraEntity = Minecraft.getInstance().getCameraEntity();
-		var cameraYRot = cameraEntity != null ? cameraEntity.getYRot() : 0;
-		dodgeVec = VectorUtil.rotateYDegrees(dodgeVec, cameraYRot);
-		dodgeVec = dodgeVec.scale(0.9 * getSpeedModifier(parkourability.getActionInfo()));
-		if (AdditionalMods.isCameraDecoupled()) player.setYRot(VectorUtil.toYaw(dodgeVec));
-		player.setDeltaMovement(dodgeVec);
+        if (!player.onGround()) return;
+        var cameraEntity = Minecraft.getInstance().getCameraEntity();
+        var cameraYRot = cameraEntity != null ? cameraEntity.getYRot() : 0;
+        dodgeVec = VectorUtil.rotateYDegrees(dodgeVec, cameraYRot);
+        dodgeVec = dodgeVec.scale(0.9 * getSpeedModifier(parkourability.getActionInfo()));
+        if (AdditionalMods.isCameraDecoupled()) player.setYRot(VectorUtil.toYaw(dodgeVec));
+        player.setDeltaMovement(dodgeVec);
 
         Animation animation = Animation.get(player);
         if (animation != null) animation.setAnimator(new DodgeAnimator(dodgeDirection));
         parkourability.getBehaviorEnforcer().addMarkerCancellingJump(ID_JUMP_CANCEL, this::isDoing);
-        if (!parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.CanGetOffStepsWhileDodge)) {
-            parkourability.getBehaviorEnforcer().addMarkerCancellingDescendFromEdge(ID_DESCEND_EDGE, this::isDoing);
+        if (!parkourability
+                .getClientInfo()
+                .get(ParCoolConfig.Client.Booleans.CanGetOffStepsWhileDodge)) {
+            parkourability
+                    .getBehaviorEnforcer()
+                    .addMarkerCancellingDescendFromEdge(ID_DESCEND_EDGE, this::isDoing);
         }
-	}
+    }
 
-	@Environment(EnvType.CLIENT)
-	@Override
-	public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
-		dodgeDirection = DodgeDirection.values()[startData.getInt()];
-		if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
-			player.playSound(SoundEvents.DODGE.get(), 1f, 1f);
-		Animation animation = Animation.get(player);
-		if (animation != null) animation.setAnimator(new DodgeAnimator(dodgeDirection));
-	}
+    @Environment(EnvType.CLIENT)
+    @Override
+    public void onStartInOtherClient(
+            Player player, Parkourability parkourability, ByteBuffer startData) {
+        dodgeDirection = DodgeDirection.values()[startData.getInt()];
+        if (ParCoolConfig.Client.Booleans.EnableActionSounds.get())
+            player.playSound(SoundEvents.DODGE.get(), 1f, 1f);
+        Animation animation = Animation.get(player);
+        if (animation != null) animation.setAnimator(new DodgeAnimator(dodgeDirection));
+    }
 
-	public int getCoolTime() {
-		return coolTime;
-	}
+    public int getCoolTime() {
+        return coolTime;
+    }
 
-	public int getSuccessivelyCoolTick() {
-		return successivelyCoolTick;
-	}
+    public int getSuccessivelyCoolTick() {
+        return successivelyCoolTick;
+    }
 
-	public boolean isInSuccessiveCoolDown(ActionInfo info) {
-		return successivelyCount >= getMaxSuccessiveDodge(info);
-	}
+    public boolean isInSuccessiveCoolDown(ActionInfo info) {
+        return successivelyCount >= getMaxSuccessiveDodge(info);
+    }
 
-	public float getCoolDownPhase(ActionInfo info) {
-		int maxCoolTime = getMaxCoolTime(info);
-		int successiveMaxCoolTime = getSuccessiveCoolTime(info);
-		return Math.min(
-				(float) (maxCoolTime - getCoolTime()) / maxCoolTime,
-				isInSuccessiveCoolDown(info) ? (float) (successiveMaxCoolTime - getSuccessivelyCoolTick()) / (successiveMaxCoolTime) : 1
-		);
-	}
+    public float getCoolDownPhase(ActionInfo info) {
+        int maxCoolTime = getMaxCoolTime(info);
+        int successiveMaxCoolTime = getSuccessiveCoolTime(info);
+        return Math.min(
+                (float) (maxCoolTime - getCoolTime()) / maxCoolTime,
+                isInSuccessiveCoolDown(info)
+                        ? (float) (successiveMaxCoolTime - getSuccessivelyCoolTick())
+                                / (successiveMaxCoolTime)
+                        : 1);
+    }
 
-	@Override
-	public boolean wantsToShowStatusBar(LocalPlayer player, Parkourability parkourability) {
-		return coolTime > 0 || isInSuccessiveCoolDown(parkourability.getActionInfo());
-	}
+    @Override
+    public boolean wantsToShowStatusBar(LocalPlayer player, Parkourability parkourability) {
+        return coolTime > 0 || isInSuccessiveCoolDown(parkourability.getActionInfo());
+    }
 
-	@Override
-	public float getStatusValue(LocalPlayer player, Parkourability parkourability) {
-		ActionInfo info = parkourability.getActionInfo();
-		int maxCoolTime = getMaxCoolTime(info);
-		int successiveMaxCoolTime = getSuccessiveCoolTime(info);
-		return Math.max(
-				(float) getCoolTime() / maxCoolTime,
-				isInSuccessiveCoolDown(info) ? (float) (getSuccessivelyCoolTick()) / (successiveMaxCoolTime) : 0
-		);
-	}
+    @Override
+    public float getStatusValue(LocalPlayer player, Parkourability parkourability) {
+        ActionInfo info = parkourability.getActionInfo();
+        int maxCoolTime = getMaxCoolTime(info);
+        int successiveMaxCoolTime = getSuccessiveCoolTime(info);
+        return Math.max(
+                (float) getCoolTime() / maxCoolTime,
+                isInSuccessiveCoolDown(info)
+                        ? (float) (getSuccessivelyCoolTick()) / (successiveMaxCoolTime)
+                        : 0);
+    }
 }

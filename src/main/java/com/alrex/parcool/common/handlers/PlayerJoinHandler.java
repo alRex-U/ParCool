@@ -3,11 +3,13 @@ package com.alrex.parcool.common.handlers;
 import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.network.payload.ClientInformationPayload;
+import com.alrex.parcool.fabric.PacketDistributor;
+
+import io.github.fabricators_of_create.porting_lib.entity.events.EntityJoinLevelEvent;
+
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import io.github.fabricators_of_create.porting_lib.entity.events.EntityJoinLevelEvent;
-import com.alrex.parcool.fabric.PacketDistributor;
 
 public class PlayerJoinHandler {
     public static void onPlayerJoin(EntityJoinLevelEvent event) {
@@ -17,8 +19,12 @@ public class PlayerJoinHandler {
             if (player instanceof LocalPlayer) {
                 Parkourability parkourability = Parkourability.get(player);
                 if (parkourability == null) return;
-                parkourability.getActionInfo().setClientSetting(ClientSetting.readFromLocalConfig());
-                PacketDistributor.sendToServer(new ClientInformationPayload(player.getUUID(), true, parkourability.getClientInfo()));
+                parkourability
+                        .getActionInfo()
+                        .setClientSetting(ClientSetting.readFromLocalConfig());
+                PacketDistributor.sendToServer(
+                        new ClientInformationPayload(
+                                player.getUUID(), true, parkourability.getClientInfo()));
             }
         }
     }

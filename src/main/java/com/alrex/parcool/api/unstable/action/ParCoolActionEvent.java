@@ -1,9 +1,10 @@
 package com.alrex.parcool.api.unstable.action;
 
 import com.alrex.parcool.common.action.Action;
-import net.minecraft.world.entity.player.Player;
 import com.alrex.parcool.fabric.Event;
 import com.alrex.parcool.fabric.ICancellableEvent;
+
+import net.minecraft.world.entity.player.Player;
 
 public class ParCoolActionEvent extends Event {
     private final Player player;
@@ -49,6 +50,7 @@ public class ParCoolActionEvent extends Event {
             super(player, action);
         }
     }
+
     // ======
 
     public static class TryToStart extends ParCoolActionEvent implements ICancellableEvent {
@@ -116,5 +118,4 @@ public class ParCoolActionEvent extends Event {
             }
         }
     }
-
 }

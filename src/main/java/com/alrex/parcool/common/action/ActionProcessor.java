@@ -9,7 +9,14 @@ import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.network.payload.ActionStatePayload;
 import com.alrex.parcool.common.network.payload.ClientInformationPayload;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.fabric.PacketDistributor;
+import com.alrex.parcool.fabric.ParCoolEvents;
 import com.alrex.parcool.utilities.BufferUtil;
+
+import io.github.fabricators_of_create.porting_lib.entity.events.tick.PlayerTickEvent;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
@@ -18,11 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import com.alrex.parcool.fabric.ParCoolEvents;
-import io.github.fabricators_of_create.porting_lib.entity.events.tick.PlayerTickEvent;
-import com.alrex.parcool.fabric.PacketDistributor;
+
 import org.apache.logging.log4j.Level;
 
 import java.nio.ByteBuffer;
@@ -30,235 +33,291 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ActionProcessor {
-	private static final BehaviorEnforcer.ID ID_EXHAUSTION_SPRINT_CANCEL = BehaviorEnforcer.newID();
-	private static final ResourceLocation STAMINA_DEPLETED_SLOWNESS_MODIFIER_ID =
-			ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "exhausted.speed");
+    private static final BehaviorEnforcer.ID ID_EXHAUSTION_SPRINT_CANCEL = BehaviorEnforcer.newID();
+    private static final ResourceLocation STAMINA_DEPLETED_SLOWNESS_MODIFIER_ID =
+            ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "exhausted.speed");
 
-	private static final AttributeModifier STAMINA_DEPLETED_SLOWNESS_MODIFIER = new AttributeModifier(
-			STAMINA_DEPLETED_SLOWNESS_MODIFIER_ID,
-			-0.05,
-			AttributeModifier.Operation.ADD_VALUE
-	);
+    private static final AttributeModifier STAMINA_DEPLETED_SLOWNESS_MODIFIER =
+            new AttributeModifier(
+                    STAMINA_DEPLETED_SLOWNESS_MODIFIER_ID,
+                    -0.05,
+                    AttributeModifier.Operation.ADD_VALUE);
 
-	private final ByteBuffer bufferOfPostState = ByteBuffer.allocate(128);
-	private final ByteBuffer bufferOfPreState = ByteBuffer.allocate(128);
-	private final ByteBuffer bufferOfStarting = ByteBuffer.allocate(128);
-	private int staminaSyncCoolTimeTick = 5;
+    private final ByteBuffer bufferOfPostState = ByteBuffer.allocate(128);
+    private final ByteBuffer bufferOfPreState = ByteBuffer.allocate(128);
+    private final ByteBuffer bufferOfStarting = ByteBuffer.allocate(128);
+    private int staminaSyncCoolTimeTick = 5;
 
+    public void onTick(PlayerTickEvent.Post event) {
+        var player = event.getEntity();
+        Parkourability parkourability = Parkourability.get(player);
 
-	public void onTick(PlayerTickEvent.Post event) {
-		var player = event.getEntity();
-		Parkourability parkourability = Parkourability.get(player);
+        boolean inClient = player.level().isClientSide();
+        boolean inServer = !inClient;
 
-		boolean inClient = player.level().isClientSide();
-		boolean inServer = !inClient;
+        onTick$doPreprocess(event);
+        if (inClient) {
+            onTick$doPreprocessInClient(event, parkourability);
+        } else {
+            onTick$doPreprocessInServer(event);
+        }
 
-		onTick$doPreprocess(event);
-		if (inClient) {
-			onTick$doPreprocessInClient(event, parkourability);
-		} else {
-			onTick$doPreprocessInServer(event);
-		}
+        List<Action> actions = parkourability.getList();
+        boolean needSync = player.isLocalPlayer();
 
-		List<Action> actions = parkourability.getList();
-		boolean needSync = player.isLocalPlayer();
+        if (needSync) {
+            onTick$checkLimitationSynchronization(player, parkourability);
+        }
 
-		if (needSync) {
-			onTick$checkLimitationSynchronization(player, parkourability);
-		}
+        parkourability.getAdditionalProperties().onTick(player, parkourability);
+        LinkedList<ActionStatePayload.Entry> syncStates = new LinkedList<>();
+        for (Action action : actions) {
+            ParCoolEvents.post(new ParCoolActionEvent.Tick.Pre(player, action));
+            processAction(player, parkourability, syncStates, inClient, action);
+            ParCoolEvents.post(new ParCoolActionEvent.Tick.Post(player, action));
+        }
+        if (needSync && !syncStates.isEmpty()) {
+            onTick$sendSynchronizationPacket(player, syncStates);
+        }
 
-		parkourability.getAdditionalProperties().onTick(player, parkourability);
-		LinkedList<ActionStatePayload.Entry> syncStates = new LinkedList<>();
-		for (Action action : actions) {
-			ParCoolEvents.post(new ParCoolActionEvent.Tick.Pre(player, action));
-			processAction(player, parkourability, syncStates, inClient, action);
-			ParCoolEvents.post(new ParCoolActionEvent.Tick.Post(player, action));
-		}
-		if (needSync && !syncStates.isEmpty()) {
-			onTick$sendSynchronizationPacket(player, syncStates);
-		}
+        if (inClient) onTick$doPostProcessInClient(event, parkourability);
+    }
 
-		if (inClient) onTick$doPostProcessInClient(event, parkourability);
-	}
+    private void onTick$doPreprocess(PlayerTickEvent event) {}
 
-	private void onTick$doPreprocess(PlayerTickEvent event) {
-	}
-
-	private void onTick$doPreprocessInServer(PlayerTickEvent event) {
-
-	}
-
-	@Environment(EnvType.CLIENT)
-	private void onTick$doPreprocessInClient(PlayerTickEvent event, Parkourability parkourability) {
-		if (!(event.getEntity() instanceof AbstractClientPlayer clientPlayer)) return;
-		Animation animation = Animation.get(clientPlayer);
-		animation.tick(clientPlayer, parkourability);
-	}
+    private void onTick$doPreprocessInServer(PlayerTickEvent event) {}
 
     @Environment(EnvType.CLIENT)
-	private void onTick$doPostProcessInClient(PlayerTickEvent event, Parkourability parkourability) {
-		if (!(event.getEntity() instanceof LocalPlayer player)) return;
-		if (!parkourability.limitationIsNotSynced()) {
-			var stamina = LocalStamina.get(player);
-			stamina.onTick(player);
-			if (--staminaSyncCoolTimeTick <= 0) {
-				stamina.sync(player);
-				staminaSyncCoolTimeTick = 5;
-			}
-		}
-		var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
-		if (attr != null) {
-			if (LocalStamina.get(player).imposeExhaustionPenalty(player) && parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.EnableStaminaExhaustionPenalty)) {
-				player.setSprinting(false);
-				// Blockfield: без маркера ваниль включает спринт обратно каждый тик, FastRun снова тратит стамину,
-				// и восстановление не начинается, пока игрок не остановится; спринт при этом мерцает.
-				parkourability.getBehaviorEnforcer().addMarkerCancellingSprint(ID_EXHAUSTION_SPRINT_CANCEL,
-						() -> LocalStamina.get(player).imposeExhaustionPenalty(player)
-								&& parkourability.getClientInfo().get(ParCoolConfig.Client.Booleans.EnableStaminaExhaustionPenalty));
-				if (!attr.hasModifier(STAMINA_DEPLETED_SLOWNESS_MODIFIER_ID)) {
-					attr.addTransientModifier(STAMINA_DEPLETED_SLOWNESS_MODIFIER);
-				}
-			} else {
-				attr.removeModifier(STAMINA_DEPLETED_SLOWNESS_MODIFIER_ID);
-			}
-		}
-	}
+    private void onTick$doPreprocessInClient(PlayerTickEvent event, Parkourability parkourability) {
+        if (!(event.getEntity() instanceof AbstractClientPlayer clientPlayer)) return;
+        Animation animation = Animation.get(clientPlayer);
+        animation.tick(clientPlayer, parkourability);
+    }
 
     @Environment(EnvType.CLIENT)
-	private void onTick$checkLimitationSynchronization(Player player, Parkourability parkourability) {
-		if (player.isLocalPlayer() && player.tickCount > 127 && player.tickCount % 256 == 0 && parkourability.limitationIsNotSynced()) {
-			// Blockfield: the proxy's waiting lobby has no ParCool, the sync can never succeed there.
-			if (player instanceof LocalPlayer localPlayer && PacketDistributor.serverAccepts(ClientInformationPayload.TYPE)) {
-				int trialCount = parkourability.getSynchronizeTrialCount();
-				if (trialCount < 5) {
-					parkourability.trySyncLimitation(localPlayer, parkourability);
-					if (ParCoolConfig.Client.Booleans.ShowAutoResynchronizationNotification.get()) {
-						player.displayClientMessage(Component.translatable("parcool.message.error.limitation.not_synced"), false);
-					}
-					ParCool.LOGGER.log(Level.WARN, "Detected ParCool Limitation is not synced. Sending synchronization request...");
-				} else if (trialCount == 5) {
-					parkourability.incrementSynchronizeTrialCount();
-					player.displayClientMessage(Component.translatable("parcool.message.error.limitation.fail_sync").withStyle(ChatFormatting.DARK_RED), false);
-					ParCool.LOGGER.log(Level.ERROR, "Failed to synchronize ParCool Limitation. There may be problems about server connection. Please report to the developer after checking connection");
-				}
-			}
-		}
-	}
-
-	private void onTick$sendSynchronizationPacket(Player player, List<ActionStatePayload.Entry> syncStates) {
-		PacketDistributor.sendToServer(new ActionStatePayload(player.getUUID(), syncStates));
-
-	}
-
-	private void processAction(Player player, Parkourability parkourability, LinkedList<ActionStatePayload.Entry> syncStates, boolean inClientSide, Action action) {
-		boolean needSync = player.isLocalPlayer();
-
-		if (needSync) {
-			saveSynchronizationState(action, bufferOfPreState);
-		}
-		action.tick();
-
-		action.onTick(player, parkourability);
-		if (inClientSide) {
-			action.onClientTick(player, parkourability);
-		} else {
-			action.onServerTick(player, parkourability);
-		}
-
-		if (needSync) {
-			checkAndChangeActionState(player, parkourability, action, syncStates);
-		}
-
-		if (action.isDoing()) {
-			action.onWorkingTick(player, parkourability);
-			if (inClientSide) {
-				action.onWorkingTickInClient(player, parkourability);
-				if (needSync) {
-					action.onWorkingTickInLocalClient(player, parkourability);
-					if (action.getStaminaConsumeTiming() == StaminaConsumeTiming.OnWorking) {
-						consumeStamina(player, parkourability.getActionInfo().getStaminaConsumptionOf(action.getClass()));
-					}
-				} else {
-					action.onWorkingTickInOtherClient(player, parkourability);
-				}
-			} else {
-				action.onWorkingTickInServer(player, parkourability);
-			}
-		}
-
-		if (needSync) {
-			saveSynchronizationState(action, bufferOfPostState);
-
-			if (!BufferUtil.haveSameContents(bufferOfPreState, bufferOfPostState)) {
-				bufferOfPostState.rewind();
-				var data = new byte[bufferOfPostState.remaining()];
-				bufferOfPostState.get(data);
-				syncStates.addLast(new ActionStatePayload.Entry(
-						action.getClass(),
-						ActionStatePayload.Entry.Type.Normal,
-						data
-				));
-				bufferOfPreState.clear();
-				bufferOfPostState.clear();
-			}
-		}
-	}
-
-	@Environment(EnvType.CLIENT)
-	private void checkAndChangeActionState(Player player, Parkourability parkourability, Action action, LinkedList<ActionStatePayload.Entry> syncStates) {
-		if (!(player instanceof LocalPlayer localPlayer)) return;
-		if (action.isDoing()) {
-			boolean canContinue = parkourability.getActionInfo().can(action.getClass())
-					&& !player.getAttachedOrCreate(Attachments.STAMINA).isExhausted()
-					&& !ParCoolEvents.post(new ParCoolActionEvent.TryToContinueEvent(player, action)).isCanceled()
-					&& !ParCoolEvents.post(new ParCoolActionEvent.TryToContinue(player, action)).isCanceled()
-					&& action.canContinue(player, parkourability);
-			if (!canContinue) {
-				ParCoolEvents.post(new ParCoolActionEvent.Finish.Pre(player, action));
-				action.finish(player);
-				ParCoolEvents.post(new ParCoolActionEvent.StopEvent(player, action));
-				ParCoolEvents.post(new ParCoolActionEvent.Finish.Post(player, action));
-				syncStates.addLast(new ActionStatePayload.Entry(action.getClass(), ActionStatePayload.Entry.Type.Finish, new byte[0]));
-			}
-		} else {
-			bufferOfStarting.clear();
-			boolean start = !player.isSpectator()
-					&& !player.getAttachedOrCreate(Attachments.STAMINA).isExhausted()
-					&& parkourability.getActionInfo().can(action.getClass())
-					&& !ParCoolEvents.post(new ParCoolActionEvent.TryToStartEvent(player, action)).isCanceled()
-					&& !ParCoolEvents.post(new ParCoolActionEvent.TryToStart(player, action)).isCanceled()
-					&& action.canStart(player, parkourability, bufferOfStarting);
-			bufferOfStarting.flip();
-			if (start) {
-				ParCoolEvents.post(new ParCoolActionEvent.Start.Pre(player, action));
-				action.start(player, parkourability, bufferOfStarting);
-				ParCoolEvents.post(new ParCoolActionEvent.StartEvent(player, action));
-				ParCoolEvents.post(new ParCoolActionEvent.Start.Post(player, action));
-				if (action.getStaminaConsumeTiming() == StaminaConsumeTiming.OnStart) {
-					consumeStamina(localPlayer, parkourability.getActionInfo().getStaminaConsumptionOf(action.getClass()));
-				}
-				var data = new byte[bufferOfStarting.remaining()];
-				bufferOfStarting.get(data);
-				syncStates.addLast(new ActionStatePayload.Entry(
-						action.getClass(),
-						ActionStatePayload.Entry.Type.Start,
-						data
-				));
-			}
-		}
-	}
-
-	private void saveSynchronizationState(Action action, ByteBuffer buffer) {
-		buffer.clear();
-		action.saveSynchronizedState(buffer);
-		buffer.flip();
-	}
+    private void onTick$doPostProcessInClient(
+            PlayerTickEvent event, Parkourability parkourability) {
+        if (!(event.getEntity() instanceof LocalPlayer player)) return;
+        if (!parkourability.limitationIsNotSynced()) {
+            var stamina = LocalStamina.get(player);
+            stamina.onTick(player);
+            if (--staminaSyncCoolTimeTick <= 0) {
+                stamina.sync(player);
+                staminaSyncCoolTimeTick = 5;
+            }
+        }
+        var attr = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (attr != null) {
+            if (LocalStamina.get(player).imposeExhaustionPenalty(player)
+                    && parkourability
+                            .getClientInfo()
+                            .get(ParCoolConfig.Client.Booleans.EnableStaminaExhaustionPenalty)) {
+                player.setSprinting(false);
+                // Blockfield: без маркера ваниль включает спринт обратно каждый тик, FastRun снова
+                // тратит стамину,
+                // и восстановление не начинается, пока игрок не остановится; спринт при этом
+                // мерцает.
+                parkourability
+                        .getBehaviorEnforcer()
+                        .addMarkerCancellingSprint(
+                                ID_EXHAUSTION_SPRINT_CANCEL,
+                                () ->
+                                        LocalStamina.get(player).imposeExhaustionPenalty(player)
+                                                && parkourability
+                                                        .getClientInfo()
+                                                        .get(
+                                                                ParCoolConfig.Client.Booleans
+                                                                        .EnableStaminaExhaustionPenalty));
+                if (!attr.hasModifier(STAMINA_DEPLETED_SLOWNESS_MODIFIER_ID)) {
+                    attr.addTransientModifier(STAMINA_DEPLETED_SLOWNESS_MODIFIER);
+                }
+            } else {
+                attr.removeModifier(STAMINA_DEPLETED_SLOWNESS_MODIFIER_ID);
+            }
+        }
+    }
 
     @Environment(EnvType.CLIENT)
-	private void consumeStamina(Player player, int value) {
-		if (player instanceof LocalPlayer localPlayer) {
-			LocalStamina.get(localPlayer).consume(localPlayer, value);
-		}
-	}
+    private void onTick$checkLimitationSynchronization(
+            Player player, Parkourability parkourability) {
+        if (player.isLocalPlayer()
+                && player.tickCount > 127
+                && player.tickCount % 256 == 0
+                && parkourability.limitationIsNotSynced()) {
+            // Blockfield: the proxy's waiting lobby has no ParCool, the sync can never succeed
+            // there.
+            if (player instanceof LocalPlayer localPlayer
+                    && PacketDistributor.serverAccepts(ClientInformationPayload.TYPE)) {
+                int trialCount = parkourability.getSynchronizeTrialCount();
+                if (trialCount < 5) {
+                    parkourability.trySyncLimitation(localPlayer, parkourability);
+                    if (ParCoolConfig.Client.Booleans.ShowAutoResynchronizationNotification.get()) {
+                        player.displayClientMessage(
+                                Component.translatable(
+                                        "parcool.message.error.limitation.not_synced"),
+                                false);
+                    }
+                    ParCool.LOGGER.log(
+                            Level.WARN,
+                            "Detected ParCool Limitation is not synced. Sending synchronization"
+                                    + " request...");
+                } else if (trialCount == 5) {
+                    parkourability.incrementSynchronizeTrialCount();
+                    player.displayClientMessage(
+                            Component.translatable("parcool.message.error.limitation.fail_sync")
+                                    .withStyle(ChatFormatting.DARK_RED),
+                            false);
+                    ParCool.LOGGER.log(
+                            Level.ERROR,
+                            "Failed to synchronize ParCool Limitation. There may be problems about"
+                                    + " server connection. Please report to the developer after"
+                                    + " checking connection");
+                }
+            }
+        }
+    }
 
+    private void onTick$sendSynchronizationPacket(
+            Player player, List<ActionStatePayload.Entry> syncStates) {
+        PacketDistributor.sendToServer(new ActionStatePayload(player.getUUID(), syncStates));
+    }
+
+    private void processAction(
+            Player player,
+            Parkourability parkourability,
+            LinkedList<ActionStatePayload.Entry> syncStates,
+            boolean inClientSide,
+            Action action) {
+        boolean needSync = player.isLocalPlayer();
+
+        if (needSync) {
+            saveSynchronizationState(action, bufferOfPreState);
+        }
+        action.tick();
+
+        action.onTick(player, parkourability);
+        if (inClientSide) {
+            action.onClientTick(player, parkourability);
+        } else {
+            action.onServerTick(player, parkourability);
+        }
+
+        if (needSync) {
+            checkAndChangeActionState(player, parkourability, action, syncStates);
+        }
+
+        if (action.isDoing()) {
+            action.onWorkingTick(player, parkourability);
+            if (inClientSide) {
+                action.onWorkingTickInClient(player, parkourability);
+                if (needSync) {
+                    action.onWorkingTickInLocalClient(player, parkourability);
+                    if (action.getStaminaConsumeTiming() == StaminaConsumeTiming.OnWorking) {
+                        consumeStamina(
+                                player,
+                                parkourability
+                                        .getActionInfo()
+                                        .getStaminaConsumptionOf(action.getClass()));
+                    }
+                } else {
+                    action.onWorkingTickInOtherClient(player, parkourability);
+                }
+            } else {
+                action.onWorkingTickInServer(player, parkourability);
+            }
+        }
+
+        if (needSync) {
+            saveSynchronizationState(action, bufferOfPostState);
+
+            if (!BufferUtil.haveSameContents(bufferOfPreState, bufferOfPostState)) {
+                bufferOfPostState.rewind();
+                var data = new byte[bufferOfPostState.remaining()];
+                bufferOfPostState.get(data);
+                syncStates.addLast(
+                        new ActionStatePayload.Entry(
+                                action.getClass(), ActionStatePayload.Entry.Type.Normal, data));
+                bufferOfPreState.clear();
+                bufferOfPostState.clear();
+            }
+        }
+    }
+
+    @Environment(EnvType.CLIENT)
+    private void checkAndChangeActionState(
+            Player player,
+            Parkourability parkourability,
+            Action action,
+            LinkedList<ActionStatePayload.Entry> syncStates) {
+        if (!(player instanceof LocalPlayer localPlayer)) return;
+        if (action.isDoing()) {
+            boolean canContinue =
+                    parkourability.getActionInfo().can(action.getClass())
+                            && !player.getAttachedOrCreate(Attachments.STAMINA).isExhausted()
+                            && !ParCoolEvents.post(
+                                            new ParCoolActionEvent.TryToContinueEvent(
+                                                    player, action))
+                                    .isCanceled()
+                            && !ParCoolEvents.post(
+                                            new ParCoolActionEvent.TryToContinue(player, action))
+                                    .isCanceled()
+                            && action.canContinue(player, parkourability);
+            if (!canContinue) {
+                ParCoolEvents.post(new ParCoolActionEvent.Finish.Pre(player, action));
+                action.finish(player);
+                ParCoolEvents.post(new ParCoolActionEvent.StopEvent(player, action));
+                ParCoolEvents.post(new ParCoolActionEvent.Finish.Post(player, action));
+                syncStates.addLast(
+                        new ActionStatePayload.Entry(
+                                action.getClass(),
+                                ActionStatePayload.Entry.Type.Finish,
+                                new byte[0]));
+            }
+        } else {
+            bufferOfStarting.clear();
+            boolean start =
+                    !player.isSpectator()
+                            && !player.getAttachedOrCreate(Attachments.STAMINA).isExhausted()
+                            && parkourability.getActionInfo().can(action.getClass())
+                            && !ParCoolEvents.post(
+                                            new ParCoolActionEvent.TryToStartEvent(player, action))
+                                    .isCanceled()
+                            && !ParCoolEvents.post(
+                                            new ParCoolActionEvent.TryToStart(player, action))
+                                    .isCanceled()
+                            && action.canStart(player, parkourability, bufferOfStarting);
+            bufferOfStarting.flip();
+            if (start) {
+                ParCoolEvents.post(new ParCoolActionEvent.Start.Pre(player, action));
+                action.start(player, parkourability, bufferOfStarting);
+                ParCoolEvents.post(new ParCoolActionEvent.StartEvent(player, action));
+                ParCoolEvents.post(new ParCoolActionEvent.Start.Post(player, action));
+                if (action.getStaminaConsumeTiming() == StaminaConsumeTiming.OnStart) {
+                    consumeStamina(
+                            localPlayer,
+                            parkourability
+                                    .getActionInfo()
+                                    .getStaminaConsumptionOf(action.getClass()));
+                }
+                var data = new byte[bufferOfStarting.remaining()];
+                bufferOfStarting.get(data);
+                syncStates.addLast(
+                        new ActionStatePayload.Entry(
+                                action.getClass(), ActionStatePayload.Entry.Type.Start, data));
+            }
+        }
+    }
+
+    private void saveSynchronizationState(Action action, ByteBuffer buffer) {
+        buffer.clear();
+        action.saveSynchronizedState(buffer);
+        buffer.flip();
+    }
+
+    @Environment(EnvType.CLIENT)
+    private void consumeStamina(Player player, int value) {
+        if (player instanceof LocalPlayer localPlayer) {
+            LocalStamina.get(localPlayer).consume(localPlayer, value);
+        }
+    }
 }

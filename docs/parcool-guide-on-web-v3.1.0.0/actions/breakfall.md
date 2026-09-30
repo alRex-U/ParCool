@@ -2,7 +2,7 @@
 
 **Breakfall**s are skills to protect us from impact of landing.
 
-By this mod, you can do *Roll* and *Safety Tap*.
+By this mod, you can do _Roll_ and _Safety Tap_.
 
 ---
 
@@ -10,7 +10,7 @@ By this mod, you can do *Roll* and *Safety Tap*.
 
 **Roll** is one of the Breakfalls. It changes an impact of landing into energy of rolling.
 
-This is sometimes misunderstood, but the *Roll* of parkour is landing technique, so ParCool's roll is also used only
+This is sometimes misunderstood, but the _Roll_ of parkour is landing technique, so ParCool's roll is also used only
 when you land.
 
 ### How to use

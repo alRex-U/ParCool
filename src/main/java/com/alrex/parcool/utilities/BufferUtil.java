@@ -7,24 +7,24 @@ import net.minecraft.world.phys.Vec3;
 import java.nio.ByteBuffer;
 
 public class BufferUtil {
-	ByteBuffer buffer;
+    ByteBuffer buffer;
 
-	private BufferUtil(ByteBuffer buffer) {
-		this.buffer = buffer;
-	}
+    private BufferUtil(ByteBuffer buffer) {
+        this.buffer = buffer;
+    }
 
-	public static BufferUtil wrap(ByteBuffer byteBuffer) {
-		return new BufferUtil(byteBuffer);
-	}
+    public static BufferUtil wrap(ByteBuffer byteBuffer) {
+        return new BufferUtil(byteBuffer);
+    }
 
-	public BufferUtil putBoolean(boolean bool) {
-		buffer.put(bool ? (byte) 1 : 0);
-		return this;
-	}
+    public BufferUtil putBoolean(boolean bool) {
+        buffer.put(bool ? (byte) 1 : 0);
+        return this;
+    }
 
-	public static boolean getBoolean(ByteBuffer buffer) {
-		return buffer.get() != 0;
-	}
+    public static boolean getBoolean(ByteBuffer buffer) {
+        return buffer.get() != 0;
+    }
 
     public BufferUtil putBlockPos(BlockPos pos) {
         return putVector3i(pos);
@@ -52,19 +52,19 @@ public class BufferUtil {
         return new Vec3(buffer.getDouble(), buffer.getDouble(), buffer.getDouble());
     }
 
-	public ByteBuffer unwrap() {
-		return buffer;
-	}
+    public ByteBuffer unwrap() {
+        return buffer;
+    }
 
-	public static boolean haveSameContents(ByteBuffer buffer1, ByteBuffer buffer2) {
-		if (buffer1.limit() != buffer2.limit()) {
-			return false;
-		}
-		while (buffer1.hasRemaining() && buffer2.hasRemaining()) {
-			if (buffer1.get() != buffer2.get()) {
-				return false;
-			}
-		}
-		return true;
-	}
+    public static boolean haveSameContents(ByteBuffer buffer1, ByteBuffer buffer2) {
+        if (buffer1.limit() != buffer2.limit()) {
+            return false;
+        }
+        while (buffer1.hasRemaining() && buffer2.hasRemaining()) {
+            if (buffer1.get() != buffer2.get()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

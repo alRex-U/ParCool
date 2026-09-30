@@ -2,15 +2,17 @@ package com.alrex.parcool.common.attachment.common;
 
 import com.alrex.parcool.api.Attributes;
 import com.alrex.parcool.common.network.payload.StaminaPayload;
+import com.alrex.parcool.fabric.PacketDistributor;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import io.netty.buffer.ByteBuf;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import com.alrex.parcool.fabric.PacketDistributor;
 
 public record ReadonlyStamina(boolean isExhausted, int value, int max) {
     public static ReadonlyStamina createDefault() {
@@ -44,7 +46,11 @@ public record ReadonlyStamina(boolean isExhausted, int value, int max) {
         if (attr == null) return this;
         var parkourability = Parkourability.get(player);
         if (parkourability == null) return this;
-        int newMax = (int) Math.min(Math.floor(attr.getValue()), parkourability.getActionInfo().getMaxStaminaLimit());
+        int newMax =
+                (int)
+                        Math.min(
+                                Math.floor(attr.getValue()),
+                                parkourability.getActionInfo().getMaxStaminaLimit());
         if (max() == newMax) return this;
         return new ReadonlyStamina(isExhausted(), value(), newMax);
     }
@@ -54,20 +60,28 @@ public record ReadonlyStamina(boolean isExhausted, int value, int max) {
         PacketDistributor.sendToServer(new StaminaPayload(player.getUUID(), this));
     }
 
-    public static final Codec<ReadonlyStamina> CODEC = RecordCodecBuilder.create(staminaInstance ->
-            staminaInstance.group(
-                    Codec.BOOL.fieldOf("exhausted").forGetter(ReadonlyStamina::isExhausted),
-                    Codec.INT.fieldOf("value").forGetter(ReadonlyStamina::value),
-                    Codec.INT.fieldOf("max").forGetter(ReadonlyStamina::max)
-            ).apply(staminaInstance, ReadonlyStamina::new)
-    );
-    public static final StreamCodec<ByteBuf, ReadonlyStamina> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.BOOL,
-            ReadonlyStamina::isExhausted,
-            ByteBufCodecs.VAR_INT,
-            ReadonlyStamina::value,
-            ByteBufCodecs.INT,
-            ReadonlyStamina::max,
-            ReadonlyStamina::new
-    );
+    public static final Codec<ReadonlyStamina> CODEC =
+            RecordCodecBuilder.create(
+                    staminaInstance ->
+                            staminaInstance
+                                    .group(
+                                            Codec.BOOL
+                                                    .fieldOf("exhausted")
+                                                    .forGetter(ReadonlyStamina::isExhausted),
+                                            Codec.INT
+                                                    .fieldOf("value")
+                                                    .forGetter(ReadonlyStamina::value),
+                                            Codec.INT
+                                                    .fieldOf("max")
+                                                    .forGetter(ReadonlyStamina::max))
+                                    .apply(staminaInstance, ReadonlyStamina::new));
+    public static final StreamCodec<ByteBuf, ReadonlyStamina> STREAM_CODEC =
+            StreamCodec.composite(
+                    ByteBufCodecs.BOOL,
+                    ReadonlyStamina::isExhausted,
+                    ByteBufCodecs.VAR_INT,
+                    ReadonlyStamina::value,
+                    ByteBufCodecs.INT,
+                    ReadonlyStamina::max,
+                    ReadonlyStamina::new);
 }

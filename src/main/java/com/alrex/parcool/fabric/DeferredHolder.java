@@ -1,6 +1,7 @@
 package com.alrex.parcool.fabric;
 
 import com.mojang.datafixers.util.Either;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderOwner;
 import net.minecraft.resources.ResourceKey;
@@ -12,8 +13,8 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * Аналог net.neoforged.neoforge.registries.DeferredHolder: и Supplier, и Holder.
- * Ссылка появляется при флаше DeferredRegister, до этого обращение к значению -- ошибка.
+ * Аналог net.neoforged.neoforge.registries.DeferredHolder: и Supplier, и Holder. Ссылка появляется
+ * при флаше DeferredRegister, до этого обращение к значению -- ошибка.
  */
 public class DeferredHolder<R, T extends R> implements Holder<R>, java.util.function.Supplier<T> {
     private final ResourceKey<R> key;
@@ -29,7 +30,8 @@ public class DeferredHolder<R, T extends R> implements Holder<R>, java.util.func
 
     private Holder.Reference<R> ref() {
         if (reference == null) {
-            throw new IllegalStateException("ParCool: registry entry " + key + " is not registered yet");
+            throw new IllegalStateException(
+                    "ParCool: registry entry " + key + " is not registered yet");
         }
         return reference;
     }

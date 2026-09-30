@@ -3,7 +3,9 @@ package com.alrex.parcool.common.stamina;
 import com.alrex.parcool.common.stamina.handlers.HungerStaminaHandler;
 import com.alrex.parcool.common.stamina.handlers.InfiniteStaminaHandler;
 import com.alrex.parcool.common.stamina.handlers.ParCoolStaminaHandler;
+
 import io.netty.buffer.ByteBuf;
+
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
@@ -34,9 +36,7 @@ public enum StaminaType {
         return constructor.apply(player);
     }
 
-    public static final StreamCodec<ByteBuf, StaminaType> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT,
-            StaminaType::ordinal,
-            (v) -> StaminaType.values()[v]
-    );
+    public static final StreamCodec<ByteBuf, StaminaType> STREAM_CODEC =
+            StreamCodec.composite(
+                    ByteBufCodecs.VAR_INT, StaminaType::ordinal, (v) -> StaminaType.values()[v]);
 }

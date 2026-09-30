@@ -4,60 +4,56 @@ import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.attachment.common.Parkourability;
+import com.alrex.parcool.fabric.RenderFrameEvent;
 import com.alrex.parcool.utilities.VectorUtil;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import com.alrex.parcool.fabric.RenderFrameEvent;
 
 import java.nio.ByteBuffer;
 
-;
-
 public class QuickTurn extends Action {
-	private static final int AnimationTickLength = 4;
-	private boolean turnRightward = false;
-	private Vec3 startAngle = null;
+    private static final int AnimationTickLength = 4;
+    private boolean turnRightward = false;
+    private Vec3 startAngle = null;
 
-	@Override
+    @Override
     public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
-		Vec3 angle = player.getLookAngle();
-		startInfo
-				.putDouble(angle.x)
-				.putDouble(angle.z);
-		return KeyRecorder.keyQuickTurn.isPressed()
-				&& !parkourability.get(Vault.class).isDoing()
-				&& !parkourability.get(Roll.class).isDoing()
-				&& !parkourability.get(Flipping.class).isDoing()
-				&& !parkourability.get(ClingToCliff.class).isDoing();
-	}
+        Vec3 angle = player.getLookAngle();
+        startInfo.putDouble(angle.x).putDouble(angle.z);
+        return KeyRecorder.keyQuickTurn.isPressed()
+                && !parkourability.get(Vault.class).isDoing()
+                && !parkourability.get(Roll.class).isDoing()
+                && !parkourability.get(Flipping.class).isDoing()
+                && !parkourability.get(ClingToCliff.class).isDoing();
+    }
 
-	@Override
+    @Override
     public boolean canContinue(Player player, Parkourability parkourability) {
-		return getDoingTick() < AnimationTickLength;
-	}
+        return getDoingTick() < AnimationTickLength;
+    }
 
-	@Override
-    public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
-		turnRightward = !turnRightward;
-		startAngle = new Vec3(
-				startData.getDouble(),
-				0,
-				startData.getDouble()
-		).normalize();
-	}
+    @Override
+    public void onStartInLocalClient(
+            Player player, Parkourability parkourability, ByteBuffer startData) {
+        turnRightward = !turnRightward;
+        startAngle = new Vec3(startData.getDouble(), 0, startData.getDouble()).normalize();
+    }
 
-	@Override
+    @Override
     public void onRenderTick(RenderFrameEvent event, Player player, Parkourability parkourability) {
-		if (isDoing() && startAngle != null) {
-            float renderTick = getDoingTick() + event.getPartialTick().getGameTimeDeltaPartialTick(true);
-			float animationPhase = renderTick / AnimationTickLength;
-			Vec3 rotatedAngle = startAngle.yRot((float) (Math.PI * animationPhase * (turnRightward ? -1 : 1)));
-			player.setYRot((float) VectorUtil.toYawDegree(rotatedAngle));
-		}
-	}
+        if (isDoing() && startAngle != null) {
+            float renderTick =
+                    getDoingTick() + event.getPartialTick().getGameTimeDeltaPartialTick(true);
+            float animationPhase = renderTick / AnimationTickLength;
+            Vec3 rotatedAngle =
+                    startAngle.yRot((float) (Math.PI * animationPhase * (turnRightward ? -1 : 1)));
+            player.setYRot((float) VectorUtil.toYawDegree(rotatedAngle));
+        }
+    }
 
-	@Override
-	public StaminaConsumeTiming getStaminaConsumeTiming() {
-		return StaminaConsumeTiming.None;
-	}
+    @Override
+    public StaminaConsumeTiming getStaminaConsumeTiming() {
+        return StaminaConsumeTiming.None;
+    }
 }

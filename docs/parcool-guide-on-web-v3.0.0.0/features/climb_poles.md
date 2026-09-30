@@ -1,6 +1,7 @@
 # Climb Poles
 
 ---
+
 Players can climb pole-like blocks, such as Iron bars, stacked fences, end rod etc.
 
 These blocks are internally dealt as ladder block.

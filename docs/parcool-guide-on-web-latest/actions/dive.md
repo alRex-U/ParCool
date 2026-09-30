@@ -16,9 +16,9 @@ This can be also started in air, although enough falling time.
 
 #### In case of starting in air
 
-- Continue to press *jump* key after a few seconds falling
+- Continue to press _jump_ key after a few seconds falling
 
---- 
+---
 
 ## Sky Dive
 
@@ -32,4 +32,4 @@ Whenever you can stop sky-dive by pressing jump key again.
 
 ### 🖱️- How to use -
 
-- Press *jump* key while doing [Dive](#dive)
+- Press _jump_ key while doing [Dive](#dive)

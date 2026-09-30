@@ -6,6 +6,7 @@ import com.alrex.parcool.common.entity.EntityTypes;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.common.zipline.ZiplineType;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -33,10 +34,15 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
     private static final EntityDataAccessor<Integer> DATA_ZIP_TYPE;
 
     static {
-        DATA_START_POS = SynchedEntityData.defineId(ZiplineRopeEntity.class, EntityDataSerializers.BLOCK_POS);
-        DATA_END_POS = SynchedEntityData.defineId(ZiplineRopeEntity.class, EntityDataSerializers.BLOCK_POS);
+        DATA_START_POS =
+                SynchedEntityData.defineId(
+                        ZiplineRopeEntity.class, EntityDataSerializers.BLOCK_POS);
+        DATA_END_POS =
+                SynchedEntityData.defineId(
+                        ZiplineRopeEntity.class, EntityDataSerializers.BLOCK_POS);
         DATA_COLOR = SynchedEntityData.defineId(ZiplineRopeEntity.class, EntityDataSerializers.INT);
-        DATA_ZIP_TYPE = SynchedEntityData.defineId(ZiplineRopeEntity.class, EntityDataSerializers.INT);
+        DATA_ZIP_TYPE =
+                SynchedEntityData.defineId(ZiplineRopeEntity.class, EntityDataSerializers.INT);
     }
 
     private EntityDimensions size;
@@ -51,17 +57,28 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
         setEndPos(end);
         setColor(info.getColor());
         setZiplineType(info.getType());
-        setPos((end.getX() + start.getX()) / 2.0 + 0.5, Math.min(end.getY(), start.getY()), (end.getZ() + start.getZ()) / 2.0 + 0.5);
+        setPos(
+                (end.getX() + start.getX()) / 2.0 + 0.5,
+                Math.min(end.getY(), start.getY()),
+                (end.getZ() + start.getZ()) / 2.0 + 0.5);
         noPhysics = true;
-        cullingBB = new AABB(start.getX(), start.getY(), start.getZ(), end.getX(), end.getY(), end.getZ()).inflate(1);
+        cullingBB =
+                new AABB(
+                                start.getX(),
+                                start.getY(),
+                                start.getZ(),
+                                end.getX(),
+                                end.getY(),
+                                end.getZ())
+                        .inflate(1);
     }
 
     private BlockPos zipline_start;
     private BlockPos zipline_end;
     private ZiplineType zip_type;
     private Zipline zipline;
-    @Nullable
-    private AABB cullingBB;
+    @Nullable private AABB cullingBB;
+
     public Zipline getZipline() {
         BlockPos start = getStartPos();
         BlockPos end = getEndPos();
@@ -69,12 +86,19 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
         if (zipline == null
                 || !start.equals(zipline_start)
                 || !end.equals(zipline_end)
-                || !type.equals(zip_type)
-        ) {
+                || !type.equals(zip_type)) {
             zipline_start = start;
             zipline_end = end;
             zip_type = type;
-            cullingBB = new AABB(start.getX(), start.getY(), start.getZ(), end.getX(), end.getY(), end.getZ()).inflate(1);
+            cullingBB =
+                    new AABB(
+                                    start.getX(),
+                                    start.getY(),
+                                    start.getZ(),
+                                    end.getX(),
+                                    end.getY(),
+                                    end.getZ())
+                            .inflate(1);
             Vec3 startPos;
             Vec3 endPos;
             BlockEntity startEntity = level().getBlockEntity(start);
@@ -97,7 +121,6 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
             } else {
                 zipline = type.getZipline(startPos, endPos);
             }
-
         }
         return zipline;
     }
@@ -116,10 +139,17 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
         double baseXOffset = start.getX() - x;
         double baseYOffset = start.getY() - y;
         double baseZOffset = start.getZ() - z;
-        double t = -(xOffset * baseXOffset + yOffset * baseYOffset + zOffset * baseZOffset) / (xOffset * xOffset + yOffset * yOffset + zOffset * zOffset);
-        Vec3 mostNearPoint = new Vec3(xOffset * t + start.getX(), yOffset * t + start.getY(), zOffset * t + start.getZ());
+        double t =
+                -(xOffset * baseXOffset + yOffset * baseYOffset + zOffset * baseZOffset)
+                        / (xOffset * xOffset + yOffset * yOffset + zOffset * zOffset);
+        Vec3 mostNearPoint =
+                new Vec3(
+                        xOffset * t + start.getX(),
+                        yOffset * t + start.getY(),
+                        zOffset * t + start.getZ());
         distanceSqr = mostNearPoint.distanceToSqr(x, y, z);
-        return distanceSqr < Zipline.MAXIMUM_HORIZONTAL_DISTANCE * Zipline.MAXIMUM_HORIZONTAL_DISTANCE;
+        return distanceSqr
+                < Zipline.MAXIMUM_HORIZONTAL_DISTANCE * Zipline.MAXIMUM_HORIZONTAL_DISTANCE;
     }
 
     @Nonnull
@@ -140,8 +170,7 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
     }
 
     @Override
-    public void move(MoverType p_19973_, Vec3 p_19974_) {
-    }
+    public void move(MoverType p_19973_, Vec3 p_19974_) {}
 
     /*
     @Override
@@ -189,7 +218,8 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
     }
 
     public ZiplineType getZiplineType() {
-        return ZiplineType.values()[getEntityData().get(DATA_ZIP_TYPE) % ZiplineType.values().length];
+        return ZiplineType.values()[
+                getEntityData().get(DATA_ZIP_TYPE) % ZiplineType.values().length];
     }
 
     private void setZiplineType(ZiplineType type) {
@@ -212,8 +242,16 @@ public class ZiplineRopeEntity extends net.minecraft.world.entity.Entity {
 
     @Override
     public void readAdditionalSaveData(@Nonnull CompoundTag compoundNBT) {
-        setStartPos(new BlockPos(compoundNBT.getInt("Tile1_X"), compoundNBT.getInt("Tile1_Y"), compoundNBT.getInt("Tile1_Z")));
-        setEndPos(new BlockPos(compoundNBT.getInt("Tile2_X"), compoundNBT.getInt("Tile2_Y"), compoundNBT.getInt("Tile2_Z")));
+        setStartPos(
+                new BlockPos(
+                        compoundNBT.getInt("Tile1_X"),
+                        compoundNBT.getInt("Tile1_Y"),
+                        compoundNBT.getInt("Tile1_Z")));
+        setEndPos(
+                new BlockPos(
+                        compoundNBT.getInt("Tile2_X"),
+                        compoundNBT.getInt("Tile2_Y"),
+                        compoundNBT.getInt("Tile2_Z")));
     }
 
     @Override

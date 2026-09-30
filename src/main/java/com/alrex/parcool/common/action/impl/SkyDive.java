@@ -5,55 +5,56 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.fabric.RenderFrameEvent;
 import com.alrex.parcool.utilities.VectorUtil;
+
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import com.alrex.parcool.fabric.RenderFrameEvent;
 
 import java.nio.ByteBuffer;
 
 public class SkyDive extends Action {
-	@Override
+    @Override
     public boolean canStart(Player player, Parkourability parkourability, ByteBuffer startInfo) {
-		return parkourability.get(Dive.class).getDoingTick() > 15
-				&& getNotDoingTick() > 20
-				&& KeyRecorder.keyJumpState.isPressed();
-	}
+        return parkourability.get(Dive.class).getDoingTick() > 15
+                && getNotDoingTick() > 20
+                && KeyRecorder.keyJumpState.isPressed();
+    }
 
-	@Override
+    @Override
     public boolean canContinue(Player player, Parkourability parkourability) {
-		return parkourability.get(Dive.class).isDoing() && !KeyRecorder.keyJumpState.isPressed();
-	}
+        return parkourability.get(Dive.class).isDoing() && !KeyRecorder.keyJumpState.isPressed();
+    }
 
-	@Override
+    @Override
     public void onWorkingTickInLocalClient(Player player, Parkourability parkourability) {
         if (!(player instanceof LocalPlayer clientPlayer)) {
-			return;
-		}
-		Vec3 forwardVec = VectorUtil.fromYawDegree(player.yHeadRot);
-		Vec3 leftVec = forwardVec.yRot((float) Math.PI / 2).scale(clientPlayer.input.leftImpulse * 0.0);
-		forwardVec = forwardVec.scale(clientPlayer.input.forwardImpulse * 0.03);
-		clientPlayer.setDeltaMovement(clientPlayer.getDeltaMovement()
-				.multiply(
-						1,
-						parkourability.getLimitedValue(
-								ParCoolConfig.Client.Doubles.SkyDiveSpeedDecreaseRate,
-								ParCoolConfig.Server.Doubles.MinSkyDiveSpeedDecreaseRate
-						),
-						1
-				).add(
-						forwardVec.add(leftVec)
-				));
-	}
+            return;
+        }
+        Vec3 forwardVec = VectorUtil.fromYawDegree(player.yHeadRot);
+        Vec3 leftVec =
+                forwardVec.yRot((float) Math.PI / 2).scale(clientPlayer.input.leftImpulse * 0.0);
+        forwardVec = forwardVec.scale(clientPlayer.input.forwardImpulse * 0.03);
+        clientPlayer.setDeltaMovement(
+                clientPlayer
+                        .getDeltaMovement()
+                        .multiply(
+                                1,
+                                parkourability.getLimitedValue(
+                                        ParCoolConfig.Client.Doubles.SkyDiveSpeedDecreaseRate,
+                                        ParCoolConfig.Server.Doubles.MinSkyDiveSpeedDecreaseRate),
+                                1)
+                        .add(forwardVec.add(leftVec)));
+    }
 
-	@Override
+    @Override
     public void onRenderTick(RenderFrameEvent event, Player player, Parkourability parkourability) {
-		if (isDoing()) player.setYBodyRot(player.yHeadRot);
-	}
+        if (isDoing()) player.setYBodyRot(player.yHeadRot);
+    }
 
-	@Override
-	public StaminaConsumeTiming getStaminaConsumeTiming() {
-		return StaminaConsumeTiming.None;
-	}
+    @Override
+    public StaminaConsumeTiming getStaminaConsumeTiming() {
+        return StaminaConsumeTiming.None;
+    }
 }

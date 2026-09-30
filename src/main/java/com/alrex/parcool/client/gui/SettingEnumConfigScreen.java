@@ -6,31 +6,33 @@ import com.alrex.parcool.common.info.ActionInfo;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.network.payload.ClientInformationPayload;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.fabric.PacketDistributor;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import com.alrex.parcool.fabric.PacketDistributor;
 
 import java.util.List;
 
 public class SettingEnumConfigScreen extends ParCoolSettingScreen {
-    private final EnumConfigSet<?>[] enumConfigList = new EnumConfigSet[]{
-            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().StaminaType),
-            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().AlignHorizontalStaminaHUD),
-            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().AlignVerticalStaminaHUD),
-            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().FastRunControl),
-            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().CrawlControl),
-            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().FlipControl),
-            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().HWallRunControl),
-            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().ClingToCliffControl),
-            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().WallJumpControl),
-            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().VaultAnimationMode),
-            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().GUIColorTheme),
-            new EnumConfigSet<>(ParCoolConfig.Client.getInstance().StaminaHUDType),
-    };
+    private final EnumConfigSet<?>[] enumConfigList =
+            new EnumConfigSet[] {
+                new EnumConfigSet<>(ParCoolConfig.Client.getInstance().StaminaType),
+                new EnumConfigSet<>(ParCoolConfig.Client.getInstance().AlignHorizontalStaminaHUD),
+                new EnumConfigSet<>(ParCoolConfig.Client.getInstance().AlignVerticalStaminaHUD),
+                new EnumConfigSet<>(ParCoolConfig.Client.getInstance().FastRunControl),
+                new EnumConfigSet<>(ParCoolConfig.Client.getInstance().CrawlControl),
+                new EnumConfigSet<>(ParCoolConfig.Client.getInstance().FlipControl),
+                new EnumConfigSet<>(ParCoolConfig.Client.getInstance().HWallRunControl),
+                new EnumConfigSet<>(ParCoolConfig.Client.getInstance().ClingToCliffControl),
+                new EnumConfigSet<>(ParCoolConfig.Client.getInstance().WallJumpControl),
+                new EnumConfigSet<>(ParCoolConfig.Client.getInstance().VaultAnimationMode),
+                new EnumConfigSet<>(ParCoolConfig.Client.getInstance().GUIColorTheme),
+                new EnumConfigSet<>(ParCoolConfig.Client.getInstance().StaminaHUDType),
+            };
     private final Button[] enumConfigButtons = new Button[enumConfigList.length];
 
     public SettingEnumConfigScreen(Component titleIn, ActionInfo info, ColorTheme theme) {
@@ -38,15 +40,16 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
         currentScreen = 2;
         for (int i = 0; i < enumConfigList.length; i++) {
             int index = i;
-            enumConfigButtons[index] = Button
-                    .builder(
-                            Component.literal(enumConfigList[index].get().toString()),
-                            it -> {
-                                enumConfigList[index].next();
-                                it.setMessage(Component.literal(enumConfigList[index].get().toString()));
-                            }
-                    )
-                    .build();
+            enumConfigButtons[index] =
+                    Button.builder(
+                                    Component.literal(enumConfigList[index].get().toString()),
+                                    it -> {
+                                        enumConfigList[index].next();
+                                        it.setMessage(
+                                                Component.literal(
+                                                        enumConfigList[index].get().toString()));
+                                    })
+                            .build();
         }
     }
 
@@ -56,7 +59,13 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
     }
 
     @Override
-    protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, int topOffset, int bottomOffset) {
+    protected void renderContents(
+            GuiGraphics graphics,
+            int mouseX,
+            int mouseY,
+            float partialTick,
+            int topOffset,
+            int bottomOffset) {
         final int offsetX = 40;
         final int boxHeight = 21;
         int contentWidth = width - offsetX * 2;
@@ -74,11 +83,27 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
             button.setHeight(20);
             button.render(graphics, mouseX, mouseY, partialTick);
             List<String> path = enumConfigList[i + topIndex].configInstance.getPath();
-            graphics.drawString(font, path.get(path.size() - 1), offsetX + 6, button.getY() + 1 + (button.getHeight() - font.lineHeight) / 2, color.getText());
-            graphics.fill(offsetX, button.getY() + button.getHeight(), width - offsetX, button.getY() + button.getHeight() + 1, color.getSubSeparator());
+            graphics.drawString(
+                    font,
+                    path.get(path.size() - 1),
+                    offsetX + 6,
+                    button.getY() + 1 + (button.getHeight() - font.lineHeight) / 2,
+                    color.getText());
+            graphics.fill(
+                    offsetX,
+                    button.getY() + button.getHeight(),
+                    width - offsetX,
+                    button.getY() + button.getHeight() + 1,
+                    color.getSubSeparator());
         }
-        graphics.fill(width - offsetX, topOffset, width - offsetX - 1, topOffset + contentHeight, color.getSeparator());
-        graphics.fill(offsetX, topOffset, offsetX + 1, topOffset + contentHeight, color.getSeparator());
+        graphics.fill(
+                width - offsetX,
+                topOffset,
+                width - offsetX - 1,
+                topOffset + contentHeight,
+                color.getSeparator());
+        graphics.fill(
+                offsetX, topOffset, offsetX + 1, topOffset + contentHeight, color.getSeparator());
     }
 
     @Override
@@ -106,7 +131,9 @@ public class SettingEnumConfigScreen extends ParCoolSettingScreen {
         Parkourability parkourability = Parkourability.get(player);
         parkourability.getActionInfo().setClientSetting(ClientSetting.readFromLocalConfig());
         parkourability.getActionInfo().updateStaminaType(LocalStamina.get(player), player);
-        PacketDistributor.sendToServer(new ClientInformationPayload(player.getUUID(), true, parkourability.getClientInfo()));
+        PacketDistributor.sendToServer(
+                new ClientInformationPayload(
+                        player.getUUID(), true, parkourability.getClientInfo()));
     }
 
     private static class EnumConfigSet<T extends Enum<T>> {

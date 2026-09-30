@@ -4,8 +4,8 @@
 name: Build
 on:
   push:
-    branches: ['**']
-    tags: ['bf[0-9]*']
+    branches: ["**"]
+    tags: ["bf[0-9]*"]
   pull_request:
   workflow_dispatch:
 permissions:
@@ -16,13 +16,20 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-java@v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12.10"
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
           distribution: temurin
-          java-version: 21
+          java-version: "21.0.12"
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22.23.2"
+      - run: just python --ci
       # v6 bundles proprietary caching under Gradle's Terms of Use; setup-gradle also validates wrappers by default.
       - uses: gradle/actions/setup-gradle@v5
-      - run: ./gradlew build
+      - run: just build
       - uses: actions/upload-artifact@v7
         with:
           name: Artifacts
@@ -33,12 +40,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -eu
-          jars=$(ls build/libs/*.jar | grep -v -e '-sources\.jar$' -e '-dev\.jar$' -e '-javadoc\.jar$')
+          jars=$(find build/libs -maxdepth 1 -type f -name '*.jar' ! -name '*-sources.jar' ! -name '*-dev.jar' ! -name '*-javadoc.jar')
           [ "$(printf '%s\n' "$jars" | wc -l)" -eq 1 ] || { echo "ожидался один jar, есть: $jars"; exit 1; }
           out="${jars%.jar}-$GITHUB_REF_NAME.jar"
           mv "$jars" "$out"
           test -f "release-notes/$GITHUB_REF_NAME.md" || { echo "missing release-notes/$GITHUB_REF_NAME.md: prepare it in the release PR"; exit 1; }
-          python3 scripts/release-notes-tool.py "release-notes/$GITHUB_REF_NAME.md" \
+          just python scripts/release-notes-tool.py "release-notes/$GITHUB_REF_NAME.md" \
             --repository Blockfield/parcool-fabric --version "$GITHUB_REF_NAME"
           cp "release-notes/$GITHUB_REF_NAME.md" release-notes.md
           gh release create "$GITHUB_REF_NAME" "$out" release-notes.md --title "$(basename "$out" .jar)" --notes-file release-notes.md

@@ -5,24 +5,26 @@ import com.alrex.parcool.api.unstable.animation.ParCoolAnimationInfoEvent;
 import com.alrex.parcool.client.animation.impl.*;
 import com.alrex.parcool.fabric.ParCoolEvents;
 import com.tacz.guns.api.item.IGun;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 /**
- * Порт TaCZ-части ParCool Compatibility Addon (alRex-U/ParCool-CompatibilityAddon, LGPL):
- * с оружием в руке поза от TaCZ важнее анимации ParCool.
+ * Порт TaCZ-части ParCool Compatibility Addon (alRex-U/ParCool-CompatibilityAddon, LGPL): с оружием
+ * в руке поза от TaCZ важнее анимации ParCool.
  *
- * Класс трогает com.tacz.*, поэтому грузится только из-под проверки isModLoaded("tacz").
+ * <p>Класс трогает com.tacz.*, поэтому грузится только из-под проверки isModLoaded("tacz").
  */
 @Environment(EnvType.CLIENT)
 public final class TaCZAnimationCompat {
-    private TaCZAnimationCompat() {
-    }
+    private TaCZAnimationCompat() {}
 
     public static void register() {
-        ParCoolEvents.register(event -> {
-            if (event instanceof ParCoolAnimationInfoEvent animEvent) onAnimationInfo(animEvent);
-        });
+        ParCoolEvents.register(
+                event -> {
+                    if (event instanceof ParCoolAnimationInfoEvent animEvent)
+                        onAnimationInfo(animEvent);
+                });
     }
 
     private static void onAnimationInfo(ParCoolAnimationInfoEvent event) {
@@ -46,8 +48,7 @@ public final class TaCZAnimationCompat {
                 || event.getAnimator() instanceof JumpFromBarAnimator
                 || event.getAnimator() instanceof VerticalWallRunAnimator
                 || event.getAnimator() instanceof WallSlideAnimator
-                || event.getAnimator() instanceof TapAnimator
-        ) {
+                || event.getAnimator() instanceof TapAnimator) {
             return;
         }
 

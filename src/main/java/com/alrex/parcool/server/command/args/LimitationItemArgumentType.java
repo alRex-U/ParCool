@@ -9,6 +9,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -25,14 +26,16 @@ public class LimitationItemArgumentType implements ArgumentType<Object> {
         String name = reader.readUnquotedString();
         int index = paths.indexOf(name);
         if (index == -1) {
-            Message message = Component.translatable("parcool.command.message.invalidConfigName", name);
+            Message message =
+                    Component.translatable("parcool.command.message.invalidConfigName", name);
             throw new CommandSyntaxException(new SimpleCommandExceptionType(message), message);
         }
         return enumConstants[index];
     }
 
     @Override
-    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+    public <S> CompletableFuture<Suggestions> listSuggestions(
+            CommandContext<S> context, SuggestionsBuilder builder) {
         String remain = builder.getRemaining();
         for (String name : paths.stream().filter(it -> it.startsWith(remain)).toList()) {
             builder.suggest(name);

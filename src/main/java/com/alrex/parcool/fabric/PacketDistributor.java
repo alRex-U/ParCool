@@ -9,8 +9,7 @@ import net.minecraft.world.entity.player.Player;
 
 /** Аналог net.neoforged.neoforge.network.PacketDistributor: те три метода, что зовёт ParCool. */
 public final class PacketDistributor {
-    private PacketDistributor() {
-    }
+    private PacketDistributor() {}
 
     public static void sendToServer(CustomPacketPayload payload) {
         // Отдельный класс: ClientPlayNetworking тянет за собой Minecraft, а на выделенном
@@ -18,7 +17,10 @@ public final class PacketDistributor {
         ClientSender.send(payload);
     }
 
-    /** Whether the current server registered this payload's channel (false on a proxy lobby without ParCool). */
+    /**
+     * Whether the current server registered this payload's channel (false on a proxy lobby without
+     * ParCool).
+     */
     public static boolean serverAccepts(CustomPacketPayload.Type<?> type) {
         return ClientSender.canSend(type);
     }

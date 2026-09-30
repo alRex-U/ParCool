@@ -16,4 +16,4 @@ However, please note that the charging is canceled if you move.
 ### 🖱️- How to use -
 
 - Sneak to store up power
-    - Press jump key whenever you want to
+  - Press jump key whenever you want to

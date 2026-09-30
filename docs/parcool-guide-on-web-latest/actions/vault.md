@@ -3,9 +3,9 @@
 ![Speed vault](../resources/actions/SpeedVault.png)
 ![Kong Vault](../resources/actions/KongVault.png)
 
-**Vault** is skills used to get over obstacles like fences.  
+**Vault** is skills used to get over obstacles like fences.\
 It's known one of actual parkour skill.
-There are numerous variations. In this game, you can use *Speed Vault* and *Kong Vault*.
+There are numerous variations. In this game, you can use _Speed Vault_ and _Kong Vault_.
 
 ## In-air Vault
 

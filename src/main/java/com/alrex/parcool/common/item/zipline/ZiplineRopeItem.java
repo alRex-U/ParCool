@@ -10,6 +10,7 @@ import com.alrex.parcool.common.item.component.ZiplinePositionComponent;
 import com.alrex.parcool.common.item.component.ZiplineTensionComponent;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.common.zipline.ZiplineType;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.BlockPos;
@@ -23,11 +24,12 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class ZiplineRopeItem extends Item {
     public static class RopeColor implements ItemColor {
@@ -51,16 +53,34 @@ public class ZiplineRopeItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nonnull TooltipContext context, @Nonnull List<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
+    public void appendHoverText(
+            ItemStack stack,
+            @Nonnull TooltipContext context,
+            @Nonnull List<Component> lines,
+            @Nonnull TooltipFlag tooltipFlag) {
         var posComponent = stack.getComponents().get(DataComponents.ZIPLINE_POSITION);
 
         if (posComponent != null) {
-            lines.add(Component.translatable("parcool.gui.text.zipline.bind_pos", posComponent.pos().getX() + ", " + posComponent.pos().getY() + ", " + posComponent.pos().getZ()).withStyle(ChatFormatting.YELLOW));
+            lines.add(
+                    Component.translatable(
+                                    "parcool.gui.text.zipline.bind_pos",
+                                    posComponent.pos().getX()
+                                            + ", "
+                                            + posComponent.pos().getY()
+                                            + ", "
+                                            + posComponent.pos().getZ())
+                            .withStyle(ChatFormatting.YELLOW));
         } else {
-            lines.add(Component.translatable("parcool.gui.text.zipline.not_bound").withStyle(ChatFormatting.DARK_GRAY));
+            lines.add(
+                    Component.translatable("parcool.gui.text.zipline.not_bound")
+                            .withStyle(ChatFormatting.DARK_GRAY));
         }
         lines.add(Component.empty());
-        lines.add(Component.translatable("parcool.gui.text.zipline.tension", getZiplineType(stack).getTranslationName()).withStyle(ChatFormatting.GRAY));
+        lines.add(
+                Component.translatable(
+                                "parcool.gui.text.zipline.tension",
+                                getZiplineType(stack).getTranslationName())
+                        .withStyle(ChatFormatting.GRAY));
         if (hasCustomColor(stack)) {
             /*
             int color = getColor(stack);
@@ -73,7 +93,9 @@ public class ZiplineRopeItem extends Item {
             lines.add(new StringTextComponent("G : " + format.format(g) + "%").withStyle(TextFormatting.GREEN));
             lines.add(new StringTextComponent("B : " + format.format(b) + "%").withStyle(TextFormatting.BLUE));
              */
-            lines.add(Component.translatable("parcool.gui.text.zipline.colored").withStyle(ChatFormatting.BLUE));
+            lines.add(
+                    Component.translatable("parcool.gui.text.zipline.colored")
+                            .withStyle(ChatFormatting.BLUE));
         }
     }
 
@@ -85,28 +107,38 @@ public class ZiplineRopeItem extends Item {
         // First Point is already registered
         if (hasBlockPosition(stack)) {
             // Second Point is Found
-            if (context.getLevel().getBlockState(context.getClickedPos()).getBlock() instanceof ZiplineHookBlock) {
+            if (context.getLevel().getBlockState(context.getClickedPos()).getBlock()
+                    instanceof ZiplineHookBlock) {
                 BlockPos start = getBlockPosition(stack);
                 if (start == null) return InteractionResult.FAIL;
 
                 BlockPos end = context.getClickedPos();
                 if (start.equals(end)) return InteractionResult.PASS;
-                double horizontalDistSqr = Mth.square(start.getX() - end.getX()) + Mth.square(start.getZ() - end.getZ());
-                if (horizontalDistSqr > Zipline.MAXIMUM_HORIZONTAL_DISTANCE * Zipline.MAXIMUM_HORIZONTAL_DISTANCE) {
+                double horizontalDistSqr =
+                        Mth.square(start.getX() - end.getX())
+                                + Mth.square(start.getZ() - end.getZ());
+                if (horizontalDistSqr
+                        > Zipline.MAXIMUM_HORIZONTAL_DISTANCE
+                                * Zipline.MAXIMUM_HORIZONTAL_DISTANCE) {
                     if (context.getLevel().isClientSide()) {
                         Player player = context.getPlayer();
                         if (player != null) {
-                            player.displayClientMessage(Component.translatable("parcool.message.zipline.too_far"), true);
+                            player.displayClientMessage(
+                                    Component.translatable("parcool.message.zipline.too_far"),
+                                    true);
                         }
                     }
                     return InteractionResult.FAIL;
                 } else {
                     double verticalDist = Math.abs(end.getY() - start.getY());
-                    if (verticalDist * Mth.fastInvSqrt(horizontalDistSqr) > 1. || verticalDist > Zipline.MAXIMUM_VERTICAL_DISTANCE) {
+                    if (verticalDist * Mth.fastInvSqrt(horizontalDistSqr) > 1.
+                            || verticalDist > Zipline.MAXIMUM_VERTICAL_DISTANCE) {
                         if (context.getLevel().isClientSide()) {
                             Player player = context.getPlayer();
                             if (player != null) {
-                                player.displayClientMessage(Component.translatable("parcool.message.zipline.too_steep"), true);
+                                player.displayClientMessage(
+                                        Component.translatable("parcool.message.zipline.too_steep"),
+                                        true);
                             }
                         }
                         return InteractionResult.FAIL;
@@ -115,19 +147,32 @@ public class ZiplineRopeItem extends Item {
 
                 BlockEntity startEntity = context.getLevel().getBlockEntity(start);
                 BlockEntity endEntity = context.getLevel().getBlockEntity(end);
-                if (startEntity instanceof ZiplineHookTileEntity startZipEntity && endEntity instanceof ZiplineHookTileEntity endZipEntity) {
-                    if (getZiplineType(stack).getZipline(startZipEntity.getActualZiplinePoint(null), endZipEntity.getActualZiplinePoint(null)).conflictsWithSomething(context.getLevel())) {
+                if (startEntity instanceof ZiplineHookTileEntity startZipEntity
+                        && endEntity instanceof ZiplineHookTileEntity endZipEntity) {
+                    if (getZiplineType(stack)
+                            .getZipline(
+                                    startZipEntity.getActualZiplinePoint(null),
+                                    endZipEntity.getActualZiplinePoint(null))
+                            .conflictsWithSomething(context.getLevel())) {
                         Player player = context.getPlayer();
                         if (player != null) {
-                            player.displayClientMessage(Component.translatable("parcool.message.zipline.obstacle_detected"), true);
+                            player.displayClientMessage(
+                                    Component.translatable(
+                                            "parcool.message.zipline.obstacle_detected"),
+                                    true);
                         }
                         return InteractionResult.FAIL;
                     }
                     if (!context.getLevel().isClientSide()) {
-                        if (!startZipEntity.connectTo(endZipEntity, new ZiplineInfo(getZiplineType(stack), getColor(stack)))) {
+                        if (!startZipEntity.connectTo(
+                                endZipEntity,
+                                new ZiplineInfo(getZiplineType(stack), getColor(stack)))) {
                             Player player = context.getPlayer();
                             if (player != null) {
-                                player.displayClientMessage(Component.translatable("parcool.message.zipline.already_exist"), true);
+                                player.displayClientMessage(
+                                        Component.translatable(
+                                                "parcool.message.zipline.already_exist"),
+                                        true);
                             }
                             return InteractionResult.FAIL;
                         }
@@ -144,7 +189,10 @@ public class ZiplineRopeItem extends Item {
                     if (context.getLevel().isClientSide()) {
                         Player player = context.getPlayer();
                         if (player != null) {
-                            player.displayClientMessage(Component.translatable("parcool.message.zipline.point_not_found"), true);
+                            player.displayClientMessage(
+                                    Component.translatable(
+                                            "parcool.message.zipline.point_not_found"),
+                                    true);
                         }
                     }
                     return InteractionResult.FAIL;
@@ -155,7 +203,9 @@ public class ZiplineRopeItem extends Item {
                 if (context.getLevel().isClientSide()) {
                     Player player = context.getPlayer();
                     if (player != null) {
-                        player.displayClientMessage(Component.translatable("parcool.message.zipline.reset_point"), true);
+                        player.displayClientMessage(
+                                Component.translatable("parcool.message.zipline.reset_point"),
+                                true);
                     }
                 }
                 removeBlockPosition(stack);
@@ -169,7 +219,10 @@ public class ZiplineRopeItem extends Item {
                 if (context.getLevel().isClientSide()) {
                     Player player = context.getPlayer();
                     if (player != null) {
-                        player.displayClientMessage(Component.translatable("parcool.message.zipline.set_point", pos.toShortString()), true);
+                        player.displayClientMessage(
+                                Component.translatable(
+                                        "parcool.message.zipline.set_point", pos.toShortString()),
+                                true);
                     }
                 }
                 return InteractionResult.SUCCESS;
@@ -178,7 +231,11 @@ public class ZiplineRopeItem extends Item {
                 if (context.getLevel().isClientSide()) {
                     Player player = context.getPlayer();
                     if (player != null) {
-                        player.displayClientMessage(Component.translatable("parcool.message.zipline.change_tension", getZiplineType(stack).getTranslationName()), true);
+                        player.displayClientMessage(
+                                Component.translatable(
+                                        "parcool.message.zipline.change_tension",
+                                        getZiplineType(stack).getTranslationName()),
+                                true);
                     }
                 }
                 return InteractionResult.SUCCESS;
@@ -208,7 +265,7 @@ public class ZiplineRopeItem extends Item {
     public static void setColor(ItemStack stack, int color) {
         if (color != DEFAULT_COLOR) {
             stack.set(DataComponents.ZIPLINE_COLOR, new ZiplineColorComponent(color));
-        }else {
+        } else {
             stack.remove(DataComponents.ZIPLINE_COLOR);
         }
     }
@@ -230,7 +287,10 @@ public class ZiplineRopeItem extends Item {
 
     public static void changeZiplineType(ItemStack stack) {
         var currentType = getZiplineType(stack);
-        setZiplineType(stack, ZiplineType.values()[(getZiplineType(stack).ordinal() + 1) % ZiplineType.values().length]);
+        setZiplineType(
+                stack,
+                ZiplineType.values()[
+                        (getZiplineType(stack).ordinal() + 1) % ZiplineType.values().length]);
     }
 
     public static void setZiplineType(ItemStack stack, ZiplineType type) {

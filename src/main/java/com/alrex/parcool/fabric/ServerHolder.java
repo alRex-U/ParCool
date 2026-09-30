@@ -5,12 +5,14 @@ import net.minecraft.server.MinecraftServer;
 
 import javax.annotation.Nullable;
 
-/** У NeoForge сервер доставали из ServerLifecycleHooks; под Fabric ловим его событиями жизненного цикла. */
+/**
+ * У NeoForge сервер доставали из ServerLifecycleHooks; под Fabric ловим его событиями жизненного
+ * цикла.
+ */
 public final class ServerHolder {
     private static volatile MinecraftServer server = null;
 
-    private ServerHolder() {
-    }
+    private ServerHolder() {}
 
     public static void init() {
         ServerLifecycleEvents.SERVER_STARTED.register(s -> server = s);

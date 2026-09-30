@@ -10,72 +10,74 @@ import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.utilities.Easing;
 import com.alrex.parcool.utilities.EasingFunctions;
 import com.alrex.parcool.utilities.MathUtil;
+
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
 
 public class DiveAnimationHostAnimator extends Animator {
     public DiveAnimationHostAnimator(double ySpeed, boolean fromInAir) {
-		diveAnimator = new DiveAnimator(ySpeed);
+        diveAnimator = new DiveAnimator(ySpeed);
         this.fromInAir = fromInAir;
-	}
-	final DiveAnimator diveAnimator;
-	@Nullable
-	SkyDiveAnimator skyDiveAnimator = null;
-    final boolean fromInAir;
-    final static int MaxTransitionStartedInAirTick = 10;
-	final static int MaxTransitionTick = 6;
+    }
 
-	@Override
+    final DiveAnimator diveAnimator;
+    @Nullable SkyDiveAnimator skyDiveAnimator = null;
+    final boolean fromInAir;
+    static final int MaxTransitionStartedInAirTick = 10;
+    static final int MaxTransitionTick = 6;
+
+    @Override
     public void tick(Player player) {
         super.tick(player);
         diveAnimator.tick(player);
         if (skyDiveAnimator != null) skyDiveAnimator.tick(player);
-		if (transitioning) {
-			transitionTick++;
-			if (transitionTick >= MaxTransitionTick) {
-				transitionTick = 0;
-				transitioning = false;
-			}
-		}
-	}
+        if (transitioning) {
+            transitionTick++;
+            if (transitionTick >= MaxTransitionTick) {
+                transitionTick = 0;
+                transitioning = false;
+            }
+        }
+    }
 
-	@Override
-	public boolean shouldRemoved(Player player, Parkourability parkourability) {
-		return !parkourability.get(Dive.class).isDoing();
-	}
+    @Override
+    public boolean shouldRemoved(Player player, Parkourability parkourability) {
+        return !parkourability.get(Dive.class).isDoing();
+    }
 
-	boolean oldSkyDiveDoing = false;
+    boolean oldSkyDiveDoing = false;
 
-	void checkTransition(Parkourability parkourability) {
-		boolean doing = parkourability.get(SkyDive.class).isDoing();
-		if (doing != oldSkyDiveDoing) {
-			startTransition();
-		}
-		oldSkyDiveDoing = doing;
-	}
+    void checkTransition(Parkourability parkourability) {
+        boolean doing = parkourability.get(SkyDive.class).isDoing();
+        if (doing != oldSkyDiveDoing) {
+            startTransition();
+        }
+        oldSkyDiveDoing = doing;
+    }
 
-	@Override
-	public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
-        if (fromInAir && getTick() < MaxTransitionStartedInAirTick) { // transition when started in air
-            float phase = (getTick() + transformer.getPartialTick()) / MaxTransitionStartedInAirTick;
+    @Override
+    public void animatePost(
+            Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
+        if (fromInAir
+                && getTick() < MaxTransitionStartedInAirTick) { // transition when started in air
+            float phase =
+                    (getTick() + transformer.getPartialTick()) / MaxTransitionStartedInAirTick;
             diveAnimator.animatePost(
-                    player, parkourability, transformer,
-                    new Easing(phase)
-                            .squareOut(0, 1, 0, 1)
-                            .get()
-            );
-            float legAngle = -45 * (float) Math.toRadians
-                    (new Easing(phase)
-                            .squareOut(0, 0.4f, 0, 1)
-                            .sinInOut(0.4f, 1, 1, 0)
-                            .get()
-                    );
-            transformer
-                    .addRotateLeftLeg(legAngle, 0, 0)
-                    .addRotateRightLeg(legAngle, 0, 0)
-                    .end();
-        } else {// normal animation
+                    player,
+                    parkourability,
+                    transformer,
+                    new Easing(phase).squareOut(0, 1, 0, 1).get());
+            float legAngle =
+                    -45
+                            * (float)
+                                    Math.toRadians(
+                                            new Easing(phase)
+                                                    .squareOut(0, 0.4f, 0, 1)
+                                                    .sinInOut(0.4f, 1, 1, 0)
+                                                    .get());
+            transformer.addRotateLeftLeg(legAngle, 0, 0).addRotateRightLeg(legAngle, 0, 0).end();
+        } else { // normal animation
             checkTransition(parkourability);
             if (parkourability.get(SkyDive.class).isDoing()) {
                 if (skyDiveAnimator == null) {
@@ -95,19 +97,22 @@ public class DiveAnimationHostAnimator extends Animator {
                     skyDiveAnimator = null;
                     diveAnimator.animatePost(player, parkourability, transformer);
                 }
-			}
-		}
-	}
+            }
+        }
+    }
 
-	@Override
-    public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
-        if (fromInAir && getTick() < MaxTransitionStartedInAirTick) { // transition when started in air
-            float factor = new Easing((getTick() + rotator.getPartialTick()) / MaxTransitionStartedInAirTick)
-                    .squareOut(0, 1, 0, 1)
-                    .get();
-            diveAnimator.rotate(
-                    player, parkourability, rotator, factor, 0
-            );
+    @Override
+    public void rotatePost(
+            Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+        if (fromInAir
+                && getTick() < MaxTransitionStartedInAirTick) { // transition when started in air
+            float factor =
+                    new Easing(
+                                    (getTick() + rotator.getPartialTick())
+                                            / MaxTransitionStartedInAirTick)
+                            .squareOut(0, 1, 0, 1)
+                            .get();
+            diveAnimator.rotate(player, parkourability, rotator, factor, 0);
         } else {
             checkTransition(parkourability);
             if (parkourability.get(SkyDive.class).isDoing()) {
@@ -118,214 +123,263 @@ public class DiveAnimationHostAnimator extends Animator {
             } else {
                 if (transitioning && skyDiveAnimator != null) {
                     float factor = getTransitionFactor(rotator.getPartialTick());
-                    diveAnimator.rotate(player, parkourability, rotator, factor, skyDiveAnimator.getPitchAngle());
+                    diveAnimator.rotate(
+                            player,
+                            parkourability,
+                            rotator,
+                            factor,
+                            skyDiveAnimator.getPitchAngle());
                 } else {
                     skyDiveAnimator = null;
                     diveAnimator.rotatePost(player, parkourability, rotator);
                 }
-			}
-		}
+            }
+        }
     }
 
-	private void startTransition() {
-		transitioning = true;
-		transitionTick = 0;
-	}
+    private void startTransition() {
+        transitioning = true;
+        transitionTick = 0;
+    }
 
-	private boolean transitioning = false;
-	private int transitionTick = 0;
+    private boolean transitioning = false;
+    private int transitionTick = 0;
 
-	private float getTransitionFactor(float partialTick) {
-		float factor;
-		if (transitioning) {
-			factor = (transitionTick + partialTick) / MaxTransitionTick;
-		} else {
-			factor = 1;
-		}
-		return factor;
-	}
+    private float getTransitionFactor(float partialTick) {
+        float factor;
+        if (transitioning) {
+            factor = (transitionTick + partialTick) / MaxTransitionTick;
+        } else {
+            factor = 1;
+        }
+        return factor;
+    }
 
-	public static class SkyDiveAnimator extends Animator {
-		private int forwardAngleCount = 0;
+    public static class SkyDiveAnimator extends Animator {
+        private int forwardAngleCount = 0;
         private int forwardAngleCountOld = 0;
-		private int rightAngleCount = 0;
+        private int rightAngleCount = 0;
         private int rightAngleCountOld = 0;
-		private final int maxCount = 8;
-		private final float startPitchAngle;
-		private float pitchAngle;
+        private final int maxCount = 8;
+        private final float startPitchAngle;
+        private float pitchAngle;
 
-		public SkyDiveAnimator(float startPitchAngleDegree) {
-			this.startPitchAngle = startPitchAngleDegree;
-		}
+        public SkyDiveAnimator(float startPitchAngleDegree) {
+            this.startPitchAngle = startPitchAngleDegree;
+        }
 
-		@Override
-		public boolean shouldRemoved(Player player, Parkourability parkourability) {
-			return false;
-		}
+        @Override
+        public boolean shouldRemoved(Player player, Parkourability parkourability) {
+            return false;
+        }
 
-		@Override
+        @Override
         public void tick(Player player) {
             super.tick(player);
             forwardAngleCountOld = forwardAngleCount;
             rightAngleCountOld = rightAngleCount;
             if (KeyBindings.isKeyForwardDown()) {
                 if (KeyBindings.isKeyBackDown()) {
-					if (forwardAngleCount > 0) forwardAngleCount--;
-					if (forwardAngleCount < 0) forwardAngleCount++;
-				} else {
-					if (forwardAngleCount < maxCount) forwardAngleCount++;
-				}
+                    if (forwardAngleCount > 0) forwardAngleCount--;
+                    if (forwardAngleCount < 0) forwardAngleCount++;
+                } else {
+                    if (forwardAngleCount < maxCount) forwardAngleCount++;
+                }
             } else if (KeyBindings.isKeyBackDown()) {
-				if (forwardAngleCount > -maxCount) forwardAngleCount--;
-			} else {
-				if (forwardAngleCount > 0) forwardAngleCount--;
-				if (forwardAngleCount < 0) forwardAngleCount++;
-			}
+                if (forwardAngleCount > -maxCount) forwardAngleCount--;
+            } else {
+                if (forwardAngleCount > 0) forwardAngleCount--;
+                if (forwardAngleCount < 0) forwardAngleCount++;
+            }
             if (KeyBindings.isKeyRightDown()) {
                 if (KeyBindings.isKeyLeftDown()) {
-					if (rightAngleCount > 0) rightAngleCount--;
-					if (rightAngleCount < 0) rightAngleCount++;
-				} else {
-					if (rightAngleCount < maxCount) rightAngleCount++;
-				}
+                    if (rightAngleCount > 0) rightAngleCount--;
+                    if (rightAngleCount < 0) rightAngleCount++;
+                } else {
+                    if (rightAngleCount < maxCount) rightAngleCount++;
+                }
             } else if (KeyBindings.isKeyLeftDown()) {
-				if (rightAngleCount > -maxCount) rightAngleCount--;
-			} else {
-				if (rightAngleCount > 0) rightAngleCount--;
-				if (rightAngleCount < 0) rightAngleCount++;
-			}
-		}
+                if (rightAngleCount > -maxCount) rightAngleCount--;
+            } else {
+                if (rightAngleCount > 0) rightAngleCount--;
+                if (rightAngleCount < 0) rightAngleCount++;
+            }
+        }
 
-		@Override
-		public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
-			animatePost(player, parkourability, transformer, 1);
-		}
+        @Override
+        public void animatePost(
+                Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
+            animatePost(player, parkourability, transformer, 1);
+        }
 
-		public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer, float factor) {
-			float forwardAngleFactor = getForwardAngleFactor(transformer.getPartialTick());
-			float rightAngleFactor = getRightAngleFactor(transformer.getPartialTick());
-			transformer.
-					rotateHeadPitch(-20)
-					.rotateRightArm((float) Math.toRadians(20 - 10 * rightAngleFactor), 0, (float) Math.toRadians(70 - 30 * forwardAngleFactor), factor)
-					.rotateLeftArm((float) Math.toRadians(20 + 10 * rightAngleFactor), 0, (float) Math.toRadians(-(70 - 30 * forwardAngleFactor)), factor)
-					.rotateRightLeg((float) Math.toRadians(20 - 10 * rightAngleFactor), 0, (float) Math.toRadians(25 - 10 * forwardAngleFactor), factor)
-					.rotateLeftLeg((float) Math.toRadians(20 + 10 * rightAngleFactor), 0, (float) Math.toRadians(-(25 - 10 * forwardAngleFactor)), factor)
-					.makeArmsMoveDynamically(0.06f)
-					.makeLegsMoveDynamically(0.06f)
-					.end();
-		}
+        public void animatePost(
+                Player player,
+                Parkourability parkourability,
+                PlayerModelTransformer transformer,
+                float factor) {
+            float forwardAngleFactor = getForwardAngleFactor(transformer.getPartialTick());
+            float rightAngleFactor = getRightAngleFactor(transformer.getPartialTick());
+            transformer
+                    .rotateHeadPitch(-20)
+                    .rotateRightArm(
+                            (float) Math.toRadians(20 - 10 * rightAngleFactor),
+                            0,
+                            (float) Math.toRadians(70 - 30 * forwardAngleFactor),
+                            factor)
+                    .rotateLeftArm(
+                            (float) Math.toRadians(20 + 10 * rightAngleFactor),
+                            0,
+                            (float) Math.toRadians(-(70 - 30 * forwardAngleFactor)),
+                            factor)
+                    .rotateRightLeg(
+                            (float) Math.toRadians(20 - 10 * rightAngleFactor),
+                            0,
+                            (float) Math.toRadians(25 - 10 * forwardAngleFactor),
+                            factor)
+                    .rotateLeftLeg(
+                            (float) Math.toRadians(20 + 10 * rightAngleFactor),
+                            0,
+                            (float) Math.toRadians(-(25 - 10 * forwardAngleFactor)),
+                            factor)
+                    .makeArmsMoveDynamically(0.06f)
+                    .makeLegsMoveDynamically(0.06f)
+                    .end();
+        }
 
-		private float getForwardAngleFactor(float partial) {
-			float phase;
+        private float getForwardAngleFactor(float partial) {
+            float phase;
             if (forwardAngleCount > 0)
                 phase = MathUtil.lerp(forwardAngleCountOld, forwardAngleCount, partial) / maxCount;
             else if (forwardAngleCount < 0)
                 phase = MathUtil.lerp(forwardAngleCountOld, forwardAngleCount, partial) / maxCount;
-			else phase = 0;
-			if (phase > 1) phase = 1;
-			if (phase < -1) phase = -1;
-			if (phase > 0) {
-				return EasingFunctions.CubicInOut(phase);
-			} else if (phase < 0) {
-				return -EasingFunctions.CubicInOut(-phase);
-			}
-			return 0;
-		}
+            else phase = 0;
+            if (phase > 1) phase = 1;
+            if (phase < -1) phase = -1;
+            if (phase > 0) {
+                return EasingFunctions.CubicInOut(phase);
+            } else if (phase < 0) {
+                return -EasingFunctions.CubicInOut(-phase);
+            }
+            return 0;
+        }
 
-		private float getRightAngleFactor(float partial) {
-			float phase;
-            if (rightAngleCount > 0) phase = MathUtil.lerp(rightAngleCountOld, rightAngleCount, partial) / maxCount;
+        private float getRightAngleFactor(float partial) {
+            float phase;
+            if (rightAngleCount > 0)
+                phase = MathUtil.lerp(rightAngleCountOld, rightAngleCount, partial) / maxCount;
             else if (rightAngleCount < 0)
                 phase = MathUtil.lerp(rightAngleCountOld, rightAngleCount, partial) / maxCount;
-			else phase = 0;
-			if (phase > 1) phase = 1;
-			if (phase < -1) phase = -1;
+            else phase = 0;
+            if (phase > 1) phase = 1;
+            if (phase < -1) phase = -1;
 
-			if (phase > 0) {
-				return 1 - (1 - phase) * (1 - phase);
-			} else if (phase < 0) {
-				phase = -phase;
-				return -1 + (1 - phase) * (1 - phase);
-			}
-			return 0;
-		}
-
-		@Override
-        public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
-			float forwardAngleFactor = getForwardAngleFactor(rotator.getPartialTick());
-			float rightAngleFactor = getRightAngleFactor(rotator.getPartialTick());
-			float basePitchAngle;
-			if (getTick() >= MaxTransitionTick) basePitchAngle = 90;
-			else {
-				basePitchAngle = MathUtil.lerp(startPitchAngle, 90, (getTick() + rotator.getPartialTick()) / MaxTransitionTick);
-			}
-			pitchAngle = basePitchAngle + 24 * forwardAngleFactor;
-			rotator.startBasedCenter()
-					.rotatePitchFrontward(pitchAngle)
-					.rotateYawRightward(-24 * rightAngleFactor)
-					.end();
+            if (phase > 0) {
+                return 1 - (1 - phase) * (1 - phase);
+            } else if (phase < 0) {
+                phase = -phase;
+                return -1 + (1 - phase) * (1 - phase);
+            }
+            return 0;
         }
 
-		float getPitchAngle() {
-			return pitchAngle;
-		}
-	}
+        @Override
+        public void rotatePost(
+                Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+            float forwardAngleFactor = getForwardAngleFactor(rotator.getPartialTick());
+            float rightAngleFactor = getRightAngleFactor(rotator.getPartialTick());
+            float basePitchAngle;
+            if (getTick() >= MaxTransitionTick) basePitchAngle = 90;
+            else {
+                basePitchAngle =
+                        MathUtil.lerp(
+                                startPitchAngle,
+                                90,
+                                (getTick() + rotator.getPartialTick()) / MaxTransitionTick);
+            }
+            pitchAngle = basePitchAngle + 24 * forwardAngleFactor;
+            rotator.startBasedCenter()
+                    .rotatePitchFrontward(pitchAngle)
+                    .rotateYawRightward(-24 * rightAngleFactor)
+                    .end();
+        }
 
-	public static class DiveAnimator extends Animator {
-		public DiveAnimator(double startYSpeed) {
+        float getPitchAngle() {
+            return pitchAngle;
+        }
+    }
+
+    public static class DiveAnimator extends Animator {
+        public DiveAnimator(double startYSpeed) {
             this.initialYSpeed = startYSpeed;
-		}
+        }
 
         private final double initialYSpeed;
-		private float pitchAngle = 0;
-		private float oldFactor = 0;
+        private float pitchAngle = 0;
+        private float oldFactor = 0;
 
-		private float getFactor(double yMovement) {
-            return (float) Math.max(
-                    0,
-                    2 / (1 + Math.exp(yMovement / (initialYSpeed) - 1)) - 0.9621 // -0.9621 is - 2 / (1+exp(-1)) + 0.5
-            );
-		}
-
-		@Override
-		public boolean shouldRemoved(Player player, Parkourability parkourability) {
-			return false;
-		}
-
-		@Override
-		public void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
-			animatePost(player, parkourability, transformer, 1);
-		}
-
-		void animatePost(Player player, Parkourability parkourability, PlayerModelTransformer transformer, float factor) {
-			double ySpeed = parkourability.get(Dive.class).getPlayerYSpeed(transformer.getPartialTick());
-			float bodyFactor = getFactor(ySpeed);
-			transformer
-					.rotateHeadPitch(-50 * bodyFactor)
-					.rotateRightArm(0, 0, (float) Math.toRadians(195 * bodyFactor), factor)
-					.rotateLeftArm(0, 0, (float) Math.toRadians(-195 * bodyFactor), factor)
-					.rotateRightLeg((float) Math.toRadians(-180 * (bodyFactor - oldFactor)), 0, 0, factor)
-					.rotateLeftLeg((float) Math.toRadians(-180 * (bodyFactor - oldFactor)), 0, 0, factor)
-					.end();
-			oldFactor = bodyFactor;
-		}
-
-		@Override
-        public void rotatePost(Player player, Parkourability parkourability, PlayerModelRotator rotator) {
-			rotate(player, parkourability, rotator, 1, 0);
+        private float getFactor(double yMovement) {
+            return (float)
+                    Math.max(
+                            0,
+                            2 / (1 + Math.exp(yMovement / (initialYSpeed) - 1))
+                                    - 0.9621 // -0.9621 is - 2 / (1+exp(-1)) + 0.5
+                            );
         }
 
-		public void rotate(Player player, Parkourability parkourability, PlayerModelRotator rotator, float factor, float transitionBaseAngle) {
-			double ySpeed = parkourability.get(Dive.class).getPlayerYSpeed(rotator.getPartialTick());
-			float angleFactor = getFactor(ySpeed);
-			pitchAngle = 180 * angleFactor;
-			rotator.startBasedCenter()
-					.rotatePitchFrontward(MathUtil.lerp(transitionBaseAngle, pitchAngle, factor))
-					.end();
-		}
+        @Override
+        public boolean shouldRemoved(Player player, Parkourability parkourability) {
+            return false;
+        }
 
-		private float getPitchAngle() {
-			return pitchAngle;
-		}
-	}
+        @Override
+        public void animatePost(
+                Player player, Parkourability parkourability, PlayerModelTransformer transformer) {
+            animatePost(player, parkourability, transformer, 1);
+        }
+
+        void animatePost(
+                Player player,
+                Parkourability parkourability,
+                PlayerModelTransformer transformer,
+                float factor) {
+            double ySpeed =
+                    parkourability.get(Dive.class).getPlayerYSpeed(transformer.getPartialTick());
+            float bodyFactor = getFactor(ySpeed);
+            transformer
+                    .rotateHeadPitch(-50 * bodyFactor)
+                    .rotateRightArm(0, 0, (float) Math.toRadians(195 * bodyFactor), factor)
+                    .rotateLeftArm(0, 0, (float) Math.toRadians(-195 * bodyFactor), factor)
+                    .rotateRightLeg(
+                            (float) Math.toRadians(-180 * (bodyFactor - oldFactor)), 0, 0, factor)
+                    .rotateLeftLeg(
+                            (float) Math.toRadians(-180 * (bodyFactor - oldFactor)), 0, 0, factor)
+                    .end();
+            oldFactor = bodyFactor;
+        }
+
+        @Override
+        public void rotatePost(
+                Player player, Parkourability parkourability, PlayerModelRotator rotator) {
+            rotate(player, parkourability, rotator, 1, 0);
+        }
+
+        public void rotate(
+                Player player,
+                Parkourability parkourability,
+                PlayerModelRotator rotator,
+                float factor,
+                float transitionBaseAngle) {
+            double ySpeed =
+                    parkourability.get(Dive.class).getPlayerYSpeed(rotator.getPartialTick());
+            float angleFactor = getFactor(ySpeed);
+            pitchAngle = 180 * angleFactor;
+            rotator.startBasedCenter()
+                    .rotatePitchFrontward(MathUtil.lerp(transitionBaseAngle, pitchAngle, factor))
+                    .end();
+        }
+
+        private float getPitchAngle() {
+            return pitchAngle;
+        }
+    }
 }

@@ -5,6 +5,5 @@ package com.alrex.parcool.fabric;
  * `Xxx.registerAll(bus)` из ParCool.java сохранена, чтобы не трогать 12 файлов-реестров.
  */
 public interface IEventBus {
-    IEventBus INSTANCE = new IEventBus() {
-    };
+    IEventBus INSTANCE = new IEventBus() {};
 }

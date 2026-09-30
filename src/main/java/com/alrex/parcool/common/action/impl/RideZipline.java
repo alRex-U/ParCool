@@ -13,28 +13,27 @@ import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import com.alrex.parcool.common.zipline.Zipline;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.VectorUtil;
+
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
+
+import javax.annotation.Nullable;
 
 public class RideZipline extends Action {
     private static final BehaviorEnforcer.ID ID_FALL_FLY_CANCEL = BehaviorEnforcer.newID();
     private static final BehaviorEnforcer.ID ID_SPRINT_CANCEL = BehaviorEnforcer.newID();
-    @Nullable
-    private ZiplineRopeEntity ridingZipline;
-    @Nullable
-    private Vec3 endOffsetFromStart;
+    @Nullable private ZiplineRopeEntity ridingZipline;
+    @Nullable private Vec3 endOffsetFromStart;
     private double speed;
     private double acceleration;
     private double slope;
     private float currentT;
-    @Nullable
-    private Vec3 currentPos;
+    @Nullable private Vec3 currentPos;
     private boolean previouslyStopByCollision = false;
 
     public double getAcceleration() {
@@ -64,14 +63,14 @@ public class RideZipline extends Action {
                 && !parkourability.get(HangDown.class).isDoing()
                 && !parkourability.get(Flipping.class).isDoing()
                 && !parkourability.get(HorizontalWallRun.class).isDoing()
-                && !parkourability.get(VerticalWallRun.class).isDoing()
-        ) {
+                && !parkourability.get(VerticalWallRun.class).isDoing()) {
             ZiplineRopeEntity ropeEntity = Zipline.getHangableZipline(player.level(), player);
             if (ropeEntity == null) return false;
             double t = ropeEntity.getZipline().getParameter(player.position());
             if (t < 0 || 1 < t) return false;
             ridingZipline = ropeEntity;
-            BufferUtil.wrap(startInfo).putVec3(ridingZipline.getZipline().getOffsetToEndFromStart());
+            BufferUtil.wrap(startInfo)
+                    .putVec3(ridingZipline.getZipline().getOffsetToEndFromStart());
             return true;
         }
         return false;
@@ -89,11 +88,13 @@ public class RideZipline extends Action {
                 && !player.getAttachedOrCreate(Attachments.STAMINA).isExhausted()
                 && ridingZipline != null
                 && ridingZipline.isAlive()
-                && 0 <= currentT && currentT <= 1;
+                && 0 <= currentT
+                && currentT <= 1;
     }
 
     @Override
-    public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
+    public void onStartInLocalClient(
+            Player player, Parkourability parkourability, ByteBuffer startData) {
         if (ridingZipline == null) {
             return;
         }
@@ -101,21 +102,25 @@ public class RideZipline extends Action {
 
         player.setSprinting(false);
 
-        parkourability.getBehaviorEnforcer().setMarkerEnforceMovePoint(
-                this::isDoing,
-                () -> {
-                    if (currentPos == null) return null;
-                    return currentPos.subtract(0, player.getBbHeight() * 1.11, 0);
-                }
-        );
-        parkourability.getBehaviorEnforcer().addMarkerCancellingSprint(ID_SPRINT_CANCEL, this::isDoing);
+        parkourability
+                .getBehaviorEnforcer()
+                .setMarkerEnforceMovePoint(
+                        this::isDoing,
+                        () -> {
+                            if (currentPos == null) return null;
+                            return currentPos.subtract(0, player.getBbHeight() * 1.11, 0);
+                        });
+        parkourability
+                .getBehaviorEnforcer()
+                .addMarkerCancellingSprint(ID_SPRINT_CANCEL, this::isDoing);
         Animation animation = Animation.get(player);
         if (animation == null) return;
         animation.setAnimator(new RideZiplineAnimator());
     }
 
     @Override
-    public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
+    public void onStartInOtherClient(
+            Player player, Parkourability parkourability, ByteBuffer startData) {
         Animation animation = Animation.get(player);
         if (animation == null) return;
         animation.setAnimator(new RideZiplineAnimator());
@@ -126,7 +131,9 @@ public class RideZipline extends Action {
         previouslyStopByCollision = false;
         endOffsetFromStart = BufferUtil.getVec3(startData);
         player.setSprinting(false);
-        parkourability.getBehaviorEnforcer().addMarkerCancellingFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
+        parkourability
+                .getBehaviorEnforcer()
+                .addMarkerCancellingFallFlying(ID_FALL_FLY_CANCEL, this::isDoing);
     }
 
     @Override
@@ -146,19 +153,22 @@ public class RideZipline extends Action {
         Vec3 input = new Vec3(-localPlayer.input.leftImpulse, 0., localPlayer.input.forwardImpulse);
         Vec3 offset = zipline.getOffsetToEndFromStart();
         if (input.lengthSqr() > 0.01) {
-            double dot = player.getLookAngle()
-                    .yRot((float) Math.toRadians(VectorUtil.toYawDegree(input)))
-                    .multiply(1, 0, 1)
-                    .normalize()
-                    .dot(new Vec3(offset.x(), 0, offset.z()).normalize());
+            double dot =
+                    player.getLookAngle()
+                            .yRot((float) Math.toRadians(VectorUtil.toYawDegree(input)))
+                            .multiply(1, 0, 1)
+                            .normalize()
+                            .dot(new Vec3(offset.x(), 0, offset.z()).normalize());
             speed += Math.min(dot * 0.01 * (speedAttr.getValue() / speedAttr.getBaseValue()), 0.08);
         }
-        currentT = (float) zipline.getMovedPositionByParameterApproximately(currentT, (float) speed);
+        currentT =
+                (float) zipline.getMovedPositionByParameterApproximately(currentT, (float) speed);
         acceleration = speed - oldSpeed;
         currentPos = zipline.getMidPoint(currentT);
     }
 
-    private void rideNewZipline(ZiplineRopeEntity ziplineRopeEntity, Vec3 position, Vec3 deltaMovement) {
+    private void rideNewZipline(
+            ZiplineRopeEntity ziplineRopeEntity, Vec3 position, Vec3 deltaMovement) {
         ridingZipline = ziplineRopeEntity;
         Zipline zipline = ziplineRopeEntity.getZipline();
         acceleration = 0;
@@ -169,7 +179,10 @@ public class RideZipline extends Action {
         {
             float yScale = (float) slope;
             Vec3 pointsOffset = zipline.getOffsetToEndFromStart();
-            double xzLenInvSqrt = Mth.fastInvSqrt(pointsOffset.x() * pointsOffset.x() + pointsOffset.z() * pointsOffset.z());
+            double xzLenInvSqrt =
+                    Mth.fastInvSqrt(
+                            pointsOffset.x() * pointsOffset.x()
+                                    + pointsOffset.z() * pointsOffset.z());
             double xScale = pointsOffset.x() * xzLenInvSqrt;
             double zScale = pointsOffset.z() * xzLenInvSqrt;
             speedScale = new Vec3(xScale, yScale, zScale).normalize();
@@ -182,7 +195,10 @@ public class RideZipline extends Action {
         {
             float yScale = zipline.getSlope(currentT);
             Vec3 pointsOffset = zipline.getOffsetToEndFromStart();
-            double xzLenInvSqrt = Mth.fastInvSqrt(pointsOffset.x() * pointsOffset.x() + pointsOffset.z() * pointsOffset.z());
+            double xzLenInvSqrt =
+                    Mth.fastInvSqrt(
+                            pointsOffset.x() * pointsOffset.x()
+                                    + pointsOffset.z() * pointsOffset.z());
             double xScale = pointsOffset.x() * xzLenInvSqrt;
             double zScale = pointsOffset.z() * xzLenInvSqrt;
             speedScale = new Vec3(xScale, yScale, zScale).normalize();
@@ -213,8 +229,7 @@ public class RideZipline extends Action {
         if (ridingZipline != null) {
             player.setDeltaMovement(
                     getDeltaMovement(ridingZipline.getZipline(), speed, currentT)
-                            .add(0, KeyBindings.isKeyJumpDown() ? 0.25 : 0, 0)
-            );
+                            .add(0, KeyBindings.isKeyJumpDown() ? 0.25 : 0, 0));
         }
         currentT = 0;
         currentPos = null;
@@ -222,7 +237,6 @@ public class RideZipline extends Action {
         speed = 0;
         slope = 0;
     }
-
 
     @Override
     public void onStop(Player player) {

@@ -3,6 +3,7 @@ package com.alrex.parcool.common.item.recipe.special;
 import com.alrex.parcool.common.item.Items;
 import com.alrex.parcool.common.item.recipe.Recipes;
 import com.alrex.parcool.common.item.zipline.ZiplineRopeItem;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
@@ -15,8 +16,9 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nonnull;
 import java.util.LinkedList;
+
+import javax.annotation.Nonnull;
 
 public class ZiplineRopeDyeRecipe extends CustomRecipe {
 
@@ -44,7 +46,8 @@ public class ZiplineRopeDyeRecipe extends CustomRecipe {
 
     @Nonnull
     @Override
-    public ItemStack assemble(@Nonnull CraftingInput input, @Nonnull HolderLookup.Provider provider) {
+    public ItemStack assemble(
+            @Nonnull CraftingInput input, @Nonnull HolderLookup.Provider provider) {
         ItemStack ziplineRope = null;
         LinkedList<DyeItem> dyeItems = new LinkedList<>();
         for (int i = 0; i < input.size(); i++) {

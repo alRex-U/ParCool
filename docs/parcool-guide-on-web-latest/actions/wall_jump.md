@@ -8,5 +8,5 @@ This skill is possible to be triggered while doing [Horizontal Wall Run](h_wall_
 
 ### 🖱️- How to use -
 
-- Press *Wall-Jump* key by wall in air
-    - *Wall-Jump* key is mapped to space key
+- Press _Wall-Jump_ key by wall in air
+  - _Wall-Jump_ key is mapped to space key

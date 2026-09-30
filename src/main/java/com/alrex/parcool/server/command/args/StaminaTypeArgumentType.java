@@ -9,6 +9,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+
 import net.minecraft.network.chat.Component;
 
 import java.util.Arrays;
@@ -22,21 +23,27 @@ public class StaminaTypeArgumentType implements ArgumentType<StaminaType> {
         try {
             return StaminaType.valueOf(name);
         } catch (IllegalArgumentException e) {
-            Message message = Component.translatable("parcool.command.message.invalidStaminaType", name);
+            Message message =
+                    Component.translatable("parcool.command.message.invalidStaminaType", name);
             throw new CommandSyntaxException(new SimpleCommandExceptionType(message), message);
         }
     }
 
     @Override
-    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+    public <S> CompletableFuture<Suggestions> listSuggestions(
+            CommandContext<S> context, SuggestionsBuilder builder) {
         String remain = builder.getRemaining();
-        for (var type : Arrays.stream(StaminaType.values()).filter(it -> it.name().startsWith(remain)).toList()) {
+        for (var type :
+                Arrays.stream(StaminaType.values())
+                        .filter(it -> it.name().startsWith(remain))
+                        .toList()) {
             builder.suggest(type.name());
         }
         return builder.buildFuture();
     }
 
-    private static final Collection<String> EXAMPLES = Arrays.stream(StaminaType.values()).map(Enum::name).toList();
+    private static final Collection<String> EXAMPLES =
+            Arrays.stream(StaminaType.values()).map(Enum::name).toList();
 
     @Override
     public Collection<String> getExamples() {

@@ -11,15 +11,15 @@ I hope you enjoy ParCool mod!
 
 - [Stamina](#stamina)
 - [Fast Run](#fast-run---the-basic-movement)
-    - Basis of ParCool
+  - Basis of ParCool
 - [Vault](#vault---getting-over-it)
-    - Get over obstacles quickly
+  - Get over obstacles quickly
 - [Cling To Cliff](#cling-to-cliff---get-over-more-high-obstacles)
-    - Get over wall
+  - Get over wall
 - [Breakfall](#breakfall---absorb-falling-impact)
-    - Reduce falling damage
+  - Reduce falling damage
 - [Zipline](#zipline---parkour-facilities)
-    - Connect 2 points and move faster
+  - Connect 2 points and move faster
 - [Afterword](#afterword)
 
 ---
@@ -44,7 +44,7 @@ You get these penalty when stamina is depleted.
 
 ---
 
-## Fast Run - *The Basic Movement*
+## Fast Run - _The Basic Movement_
 
 ![player doing fast running](resources/actions/FastRun.png)
 
@@ -58,7 +58,7 @@ key.
 
 ---
 
-## Vault - *Getting over it*
+## Vault - _Getting over it_
 
 ![player vaulting](resources/actions/SpeedVault.png)
 
@@ -78,7 +78,7 @@ It may look difficult but actually quite easy.
 
 ---
 
-## Cling To Cliff - *Get over more high obstacles*
+## Cling To Cliff - _Get over more high obstacles_
 
 ![cling to cliff 1](resources/actions/ClingToCliff1.png)
 ![cling to cliff 2](resources/actions/ClingToCliff2.png)
@@ -86,7 +86,7 @@ It may look difficult but actually quite easy.
 I think there are times when you might want to climb up more high wall or obstacles.
 So it's time to use **Cling To Cliff** movement!
 
-It's easy to use. Just press *cling to cliff* key (Right Click) and touch edge of blocks.
+It's easy to use. Just press _cling to cliff_ key (Right Click) and touch edge of blocks.
 
 Now you can Cling To Cliff! You can also look around while cling. Use of items is disabled.
 
@@ -113,10 +113,10 @@ ParCool provides 2 type Breakfall, but here I'll introduce one of them : **Roll*
 
 **Roll** is one of breakfall techniques. It protects you by changing landing impact into rolling energy.
 
-This is also easy to trigger. Just keep pressing *breakfall* key (R key) when you land. Roll is triggered if you are
+This is also easy to trigger. Just keep pressing _breakfall_ key (R key) when you land. Roll is triggered if you are
 pressing forward movement key at the time.
 
-Tips! If you press breakfall key just before landing, *just-time breakfall* will be triggered. You gain larger damage
+Tips! If you press breakfall key just before landing, _just-time breakfall_ will be triggered. You gain larger damage
 reduction and special effects!
 
 ---
@@ -149,7 +149,7 @@ It is possible to change color by dyeing. Please craft it with dye items like le
 
 Press shift + right click to select rope tension. After that use it to 2 zipline hooks.
 
-Then let's ride on it by pressing *ride zipline* key (Right click)!
+Then let's ride on it by pressing _ride zipline_ key (Right click)!
 
 ## Afterword
 

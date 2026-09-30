@@ -5,12 +5,12 @@ In this section I introduce a facility added by ParCool : **Zipline**.
 This connects distant 2 points and enable players to move from one side to other end.
 
 - [Crafting](#crafting-items)
-    - [Zipline Hook](#zipline-hook)
-    - [Zipline Rope](#zipline-rope)
+  - [Zipline Hook](#zipline-hook)
+  - [Zipline Rope](#zipline-rope)
 - [Place Zipline](#placing-zipline)
 - [How to use Zipline](#how-to-use)
 
---- 
+---
 
 ## Crafting Items
 
@@ -78,7 +78,7 @@ When you want to remove zipline, use scissors to the zipline hook.
 
 You need nothing to ride zipline except enough stamina.
 
-Just jump to approach zipline and continue to press *Ride-Zipline* key. *Ride-Zipline* key is normally mapped to
+Just jump to approach zipline and continue to press _Ride-Zipline_ key. _Ride-Zipline_ key is normally mapped to
 right-click.
 
 ![riding](../resources/actions/RideZipline.png)

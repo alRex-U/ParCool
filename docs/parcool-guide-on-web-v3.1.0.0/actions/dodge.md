@@ -1,6 +1,6 @@
 # Dodge
 
-**Dodge** is action for avoiding bullets or arrows. You can move quickly short distance.  
+**Dodge** is action for avoiding bullets or arrows. You can move quickly short distance.\
 However be careful with cool time!
 
 ### How to use

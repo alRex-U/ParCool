@@ -4,7 +4,9 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.attachment.client.Animation;
 import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.fabric.RenderFrameEvent;
+
 import io.github.fabricators_of_create.porting_lib.client_events.event.client.ViewportEvent;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -14,9 +16,10 @@ import net.minecraft.world.entity.player.Player;
 import java.util.List;
 
 /**
- * Кадровая часть ActionProcessor вынесена сюда: у NeoForge клиентские классы Minecraft лежат
- * и на выделенном сервере, у Fabric их там нет, и один только `Player p = Minecraft.getInstance().player`
- * ронял загрузку ActionProcessor на сервере (NoClassDefFoundError net/minecraft/class_746).
+ * Кадровая часть ActionProcessor вынесена сюда: у NeoForge клиентские классы Minecraft лежат и на
+ * выделенном сервере, у Fabric их там нет, и один только `Player p =
+ * Minecraft.getInstance().player` ронял загрузку ActionProcessor на сервере (NoClassDefFoundError
+ * net/minecraft/class_746).
  */
 @Environment(EnvType.CLIENT)
 public class ClientRenderProcessor {

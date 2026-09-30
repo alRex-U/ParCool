@@ -18,7 +18,7 @@ Please note that you cannot cling to if the wall is made of slippery material li
 
 ### 🖱️- How to use -
 
-- Press *Cling-To-Cliff* key by a wall
-    - *Cling-To-Cliff* key is normally mapped to right-click
-    - If *Cling-To-Cliff* is in *Toggle* mode, you don't need to keep the button pressed to stay hanging. To release the
-      hang, you need to use the *Cling-To-Cliff* key again
+- Press _Cling-To-Cliff_ key by a wall
+  - _Cling-To-Cliff_ key is normally mapped to right-click
+  - If _Cling-To-Cliff_ is in _Toggle_ mode, you don't need to keep the button pressed to stay hanging. To release the
+    hang, you need to use the _Cling-To-Cliff_ key again

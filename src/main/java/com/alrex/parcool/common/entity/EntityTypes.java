@@ -3,25 +3,32 @@ package com.alrex.parcool.common.entity;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
 import com.alrex.parcool.common.zipline.Zipline;
+import com.alrex.parcool.fabric.DeferredHolder;
+import com.alrex.parcool.fabric.DeferredRegister;
+import com.alrex.parcool.fabric.IEventBus;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import com.alrex.parcool.fabric.IEventBus;
-import com.alrex.parcool.fabric.DeferredHolder;
-import com.alrex.parcool.fabric.DeferredRegister;
 
 public class EntityTypes {
-    private static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(Registries.ENTITY_TYPE, ParCool.MOD_ID);
-    public static final DeferredHolder<EntityType<?>, EntityType<ZiplineRopeEntity>> ZIPLINE_ROPE
-            = REGISTER.register("zipline_rope", () -> EntityType.Builder
-            .of((EntityType.EntityFactory<ZiplineRopeEntity>) ZiplineRopeEntity::new, MobCategory.MISC)
-            .noSave()
-            .clientTrackingRange((int) (Zipline.MAXIMUM_HORIZONTAL_DISTANCE / 1.9))
-            .updateInterval(Integer.MAX_VALUE)
-            .sized(0.1f, 0.1f)
-            .noSummon()
-            .build("zipline_rope")
-    );
+    private static final DeferredRegister<EntityType<?>> REGISTER =
+            DeferredRegister.create(Registries.ENTITY_TYPE, ParCool.MOD_ID);
+    public static final DeferredHolder<EntityType<?>, EntityType<ZiplineRopeEntity>> ZIPLINE_ROPE =
+            REGISTER.register(
+                    "zipline_rope",
+                    () ->
+                            EntityType.Builder.of(
+                                            (EntityType.EntityFactory<ZiplineRopeEntity>)
+                                                    ZiplineRopeEntity::new,
+                                            MobCategory.MISC)
+                                    .noSave()
+                                    .clientTrackingRange(
+                                            (int) (Zipline.MAXIMUM_HORIZONTAL_DISTANCE / 1.9))
+                                    .updateInterval(Integer.MAX_VALUE)
+                                    .sized(0.1f, 0.1f)
+                                    .noSummon()
+                                    .build("zipline_rope"));
 
     public static void registerAll(IEventBus bus) {
         REGISTER.register(bus);

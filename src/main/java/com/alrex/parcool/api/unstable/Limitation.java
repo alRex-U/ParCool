@@ -6,6 +6,7 @@ import com.alrex.parcool.common.stamina.StaminaType;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.server.limitation.Limitations;
 import com.google.gson.stream.JsonWriter;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -20,11 +21,14 @@ import java.nio.file.StandardOpenOption;
 
 public abstract class Limitation {
     public static Limitation get(ServerPlayer player, ID limitationID) {
-        return new NormalLimitation(player, Limitations.createLimitationOf(player.getUUID(), limitationID.convert()));
+        return new NormalLimitation(
+                player, Limitations.createLimitationOf(player.getUUID(), limitationID.convert()));
     }
 
     public static Limitation getIndividual(ServerPlayer player) {
-        return new NormalLimitation(player, Limitations.createLimitationOf(player.getUUID(), Limitations.INDIVIDUAL_ID));
+        return new NormalLimitation(
+                player,
+                Limitations.createLimitationOf(player.getUUID(), Limitations.INDIVIDUAL_ID));
     }
 
     public static Limitation getGlobal(MinecraftServer server) {
@@ -141,7 +145,8 @@ public abstract class Limitation {
 
     private static class NormalLimitation extends Limitation {
 
-        private NormalLimitation(ServerPlayer player, com.alrex.parcool.server.limitation.Limitation instance) {
+        private NormalLimitation(
+                ServerPlayer player, com.alrex.parcool.server.limitation.Limitation instance) {
             super(instance);
             this.player = player;
         }
@@ -164,8 +169,7 @@ public abstract class Limitation {
                                 + instance.getID().getGroup()
                                 + ":"
                                 + instance.getID().getName()
-                                + ")"
-                );
+                                + ")");
                 return;
             }
             File limitationFile = filepath.toFile();
@@ -173,21 +177,17 @@ public abstract class Limitation {
                 limitationFile.getParentFile().mkdirs();
             }
             try (JsonWriter writer =
-                         new JsonWriter(
-                                 new OutputStreamWriter(
-                                         new BufferedOutputStream(
-                                                 Files.newOutputStream(limitationFile.toPath(), StandardOpenOption.CREATE, StandardOpenOption.WRITE)
-                                         ),
-                                         StandardCharsets.UTF_8
-                                 )
-                         )
-            ) {
+                    new JsonWriter(
+                            new OutputStreamWriter(
+                                    new BufferedOutputStream(
+                                            Files.newOutputStream(
+                                                    limitationFile.toPath(),
+                                                    StandardOpenOption.CREATE,
+                                                    StandardOpenOption.WRITE)),
+                                    StandardCharsets.UTF_8))) {
                 instance.saveTo(writer);
             } catch (IOException e) {
-                ParCool.LOGGER.error(
-                        "IOException during saving limitation : "
-                                + e.getMessage()
-                );
+                ParCool.LOGGER.error("IOException during saving limitation : " + e.getMessage());
             }
         }
     }
@@ -208,8 +208,7 @@ public abstract class Limitation {
         }
 
         @Override
-        public void save() {
-        }
+        public void save() {}
     }
 
     protected final com.alrex.parcool.server.limitation.Limitation instance;

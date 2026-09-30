@@ -2,6 +2,7 @@ package com.alrex.parcool.common.block.zipline;
 
 import com.alrex.parcool.common.block.BlockStateProperties;
 import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -22,32 +23,25 @@ public class IronZiplineHookBlock extends ZiplineHookBlock {
     protected static final VoxelShape[] SHAPES = new VoxelShape[Direction.values().length];
 
     static {
-        SHAPES[Direction.DOWN.ordinal()] = Block.box(
-                6, 11, 6, 10, 16, 10
-        );
-        SHAPES[Direction.UP.ordinal()] = Block.box(
-                6, 0, 6, 10, 5, 10
-        );
-        SHAPES[Direction.SOUTH.ordinal()] = Block.box(
-                6, 6, 0, 10, 10, 5
-        );
-        SHAPES[Direction.NORTH.ordinal()] = Block.box(
-                6, 6, 11, 10, 10, 16
-        );
-        SHAPES[Direction.WEST.ordinal()] = Block.box(
-                11, 6, 6, 16, 10, 10
-        );
-        SHAPES[Direction.EAST.ordinal()] = Block.box(
-                0, 6, 6, 5, 10, 10
-        );
+        SHAPES[Direction.DOWN.ordinal()] = Block.box(6, 11, 6, 10, 16, 10);
+        SHAPES[Direction.UP.ordinal()] = Block.box(6, 0, 6, 10, 5, 10);
+        SHAPES[Direction.SOUTH.ordinal()] = Block.box(6, 6, 0, 10, 10, 5);
+        SHAPES[Direction.NORTH.ordinal()] = Block.box(6, 6, 11, 10, 10, 16);
+        SHAPES[Direction.WEST.ordinal()] = Block.box(11, 6, 6, 16, 10, 10);
+        SHAPES[Direction.EAST.ordinal()] = Block.box(0, 6, 6, 5, 10, 10);
     }
 
     @Override
-    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter getter, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
+    public VoxelShape getShape(
+            @Nonnull BlockState state,
+            @Nonnull BlockGetter getter,
+            @Nonnull BlockPos pos,
+            @Nonnull CollisionContext context) {
         return SHAPES[state.getValue(FACING).ordinal()];
     }
 
-    private static final MapCodec<IronZiplineHookBlock> CODEC = simpleCodec(IronZiplineHookBlock::new);
+    private static final MapCodec<IronZiplineHookBlock> CODEC =
+            simpleCodec(IronZiplineHookBlock::new);
 
     @Nonnull
     @Override
@@ -66,12 +60,12 @@ public class IronZiplineHookBlock extends ZiplineHookBlock {
         return new Vec3(
                 pos.getX() + 0.5 - direction.getStepX() * 0.2,
                 pos.getY() + 0.5 - direction.getStepY() * 0.2,
-                pos.getZ() + 0.5 - direction.getStepZ() * 0.2
-        );
+                pos.getZ() + 0.5 - direction.getStepZ() * 0.2);
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> stateBuilder) {
+    protected void createBlockStateDefinition(
+            StateDefinition.Builder<Block, BlockState> stateBuilder) {
         super.createBlockStateDefinition(stateBuilder);
         stateBuilder.add(ORTHOGONAL);
     }
@@ -82,8 +76,7 @@ public class IronZiplineHookBlock extends ZiplineHookBlock {
 
         boolean orthogonal;
         var player = context.getPlayer();
-        if (player == null)
-            orthogonal = false;
+        if (player == null) orthogonal = false;
         else {
             var lookVec = player.getLookAngle();
             switch (context.getClickedFace()) {

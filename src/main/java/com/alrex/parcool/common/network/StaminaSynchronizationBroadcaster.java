@@ -19,7 +19,10 @@ public class StaminaSynchronizationBroadcaster {
 
     private static void send() {
         if (staminaMap.isEmpty()) return;
-        var payloads = staminaMap.entrySet().stream().map(entry -> new StaminaPayload(entry.getKey(), entry.getValue())).toList();
+        var payloads =
+                staminaMap.entrySet().stream()
+                        .map(entry -> new StaminaPayload(entry.getKey(), entry.getValue()))
+                        .toList();
         staminaMap = new TreeMap<>();
         PacketDistributor.sendToAllPlayers(new StaminaBroadcastPayload(payloads));
     }

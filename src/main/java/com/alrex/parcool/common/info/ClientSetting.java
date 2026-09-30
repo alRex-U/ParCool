@@ -4,19 +4,19 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.Actions;
 import com.alrex.parcool.common.stamina.StaminaType;
 import com.alrex.parcool.config.ParCoolConfig;
+
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.util.Arrays;
 import java.util.EnumMap;
 
 public abstract class ClientSetting {
-    public static final StreamCodec<ByteBuf, ClientSetting> STREAM_CODEC = StreamCodec.of(
-            (buffer, value) -> value.writeTo(buffer),
-            ClientSetting::readFrom
-    );
+    public static final StreamCodec<ByteBuf, ClientSetting> STREAM_CODEC =
+            StreamCodec.of((buffer, value) -> value.writeTo(buffer), ClientSetting::readFrom);
 
     private static class Default extends ClientSetting {
         @Override
@@ -53,9 +53,12 @@ public abstract class ClientSetting {
     private static class Remote extends ClientSetting {
         private final boolean[] actionPossibilities = new boolean[Actions.LIST.size()];
         private final int[] staminaConsumptions = new int[Actions.LIST.size()];
-        private final EnumMap<ParCoolConfig.Client.Booleans, Boolean> booleans = new EnumMap<>(ParCoolConfig.Client.Booleans.class);
-        private final EnumMap<ParCoolConfig.Client.Integers, Integer> integers = new EnumMap<>(ParCoolConfig.Client.Integers.class);
-        private final EnumMap<ParCoolConfig.Client.Doubles, Double> doubles = new EnumMap<>(ParCoolConfig.Client.Doubles.class);
+        private final EnumMap<ParCoolConfig.Client.Booleans, Boolean> booleans =
+                new EnumMap<>(ParCoolConfig.Client.Booleans.class);
+        private final EnumMap<ParCoolConfig.Client.Integers, Integer> integers =
+                new EnumMap<>(ParCoolConfig.Client.Integers.class);
+        private final EnumMap<ParCoolConfig.Client.Doubles, Double> doubles =
+                new EnumMap<>(ParCoolConfig.Client.Doubles.class);
         private StaminaType requestedStamina = null;
 
         public Remote() {
@@ -101,7 +104,6 @@ public abstract class ClientSetting {
         public Double get(ParCoolConfig.Client.Doubles item) {
             return doubles.get(item);
         }
-
     }
 
     public static final ClientSetting UNSYNCED_INSTANCE = new Default();
@@ -123,8 +125,10 @@ public abstract class ClientSetting {
         var configInstance = ParCoolConfig.Client.getInstance();
         Remote instance = new Remote();
         for (int i = 0; i < instance.actionPossibilities.length; i++) {
-            instance.actionPossibilities[i] = configInstance.getPossibilityOf(Actions.LIST.get(i)).get();
-            instance.staminaConsumptions[i] = configInstance.getStaminaConsumptionOf(Actions.LIST.get(i)).get();
+            instance.actionPossibilities[i] =
+                    configInstance.getPossibilityOf(Actions.LIST.get(i)).get();
+            instance.staminaConsumptions[i] =
+                    configInstance.getStaminaConsumptionOf(Actions.LIST.get(i)).get();
         }
         for (ParCoolConfig.Client.Booleans item : ParCoolConfig.Client.Booleans.values()) {
             instance.booleans.put(item, item.get());
@@ -174,5 +178,4 @@ public abstract class ClientSetting {
         instance.requestedStamina = StaminaType.values()[buffer.readByte()];
         return instance;
     }
-
 }

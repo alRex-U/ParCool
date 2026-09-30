@@ -4,6 +4,7 @@ import com.alrex.parcool.common.action.impl.HideInBlock;
 import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.fabric.ForcedPoseHolder;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
@@ -13,7 +14,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -22,10 +22,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import javax.annotation.Nullable;
+
 @Mixin(Entity.class)
 public abstract class EntityMixin implements ForcedPoseHolder {
-    @Unique
-    private Pose parCool$forcedPose = null;
+    @Unique private Pose parCool$forcedPose = null;
 
     @Nullable
     @Override
@@ -38,7 +39,6 @@ public abstract class EntityMixin implements ForcedPoseHolder {
         parCool$forcedPose = pose;
     }
 
-
     @Shadow
     public abstract void setBoundingBox(AABB bb);
 
@@ -48,8 +48,7 @@ public abstract class EntityMixin implements ForcedPoseHolder {
     @Shadow
     public abstract void setPos(double x, double y, double z);
 
-    @Shadow
-    public boolean noPhysics;
+    @Shadow public boolean noPhysics;
 
     @Inject(method = "getEyeHeight()F", at = @At("HEAD"), cancellable = true)
     public void onGetEyeHeight(CallbackInfoReturnable<Float> cir) {
@@ -109,10 +108,10 @@ public abstract class EntityMixin implements ForcedPoseHolder {
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability == null) return;
         if (parkourability.getAdditionalProperties().isInAirByJumping()) return;
-        if (parkourability.getAdditionalProperties().getActualNotLandingTick() < parkourability.getLimitedValue(
-                ParCoolConfig.Client.Integers.CoyoteTime,
-                ParCoolConfig.Server.Integers.MaxCoyoteTime
-        )) {
+        if (parkourability.getAdditionalProperties().getActualNotLandingTick()
+                < parkourability.getLimitedValue(
+                        ParCoolConfig.Client.Integers.CoyoteTime,
+                        ParCoolConfig.Server.Integers.MaxCoyoteTime)) {
             cir.setReturnValue(true);
         }
     }

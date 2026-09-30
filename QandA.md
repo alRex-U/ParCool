@@ -8,7 +8,7 @@ Frequently Asked Questions
 
 #### A. No
 
-It will takes much time of port to other API.  
+It will takes much time of port to other API.\
 But if someone is willing to do that, I will accept the contribution.
 
 ---
@@ -25,7 +25,7 @@ I have no plan to port this mod to former version than 1.16.
 
 #### A. Maybe Yes
 
-*Not Enough Animations*, *Elenai Dodge* and *Better Combat* are asked frequently.  
+_Not Enough Animations_, _Elenai Dodge_ and _Better Combat_ are asked frequently.\
 This mod's animation system is less prone to cause conflict with other mods.
 Actually some players have reported that these mod's work well with this mod.
 
@@ -34,6 +34,7 @@ First try to install it.
 ---
 
 ### Q. Why I can't place blocks fast anymore by consecutively pressing right click?
+
 #### A. Re-bind some keybindings may solve this.
 
 ParCool use Right Click as some keybindings for some acitons.

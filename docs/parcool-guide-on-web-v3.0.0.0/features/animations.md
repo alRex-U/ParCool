@@ -1,6 +1,7 @@
 # Animations
 
 ---
+
 This mod adds many animations.
 Some are shown when you do ParCool actions.
 

@@ -6,7 +6,7 @@ You can run horizontally sticking to wall.
 
 This should help you to jump to a distance platform.
 
-Although Sometimes misunderstood, the technique of *Wall Run* is vertical one, not horizontal.
+Although Sometimes misunderstood, the technique of _Wall Run_ is vertical one, not horizontal.
 
 You can trigger [Wall Jump](wall_jump.md) while doing this movement, so it is also possible to use this skill
 continuously without landing by jumping to other wall.
@@ -19,8 +19,8 @@ Please note that you fail wall running if the wall is made of slippery material 
 
 #### PressKey (Default)
 
-- Do [Fast Run](fast_run.md) in air along the wall, and continue to press *Wall-Run* key
-    - *Wall-Run* key is normally mapped to R key
+- Do [Fast Run](fast_run.md) in air along the wall, and continue to press _Wall-Run_ key
+  - _Wall-Run_ key is normally mapped to R key
 
 #### Auto
 

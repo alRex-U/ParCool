@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.zipline;
 
 import com.alrex.parcool.common.entity.zipline.ZiplineRopeEntity;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -8,8 +9,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 public abstract class Zipline {
     public static final double MAXIMUM_HORIZONTAL_DISTANCE = 72.;
@@ -54,21 +56,22 @@ public abstract class Zipline {
     }
 
     @Nullable
-    public static ZiplineRopeEntity getHangableZipline(Level world, Player player, @Nullable ZiplineRopeEntity except) {
+    public static ZiplineRopeEntity getHangableZipline(
+            Level world, Player player, @Nullable ZiplineRopeEntity except) {
         final double d = MAXIMUM_HORIZONTAL_DISTANCE * 0.52 + 1;
-        List<ZiplineRopeEntity> entities = world.getEntitiesOfClass(
-                ZiplineRopeEntity.class,
-                player.getBoundingBox().inflate(d, Zipline.MAXIMUM_VERTICAL_DISTANCE + 1, d)
-        );
+        List<ZiplineRopeEntity> entities =
+                world.getEntitiesOfClass(
+                        ZiplineRopeEntity.class,
+                        player.getBoundingBox()
+                                .inflate(d, Zipline.MAXIMUM_VERTICAL_DISTANCE + 1, d));
         double catchRange = player.getBbWidth();
         double yDeltaMovement = player.getDeltaMovement().y();
         double yDistanceScale = Mth.clamp(0.7 / (Math.abs(yDeltaMovement) + 0.7), 0.4d, 1d);
         var grabPos = player.position().add(0, player.getBbHeight() * 1.11, 0);
         for (ZiplineRopeEntity ziplineEntity : entities) {
-            if (except == ziplineEntity)
-                continue;
-            if (ziplineEntity.getStartPos().equals(BlockPos.ZERO) && ziplineEntity.getEndPos().equals(BlockPos.ZERO))
-                continue;
+            if (except == ziplineEntity) continue;
+            if (ziplineEntity.getStartPos().equals(BlockPos.ZERO)
+                    && ziplineEntity.getEndPos().equals(BlockPos.ZERO)) continue;
             Zipline zipline = ziplineEntity.getZipline();
             if (zipline.isPossiblyHangable(grabPos)) {
                 double distSqr = zipline.getSquaredDistanceApproximately(grabPos, yDistanceScale);
@@ -85,10 +88,7 @@ public abstract class Zipline {
         for (int i = 1; i < count - 1; i++) {
             Vec3 midPoint = getMidPoint(((float) i / count));
             final double d = 0.2;
-            if (!world.noCollision(new AABB(
-                    midPoint.subtract(d, d, d),
-                    midPoint.add(d, d, d)
-            ))) {
+            if (!world.noCollision(new AABB(midPoint.subtract(d, d, d), midPoint.add(d, d, d)))) {
                 return true;
             }
         }
@@ -128,7 +128,13 @@ public abstract class Zipline {
     public abstract double getSquaredDistanceApproximately(Vec3 position, double yDistanceScale);
 
     public boolean isPossiblyHangable(Vec3 position) {
-        return new AABB(getStartPos().x(), getStartPos().y(), getStartPos().z(), getEndPos().x(), getEndPos().y(), getEndPos().z())
+        return new AABB(
+                        getStartPos().x(),
+                        getStartPos().y(),
+                        getStartPos().z(),
+                        getEndPos().x(),
+                        getEndPos().y(),
+                        getEndPos().z())
                 .inflate(1d)
                 .contains(position);
     }

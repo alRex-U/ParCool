@@ -15,5 +15,5 @@ Be careful, you may take damage when you try to decline too much fall speed.
 
 ### 🖱️- How to use -
 
-- Press *Wall-Slide* key by walls in air
-    - *Wall-Slide* key is normally mapped to right-click.
+- Press _Wall-Slide_ key by walls in air
+  - _Wall-Slide_ key is normally mapped to right-click.

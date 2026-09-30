@@ -13,10 +13,10 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 /**
- * Аналог net.neoforged.neoforge.registries.DeferredRegister поверх ванильных реестров.
- * Форма вызовов апстрима сохранена целиком, поэтому 12 классов-реестров ParCool едут
- * без правок, кроме импортов. Порядок флаша задаётся порядком registerAll в ParCool:
- * блоки раньше предметов, вкладка позже предметов.
+ * Аналог net.neoforged.neoforge.registries.DeferredRegister поверх ванильных реестров. Форма
+ * вызовов апстрима сохранена целиком, поэтому 12 классов-реестров ParCool едут без правок, кроме
+ * импортов. Порядок флаша задаётся порядком registerAll в ParCool: блоки раньше предметов, вкладка
+ * позже предметов.
  */
 public class DeferredRegister<T> {
     private final ResourceKey<? extends Registry<T>> registryKey;
@@ -28,30 +28,36 @@ public class DeferredRegister<T> {
         this.namespace = namespace;
     }
 
-    public static <T> DeferredRegister<T> create(ResourceKey<? extends Registry<T>> registryKey, String namespace) {
+    public static <T> DeferredRegister<T> create(
+            ResourceKey<? extends Registry<T>> registryKey, String namespace) {
         return new DeferredRegister<>(registryKey, namespace);
     }
 
-    public static DataComponents createDataComponents(ResourceKey<? extends Registry<DataComponentType<?>>> registryKey, String namespace) {
+    public static DataComponents createDataComponents(
+            ResourceKey<? extends Registry<DataComponentType<?>>> registryKey, String namespace) {
         return new DataComponents(registryKey, namespace);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected Registry<T> registry() {
-        Registry<?> registry = (Registry<?>) BuiltInRegistries.REGISTRY.get((ResourceKey) registryKey);
+        Registry<?> registry =
+                (Registry<?>) BuiltInRegistries.REGISTRY.get((ResourceKey) registryKey);
         if (registry == null) {
             throw new IllegalStateException("ParCool: no built-in registry for " + registryKey);
         }
         return (Registry<T>) registry;
     }
 
-    public <U extends T> DeferredHolder<T, U> register(String name, Supplier<? extends U> supplier) {
+    public <U extends T> DeferredHolder<T, U> register(
+            String name, Supplier<? extends U> supplier) {
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(namespace, name);
         DeferredHolder<T, U> holder = new DeferredHolder<>(ResourceKey.create(registryKey, id));
-        pending.add(() -> {
-            Holder.Reference<T> reference = Registry.registerForHolder(registry(), id, supplier.get());
-            holder.bind(reference);
-        });
+        pending.add(
+                () -> {
+                    Holder.Reference<T> reference =
+                            Registry.registerForHolder(registry(), id, supplier.get());
+                    holder.bind(reference);
+                });
         return holder;
     }
 
@@ -61,11 +67,14 @@ public class DeferredRegister<T> {
     }
 
     public static class DataComponents extends DeferredRegister<DataComponentType<?>> {
-        protected DataComponents(ResourceKey<? extends Registry<DataComponentType<?>>> registryKey, String namespace) {
+        protected DataComponents(
+                ResourceKey<? extends Registry<DataComponentType<?>>> registryKey,
+                String namespace) {
             super(registryKey, namespace);
         }
 
-        public <D> Supplier<DataComponentType<D>> registerComponentType(String name, UnaryOperator<DataComponentType.Builder<D>> builder) {
+        public <D> Supplier<DataComponentType<D>> registerComponentType(
+                String name, UnaryOperator<DataComponentType.Builder<D>> builder) {
             DeferredHolder<DataComponentType<?>, DataComponentType<D>> holder =
                     register(name, () -> builder.apply(DataComponentType.builder()).build());
             return holder;

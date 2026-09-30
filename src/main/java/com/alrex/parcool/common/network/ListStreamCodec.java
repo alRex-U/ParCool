@@ -1,11 +1,13 @@
 package com.alrex.parcool.common.network;
 
 import io.netty.buffer.ByteBuf;
+
 import net.minecraft.network.codec.StreamCodec;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 public class ListStreamCodec<B extends ByteBuf, R> implements StreamCodec<B, List<R>> {
     private final StreamCodec<B, R> CODEC;

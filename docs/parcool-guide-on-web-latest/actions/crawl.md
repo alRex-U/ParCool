@@ -11,8 +11,8 @@ There are derived skill called [Slide](#slide). Please see below section.
 
 ### 🖱️- How to use -
 
-- Press *Crawl* key
-    - *Crawl* key is normally mapped to C key
+- Press _Crawl_ key
+  - _Crawl_ key is normally mapped to C key
 
 ---
 

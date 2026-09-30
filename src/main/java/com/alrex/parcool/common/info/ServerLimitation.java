@@ -6,7 +6,9 @@ import com.alrex.parcool.common.stamina.StaminaType;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.server.limitation.Limitation;
 import com.alrex.parcool.server.limitation.Limitations;
+
 import io.netty.buffer.ByteBuf;
+
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -15,10 +17,10 @@ import java.util.Collection;
 import java.util.EnumMap;
 
 public abstract class ServerLimitation {
-    public static final StreamCodec<ByteBuf, ServerLimitation> STREAM_CODEC = StreamCodec.of(
-            (buf, limitation) -> limitation.writeTo(buf),
-            ServerLimitation::readFrom
-    );
+    public static final StreamCodec<ByteBuf, ServerLimitation> STREAM_CODEC =
+            StreamCodec.of(
+                    (buf, limitation) -> limitation.writeTo(buf), ServerLimitation::readFrom);
+
     private static class Default extends ServerLimitation {
         @Override
         public boolean isPermitted(Class<? extends Action> action) {
@@ -37,12 +39,16 @@ public abstract class ServerLimitation {
 
         @Override
         public Integer get(ParCoolConfig.Server.Integers item) {
-            return item.Advantageous == ParCoolConfig.AdvantageousDirection.Lower ? item.Max : item.Min;
+            return item.Advantageous == ParCoolConfig.AdvantageousDirection.Lower
+                    ? item.Max
+                    : item.Min;
         }
 
         @Override
         public Double get(ParCoolConfig.Server.Doubles item) {
-            return item.Advantageous == ParCoolConfig.AdvantageousDirection.Lower ? item.Max : item.Min;
+            return item.Advantageous == ParCoolConfig.AdvantageousDirection.Lower
+                    ? item.Max
+                    : item.Min;
         }
 
         @Override
@@ -59,9 +65,12 @@ public abstract class ServerLimitation {
     private static class Remote extends ServerLimitation {
         private final boolean[] actionPossibilities = new boolean[Actions.LIST.size()];
         private final int[] leastStaminaConsumptions = new int[Actions.LIST.size()];
-        private final EnumMap<ParCoolConfig.Server.Booleans, Boolean> booleans = new EnumMap<>(ParCoolConfig.Server.Booleans.class);
-        private final EnumMap<ParCoolConfig.Server.Integers, Integer> integers = new EnumMap<>(ParCoolConfig.Server.Integers.class);
-        private final EnumMap<ParCoolConfig.Server.Doubles, Double> doubles = new EnumMap<>(ParCoolConfig.Server.Doubles.class);
+        private final EnumMap<ParCoolConfig.Server.Booleans, Boolean> booleans =
+                new EnumMap<>(ParCoolConfig.Server.Booleans.class);
+        private final EnumMap<ParCoolConfig.Server.Integers, Integer> integers =
+                new EnumMap<>(ParCoolConfig.Server.Integers.class);
+        private final EnumMap<ParCoolConfig.Server.Doubles, Double> doubles =
+                new EnumMap<>(ParCoolConfig.Server.Doubles.class);
         private StaminaType forcedStamina = StaminaType.NONE;
 
         public Remote() {
@@ -71,10 +80,18 @@ public abstract class ServerLimitation {
                 booleans.put(item, item.AdvantageousValue);
             }
             for (ParCoolConfig.Server.Integers item : ParCoolConfig.Server.Integers.values()) {
-                integers.put(item, item.Advantageous == ParCoolConfig.AdvantageousDirection.Higher ? item.Max : item.Min);
+                integers.put(
+                        item,
+                        item.Advantageous == ParCoolConfig.AdvantageousDirection.Higher
+                                ? item.Max
+                                : item.Min);
             }
             for (ParCoolConfig.Server.Doubles item : ParCoolConfig.Server.Doubles.values()) {
-                doubles.put(item, item.Advantageous == ParCoolConfig.AdvantageousDirection.Higher ? item.Max : item.Min);
+                doubles.put(
+                        item,
+                        item.Advantageous == ParCoolConfig.AdvantageousDirection.Higher
+                                ? item.Max
+                                : item.Min);
             }
         }
 
@@ -118,10 +135,10 @@ public abstract class ServerLimitation {
                 if (this.actionPossibilities[i]) {
                     this.actionPossibilities[i] = limitation.isPermitted(Actions.LIST.get(i));
                 }
-                this.leastStaminaConsumptions[i] = Math.max(
-                        this.leastStaminaConsumptions[i],
-                        limitation.getLeastStaminaConsumption(Actions.LIST.get(i))
-                );
+                this.leastStaminaConsumptions[i] =
+                        Math.max(
+                                this.leastStaminaConsumptions[i],
+                                limitation.getLeastStaminaConsumption(Actions.LIST.get(i)));
             }
             for (ParCoolConfig.Server.Booleans item : ParCoolConfig.Server.Booleans.values()) {
                 if (this.booleans.get(item) == item.AdvantageousValue) {
@@ -131,18 +148,16 @@ public abstract class ServerLimitation {
             for (ParCoolConfig.Server.Integers item : ParCoolConfig.Server.Integers.values()) {
                 this.integers.put(
                         item,
-                        item.Advantageous == ParCoolConfig.AdvantageousDirection.Higher ?
-                                Math.min(limitation.get(item), this.integers.get(item)) :
-                                Math.max(limitation.get(item), this.integers.get(item))
-                );
+                        item.Advantageous == ParCoolConfig.AdvantageousDirection.Higher
+                                ? Math.min(limitation.get(item), this.integers.get(item))
+                                : Math.max(limitation.get(item), this.integers.get(item)));
             }
             for (ParCoolConfig.Server.Doubles item : ParCoolConfig.Server.Doubles.values()) {
                 this.doubles.put(
                         item,
-                        item.Advantageous == ParCoolConfig.AdvantageousDirection.Higher ?
-                                Math.min(limitation.get(item), this.doubles.get(item)) :
-                                Math.max(limitation.get(item), this.doubles.get(item))
-                );
+                        item.Advantageous == ParCoolConfig.AdvantageousDirection.Higher
+                                ? Math.min(limitation.get(item), this.doubles.get(item))
+                                : Math.max(limitation.get(item), this.doubles.get(item)));
             }
             forcedStamina = limitation.getForcedStamina();
         }

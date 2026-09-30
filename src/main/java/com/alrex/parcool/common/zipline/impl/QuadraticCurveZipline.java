@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.zipline.impl;
 
 import com.alrex.parcool.common.zipline.Zipline;
+
 import net.minecraft.world.phys.Vec3;
 
 public class QuadraticCurveZipline extends Zipline {
@@ -25,8 +26,10 @@ public class QuadraticCurveZipline extends Zipline {
     public float getParameter(Vec3 position) {
         double offsetX = getOffsetToEndFromStart().x();
         double offsetZ = getOffsetToEndFromStart().z();
-        return (float) (((position.x() - getStartPos().x()) * offsetX + (position.z() - getStartPos().z()) * offsetZ) /
-                (getHorizontalDistance() * getHorizontalDistance()));
+        return (float)
+                (((position.x() - getStartPos().x()) * offsetX
+                                + (position.z() - getStartPos().z()) * offsetZ)
+                        / (getHorizontalDistance() * getHorizontalDistance()));
     }
 
     // length along curve from point of t=0
@@ -41,7 +44,7 @@ public class QuadraticCurveZipline extends Zipline {
 
     @Override
     public double getMovedPositionByParameterApproximately(float currentT, float movement) {
-        //Movement along a quadratic curve is difficult to calculate mathematically precisely
+        // Movement along a quadratic curve is difficult to calculate mathematically precisely
         double xzLength = getHorizontalDistance();
         double a = getOffsetToEndFromStart().y() / (xzLength * xzLength);
 
@@ -51,12 +54,14 @@ public class QuadraticCurveZipline extends Zipline {
         }
 
         double destination = getDistanceFrom0(currentT * xzLength, a) + movement;
-        //Newton's method
+        // Newton's method
         double oldInterim;
         double interim = currentT * xzLength;
         for (int i = 0; i < 20; i++) {
             oldInterim = interim;
-            interim -= (getDistanceFrom0(interim, a) - destination) / getDistanceFrom0Derivative(interim, a);
+            interim -=
+                    (getDistanceFrom0(interim, a) - destination)
+                            / getDistanceFrom0Derivative(interim, a);
             if (Math.abs(oldInterim - interim) < 0.001) {
                 return interim / xzLength;
             }

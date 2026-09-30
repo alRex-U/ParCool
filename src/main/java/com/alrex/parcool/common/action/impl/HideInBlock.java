@@ -11,6 +11,9 @@ import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.BufferUtil;
 import com.alrex.parcool.utilities.WorldUtil;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -22,23 +25,18 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+
+import java.nio.ByteBuffer;
 
 import javax.annotation.Nullable;
-import java.nio.ByteBuffer;
 
 public class HideInBlock extends Action {
     private static final BehaviorEnforcer.ID ID_SHOW_NAME = BehaviorEnforcer.newID();
     private static final BehaviorEnforcer.ID ID_SNEAK = BehaviorEnforcer.newID();
-    @Nullable
-    Vec3 hidingPoint = null;
-    @Nullable
-    Tuple<BlockPos, BlockPos> hidingArea = null;
-    @Nullable
-    Vec3 enterPoint = null;
-    @Nullable
-    Vec3 lookDirection = null;
+    @Nullable Vec3 hidingPoint = null;
+    @Nullable Tuple<BlockPos, BlockPos> hidingArea = null;
+    @Nullable Vec3 enterPoint = null;
+    @Nullable Vec3 lookDirection = null;
     boolean hidingBlockChanged = false;
     boolean keyPressed;
     boolean startedFromDiving;
@@ -64,8 +62,7 @@ public class HideInBlock extends Action {
                 || player.isPassenger()
                 || player.isVisuallySwimming()
                 || getNotDoingTick() < 6
-                || parkourability.get(Crawl.class).isDoing()
-        ) {
+                || parkourability.get(Crawl.class).isDoing()) {
             return false;
         }
 
@@ -74,7 +71,9 @@ public class HideInBlock extends Action {
         if (isStandbyInAir(parkourability)) {
             hideBaseBlockPos = player.blockPosition().below();
             startFromDiving = true;
-        } else if (KeyBindings.getKeyHideInBlock().isDown() && (!ParCoolConfig.Client.Booleans.HideInBlockSneakNeeded.get() || player.getPose() == Pose.CROUCHING)) {
+        } else if (KeyBindings.getKeyHideInBlock().isDown()
+                && (!ParCoolConfig.Client.Booleans.HideInBlockSneakNeeded.get()
+                        || player.getPose() == Pose.CROUCHING)) {
             HitResult result = Minecraft.getInstance().hitResult;
             if (result instanceof BlockHitResult && parkourability.isDoingNothing()) {
                 hideBaseBlockPos = ((BlockHitResult) result).getBlockPos();
@@ -85,13 +84,14 @@ public class HideInBlock extends Action {
         }
 
         if (hideBaseBlockPos != null) {
-            Tuple<BlockPos, BlockPos> hideArea = WorldUtil.getHideAbleSpace(player, hideBaseBlockPos);
+            Tuple<BlockPos, BlockPos> hideArea =
+                    WorldUtil.getHideAbleSpace(player, hideBaseBlockPos);
             if (hideArea == null) return false;
-            Vec3 hidePoint = new Vec3(
-                    0.5 + (hideArea.getA().getX() + hideArea.getB().getX()) / 2.,
-                    Math.min(hideArea.getA().getY(), hideArea.getB().getY()),
-                    0.5 + (hideArea.getA().getZ() + hideArea.getB().getZ()) / 2.
-            );
+            Vec3 hidePoint =
+                    new Vec3(
+                            0.5 + (hideArea.getA().getX() + hideArea.getB().getX()) / 2.,
+                            Math.min(hideArea.getA().getY(), hideArea.getB().getY()),
+                            0.5 + (hideArea.getA().getZ() + hideArea.getB().getZ()) / 2.);
             if (!player.position().closerThan(hidePoint, 1.8)) return false;
             {
                 int minX = Math.min(hideArea.getA().getX(), hideArea.getB().getX());
@@ -100,21 +100,27 @@ public class HideInBlock extends Action {
                 int maxY = Math.max(hideArea.getA().getY(), hideArea.getB().getY());
                 int minZ = Math.min(hideArea.getA().getZ(), hideArea.getB().getZ());
                 int maxZ = Math.max(hideArea.getA().getZ(), hideArea.getB().getZ());
-                hideArea = new Tuple<>(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ));
+                hideArea =
+                        new Tuple<>(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ));
             }
             Vec3 direction;
-            boolean stand = player.getBbHeight() < (hideArea.getB().getY() - hideArea.getA().getY() + 1);
+            boolean stand =
+                    player.getBbHeight() < (hideArea.getB().getY() - hideArea.getA().getY() + 1);
             if (stand && startFromDiving) return false;
             if (stand) {
                 Vec3 lookAngle = player.getLookAngle();
-                direction = Math.abs(lookAngle.x()) > Math.abs(lookAngle.z()) ?
-                        new Vec3(lookAngle.x() > 0 ? 1 : -1, 0, 0) :
-                        new Vec3(0, 0, lookAngle.z() > 0 ? 1 : -1);
+                direction =
+                        Math.abs(lookAngle.x()) > Math.abs(lookAngle.z())
+                                ? new Vec3(lookAngle.x() > 0 ? 1 : -1, 0, 0)
+                                : new Vec3(0, 0, lookAngle.z() > 0 ? 1 : -1);
             } else {
-                boolean zLonger = Math.abs(hideArea.getA().getZ() - hideArea.getB().getZ()) > Math.abs(hideArea.getA().getX() - hideArea.getB().getX());
-                direction = zLonger ?
-                        new Vec3(0, 0, player.getLookAngle().z() > 0 ? 1 : -1) :
-                        new Vec3(player.getLookAngle().x() > 0 ? 1 : -1, 0, 0);
+                boolean zLonger =
+                        Math.abs(hideArea.getA().getZ() - hideArea.getB().getZ())
+                                > Math.abs(hideArea.getA().getX() - hideArea.getB().getX());
+                direction =
+                        zLonger
+                                ? new Vec3(0, 0, player.getLookAngle().z() > 0 ? 1 : -1)
+                                : new Vec3(player.getLookAngle().x() > 0 ? 1 : -1, 0, 0);
             }
             BufferUtil.wrap(startInfo)
                     .putBoolean(stand)
@@ -136,67 +142,79 @@ public class HideInBlock extends Action {
         }
         return (player.hurtTime <= 0 || (startedFromDiving && getDoingTick() < 10))
                 && player.getPose() == Pose.STANDING
-                && (getDoingTick() < 6 || KeyBindings.getKeyHideInBlock().isDown() || KeyBindings.getKeySneak().isDown());
+                && (getDoingTick() < 6
+                        || KeyBindings.getKeyHideInBlock().isDown()
+                        || KeyBindings.getKeySneak().isDown());
     }
 
     @Override
     public void onStart(Player player, Parkourability parkourability, ByteBuffer startData) {
         boolean _stand = BufferUtil.getBoolean(startData);
         startedFromDiving = BufferUtil.getBoolean(startData);
-        hidingArea = new Tuple<>(BufferUtil.getBlockPos(startData), BufferUtil.getBlockPos(startData));
+        hidingArea =
+                new Tuple<>(BufferUtil.getBlockPos(startData), BufferUtil.getBlockPos(startData));
         hidingPoint = BufferUtil.getVec3(startData);
         enterPoint = BufferUtil.getVec3(startData);
         lookDirection = BufferUtil.getVec3(startData);
         if (startedFromDiving) {
-            parkourability.getBehaviorEnforcer().setMarkerEnforcePosition(
-                    this::isDoing,
-                    () -> hidingPoint
-            );
+            parkourability
+                    .getBehaviorEnforcer()
+                    .setMarkerEnforcePosition(this::isDoing, () -> hidingPoint);
         } else {
-            parkourability.getBehaviorEnforcer().setMarkerEnforcePosition(
-                    this::isDoing,
-                    () -> {
-                        if (getDoingTick() == 0)
-                            return hidingPoint.subtract(enterPoint).scale(0.75).add(enterPoint);
-                        return hidingPoint;
-                    }
-            );
+            parkourability
+                    .getBehaviorEnforcer()
+                    .setMarkerEnforcePosition(
+                            this::isDoing,
+                            () -> {
+                                if (getDoingTick() == 0)
+                                    return hidingPoint
+                                            .subtract(enterPoint)
+                                            .scale(0.75)
+                                            .add(enterPoint);
+                                return hidingPoint;
+                            });
         }
         parkourability.getBehaviorEnforcer().addMarkerCancellingSneak(ID_SNEAK, this::isDoing);
         player.setPose(Pose.STANDING);
         player.noPhysics = true;
-        player.playSound(player.level()
+        player.playSound(
+                player.level()
                         .getBlockState(
                                 new BlockPos(
                                         Mth.floor(hidingPoint.x()),
                                         Mth.floor(hidingPoint.y() + 0.2),
-                                        Mth.floor(hidingPoint.z())
-                                )
-                        )
-                        .getSoundType().getBreakSound(),
-                1, 1
-        );
+                                        Mth.floor(hidingPoint.z())))
+                        .getSoundType()
+                        .getBreakSound(),
+                1,
+                1);
     }
 
     @Override
-    public void onStartInLocalClient(Player player, Parkourability parkourability, ByteBuffer startData) {
+    public void onStartInLocalClient(
+            Player player, Parkourability parkourability, ByteBuffer startData) {
         boolean stand = BufferUtil.getBoolean(startData);
-        RenderBehaviorEnforcer.serMarkerEnforceCameraType(this::isDoing, () -> CameraType.THIRD_PERSON_BACK);
-        parkourability.getBehaviorEnforcer().addMarkerCancellingShowName(ID_SHOW_NAME, this::isDoing);
+        RenderBehaviorEnforcer.serMarkerEnforceCameraType(
+                this::isDoing, () -> CameraType.THIRD_PERSON_BACK);
+        parkourability
+                .getBehaviorEnforcer()
+                .addMarkerCancellingShowName(ID_SHOW_NAME, this::isDoing);
         spawnOnHideParticles(player);
         Animation animation = Animation.get(player);
         animation.setAnimator(new HideInBlockAnimator(stand, startedFromDiving));
     }
 
     @Override
-    public void onStartInOtherClient(Player player, Parkourability parkourability, ByteBuffer startData) {
+    public void onStartInOtherClient(
+            Player player, Parkourability parkourability, ByteBuffer startData) {
         boolean stand = BufferUtil.getBoolean(startData);
-        parkourability.getBehaviorEnforcer().addMarkerCancellingShowName(ID_SHOW_NAME, this::isDoing);
+        parkourability
+                .getBehaviorEnforcer()
+                .addMarkerCancellingShowName(ID_SHOW_NAME, this::isDoing);
         spawnOnHideParticles(player);
         Animation animation = Animation.get(player);
         animation.setAnimator(new HideInBlockAnimator(stand, startedFromDiving));
     }
-
 
     @Override
     public void onWorkingTickInServer(Player player, Parkourability parkourability) {
@@ -217,42 +235,43 @@ public class HideInBlock extends Action {
         final Vec3 hidePos = hidingPoint;
         final Vec3 entPos = enterPoint;
         Parkourability parkourability = Parkourability.get(player);
-        parkourability.getBehaviorEnforcer().setMarkerEnforcePosition(
-                () -> this.getNotDoingTick() <= 1,
-                () -> {
-                    if (getNotDoingTick() == 0)
-                        return entPos.subtract(hidePos).scale(0.65).add(hidePos);
-                    return entPos;
-                }
-        );
+        parkourability
+                .getBehaviorEnforcer()
+                .setMarkerEnforcePosition(
+                        () -> this.getNotDoingTick() <= 1,
+                        () -> {
+                            if (getNotDoingTick() == 0)
+                                return entPos.subtract(hidePos).scale(0.65).add(hidePos);
+                            return entPos;
+                        });
         spawnOnHideParticles(player);
-        player.playSound(player.level()
+        player.playSound(
+                player.level()
                         .getBlockState(
                                 new BlockPos(
                                         Mth.floor(hidingPoint.x()),
                                         Mth.floor(hidingPoint.y() + 0.2),
-                                        Mth.floor(hidingPoint.z())
-                                )
-                        )
-                        .getSoundType().getBreakSound(),
-                1, 1
-        );
+                                        Mth.floor(hidingPoint.z())))
+                        .getSoundType()
+                        .getBreakSound(),
+                1,
+                1);
     }
 
     @Override
     public void onStopInOtherClient(Player player) {
         spawnOnHideParticles(player);
-        player.playSound(player.level()
+        player.playSound(
+                player.level()
                         .getBlockState(
                                 new BlockPos(
                                         Mth.floor(hidingPoint.x()),
                                         Mth.floor(hidingPoint.y() + 0.2),
-                                        Mth.floor(hidingPoint.z())
-                                )
-                        )
-                        .getSoundType().getBreakSound(),
-                1, 1
-        );
+                                        Mth.floor(hidingPoint.z())))
+                        .getSoundType()
+                        .getBreakSound(),
+                1,
+                1);
     }
 
     @Override
@@ -305,10 +324,12 @@ public class HideInBlock extends Action {
             return false;
         }
         BlockPos posA = hidingArea.getA(), posB = hidingArea.getB();
-        return (posA.getX() <= pos.getX() && pos.getX() <= posB.getX()
-                && posA.getY() <= pos.getY() && pos.getY() <= posB.getY()
-                && posA.getZ() <= pos.getZ() && pos.getZ() <= posB.getZ()
-        );
+        return (posA.getX() <= pos.getX()
+                && pos.getX() <= posB.getX()
+                && posA.getY() <= pos.getY()
+                && pos.getY() <= posB.getY()
+                && posA.getZ() <= pos.getZ()
+                && pos.getZ() <= posB.getZ());
     }
 
     @Environment(EnvType.CLIENT)

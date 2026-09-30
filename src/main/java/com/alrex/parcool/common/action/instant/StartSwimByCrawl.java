@@ -4,6 +4,7 @@ import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.action.InstantAction;
 import com.alrex.parcool.common.action.StaminaConsumeTiming;
 import com.alrex.parcool.common.attachment.common.Parkourability;
+
 import net.minecraft.world.entity.player.Player;
 
 import java.nio.ByteBuffer;

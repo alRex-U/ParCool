@@ -8,47 +8,48 @@ import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.utilities.MathUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 
 public class LightStaminaHUD {
-	private static final int VANILLA_RIGHT_STACK_HEIGHT = 39;
-	private long lastStaminaChangedTick = 0;
-	//1-> recovering, -1->consuming, 0->no changing
-	private int lastChangingSign = 0;
-	private int changingSign = 0;
-	private long changingTimeTick = 0;
-	private int randomOffset = 0;
-	private boolean justBecameMax = false;
+    private static final int VANILLA_RIGHT_STACK_HEIGHT = 39;
+    private long lastStaminaChangedTick = 0;
+    // 1-> recovering, -1->consuming, 0->no changing
+    private int lastChangingSign = 0;
+    private int changingSign = 0;
+    private long changingTimeTick = 0;
+    private int randomOffset = 0;
+    private boolean justBecameMax = false;
 
     private float statusValue = 0f;
     private float oldStatusValue = 0f;
     private boolean showStatus = false;
-	private int oldValue = 0;
+    private int oldValue = 0;
 
-	public void onTick(LocalPlayer player) {
+    public void onTick(LocalPlayer player) {
         Parkourability parkourability = Parkourability.get(player);
-		if (parkourability == null) return;
-		var stamina = player.getAttachedOrCreate(Attachments.STAMINA);
-		int newValue = stamina.value();
-		changingSign = (int) Math.signum(newValue - oldValue);
-		final long gameTime = player.getCommandSenderWorld().getGameTime();
-		if (changingSign != lastChangingSign) {
-			lastChangingSign = changingSign;
-			changingTimeTick = 0;
-		} else {
-			changingTimeTick++;
-		}
-		if (player.getRandom().nextInt(5) == 0) {
-			randomOffset += player.getRandom().nextBoolean() ? 1 : -1;
-		} else {
-			randomOffset = 0;
-		}
-		if (newValue != oldValue || stamina.isExhausted()) {
-			lastStaminaChangedTick = gameTime;
-		}
-		justBecameMax = oldValue < newValue && newValue == stamina.max();
+        if (parkourability == null) return;
+        var stamina = player.getAttachedOrCreate(Attachments.STAMINA);
+        int newValue = stamina.value();
+        changingSign = (int) Math.signum(newValue - oldValue);
+        final long gameTime = player.getCommandSenderWorld().getGameTime();
+        if (changingSign != lastChangingSign) {
+            lastChangingSign = changingSign;
+            changingTimeTick = 0;
+        } else {
+            changingTimeTick++;
+        }
+        if (player.getRandom().nextInt(5) == 0) {
+            randomOffset += player.getRandom().nextBoolean() ? 1 : -1;
+        } else {
+            randomOffset = 0;
+        }
+        if (newValue != oldValue || stamina.isExhausted()) {
+            lastStaminaChangedTick = gameTime;
+        }
+        justBecameMax = oldValue < newValue && newValue == stamina.max();
 
         oldStatusValue = statusValue;
         boolean oldShowStatus = showStatus;
@@ -70,39 +71,50 @@ public class LightStaminaHUD {
         if (!oldShowStatus && showStatus) {
             oldStatusValue = statusValue;
         }
-		oldValue = newValue;
-	}
+        oldValue = newValue;
+    }
 
-	public void render(GuiGraphics graphics, Parkourability parkourability, ReadonlyStamina stamina, float partialTick) {
-		var player = Minecraft.getInstance().player;
-		if (player == null) return;
-		final boolean inexhaustible = player.hasEffect(Effects.INEXHAUSTIBLE);
-		final boolean exhausted = stamina.isExhausted();
+    public void render(
+            GuiGraphics graphics,
+            Parkourability parkourability,
+            ReadonlyStamina stamina,
+            float partialTick) {
+        var player = Minecraft.getInstance().player;
+        if (player == null) return;
+        final boolean inexhaustible = player.hasEffect(Effects.INEXHAUSTIBLE);
+        final boolean exhausted = stamina.isExhausted();
 
-		if (!showStatus) {
-			long gameTime = player.level().getGameTime();
-			if (gameTime - lastStaminaChangedTick > 40 && !ParCoolConfig.Client.Booleans.ShowLightStaminaHUDAlways.get())
-				return;
-		}
-		float staminaScale = (float) stamina.value() / stamina.max();
-		if (staminaScale < 0) staminaScale = 0;
-		if (staminaScale > 1) staminaScale = 1;
+        if (!showStatus) {
+            long gameTime = player.level().getGameTime();
+            if (gameTime - lastStaminaChangedTick > 40
+                    && !ParCoolConfig.Client.Booleans.ShowLightStaminaHUDAlways.get()) return;
+        }
+        float staminaScale = (float) stamina.value() / stamina.max();
+        if (staminaScale < 0) staminaScale = 0;
+        if (staminaScale > 1) staminaScale = 1;
 
         staminaScale *= 10f;
-		float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick) * 10f : 0f;
+        float statusScale =
+                showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick) * 10f : 0f;
 
-		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.setShaderTexture(0, StaminaHUD.STAMINA);
-		final int width = graphics.guiWidth();
-		final int height = graphics.guiHeight();
-        int baseX = width / 2 + 91 + ParCoolConfig.Client.Integers.HorizontalOffsetOfLightStaminaHUD.get();
-		// ponytail: у NeoForge Gui.rightHeight складывает высоту правой стопки HUD; в ваниле такого
-		// счётчика нет, берём фиксированную высоту полосы голода. Сдвинуть настройкой
-		// VerticalOffsetOfLightStaminaHUD, если в паке появится ещё один правый HUD.
-		int baseY = height - VANILLA_RIGHT_STACK_HEIGHT + ParCoolConfig.Client.Integers.VerticalOffsetOfLightStaminaHUD.get();
-		for (int i = 0; i < 10; i++) {
-			int x = baseX - i * 8 - 9;
-			int offsetY = 0;
+        final int width = graphics.guiWidth();
+        final int height = graphics.guiHeight();
+        int baseX =
+                width / 2
+                        + 91
+                        + ParCoolConfig.Client.Integers.HorizontalOffsetOfLightStaminaHUD.get();
+        // ponytail: у NeoForge Gui.rightHeight складывает высоту правой стопки HUD; в ваниле такого
+        // счётчика нет, берём фиксированную высоту полосы голода. Сдвинуть настройкой
+        // VerticalOffsetOfLightStaminaHUD, если в паке появится ещё один правый HUD.
+        int baseY =
+                height
+                        - VANILLA_RIGHT_STACK_HEIGHT
+                        + ParCoolConfig.Client.Integers.VerticalOffsetOfLightStaminaHUD.get();
+        for (int i = 0; i < 10; i++) {
+            int x = baseX - i * 8 - 9;
+            int offsetY = 0;
             int textureX;
             if (inexhaustible) {
                 if (showStatus) {
@@ -123,24 +135,24 @@ public class LightStaminaHUD {
                     textureX = 0;
                 }
             }
-			if (justBecameMax) {
-				textureX = 81;
-            } else if (staminaScale < i) {//empty
-				textureX += 18;
-			} else if (staminaScale < i + 0.5f) {//not full
-				textureX += 9;
-			}
-			if (justBecameMax) {
-				offsetY = -1;
-			} else if (changingSign == 1) {
-				if ((changingTimeTick & 0b11111) == i) {
-					offsetY = -1;
-				}
-			} else if (i + 1 > staminaScale && staminaScale > i && changingSign == -1) {
-				offsetY = randomOffset;
-			}
+            if (justBecameMax) {
+                textureX = 81;
+            } else if (staminaScale < i) { // empty
+                textureX += 18;
+            } else if (staminaScale < i + 0.5f) { // not full
+                textureX += 9;
+            }
+            if (justBecameMax) {
+                offsetY = -1;
+            } else if (changingSign == 1) {
+                if ((changingTimeTick & 0b11111) == i) {
+                    offsetY = -1;
+                }
+            } else if (i + 1 > staminaScale && staminaScale > i && changingSign == -1) {
+                offsetY = randomOffset;
+            }
 
-			graphics.blit(StaminaHUD.STAMINA, x, baseY + offsetY, textureX, 119, 9, 9, 128, 128);
-		}
-	}
+            graphics.blit(StaminaHUD.STAMINA, x, baseY + offsetY, textureX, 119, 9, 9, 128, 128);
+        }
+    }
 }

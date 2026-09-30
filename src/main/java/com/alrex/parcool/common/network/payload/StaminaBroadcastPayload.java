@@ -2,24 +2,30 @@ package com.alrex.parcool.common.network.payload;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.network.ListStreamCodec;
+import com.alrex.parcool.fabric.IPayloadContext;
+
 import io.netty.buffer.ByteBuf;
+
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import com.alrex.parcool.fabric.IPayloadContext;
 
 import java.util.List;
 
-public record StaminaBroadcastPayload(List<StaminaPayload> staminaList) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<StaminaBroadcastPayload> TYPE
-            = new Type<>(ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "payload.stamina.broadcast"));
+public record StaminaBroadcastPayload(List<StaminaPayload> staminaList)
+        implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<StaminaBroadcastPayload> TYPE =
+            new Type<>(
+                    ResourceLocation.fromNamespaceAndPath(
+                            ParCool.MOD_ID, "payload.stamina.broadcast"));
 
-    private static final StreamCodec<ByteBuf, List<StaminaPayload>> STAMINA_CODEC = new ListStreamCodec<>(StaminaPayload.CODEC);
-    public static final StreamCodec<ByteBuf, StaminaBroadcastPayload> CODEC = StreamCodec.composite(
-            STAMINA_CODEC,
-            StaminaBroadcastPayload::staminaList,
-            StaminaBroadcastPayload::new
-    );
+    private static final StreamCodec<ByteBuf, List<StaminaPayload>> STAMINA_CODEC =
+            new ListStreamCodec<>(StaminaPayload.CODEC);
+    public static final StreamCodec<ByteBuf, StaminaBroadcastPayload> CODEC =
+            StreamCodec.composite(
+                    STAMINA_CODEC,
+                    StaminaBroadcastPayload::staminaList,
+                    StaminaBroadcastPayload::new);
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
@@ -27,10 +33,11 @@ public record StaminaBroadcastPayload(List<StaminaPayload> staminaList) implemen
     }
 
     public static void handleClient(StaminaBroadcastPayload payload, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            for (var elem : payload.staminaList()) {
-                elem.processPlayer(context);
-            }
-        });
+        context.enqueueWork(
+                () -> {
+                    for (var elem : payload.staminaList()) {
+                        elem.processPlayer(context);
+                    }
+                });
     }
 }

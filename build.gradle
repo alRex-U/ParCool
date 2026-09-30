@@ -75,3 +75,13 @@ tasks.withType(JavaCompile).configureEach {
 jar {
     from('LICENSE') { rename { "${it}_${project.base.archivesName.get()}" } }
 }
+
+tasks.register('lintJava', JavaCompile) {
+    dependsOn 'testClasses'
+    source sourceSets.main.allJava, sourceSets.test.allJava
+    classpath = sourceSets.main.compileClasspath + sourceSets.test.compileClasspath + sourceSets.main.output + sourceSets.test.output
+    destinationDirectory = layout.buildDirectory.dir('classes/java/lint')
+    options.annotationProcessorPath = files()
+    options.compilerArgs += ['-proc:none', '-Xlint:divzero,empty,fallthrough,finally,-removal', '-Werror']
+}
+tasks.named('check') { dependsOn tasks.named('lintJava') }

@@ -1,6 +1,9 @@
 package com.alrex.parcool.fabric;
 
-/** Аналог net.neoforged.bus.api.Event для собственных событий ParCool (api.unstable, api.client.gui). */
+/**
+ * Аналог net.neoforged.bus.api.Event для собственных событий ParCool (api.unstable,
+ * api.client.gui).
+ */
 public abstract class Event {
     private boolean canceled = false;
 

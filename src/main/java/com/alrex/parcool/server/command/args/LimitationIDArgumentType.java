@@ -11,6 +11,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+
 import net.minecraft.network.chat.Component;
 
 import java.util.Arrays;
@@ -18,12 +19,15 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 public class LimitationIDArgumentType implements ArgumentType<Limitation.ID> {
-    private static final Collection<String> EXAMPLES = Arrays.asList("{Your ID}:{Limitation ID}", "{parcool:example_limitation}");
+    private static final Collection<String> EXAMPLES =
+            Arrays.asList("{Your ID}:{Limitation ID}", "{parcool:example_limitation}");
 
     private String read(StringReader reader) {
         int start = reader.getCursor();
 
-        while (reader.canRead() && (reader.peek() == ':' || StringReader.isAllowedInUnquotedString(reader.peek()))) {
+        while (reader.canRead()
+                && (reader.peek() == ':'
+                        || StringReader.isAllowedInUnquotedString(reader.peek()))) {
             reader.skip();
         }
 
@@ -42,13 +46,14 @@ public class LimitationIDArgumentType implements ArgumentType<Limitation.ID> {
     }
 
     @Override
-    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+    public <S> CompletableFuture<Suggestions> listSuggestions(
+            CommandContext<S> context, SuggestionsBuilder builder) {
         String remain = builder.getRemaining();
-        for (com.alrex.parcool.server.limitation.Limitation.ID id : Limitations.getRegisteredIDs()) {
+        for (com.alrex.parcool.server.limitation.Limitation.ID id :
+                Limitations.getRegisteredIDs()) {
             if (id.getGroup().equals(ParCool.MOD_ID)) continue;
             String suggestion = id.getGroup() + ":" + id.getName();
-            if (suggestion.startsWith(remain))
-                builder.suggest(suggestion);
+            if (suggestion.startsWith(remain)) builder.suggest(suggestion);
         }
         return builder.buildFuture();
     }
@@ -62,7 +67,8 @@ public class LimitationIDArgumentType implements ArgumentType<Limitation.ID> {
         return new LimitationIDArgumentType();
     }
 
-    public static Limitation.ID getLimitationID(final CommandContext<?> context, final String name) {
+    public static Limitation.ID getLimitationID(
+            final CommandContext<?> context, final String name) {
         return context.getArgument(name, Limitation.ID.class);
     }
 }

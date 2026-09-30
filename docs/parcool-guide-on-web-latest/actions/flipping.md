@@ -16,16 +16,16 @@ You can select which control you use by modifying config
 #### TapMovementAndJump (Default)
 
 - Press following keys simultaneously
-    - jump key
-    - forward or backward movement key
+  - jump key
+  - forward or backward movement key
 
 #### PressRightAndLeft
 
 - Press following keys simultaneously
-    - left movement key
-    - right movement key
+  - left movement key
+  - right movement key
 
 #### PressFlippingKey;
 
-- Press *Flipping* key
-    - *Flipping* key is normally mapped to nothing
+- Press _Flipping_ key
+  - _Flipping_ key is normally mapped to nothing

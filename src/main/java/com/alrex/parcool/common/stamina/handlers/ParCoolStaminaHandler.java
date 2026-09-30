@@ -4,9 +4,10 @@ import com.alrex.parcool.api.Attributes;
 import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import com.alrex.parcool.common.stamina.IParCoolStaminaHandler;
-import net.minecraft.client.player.LocalPlayer;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.player.LocalPlayer;
 
 public class ParCoolStaminaHandler implements IParCoolStaminaHandler {
     private int recoveryCoolDown = 0;
@@ -42,7 +43,11 @@ public class ParCoolStaminaHandler implements IParCoolStaminaHandler {
             if (parkourability == null) return current;
             var attr = player.getAttribute(Attributes.STAMINA_RECOVERY);
             if (attr == null) return current;
-            int recoverValue = (int) Math.min(parkourability.getActionInfo().getStaminaRecoveryLimit(), attr.getValue());
+            int recoverValue =
+                    (int)
+                            Math.min(
+                                    parkourability.getActionInfo().getStaminaRecoveryLimit(),
+                                    attr.getValue());
             if (player.onGround()) {
                 current = current.recovered(recoverValue);
             } else {

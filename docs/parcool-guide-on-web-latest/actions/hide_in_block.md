@@ -17,8 +17,8 @@ careful.
 
 ### 🖱️- How to use -
 
-- Press *Hide-In-Block* key while sneaking near blocks you want to hide in
-    - *Hide-In-Block* key is normally mapped to C key
+- Press _Hide-In-Block_ key while sneaking near blocks you want to hide in
+  - _Hide-In-Block_ key is normally mapped to C key
 
 ---
 

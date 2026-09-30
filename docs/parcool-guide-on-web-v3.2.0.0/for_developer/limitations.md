@@ -47,7 +47,7 @@ parcool limitations enable yourprojectname:example of <players>
 
 ## Server-wide Limitations
 
-*Server-wide Limitations* is applied to all players by server-configuration file.
+_Server-wide Limitations_ is applied to all players by server-configuration file.
 
 Please check serverconfig folder in folders of each world.
 
@@ -55,7 +55,7 @@ Please check serverconfig folder in folders of each world.
 
 ## Individual and Custom Limitations
 
-*Individual Limitations* and *Custom Limitations* can be applied to each player by in-game commands.
+_Individual Limitations_ and _Custom Limitations_ can be applied to each player by in-game commands.
 
 ### Example
 
@@ -91,7 +91,7 @@ parcool limitations set <your limitation id> of <players> to_default
 
 ### From your java code
 
-As for *Custom Limitations*, you can create and control from your code.
+As for _Custom Limitations_, you can create and control from your code.
 
 ```groovy
 repositories {

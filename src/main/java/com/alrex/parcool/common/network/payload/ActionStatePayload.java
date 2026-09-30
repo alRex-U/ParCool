@@ -6,28 +6,30 @@ import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.Actions;
 import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.network.ActionSynchronizationBroadcaster;
+import com.alrex.parcool.fabric.IPayloadContext;
+import com.alrex.parcool.fabric.ParCoolEvents;
+
 import io.netty.buffer.ByteBuf;
+
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import com.alrex.parcool.fabric.ParCoolEvents;
-import com.alrex.parcool.fabric.IPayloadContext;
 
-import javax.annotation.Nonnull;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.Nonnull;
+
 public record ActionStatePayload(UUID playerID, List<Entry> states) implements CustomPacketPayload {
-    public static final Type<ActionStatePayload> TYPE
-            = new Type<>(ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "payload.action_state"));
-    public static final StreamCodec<ByteBuf, ActionStatePayload> CODEC = StreamCodec.of(
-            ActionStatePayload::encode,
-            ActionStatePayload::decode
-    );
+    public static final Type<ActionStatePayload> TYPE =
+            new Type<>(
+                    ResourceLocation.fromNamespaceAndPath(ParCool.MOD_ID, "payload.action_state"));
+    public static final StreamCodec<ByteBuf, ActionStatePayload> CODEC =
+            StreamCodec.of(ActionStatePayload::encode, ActionStatePayload::decode);
 
     @Nonnull
     @Override
@@ -81,34 +83,39 @@ public record ActionStatePayload(UUID playerID, List<Entry> states) implements C
     }
 
     public static void handleClient(ActionStatePayload payload, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            Player player;
-            Level world = context.player().level();
-            player = world.getPlayerByUUID(payload.playerID());
-            if (player == null || player.isLocalPlayer()) return;
+        context.enqueueWork(
+                () -> {
+                    Player player;
+                    Level world = context.player().level();
+                    player = world.getPlayerByUUID(payload.playerID());
+                    if (player == null || player.isLocalPlayer()) return;
 
-            payload.processPlayer(player);
-        });
+                    payload.processPlayer(player);
+                });
     }
 
     public static void handleServer(ActionStatePayload payload, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            Player player = context.player();
-            // Rebroadcast under the sender's UUID: playerID is client-supplied and would let a client act as someone else.
-            ActionSynchronizationBroadcaster.add(new ActionStatePayload(player.getUUID(), payload.states()));
+        context.enqueueWork(
+                () -> {
+                    Player player = context.player();
+                    // Rebroadcast under the sender's UUID: playerID is client-supplied and would
+                    // let a client act as someone else.
+                    ActionSynchronizationBroadcaster.add(
+                            new ActionStatePayload(player.getUUID(), payload.states()));
 
-            payload.processPlayer(player);
-        });
+                    payload.processPlayer(player);
+                });
     }
 
     public record Entry(Class<? extends Action> action, Type type, byte[] data) {
         public enum Type {
-            Normal, Start, Finish;
+            Normal,
+            Start,
+            Finish;
         }
 
         private void encode(ByteBuf buf) {
-            buf
-                    .writeShort(Actions.getIndexOf(action))
+            buf.writeShort(Actions.getIndexOf(action))
                     .writeByte(type().ordinal())
                     .writeInt(data().length)
                     .writeBytes(data);

@@ -1,15 +1,16 @@
 package com.alrex.parcool.mixin.client;
 
-
 import com.alrex.parcool.client.input.KeyRecorder;
 import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.mojang.authlib.GameProfile;
+
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,7 +25,13 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
     }
 
     // Замена MovementInputUpdateEvent: NeoForge шлёт его ровно после этого вызова.
-    @Inject(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/Input;tick(ZF)V", shift = At.Shift.AFTER))
+    @Inject(
+            method = "aiStep",
+            at =
+                    @At(
+                            value = "INVOKE",
+                            target = "Lnet/minecraft/client/player/Input;tick(ZF)V",
+                            shift = At.Shift.AFTER))
     public void onMovementInputUpdated(CallbackInfo ci) {
         KeyRecorder.onClientTick();
     }
@@ -53,5 +60,4 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
             super.move(type, dMove);
         }
     }
-
 }

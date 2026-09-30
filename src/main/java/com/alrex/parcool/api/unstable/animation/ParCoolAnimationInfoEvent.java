@@ -1,10 +1,11 @@
 package com.alrex.parcool.api.unstable.animation;
 
 import com.alrex.parcool.client.animation.Animator;
-import net.minecraft.client.player.AbstractClientPlayer;
+import com.alrex.parcool.fabric.Event;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import com.alrex.parcool.fabric.Event;
+import net.minecraft.client.player.AbstractClientPlayer;
 
 @Environment(EnvType.CLIENT)
 public class ParCoolAnimationInfoEvent extends Event {
@@ -12,10 +13,7 @@ public class ParCoolAnimationInfoEvent extends Event {
     private final Animator animator;
     private final AnimationOption option;
 
-    public ParCoolAnimationInfoEvent(
-            AbstractClientPlayer player,
-            Animator animator
-    ) {
+    public ParCoolAnimationInfoEvent(AbstractClientPlayer player, Animator animator) {
         this.animator = animator;
         this.player = player;
         option = new AnimationOption();

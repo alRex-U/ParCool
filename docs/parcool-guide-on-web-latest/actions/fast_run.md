@@ -14,8 +14,8 @@ There are some type of input control, please select what you like in configurati
 
 #### PressKey (Default)
 
-- Continue to press *Fast-Run* key during sprinting
-    - *Fast-Run* key is normally mapped to Ctrl key
+- Continue to press _Fast-Run_ key during sprinting
+  - _Fast-Run_ key is normally mapped to Ctrl key
 
 #### Toggle
 
@@ -39,8 +39,8 @@ Its operation is same as one of Fast Run.
 
 #### PressKey (Default)
 
-- Continue to press *Fast-Run* key during sprinting
-    - *Fast-Run* key is normally mapped to Ctrl key
+- Continue to press _Fast-Run_ key during sprinting
+  - _Fast-Run_ key is normally mapped to Ctrl key
 
 #### Toggle
 

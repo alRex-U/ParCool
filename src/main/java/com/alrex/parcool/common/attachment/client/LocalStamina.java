@@ -7,18 +7,17 @@ import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import com.alrex.parcool.common.stamina.IParCoolStaminaHandler;
 import com.alrex.parcool.common.stamina.StaminaType;
 import com.alrex.parcool.common.stamina.handlers.InfiniteStaminaHandler;
-import net.minecraft.client.player.LocalPlayer;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.player.LocalPlayer;
 
 import javax.annotation.Nullable;
 
 @Environment(EnvType.CLIENT)
 public class LocalStamina {
-    @Nullable
-    private StaminaType currentType = null;
-    @Nullable
-    private IParCoolStaminaHandler handler = null;
+    @Nullable private StaminaType currentType = null;
+    @Nullable private IParCoolStaminaHandler handler = null;
 
     public static LocalStamina get(LocalPlayer player) {
         return player.getAttachedOrCreate(ClientAttachments.LOCAL_STAMINA);
@@ -29,13 +28,17 @@ public class LocalStamina {
     }
 
     public boolean isInfinite(LocalPlayer player) {
-        return player.isCreative() || player.isSpectator() || handler instanceof InfiniteStaminaHandler;
+        return player.isCreative()
+                || player.isSpectator()
+                || handler instanceof InfiniteStaminaHandler;
     }
 
     public void changeType(LocalPlayer player, StaminaType type) {
         currentType = type;
         handler = type.newHandler(player);
-        player.setAttached(Attachments.STAMINA, handler.initializeStamina(player, player.getAttachedOrCreate(Attachments.STAMINA)));
+        player.setAttached(
+                Attachments.STAMINA,
+                handler.initializeStamina(player, player.getAttachedOrCreate(Attachments.STAMINA)));
     }
 
     @Nullable
@@ -62,8 +65,7 @@ public class LocalStamina {
         if (player.hasEffect(Effects.INEXHAUSTIBLE)) return;
         player.setAttached(
                 Attachments.STAMINA,
-                handler.consume(player, player.getAttachedOrCreate(Attachments.STAMINA), value)
-        );
+                handler.consume(player, player.getAttachedOrCreate(Attachments.STAMINA), value));
     }
 
     public void recover(LocalPlayer player, int value) {
@@ -71,16 +73,14 @@ public class LocalStamina {
         if (handler == null) return;
         player.setAttached(
                 Attachments.STAMINA,
-                handler.recover(player, player.getAttachedOrCreate(Attachments.STAMINA), value)
-        );
+                handler.recover(player, player.getAttachedOrCreate(Attachments.STAMINA), value));
     }
 
     public void onTick(LocalPlayer player) {
         if (handler == null) return;
         player.setAttached(
                 Attachments.STAMINA,
-                handler.onTick(player, player.getAttachedOrCreate(Attachments.STAMINA))
-        );
+                handler.onTick(player, player.getAttachedOrCreate(Attachments.STAMINA)));
     }
 
     public boolean shouldShowHUD(LocalPlayer player) {
@@ -95,6 +95,7 @@ public class LocalStamina {
     }
 
     private ReadonlyStamina oldStamina = ReadonlyStamina.createDefault();
+
     public void sync(LocalPlayer player) {
         ReadonlyStamina stamina = player.getAttachedOrCreate(Attachments.STAMINA);
         if (!stamina.equals(oldStamina)) {

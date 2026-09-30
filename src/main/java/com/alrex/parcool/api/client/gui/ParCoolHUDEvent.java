@@ -1,9 +1,10 @@
 package com.alrex.parcool.api.client.gui;
 
-import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
 import com.alrex.parcool.fabric.Event;
 import com.alrex.parcool.fabric.ICancellableEvent;
+
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class ParCoolHUDEvent extends Event {
     public static class RenderEvent extends ParCoolHUDEvent implements ICancellableEvent {
@@ -22,6 +23,5 @@ public class ParCoolHUDEvent extends Event {
         public DeltaTracker getDeltaTracker() {
             return partialTick;
         }
-
     }
 }

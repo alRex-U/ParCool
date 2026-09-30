@@ -6,7 +6,7 @@ ParCool provides API for adding support of ParCool.
 
 ## Installation
 
-First import ParCool into your project in some way.  
+First import ParCool into your project in some way.\
 Normally I recommend to use [Curse Maven](https://cursemaven.com/).
 
 Add these sentences to your gradle buildscripts.
@@ -37,7 +37,7 @@ Stamina instance = Stamina.get(player);
 ```
 
 `Stamina.get(Player)` returns `@Nullable Stamina`, so don't forget null-check.
-This method returns *null* when initialization is not done yet.
+This method returns _null_ when initialization is not done yet.
 
 #### Accessors
 

@@ -1,8 +1,8 @@
 package com.alrex.parcool.common.zipline.impl;
 
 import com.alrex.parcool.common.zipline.Zipline;
+
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class StraightZipline extends Zipline {
@@ -23,10 +23,13 @@ public class StraightZipline extends Zipline {
         return getOffsetToEndFromStart().scale(t);
     }
 
-    private final float slope = (float) (getOffsetToEndFromStart().y() * Mth.fastInvSqrt(
-            getOffsetToEndFromStart().x() * getOffsetToEndFromStart().x()
-                    + getOffsetToEndFromStart().z() * getOffsetToEndFromStart().z()
-    ));
+    private final float slope =
+            (float)
+                    (getOffsetToEndFromStart().y()
+                            * Mth.fastInvSqrt(
+                                    getOffsetToEndFromStart().x() * getOffsetToEndFromStart().x()
+                                            + getOffsetToEndFromStart().z()
+                                                    * getOffsetToEndFromStart().z()));
 
     @Override
     public float getSlope(float t) {
@@ -45,7 +48,8 @@ public class StraightZipline extends Zipline {
         double baseXOffset = getStartPos().x() - position.x;
         double baseYOffset = getStartPos().y() - position.y;
         double baseZOffset = getStartPos().z() - position.z;
-        return -(xOffset * baseXOffset + yOffset * baseYOffset + zOffset * baseZOffset) / (xOffset * xOffset + yOffset * yOffset + zOffset * zOffset);
+        return -(xOffset * baseXOffset + yOffset * baseYOffset + zOffset * baseZOffset)
+                / (xOffset * xOffset + yOffset * yOffset + zOffset * zOffset);
     }
 
     @Override

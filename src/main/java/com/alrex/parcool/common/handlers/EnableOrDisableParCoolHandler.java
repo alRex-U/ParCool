@@ -6,12 +6,13 @@ import com.alrex.parcool.common.attachment.common.Parkourability;
 import com.alrex.parcool.common.info.ClientSetting;
 import com.alrex.parcool.common.network.payload.ClientInformationPayload;
 import com.alrex.parcool.config.ParCoolConfig;
+import com.alrex.parcool.fabric.PacketDistributor;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import com.alrex.parcool.fabric.PacketDistributor;
 
 @Environment(EnvType.CLIENT)
 public class EnableOrDisableParCoolHandler {
@@ -25,8 +26,13 @@ public class EnableOrDisableParCoolHandler {
             Parkourability parkourability = Parkourability.get(player);
             if (parkourability == null) return;
             parkourability.getActionInfo().setClientSetting(ClientSetting.readFromLocalConfig());
-            PacketDistributor.sendToServer(new ClientInformationPayload(player.getUUID(), false, parkourability.getClientInfo()));
-            player.displayClientMessage(Component.translatable(currentStatus ? "parcool.message.enabled" : "parcool.message.disabled"), true);
+            PacketDistributor.sendToServer(
+                    new ClientInformationPayload(
+                            player.getUUID(), false, parkourability.getClientInfo()));
+            player.displayClientMessage(
+                    Component.translatable(
+                            currentStatus ? "parcool.message.enabled" : "parcool.message.disabled"),
+                    true);
             if (currentStatus) {
                 player.playSound(SoundEvents.PARCOOL_ENABLE.get(), 1.0f, 1.0f);
             } else {

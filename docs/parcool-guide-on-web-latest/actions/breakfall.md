@@ -21,8 +21,8 @@ In game, it enables you to reduce fall damage without slowing down.
 ### 🖱️- How to use -
 
 - Keep pressing these keys when you land
-    - forward or backward movement key
-    - breakfall Key (R with defalt setting)
+  - forward or backward movement key
+  - breakfall Key (R with defalt setting)
 
 ---
 
@@ -38,4 +38,4 @@ It's also effective for landing without enough space to roll.
 ### 🖱️- How to use -
 
 - Keep pressing these keys when you land
-    - breakfall Key (R with defalt setting)
+  - breakfall Key (R with defalt setting)
