@@ -7,7 +7,6 @@ import com.alrex.parcool.client.gui.components.*;
 import com.alrex.parcool.client.textures.ParCoolActionsTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
-import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionCapabilities;
 import com.alrex.parcool.common.network.EnableActionPacket;
 import com.alrex.parcool.util.ColorUtil;
@@ -93,17 +92,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
         addRenderableWidget(new ExtendableSpriteButton.BasicOff(
                 font, contentOffsetX + 18, contentOffsetY + contentHeight - 50, tabWidth - 23, 20,
                 Component.translatable("parcool.gui.text.open_skilltree"),
-                () -> {
-                    var player = minecraft.player;
-                    if (player == null) return;
-                    var parkourability = Parkourability.get(player);
-                    minecraft.setScreen(new SkillTreeScreen(
-                            parkourability.getCapabilities(),
-                            parkourability.getEnabledActions(),
-                            Collections.emptyList(),
-                            false
-                    ));
-                })
+                () -> ParCool.PROXY.openSkillTreeGui(minecraft.player, false))
         );
         addRenderableWidget(new ExtendableSpriteButton.BasicOff(
                 font, contentOffsetX + 18, contentOffsetY + contentHeight - 25, tabWidth - 23, 20,

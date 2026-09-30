@@ -1,11 +1,11 @@
 package com.alrex.parcool.client.gui.components;
 
-import com.alrex.parcool.api.client.skilltree.SkillTree;
 import com.alrex.parcool.client.gui.GuiRenderUtil;
 import com.alrex.parcool.client.textures.ParCoolActionsTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.action.ActionCapabilities;
+import com.alrex.parcool.common.skilltree.SkillTree;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;

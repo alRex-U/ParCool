@@ -2,7 +2,6 @@ package com.alrex.parcool.client.gui.screen;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolSoundEvents;
-import com.alrex.parcool.api.client.skilltree.SkillTree;
 import com.alrex.parcool.client.gui.GuiColorPallet;
 import com.alrex.parcool.client.gui.components.*;
 import com.alrex.parcool.client.md.resource.GuideResourceManager;
@@ -12,6 +11,7 @@ import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.action.ActionCapabilities;
 import com.alrex.parcool.common.network.EnableActionPacket;
 import com.alrex.parcool.common.network.RequestUnlockActionPacket;
+import com.alrex.parcool.common.skilltree.SkillTree;
 import com.alrex.parcool.util.ColorUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;

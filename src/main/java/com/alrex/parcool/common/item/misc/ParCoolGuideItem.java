@@ -30,11 +30,7 @@ public class ParCoolGuideItem extends Item {
     public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
         var itemInHand = player.getItemInHand(hand);
         if (level.isClientSide()) {
-            if (player.isShiftKeyDown() && ParCool.getConfig().server().enableSkillTreeUi.get()) {
-                ParCool.PROXY.openSkillTreeGui(player, true);
-            } else {
-                ParCool.PROXY.openGuideGui();
-            }
+            ParCool.PROXY.openGuideGui();
         }
         return InteractionResultHolder.sidedSuccess(itemInHand, level.isClientSide());
     }

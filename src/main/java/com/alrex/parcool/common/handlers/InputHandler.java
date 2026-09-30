@@ -14,7 +14,7 @@ public class InputHandler {
     @SubscribeEvent
     public static void onTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.START) return;
-        if (ParCoolKeyBinds.OPEN_SKILLTREE.state().isJustPressed()) {
+        if (ParCoolKeyBinds.OPEN_SETTING_SKILLTREE.state().isJustPressed()) {
             var player = Minecraft.getInstance().player;
             if (player == null) return;
             ParCool.PROXY.openSettingGui(player, false);

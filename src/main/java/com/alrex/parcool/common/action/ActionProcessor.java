@@ -84,6 +84,7 @@ public class ActionProcessor {
 	}
 
 	private void onTick$doPreprocessInServer(Parkourability parkourability) {
+		parkourability.sendSkillTreePacketFromServer();
 	}
 
 	@OnlyIn(Dist.CLIENT)
