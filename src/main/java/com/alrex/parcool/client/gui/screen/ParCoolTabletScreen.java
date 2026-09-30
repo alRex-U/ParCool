@@ -96,7 +96,7 @@ public class ParCoolTabletScreen extends Screen {
     }
 
     public void setFullscreen(boolean fullscreen) {
-        if (!openedByGuideItem) fullscreen = false;
+        if (!openedByGuideItem) fullscreen = true;
         if (this.fullscreen != fullscreen) {
             this.fullscreen = fullscreen;
             rebuildWidgets();
@@ -226,6 +226,18 @@ public class ParCoolTabletScreen extends Screen {
         public static class ShrinkDark extends IconButton {
             public ShrinkDark(int x, int y, @Nullable Runnable listener) {
                 super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_SHRINK_DARK), listener);
+            }
+        }
+
+        public static class SkilltreeDark extends IconButton {
+            public SkilltreeDark(int x, int y, @Nullable Runnable listener) {
+                super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_SKILLTREE_DARK), listener);
+            }
+        }
+
+        public static class SettingsDark extends IconButton {
+            public SettingsDark(int x, int y, @Nullable Runnable listener) {
+                super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_SETTINGS_DARK), listener);
             }
         }
     }

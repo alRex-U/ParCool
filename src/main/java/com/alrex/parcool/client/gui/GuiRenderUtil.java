@@ -1,12 +1,16 @@
 package com.alrex.parcool.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 
 @OnlyIn(Dist.CLIENT)
 public class GuiRenderUtil {
@@ -32,5 +36,47 @@ public class GuiRenderUtil {
         }
         modelViewStack.popPose();
         RenderSystem.applyModelViewMatrix();
+    }
+
+    public static void renderExtendableSprite(PoseStack poseStack, TextureAtlasSprite sprite, int x, int y, int width, int height) {
+        int halfWidth = width / 2, halfHeight = height / 2;
+        int spriteWidth = sprite.getWidth(), spriteHeight = sprite.getHeight();
+
+        RenderSystem.setShaderTexture(0, sprite.atlas().location());
+        var pose = poseStack.last().pose();
+        float midU0 = sprite.getU(16. * halfWidth / spriteWidth), midV0 = sprite.getV(16. * halfHeight / spriteHeight);
+        float midU1 = sprite.getU(16. - 16. * (width - halfWidth) / spriteWidth), midV1 = sprite.getV(16. - 16. * (height - halfHeight) / spriteHeight);
+        GuiComponent.innerBlit(
+                pose,
+                x, x + halfWidth,
+                y, y + halfHeight,
+                0 /*z pos*/,
+                sprite.getU0(), midU0,
+                sprite.getV0(), midV0
+        );
+        GuiComponent.innerBlit(
+                pose,
+                x + halfWidth, x + width,
+                y, y + halfHeight,
+                0,
+                midU1, sprite.getU1(),
+                sprite.getV0(), midV0
+        );
+        GuiComponent.innerBlit(
+                pose,
+                x, x + halfWidth,
+                y + halfHeight, y + height,
+                0,
+                sprite.getU0(), midU0,
+                midV1, sprite.getV1()
+        );
+        GuiComponent.innerBlit(
+                pose,
+                x + halfWidth, x + width,
+                y + halfHeight, y + height,
+                0,
+                midU1, sprite.getU1(),
+                midV1, sprite.getV1()
+        );
     }
 }

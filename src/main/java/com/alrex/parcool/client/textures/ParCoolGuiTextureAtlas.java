@@ -42,8 +42,15 @@ public class ParCoolGuiTextureAtlas extends TextureAtlasHolder {
     public static final ResourceLocation BASIC_BUTTON_OFF_HOVER = register("icon/basic_button_off_hover");
     public static final ResourceLocation BASIC_BUTTON_ON = register("icon/basic_button_on");
     public static final ResourceLocation BASIC_BUTTON_ON_HOVER = register("icon/basic_button_on_hover");
-    public static final ResourceLocation TOGGLE_BUTTON_ON = register("icon/toggle_button_on");
-    public static final ResourceLocation TOGGLE_BUTTON_OFF = register("icon/toggle_button_off");
+    public static final ResourceLocation BASIC_SWITCH_INACTIVE = register("icon/basic_switch_inactive");
+    public static final ResourceLocation BASIC_SWITCH_OFF = register("icon/basic_switch_off");
+    public static final ResourceLocation BASIC_SWITCH_OFF_HOVER = register("icon/basic_switch_off_hover");
+    public static final ResourceLocation BASIC_SWITCH_ON = register("icon/basic_switch_on");
+    public static final ResourceLocation BASIC_SWITCH_ON_HOVER = register("icon/basic_switch_on_hover");
+    public static final ResourceLocation SETTINGS_ICON_ACTIONS = register("icon/settings_actions");
+    public static final ResourceLocation SETTINGS_ICON_ANIMATIONS = register("icon/settings_animations");
+    public static final ResourceLocation SETTINGS_ICON_OPTIONS = register("icon/settings_options");
+    public static final ResourceLocation SETTINGS_ICON_LINKS = register("icon/settings_links");
     public static final ResourceLocation UNLOCK_COST_BOX = register("icon/unlock_cost_box");
     public static final ResourceLocation EXPERIENCE_BOX = register("icon/experience_box");
     public static final ResourceLocation ICON_EXPERIENCE = register("icon/icon_experience");
@@ -55,6 +62,8 @@ public class ParCoolGuiTextureAtlas extends TextureAtlasHolder {
     public static final ResourceLocation BUTTON_SHRINK = register("icon/button_shrink");
     public static final ResourceLocation BUTTON_EXPAND_DARK = register("icon/button_expand_dark");
     public static final ResourceLocation BUTTON_SHRINK_DARK = register("icon/button_shrink_dark");
+    public static final ResourceLocation BUTTON_SKILLTREE_DARK = register("icon/button_skilltree_dark");
+    public static final ResourceLocation BUTTON_SETTINGS_DARK = register("icon/button_settings_dark");
 
     public ParCoolGuiTextureAtlas(TextureManager manager) {
         super(manager, TEXTURE_LOCATION, "gui/sprites");

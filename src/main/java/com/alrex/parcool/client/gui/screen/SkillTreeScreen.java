@@ -86,12 +86,12 @@ public class SkillTreeScreen extends ParCoolTabletScreen {
                                         TextWidget.HorizontalAlignment.CENTER,
                                         colors.onSurface()
                                 ).withShadow(true),
-                                unlockButton = new ExtendableSpriteButton.Basic(
+                                unlockButton = new ExtendableSpriteButton.BasicOn(
                                         font, 3, contentHeight - 17, 50, 15,
                                         Component.translatable("parcool.gui.text.unlock"),
                                         this::unlockSkill
                                 ),
-                                viewGuideButton = new ExtendableSpriteButton.Basic(
+                                viewGuideButton = new ExtendableSpriteButton.BasicOn(
                                         font, 3, contentHeight - 17, 50, 15,
                                         Component.translatable("parcool.gui.text.open_guide"),
                                         this::viewGuide

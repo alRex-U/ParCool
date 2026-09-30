@@ -17,7 +17,7 @@ public class InputHandler {
         if (ParCoolKeyBinds.OPEN_SKILLTREE.state().isJustPressed()) {
             var player = Minecraft.getInstance().player;
             if (player == null) return;
-            ParCool.PROXY.openSkillTreeGui(player, false);
+            ParCool.PROXY.openSettingGui(player, false);
         }
     }
 

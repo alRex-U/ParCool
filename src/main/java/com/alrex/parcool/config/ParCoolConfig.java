@@ -78,7 +78,7 @@ public class ParCoolConfig {
 
 			actionMap = new TreeMap<>();
 
-			builder.push("Action");
+			builder.push("action");
 			for (var group : actionRegistry.getRegisteredGroups().entrySet()) {
 				builder.push(group.getKey());
 				var inGroupMap = new TreeMap<ActionEntry<?>, ActionValue>();
@@ -97,7 +97,7 @@ public class ParCoolConfig {
 				builder.pop();
 			}
 			builder.pop();
-			builder.push("HUD");
+			builder.push("hud");
 			{
 				staminaHud = new StaminaHud(
 						builder.defineEnum("stamina_hud_type", HUDType.Light),
@@ -108,7 +108,7 @@ public class ParCoolConfig {
 				);
 			}
 			builder.pop();
-			builder.push("GrapplingHook");
+			builder.push("grappling_hook");
 			{
 				grapplingHook = new GrapplingHookView(
 						builder.comment("how much speed widens the view. 0 disables")
@@ -126,7 +126,7 @@ public class ParCoolConfig {
 						.define("debug_rope", false);
 			}
 			builder.pop();
-			builder.push("Other");
+			builder.push("other");
 			{
 				enableActionSounds = builder.define("enable_sounds", true);
 			}
@@ -174,6 +174,7 @@ public class ParCoolConfig {
 		private final TreeMap<String, TreeMap<ActionEntry<?>, ActionValue>> actionMap;
         public final ForgeConfigSpec.BooleanValue damageWithoutGlove;
         public final ForgeConfigSpec.BooleanValue enableSkillTree;
+		public final ForgeConfigSpec.BooleanValue enableSkillTreeUi;
 		public final GrapplingHook grapplingHook;
 
 		public final ResourceLocation getStaminaTypeID() {
@@ -192,7 +193,7 @@ public class ParCoolConfig {
 
 			actionMap = new TreeMap<>();
 
-			builder.push("Action");
+			builder.push("action");
 			for (var group : actionRegistry.getRegisteredGroups().entrySet()) {
 				builder.push(group.getKey());
 				var inGroupMap = new TreeMap<ActionEntry<?>, ActionValue>();
@@ -215,13 +216,20 @@ public class ParCoolConfig {
 			}
 			builder.pop();
 
-            builder.push("Game");
+			builder.push("game");
             {
-                enableSkillTree = builder.define("enable_skill_tree", true);
-                damageWithoutGlove = builder.define("damage_without_glove", true);
+				enableSkillTree = builder
+						.comment("Enable Skilltree, if disabled all actions are available without learning")
+						.define("enable_skill_tree", true);
+				enableSkillTreeUi = builder
+						.comment("Enable Skilltree Gui, if disabled the skilltree ui is redirected into other ui")
+						.define("enable_skill_tree_ui", true);
+				damageWithoutGlove = builder
+						.comment("Whether you take damage when you use some actions like WallSlide without traceur's gloves")
+						.define("damage_without_glove", true);
             }
             builder.pop();
-			builder.push("GrapplingHook");
+			builder.push("grappling_hook");
 			{
 				grapplingHook = new GrapplingHook(
 						builder.comment("max reach in blocks")
@@ -269,7 +277,7 @@ public class ParCoolConfig {
 				);
 			}
 			builder.pop();
-			builder.push("Stamina");
+			builder.push("stamina");
 			{
 				var registeredItems = staminaTypeRegistry.getEntries();
 				var list = new String[registeredItems.size() + 1];

@@ -11,6 +11,7 @@ import com.alrex.parcool.client.animation.system.handle.AnimationSystemEventHand
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.animation.system.resource.AnimationResourceManager;
 import com.alrex.parcool.client.gui.screen.ParCoolGuideScreen;
+import com.alrex.parcool.client.gui.screen.ParCoolSettingScreen;
 import com.alrex.parcool.client.gui.screen.SkillTreeScreen;
 import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
@@ -121,6 +122,14 @@ public class ClientProxy extends CommonProxy {
 				.consumerMainThread(ChangeActivationPacket.HANDLER::handleInPhysicalClient)
 				.add();
 	}
+
+    @Override
+    public void openSettingGui(Player player, boolean openByGuideItem) {
+        super.openSettingGui(player, openByGuideItem);
+        Minecraft.getInstance().setScreen(new ParCoolSettingScreen(
+                Parkourability.get(player).getEnabledActions(), openByGuideItem
+        ));
+    }
 
 	@Override
 	public void openSkillTreeGui(Player player, boolean openByGuideItem) {

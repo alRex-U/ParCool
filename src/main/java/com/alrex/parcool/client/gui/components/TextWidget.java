@@ -57,6 +57,11 @@ public class TextWidget extends AbstractWidget {
     }
 
     @Override
+    protected boolean isValidClickButton(int click) {
+        return false;
+    }
+
+    @Override
     public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
 
     }

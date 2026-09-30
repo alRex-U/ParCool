@@ -5,6 +5,7 @@ import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.animation.system.registration.ID;
 import net.minecraftforge.common.ForgeConfigSpec;
 
+import java.util.Map;
 import java.util.TreeMap;
 
 public class AnimationSystemConfig {
@@ -30,11 +31,11 @@ public class AnimationSystemConfig {
         if (!animations.isFrozen()) {
             throw new IllegalStateException("It's impossible to create config for unfrozen AnimationSets");
         }
-        builder.push("Animation");
+        builder.push("animation");
         {
             enableAnimation = builder.define("enable", true);
             enableCameraAnimation = builder.define("enable_camera_animation", true);
-            builder.push("Availability");
+            builder.push("availability");
             {
                 animationAvailabilities = new TreeMap<>();
                 for (var animation : animations.getRegistry().entrySet()) {
@@ -54,6 +55,10 @@ public class AnimationSystemConfig {
         var config = animationAvailabilities.get(id);
         if (config == null) return false;
         return config.get();
+    }
+
+    public Map<ID<AnimationSet>, ForgeConfigSpec.BooleanValue> getAnimationAvailabilities() {
+        return animationAvailabilities;
     }
 
     public ForgeConfigSpec getBuiltConfig() {
