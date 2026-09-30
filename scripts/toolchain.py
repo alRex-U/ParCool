@@ -223,7 +223,7 @@ def tool(name):
         directory = CACHE / "venv"
         python = directory / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
         if not python.is_file():
-            call(canonical_python(), "-I", "-m", "venv", directory)
+            call(canonical_python(), "-I", "-m", "venv", "--clear", directory)
         probe = subprocess.run(
             [str(python), "-I", "-m", "ruff", "--version"],
             env=child_env(),
