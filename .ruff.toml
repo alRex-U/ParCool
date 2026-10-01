@@ -5,3 +5,7 @@ select = ["E4", "E7", "E9", "F"]
 
 # Named lambdas are permitted in compact data and coordinate transforms.
 ignore = ["E731"]
+
+[format]
+indent-style = "space"
+line-ending = "lf"
