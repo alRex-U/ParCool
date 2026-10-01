@@ -3,8 +3,8 @@ package com.alrex.parcool.client.gui.components;
 import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -46,15 +46,14 @@ public class SpriteToggleButton extends AbstractSpriteButton {
     }
 
     @Override
-    public void renderButton(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
         var sprite = active
                 ? (state ? (isHovered ? spriteWhenOnHover : spriteWhenOn) : (isHovered ? spriteWhenOffHover : spriteWhenOff))
                 : spriteWhenInactive;
-        RenderSystem.setShaderTexture(0, sprite.atlas().location());
-        blit(poseStack, x, y, 0, width, height, sprite);
-        renderInnerMessage(poseStack, getMessage());
+        graphics.blit(getX(), getY(), 0, width, height, sprite);
+        renderInnerMessage(graphics, getMessage());
     }
 
     @Override
@@ -64,7 +63,7 @@ public class SpriteToggleButton extends AbstractSpriteButton {
     }
 
     @Override
-    public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+    public void updateWidgetNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
     }
 
     public void setState(boolean state) {

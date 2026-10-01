@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
 import com.alrex.parcool.client.gui.GuiRenderUtil;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -24,11 +24,11 @@ public class ExtendableSpritePanel extends AbstractWidget {
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
-        GuiRenderUtil.renderExtendableSprite(poseStack, sprite, x, y, width, height);
+    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        GuiRenderUtil.renderExtendableSprite(graphics, sprite, getX(), getY(), width, height);
     }
 
     @Override
-    public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+    public void updateWidgetNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
     }
 }

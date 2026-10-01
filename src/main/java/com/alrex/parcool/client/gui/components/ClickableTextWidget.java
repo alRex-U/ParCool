@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nonnull;
@@ -22,17 +22,13 @@ public class ClickableTextWidget extends TextWidget {
     }
 
     @Override
-    public void renderButton(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
         var xOffset = switch (alignment) {
-            case START -> x;
-            case END -> x + width - messageWidth;
-            case CENTER -> x + (width - messageWidth) / 2f;
+            case START -> getX();
+            case END -> getX() + width - messageWidth;
+            case CENTER -> getX() + (width - messageWidth) / 2f;
         };
-        if (shadow) {
-            font.drawShadow(poseStack, getMessage(), xOffset, y, isHovered ? hoveredTxtColor : txtColor);
-        } else {
-            font.draw(poseStack, getMessage(), xOffset, y, isHovered ? hoveredTxtColor : txtColor);
-        }
+        graphics.drawString(font, getMessage(), (int) xOffset, getY(), isHovered ? hoveredTxtColor : txtColor, shadow);
     }
 
     @Override

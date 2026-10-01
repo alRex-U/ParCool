@@ -2,7 +2,7 @@ package com.alrex.parcool.client.gui.components;
 
 import com.alrex.parcool.client.gui.GuiRenderUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,8 +27,8 @@ public class ScrollableWidgetGroup extends WidgetGroup {
     public ScrollableWidgetGroup(int x, int y, int width, int height, ScrollType scrollType, List<AbstractWidget> widgets) {
         super(x, y, width, height, widgets);
         this.scrollType = scrollType;
-        this.contentWidth = widgets.stream().map(it -> it.x + it.getWidth()).max(Integer::compareTo).orElse(1);
-        this.contentHeight = widgets.stream().map(it -> it.y + it.getHeight()).max(Integer::compareTo).orElse(1);
+        this.contentWidth = widgets.stream().map(it -> it.getX() + it.getWidth()).max(Integer::compareTo).orElse(1);
+        this.contentHeight = widgets.stream().map(it -> it.getY() + it.getHeight()).max(Integer::compareTo).orElse(1);
         setWidth(width);
         setHeight(height);
     }
@@ -46,13 +46,14 @@ public class ScrollableWidgetGroup extends WidgetGroup {
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
         if (!visible) return;
-        GuiRenderUtil.enableScissorTestInGuiCoordinate(x, y, width, height);
+        GuiRenderUtil.enableScissorTestInGuiCoordinate(getX(), getY(), width, height);
+        var poseStack = graphics.pose();
         poseStack.pushPose();
         {
             poseStack.translate(-scrollX, -scrollY, 0);
-            super.render(poseStack, mouseX + scrollX, mouseY + scrollY, partial);
+            super.renderWidget(graphics, mouseX + scrollX, mouseY + scrollY, partial);
         }
         poseStack.popPose();
         RenderSystem.disableScissor();

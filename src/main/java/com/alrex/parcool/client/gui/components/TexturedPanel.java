@@ -3,7 +3,7 @@ package com.alrex.parcool.client.gui.components;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.util.ColorUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -44,17 +44,16 @@ public class TexturedPanel extends AbstractWidget {
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
         if (ColorUtil.alphaOf(borderColor) != 0) {
-            fill(poseStack, x, y - 1, x + width, y, borderColor);
-            fill(poseStack, x, y + height, x + width, y + height + 1, borderColor);
-            fill(poseStack, x - 1, y, x, y + height, borderColor);
-            fill(poseStack, x + width, y, x + width + 1, y + height, borderColor);
+            graphics.fill(getX(), getY() - 1, getX() + width, getY(), borderColor);
+            graphics.fill(getX(), getY() + height, getX() + width, getY() + height + 1, borderColor);
+            graphics.fill(getX() - 1, getY(), getX(), getY() + height, borderColor);
+            graphics.fill(getX() + width, getY(), getX() + width + 1, getY() + height, borderColor);
         }
-        RenderSystem.setShaderTexture(0, texLocation);
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
-        blit(poseStack, x, y, 0, 0, 0, width, height, texWidth, texHeight);
+        graphics.blit(texLocation, getX(), getY(), 0, 0, 0, width, height, texWidth, texHeight);
     }
 
     @Override
@@ -63,6 +62,6 @@ public class TexturedPanel extends AbstractWidget {
     }
 
     @Override
-    public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+    public void updateWidgetNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
     }
 }

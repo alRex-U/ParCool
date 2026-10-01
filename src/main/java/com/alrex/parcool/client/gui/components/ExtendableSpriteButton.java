@@ -4,8 +4,8 @@ import com.alrex.parcool.client.gui.GuiRenderUtil;
 import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,14 +35,14 @@ public class ExtendableSpriteButton extends SpriteButton {
 
 
     @Override
-    public void renderButton(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
         var sprite = active
                 ? (isHovered ? spriteWhenOnHover : spriteWhenOn)
                 : spriteWhenInactive;
-        GuiRenderUtil.renderExtendableSprite(poseStack, sprite, x, y, width, height);
-        renderInnerMessage(poseStack, getMessage());
+        GuiRenderUtil.renderExtendableSprite(graphics, sprite, getX(), getY(), width, height);
+        renderInnerMessage(graphics, getMessage());
     }
 
     public static class BasicOn extends ExtendableSpriteButton {

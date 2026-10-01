@@ -1,7 +1,7 @@
 package com.alrex.parcool.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -36,7 +36,7 @@ public abstract class AbstractSpriteButton extends AbstractButton {
         this.spriteWhenOnHover = spriteWhenOnHover;
     }
 
-    protected void renderInnerMessage(PoseStack poseStack, Component message) {
-        font.draw(poseStack, message, x + (width - font.width(message)) / 2f, 0.5f + y + (height - font.lineHeight) / 2f, txtColor);
+    protected void renderInnerMessage(GuiGraphics graphics, Component message) {
+        graphics.drawString(font, message, getX() + (width - font.width(message)) / 2, 1 + getY() + (height - font.lineHeight) / 2, txtColor, false);
     }
 }

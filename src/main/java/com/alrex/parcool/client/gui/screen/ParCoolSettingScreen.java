@@ -10,10 +10,9 @@ import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.action.ActionCapabilities;
 import com.alrex.parcool.common.network.EnableActionPacket;
 import com.alrex.parcool.util.ColorUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
@@ -145,7 +144,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
     }
 
     @Override
-    public void renderBackground(@Nullable PoseStack poseStack) {
+    public void renderBackground(@Nullable GuiGraphics graphics) {
     }
 
     private AbstractWidget createSkillOptions(int x, int y, int width, int height) {
@@ -421,13 +420,12 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
             }
 
             @Override
-            public void render(@Nonnull PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTicks) {
+            public void render(@Nonnull GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTicks) {
                 if (isMouseOver) {
-                    fill(poseStack, left, top - 1, left + width, top + height + 1, ColorUtil.withAlpha(colors.primary(), 0x20));
+                    graphics.fill(left, top - 1, left + width, top + height + 1, ColorUtil.withAlpha(colors.primary(), 0x20));
                 }
-                RenderSystem.setShaderTexture(0, sprite.atlas().location());
-                blit(poseStack, left + 4, top + (height - 9) / 2, 0, 9, 9, sprite);
-                font.draw(poseStack, text, left + 17, 0.5f + top + (height - font.lineHeight) / 2f, colors.onSurface());
+                graphics.blit(left + 4, top + (height - 9) / 2, 0, 9, 9, sprite);
+                graphics.drawString(font, text, left + 17, 1 + top + (height - font.lineHeight) / 2, colors.onSurface(), false);
             }
         }
     }

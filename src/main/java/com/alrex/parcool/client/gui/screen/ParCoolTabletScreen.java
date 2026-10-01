@@ -132,10 +132,9 @@ public class ParCoolTabletScreen extends Screen {
         var poseStack = graphics.pose();
         poseStack.pushPose();
         {
-            RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
-            graphics.blit(frameOffsetX, frameOffsetY, 0, 0, FRAME_WIDTH, FRAME_HEIGHT);
+            graphics.blit(TEXTURE_LOCATION, frameOffsetX, frameOffsetY, 0, 0, FRAME_WIDTH, FRAME_HEIGHT);
             GuiRenderUtil.enableScissorTestInGuiCoordinate(frameOffsetX + 22, frameOffsetY + 7, 224, font.lineHeight + 5);
-            graphics.drawString(font, topBarText, frameOffsetX + 23, frameOffsetY + 8, 0x37474F);
+            graphics.drawString(font, topBarText, frameOffsetX + 23, frameOffsetY + 8, 0x37474F, false);
             RenderSystem.disableScissor();
         }
         poseStack.popPose();

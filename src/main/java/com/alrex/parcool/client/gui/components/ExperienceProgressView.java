@@ -3,8 +3,8 @@ package com.alrex.parcool.client.gui.components;
 import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -22,17 +22,18 @@ public class ExperienceProgressView extends AbstractWidget {
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
         RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
-        blit(poseStack, x, y, 0, width, height, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.EXPERIENCE_BOX));
+        graphics.blit(getX(), getY(), 0, width, height, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.EXPERIENCE_BOX));
         var sprite = ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.EXPERIENCE_BOX_OVERLAY);
-        innerBlit(poseStack.last().pose(),
-                x, (int) (x + sprite.getWidth() * progress), y, y + sprite.getHeight(), 0,
+        graphics.innerBlit(
+                sprite.atlasLocation(),
+                getX(), (int) (getX() + sprite.contents().width() * progress), getY(), getY() + sprite.contents().height(), 0,
                 sprite.getU0(), sprite.getU(16f * progress), sprite.getV0(), sprite.getV1()
         );
         var message = getMessage();
         var messageWidth = font.width(message);
-        font.drawShadow(poseStack, message, x + width - 3 - messageWidth, y + 1 + (height - font.lineHeight) / 2f, ~0);
+        graphics.drawString(font, message, getX() + width - 3 - messageWidth, getY() + 1 + (height - font.lineHeight) / 2, ~0, true);
     }
 
     public void setProgress(float progress) {
@@ -45,6 +46,6 @@ public class ExperienceProgressView extends AbstractWidget {
     }
 
     @Override
-    public void updateNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
+    protected void updateWidgetNarration(@Nonnull NarrationElementOutput narrationElementOutput) {
     }
 }

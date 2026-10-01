@@ -10,8 +10,8 @@ import com.alrex.parcool.common.action.ActionCapabilities;
 import com.alrex.parcool.common.network.RequestUnlockActionPacket;
 import com.alrex.parcool.common.skilltree.SkillTree;
 import com.alrex.parcool.util.ColorUtil;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -80,7 +80,7 @@ public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
                                 selectedSkillNameWidget = new WrappedTextWidget(
                                         font,
                                         3,
-                                        selectedSkillIconWidget.y + selectedSkillIconWidget.getHeight() + 4,
+                                        selectedSkillIconWidget.getY() + selectedSkillIconWidget.getHeight() + 4,
                                         SKILL_VIEW_CARD_WIDTH - 5,
                                         Component.empty(), TextWidget.HorizontalAlignment.CENTER, colors.onSurface()
                                 ).withShadow(true),
@@ -124,17 +124,17 @@ public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
     }
 
     @Override
-    public void renderBackground(@Nullable PoseStack poseStack) {
+    public void renderBackground(@Nullable GuiGraphics graphics) {
     }
 
     @Override
-    protected void renderContent(PoseStack poseStack, int mouseX, int mouseY, float partial) {
-        fill(poseStack,
+    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY, float partial) {
+        graphics.fill(
                 contentOffsetX, contentOffsetY,
                 contentOffsetX + contentWidth, contentOffsetY + contentHeight,
                 isFullscreen() ? ColorUtil.withAlpha(colors.background(), 0xE8) : colors.background()
         );
-        super.renderContent(poseStack, mouseX, mouseY, partial);
+        super.renderContent(graphics, mouseX, mouseY, partial);
     }
 
     private void unlockSkill() {
