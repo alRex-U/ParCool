@@ -75,8 +75,8 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
     private EnumMap<SettingTab, AbstractWidget> settingWidgets;
     private final ActionCapabilities enabledActions;
 
-    public ParCoolSettingScreen(ActionCapabilities enabledActions, boolean openedByGuideItem) {
-        super(Component.empty(), GuiColorPallet.DEFAULT_DARK, openedByGuideItem);
+    public ParCoolSettingScreen(ActionCapabilities enabledActions) {
+        super(Component.empty(), GuiColorPallet.DEFAULT_DARK, false);
         this.enabledActions = enabledActions;
     }
 
@@ -85,6 +85,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
         var tabWidth = Math.min(120, contentWidth / 4);
         var topBarHeight = font.lineHeight + 10;
         var margin = 10;
+        addRenderableOnly(new TexturedPanel(contentOffsetX, contentOffsetY, contentWidth, contentHeight, TexturedPanel.Textures.SETTING_BACKGROUND));
         addRenderableOnly(new TexturedPanel(contentOffsetX, contentOffsetY, tabWidth, contentHeight, TexturedPanel.Textures.SETTING_CARD));
         addRenderableWidget(new TabSelectionList(
                 minecraft, font, colors, tabWidth - 13, contentHeight - topBarHeight - 1, contentOffsetY + topBarHeight + 1, contentOffsetY + contentHeight - 50
@@ -92,7 +93,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
         addRenderableWidget(new ExtendableSpriteButton.BasicOff(
                 font, contentOffsetX + 18, contentOffsetY + contentHeight - 50, tabWidth - 23, 20,
                 Component.translatable("parcool.gui.text.open_skilltree"),
-                () -> ParCool.PROXY.openSkillTreeGui(minecraft.player, false))
+                () -> ParCool.PROXY.openSkillTreeGui(minecraft.player))
         );
         addRenderableWidget(new ExtendableSpriteButton.BasicOff(
                 font, contentOffsetX + 18, contentOffsetY + contentHeight - 25, tabWidth - 23, 20,
@@ -118,8 +119,12 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
         );
         addRenderableOnly(new TexturedPanel(contentOffsetX, contentOffsetY, 13, contentHeight, TexturedPanel.Textures.SETTING_SURFACE).withBorder(colors.shadow()));
         addRenderableOnly(new TexturedPanel(contentOffsetX, contentOffsetY, contentWidth, topBarHeight, TexturedPanel.Textures.SETTING_TOP).withBorder(colors.shadow()));
-        addRenderableOnly(new TextWidget(font, contentOffsetX, contentOffsetY + 1 + (topBarHeight - font.lineHeight) / 2, tabWidth, Component.translatable("parcool.gui.text.setting"), TextWidget.HorizontalAlignment.CENTER, colors.onPrimary()).withShadow(true));
+        addRenderableOnly(new TextWidget(font, contentOffsetX + 7, contentOffsetY + 1 + (topBarHeight - font.lineHeight) / 2, tabWidth, Component.translatable("parcool.gui.text.setting"), TextWidget.HorizontalAlignment.START, colors.onPrimary()).withShadow(true));
         changeTab(currentTab);
+    }
+
+    @Override
+    public void renderBackground(@Nullable PoseStack poseStack) {
     }
 
     private AbstractWidget createSkillOptions(int x, int y, int width, int height) {

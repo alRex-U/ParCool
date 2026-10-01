@@ -147,6 +147,19 @@ public class ParCoolTabletScreen extends Screen {
         this.topBarText = text;
     }
 
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        for (var iterator = this.children().listIterator(this.children().size()); iterator.hasPrevious(); ) {
+            var listener = iterator.previous();
+            if (listener.mouseClicked(mouseX, mouseY, button)) {
+                this.setFocused(listener);
+                if (button == 0) this.setDragging(true);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static class IconButton extends AbstractButton {
         private final TextureAtlasSprite sprite;
         @Nullable
@@ -214,30 +227,6 @@ public class ParCoolTabletScreen extends Screen {
         public static class Shrink extends IconButton {
             public Shrink(int x, int y, @Nullable Runnable listener) {
                 super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_SHRINK), listener);
-            }
-        }
-
-        public static class ExpandDark extends IconButton {
-            public ExpandDark(int x, int y, @Nullable Runnable listener) {
-                super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_EXPAND_DARK), listener);
-            }
-        }
-
-        public static class ShrinkDark extends IconButton {
-            public ShrinkDark(int x, int y, @Nullable Runnable listener) {
-                super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_SHRINK_DARK), listener);
-            }
-        }
-
-        public static class SkilltreeDark extends IconButton {
-            public SkilltreeDark(int x, int y, @Nullable Runnable listener) {
-                super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_SKILLTREE_DARK), listener);
-            }
-        }
-
-        public static class SettingsDark extends IconButton {
-            public SettingsDark(int x, int y, @Nullable Runnable listener) {
-                super(x, y, ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.BUTTON_SETTINGS_DARK), listener);
             }
         }
     }

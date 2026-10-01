@@ -13,9 +13,13 @@ import javax.annotation.Nonnull;
 
 public class TexturedPanel extends AbstractWidget {
     public static class Textures {
-        public static final ResourceLocation SETTING_TOP = new ResourceLocation(ParCool.MOD_ID, "textures/gui/panel/setting_top.png");
-        public static final ResourceLocation SETTING_SURFACE = new ResourceLocation(ParCool.MOD_ID, "textures/gui/panel/setting_surface.png");
-        public static final ResourceLocation SETTING_CARD = new ResourceLocation(ParCool.MOD_ID, "textures/gui/panel/setting_card.png");
+        public static final ResourceLocation SETTING_TOP = new ResourceLocation(ParCool.MOD_ID, "textures/gui/panel/setting/top.png");
+        public static final ResourceLocation SETTING_SURFACE = new ResourceLocation(ParCool.MOD_ID, "textures/gui/panel/setting/surface.png");
+        public static final ResourceLocation SETTING_CARD = new ResourceLocation(ParCool.MOD_ID, "textures/gui/panel/setting/card.png");
+        public static final ResourceLocation SETTING_BACKGROUND = new ResourceLocation(ParCool.MOD_ID, "textures/gui/panel/setting/background.png");
+        public static final ResourceLocation SKILLTREE_TOP = new ResourceLocation(ParCool.MOD_ID, "textures/gui/panel/skilltree/top.png");
+        public static final ResourceLocation SKILLTREE_SURFACE = new ResourceLocation(ParCool.MOD_ID, "textures/gui/panel/skilltree/surface.png");
+        public static final ResourceLocation SKILLTREE_BACKGROUND = new ResourceLocation(ParCool.MOD_ID, "textures/gui/panel/skilltree/background.png");
     }
 
     private final ResourceLocation texLocation;

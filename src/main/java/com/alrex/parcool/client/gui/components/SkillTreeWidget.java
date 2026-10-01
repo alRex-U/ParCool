@@ -97,10 +97,10 @@ public class SkillTreeWidget extends AbstractWidget {
     }
 
     private void limitScroll() {
-        if (scrollX < -width) scrollX = -width;
-        else if (scrollX > contentWidth) scrollX = contentWidth;
-        if (scrollY < -height) scrollY = -height;
-        else if (scrollY > contentHeight) scrollY = contentHeight;
+        if (scrollX < -width / 2.) scrollX = -width / 2.;
+        else if (scrollX > contentWidth - width / 2.) scrollX = contentWidth - width / 2.;
+        if (scrollY < -height / 2.) scrollY = -height / 2.;
+        else if (scrollY > contentHeight - height / 2.) scrollY = contentHeight - height / 2.;
     }
 
     private void limitScale() {
@@ -191,7 +191,7 @@ public class SkillTreeWidget extends AbstractWidget {
                 }
             }
         }
-        return false;
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     private class ConnectivityWidget extends GuiComponent implements Widget {
@@ -265,19 +265,6 @@ public class SkillTreeWidget extends AbstractWidget {
                 if (visible) {
                     RenderSystem.setShaderTexture(0, ParCoolActionsTextureAtlas.TEXTURE_LOCATION);
                     blit(poseStack, this.x, this.y, 0, this.width, this.height, ParCoolTextures.action(entry.getActionEntry()));
-                }
-                if (entry.isUnlocked(capabilities)) {
-                    var sprite = ParCoolTextures.guiSprite(
-                            entry.isEnabled(enabledActions)
-                                    ? ParCoolGuiTextureAtlas.SKILLTREE_ACTION_MARK_ENABLED
-                                    : ParCoolGuiTextureAtlas.SKILLTREE_ACTION_MARK_DISABLED
-                    );
-                    RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
-                    blit(poseStack,
-                            this.x + this.width - 3,
-                            this.y - 3, 0, 6, 6,
-                            sprite
-                    );
                 }
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             } else {

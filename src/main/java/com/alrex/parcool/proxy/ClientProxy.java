@@ -11,7 +11,7 @@ import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.animation.system.resource.AnimationResourceManager;
 import com.alrex.parcool.client.gui.screen.ParCoolGuideScreen;
 import com.alrex.parcool.client.gui.screen.ParCoolSettingScreen;
-import com.alrex.parcool.client.gui.screen.SkillTreeScreen;
+import com.alrex.parcool.client.gui.screen.ParCoolSkillTreeScreen;
 import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.client.md.resource.GuideResourceManager;
@@ -127,21 +127,19 @@ public class ClientProxy extends CommonProxy {
 	}
 
     @Override
-    public void openSettingGui(Player player, boolean openByGuideItem) {
-        super.openSettingGui(player, openByGuideItem);
+	public void openSettingGui(Player player) {
         Minecraft.getInstance().setScreen(new ParCoolSettingScreen(
-                Parkourability.get(player).getEnabledActions(), openByGuideItem
+				Parkourability.get(player).getEnabledActions()
         ));
     }
 
 	@Override
-	public void openSkillTreeGui(Player player, boolean openByGuideItem) {
+	public void openSkillTreeGui(Player player) {
 		var parkourability = Parkourability.get(player);
-		Minecraft.getInstance().setScreen(new SkillTreeScreen(
+		Minecraft.getInstance().setScreen(new ParCoolSkillTreeScreen(
 				parkourability.getCapabilities(),
 				parkourability.getEnabledActions(),
-				parkourability.getSkillTrees(),
-				openByGuideItem
+				parkourability.getSkillTrees()
 		));
 	}
 
