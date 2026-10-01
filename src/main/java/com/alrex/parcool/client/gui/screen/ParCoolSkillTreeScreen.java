@@ -7,7 +7,6 @@ import com.alrex.parcool.client.gui.components.*;
 import com.alrex.parcool.client.textures.ParCoolActionsTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.action.ActionCapabilities;
-import com.alrex.parcool.common.network.EnableActionPacket;
 import com.alrex.parcool.common.network.RequestUnlockActionPacket;
 import com.alrex.parcool.common.skilltree.SkillTree;
 import com.alrex.parcool.util.ColorUtil;
@@ -111,10 +110,12 @@ public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
                 font, contentOffsetX + 5, skillTreeOffsetY + skillTreeHeight - 30, 60, 25,
                 Component.translatable("parcool.gui.text.open_setting"), () -> ParCool.PROXY.openSettingGui(minecraft.player))
         );
-        addRenderableOnly(new WidgetGroup(contentOffsetX + 6, contentOffsetY + 6, 80, 7 + font.lineHeight, List.of(
-                new TexturedPanel(0, 0, 80, 7 + font.lineHeight, TexturedPanel.Textures.SKILLTREE_SURFACE).withBorder(colors.separator()),
-                new TextWidget(font, 0, 4, 80,
-                        Component.translatable("parcool.gui.text.skilltree"), TextWidget.HorizontalAlignment.CENTER,
+        var title = Component.translatable("parcool.gui.text.skilltree");
+        var titleWidth = Math.max(80, font.width(title) + 12);
+        addRenderableOnly(new WidgetGroup(contentOffsetX + 6, contentOffsetY + 6, titleWidth, 7 + font.lineHeight, List.of(
+                new TexturedPanel(0, 0, titleWidth, 7 + font.lineHeight, TexturedPanel.Textures.SKILLTREE_SURFACE).withBorder(colors.separator()),
+                new TextWidget(font, 0, 4, titleWidth,
+                        title, TextWidget.HorizontalAlignment.CENTER,
                         colors.onBackground()
                 ).withShadow(true)
         )));
@@ -165,7 +166,7 @@ public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
                 actionWhenLockedViewGroup.visible = true;
                 actionWhenUnlockedViewGroup.visible = false;
                 costView.setMessage(Component.literal(
-                        (player.experienceLevel < 100 ? Integer.toString(player.experienceLevel) : "99+") + "/" + learnCost
+                        (player.experienceLevel < 1000 ? Integer.toString(player.experienceLevel) : "999+") + "/" + learnCost
                 ).withStyle(Style.EMPTY.withColor(player.experienceLevel >= learnCost ? 0xFFCDF263 : colors.onSurface())));
                 costView.setProgress(player.experienceLevel / (float) learnCost);
             }
@@ -174,7 +175,7 @@ public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
         } else {
             skillViewCardGroup.visible = false;
         }
-        currentExperienceLevelView.setMessage(Component.literal(player.experienceLevel < 100 ? Integer.toString(player.experienceLevel) : "99+").withStyle(Style.EMPTY.withColor(0xFFCDF263)));
+        currentExperienceLevelView.setMessage(Component.literal(player.experienceLevel < 1000 ? Integer.toString(player.experienceLevel) : "999+").withStyle(Style.EMPTY.withColor(0xFFCDF263)));
     }
 
     private void onSkillSelectionChanged(@Nullable SkillTree.Entry<?> selectedItem) {
@@ -186,10 +187,5 @@ public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
         selectedSkillIconWidget.setImage(action != null ? ParCoolTextures.action(action) : null);
         selectedSkillNameWidget.setMessage(action != null ? Component.translatable(action.getTranslationKey()) : Component.empty());
         updateWidgetVisibility();
-    }
-
-    private void onToggleAction(boolean state) {
-        if (selectedSkill == null) return;
-        ParCool.CONNECTION.send(PacketDistributor.SERVER.noArg(), new EnableActionPacket(selectedSkill.getActionEntry(), state));
     }
 }

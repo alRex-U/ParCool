@@ -128,8 +128,10 @@ public class ClientProxy extends CommonProxy {
 
     @Override
 	public void openSettingGui(Player player) {
+		var parkourability = Parkourability.get(player);
         Minecraft.getInstance().setScreen(new ParCoolSettingScreen(
-				Parkourability.get(player).getEnabledActions()
+				parkourability.getCapabilities(),
+				parkourability.getEnabledActions()
         ));
     }
 

@@ -122,6 +122,7 @@
   "parcool.gui.top.skilltree": "Skilltree",
   "parcool.gui.top.skilltree.skill": "Skilltree > %s",
   "parcool.gui.settings.actions": "Action",
+  "parcool.gui.settings.controls": "Control",
   "parcool.gui.settings.animations": "Animation",
   "parcool.gui.settings.general": "General",
   "parcool.gui.settings.links": "Link",
@@ -156,6 +157,7 @@
   "parcool.command.success.unlock.all": "unlock %s player's all actions",
   "parcool.command.success.lock.action": "lock %s player's [%s] action",
   "parcool.command.success.lock.all": "lock %s player's all actions",
+  "parcool.config.group.control": "CONTROL",
   "parcool.config.group.hud": "HUD",
   "parcool.config.group.misc": "MISCELLANEOUS",
   "parcool.config.group.grapple": "GRAPPLING HOOK",
@@ -167,5 +169,14 @@
   "parcool.config.hud.hide_automatically": "Hide Automatically",
   "parcool.config.hud.stamina_hud_type": "Stamina HUD",
   "parcool.config.other.enable_sounds": "Enable Action Sound",
-  "parcool.config.grappling_hook.show_target_indicator": "Show Target Indicator"
+  "parcool.config.grappling_hook.show_target_indicator": "Show Target Indicator",
+  "parcool.link.discord": "Discord",
+  "parcool.link.discord.atk": "ATK Studios",
+  "parcool.link.discord.parcool": "ParCool (Outdated)",
+  "parcool.link.github": "GitHub",
+  "parcool.link.github.repository": "Repository",
+  "parcool.link.github.issues": "Issues",
+  "parcool.link.distribution": "Distributions",
+  "parcool.link.distribution.curseforge": "CurseForge",
+  "parcool.link.distribution.modrinth": "Modrinth"
 }

@@ -20,7 +20,7 @@ public class TextWidget extends AbstractWidget {
     protected final int txtColor;
     protected boolean shadow;
     protected final HorizontalAlignment alignment;
-    private int messageWidth;
+    protected int messageWidth;
 
     public TextWidget(Font font, int x, int y, int width, Component message, HorizontalAlignment alignment, int txtColor) {
         super(x, y, width, font.lineHeight, message);
@@ -36,8 +36,7 @@ public class TextWidget extends AbstractWidget {
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
-        if (!visible) return;
+    public void renderButton(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
         var xOffset = switch (alignment) {
             case START -> x;
             case END -> x + width - messageWidth;

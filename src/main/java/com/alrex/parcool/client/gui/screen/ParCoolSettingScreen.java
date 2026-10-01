@@ -16,9 +16,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -33,6 +35,7 @@ import java.util.function.Supplier;
 public class ParCoolSettingScreen extends ParCoolTabletScreen {
     public enum SettingTab {
         ACTIONS("parcool.gui.settings.actions", ParCoolGuiTextureAtlas.SETTINGS_ICON_ACTIONS),
+        CONTROLS("parcool.gui.settings.controls", ParCoolGuiTextureAtlas.SETTINGS_ICON_CONTROLS),
         ANIMATIONS("parcool.gui.settings.animations", ParCoolGuiTextureAtlas.SETTINGS_ICON_ANIMATIONS),
         GENERAL("parcool.gui.settings.general", ParCoolGuiTextureAtlas.SETTINGS_ICON_OPTIONS),
         LINKS("parcool.gui.settings.links", ParCoolGuiTextureAtlas.SETTINGS_ICON_LINKS);
@@ -46,7 +49,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
     }
 
     private record OptionGroup(Component name, List<BooleanOptionProvider> boolOptions,
-                               List<EnumOptionProvider> enumOptions) {
+                               List<EnumOptionProvider<?>> enumOptions) {
     }
 
     private record BooleanOptionProvider(Component name, Supplier<Boolean> getter, Consumer<Boolean> setter) {
@@ -64,6 +67,10 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
             return new EnumOptionProvider<>(Component.translatable(config.getPath().stream().reduce("parcool.config", (a, b) -> a + "." + b)), config, config::set);
         }
 
+        public static <E extends Enum<E>> EnumOptionProvider<E> from(Component name, ForgeConfigSpec.EnumValue<E> config) {
+            return new EnumOptionProvider<>(name, config, config::set);
+        }
+
         public void next() {
             var current = getter.get();
             var enumValues = current.getClass().getEnumConstants();
@@ -73,10 +80,12 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
 
     private SettingTab currentTab = SettingTab.ACTIONS;
     private EnumMap<SettingTab, AbstractWidget> settingWidgets;
+    private final ActionCapabilities capabilities;
     private final ActionCapabilities enabledActions;
 
-    public ParCoolSettingScreen(ActionCapabilities enabledActions) {
+    public ParCoolSettingScreen(ActionCapabilities capabilities, ActionCapabilities enabledActions) {
         super(Component.empty(), GuiColorPallet.DEFAULT_DARK, false);
+        this.capabilities = capabilities;
         this.enabledActions = enabledActions;
     }
 
@@ -90,20 +99,32 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
         addRenderableWidget(new TabSelectionList(
                 minecraft, font, colors, tabWidth - 13, contentHeight - topBarHeight - 1, contentOffsetY + topBarHeight + 1, contentOffsetY + contentHeight - 50
         )).setLeftPos(contentOffsetX + 13);
-        addRenderableWidget(new ExtendableSpriteButton.BasicOff(
-                font, contentOffsetX + 18, contentOffsetY + contentHeight - 50, tabWidth - 23, 20,
-                Component.translatable("parcool.gui.text.open_skilltree"),
-                () -> ParCool.PROXY.openSkillTreeGui(minecraft.player))
-        );
-        addRenderableWidget(new ExtendableSpriteButton.BasicOff(
+        if (ParCool.getConfig().server().enableSkillTreeUi.get()) {
+            addRenderableWidget(new ExtendableSpriteButton(
+                    font, contentOffsetX + 18, contentOffsetY + contentHeight - 50, tabWidth - 23, 20,
+                    Component.translatable("parcool.gui.text.open_skilltree"), colors.onSurface(),
+                    ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.SETTING_BUTTON),
+                    ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.SETTING_BUTTON_HOVER),
+                    ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.SETTING_BUTTON),
+                    () -> ParCool.PROXY.openSkillTreeGui(minecraft.player)
+            ));
+        }
+        addRenderableWidget(new ExtendableSpriteButton(
                 font, contentOffsetX + 18, contentOffsetY + contentHeight - 25, tabWidth - 23, 20,
-                Component.translatable("parcool.gui.text.close"),
+                Component.translatable("parcool.gui.text.close"), colors.onSurface(),
+                ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.SETTING_BUTTON),
+                ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.SETTING_BUTTON_HOVER),
+                ParCoolTextures.guiSprite(ParCoolGuiTextureAtlas.SETTING_BUTTON),
                 () -> minecraft.setScreen(null))
         );
         settingWidgets = new EnumMap<>(SettingTab.class);
         settingWidgets.put(
                 SettingTab.ACTIONS,
                 addRenderableWidget(createSkillOptions(contentOffsetX + tabWidth + margin, contentOffsetY + topBarHeight, contentWidth - tabWidth - margin * 2, contentHeight - topBarHeight))
+        );
+        settingWidgets.put(
+                SettingTab.CONTROLS,
+                addRenderableWidget(createControlOptions(contentOffsetX + tabWidth + margin, contentOffsetY + topBarHeight, contentWidth - tabWidth - margin * 2, contentHeight - topBarHeight))
         );
         settingWidgets.put(
                 SettingTab.ANIMATIONS,
@@ -134,6 +155,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
         var serverConfig = ParCool.getConfig().server();
         for (var action : actions.values()) {
             if (!action.option().needLearning()) continue;
+            if (serverConfig.enableSkillTree.get() && !capabilities.can(action)) continue;
             if (!serverConfig.get(action).permit().get()) continue;
             ExtendableSpriteToggleButton toggleButton;
             widgetList.add(new WidgetGroup(
@@ -164,6 +186,29 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
         }
         widgetList.trimToSize();
         return new ScrollableWidgetGroup(x, y, width, height, ScrollableWidgetGroup.ScrollType.VERTICAL, Collections.unmodifiableList(widgetList));
+    }
+
+    private AbstractWidget createControlOptions(int x, int y, int width, int height) {
+        var actions = ParCool.getActionRegistry().getRegisteredActions();
+        var optionList = new ArrayList<EnumOptionProvider<?>>();
+        var serverConfig = ParCool.getConfig().server();
+        var clientConfig = ParCool.getConfig().client();
+        for (var action : actions.values()) {
+            if (!action.option().needLearning()) continue;
+            if (serverConfig.enableSkillTree.get() && !capabilities.can(action)) continue;
+            if (!serverConfig.get(action).permit().get()) continue;
+            var actionControl = clientConfig.get(action);
+            if (actionControl.instantInputType() != null) {
+                optionList.add(EnumOptionProvider.from(Component.translatable(action.getTranslationKey()), actionControl.instantInputType()));
+            } else if (actionControl.continuousInputType() != null) {
+                optionList.add(EnumOptionProvider.from(Component.translatable(action.getTranslationKey()), actionControl.continuousInputType()));
+            }
+        }
+        return createOptionList(x, y, width, height, Collections.singletonList(new OptionGroup(
+                Component.translatable("parcool.config.group.control"),
+                Collections.emptyList(),
+                optionList
+        )));
     }
 
     private AbstractWidget createGeneralOptions(int x, int y, int width, int height) {
@@ -217,11 +262,48 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
     }
 
     private AbstractWidget createLinks(int x, int y, int width, int height) {
-        return new ScrollableWidgetGroup(x, y, width, height, ScrollableWidgetGroup.ScrollType.VERTICAL, List.of(
-                new WidgetGroup(0, 8, width, 100, List.of(
-                        new TexturedPanel(1, 0, width - 2, 100, TexturedPanel.Textures.SETTING_CARD).withBorder(colors.separator())
+        List<Tuple<Component, List<Tuple<Component, String>>>> list = List.of(
+                new Tuple<>(Component.translatable("parcool.link.discord"), List.of(
+                        new Tuple<>(Component.translatable("parcool.link.discord.atk"), "https://discord.com/invite/NbAJwj8RHg"),
+                        new Tuple<>(Component.translatable("parcool.link.discord.parcool"), "https://discord.com/invite/T3kSXWRAFj")
+                )),
+                new Tuple<>(Component.translatable("parcool.link.github"), List.of(
+                        new Tuple<>(Component.translatable("parcool.link.github.repository"), "https://github.com/alRex-U/ParCool"),
+                        new Tuple<>(Component.translatable("parcool.link.github.issues"), "https://github.com/alRex-U/ParCool/issues")
+                )),
+                new Tuple<>(Component.translatable("parcool.link.distribution"), List.of(
+                        new Tuple<>(Component.translatable("parcool.link.distribution.curseforge"), "https://www.curseforge.com/minecraft/mc-mods/parcool"),
+                        new Tuple<>(Component.translatable("parcool.link.distribution.modrinth"), "https://modrinth.com/mod/parcool")
                 ))
-        ));
+        );
+        var widgetList = new ArrayList<AbstractWidget>();
+        var groupWidgetY = 8;
+        for (var group : list) {
+            var subWidgetList = new ArrayDeque<AbstractWidget>();
+            subWidgetList.add(new TextWidget(font, 6, 6, width - 12, group.getA(), TextWidget.HorizontalAlignment.START, colors.primary()).withShadow(true));
+            var subWidgetY = 8 + font.lineHeight;
+            final int rowHeight = 20;
+            for (var link : group.getB()) {
+                var text = font.plainSubstrByWidth(link.getB(), (width - 16) / 2);
+                if (!text.equals(link.getB())) {
+                    text += "...";
+                }
+                subWidgetList.add(new WidgetGroup(8, subWidgetY, width - 16, rowHeight, List.of(
+                        new TextWidget(font, 0, (rowHeight - font.lineHeight) / 2, width - 16, link.getA(), TextWidget.HorizontalAlignment.START, colors.onSurface()),
+                        new ClickableTextWidget(
+                                font, 0, (rowHeight - font.lineHeight) / 2, width - 16, Component.literal(text),
+                                TextWidget.HorizontalAlignment.END, 0xFF0994E9, 0xFFEB622B,
+                                () -> Minecraft.getInstance().setScreen(new ConfirmLinkScreen((b) -> this.confirmLink(b, link.getB()), link.getB(), false))
+                        )
+                )));
+                subWidgetY += rowHeight;
+            }
+            subWidgetList.addFirst(new TexturedPanel(1, 0, width - 2, subWidgetY, TexturedPanel.Textures.SETTING_CARD).withBorder(colors.separator()));
+            widgetList.add(new WidgetGroup(0, groupWidgetY, width, subWidgetY, subWidgetList.stream().toList()));
+            groupWidgetY += subWidgetY + 8;
+        }
+        widgetList.trimToSize();
+        return new ScrollableWidgetGroup(x, y, width, height, ScrollableWidgetGroup.ScrollType.VERTICAL, Collections.unmodifiableList(widgetList));
     }
 
     private AbstractWidget createBooleanConfigRow(int x, int y, int width, int height, BooleanOptionProvider provider) {
@@ -238,7 +320,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
         SpriteButton button;
         var widgets = new WidgetGroup(x, y, width, height, List.of(
                 new TextWidget(font, 0, (height - font.lineHeight) / 2, width - 44, provider.name, TextWidget.HorizontalAlignment.START, colors.onSurface()),
-                button = new ExtendableSpriteButton.BasicOn(font, width - 40, 1, 40, 15, Component.literal(provider.getter.get().name()), null)
+                button = new ExtendableSpriteButton.BasicOn(font, width - 72, 1, 72, 15, Component.literal(provider.getter.get().name()), null)
         ));
         button.setPressedListener(() -> {
             provider.next();
