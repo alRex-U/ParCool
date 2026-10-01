@@ -8,6 +8,7 @@ import com.alrex.parcool.api.action.RegisterParCoolActionEvent;
 import com.alrex.parcool.api.stamina.RegisterParCoolStaminaTypeEvent;
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.renderer.Renderers;
+import com.alrex.parcool.common.RegistryHash;
 import com.alrex.parcool.common.action.ActionProcessor;
 import com.alrex.parcool.common.action.ActionRegistry;
 import com.alrex.parcool.common.action.ParCoolActions;
@@ -42,7 +43,6 @@ import net.minecraftforge.network.simple.SimpleChannel;
 @Mod(ParCool.MOD_ID)
 public class ParCool {
 	public static final String MOD_ID = "parcool";
-	private static final String PROTOCOL_VERSION = "4.0.0.0";
 	public static final CommonProxy PROXY = DistExecutor.unsafeRunForDist(
 			() -> ClientProxy::new,
 			() -> ServerProxy::new
@@ -79,6 +79,7 @@ public class ParCool {
 	}
 
 	public ParCool() {
+		var modLoadingContext = ModLoadingContext.get();
 		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		eventBus.addListener(this::setup);
 		eventBus.addListener(this::setupClient);
@@ -107,12 +108,14 @@ public class ParCool {
 		FMLJavaModLoadingContext.get().getModEventBus().post(new RegisterParCoolActionEvent(actionRegistry));
 		actionRegistry.freeze();
 		config = new ParCoolConfig(actionRegistry, staminaTypeRegistry);
-		config.register(ModLoadingContext.get());
+		config.register(modLoadingContext);
+		var modInfo = modLoadingContext.getContainer().getModInfo();
+		var protocolId = modInfo.getVersion() + "/" + RegistryHash.getHash(actionRegistry, staminaTypeRegistry);
 		CONNECTION = NetworkRegistry.newSimpleChannel(
 				resourceLocation("message"),
-				() -> PROTOCOL_VERSION,
-				PROTOCOL_VERSION::equals,
-				PROTOCOL_VERSION::equals
+				() -> protocolId,
+				protocolId::equals,
+				protocolId::equals
 		);
 	}
 

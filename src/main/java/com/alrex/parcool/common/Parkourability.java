@@ -202,15 +202,18 @@ public class Parkourability {
 
     public CompoundTag saveToTag() {
         var tag = new CompoundTag();
-        tag.put("caps", capabilities.saveToTag());
-		tag.put("enabled", enabledActionStates.saveToTag());
+		var registry = ParCool.getActionRegistry();
+		tag.put("caps", capabilities.saveToTag(registry));
+		tag.put("enabled", enabledActionStates.saveToTag(registry));
 		tag.putBoolean("active", active);
         return tag;
     }
 
     public void readFrom(CompoundTag tag) {
-        if (tag.get("caps") instanceof CompoundTag compoundCapTag) capabilities.readFromTag(compoundCapTag);
-		if (tag.get("enabled") instanceof CompoundTag compoundCapTag) enabledActionStates.readFromTag(compoundCapTag);
+		var registry = ParCool.getActionRegistry();
+		if (tag.get("caps") instanceof CompoundTag compoundCapTag) capabilities.readFromTag(registry, compoundCapTag);
+		if (tag.get("enabled") instanceof CompoundTag compoundCapTag)
+			enabledActionStates.readFromTag(registry, compoundCapTag);
 		if (tag.contains("active")) {
 			active = tag.getBoolean("active");
 			activationDirty = true;
