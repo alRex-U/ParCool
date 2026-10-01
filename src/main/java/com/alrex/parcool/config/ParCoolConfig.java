@@ -2,7 +2,6 @@ package com.alrex.parcool.config;
 
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.api.action.GeneralInputType;
-import com.alrex.parcool.client.hud.Position;
 import com.alrex.parcool.client.hud.stamina.HUDType;
 import com.alrex.parcool.common.action.ActionRegistry;
 import com.alrex.parcool.common.stamina.StaminaTypeRegistry;
@@ -42,8 +41,6 @@ public class ParCoolConfig {
 
 		public record StaminaHud(
 				ForgeConfigSpec.EnumValue<HUDType> type,
-				ForgeConfigSpec.EnumValue<Position.Horizontal> alignHorizontal,
-				ForgeConfigSpec.EnumValue<Position.Vertical> alignVertical,
 				ForgeConfigSpec.BooleanValue showAlways,
 				ForgeConfigSpec.BooleanValue hideAutomatically,
 				ForgeConfigSpec.IntValue offsetHorizontal,
@@ -81,7 +78,7 @@ public class ParCoolConfig {
 
 			actionMap = new TreeMap<>();
 
-			builder.push("Action");
+			builder.push("action");
 			for (var group : actionRegistry.getRegisteredGroups().entrySet()) {
 				builder.push(group.getKey());
 				var inGroupMap = new TreeMap<ActionEntry<?>, ActionValue>();
@@ -100,38 +97,36 @@ public class ParCoolConfig {
 				builder.pop();
 			}
 			builder.pop();
-			builder.push("HUD");
+			builder.push("hud");
 			{
 				staminaHud = new StaminaHud(
 						builder.defineEnum("stamina_hud_type", HUDType.Light),
-						builder.comment("horizontal alignment").defineEnum("hud_align_h_s", Position.Horizontal.Right),
-						builder.comment("vertical alignment").defineEnum("hud_align_v_s", Position.Vertical.Bottom),
 						builder.define("show_always", false),
 						builder.define("hide_automatically", true),
 						builder.defineInRange("hud_offset_h", 0, -100, 100),
 						builder.defineInRange("hud_offset_v", 0, -100, 100)
 				);
 			}
-            builder.pop();
-            builder.push("GrapplingHook");
-            {
-                grapplingHook = new GrapplingHookView(
-                        builder.comment("how much speed widens the view. 0 disables")
-                                .defineInRange("fov_intensity", 0.6, 0.0, 1.0),
-                        builder.comment("how far the camera leans towards the rope. 0 disables")
-                                .defineInRange("camera_roll_intensity", 0.6, 0.0, 1.0),
-                        builder.comment("how much a loose rope sags. 0 for straight")
-                                .defineInRange("rope_sag", 1.0, 0.0, 2.0)
-                );
-                showTargetIndicator = builder.comment("show a marker where the hook would land")
-                        .define("show_target_indicator", true);
-                targetIndicatorSize = builder.comment("size of that marker in pixels")
-                        .defineInRange("target_indicator_size", 11, 3, 64);
-                debugRope = builder.comment("log it when the rope ends up inside a block")
-                        .define("debug_rope", false);
-            }
 			builder.pop();
-			builder.push("Other");
+			builder.push("grappling_hook");
+			{
+				grapplingHook = new GrapplingHookView(
+						builder.comment("how much speed widens the view. 0 disables")
+								.defineInRange("fov_intensity", 0.6, 0.0, 1.0),
+						builder.comment("how far the camera leans towards the rope. 0 disables")
+								.defineInRange("camera_roll_intensity", 0.6, 0.0, 1.0),
+						builder.comment("how much a loose rope sags. 0 for straight")
+								.defineInRange("rope_sag", 1.0, 0.0, 2.0)
+				);
+				showTargetIndicator = builder.comment("show a marker where the hook would land")
+						.define("show_target_indicator", true);
+				targetIndicatorSize = builder.comment("size of that marker in pixels")
+						.defineInRange("target_indicator_size", 11, 3, 64);
+				debugRope = builder.comment("log it when the rope ends up inside a block")
+						.define("debug_rope", false);
+			}
+			builder.pop();
+			builder.push("other");
 			{
 				enableActionSounds = builder.define("enable_sounds", true);
 			}
@@ -179,7 +174,8 @@ public class ParCoolConfig {
 		private final TreeMap<String, TreeMap<ActionEntry<?>, ActionValue>> actionMap;
         public final ForgeConfigSpec.BooleanValue damageWithoutGlove;
         public final ForgeConfigSpec.BooleanValue enableSkillTree;
-        public final GrapplingHook grapplingHook;
+		public final ForgeConfigSpec.BooleanValue enableSkillTreeUi;
+		public final GrapplingHook grapplingHook;
 
 		public final ResourceLocation getStaminaTypeID() {
 			var id = ResourceLocation.tryParse(staminaType.get());
@@ -197,7 +193,7 @@ public class ParCoolConfig {
 
 			actionMap = new TreeMap<>();
 
-			builder.push("Action");
+			builder.push("action");
 			for (var group : actionRegistry.getRegisteredGroups().entrySet()) {
 				builder.push(group.getKey());
 				var inGroupMap = new TreeMap<ActionEntry<?>, ActionValue>();
@@ -220,61 +216,68 @@ public class ParCoolConfig {
 			}
 			builder.pop();
 
-            builder.push("Game");
+			builder.push("game");
             {
-                enableSkillTree = builder.define("enable_skill_tree", true);
-                damageWithoutGlove = builder.define("damage_without_glove", true);
+				enableSkillTree = builder
+						.comment("Enable Skilltree, if disabled all actions are available without learning")
+						.define("enable_skill_tree", true);
+				enableSkillTreeUi = builder
+						.comment("Enable Skilltree Gui, if disabled the skilltree ui is redirected into other ui")
+						.define("enable_skill_tree_ui", true);
+				damageWithoutGlove = builder
+						.comment("Whether you take damage when you use some actions like WallSlide without traceur's gloves")
+						.define("damage_without_glove", true);
             }
             builder.pop();
-            builder.push("GrapplingHook");
-            {
-                grapplingHook = new GrapplingHook(
-                        builder.comment("max reach in blocks")
-                                .defineInRange("max_range", 48.0, 8.0, 128.0),
-                        builder.comment("how fast the thrown hook flies")
-                                .defineInRange("hook_travel_speed", 4.0, 1.0, 24.0),
-                        builder.comment("shortest the rope can get")
-                                .defineInRange("min_rope_length", 1.5, 0.5, 8.0),
-                        builder.comment("rope let out per tick while sneaking")
-                                .defineInRange("reel_out_speed", 0.35, 0.0, 1.0),
-                        builder.comment("steering force while swinging. gravity is 0.08")
-                                .defineInRange("swing_control_force", 0.012, 0.0, 0.16),
-                        builder.comment("how much steering pumps the swing. 0 for a plain pendulum")
-                                .defineInRange("swing_assist", 0.35, 0.0, 2.0),
-                        builder.comment("raise this if a swing wobbles for too long")
-                                .defineInRange("swing_damping", 0.015, 0.0, 0.3),
-                        builder.comment("drag at speed. raise for a heavier swing")
-                                .defineInRange("air_resistance", 0.013, 0.0, 0.1),
-                        builder.comment("speed limit while swinging")
-                                .defineInRange("max_speed", 1.6, 0.5, 5.0),
-                        builder.comment("flat speed kept per tick")
-                                .defineInRange("rope_drag", 0.997, 0.9, 1.0),
-                        builder.comment("how much the rope stretches. 0 for none")
-                                .defineInRange("rope_compliance", 0.0005, 0.0, 0.05),
-                        builder.comment("upward boost when letting go with jump. a jump is 0.42")
-                                .defineInRange("release_boost", 0.36, 0.0, 1.5),
-                        builder.comment("ticks of momentum kept after letting go. 0 disables")
-                                .defineInRange("momentum_keep_ticks", 30, 0, 200),
-                        builder.comment("speed kept per tick during that. vanilla air is 0.91")
-                                .defineInRange("momentum_drag", 0.98, 0.9, 1.0),
-                        builder.comment("aim assist cone in degrees. 0 disables")
-                                .defineInRange("aim_assist_angle", 14, 0, 45),
-                        builder.comment("physics steps per tick")
-                                .defineInRange("physics_substeps", 6, 1, 12),
-                        builder.comment("let the rope bend around corners")
-                                .define("allow_rope_wrapping", true),
-                        builder.comment("max corners one rope can wrap around")
-                                .defineInRange("max_rope_bends", 40, 0, 64),
-                        builder.comment("load before the hook tears off. 0 never breaks")
-                                .defineInRange("max_tension", 26.0, 0.0, 200.0),
-                        builder.comment("pull force while holding use. gravity is 0.08")
-                                .defineInRange("pull_strength", 0.12, 0.0, 2.0),
-                        builder.comment("fastest the rope reels you in, in blocks per tick")
-                                .defineInRange("pull_speed_limit", 0.75, 0.05, 4.0)
-                );
-            }
-            builder.pop();
-			builder.push("Stamina");
+			builder.push("grappling_hook");
+			{
+				grapplingHook = new GrapplingHook(
+						builder.comment("max reach in blocks")
+								.defineInRange("max_range", 48.0, 8.0, 128.0),
+						builder.comment("how fast the thrown hook flies")
+								.defineInRange("hook_travel_speed", 4.0, 1.0, 24.0),
+						builder.comment("shortest the rope can get")
+								.defineInRange("min_rope_length", 1.5, 0.5, 8.0),
+						builder.comment("rope let out per tick while sneaking")
+								.defineInRange("reel_out_speed", 0.35, 0.0, 1.0),
+						builder.comment("steering force while swinging. gravity is 0.08")
+								.defineInRange("swing_control_force", 0.012, 0.0, 0.16),
+						builder.comment("how much steering pumps the swing. 0 for a plain pendulum")
+								.defineInRange("swing_assist", 0.35, 0.0, 2.0),
+						builder.comment("raise this if a swing wobbles for too long")
+								.defineInRange("swing_damping", 0.015, 0.0, 0.3),
+						builder.comment("drag at speed. raise for a heavier swing")
+								.defineInRange("air_resistance", 0.013, 0.0, 0.1),
+						builder.comment("speed limit while swinging")
+								.defineInRange("max_speed", 1.6, 0.5, 5.0),
+						builder.comment("flat speed kept per tick")
+								.defineInRange("rope_drag", 0.997, 0.9, 1.0),
+						builder.comment("how much the rope stretches. 0 for none")
+								.defineInRange("rope_compliance", 0.0005, 0.0, 0.05),
+						builder.comment("upward boost when letting go with jump. a jump is 0.42")
+								.defineInRange("release_boost", 0.36, 0.0, 1.5),
+						builder.comment("ticks of momentum kept after letting go. 0 disables")
+								.defineInRange("momentum_keep_ticks", 30, 0, 200),
+						builder.comment("speed kept per tick during that. vanilla air is 0.91")
+								.defineInRange("momentum_drag", 0.98, 0.9, 1.0),
+						builder.comment("aim assist cone in degrees. 0 disables")
+								.defineInRange("aim_assist_angle", 14, 0, 45),
+						builder.comment("physics steps per tick")
+								.defineInRange("physics_substeps", 6, 1, 12),
+						builder.comment("let the rope bend around corners")
+								.define("allow_rope_wrapping", true),
+						builder.comment("max corners one rope can wrap around")
+								.defineInRange("max_rope_bends", 40, 0, 64),
+						builder.comment("load before the hook tears off. 0 never breaks")
+								.defineInRange("max_tension", 26.0, 0.0, 200.0),
+						builder.comment("pull force while holding use. gravity is 0.08")
+								.defineInRange("pull_strength", 0.12, 0.0, 2.0),
+						builder.comment("fastest the rope reels you in, in blocks per tick")
+								.defineInRange("pull_speed_limit", 0.75, 0.05, 4.0)
+				);
+			}
+			builder.pop();
+			builder.push("stamina");
 			{
 				var registeredItems = staminaTypeRegistry.getEntries();
 				var list = new String[registeredItems.size() + 1];

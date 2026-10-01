@@ -1,5 +1,6 @@
 package com.alrex.parcool.client.gui.components;
 
+import com.alrex.parcool.util.ColorUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -52,19 +53,35 @@ public class CardPanel extends AbstractWidget {
         return this;
     }
 
+    public CardPanel shadowAll(boolean value) {
+        shadowTop = shadowBottom = shadowLeft = shadowRight = value;
+        return this;
+    }
+
     @Override
     public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
         if (!visible) return;
-        if (shadowRight || shadowBottom || shadowTop || shadowLeft) {
-            graphics.fill(
-                    getX() + (shadowLeft ? -1 : 0),
-                    getY() + (shadowTop ? -1 : 0),
-                    getX() + width + (shadowRight ? 1 : 0),
-                    getY() + height + (shadowBottom ? 1 : 0),
-                    shadowColor
-            );
-        }
+        renderShadow(graphics);
         graphics.fill(getX(), getY(), getX() + width, getY() + height, color);
+    }
+
+    protected void renderShadow(GuiGraphics graphics) {
+        if (shadowRight || shadowBottom || shadowTop || shadowLeft) {
+            if (ColorUtil.alphaOf(color) == 0xFF) {
+                graphics.fill(
+                        getX() + (shadowLeft ? -1 : 0),
+                        getY() + (shadowTop ? -1 : 0),
+                        getX() + width + (shadowRight ? 1 : 0),
+                        getY() + height + (shadowBottom ? 1 : 0),
+                        shadowColor
+                );
+            } else {
+                if (shadowTop) graphics.fill(getX(), getY() - 1, getX() + width, getY(), shadowColor);
+                if (shadowBottom) graphics.fill(getX(), getY() + height, getX() + width, getY() + height + 1, shadowColor);
+                if (shadowLeft) graphics.fill(getX() - 1, getY(), getX(), getY() + height, shadowColor);
+                if (shadowRight) graphics.fill(getX() + width, getY(), getX() + width + 1, getY() + height, shadowColor);
+            }
+        }
     }
 
     @Override

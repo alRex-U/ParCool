@@ -1,0 +1,8 @@
+{
+  "action": "parcool:crawl",
+  "children": [
+    "parcool:slide",
+    "parcool:hide_in_block",
+    "parcool:charge_jump"
+  ]
+}

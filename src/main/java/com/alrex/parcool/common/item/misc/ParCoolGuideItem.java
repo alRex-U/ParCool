@@ -23,7 +23,6 @@ public class ParCoolGuideItem extends Item {
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level level, @Nonnull List<Component> lines, @Nonnull TooltipFlag tooltipFlag) {
         lines.add(Component.translatable("parcool.gui.text.guide.tooltip.guide").withStyle(ChatFormatting.GRAY));
-        lines.add(Component.translatable("parcool.gui.text.guide.tooltip.skilltree").withStyle(ChatFormatting.GRAY));
     }
 
     @Nonnull
@@ -31,11 +30,7 @@ public class ParCoolGuideItem extends Item {
     public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
         var itemInHand = player.getItemInHand(hand);
         if (level.isClientSide()) {
-            if (player.isShiftKeyDown()) {
-                ParCool.PROXY.openSkillTreeGui(player, true);
-            } else {
-                ParCool.PROXY.openGuideGui();
-            }
+            ParCool.PROXY.openGuideGui();
         }
         return InteractionResultHolder.sidedSuccess(itemInHand, level.isClientSide());
     }

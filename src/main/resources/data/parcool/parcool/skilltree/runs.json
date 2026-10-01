@@ -1,0 +1,37 @@
+{
+  "action": "parcool:fast_run",
+  "children": [
+    "parcool:fast_swim",
+    {
+      "action": "parcool:vault",
+      "children": [
+        "parcool:breakfall"
+      ]
+    },
+    {
+      "action": "parcool:trick_jump",
+      "children": [
+        "parcool:long_jump",
+        "parcool:dodge"
+      ]
+    },
+    {
+      "action": "parcool:dive",
+      "children": [
+        "parcool:skydive"
+      ]
+    },
+    "parcool:horizontal_wall_run",
+    {
+      "action": "parcool:wall_jump",
+      "children": [
+        {
+          "action": "parcool:wall_run",
+          "children": [
+            "parcool:castaway"
+          ]
+        }
+      ]
+    }
+  ]
+}

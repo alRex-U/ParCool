@@ -1,6 +1,7 @@
 package com.alrex.parcool.proxy;
 
 import com.alrex.parcool.common.handlers.PlayerEventHandler;
+import com.alrex.parcool.common.resource.skilltree.SkilltreeResourceManager;
 import com.alrex.parcool.server.command.CommandRegistry;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
@@ -13,10 +14,14 @@ public abstract class CommonProxy {
 	public void init() {
         MinecraftForge.EVENT_BUS.register(PlayerEventHandler.class);
 		MinecraftForge.EVENT_BUS.addListener(CommandRegistry::onRegisterCommand);
+		MinecraftForge.EVENT_BUS.addListener(SkilltreeResourceManager::register);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(CommandRegistry::registerArgumentTypes);
 	}
 
-	public void openSkillTreeGui(Player player, boolean openByGuideItem) {
+    public void openSettingGui(Player player) {
+    }
+
+    public void openSkillTreeGui(Player player) {
 	}
 
 	public void openGuideGui() {

@@ -6,8 +6,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public record GuiColorPallet(
         int primary,
-        int primaryLight,
-        int primaryDark,
         int onPrimary,
         int accent,
         int error,
@@ -21,8 +19,6 @@ public record GuiColorPallet(
 ) {
     public static final GuiColorPallet DEFAULT_LIGHT = new GuiColorPallet(
             0xFF0255EE,
-            0xFF718BF5,
-            0xFF0041D6,
             0xFFFFFFFF,
             0xFFFFC64B,
             0xFFB00020,
@@ -35,9 +31,7 @@ public record GuiColorPallet(
             0x60808080
     );
     public static final GuiColorPallet DEFAULT_DARK = new GuiColorPallet(
-            0xFF0255EE,
-            0xFF718BF5,
-            0xFF0041D6,
+            0xFF7089F2,
             0xFFFFFFFF,
             0xFFFFC64B,
             0xFFB00020,

@@ -20,7 +20,7 @@ public class TextWidget extends AbstractWidget {
     protected final int txtColor;
     protected boolean shadow;
     protected final HorizontalAlignment alignment;
-    private int messageWidth;
+    protected int messageWidth;
 
     public TextWidget(Font font, int x, int y, int width, Component message, HorizontalAlignment alignment, int txtColor) {
         super(x, y, width, font.lineHeight, message);
@@ -37,7 +37,6 @@ public class TextWidget extends AbstractWidget {
 
     @Override
     public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partial) {
-        if (!visible) return;
         var xOffset = switch (alignment) {
             case START -> getX();
             case END -> getX() + width - messageWidth;
@@ -50,6 +49,11 @@ public class TextWidget extends AbstractWidget {
     public void setMessage(@Nonnull Component message) {
         super.setMessage(message);
         messageWidth = font.width(getMessage());
+    }
+
+    @Override
+    protected boolean isValidClickButton(int click) {
+        return false;
     }
 
     @Override

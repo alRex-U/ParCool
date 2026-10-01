@@ -1,11 +1,11 @@
 package com.alrex.parcool.client.gui.components;
 
-import com.alrex.parcool.api.client.skilltree.SkillTree;
 import com.alrex.parcool.client.gui.GuiRenderUtil;
 import com.alrex.parcool.client.textures.ParCoolActionsTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.action.ActionCapabilities;
+import com.alrex.parcool.common.skilltree.SkillTree;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
@@ -95,6 +95,32 @@ public class SkillTreeWidget extends AbstractWidget {
         return new CalculateWidgetResult(widget, width, childMaxHeight + yMargin + widget.getHeight());
     }
 
+    private void limitScroll() {
+        if (scrollX < -width / 2.) scrollX = -width / 2.;
+        else if (scrollX > contentWidth - width / 2.) scrollX = contentWidth - width / 2.;
+        if (scrollY < -height / 2.) scrollY = -height / 2.;
+        else if (scrollY > contentHeight - height / 2.) scrollY = contentHeight - height / 2.;
+    }
+
+    private void limitScale() {
+        if (this.scale < 0.5f) this.scale = 0.5f;
+        else if (this.scale > 2.0f) this.scale = 2.0f;
+    }
+
+    public void center() {
+        scrollX = (contentWidth - width / scale) / 2.;
+        scrollY = (contentHeight - height / scale) / 2.;
+        limitScroll();
+    }
+
+    public void center(boolean autoScale) {
+        if (autoScale) {
+            scale = (width - 20) / (contentWidth + 1f);
+            limitScale();
+        }
+        center();
+    }
+
     @Nullable
     public SkillTree.Entry<?> getSelectedSkill() {
         return selectedSkill;
@@ -145,18 +171,14 @@ public class SkillTreeWidget extends AbstractWidget {
     public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
         scrollX -= dragX / scale;
         scrollY -= dragY / scale;
-        if (scrollX < -width) scrollX = -width;
-        else if (scrollX > contentWidth) scrollX = contentWidth;
-        if (scrollY < -height) scrollY = -height;
-        else if (scrollY > contentHeight) scrollY = contentHeight;
+        limitScroll();
         return true;
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollDelta) {
         this.scale += (float) scrollDelta / 4f;
-        if (this.scale < 0.5f) this.scale = 0.5f;
-        else if (this.scale > 2.0f) this.scale = 2.0f;
+        limitScale();
         return true;
     }
 
@@ -169,7 +191,7 @@ public class SkillTreeWidget extends AbstractWidget {
                 }
             }
         }
-        return false;
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     private class ConnectivityWidget implements Renderable {
@@ -243,15 +265,6 @@ public class SkillTreeWidget extends AbstractWidget {
                 if (visible) {
                     RenderSystem.setShaderTexture(0, ParCoolActionsTextureAtlas.TEXTURE_LOCATION);
                     graphics.blit(this.getX(), this.getY(), 0, this.width, this.height, ParCoolTextures.action(entry.getActionEntry()));
-                }
-                if (entry.isUnlocked(capabilities)) {
-                    var sprite = ParCoolTextures.guiSprite(
-                            entry.isEnabled(enabledActions)
-                                    ? ParCoolGuiTextureAtlas.SKILLTREE_ACTION_MARK_ENABLED
-                                    : ParCoolGuiTextureAtlas.SKILLTREE_ACTION_MARK_DISABLED
-                    );
-                    RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
-                    graphics.blit(this.getX() + this.width - 3, this.getY() - 3, 0, 6, 6, sprite);
                 }
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
             } else {

@@ -1,6 +1,5 @@
 package com.alrex.parcool.proxy;
 
-import com.alrex.parcool.api.client.skilltree.PrepareParCoolSkillTreeEvent;
 import com.alrex.parcool.client.GrappleCameraHandler;
 import com.alrex.parcool.client.GrappleTargetOverlay;
 import com.alrex.parcool.client.animation.AnimationRegistries;
@@ -11,14 +10,14 @@ import com.alrex.parcool.client.animation.system.handle.AnimationSystemEventHand
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.animation.system.resource.AnimationResourceManager;
 import com.alrex.parcool.client.gui.screen.ParCoolGuideScreen;
-import com.alrex.parcool.client.gui.screen.SkillTreeScreen;
+import com.alrex.parcool.client.gui.screen.ParCoolSettingScreen;
+import com.alrex.parcool.client.gui.screen.ParCoolSkillTreeScreen;
 import com.alrex.parcool.client.hud.HUDRegistry;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.client.md.resource.GuideResourceManager;
 import com.alrex.parcool.client.renderer.GrappleRopeRenderer;
 import com.alrex.parcool.client.renderer.GrapplingHookItemRenderer;
 import com.alrex.parcool.client.renderer.entity.layers.ParCoolModelLayers;
-import com.alrex.parcool.client.skilltree.ParCoolSkillTrees;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.handlers.InputHandler;
@@ -56,10 +55,9 @@ public class ClientProxy extends CommonProxy {
 		bus.register(HUDRegistry.getInstance());
 		bus.register(InputHandler.class);
         bus.register(AnimationSystemEventHandler.class);
-        bus.register(ParCoolSkillTrees.class);
-		bus.register(GrappleCameraHandler.class);
-		bus.register(GrappleRopeRenderer.class);
-		bus.register(GrappleTargetOverlay.class);
+        bus.register(GrappleCameraHandler.class);
+        bus.register(GrappleRopeRenderer.class);
+        bus.register(GrappleTargetOverlay.class);
 		bus.register(new PassiveAnimationProcessor());
 
 		var registerAnimationEntryEvent = new RegisterAnimationEntryEvent();
@@ -120,18 +118,30 @@ public class ClientProxy extends CommonProxy {
 				.encoder(ChangeActivationPacket.HANDLER::encode)
 				.consumerMainThread(ChangeActivationPacket.HANDLER::handleInPhysicalClient)
 				.add();
+		instance.messageBuilder(SkilltreePacket.class, index++)
+				.noResponse()
+				.decoder(SkilltreePacket.HANDLER::decode)
+				.encoder(SkilltreePacket.HANDLER::encode)
+				.consumerMainThread(SkilltreePacket.HANDLER::handleInPhysicalClient)
+				.add();
 	}
 
-	@Override
-	public void openSkillTreeGui(Player player, boolean openByGuideItem) {
-		var prepareEvent = new PrepareParCoolSkillTreeEvent();
-		MinecraftForge.EVENT_BUS.post(prepareEvent);
+    @Override
+	public void openSettingGui(Player player) {
 		var parkourability = Parkourability.get(player);
-		Minecraft.getInstance().setScreen(new SkillTreeScreen(
+        Minecraft.getInstance().setScreen(new ParCoolSettingScreen(
+				parkourability.getCapabilities(),
+				parkourability.getEnabledActions()
+        ));
+    }
+
+	@Override
+	public void openSkillTreeGui(Player player) {
+		var parkourability = Parkourability.get(player);
+		Minecraft.getInstance().setScreen(new ParCoolSkillTreeScreen(
 				parkourability.getCapabilities(),
 				parkourability.getEnabledActions(),
-				prepareEvent.getSkillTrees(),
-				openByGuideItem
+				parkourability.getSkillTrees()
 		));
 	}
 

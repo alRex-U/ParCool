@@ -3,7 +3,6 @@ package com.alrex.parcool.common.action;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.common.network.ActionCapabilitiesPacket;
-import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -76,7 +75,7 @@ public class ActionCapabilities {
 
     public void sync(ServerPlayer owner, ActionCapabilitiesPacket.Target target) {
         this.dirty = false;
-        ParCool.CONNECTION.send(PacketDistributor.PLAYER.with(() -> owner), new ActionCapabilitiesPacket(this, target));
+        ParCool.getConnection().send(PacketDistributor.PLAYER.with(() -> owner), new ActionCapabilitiesPacket(this, target));
     }
 
     public void copyFrom(ActionCapabilities capabilities) {
@@ -87,23 +86,43 @@ public class ActionCapabilities {
         this.dirty = true;
     }
 
-    public CompoundTag saveToTag() {
+    public CompoundTag saveToTag(ActionRegistry registry) {
         var tag = new CompoundTag();
         for (var group : capabilities.entrySet()) {
+            var actionGroup = registry.getRegisteredGroups().get(group.getKey());
+            if (actionGroup == null) continue;
             var groupCapabilities = group.getValue();
-            tag.putByteArray(group.getKey(), encodeToByteArray(groupCapabilities));
+            var groupCapabilityObject = new CompoundTag();
+            for (var i = 0; i < groupCapabilities.length && i < actionGroup.actions().size(); i++) {
+                var action = actionGroup.actions().get(i);
+                groupCapabilityObject.putBoolean(action.id().getPath(), groupCapabilities[i]);
+            }
+            tag.put(actionGroup.namespace(), groupCapabilityObject);
         }
         return tag;
     }
 
-    public void readFromTag(CompoundTag tag) {
+    public void readFromTag(ActionRegistry registry, CompoundTag tag) {
         for (var groupName : tag.getAllKeys()) {
-            if (!capabilities.containsKey(groupName)) continue;
-            var groupTag = tag.get(groupName);
-            if (!(groupTag instanceof ByteArrayTag bytesTag)) continue;
-            capabilities.compute(groupName, (k, groupCapabilities) -> decodeFromByteArray(groupCapabilities.length, bytesTag.getAsByteArray()));
-            dirty = true;
+            var cap = capabilities.get(groupName);
+            if (cap == null) continue;
+            var actionGroup = registry.getRegisteredGroups().get(groupName);
+            if (actionGroup == null) continue;
+            if (!(tag.get(groupName) instanceof CompoundTag groupTag)) continue;
+            Arrays.fill(cap, false);
+            for (var actionName : groupTag.getAllKeys()) {
+                var actionCap = groupTag.getBoolean(actionName);
+                actionGroup
+                        .actions()
+                        .stream()
+                        .filter(it -> it.id().getPath().equals(actionName))
+                        .findFirst()
+                        .ifPresent(action -> {
+                            if (action.index() < cap.length) cap[action.index()] = actionCap;
+                        });
+            }
         }
+        dirty = true;
     }
 
     public void write(FriendlyByteBuf buf) {

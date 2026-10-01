@@ -16,7 +16,7 @@ public class ActionSynchronizationDepot {
 
     public void tick() {
         if (!packets.isEmpty()) {
-            ParCool.CONNECTION.send(PacketDistributor.ALL.noArg(), packToPacket());
+            ParCool.getConnection().send(PacketDistributor.ALL.noArg(), packToPacket());
         }
     }
 

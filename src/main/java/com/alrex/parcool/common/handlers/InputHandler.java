@@ -14,10 +14,14 @@ public class InputHandler {
     @SubscribeEvent
     public static void onTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.START) return;
-        if (ParCoolKeyBinds.OPEN_SKILLTREE.state().isJustPressed()) {
+        if (ParCoolKeyBinds.OPEN_SETTING_SKILLTREE.state().isJustPressed()) {
             var player = Minecraft.getInstance().player;
             if (player == null) return;
-            ParCool.PROXY.openSkillTreeGui(player, false);
+            if (ParCool.getConfig().server().enableSkillTreeUi.get()) {
+                ParCool.PROXY.openSkillTreeGui(player);
+            } else {
+                ParCool.PROXY.openSettingGui(player);
+            }
         }
     }
 

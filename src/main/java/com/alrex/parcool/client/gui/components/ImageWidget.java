@@ -34,7 +34,7 @@ public class ImageWidget extends AbstractWidget {
     }
 
     @Override
-    protected boolean isValidClickButton(int p_93652_) {
+    protected boolean isValidClickButton(int click) {
         return false;
     }
 

@@ -28,12 +28,14 @@ public class Dodge extends ContinuableAction implements ActionExtension.Attacked
     private final SynchronizedDataHolder dataHolder;
     private final SynchronizedProperty<AnimationType> propertyAnimationType;
     private final SynchronizedProperty<Float> propertyStartedYRot;
+    private final SynchronizedProperty<Float> propertyMoveDirectionYRot;
 
     public Dodge(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry);
         dataHolder = SynchronizedDataHolder.create(entry,
                 propertyAnimationType = SynchronizedProperty.newEnum(AnimationType.class),
-                propertyStartedYRot = SynchronizedProperty.newFloat()
+                propertyStartedYRot = SynchronizedProperty.newFloat(),
+                propertyMoveDirectionYRot = SynchronizedProperty.newFloat()
         );
     }
 
@@ -52,19 +54,23 @@ public class Dodge extends ContinuableAction implements ActionExtension.Attacked
     @Override
     public boolean canStart() {
         if (input.isActive()) {
-            AnimationType type = null;
-            if (ParCoolKeyBinds.getMovementInput(LogicalMovement.BACKWARD).isDown()) {
-                type = AnimationType.BACK;
-            } else if (ParCoolKeyBinds.getMovementInput(LogicalMovement.FORWARD).isDown()) {
-                type = AnimationType.FRONT;
-            } else if (ParCoolKeyBinds.getMovementInput(LogicalMovement.RIGHT).isDown()) {
-                type = AnimationType.RIGHT;
-            } else if (ParCoolKeyBinds.getMovementInput(LogicalMovement.LEFT).isDown()) {
-                type = AnimationType.LEFT;
-            }
-            if (type == null) return false;
+            int forward = (ParCoolKeyBinds.getMovementInput(LogicalMovement.BACKWARD).isDown() ? -1 : 0)
+                    + (ParCoolKeyBinds.getMovementInput(LogicalMovement.FORWARD).isDown() ? 1 : 0);
+            int right = (ParCoolKeyBinds.getMovementInput(LogicalMovement.RIGHT).isDown() ? 1 : 0)
+                    + (ParCoolKeyBinds.getMovementInput(LogicalMovement.LEFT).isDown() ? -1 : 0);
+            if (forward == 0 && right == 0) return false;
+            AnimationType type;
+            if (forward > 0) type = AnimationType.FRONT;
+            else if (forward < 0) type = AnimationType.BACK;
+            else if (right > 0) type = AnimationType.RIGHT;
+            else type = AnimationType.LEFT;
             propertyAnimationType.set(type);
-            propertyStartedYRot.set(parkourability.player().getYRot());
+            var dodgeYRotDegree = VectorUtil.toYawDegree(new Vec3(right, 0, forward));
+            propertyMoveDirectionYRot.set((float) Math.toRadians(dodgeYRotDegree));
+            propertyStartedYRot.set((forward != 0 && right != 0)
+                    ? parkourability.player().getYRot() - (float) (Math.abs(dodgeYRotDegree) < 90. ? dodgeYRotDegree : 180 + dodgeYRotDegree)
+                    : parkourability.player().getYRot()
+            );
             return true;
         }
         return false;
@@ -103,13 +109,7 @@ public class Dodge extends ContinuableAction implements ActionExtension.Attacked
         var player = parkourability.player();
         var moveDirection = EntityUtil.getHorizontalLookAngle(player);
         var speed = EntityUtil.getHorizontalMaximumSpeed(player);
-        moveDirection = switch (propertyAnimationType.getOrDefaultIfNull(AnimationType.FRONT)) {
-            case FRONT -> moveDirection;
-            case BACK -> moveDirection.reverse();
-            case LEFT -> moveDirection.yRot(Mth.HALF_PI);
-            case RIGHT -> moveDirection.yRot(-Mth.HALF_PI);
-        };
-        var moveVec = moveDirection.scale(speed);
+        var moveVec = moveDirection.yRot(propertyMoveDirectionYRot.getOrDefaultIfNull(0f)).scale(speed);
         parkourability.getBehaviorEnforcer().setMarkerEnforcingDeltaMovement(this::isDoing, () -> new Vec3(moveVec.x, player.getDeltaMovement().y, moveVec.z));
         parkourability.getBehaviorEnforcer().noDescendingFromEdgeMarks.add(ID_CANCEL_GET_OFF_BLOCK, this::isDoing);
     }
