@@ -120,7 +120,7 @@ public abstract class Action {
 				entry.id().getNamespace(),
 				Collections.singletonList(getSynchronizedData().packToEntry(ActionStatePacket.Type.START, entry))
 		));
-        ParCool.CONNECTION.send(clientSide ? PacketDistributor.SERVER.noArg() : PacketDistributor.ALL.noArg(), packet);
+        ParCool.getConnection().send(clientSide ? PacketDistributor.SERVER.noArg() : PacketDistributor.ALL.noArg(), packet);
 	}
 
 	protected final boolean isPossible() {

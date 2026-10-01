@@ -22,7 +22,7 @@ public class StaminaSynchronizationDepot {
             syncCooldown--;
         } else {
             if (!map.isEmpty()) {
-                ParCool.CONNECTION.send(PacketDistributor.ALL.noArg(), packToPacket());
+                ParCool.getConnection().send(PacketDistributor.ALL.noArg(), packToPacket());
             }
             syncCooldown = 20;
         }

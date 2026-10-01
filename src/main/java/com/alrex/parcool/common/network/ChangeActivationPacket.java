@@ -35,7 +35,7 @@ public record ChangeActivationPacket(UUID playerID, boolean value, boolean fromC
             var parkourability = Parkourability.get(player);
             parkourability.syncActive(packet.value);
 
-            ParCool.CONNECTION.send(PacketDistributor.ALL.noArg(), packet);
+            ParCool.getConnection().send(PacketDistributor.ALL.noArg(), packet);
         }
 
         @OnlyIn(Dist.CLIENT)
@@ -48,7 +48,7 @@ public record ChangeActivationPacket(UUID playerID, boolean value, boolean fromC
             parkourability.syncActive(packet.value);
 
             if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
-                ParCool.CONNECTION.send(PacketDistributor.ALL.noArg(), packet);
+                ParCool.getConnection().send(PacketDistributor.ALL.noArg(), packet);
             }
         }
     };

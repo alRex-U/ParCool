@@ -43,12 +43,6 @@ import net.minecraftforge.network.simple.SimpleChannel;
 public class ParCool {
 	public static final String MOD_ID = "parcool";
 	private static final String PROTOCOL_VERSION = "4.0.0.0";
-	public static final SimpleChannel CONNECTION = NetworkRegistry.newSimpleChannel(
-			resourceLocation("message"),
-			() -> PROTOCOL_VERSION,
-			PROTOCOL_VERSION::equals,
-			PROTOCOL_VERSION::equals
-	);
 	public static final CommonProxy PROXY = DistExecutor.unsafeRunForDist(
 			() -> ClientProxy::new,
 			() -> ServerProxy::new
@@ -57,6 +51,7 @@ public class ParCool {
 	private static final ActionRegistry actionRegistry = new ActionRegistry();
 	private static final StaminaTypeRegistry staminaTypeRegistry = new StaminaTypeRegistry();
 	private static final ActionProcessor actionProcessor = new ActionProcessor();
+	private static SimpleChannel CONNECTION;
 	private static ParCoolConfig config;
 
 	public static ResourceLocation resourceLocation(String path) {
@@ -73,6 +68,10 @@ public class ParCool {
 
 	public static ParCoolConfig getConfig() {
 		return config;
+	}
+
+	public static SimpleChannel getConnection() {
+		return CONNECTION;
 	}
 
 	public static ActionProcessor getActionProcessor() {
@@ -109,6 +108,12 @@ public class ParCool {
 		actionRegistry.freeze();
 		config = new ParCoolConfig(actionRegistry, staminaTypeRegistry);
 		config.register(ModLoadingContext.get());
+		CONNECTION = NetworkRegistry.newSimpleChannel(
+				resourceLocation("message"),
+				() -> PROTOCOL_VERSION,
+				PROTOCOL_VERSION::equals,
+				PROTOCOL_VERSION::equals
+		);
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {

@@ -177,7 +177,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
                                     font, width - 60, 6, 56, 24,
                                     Component.translatable("parcool.gui.text.enabled"),
                                     Component.translatable("parcool.gui.text.disabled"),
-                                    (state) -> ParCool.CONNECTION.sendToServer(new EnableActionPacket(action, state))
+                                    (state) -> ParCool.getConnection().sendToServer(new EnableActionPacket(action, state))
                             )
                     )
             ));

@@ -41,7 +41,7 @@ public abstract class AbstractLocalStamina implements IReadableStamina {
 
     public final void sync() {
         if (dirty) {
-            ParCool.CONNECTION.send(PacketDistributor.SERVER.noArg(), new StaminaPacket(owner.getUUID(), true, this.copyAsReadOnly()));
+            ParCool.getConnection().send(PacketDistributor.SERVER.noArg(), new StaminaPacket(owner.getUUID(), true, this.copyAsReadOnly()));
             dirty = false;
         }
     }

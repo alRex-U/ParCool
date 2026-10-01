@@ -123,7 +123,7 @@ public class ActionProcessor {
 			packet.add(subPacket);
 		}
 		if (side.isClient()) {
-			ParCool.CONNECTION.send(PacketDistributor.SERVER.noArg(), packet);
+            ParCool.getConnection().send(PacketDistributor.SERVER.noArg(), packet);
 		} else {
 			getActionSyncDepot().requestSync(packet);
 		}

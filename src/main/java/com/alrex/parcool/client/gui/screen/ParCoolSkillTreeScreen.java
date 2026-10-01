@@ -143,7 +143,7 @@ public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
         if (player != null) {
             player.playSound(ParCoolSoundEvents.SKILLTREE_UNLOCK.get());
         }
-        ParCool.CONNECTION.send(PacketDistributor.SERVER.noArg(), new RequestUnlockActionPacket(selectedSkill.getActionEntry()));
+        ParCool.getConnection().send(PacketDistributor.SERVER.noArg(), new RequestUnlockActionPacket(selectedSkill.getActionEntry()));
     }
 
     @Override

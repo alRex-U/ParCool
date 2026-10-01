@@ -76,7 +76,7 @@ public class ActionCapabilities {
 
     public void sync(ServerPlayer owner, ActionCapabilitiesPacket.Target target) {
         this.dirty = false;
-        ParCool.CONNECTION.send(PacketDistributor.PLAYER.with(() -> owner), new ActionCapabilitiesPacket(this, target));
+        ParCool.getConnection().send(PacketDistributor.PLAYER.with(() -> owner), new ActionCapabilitiesPacket(this, target));
     }
 
     public void copyFrom(ActionCapabilities capabilities) {
