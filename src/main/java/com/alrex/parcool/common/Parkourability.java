@@ -7,13 +7,19 @@ import com.alrex.parcool.api.action.StaminaConsumption;
 import com.alrex.parcool.api.stamina.IReadableStamina;
 import com.alrex.parcool.common.action.*;
 import com.alrex.parcool.common.network.ChangeActivationPacket;
+import com.alrex.parcool.common.network.SkilltreePacket;
+import com.alrex.parcool.common.resource.skilltree.SkilltreeResourceManager;
+import com.alrex.parcool.common.skilltree.SkillTree;
 import com.alrex.parcool.common.stamina.ReadonlyStamina;
 import com.alrex.parcool.common.stamina.StaminaTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.List;
 import java.util.TreeMap;
 
 public class Parkourability {
@@ -31,9 +37,11 @@ public class Parkourability {
 	private final Player player;
 	private final ActionCapabilities capabilities;
 	private final ActionCapabilities enabledActionStates;
+	private List<SkillTree> skillTrees = Collections.emptyList();
 	private IReadableStamina stamina;
 	private boolean active = true;
 	private boolean activationDirty = false;
+	private boolean skillTreeDirty = false;
 
 	public Parkourability(Player player, ActionRegistry registry) {
 		this.player = player;
@@ -49,6 +57,9 @@ public class Parkourability {
 			this.stamina = staminaProvider.provider().newInstance(player, null);
 		} else {
 			this.stamina = ReadonlyStamina.DEFAULT;
+			if (player instanceof ServerPlayer) {
+				setSkillTree(SkilltreeResourceManager.getInstance().getSkillTrees());
+			}
 		}
 	}
 
@@ -97,6 +108,19 @@ public class Parkourability {
 		return active;
 	}
 
+	public void setSkillTree(List<SkillTree> skillTrees) {
+		this.skillTrees = skillTrees;
+		skillTreeDirty = true;
+	}
+
+	public void syncSkillTree(List<SkillTree> skillTrees) {
+		this.skillTrees = skillTrees;
+	}
+
+	public List<SkillTree> getSkillTrees() {
+		return skillTrees;
+	}
+
 	public void sendActivationPacket() {
 		if (activationDirty) {
 			activationDirty = false;
@@ -105,6 +129,15 @@ public class Parkourability {
 			} else {
 				PacketDistributor.sendToAllPlayers(new ChangeActivationPacket(player.getUUID(), active, false));
 			}
+		}
+	}
+
+	public void sendSkillTreePacketFromServer() {
+		if (player.level().isClientSide) return;
+		if (skillTreeDirty) {
+			if (player instanceof ServerPlayer serverPlayer)
+				PacketDistributor.sendToPlayer(serverPlayer, new SkilltreePacket(skillTrees));
+			skillTreeDirty = false;
 		}
 	}
 
@@ -170,15 +203,18 @@ public class Parkourability {
 
     public CompoundTag saveToTag() {
         var tag = new CompoundTag();
-        tag.put("caps", capabilities.saveToTag());
-		tag.put("enabled", enabledActionStates.saveToTag());
+		var registry = ParCool.getActionRegistry();
+		tag.put("caps", capabilities.saveToTag(registry));
+		tag.put("enabled", enabledActionStates.saveToTag(registry));
 		tag.putBoolean("active", active);
         return tag;
     }
 
     public void readFrom(CompoundTag tag) {
-        if (tag.get("caps") instanceof CompoundTag compoundCapTag) capabilities.readFromTag(compoundCapTag);
-		if (tag.get("enabled") instanceof CompoundTag compoundCapTag) enabledActionStates.readFromTag(compoundCapTag);
+		var registry = ParCool.getActionRegistry();
+		if (tag.get("caps") instanceof CompoundTag compoundCapTag) capabilities.readFromTag(registry, compoundCapTag);
+		if (tag.get("enabled") instanceof CompoundTag compoundCapTag)
+			enabledActionStates.readFromTag(registry, compoundCapTag);
 		if (tag.contains("active")) {
 			active = tag.getBoolean("active");
 			activationDirty = true;

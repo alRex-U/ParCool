@@ -3,10 +3,12 @@ package com.alrex.parcool.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
 
 @OnlyIn(Dist.CLIENT)
 public class GuiRenderUtil {
@@ -31,5 +33,45 @@ public class GuiRenderUtil {
             graphics.renderItem(itemStack, scaledX, scaledY);
         }
         poseStack.popPose();
+    }
+
+    public static void renderExtendableSprite(GuiGraphics graphics, TextureAtlasSprite sprite, int x, int y, int width, int height) {
+        int halfWidth = width / 2, halfHeight = height / 2;
+        float spriteWidth = sprite.contents().width(), spriteHeight = sprite.contents().height();
+
+        float midU0 = sprite.getU(halfWidth / spriteWidth), midV0 = sprite.getV(halfHeight / spriteHeight);
+        float midU1 = sprite.getU(1f - (width - halfWidth) / spriteWidth), midV1 = sprite.getV(1f - (height - halfHeight) / spriteHeight);
+        graphics.innerBlit(
+                sprite.atlasLocation(),
+                x, x + halfWidth,
+                y, y + halfHeight,
+                0 /*z pos*/,
+                sprite.getU0(), midU0,
+                sprite.getV0(), midV0
+        );
+        graphics.innerBlit(
+                sprite.atlasLocation(),
+                x + halfWidth, x + width,
+                y, y + halfHeight,
+                0,
+                midU1, sprite.getU1(),
+                sprite.getV0(), midV0
+        );
+        graphics.innerBlit(
+                sprite.atlasLocation(),
+                x, x + halfWidth,
+                y + halfHeight, y + height,
+                0,
+                sprite.getU0(), midU0,
+                midV1, sprite.getV1()
+        );
+        graphics.innerBlit(
+                sprite.atlasLocation(),
+                x + halfWidth, x + width,
+                y + halfHeight, y + height,
+                0,
+                midU1, sprite.getU1(),
+                midV1, sprite.getV1()
+        );
     }
 }

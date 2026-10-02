@@ -5,6 +5,7 @@ import com.alrex.parcool.common.handlers.AddAttributesHandler;
 import com.alrex.parcool.common.handlers.PlayerEventHandler;
 import com.alrex.parcool.common.network.NetworkRegistrar;
 import com.alrex.parcool.common.potion.ParCoolBrewingRecipe;
+import com.alrex.parcool.common.resource.skilltree.SkilltreeResourceManager;
 import com.alrex.parcool.common.stamina.StaminaTypes;
 import com.alrex.parcool.server.command.CommandRegistry;
 import net.neoforged.bus.api.IEventBus;
@@ -21,6 +22,7 @@ public class CommonRegistrar {
     public static void registerGameEvent(IEventBus bus) {
         bus.register(PlayerEventHandler.class);
         bus.register(ParCoolBrewingRecipe.class);
+        bus.addListener(SkilltreeResourceManager::register);
         bus.addListener(CommandRegistry::onRegisterCommand);
     }
 }

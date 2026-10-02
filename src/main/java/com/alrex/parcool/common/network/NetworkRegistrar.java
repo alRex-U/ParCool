@@ -1,12 +1,13 @@
 package com.alrex.parcool.common.network;
 
+import com.alrex.parcool.ParCool;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 public class NetworkRegistrar {
     @SubscribeEvent
     public static void registerPackets(RegisterPayloadHandlersEvent event) {
-        var r = event.registrar("4.0.0.0");
+        var r = event.registrar(ParCool.getConnectionId());
         r.playBidirectional(
                 ActionStatePacket.TYPE,
                 ActionStatePacket.HANDLER.codec(),
@@ -51,6 +52,11 @@ public class NetworkRegistrar {
                 ChangeActivationPacket.TYPE,
                 ChangeActivationPacket.HANDLER.codec(),
                 ChangeActivationPacket.HANDLER.payloadHandler()
+        );
+        r.playToClient(
+                SkilltreePacket.TYPE,
+                SkilltreePacket.HANDLER.codec(),
+                SkilltreePacket.HANDLER.payloadHandler()
         );
     }
 }

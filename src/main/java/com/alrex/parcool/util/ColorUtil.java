@@ -19,4 +19,8 @@ public class ColorUtil {
 		b = (int) Math.min(0xFF, b * scale);
 		return getColorCodeFromARGB(a, r, g, b);
 	}
+
+    public static int alphaOf(int color) {
+        return (color & 0xFF000000) >> 24;
+    }
 }

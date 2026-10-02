@@ -1,6 +1,5 @@
 package com.alrex.parcool.common.action;
 
-import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.Action;
 import com.alrex.parcool.api.action.ContinuableAction;
 import com.alrex.parcool.api.action.ParCoolActionEvent;
@@ -83,6 +82,7 @@ public class ActionProcessor {
 	}
 
 	private void onTick$doPreprocessInServer(Parkourability parkourability) {
+        parkourability.sendSkillTreePacketFromServer();
 	}
 
 	@OnlyIn(Dist.CLIENT)

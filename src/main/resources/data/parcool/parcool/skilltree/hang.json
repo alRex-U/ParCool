@@ -1,0 +1,14 @@
+{
+  "action": "parcool:hang_on",
+  "children": [
+    {
+      "action": "parcool:climb_up",
+      "children": [
+        "parcool:pole_climb"
+      ]
+    },
+    "parcool:slide_down",
+    "parcool:hang_down",
+    "parcool:ride_zipline"
+  ]
+}

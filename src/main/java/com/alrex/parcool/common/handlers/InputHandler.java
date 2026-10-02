@@ -1,5 +1,6 @@
 package com.alrex.parcool.common.handlers;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.gui.GuiHelper;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
@@ -13,10 +14,14 @@ import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
 public class InputHandler {
     @SubscribeEvent
     public static void onTick(ClientTickEvent.Pre event) {
-        if (ParCoolKeyBinds.OPEN_SKILLTREE.state().isJustPressed()) {
+        if (ParCoolKeyBinds.OPEN_SETTING_SKILLTREE.state().isJustPressed()) {
             var player = Minecraft.getInstance().player;
             if (player == null) return;
-            GuiHelper.openSkillTreeGui(player, false);
+            if (ParCool.getConfig().server().enableSkillTreeUi.get()) {
+                GuiHelper.openSkillTreeGui(player);
+            } else {
+                GuiHelper.openSettingGui(player);
+            }
         }
     }
 

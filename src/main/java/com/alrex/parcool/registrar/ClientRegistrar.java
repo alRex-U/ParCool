@@ -15,7 +15,6 @@ import com.alrex.parcool.client.md.resource.GuideResourceManager;
 import com.alrex.parcool.client.renderer.GrappleRopeRenderer;
 import com.alrex.parcool.client.renderer.GrapplingHookItemRenderer;
 import com.alrex.parcool.client.renderer.entity.layers.ParCoolModelLayers;
-import com.alrex.parcool.client.skilltree.ParCoolSkillTrees;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.handlers.InputHandler;
 import net.neoforged.api.distmarker.Dist;
@@ -51,7 +50,6 @@ public class ClientRegistrar {
         bus.register(GrappleTargetOverlay.class);
         bus.register(InputHandler.class);
         bus.register(AnimationSystemEventHandler.class);
-        bus.register(ParCoolSkillTrees.class);
         bus.register(new PassiveAnimationProcessor());
     }
 }

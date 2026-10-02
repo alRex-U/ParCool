@@ -8,6 +8,7 @@ import com.alrex.parcool.api.action.RegisterParCoolActionEvent;
 import com.alrex.parcool.api.stamina.RegisterParCoolStaminaTypeEvent;
 import com.alrex.parcool.client.animation.system.registration.AnimationSets;
 import com.alrex.parcool.client.renderer.Renderers;
+import com.alrex.parcool.common.RegistryHash;
 import com.alrex.parcool.common.action.ActionProcessor;
 import com.alrex.parcool.common.action.ActionRegistry;
 import com.alrex.parcool.common.block.Blocks;
@@ -38,6 +39,7 @@ public class ParCool {
 	private static final StaminaTypeRegistry staminaTypeRegistry = new StaminaTypeRegistry();
 	private static final ActionProcessor actionProcessor = new ActionProcessor();
 	private static ParCoolConfig config;
+	private static String connectionId;
 
 	public static ResourceLocation resourceLocation(String path) {
 		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
@@ -53,6 +55,10 @@ public class ParCool {
 
 	public static ParCoolConfig getConfig() {
 		return config;
+	}
+
+	public static String getConnectionId() {
+		return connectionId;
 	}
 
 	public static ActionProcessor getActionProcessor() {
@@ -94,6 +100,8 @@ public class ParCool {
 		actionRegistry.freeze();
 		config = new ParCoolConfig(actionRegistry, staminaTypeRegistry);
 		config.register(container);
+		var modInfo = container.getModInfo();
+		connectionId = modInfo.getVersion() + "/" + RegistryHash.getHash(actionRegistry, staminaTypeRegistry);
 	}
 
 	private void loaded(FMLLoadCompleteEvent event) {

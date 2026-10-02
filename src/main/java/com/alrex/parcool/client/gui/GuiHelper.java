@@ -1,28 +1,29 @@
 package com.alrex.parcool.client.gui;
 
-import com.alrex.parcool.api.client.skilltree.PrepareParCoolSkillTreeEvent;
 import com.alrex.parcool.client.gui.screen.ParCoolGuideScreen;
-import com.alrex.parcool.client.gui.screen.SkillTreeScreen;
+import com.alrex.parcool.client.gui.screen.ParCoolSettingScreen;
+import com.alrex.parcool.client.gui.screen.ParCoolSkillTreeScreen;
 import com.alrex.parcool.common.Parkourability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.NeoForge;
 
 public class GuiHelper {
-    public static void openSkillTreeGui(Player player, boolean openedByGuideItem) {
-        var prepareEvent = new PrepareParCoolSkillTreeEvent();
-        NeoForge.EVENT_BUS.post(prepareEvent);
+    public static void openSkillTreeGui(Player player) {
         var parkourability = Parkourability.get(player);
-        Minecraft.getInstance().setScreen(new SkillTreeScreen(
+        Minecraft.getInstance().setScreen(new ParCoolSkillTreeScreen(
                 parkourability.getCapabilities(),
                 parkourability.getEnabledActions(),
-                prepareEvent.getSkillTrees(),
-                openedByGuideItem
+                parkourability.getSkillTrees()
         ));
     }
 
     public static void openGuideGui() {
         Minecraft.getInstance().setScreen(new ParCoolGuideScreen(ResourceLocation.fromNamespaceAndPath("parcool", "welcome.md")));
+    }
+
+    public static void openSettingGui(Player player) {
+        var parkourability = Parkourability.get(player);
+        Minecraft.getInstance().setScreen(new ParCoolSettingScreen(parkourability.getCapabilities(), parkourability.getEnabledActions()));
     }
 }
