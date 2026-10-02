@@ -4,12 +4,15 @@
 name: Build
 on:
   push:
-    branches: ["**"]
+    branches: [main]
     tags: ["bf[0-9]*"]
   pull_request:
   workflow_dispatch:
 permissions:
   contents: write
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   build:
     runs-on: ubuntu-latest
