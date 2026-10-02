@@ -135,7 +135,8 @@ public class Parkourability {
 	public void sendSkillTreePacketFromServer() {
 		if (player.level().isClientSide) return;
 		if (skillTreeDirty) {
-            ParCool.getConnection().send(PacketDistributor.ALL.noArg(), new SkilltreePacket(skillTrees));
+			if (player instanceof ServerPlayer serverPlayer)
+				ParCool.getConnection().send(PacketDistributor.PLAYER.with(() -> serverPlayer), new SkilltreePacket(skillTrees));
 			skillTreeDirty = false;
 		}
 	}
