@@ -8,10 +8,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.function.Supplier;
 
 public record ActionCapabilitiesPacket(ActionCapabilities capabilities, Target target) {
+    private static final Logger LOGGER = LogManager.getLogger();
     public enum Target {
         CAPABILITY, ENABLED_ACTIONS
     }
@@ -47,6 +50,7 @@ public record ActionCapabilitiesPacket(ActionCapabilities capabilities, Target t
             } else {
                 parkourability.updateEnabledActions(packet.capabilities);
             }
+            LOGGER.info("ActionCapabilities [{}] is synchronized", packet.target);
         }
     };
 }
