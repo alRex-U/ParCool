@@ -2,11 +2,17 @@ package com.alrex.parcool.api.stamina;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolMobEffects;
+import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.network.StaminaPacket;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.PacketDistributor;
 
 public abstract class AbstractLocalStamina implements IReadableStamina {
+    public static AbstractLocalStamina get(LocalPlayer player) {
+        return (AbstractLocalStamina) Parkourability.get(player).getStamina();
+    }
+
     public AbstractLocalStamina(Player owner) {
         this.owner = owner;
     }
