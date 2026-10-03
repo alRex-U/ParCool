@@ -214,6 +214,15 @@ def compile_check(files):
 
 
 def tests():
+    wrapper = ROOT / "gradlew"
+    if wrapper.is_file():
+        run(
+            gradle_command(wrapper),
+            "regressionCheck",
+            "--no-daemon",
+            "--max-workers=2",
+            "-Dorg.gradle.jvmargs=-Xmx2G",
+        )
     if (ROOT / "package.json").is_file():
         import json
 

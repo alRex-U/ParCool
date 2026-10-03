@@ -55,12 +55,17 @@ public class Crawl extends Action {
         // start:
         // a key dodge needs a held direction. Standing still, the shared key must still crawl
         // (Blockfield: players rebind Crawl to C, the pack's Dodge key, and it went dead).
-        return pose == Pose.CROUCHING
-                || !KeyRecorder.keyDodge.isPressed()
-                || !(KeyBindings.isKeyForwardDown()
+        return allowsSharedKey(
+                pose == Pose.CROUCHING,
+                KeyRecorder.keyDodge.isPressed(),
+                KeyBindings.isKeyForwardDown()
                         || KeyBindings.isKeyBackDown()
                         || KeyBindings.isKeyLeftDown()
                         || KeyBindings.isKeyRightDown());
+    }
+
+    static boolean allowsSharedKey(boolean crouching, boolean dodgePressed, boolean directionHeld) {
+        return crouching || !dodgePressed || !directionHeld;
     }
 
     @Override

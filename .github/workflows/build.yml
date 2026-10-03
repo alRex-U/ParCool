@@ -39,7 +39,8 @@ jobs:
       - run: python -I -X utf8 scripts/toolchain.py --ci
       # v6 bundles proprietary caching under Gradle's Terms of Use; setup-gradle also validates wrappers by default.
       - uses: gradle/actions/setup-gradle@v5
-      - run: just build
+      - name: Verify JVM lint and regression tests, then build
+        run: just build
       - uses: actions/upload-artifact@v7
         with:
           name: Artifacts

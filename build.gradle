@@ -85,3 +85,13 @@ tasks.register('lintJava', JavaCompile) {
     options.compilerArgs += ['-proc:none', '-Xlint:divzero,empty,fallthrough,finally,-removal', '-Werror']
 }
 tasks.named('check') { dependsOn tasks.named('lintJava') }
+
+
+tasks.register('regressionCheck', JavaExec) {
+    group = 'verification'
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.compileClasspath
+    mainClass = 'com.alrex.parcool.common.action.impl.ParkourRegressionChecks'
+    maxHeapSize = '256m'
+}
+tasks.named('check') { dependsOn tasks.named('regressionCheck') }
