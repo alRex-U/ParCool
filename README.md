@@ -11,20 +11,25 @@ Players can do more actions such as...
 
 + Grabbing Cliffs
 + Running Faster
-+ Roll
-+ Backflip
++ Dodge Roll
++ Breakfall
++ Trick Jump
 + WallJump
-+ CatLeap  
++ Long Jump
   etc
 
 If it made you traceurs or traceuses ; parkour practitioners, I couldn't be happier!!
+
+Please read [ParCool Guide](https://github.com/alRex-U/ParCool/wiki) first!
+
+Before reporting issues, please first read [FAQ](https://github.com/alRex-U/ParCool/wiki/faq)
 
 This project is always ready to accept your contribution.
 
 ### For Developers
 
 This mod provides some features for mod developers, server-hosts and mod-packers.
-Please read [ParCool Guide](docs/parcool-guide-on-web-v3.1.0.0/Introduction.md).
+Please read [ParCool Guide](https://github.com/alRex-U/ParCool/wiki).
 
 *ParCool* is licensed with  
 **GNU LESSER GENERAL PUBLIC LICENSE Version 3**.

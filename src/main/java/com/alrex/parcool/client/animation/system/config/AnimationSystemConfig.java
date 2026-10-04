@@ -25,6 +25,7 @@ public class AnimationSystemConfig {
     private final TreeMap<ID<AnimationSet>, ForgeConfigSpec.BooleanValue> animationAvailabilities;
     public final ForgeConfigSpec.BooleanValue enableAnimation;
     public final ForgeConfigSpec.BooleanValue enableCameraAnimation;
+    public final ForgeConfigSpec.BooleanValue enableFPVAnimation;
 
     public AnimationSystemConfig(AnimationSets animations) {
         var builder = new ForgeConfigSpec.Builder();
@@ -35,6 +36,7 @@ public class AnimationSystemConfig {
         {
             enableAnimation = builder.define("enable", true);
             enableCameraAnimation = builder.define("enable_camera_animation", true);
+            enableFPVAnimation = builder.define("enable_first_person_view_animation", true);
             builder.push("availability");
             {
                 animationAvailabilities = new TreeMap<>();

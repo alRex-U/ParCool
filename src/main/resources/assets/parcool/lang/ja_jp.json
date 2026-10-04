@@ -154,6 +154,7 @@
   "parcool.config.group.animation.availability": "ANIMATIONS",
   "parcool.config.animation.enable": "アニメーションを有効化する",
   "parcool.config.animation.enable_camera_animation": "カメラアニメーションを有効化する",
+  "parcool.config.animation.enable_first_person_view_animation": "一人称視点時にアニメーションを有効化する",
   "parcool.config.hud.show_always": "常に表示",
   "parcool.config.hud.hide_automatically": "自動的に隠す",
   "parcool.config.hud.stamina_hud_type": "スタミナ HUD",
