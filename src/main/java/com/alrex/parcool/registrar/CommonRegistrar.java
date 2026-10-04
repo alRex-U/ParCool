@@ -16,7 +16,6 @@ public class CommonRegistrar {
         bus.register(ParCoolActions.class);
         bus.register(StaminaTypes.class);
         bus.register(NetworkRegistrar.class);
-        bus.addListener(CommandRegistry::registerArgumentTypes);
     }
 
     public static void registerGameEvent(IEventBus bus) {

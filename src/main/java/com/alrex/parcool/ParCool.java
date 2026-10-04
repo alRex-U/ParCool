@@ -23,6 +23,7 @@ import com.alrex.parcool.config.ParCoolConfig;
 import com.alrex.parcool.extern.AdditionalMods;
 import com.alrex.parcool.registrar.ClientRegistrar;
 import com.alrex.parcool.registrar.CommonRegistrar;
+import com.alrex.parcool.server.command.args.ArgumentTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -91,6 +92,7 @@ public class ParCool {
 		TileEntities.register(eventBus);
 		ParCoolItemGroup.register(eventBus);
 		ParCoolDataComponents.register(eventBus);
+		ArgumentTypes.register(eventBus);
 
 		AdditionalMods.init();
 

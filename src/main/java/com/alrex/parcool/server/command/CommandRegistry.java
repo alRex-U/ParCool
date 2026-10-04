@@ -1,13 +1,9 @@
 package com.alrex.parcool.server.command;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.server.command.args.ActionArgumentType;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.synchronization.ArgumentTypeInfos;
-import net.minecraft.commands.synchronization.SingletonArgumentInfo;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 public class CommandRegistry {
@@ -20,9 +16,5 @@ public class CommandRegistry {
                 Commands.literal(ParCool.MOD_ID)
                         .then(ActionCapabilitiesCommand.getBuilder())
         );
-    }
-
-    public static void registerArgumentTypes(FMLCommonSetupEvent event) {
-        ArgumentTypeInfos.registerByClass(ActionArgumentType.class, SingletonArgumentInfo.contextFree(ActionArgumentType::action));
     }
 }

@@ -22,7 +22,7 @@ public class ActionArgumentType implements ArgumentType<ActionEntry<?>> {
         var id = ResourceLocation.read(reader);
         var result = ParCool.getActionRegistry().get(id);
         if (result != null) return result;
-        var message = Component.translatable("parcool.command.message.action_not_found", id);
+        var message = Component.translatable("parcool.command.message.action_not_found", id.toString());
         throw new CommandSyntaxException(new SimpleCommandExceptionType(message), message);
     }
 

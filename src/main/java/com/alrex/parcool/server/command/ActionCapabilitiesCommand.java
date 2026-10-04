@@ -36,7 +36,7 @@ public class ActionCapabilitiesCommand {
         for (var player : players) {
             Parkourability.get(player).getCapabilities().set(action, true);
         }
-        context.getSource().sendSuccess(() -> Component.translatable("parcool.command.success.unlock.action", players.size(), action.id()), false);
+        context.getSource().sendSuccess(() -> Component.translatable("parcool.command.success.unlock.action", players.size(), action.id().toString()), false);
         return 0;
     }
 
@@ -57,7 +57,7 @@ public class ActionCapabilitiesCommand {
         for (var player : players) {
             Parkourability.get(player).getCapabilities().set(action, false);
         }
-        context.getSource().sendSuccess(() -> Component.translatable("parcool.command.success.lock.action", players.size(), action.id()), false);
+        context.getSource().sendSuccess(() -> Component.translatable("parcool.command.success.lock.action", players.size(), action.id().toString()), false);
         return 0;
     }
 
