@@ -36,6 +36,7 @@ public class PlayerAnimator {
     }
 
     private void updateTransformation(boolean firstPersonView, float partialTick) {
+        if (firstPersonView && !AnimationSystemConfig.getInstance().enableFPVAnimation.get()) return;
         if (AnimationSystemConfig.getInstance().enableAnimation.get())
             currentTransformation = animationProcessor.getTransformation(firstPersonView, partialTick);
         else

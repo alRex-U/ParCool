@@ -245,7 +245,8 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
                 new OptionGroup(Component.translatable("parcool.config.group.animation.general"),
                         List.of(
                                 BooleanOptionProvider.from(config.enableAnimation),
-                                BooleanOptionProvider.from(config.enableCameraAnimation)
+                                BooleanOptionProvider.from(config.enableCameraAnimation),
+                                BooleanOptionProvider.from(config.enableFPVAnimation)
                         ),
                         Collections.emptyList()
                 ),
