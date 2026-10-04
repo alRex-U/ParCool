@@ -1,6 +1,7 @@
 package com.alrex.parcool.mixin.common;
 
 import com.alrex.parcool.common.Parkourability;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Attackable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -11,7 +12,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.extensions.IForgeLivingEntity;
+import net.neoforged.neoforge.common.extensions.ILivingEntityExtension;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -20,17 +21,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin extends Entity implements Attackable, IForgeLivingEntity {
+public abstract class LivingEntityMixin extends Entity implements Attackable, ILivingEntityExtension {
     @Shadow
     @Nullable
-    public abstract AttributeInstance getAttribute(Attribute p_21052_);
-
-    @Shadow
-    @Final
-    private static UUID SPEED_MODIFIER_SPRINTING_UUID;
+    public abstract AttributeInstance getAttribute(Holder<Attribute> attribute);
 
     @Shadow
     @Final
@@ -54,11 +50,11 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, IF
             ci.cancel();
         }
         if (ci.isCancelled()) {
-            var attributeinstance = getAttribute(Attributes.MOVEMENT_SPEED);
-            if (attributeinstance.getModifier(SPEED_MODIFIER_SPRINTING_UUID) != null) {
-                attributeinstance.removeModifier(SPEED_MODIFIER_SPRINTING);
+            AttributeInstance attributeinstance = getAttribute(Attributes.MOVEMENT_SPEED);
+            attributeinstance.removeModifier(SPEED_MODIFIER_SPRINTING.id());
+            if (sprint) {
+                attributeinstance.addTransientModifier(SPEED_MODIFIER_SPRINTING);
             }
-            if (sprint) attributeinstance.addTransientModifier(SPEED_MODIFIER_SPRINTING);
         }
     }
 }
