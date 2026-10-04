@@ -391,6 +391,9 @@ public class Grapple extends ContinuableAction {
                 exitVelocity = exitVelocity.add(0, config.releaseBoost().get(), 0);
             }
             exitVelocity = GrapplePhysics.clampSpeed(exitVelocity, config.maxSpeed().get());
+            if (player.isInFluidType()) {
+                exitVelocity = exitVelocity.scale(0.25);
+            }
             player.setDeltaMovement(exitVelocity);
 
             momentumTicksLeft = config.momentumKeepTicks().get();
@@ -567,6 +570,9 @@ public class Grapple extends ContinuableAction {
         Vec3 delta = current.subtract(position);
         double distance = delta.length();
         if (distance > maxSpeed) delta = delta.scale(maxSpeed / distance);
+        if (player.isInFluidType()) {
+            delta = delta.scale(0.25);
+        }
 
         velocity = GrapplePhysics.clampSpeed(currentVelocity, maxSpeed);
         propertyAcceleration.set(delta.subtract(plannedDelta));

@@ -247,7 +247,8 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
                 new OptionGroup(Component.translatable("parcool.config.group.animation.general"),
                         List.of(
                                 BooleanOptionProvider.from(config.enableAnimation),
-                                BooleanOptionProvider.from(config.enableCameraAnimation)
+                                BooleanOptionProvider.from(config.enableCameraAnimation),
+                                BooleanOptionProvider.from(config.enableFPVAnimation)
                         ),
                         Collections.emptyList()
                 ),
@@ -270,6 +271,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
                         new Tuple<>(Component.translatable("parcool.link.discord.parcool"), "https://discord.com/invite/T3kSXWRAFj")
                 )),
                 new Tuple<>(Component.translatable("parcool.link.github"), List.of(
+                        new Tuple<>(Component.translatable("parcool.link.github.wiki"), "https://github.com/alRex-U/ParCool/wiki"),
                         new Tuple<>(Component.translatable("parcool.link.github.repository"), "https://github.com/alRex-U/ParCool"),
                         new Tuple<>(Component.translatable("parcool.link.github.issues"), "https://github.com/alRex-U/ParCool/issues")
                 )),

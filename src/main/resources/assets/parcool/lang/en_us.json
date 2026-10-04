@@ -165,6 +165,7 @@
   "parcool.config.group.animation.availability": "ANIMATIONS",
   "parcool.config.animation.enable": "Enable Animation",
   "parcool.config.animation.enable_camera_animation": "Enable Camera Animation",
+  "parcool.config.animation.enable_first_person_view_animation": "Enable Animation in first person view",
   "parcool.config.hud.show_always": "Show Always",
   "parcool.config.hud.hide_automatically": "Hide Automatically",
   "parcool.config.hud.stamina_hud_type": "Stamina HUD",
@@ -178,5 +179,6 @@
   "parcool.link.github.issues": "Issues",
   "parcool.link.distribution": "Distributions",
   "parcool.link.distribution.curseforge": "CurseForge",
-  "parcool.link.distribution.modrinth": "Modrinth"
+  "parcool.link.distribution.modrinth": "Modrinth",
+  "parcool.link.github.wiki": "GitHub Wiki"
 }

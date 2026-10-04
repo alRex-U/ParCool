@@ -6,10 +6,13 @@ import com.alrex.parcool.common.action.ActionCapabilities;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 
 public record ActionCapabilitiesPacket(ActionCapabilities capabilities, Target target) implements CustomPacketPayload {
+    private static final Logger LOGGER = LogManager.getLogger();
     public static final Type<ActionCapabilitiesPacket> TYPE = new Type<>(ParCool.resourceLocation("caps"));
 
     @Nonnull
@@ -49,6 +52,7 @@ public record ActionCapabilitiesPacket(ActionCapabilities capabilities, Target t
             } else {
                 parkourability.updateEnabledActions(packet.capabilities);
             }
+            LOGGER.info("ActionCapabilities [{}] is synchronized", packet.target);
         }
     };
 }

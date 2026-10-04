@@ -37,20 +37,4 @@ public abstract class EntityMixin extends AttachmentHolder implements SyncedData
             noPhysics = true;
         }
     }
-
-    @Inject(method = "setSprinting", at = @At("HEAD"), cancellable = true)
-    public void onSetSprinting(boolean sprint, CallbackInfo ci) {
-        if (!(((Object) this) instanceof Player player)) {
-            return;
-        }
-        Parkourability parkourability = Parkourability.get(player);
-        if (parkourability.getBehaviorEnforcer().noSprintMarks.enforce()) {
-            this.setSharedFlag(3, false);
-            ci.cancel();
-        } else if (parkourability.getBehaviorEnforcer().sprintMarks.enforce()) {
-            this.setSharedFlag(3, true);
-            ci.cancel();
-        }
-    }
-
 }
