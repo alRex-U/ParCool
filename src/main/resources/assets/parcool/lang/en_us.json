@@ -179,5 +179,6 @@
   "parcool.link.github.issues": "Issues",
   "parcool.link.distribution": "Distributions",
   "parcool.link.distribution.curseforge": "CurseForge",
-  "parcool.link.distribution.modrinth": "Modrinth"
+  "parcool.link.distribution.modrinth": "Modrinth",
+  "parcool.link.github.wiki": "GitHub Wiki"
 }
