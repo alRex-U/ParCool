@@ -6,9 +6,12 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.network.StaminaPacket;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
 
 public abstract class AbstractLocalStamina implements IReadableStamina {
+    @OnlyIn(Dist.CLIENT)
     public static AbstractLocalStamina get(LocalPlayer player) {
         return (AbstractLocalStamina) Parkourability.get(player).getStamina();
     }
