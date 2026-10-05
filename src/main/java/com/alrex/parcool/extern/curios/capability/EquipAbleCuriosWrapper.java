@@ -19,7 +19,7 @@ public class EquipAbleCuriosWrapper implements ICurio {
         this.itemStack = itemStack;
         this.modifiers = HashMultimap.create();
         if (itemStack.getItem() instanceof EquipAble equipAble) {
-            for (var attrEntry : itemStack.getAttributeModifiers().modifiers()) {
+            for (var attrEntry : itemStack.getItem().getDefaultAttributeModifiers(itemStack).modifiers()) {
                 if (attrEntry.slot().test(equipAble.getEquipmentSlot())) {
                     modifiers.put(attrEntry.attribute(), attrEntry.modifier());
                 }
