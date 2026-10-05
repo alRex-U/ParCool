@@ -25,7 +25,7 @@ public class EquipAbleCuriosWrapper implements ICurio, ICapabilityProvider {
     public EquipAbleCuriosWrapper(ItemStack itemStack) {
         this.itemStack = itemStack;
         if (itemStack.getItem() instanceof EquipAble equipAble) {
-            this.modifiers = itemStack.getAttributeModifiers(equipAble.getEquipmentSlot());
+            this.modifiers = itemStack.getItem().getAttributeModifiers(equipAble.getEquipmentSlot(), itemStack);
         } else {
             this.modifiers = HashMultimap.create();
         }
