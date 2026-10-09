@@ -7,7 +7,7 @@ import com.alrex.parcool.client.gui.components.*;
 import com.alrex.parcool.client.textures.ParCoolActionsTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
-import com.alrex.parcool.common.action.ActionCapabilities;
+import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.network.EnableActionPacket;
 import com.alrex.parcool.util.ColorUtil;
 import net.minecraft.client.Minecraft;
@@ -79,13 +79,11 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
 
     private SettingTab currentTab = SettingTab.ACTIONS;
     private EnumMap<SettingTab, AbstractWidget> settingWidgets;
-    private final ActionCapabilities capabilities;
-    private final ActionCapabilities enabledActions;
+    private final Parkourability parkourability;
 
-    public ParCoolSettingScreen(ActionCapabilities capabilities, ActionCapabilities enabledActions) {
+    public ParCoolSettingScreen(Parkourability parkourability) {
         super(Component.empty(), GuiColorPallet.DEFAULT_DARK, false);
-        this.capabilities = capabilities;
-        this.enabledActions = enabledActions;
+        this.parkourability = parkourability;
     }
 
     @Override
@@ -153,9 +151,8 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
         var widgetY = 8;
         var serverConfig = ParCool.getConfig().server();
         for (var action : actions.values()) {
-            if (!action.option().needLearning()) continue;
-            if (serverConfig.enableSkillTree.get() && !capabilities.can(action)) continue;
-            if (!serverConfig.get(action).permit().get()) continue;
+            if (!action.option().needLearning() || !serverConfig.get(action).permit().get()) continue;
+            if (!parkourability.learned(action)) continue;
             ExtendableSpriteToggleButton toggleButton;
             widgetList.add(new WidgetGroup(
                     0, widgetY, width, 36,
@@ -180,7 +177,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
                             )
                     )
             ));
-            toggleButton.setState(enabledActions.can(action));
+            toggleButton.setState(parkourability.isEnabledByPlayer(action));
             widgetY += 48;
         }
         widgetList.trimToSize();
@@ -193,9 +190,8 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
         var serverConfig = ParCool.getConfig().server();
         var clientConfig = ParCool.getConfig().client();
         for (var action : actions.values()) {
-            if (!action.option().needLearning()) continue;
-            if (serverConfig.enableSkillTree.get() && !capabilities.can(action)) continue;
             if (!serverConfig.get(action).permit().get()) continue;
+            if (!parkourability.learned(action)) continue;
             var actionControl = clientConfig.get(action);
             if (actionControl.instantInputType() != null) {
                 optionList.add(EnumOptionProvider.from(Component.translatable(action.getTranslationKey()), actionControl.instantInputType()));

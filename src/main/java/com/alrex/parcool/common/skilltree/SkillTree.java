@@ -3,7 +3,7 @@ package com.alrex.parcool.common.skilltree;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.Action;
 import com.alrex.parcool.api.action.ActionEntry;
-import com.alrex.parcool.common.action.ActionCapabilities;
+import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionRegistry;
 import com.google.gson.*;
 import io.netty.buffer.ByteBuf;
@@ -74,26 +74,24 @@ public class SkillTree {
             return actionEntry;
         }
 
-        public boolean checkDependenciesUnlocked(ActionCapabilities capabilities) {
-            if (parent != null && !parent.isUnlocked(capabilities)) return false;
+        public boolean checkDependenciesUnlocked(Parkourability parkourability) {
+            if (parent != null && !parent.isUnlocked(parkourability)) return false;
             for (var action : dependingActions) {
-                if (!capabilities.can(action)) return false;
+                if (!parkourability.learned(action)) return false;
             }
             return true;
         }
 
-        public boolean isVisible(ActionCapabilities capabilities) {
-            return parent == null || parent.isUnlocked(capabilities) || this.isUnlocked(capabilities);
+        public boolean isVisible(Parkourability parkourability) {
+            return parent == null || parent.isUnlocked(parkourability) || this.isUnlocked(parkourability);
         }
 
-        public boolean isUnlocked(ActionCapabilities capabilities) {
-            return !ParCool.getConfig().server().enableSkillTree.get()
-                    || !actionEntry.option().needLearning()
-                    || capabilities.can(actionEntry);
+        public boolean isUnlocked(Parkourability parkourability) {
+            return parkourability.learned(actionEntry);
         }
 
-        public boolean isEnabled(ActionCapabilities capabilities) {
-            return capabilities.can(actionEntry);
+        public boolean isEnabled(Parkourability parkourability) {
+            return parkourability.isEnabledByPlayer(actionEntry);
         }
 
         public int getLearningCost() {
