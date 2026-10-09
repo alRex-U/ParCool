@@ -6,7 +6,7 @@ import com.alrex.parcool.client.gui.GuiColorPallet;
 import com.alrex.parcool.client.gui.components.*;
 import com.alrex.parcool.client.textures.ParCoolActionsTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
-import com.alrex.parcool.common.action.ActionCapabilities;
+import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.network.RequestUnlockActionPacket;
 import com.alrex.parcool.common.skilltree.SkillTree;
 import com.alrex.parcool.util.ColorUtil;
@@ -36,15 +36,13 @@ public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
     private WidgetGroup skillViewCardGroup;
     @Nullable
     private SkillTree.Entry<?> selectedSkill;
-    private final ActionCapabilities capabilities;
-    private final ActionCapabilities enabledActions;
+    private final Parkourability parkourability;
     private final List<SkillTree> trees;
 
-    public ParCoolSkillTreeScreen(ActionCapabilities capabilities, ActionCapabilities enabledActions, List<SkillTree> trees) {
+    public ParCoolSkillTreeScreen(Parkourability parkourability, List<SkillTree> trees) {
         super(Component.empty(), GuiColorPallet.DEFAULT_DARK, false);
         this.trees = trees;
-        this.capabilities = capabilities;
-        this.enabledActions = enabledActions;
+        this.parkourability = parkourability;
     }
 
     @Override
@@ -68,7 +66,7 @@ public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
         int skillViewTabOffsetY = skillTreeOffsetY + (skillTreeHeight - SKILL_VIEW_CARD_HEIGHT) / 2;
         addRenderableOnly(new TexturedPanel(contentOffsetX, skillTreeOffsetY, contentWidth, skillTreeHeight, TexturedPanel.Textures.SKILLTREE_BACKGROUND));
         var skilltreeWidget = addRenderableWidget(
-                new SkillTreeWidget(trees, capabilities, enabledActions, contentOffsetX, skillTreeOffsetY, contentWidth, skillTreeHeight, this::onSkillSelectionChanged)
+                new SkillTreeWidget(trees, parkourability, contentOffsetX, skillTreeOffsetY, contentWidth, skillTreeHeight, this::onSkillSelectionChanged)
         );
         skillViewCardGroup = addRenderableWidget(
                 new WidgetGroup(
@@ -159,7 +157,7 @@ public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
         var selectedItem = this.selectedSkill;
         if (selectedItem != null) {
             var learnCost = selectedItem.getLearningCost();
-            if (selectedItem.isUnlocked(capabilities)) {
+            if (selectedItem.isUnlocked(parkourability)) {
                 actionWhenLockedViewGroup.visible = false;
                 actionWhenUnlockedViewGroup.visible = true;
             } else {

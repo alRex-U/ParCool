@@ -4,7 +4,7 @@ import com.alrex.parcool.client.gui.GuiRenderUtil;
 import com.alrex.parcool.client.textures.ParCoolActionsTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolGuiTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
-import com.alrex.parcool.common.action.ActionCapabilities;
+import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.skilltree.SkillTree;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -28,8 +28,7 @@ import java.util.function.Consumer;
 public class SkillTreeWidget extends AbstractWidget {
     private final List<SkillTreeActionIcon> icons;
     private final List<ConnectivityWidget> connectivities;
-    private final ActionCapabilities capabilities;
-    private final ActionCapabilities enabledActions;
+    private final Parkourability parkourability;
     @Nullable
     private SkillTree.Entry<?> selectedSkill;
     @Nullable
@@ -40,17 +39,16 @@ public class SkillTreeWidget extends AbstractWidget {
     private final int contentWidth;
     private final int contentHeight;
 
-    public SkillTreeWidget(List<SkillTree> skillTrees, ActionCapabilities capabilities, ActionCapabilities enabledActions, int x, int y, int width, int height, Consumer<SkillTree.Entry<?>> selectionListener) {
+    public SkillTreeWidget(List<SkillTree> skillTrees, Parkourability parkourability, int x, int y, int width, int height, Consumer<SkillTree.Entry<?>> selectionListener) {
         super(x, y, width, height, Component.empty());
-        this.capabilities = capabilities;
-        this.enabledActions = enabledActions;
+        this.parkourability = parkourability;
         this.selectionListener = selectionListener;
         this.icons = new ArrayList<>();
         this.connectivities = new ArrayList<>();
         var contentWidth = 0;
         var contentHeight = 0;
         for (var skillTree : skillTrees) {
-            var result = init$calculateWidget(skillTree.getRoot(), 32, contentWidth, 0, icons, connectivities, capabilities);
+            var result = init$calculateWidget(skillTree.getRoot(), 32, contentWidth, 0, icons, connectivities, parkourability);
             contentWidth += result.width + 40;
             if (contentHeight < result.height) contentHeight = result.height;
         }
@@ -62,7 +60,7 @@ public class SkillTreeWidget extends AbstractWidget {
     private record CalculateWidgetResult(SkillTreeActionIcon rootIcon, int width, int height) {
     }
 
-    private CalculateWidgetResult init$calculateWidget(SkillTree.Entry<?> entry, int xMargin, int xOffset, int yOffset, List<SkillTreeActionIcon> iconsList, List<ConnectivityWidget> connectivities, ActionCapabilities capabilities) {
+    private CalculateWidgetResult init$calculateWidget(SkillTree.Entry<?> entry, int xMargin, int xOffset, int yOffset, List<SkillTreeActionIcon> iconsList, List<ConnectivityWidget> connectivities, Parkourability parkourability) {
         var widget = new SkillTreeActionIcon(entry, xOffset, yOffset);
         var children = entry.getChildren();
         if (children.isEmpty()) {
@@ -81,7 +79,7 @@ public class SkillTreeWidget extends AbstractWidget {
                     yOffset + yMargin + widget.getHeight(),
                     iconsList,
                     connectivities,
-                    capabilities
+                    parkourability
             );
             childList.add(childResult.rootIcon);
             width += childResult.width + xMargin;
@@ -212,7 +210,7 @@ public class SkillTreeWidget extends AbstractWidget {
 
         @Override
         public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-            int color = root.getSkillTreeEntry().isUnlocked(capabilities) ? 0xFFEEEEEE : 0xAA777777;
+            int color = root.getSkillTreeEntry().isUnlocked(parkourability) ? 0xFFEEEEEE : 0xAA777777;
             var rootYCenter = root.y + root.getHeight() / 2;
             var rootXCenter = root.x + root.getWidth() / 2;
             if (leaves.isEmpty()) return;
@@ -251,13 +249,13 @@ public class SkillTreeWidget extends AbstractWidget {
         @Override
         public void renderButton(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
             RenderSystem.setShaderTexture(0, ParCoolGuiTextureAtlas.TEXTURE_LOCATION);
-            if (entry.isVisible(capabilities)) {
+            if (entry.isVisible(parkourability)) {
                 if (isHovered)
                     RenderSystem.setShaderColor(0.9f, 0.9f, 0.9f, 1f);
                 else
                     RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                 blit(poseStack, this.x, this.y, 0, this.width, this.height,
-                        ParCoolTextures.guiSprite(entry.isUnlocked(capabilities)
+                        ParCoolTextures.guiSprite(entry.isUnlocked(parkourability)
                                 ? ParCoolGuiTextureAtlas.SKILLTREE_ACTION_UNLOCKED
                                 : ParCoolGuiTextureAtlas.SKILLTREE_ACTION_LOCKED
                         )
@@ -274,7 +272,7 @@ public class SkillTreeWidget extends AbstractWidget {
 
         @Override
         protected boolean isValidClickButton(int p_93652_) {
-            return entry.isVisible(capabilities);
+            return entry.isVisible(parkourability);
         }
 
         @Override
