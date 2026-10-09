@@ -168,7 +168,7 @@ public class ParCoolConfig {
 				ModConfigSpec.IntValue costOnStart,
 				ModConfigSpec.IntValue costOnWorking,
 				ModConfigSpec.IntValue costOnFinish,
-				ModConfigSpec.IntValue learningCost
+				ModConfigSpec.IntValue learningCost,
 				@Nullable ModConfigSpec.BooleanValue needLearning
 		) {
 		}

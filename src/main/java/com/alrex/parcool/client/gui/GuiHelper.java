@@ -12,9 +12,7 @@ public class GuiHelper {
     public static void openSkillTreeGui(Player player) {
         var parkourability = Parkourability.get(player);
         Minecraft.getInstance().setScreen(new ParCoolSkillTreeScreen(
-                parkourability.getCapabilities(),
-                parkourability.getEnabledActions(),
-                parkourability.getSkillTrees()
+                parkourability, parkourability.getSkillTrees()
         ));
     }
 
@@ -23,7 +21,6 @@ public class GuiHelper {
     }
 
     public static void openSettingGui(Player player) {
-        var parkourability = Parkourability.get(player);
-        Minecraft.getInstance().setScreen(new ParCoolSettingScreen(parkourability.getCapabilities(), parkourability.getEnabledActions()));
+        Minecraft.getInstance().setScreen(new ParCoolSettingScreen(Parkourability.get(player)));
     }
 }
