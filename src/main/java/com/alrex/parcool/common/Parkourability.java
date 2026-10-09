@@ -20,6 +20,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.TreeMap;
 
 public class Parkourability {
@@ -156,14 +157,26 @@ public class Parkourability {
 	}
 
 	public boolean permit(ActionEntry<?> actionEntry) {
-        var config = ParCool.getConfig().server();
-		if (!active && actionEntry.option().needLearning()) {
-			return false;
+		return active
+				&& ParCool.getConfig().server().get(actionEntry).permit().get()
+				&& learned(actionEntry)
+				&& isEnabledByPlayer(actionEntry);
+	}
+
+	public boolean isEnabledByPlayer(ActionEntry<?> actionEntry) {
+		return enabledActionStates.can(actionEntry);
+	}
+
+	public boolean learned(ActionEntry<?> actionEntry) {
+		var config = ParCool.getConfig().server();
+		// If players have to learn explicitly before use
+		if (config.enableSkillTree.get()
+				&& actionEntry.option().needLearning()
+				&& Objects.requireNonNull(config.get(actionEntry).needLearning()).get()
+		) {
+			return capabilities.can(actionEntry);
 		}
-		boolean learned = (!actionEntry.option().needLearning())
-				|| !config.enableSkillTree.get()
-				|| capabilities.can(actionEntry);
-		return config.get(actionEntry).permit().get() && learned && enabledActionStates.can(actionEntry);
+		return true;
 	}
 
 	/// Request the action start.
