@@ -168,7 +168,7 @@ public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
                 costView.setMessage(Component.literal(
                         (player.experienceLevel < 1000 ? Integer.toString(player.experienceLevel) : "999+") + "/" + learnCost
                 ).withStyle(Style.EMPTY.withColor(player.experienceLevel >= learnCost ? 0xFFCDF263 : colors.onSurface())));
-                costView.setProgress(player.experienceLevel / (float) learnCost);
+                costView.setProgress(learnCost > 0 ? player.experienceLevel / (float) learnCost : 1f);
             }
             skillViewCardGroup.visible = true;
             unlockButton.active = player.experienceLevel >= learnCost;
