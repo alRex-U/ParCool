@@ -21,10 +21,12 @@ import com.alrex.parcool.client.renderer.entity.layers.ParCoolModelLayers;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.handlers.InputHandler;
+import com.alrex.parcool.common.item.ParCoolItems;
 import com.alrex.parcool.common.network.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -135,7 +137,9 @@ public class ClientProxy extends CommonProxy {
 	public void openSkillTreeGui(Player player) {
 		var parkourability = Parkourability.get(player);
 		Minecraft.getInstance().setScreen(new ParCoolSkillTreeScreen(
-				parkourability, parkourability.getSkillTrees()
+				parkourability,
+				parkourability.getSkillTrees(),
+				player.getInventory().contains(new ItemStack(ParCoolItems.PARCOOL_GUIDE.get()))
 		));
 	}
 
