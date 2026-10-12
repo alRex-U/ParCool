@@ -4,6 +4,7 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.client.gui.GuiColorPallet;
 import com.alrex.parcool.client.gui.components.*;
+import com.alrex.parcool.client.md.resource.GuideResourceManager;
 import com.alrex.parcool.client.textures.ParCoolActionsTextureAtlas;
 import com.alrex.parcool.client.textures.ParCoolTextures;
 import com.alrex.parcool.common.Parkourability;
@@ -38,11 +39,13 @@ public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
     private SkillTree.Entry<?> selectedSkill;
     private final Parkourability parkourability;
     private final List<SkillTree> trees;
+    private final boolean playerHasGuideItem;
 
-    public ParCoolSkillTreeScreen(Parkourability parkourability, List<SkillTree> trees) {
+    public ParCoolSkillTreeScreen(Parkourability parkourability, List<SkillTree> trees, boolean playerHasGuideItem) {
         super(Component.empty(), GuiColorPallet.DEFAULT_DARK, false);
         this.trees = trees;
         this.parkourability = parkourability;
+        this.playerHasGuideItem = playerHasGuideItem;
     }
 
     @Override
@@ -94,11 +97,28 @@ public class ParCoolSkillTreeScreen extends ParCoolTabletScreen {
                                 ),
                                 actionWhenUnlockedViewGroup = new WidgetGroup(
                                         0, SKILL_VIEW_CARD_HEIGHT - 49, SKILL_VIEW_CARD_WIDTH, 49,
-                                        List.of(
-                                                new TextWidget(font, 0, (45 - font.lineHeight) / 2, SKILL_VIEW_CARD_WIDTH,
-                                                        Component.translatable("parcool.gui.text.unlocked"), TextWidget.HorizontalAlignment.CENTER, colors.accent()
-                                                ).withShadow(true)
-                                        )
+                                        playerHasGuideItem ?
+                                                List.of(
+                                                        new TextWidget(font, 0, 3 + (14 - font.lineHeight) / 2, SKILL_VIEW_CARD_WIDTH,
+                                                                Component.translatable("parcool.gui.text.unlocked"), TextWidget.HorizontalAlignment.CENTER, colors.accent()
+                                                        ).withShadow(true),
+                                                        new ExtendableSpriteButton.BasicOn(
+                                                                font, 3, 20, SKILL_VIEW_CARD_WIDTH - 6, 24,
+                                                                Component.translatable("parcool.gui.text.open_guide"),
+                                                                () -> {
+                                                                    if (selectedSkill != null) {
+                                                                        Minecraft.getInstance().setScreen(
+                                                                                new ParCoolGuideScreen(GuideResourceManager.getLocation(selectedSkill.getActionEntry()))
+                                                                        );
+                                                                    }
+                                                                }
+                                                        )
+                                                ) :
+                                                List.of(
+                                                        new TextWidget(font, 0, (45 - font.lineHeight) / 2, SKILL_VIEW_CARD_WIDTH,
+                                                                Component.translatable("parcool.gui.text.unlocked"), TextWidget.HorizontalAlignment.CENTER, colors.accent()
+                                                        ).withShadow(true)
+                                                )
                                 )
                         )
                 )

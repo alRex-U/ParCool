@@ -8,8 +8,6 @@ import com.alrex.parcool.client.animation.system.math.Vec3f;
 import com.alrex.parcool.client.renderer.entity.layers.ParCoolGeneralEquipmentLayer;
 import com.alrex.parcool.client.renderer.entity.layers.ParCoolModelLayers;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.CameraType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -41,10 +39,10 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
 	protected void onSetupRotationsHead(AbstractClientPlayer player, PoseStack stack, float xRot, float yRot, float partial, CallbackInfo ci) {
 		if (player.isFallFlying()) return;
 		if (player instanceof IPlayerAnimatorHolder holder) {
-			if (player.isLocalPlayer()) {
-				if (Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON) return;
-			}
-			var transform = holder.getParCoolPlayerAnimator().getCurrentTransformation();
+			var animator = holder.getParCoolPlayerAnimator();
+			if (animator.cancelPlayerModelRotation()) return;
+
+			var transform = animator.getCurrentTransformation();
 			if (transform == null) return;
 
 			var bodyTransformation = transform.transformation().transforms().get(AnimatableModelPart.BODY);
