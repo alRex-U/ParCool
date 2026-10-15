@@ -4,10 +4,10 @@ import com.alrex.parcool.client.animation.system.AnimatableModelPart;
 import com.alrex.parcool.client.animation.system.AnimationProcessor;
 import com.alrex.parcool.client.animation.system.ModelTransform;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.eventbus.api.Cancelable;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.ICancellableEvent;
 
 import javax.annotation.Nullable;
 
@@ -29,17 +29,11 @@ public class AnimationUpdateEvent extends Event {
         return processor;
     }
 
-    @Cancelable
-    public static class Pre extends AnimationUpdateEvent {
+    public static class Pre extends AnimationUpdateEvent implements ICancellableEvent {
         private boolean stopAnimation;
 
         public Pre(AbstractClientPlayer player, AnimationProcessor processor) {
             super(player, processor);
-        }
-
-        @Override
-        public boolean isCancelable() {
-            return true;
         }
 
         public boolean isAnimationStopped() {

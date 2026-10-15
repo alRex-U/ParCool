@@ -47,7 +47,7 @@ public class PlayerAnimator {
         if (firstPersonView && !AnimationSystemConfig.getInstance().enableFPVAnimation.get()) return;
 
         var preEvent = new AnimationUpdateEvent.Pre(animationProcessor.getOwner(), animationProcessor);
-        var cancelled = MinecraftForge.EVENT_BUS.post(preEvent);
+        var cancelled = NeoForge.EVENT_BUS.post(preEvent).isCanceled();
         if (preEvent.isAnimationStopped()) currentTransformation = null;
         if (cancelled) return;
 
