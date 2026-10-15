@@ -1,5 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCool;
+import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.Action;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.api.action.SynchronizedDataHolder;
@@ -101,6 +103,9 @@ public class LongJump extends Action {
         var jumpDirectionYaw = propertyJumpDirectionYaw.get();
         if (jumpDirectionYaw != null) {
             spawnJumpEffect(parkourability.player(), VectorUtil.fromYawDegree(jumpDirectionYaw));
+        }
+        if (ParCool.getConfig().client().enableActionSounds.get()) {
+            parkourability.player().playSound(ParCoolSoundEvents.LONG_JUMP.get());
         }
     }
 
