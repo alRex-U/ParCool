@@ -314,7 +314,7 @@ public class Grapple extends ContinuableAction {
 
         if (parkourability.player() instanceof IPlayerAnimatorHolder holder)
             holder.getParCoolPlayerAnimator().start(AnimationRegistries.get().animations().GRAPPLE);
-        playSound(parkourability.player(), ParCoolSoundEvents.GRAPPLE_SHOT, 0.7f, 1.5f);
+        playSound(parkourability.player(), ParCoolSoundEvents.GRAPPLE_SHOT.get(), 0.7f, 1.5f);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -332,7 +332,7 @@ public class Grapple extends ContinuableAction {
     public void onStopInClient() {
         playSound(
                 parkourability.player(),
-                getPhase() == GrapplePhase.ATTACHED ? ParCoolSoundEvents.GRAPPLE_DETACH : ParCoolSoundEvents.GRAPPLE_CANCEL,
+                getPhase() == GrapplePhase.ATTACHED ? ParCoolSoundEvents.GRAPPLE_DETACH.get() : ParCoolSoundEvents.GRAPPLE_CANCEL.get(),
                 0.4f,
                 getPhase() == GrapplePhase.ATTACHED ? 1.6f : 1.3f
         );
@@ -342,7 +342,7 @@ public class Grapple extends ContinuableAction {
         if (phase != GrapplePhase.ATTACHED || previous == GrapplePhase.ATTACHED) return;
         var player = parkourability.player();
         if (!player.level().isClientSide()) return;
-        playSound(player, ParCoolSoundEvents.GRAPPLE_ATTACH, 0.9f, 1.4f);
+        playSound(player, ParCoolSoundEvents.GRAPPLE_ATTACH.get(), 0.9f, 1.4f);
         spawnAttachParticles(player, propertyAnchor.get());
     }
 
