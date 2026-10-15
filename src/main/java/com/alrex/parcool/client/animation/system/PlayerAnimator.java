@@ -2,11 +2,13 @@ package com.alrex.parcool.client.animation.system;
 
 import com.alrex.parcool.client.animation.system.config.AnimationSystemConfig;
 import com.alrex.parcool.client.animation.system.data.AnimationSet;
+import com.alrex.parcool.client.animation.system.event.AnimationUpdateEvent;
 import com.alrex.parcool.client.animation.system.registration.ID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.NeoForge;
 
 import javax.annotation.Nullable;
 
@@ -28,19 +30,37 @@ public class PlayerAnimator {
         animationProcessor.tick();
     }
 
+    public boolean isFirstPersonViewPlayer() {
+        return Minecraft.getInstance().getCameraEntity() == animationProcessor.getOwner()
+                && Minecraft.getInstance().options.getCameraType().isFirstPerson();
+    }
+
+    public boolean cancelPlayerModelRotation() {
+        return isFirstPersonViewPlayer();
+    }
+
     public void onRenderTick(float partialTick) {
-        updateTransformation(
-                animationProcessor.getOwner().isLocalPlayer()
-                        && Minecraft.getInstance().options.getCameraType().isFirstPerson(),
-                partialTick);
+        updateTransformation(isFirstPersonViewPlayer(), partialTick);
     }
 
     private void updateTransformation(boolean firstPersonView, float partialTick) {
         if (firstPersonView && !AnimationSystemConfig.getInstance().enableFPVAnimation.get()) return;
-        if (AnimationSystemConfig.getInstance().enableAnimation.get())
+
+        var preEvent = new AnimationUpdateEvent.Pre(animationProcessor.getOwner(), animationProcessor);
+        var cancelled = MinecraftForge.EVENT_BUS.post(preEvent);
+        if (preEvent.isAnimationStopped()) currentTransformation = null;
+        if (cancelled) return;
+
+        if (AnimationSystemConfig.getInstance().enableAnimation.get()) {
             currentTransformation = animationProcessor.getTransformation(firstPersonView, partialTick);
-        else
-            currentTransformation = null;
+            if (currentTransformation != null) {
+                NeoForge.EVENT_BUS.post(new AnimationUpdateEvent.Post(
+                        animationProcessor.getOwner(),
+                        animationProcessor,
+                        currentTransformation.transformation()
+                ));
+            }
+        } else currentTransformation = null;
     }
 
     @Nullable

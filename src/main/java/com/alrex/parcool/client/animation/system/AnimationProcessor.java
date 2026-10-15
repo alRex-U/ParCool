@@ -32,6 +32,7 @@ public class AnimationProcessor {
         return owner;
     }
 
+    // Always sorted by animation priority
     private final ArrayList<WorkingAnimationEntry> animators = new ArrayList<>();
 
     public void tick() {
@@ -66,7 +67,13 @@ public class AnimationProcessor {
         if (animEntry.parent() != null) {
             startIfNotWorking(animEntry.parent().id(), mirror);
         }
-        animators.add(new WorkingAnimationEntry(animEntry, new WorkingAnimationSet(newAnimationSet, animEntry.controllerSupplier().apply(owner), mirror)));
+        var newAnim = new WorkingAnimationEntry(animEntry, new WorkingAnimationSet(newAnimationSet, animEntry.controllerSupplier().apply(owner), mirror));
+        for (var i = animators.size() - 1; i >= 0; i--) {
+            if (animators.get(i).animator().getPriority() > newAnimationSet.priority()) continue;
+            animators.add(i + 1, newAnim);
+            return;
+        }
+        animators.add(0, newAnim);
     }
 
     private void remove(WorkingAnimationEntry entry) {

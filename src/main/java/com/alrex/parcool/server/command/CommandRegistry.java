@@ -15,6 +15,7 @@ public class CommandRegistry {
         dispatcher.register(
                 Commands.literal(ParCool.MOD_ID)
                         .then(ActionCapabilitiesCommand.getBuilder())
+                        .then(StaminaCommand.getBuilder())
         );
     }
 }

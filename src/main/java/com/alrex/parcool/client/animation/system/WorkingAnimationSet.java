@@ -25,6 +25,7 @@ public class WorkingAnimationSet {
     private int primaryTick = 0;
     private final int fadeInTick;
     private final int fadeOutTick;
+    private final int priority;
     private final float fpvBlend;
     private final boolean mirror;
     @Nullable
@@ -41,6 +42,7 @@ public class WorkingAnimationSet {
         this.controller = controller;
         this.fadeInTick = animationSet.fadeInDuration();
         this.fadeOutTick = animationSet.fadeOutDuration();
+        this.priority = animationSet.priority();
         this.fpvBlend = animationSet.blendFactorInFirstPersonView();
         this.cameraAnimationScales = animationSet.cameraAnimationScales();
         this.mirror = mirror;
@@ -83,6 +85,10 @@ public class WorkingAnimationSet {
 
     public float getFadeOutTick() {
         return fadeOutTick;
+    }
+
+    public int getPriority() {
+        return priority;
     }
 
     public void tick(AbstractClientPlayer player) {

@@ -1,5 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
+import com.alrex.parcool.ParCool;
+import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.Action;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.api.action.SynchronizedDataHolder;
@@ -60,7 +62,7 @@ public class LongJump extends Action {
         ) {
             var fastRun = parkourability.get(ParCoolActions.FAST_RUN);
             if (fastRun.getNotDoingTick() >= INPUT_ACCEPTANCE_TICK
-                    || (fastRun.getTickSinceStarted() - fastRun.getNotDoingTick()) < 20
+                    || (fastRun.getTickSinceStarted() - fastRun.getNotDoingTick()) < 14
             ) return false;
             var deltaMove = parkourability.player().getDeltaMovement();
             if (deltaMove.lengthSqr() < 1e-5) return false;
@@ -102,6 +104,9 @@ public class LongJump extends Action {
         var jumpDirectionYaw = propertyJumpDirectionYaw.get();
         if (jumpDirectionYaw != null) {
             spawnJumpEffect(parkourability.player(), VectorUtil.fromYawDegree(jumpDirectionYaw));
+        }
+        if (ParCool.getConfig().client().enableActionSounds.get()) {
+            parkourability.player().playSound(ParCoolSoundEvents.LONG_JUMP.get());
         }
     }
 

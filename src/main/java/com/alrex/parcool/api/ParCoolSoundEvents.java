@@ -24,6 +24,11 @@ public class ParCoolSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> HORIZONTAL_WALL_RUN = register("action.h_wall_run");
     public static final DeferredHolder<SoundEvent, SoundEvent> SLIDE_DOWN = register("action.slide_down");
     public static final DeferredHolder<SoundEvent, SoundEvent> DIVE = register("action.dive");
+    public static final DeferredHolder<SoundEvent, SoundEvent> LONG_JUMP = register("action.long_jump");
+    public static final DeferredHolder<SoundEvent, SoundEvent> GRAPPLE_SHOT = register("grapple.shot");
+    public static final DeferredHolder<SoundEvent, SoundEvent> GRAPPLE_ATTACH = register("grapple.attach");
+    public static final DeferredHolder<SoundEvent, SoundEvent> GRAPPLE_DETACH = register("grapple.detach");
+    public static final DeferredHolder<SoundEvent, SoundEvent> GRAPPLE_CANCEL = register("grapple.cancel");
     public static final DeferredHolder<SoundEvent, SoundEvent> ZIPLINE_USE = register("action.ride_zipline");
     public static final DeferredHolder<SoundEvent, SoundEvent> ZIPLINE_SET = register("zipline.set");
     public static final DeferredHolder<SoundEvent, SoundEvent> ZIPLINE_REMOVE = register("zipline.remove");

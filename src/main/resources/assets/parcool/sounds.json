@@ -80,8 +80,101 @@
       "item/elytra/elytra_loop"
     ]
   },
-  "action.zipline": {
-    "subtitle": "subtitle.parcool.action.zipline",
+  "action.long_jump": {
+    "subtitle": "subtitle.parcool.action.long_jump",
+    "sounds": [
+      "parcool:action/steps"
+    ]
+  },
+  "grapple.shot": {
+    "subtitle": "subtitle.parcool.grapple.shot",
+    "sounds": [
+      {
+        "name": "item/crossbow/shoot1",
+        "volume": 0.8
+      },
+      {
+        "name": "item/crossbow/shoot1",
+        "volume": 0.9
+      },
+      {
+        "name": "item/crossbow/shoot1",
+        "pitch": 0.9,
+        "volume": 0.9
+      },
+      {
+        "name": "item/crossbow/shoot2",
+        "volume": 0.8
+      },
+      {
+        "name": "item/crossbow/shoot2",
+        "volume": 0.9
+      },
+      {
+        "name": "item/crossbow/shoot2",
+        "pitch": 0.9,
+        "volume": 0.9
+      },
+      {
+        "name": "item/crossbow/shoot3",
+        "volume": 0.8
+      },
+      {
+        "name": "item/crossbow/shoot3",
+        "volume": 0.9
+      },
+      {
+        "name": "item/crossbow/shoot3",
+        "pitch": 0.9,
+        "volume": 0.9
+      }
+    ]
+  },
+  "grapple.attach": {
+    "subtitle": "subtitle.parcool.grapple.attach",
+    "sounds": [
+      {
+        "name": "block/chain/break1",
+        "volume": 0.5
+      },
+      {
+        "name": "block/chain/break2",
+        "volume": 0.5
+      },
+      {
+        "name": "block/chain/break3",
+        "volume": 0.5
+      },
+      {
+        "name": "block/chain/break4",
+        "volume": 0.5
+      }
+    ]
+  },
+  "grapple.detach": {
+    "subtitle": "subtitle.parcool.grapple.detach",
+    "sounds": [
+      "entity/itemframe/rotate_item1",
+      "entity/itemframe/rotate_item2",
+      "entity/itemframe/rotate_item3",
+      "entity/itemframe/rotate_item4"
+    ]
+  },
+  "grapple.cancel": {
+    "subtitle": "subtitle.parcool.grapple.cancel",
+    "sounds": [
+      {
+        "name": "entity/bobber/retrieve1",
+        "pitch": 2.4
+      },
+      {
+        "name": "entity/bobber/retrieve2",
+        "pitch": 2.4
+      }
+    ]
+  },
+  "action.ride_zipline": {
+    "subtitle": "subtitle.parcool.action.ride_zipline",
     "sounds": [
       "parcool:action/zipline.loop"
     ]
