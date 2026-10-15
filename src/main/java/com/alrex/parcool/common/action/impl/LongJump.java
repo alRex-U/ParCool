@@ -59,7 +59,7 @@ public class LongJump extends Action {
         ) {
             var fastRun = parkourability.get(ParCoolActions.FAST_RUN);
             if (fastRun.getNotDoingTick() >= INPUT_ACCEPTANCE_TICK
-                    || (fastRun.getTickSinceStarted() - fastRun.getNotDoingTick()) < 20
+                    || (fastRun.getTickSinceStarted() - fastRun.getNotDoingTick()) < 14
             ) return false;
             var deltaMove = parkourability.player().getDeltaMovement();
             if (deltaMove.lengthSqr() < 1e-5) return false;
