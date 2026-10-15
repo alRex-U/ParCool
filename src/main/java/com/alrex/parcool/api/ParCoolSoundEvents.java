@@ -24,6 +24,11 @@ public class ParCoolSoundEvents {
     public static final RegistryObject<SoundEvent> HORIZONTAL_WALL_RUN = register("action.h_wall_run");
     public static final RegistryObject<SoundEvent> SLIDE_DOWN = register("action.slide_down");
     public static final RegistryObject<SoundEvent> DIVE = register("action.dive");
+    public static final RegistryObject<SoundEvent> LONG_JUMP = register("action.long_jump");
+    public static final RegistryObject<SoundEvent> GRAPPLE_SHOT = register("grapple.shot");
+    public static final RegistryObject<SoundEvent> GRAPPLE_ATTACH = register("grapple.attach");
+    public static final RegistryObject<SoundEvent> GRAPPLE_DETACH = register("grapple.detach");
+    public static final RegistryObject<SoundEvent> GRAPPLE_CANCEL = register("grapple.cancel");
     public static final RegistryObject<SoundEvent> ZIPLINE_USE = register("action.ride_zipline");
     public static final RegistryObject<SoundEvent> ZIPLINE_SET = register("zipline.set");
     public static final RegistryObject<SoundEvent> ZIPLINE_REMOVE = register("zipline.remove");

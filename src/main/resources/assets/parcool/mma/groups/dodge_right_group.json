@@ -7,7 +7,7 @@
         "name": "parcool:time",
         "args": {
           "max": 25,
-          "scale": 1.6
+          "scale": 1.75
         }
       }
     },

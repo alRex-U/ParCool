@@ -45,7 +45,7 @@
   "subtitle.parcool.action.vault": "Игрок перепрыгивает",
   "subtitle.parcool.action.wall_run": "Игрок отпнулся от стены",
   "subtitle.parcool.action.wall_jump": "Игрок отпнулся от стены",
-  "subtitle.parcool.action.zipline": "Игрок использует зиплайн",
+  "subtitle.parcool.action.ride_zipline": "Игрок использует зиплайн",
   "subtitle.parcool.zipline.set": "Зиплайн установлен",
   "subtitle.parcool.zipline.remove": "Зиплайн убран",
   "subtitle.parcool.skilltree.unlock": "Действие разблокировано",

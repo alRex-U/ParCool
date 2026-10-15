@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
 import com.alrex.parcool.client.animation.system.IPlayerAnimatorHolder;
@@ -24,7 +25,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -314,7 +314,7 @@ public class Grapple extends ContinuableAction {
 
         if (parkourability.player() instanceof IPlayerAnimatorHolder holder)
             holder.getParCoolPlayerAnimator().start(AnimationRegistries.get().animations().GRAPPLE);
-        playSound(parkourability.player(), SoundEvents.CROSSBOW_SHOOT, 0.7f, 1.5f);
+        playSound(parkourability.player(), ParCoolSoundEvents.GRAPPLE_SHOT, 0.7f, 1.5f);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -332,7 +332,7 @@ public class Grapple extends ContinuableAction {
     public void onStopInClient() {
         playSound(
                 parkourability.player(),
-                getPhase() == GrapplePhase.ATTACHED ? SoundEvents.ITEM_FRAME_REMOVE_ITEM : SoundEvents.FISHING_BOBBER_RETRIEVE,
+                getPhase() == GrapplePhase.ATTACHED ? ParCoolSoundEvents.GRAPPLE_DETACH : ParCoolSoundEvents.GRAPPLE_CANCEL,
                 0.4f,
                 getPhase() == GrapplePhase.ATTACHED ? 1.6f : 1.3f
         );
@@ -342,7 +342,7 @@ public class Grapple extends ContinuableAction {
         if (phase != GrapplePhase.ATTACHED || previous == GrapplePhase.ATTACHED) return;
         var player = parkourability.player();
         if (!player.level().isClientSide()) return;
-        playSound(player, SoundEvents.CHAIN_PLACE, 0.9f, 1.4f);
+        playSound(player, ParCoolSoundEvents.GRAPPLE_ATTACH, 0.9f, 1.4f);
         spawnAttachParticles(player, propertyAnchor.get());
     }
 

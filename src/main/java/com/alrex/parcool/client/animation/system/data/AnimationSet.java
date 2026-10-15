@@ -19,6 +19,7 @@ public record AnimationSet(
         @Nullable Supplier<IBlendingFactor> blendingFactorSupplier,
         int fadeInDuration,
         int fadeOutDuration,
+        int priority,
         float blendFactorInFirstPersonView,
         @Nullable
         Vec3f cameraAnimationScales

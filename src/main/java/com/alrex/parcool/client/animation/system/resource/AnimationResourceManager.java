@@ -268,6 +268,7 @@ public class AnimationResourceManager extends SimplePreparableReloadListener<Ani
                                 blendingFactorSupplier,
                                 animSet.getFadeInDuration(),
                                 animSet.getFadeOutDuration(),
+                                animSet.getPriority(),
                                 animSet.getFpvBlend(),
                                 animSet.getCameraAnimationScales()
                         )
