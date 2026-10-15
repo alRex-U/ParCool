@@ -6,7 +6,8 @@
         "main": "parcool:fast_run_group.json",
         "fade_in_duration": 10,
         "fade_out_duration": 10,
-        "fpv_blend": 0.1
+        "fpv_blend": 0.1,
+        "priority": -1
       }
     ]
   },

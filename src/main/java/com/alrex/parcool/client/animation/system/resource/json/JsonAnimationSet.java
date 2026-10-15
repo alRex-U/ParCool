@@ -32,6 +32,7 @@ public class JsonAnimationSet {
         private int fadeInDuration = 0;
         @SerializedName("fade_out_duration")
         private int fadeOutDuration = 0;
+        private int priority = 0;
         @SerializedName("camera_blend")
         @Nullable
         private float[] cameraBlending;
@@ -68,6 +69,10 @@ public class JsonAnimationSet {
 
         public int getFadeOutDuration() {
             return Math.max(0, fadeOutDuration);
+        }
+
+        public int getPriority() {
+            return priority;
         }
 
         @Nullable
