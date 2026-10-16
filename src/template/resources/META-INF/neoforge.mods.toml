@@ -68,7 +68,7 @@ side = "BOTH"
 # Curios
 [[dependencies.parcool]]
 modId = "${extern_curios.mod_id}"
-mandatory = false
+type = "optional"
 versionRange = "${extern_curios.version_range}"
 ordering = "NONE"
 side = "BOTH"
