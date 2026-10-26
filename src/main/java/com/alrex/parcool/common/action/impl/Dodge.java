@@ -51,7 +51,7 @@ public class Dodge extends ContinuableAction implements ActionExtension.Attacked
 
     @Override
     public boolean canStart() {
-        if (input.isActive()) {
+        if (input().isActive()) {
             int forward = (ParCoolKeyBinds.getMovementInput(LogicalMovement.BACKWARD).isDown() ? -1 : 0)
                     + (ParCoolKeyBinds.getMovementInput(LogicalMovement.FORWARD).isDown() ? 1 : 0);
             int right = (ParCoolKeyBinds.getMovementInput(LogicalMovement.RIGHT).isDown() ? 1 : 0)

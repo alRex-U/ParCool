@@ -25,6 +25,18 @@ public abstract class Action {
 		this.entry = entry;
 		this.parkourability = parkourability;
 		this.exclusiveActions = exclusiveActions;
+		updateInput();
+	}
+
+	protected final Parkourability parkourability;
+	protected final ActionEntry<? extends Action> entry;
+	@Nullable
+	protected final Collection<ActionEntry<? extends ContinuableAction>> exclusiveActions;
+	@Nullable
+	private GeneralInputType.Input input;
+	private int tickSinceStarted = 100;
+
+	public void updateInput() {
 		if (parkourability.player().isLocalPlayer()) {
 			var actionConfig = ParCool.getConfig().client().get(entry);
 			if (actionConfig.instantInputType() != null) {
@@ -39,13 +51,9 @@ public abstract class Action {
 		}
 	}
 
-	protected final Parkourability parkourability;
-	protected final ActionEntry<? extends Action> entry;
-	@Nullable
-	protected final Collection<ActionEntry<? extends ContinuableAction>> exclusiveActions;
-	@Nullable
-	protected final GeneralInputType.Input input;
-	private int tickSinceStarted = 100;
+	protected GeneralInputType.Input input() {
+		return input;
+	}
 
 	public int getTickSinceStarted() {
 		return tickSinceStarted;

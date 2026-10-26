@@ -106,7 +106,7 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
 
     @Override
     public boolean canContinue() {
-        var continuing = !barNotFound && input.isActive() && !ParCoolKeyBinds.JUMP.state().isJustPressed();
+        var continuing = !barNotFound && input().isActive() && !ParCoolKeyBinds.JUMP.state().isJustPressed();
         if (continuing) {
             if (Math.abs(propertyBodyAngularSpeedInRad.getOrDefaultIfNull(0f)) > Mth.PI / 20f) {
                 propertyJumpOff.set(true);
@@ -119,7 +119,7 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
     public boolean canStart() {
         var player = parkourability.player();
         if (0 <= getNotDoingTick() && getNotDoingTick() < 7) return false;
-        if (Math.abs(player.getDeltaMovement().y) > 0.2 || !input.isActive()) return false;
+        if (Math.abs(player.getDeltaMovement().y) > 0.2 || !input().isActive()) return false;
         var hangingBar = getHangAbleBars(player);
         if (hangingBar == null) return false;
 

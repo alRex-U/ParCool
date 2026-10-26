@@ -195,9 +195,29 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
             if (!parkourability.learned(action)) continue;
             var actionControl = clientConfig.get(action);
             if (actionControl.instantInputType() != null) {
-                optionList.add(EnumOptionProvider.from(Component.translatable(action.getTranslationKey()), actionControl.instantInputType()));
+                optionList.add(new EnumOptionProvider<>(
+                        Component.translatable(action.getTranslationKey()),
+                        actionControl.instantInputType(),
+                        value -> {
+                            actionControl.instantInputType().set(value);
+                            if (minecraft == null) return;
+                            var player = minecraft.player;
+                            if (player == null) return;
+                            Parkourability.get(player).get(action).updateInput();
+                        })
+                );
             } else if (actionControl.continuousInputType() != null) {
-                optionList.add(EnumOptionProvider.from(Component.translatable(action.getTranslationKey()), actionControl.continuousInputType()));
+                optionList.add(new EnumOptionProvider<>(
+                        Component.translatable(action.getTranslationKey()),
+                        actionControl.continuousInputType(),
+                        value -> {
+                            actionControl.continuousInputType().set(value);
+                            if (minecraft == null) return;
+                            var player = minecraft.player;
+                            if (player == null) return;
+                            Parkourability.get(player).get(action).updateInput();
+                        })
+                );
             }
         }
         return createOptionList(x, y, width, height, Collections.singletonList(new OptionGroup(

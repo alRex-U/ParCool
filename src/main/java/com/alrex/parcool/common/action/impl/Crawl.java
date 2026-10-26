@@ -41,13 +41,13 @@ public class Crawl extends ContinuableAction {
     @Override
     public boolean canStart() {
         if (parkourability.player().getForcedPose() != null) return false;
-        if (input.isActive()) return true;
+        if (input().isActive()) return true;
         return parkourability.player().hasPose(Pose.SWIMMING);
     }
 
     @Override
     public boolean canContinue() {
-        if (input.isActive() || parkourability.player().getForcedPose() == Pose.SWIMMING)
+        if (input().isActive() || parkourability.player().getForcedPose() == Pose.SWIMMING)
             return true;
         if (parkourability.getBehaviorEnforcer().swimmingPoseMarks.remainExcept(ID_ENFORCE_SWIM)) return true;
         return !parkourability.player().canEnterPose(Pose.CROUCHING) && parkourability.player().hasPose(Pose.SWIMMING);

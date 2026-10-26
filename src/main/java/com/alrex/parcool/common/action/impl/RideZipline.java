@@ -84,7 +84,7 @@ public class RideZipline extends ContinuableAction implements ActionExtension.Ke
 
     @Override
     public boolean canStart() {
-        if (!input.isActive()
+        if (!input().isActive()
                 || (getNotDoingTick() <= 5 && (ParCoolKeyBinds.JUMP.state().isDown() || previouslyStopByCollision))
         ) return false;
         var player = parkourability.player();
@@ -105,7 +105,7 @@ public class RideZipline extends ContinuableAction implements ActionExtension.Ke
             return false;
         }
 
-        return input.isActive()
+        return input().isActive()
                 && !ParCoolKeyBinds.JUMP.state().isJustPressed()
                 && ridingZipline != null
                 && 0 <= currentT && currentT <= 1;

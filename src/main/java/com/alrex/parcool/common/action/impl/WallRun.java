@@ -64,7 +64,12 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
         var jumpScale = getWallRunHeightScale(player, wallDirection, jumpHeight);
         if (jumpScale <= 0) return false;
 
-        runSpeed = 1.5 * Math.sqrt(jumpHeight * jumpScale * gravity);
+        var blockPos = new BlockPos(player.position().add(wallDirection.asVec()));
+        var level = player.level;
+        if (!level.isLoaded(blockPos)) return false;
+
+        runSpeed = 1.5 * Math.sqrt(jumpHeight * jumpScale * gravity)
+                * (level.getBlockState(blockPos).getFriction(level, blockPos, player) > 0.9f ? 0.5 : 1);
 
         return true;
     }

@@ -39,7 +39,7 @@ public class FastSwim extends ContinuableAction {
     public boolean canStart() {
         return parkourability.player().isSwimming()
                 && !((LocalPlayer) parkourability.player()).isMovingSlowly()
-                && input.isActive();
+                && input().isActive();
     }
 
     @Override

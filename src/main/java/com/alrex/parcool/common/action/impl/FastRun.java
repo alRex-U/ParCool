@@ -47,7 +47,7 @@ public class FastRun extends ContinuableAction {
     public boolean canStart() {
         return parkourability.player().isSprinting()
                 && !((LocalPlayer) parkourability.player()).isMovingSlowly()
-                && input.isActive();
+                && input().isActive();
     }
 
     @Override
