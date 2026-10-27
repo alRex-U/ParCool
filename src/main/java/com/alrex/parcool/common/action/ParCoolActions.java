@@ -193,6 +193,7 @@ public class ParCoolActions {
         BREAKFALL = builder.add("breakfall", Breakfall.class, Breakfall::new, new ActionOption()
                 .triggeredSide(LogicalSide.SERVER)
                 .inputType(GeneralInputType.CONTINUOUS)
+                .needPoses(Pose.STANDING, Pose.CROUCHING)
                 .cost(StaminaConsumption.get(50, 0, 0))
                 .learningCost(4)
         );
