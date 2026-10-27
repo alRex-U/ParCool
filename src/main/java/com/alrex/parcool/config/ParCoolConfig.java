@@ -176,6 +176,7 @@ public class ParCoolConfig {
         public final ForgeConfigSpec.BooleanValue damageWithoutGlove;
         public final ForgeConfigSpec.BooleanValue enableSkillTree;
 		public final ForgeConfigSpec.BooleanValue enableSkillTreeUi;
+		public final ForgeConfigSpec.IntValue breakfallJustTimeInputAcceptanceTick;
 		public final GrapplingHook grapplingHook;
 
 		public final ResourceLocation getStaminaTypeID() {
@@ -229,6 +230,9 @@ public class ParCoolConfig {
 				damageWithoutGlove = builder
 						.comment("Whether you take damage when you use some actions like WallSlide without traceur's gloves")
 						.define("damage_without_glove", true);
+				breakfallJustTimeInputAcceptanceTick = builder
+						.comment("Input acceptance duration of perfect-breakfall in tick, perfect breakfall is disabled if this value is 0")
+						.defineInRange("breakfall_just_time_input_tick", 0, 0, Integer.MAX_VALUE);
             }
             builder.pop();
 			builder.push("grappling_hook");

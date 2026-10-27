@@ -35,6 +35,7 @@
   "key.parcool.enable": "Enable/Disable ParCool",
 
   "subtitle.parcool.action.breakfall": "Player does breakfall",
+  "subtitle.parcool.action.breakfall.perfect": "Player lands perfectly",
   "subtitle.parcool.action.charge_jump": "Player does charge jump",
   "subtitle.parcool.action.climb_up": "Player climbs up",
   "subtitle.parcool.action.dodge": "Player dodges",

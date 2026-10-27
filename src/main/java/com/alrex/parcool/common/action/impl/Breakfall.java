@@ -14,6 +14,8 @@ import com.alrex.parcool.util.EntityUtil;
 import com.alrex.parcool.util.MathUtil;
 import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -29,13 +31,18 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
     // Server -> Local
     private final SynchronizedProperty<BreakfallType> propertyWorkingBreakfallType;
     private final SynchronizedProperty<Float> propertyFallDist;
+    private final SynchronizedProperty<Boolean> propertyLandingPerfect;
+
+    // For Server
+    private int inputTick = 0;
 
     public Breakfall(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry);
         holder = SynchronizedDataHolder.create(entry,
                 propertyInputBreakfallType = SynchronizedProperty.newEnum(BreakfallType.class),
                 propertyWorkingBreakfallType = SynchronizedProperty.newEnum(BreakfallType.class),
-                propertyFallDist = SynchronizedProperty.newFloat()
+                propertyFallDist = SynchronizedProperty.newFloat(),
+                propertyLandingPerfect = SynchronizedProperty.newBoolean()
         );
     }
 
@@ -66,6 +73,15 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
     }
 
     @Override
+    public void onTickInServer() {
+        if (propertyInputBreakfallType.getOrDefaultIfNull(BreakfallType.NONE) != BreakfallType.NONE) {
+            inputTick++;
+        } else {
+            inputTick = 0;
+        }
+    }
+
+    @Override
     public void onLand(LivingFallEvent event) {
         if (parkourability.player().level.isClientSide()) return;
         var breakfallType = propertyInputBreakfallType.get();
@@ -73,7 +89,17 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
         var attr = parkourability.player().getAttribute(ParCoolAttributes.BREAKFALL_DAMAGE_REDUCTION.get());
         if (attr == null) return;
         if (isPossible() && !MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.TryToStart(parkourability.player(), this))) {
-            var damageReduction = attr.getValue();
+            int perfectInputAcceptanceTick = ParCool.getConfig().server().breakfallJustTimeInputAcceptanceTick.get();
+            double damageReduction;
+            if (perfectInputAcceptanceTick <= 0) {
+                damageReduction = attr.getValue();
+                propertyLandingPerfect.set(false);
+            } else {
+                boolean perfect = inputTick <= perfectInputAcceptanceTick;
+                damageReduction = attr.getValue() * (perfect ? 1.2 : 0.8);
+                propertyLandingPerfect.set(perfect);
+            }
+            damageReduction = Mth.clamp(damageReduction, 0, 1);
             event.setDamageMultiplier(event.getDamageMultiplier() * (float) (1. - damageReduction));
             if (event.getDistance() < 15 * damageReduction) {
                 event.setCanceled(true);
@@ -95,12 +121,22 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
             case ROLL:
                 PlayerAnimator.get((AbstractClientPlayer) parkourability.player()).start(AnimationRegistries.get().animations().BREAKFALL_FORWARD);
         }
+        boolean perfect = propertyLandingPerfect.getOrDefaultIfNull(false);
         if (ParCool.getConfig().client().enableActionSounds.get()) {
-            parkourability.player().playSound(
-                    ParCoolSoundEvents.BREAKFALL.get(),
-                    MathUtil.mapLinear(propertyFallDist.getOrDefaultIfNull(0f), 3f, 10f, 0f, 1f),
-                    1f
-            );
+            if (perfect) {
+                parkourability.player().playSound(
+                        ParCoolSoundEvents.BREAKFALL_PERFECT.get(), 1f, 1f
+                );
+            } else {
+                parkourability.player().playSound(
+                        ParCoolSoundEvents.BREAKFALL.get(),
+                        MathUtil.mapLinear(propertyFallDist.getOrDefaultIfNull(0f), 3f, 10f, 0f, 1f),
+                        1f
+                );
+            }
+        }
+        if (perfect) {
+            spawnPerfectLandingParticles();
         }
     }
 
@@ -120,6 +156,23 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
                         () -> this.getTickSinceStarted() < 10,
                         () -> new Vec3(deltaMove.x, parkourability.player().getDeltaMovement().y, deltaMove.z)
                 );
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void spawnPerfectLandingParticles() {
+        var player = parkourability.player();
+        var pos = player.position();
+        var rand = player.getRandom();
+        for (int i = 0; i < 12; i++) {
+            player.level.addParticle(ParticleTypes.END_ROD,
+                    pos.x(),
+                    pos.y() + player.getBbHeight() / 2,
+                    pos.z(),
+                    (rand.nextDouble() - 0.5) * 0.5,
+                    (rand.nextDouble() - 0.5) * 0.5,
+                    (rand.nextDouble() - 0.5) * 0.5
+            );
         }
     }
 

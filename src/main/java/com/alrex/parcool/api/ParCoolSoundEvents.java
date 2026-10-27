@@ -11,6 +11,7 @@ public class ParCoolSoundEvents {
     private static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, ParCool.MOD_ID);
 
     public static final RegistryObject<SoundEvent> BREAKFALL = register("action.breakfall");
+    public static final RegistryObject<SoundEvent> BREAKFALL_PERFECT = register("action.breakfall.perfect");
     public static final RegistryObject<SoundEvent> DODGE = register("action.dodge");
     public static final RegistryObject<SoundEvent> VAULT = register("action.vault");
     public static final RegistryObject<SoundEvent> HANG_ON = register("action.hang_on");
