@@ -52,6 +52,7 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
                 ParCoolActions.HANG_ON,
                 ParCoolActions.POLE_CLIMB,
                 ParCoolActions.DIVE,
+                ParCoolActions.HORIZONTAL_WALL_RUN,
                 ParCoolActions.CASTAWAY
         ));
         dataHolder = SynchronizedDataHolder.create(entry,
