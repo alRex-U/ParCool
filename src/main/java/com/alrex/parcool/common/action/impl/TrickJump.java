@@ -52,7 +52,7 @@ public class TrickJump extends Action implements ActionExtension.JumpListener {
             propertyTrickType.set(Type.BACK);
             return true;
         }
-        if (parkourability.get(ParCoolActions.FAST_RUN).isDoing()) {
+        if (parkourability.get(ParCoolActions.SUPER_SPRINT).isDoing()) {
             var player = parkourability.player();
             var vec = EntityUtil.getHorizontalLookAngle(player).scale(3.5);
             var collideVec = Entity.collideBoundingBox(player, vec, player.getBoundingBox().deflate(0.1), player.level, Collections.emptyList());

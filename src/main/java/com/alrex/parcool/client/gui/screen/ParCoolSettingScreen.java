@@ -247,7 +247,8 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
                 ),
                 new OptionGroup(Component.translatable("parcool.config.group.misc"),
                         List.of(
-                                BooleanOptionProvider.from(config.enableActionSounds)
+                                BooleanOptionProvider.from(config.enableActionSounds),
+                                BooleanOptionProvider.from(config.substituteSprintForFastRun)
                         ),
                         Collections.emptyList()
                 )

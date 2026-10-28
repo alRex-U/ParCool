@@ -49,7 +49,7 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
 
         var player = parkourability.player();
         var lookAngle = player.getLookAngle();
-        if (lookAngle.y <= 0. || !parkourability.get(ParCoolActions.FAST_RUN).isDoing()) return false;
+        if (lookAngle.y <= 0. || !parkourability.get(ParCoolActions.SUPER_SPRINT).isDoing()) return false;
 
         if (!player.horizontalCollision) return false;
         var wallDirection = parkourability.getAdditionalProperties().getDefaultWallInteraction();

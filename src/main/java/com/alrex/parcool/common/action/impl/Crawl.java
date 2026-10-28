@@ -63,7 +63,7 @@ public class Crawl extends ContinuableAction {
     @Override
     public void onStartInLocalClient() {
         parkourability.getBehaviorEnforcer().noSprintMarks.add(ID_CANCEL_SPRINT, this::isDoing);
-        if (parkourability.get(ParCoolActions.FAST_RUN).isDoing()) {
+        if (parkourability.get(ParCoolActions.SUPER_SPRINT).isDoing()) {
             parkourability.request(ParCoolActions.SLIDE, new Slide.RequestContext());
         }
     }

@@ -34,6 +34,7 @@ public class ParCoolActions {
     public static final ActionEntry<WallRun> WALL_RUN;
     public static final ActionEntry<PoleClimb> POLE_CLIMB;
     public static final ActionEntry<Grapple> GRAPPLE;
+    public static final ActionEntry<SuperSprint> SUPER_SPRINT;
 
     static {
         var builder = new ActionGroup.Builder(ParCool.MOD_ID);
@@ -72,14 +73,20 @@ public class ParCoolActions {
                 .cost(StaminaConsumption.get(0, 2, 0))
                 .learningCost(1)
         );
+
+        SUPER_SPRINT = builder.add("super_sprint", SuperSprint.class, SuperSprint::new, new ActionOption()
+                .processedAfter(FAST_RUN)
+                .needLearning(false)
+                .needPose(null)
+        );
         {
             VAULT = builder.add("vault", Vault.class, Vault::new, new ActionOption()
-                    .parent(FAST_RUN)
+                    .parent(SUPER_SPRINT)
                     .cost(StaminaConsumption.get(50, 0, 0))
                     .learningCost(3)
             );
             HORIZONTAL_WALL_RUN = builder.add("horizontal_wall_run", HorizontalWallRun.class, HorizontalWallRun::new, new ActionOption()
-                    .parent(FAST_RUN)
+                    .parent(SUPER_SPRINT)
                     .inputType(GeneralInputType.CONTINUOUS)
                     .needNotOnGround(true)
                     .cost(StaminaConsumption.get(0, 3, 0))
@@ -104,7 +111,7 @@ public class ParCoolActions {
         );
 
         DIVE = builder.add("dive", Dive.class, Dive::new, new ActionOption()
-                .processedAfter(FAST_RUN, LONG_JUMP)
+                .processedAfter(SUPER_SPRINT, LONG_JUMP)
                 .needNotOnGround(true)
                 .learningCost(2)
         );

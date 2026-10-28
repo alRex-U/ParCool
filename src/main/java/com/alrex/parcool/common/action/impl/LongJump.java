@@ -59,7 +59,7 @@ public class LongJump extends Action {
         if (shiftKey.state().isJustReleased()
                 && shiftKey.state().getPreviousPressedDurationTick() < INPUT_ACCEPTANCE_TICK
         ) {
-            var fastRun = parkourability.get(ParCoolActions.FAST_RUN);
+            var fastRun = parkourability.get(ParCoolActions.SUPER_SPRINT);
             if (fastRun.getNotDoingTick() >= INPUT_ACCEPTANCE_TICK
                     || (fastRun.getTickSinceStarted() - fastRun.getNotDoingTick()) < 14
             ) return false;

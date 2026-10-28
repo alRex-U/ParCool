@@ -28,7 +28,7 @@ public record ActionCapabilitiesPacket(ActionCapabilities capabilities, Target t
         @Override
         public ActionCapabilitiesPacket decode(FriendlyByteBuf packet) {
             var target = Target.values()[packet.readByte() % Target.values().length];
-            var caps = new ActionCapabilities(ParCool.getActionRegistry());
+            var caps = new ActionCapabilities(ParCool.getActionRegistry(), target == Target.ENABLED_ACTIONS);
             caps.read(packet);
             return new ActionCapabilitiesPacket(caps, target);
         }

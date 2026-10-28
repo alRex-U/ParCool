@@ -63,6 +63,7 @@ public class ParCoolConfig {
 
 		public final ForgeConfigSpec.BooleanValue enableActionSounds;
 		public final ForgeConfigSpec.BooleanValue showTargetIndicator;
+		public final ForgeConfigSpec.BooleanValue substituteSprintForFastRun;
 		public final ForgeConfigSpec.IntValue targetIndicatorSize;
 		public final ForgeConfigSpec.BooleanValue debugRope;
 		public final StaminaHud staminaHud;
@@ -129,6 +130,9 @@ public class ParCoolConfig {
 			builder.push("other");
 			{
 				enableActionSounds = builder.define("enable_sounds", true);
+				substituteSprintForFastRun = builder
+						.comment("Make actions needing fast-run available with normal sprint")
+						.define("enable_actions_with_sprint", false);
 			}
 			builder.pop();
 			builtConfig = builder.build();

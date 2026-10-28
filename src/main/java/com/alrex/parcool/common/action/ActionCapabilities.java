@@ -14,17 +14,12 @@ import java.util.TreeMap;
 
 public class ActionCapabilities {
     private TreeMap<String, boolean[]> capabilities;
+    private final boolean defaultValue;
     private boolean dirty;
-
-    public ActionCapabilities(ActionRegistry registry) {
-        capabilities = new TreeMap<>();
-        for (var group : registry.getRegisteredGroups().entrySet()) {
-            capabilities.put(group.getKey(), new boolean[group.getValue().actions().size()]);
-        }
-    }
 
     public ActionCapabilities(ActionRegistry registry, boolean initial) {
         capabilities = new TreeMap<>();
+        defaultValue = initial;
         for (var group : registry.getRegisteredGroups().entrySet()) {
             var array = new boolean[group.getValue().actions().size()];
             if (initial) {
@@ -109,7 +104,7 @@ public class ActionCapabilities {
             var actionGroup = registry.getRegisteredGroups().get(groupName);
             if (actionGroup == null) continue;
             if (!(tag.get(groupName) instanceof CompoundTag groupTag)) continue;
-            Arrays.fill(cap, false);
+            Arrays.fill(cap, defaultValue);
             for (var actionName : groupTag.getAllKeys()) {
                 var actionCap = groupTag.getBoolean(actionName);
                 actionGroup
