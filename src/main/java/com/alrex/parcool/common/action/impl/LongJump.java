@@ -11,11 +11,13 @@ import com.alrex.parcool.client.animation.system.IPlayerAnimatorHolder;
 import com.alrex.parcool.client.animation.system.math.MathUtil;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
+import com.alrex.parcool.common.action.ActionExtension;
 import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.phys.Vec3;
@@ -24,7 +26,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 
-public class LongJump extends Action {
+public class LongJump extends Action implements ActionExtension.IndicatorStatusProvider {
     private static final int INPUT_ACCEPTANCE_TICK = 11;
     private static final int COOLDOWN = 30;
 
@@ -136,5 +138,17 @@ public class LongJump extends Action {
                 );
             }
         }
+    }
+
+    @Override
+    public boolean requestStatusIndicator() {
+        return parkourability.get(ParCoolActions.SUPER_SPRINT).getNotDoingTick() < INPUT_ACCEPTANCE_TICK
+                && cooldownTick <= 0;
+    }
+
+    @Override
+    public float getStatusIndicatorValue() {
+        var fastRun = parkourability.get(ParCoolActions.SUPER_SPRINT);
+        return Mth.clamp((fastRun.getTickSinceStarted() - fastRun.getNotDoingTick()) / 14f, 0f, 1f);
     }
 }

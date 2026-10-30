@@ -14,7 +14,7 @@ import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ChargeJump extends ContinuableAction implements ActionExtension.JumpListener {
+public class ChargeJump extends ContinuableAction implements ActionExtension.JumpListener, ActionExtension.IndicatorStatusProvider {
     private static final byte CHARGE_DURATION = 10;
 
     private final SynchronizedDataHolder dataHolder;
@@ -132,5 +132,15 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
 
     public float getChargeProgress(float partial) {
         return Mth.lerp(partial, oldChargingTick, chargingTick) / CHARGE_DURATION;
+    }
+
+    @Override
+    public boolean requestStatusIndicator() {
+        return isCharging();
+    }
+
+    @Override
+    public float getStatusIndicatorValue() {
+        return chargingTick / (float) CHARGE_DURATION;
     }
 }

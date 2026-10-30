@@ -1,12 +1,13 @@
 package com.alrex.parcool.api.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.util.Mth;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
-public class RenderParCoolHUDEvent extends Event {
-    public static class Render extends RenderParCoolHUDEvent {
+public class ParCoolHUDEvent extends Event {
+    public static class Render extends ParCoolHUDEvent {
         private final ForgeGui gui;
         private final PoseStack posestack;
         private final float partialTick;
@@ -64,6 +65,11 @@ public class RenderParCoolHUDEvent extends Event {
                 public Pre(ForgeGui gui, PoseStack stack, float partialTick, int width, int height, StaminaDisplayContext currentContext, StaminaDisplayContext oldContext) {
                     super(gui, stack, partialTick, width, height, currentContext, oldContext);
                 }
+
+                @Override
+                public boolean isCancelable() {
+                    return true;
+                }
             }
 
             public static class Post extends Stamina {
@@ -74,14 +80,18 @@ public class RenderParCoolHUDEvent extends Event {
         }
     }
 
-    public static class Update extends RenderParCoolHUDEvent {
+    public static class Update extends ParCoolHUDEvent {
         public static class StaminaContext extends Update {
-            private final StaminaDisplayContext currentContext;
+            private StaminaDisplayContext currentContext;
             private final StaminaDisplayContext oldContext;
 
             public StaminaContext(StaminaDisplayContext currentContext, StaminaDisplayContext oldContext) {
                 this.currentContext = currentContext;
                 this.oldContext = oldContext;
+            }
+
+            public void setCurrentContext(StaminaDisplayContext currentContext) {
+                this.currentContext = currentContext;
             }
 
             public StaminaDisplayContext getCurrentContext() {
@@ -90,6 +100,22 @@ public class RenderParCoolHUDEvent extends Event {
 
             public StaminaDisplayContext getOldContext() {
                 return oldContext;
+            }
+        }
+
+        public static class StatusIndicatorValue extends Update {
+            private float statusValue = -1f;
+
+            public void setStatusValue(float value) {
+                statusValue = value;
+            }
+
+            public float getStatusValue() {
+                return Mth.clamp(statusValue, 0f, 1f);
+            }
+
+            public boolean shouldShowIndicator() {
+                return statusValue >= 0f;
             }
         }
     }

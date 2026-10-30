@@ -15,6 +15,9 @@ public interface IStaminaHUD {
             PoseStack stack,
             Parkourability parkourability,
             StaminaDisplayContext currentContext, StaminaDisplayContext oldContext,
+            boolean showStatusIndicator,
+            float statusValue,
+            float oldStatusValue,
             float partialTick, int width, int height
     );
 

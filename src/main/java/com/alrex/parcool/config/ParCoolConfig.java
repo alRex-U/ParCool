@@ -43,6 +43,7 @@ public class ParCoolConfig {
 				ForgeConfigSpec.EnumValue<HUDType> type,
 				ForgeConfigSpec.BooleanValue showAlways,
 				ForgeConfigSpec.BooleanValue hideAutomatically,
+				ForgeConfigSpec.BooleanValue showStatusIndicator,
 				ForgeConfigSpec.IntValue offsetHorizontal,
 				ForgeConfigSpec.IntValue offsetVertical
 		) {
@@ -104,6 +105,7 @@ public class ParCoolConfig {
 						builder.defineEnum("stamina_hud_type", HUDType.Light),
 						builder.define("show_always", false),
 						builder.define("hide_automatically", true),
+						builder.define("show_status_indicator", true),
 						builder.defineInRange("hud_offset_h", 0, -100, 100),
 						builder.defineInRange("hud_offset_v", 0, -100, 100)
 				);

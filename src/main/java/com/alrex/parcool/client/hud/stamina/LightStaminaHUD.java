@@ -39,9 +39,17 @@ public class LightStaminaHUD extends GuiComponent implements IStaminaHUD {
 	}
 
 	@Override
-	public void render(ForgeGui gui, PoseStack stack, Parkourability parkourability, StaminaDisplayContext currentContext, StaminaDisplayContext oldContext, float partialTick, int width, int height) {
-		if (!valueChanging && tickValueChangingOrNotChanging > 40 && ParCool.getConfig().client().staminaHud.hideAutomatically().get())
-			return;
+	public void render(
+			ForgeGui gui,
+			PoseStack stack,
+			Parkourability parkourability,
+			StaminaDisplayContext currentContext,
+			StaminaDisplayContext oldContext,
+			boolean showStatusIndicator,
+			float statusValue,
+			float oldStatusValue,
+			float partialTick, int width, int height
+	) {
 		var player = parkourability.player();
 		final boolean inexhaustible = player.hasEffect(ParCoolMobEffects.INEXHAUSTIBLE.get());
 
@@ -50,18 +58,21 @@ public class LightStaminaHUD extends GuiComponent implements IStaminaHUD {
 		if (staminaScale > 1) staminaScale = 1;
 		staminaScale *= 10f;
 
-		// TODO: Is it actually needed to show cooldown or other status on hud?
-		// float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick) * 10f : 0f;
+		float statusScale = showStatusIndicator ? Mth.lerp(partialTick, oldStatusValue, statusValue) * 10f : 0f;
 
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
 		int baseX = width / 2 + 91 + ParCool.getConfig().client().staminaHud.offsetHorizontal().get();
 		int baseY = height - gui.rightHeight + ParCool.getConfig().client().staminaHud.offsetVertical().get();
+		var overlaySprite = ParCoolTextures.guiSprite(STAMINA_BRIGHT_OVERLAY);
 		for (int i = 0; i < 10; i++) {
 			TextureAtlasSprite staminaSprite;
 			int x = baseX - i * 8 - 9;
 			int offsetY = 0;
 			int fillPhase;
+			boolean showBrightOverlay = showStatusIndicator && statusScale > i;
+			float partialOverlayScale = 0f;
+			if (showBrightOverlay) partialOverlayScale = Math.min(statusScale - i, 1f);
 			if (staminaScale < i) fillPhase = 0;
 			else if (staminaScale < i + 0.5f) fillPhase = 1;
 			else fillPhase = 2;
@@ -96,8 +107,21 @@ public class LightStaminaHUD extends GuiComponent implements IStaminaHUD {
 			} else if (i + 1 > staminaScale && staminaScale > i && currentContext.value() < oldContext.value()) {
 				offsetY = consumingStaminaVibration;
 			}
+			int y = baseY + offsetY;
 
-			blit(stack, x, baseY + offsetY, 0, 9, 9, staminaSprite);
+			blit(stack, x, y, 0, 9, 9, staminaSprite);
+
+			if (showBrightOverlay) {
+				var partialX = (int) (overlaySprite.getWidth() * (1f - partialOverlayScale));
+				RenderSystem.enableBlend();
+				innerBlit(stack.last().pose(),
+						x + partialX, x + overlaySprite.getWidth(),
+						y, y + overlaySprite.getHeight(), 0,
+						overlaySprite.getU(16f * (partialX / (float) overlaySprite.getWidth())), overlaySprite.getU1(),
+						overlaySprite.getV0(), overlaySprite.getV1()
+				);
+				RenderSystem.disableBlend();
+			}
 		}
 		gui.rightHeight += 10;
 	}

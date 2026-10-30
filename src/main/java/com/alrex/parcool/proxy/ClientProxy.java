@@ -54,7 +54,7 @@ public class ClientProxy extends CommonProxy {
 
 		bus = MinecraftForge.EVENT_BUS;
 		bus.addListener(ParCoolKeyBinds::tick);
-		bus.register(HUDRegistry.getInstance());
+		bus.addListener(HUDRegistry.getInstance()::onTick);
 		bus.register(InputHandler.class);
         bus.register(AnimationSystemEventHandler.class);
         bus.register(GrappleCameraHandler.class);
