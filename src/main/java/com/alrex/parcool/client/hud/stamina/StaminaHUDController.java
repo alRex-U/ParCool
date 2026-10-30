@@ -59,7 +59,7 @@ public class StaminaHUDController implements IGuiOverlay {
 			}
 			MinecraftForge.EVENT_BUS.post(indicatorUpdateEvent);
 			showStatus = indicatorUpdateEvent.shouldShowIndicator();
-			statusValue = indicatorUpdateEvent.getStatusValue();
+			statusValue = (indicatorUpdateEvent.getStatusValue() + oldStatusValue) / 2f;
 		} else {
 			showStatus = false;
 			statusValue = 0;

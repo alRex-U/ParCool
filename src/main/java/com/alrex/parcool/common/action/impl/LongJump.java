@@ -142,13 +142,19 @@ public class LongJump extends Action implements ActionExtension.IndicatorStatusP
 
     @Override
     public boolean requestStatusIndicator() {
+        if (cooldownTick > COOLDOWN - 10) return true;
         return parkourability.get(ParCoolActions.SUPER_SPRINT).getNotDoingTick() < INPUT_ACCEPTANCE_TICK
-                && cooldownTick <= 0;
+                && cooldownTick <= 0
+                && !parkourability.getStamina().isExhausted();
     }
 
     @Override
     public float getStatusIndicatorValue() {
-        var fastRun = parkourability.get(ParCoolActions.SUPER_SPRINT);
-        return Mth.clamp((fastRun.getTickSinceStarted() - fastRun.getNotDoingTick()) / 14f, 0f, 1f);
+        if (cooldownTick > COOLDOWN - 10) {
+            return (cooldownTick - (COOLDOWN - 10)) / 10f;
+        } else {
+            var fastRun = parkourability.get(ParCoolActions.SUPER_SPRINT);
+            return Mth.clamp((fastRun.getTickSinceStarted() - fastRun.getNotDoingTick()) / 14f, 0f, 1f);
+        }
     }
 }
