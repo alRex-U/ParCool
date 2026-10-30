@@ -325,7 +325,7 @@ public class HangDown extends ContinuableAction implements ActionExtension.KeyMa
         var collideDistY = Entity.collideBoundingBox(
                 entity,
                 new Vec3(0, 1., 0),
-                entityBB.deflate(0.05, 0, 0.05),
+                entityBB.deflate(0.001, 0, 0.001),
                 level,
                 Collections.emptyList()
         ).y;
