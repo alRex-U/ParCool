@@ -1,6 +1,7 @@
 package com.alrex.parcool.client.hud.stamina;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.api.action.Action;
 import com.alrex.parcool.api.client.gui.ParCoolHUDEvent;
 import com.alrex.parcool.api.client.gui.StaminaDisplayContext;
 import com.alrex.parcool.api.stamina.AbstractLocalStamina;
@@ -54,7 +55,7 @@ public class StaminaHUDController implements IGuiOverlay {
 		if (ParCool.getConfig().client().showTargetIndicator.get()) {
 			var indicatorUpdateEvent = new ParCoolHUDEvent.Update.StatusIndicatorValue();
 			for (var provider : parkourability.getActions().getExtensionListeners(ActionExtension.IndicatorStatusProvider.class)) {
-				if (provider.requestStatusIndicator())
+				if (provider.requestStatusIndicator() && provider instanceof Action action && parkourability.permit(action.getEntry()))
 					indicatorUpdateEvent.setStatusValue(provider.getStatusIndicatorValue());
 			}
 			MinecraftForge.EVENT_BUS.post(indicatorUpdateEvent);

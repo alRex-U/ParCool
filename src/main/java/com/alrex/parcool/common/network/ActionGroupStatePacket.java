@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public record ActionStatePacket(String groupName, List<Entry> entries) {
-    public static IHandler<ActionStatePacket> HANDLER = new Handler();
+public record ActionGroupStatePacket(String groupName, List<Entry> entries) {
+    public static IHandler<ActionGroupStatePacket> HANDLER = new Handler();
 
     public enum Type {
         START, DATA, FINISH
@@ -37,9 +37,9 @@ public record ActionStatePacket(String groupName, List<Entry> entries) {
         }
     }
 
-    private static class Handler implements IHandler<ActionStatePacket> {
+    private static class Handler implements IHandler<ActionGroupStatePacket> {
         @Override
-        public void encode(ActionStatePacket actionStatePacket, FriendlyByteBuf packet) {
+        public void encode(ActionGroupStatePacket actionStatePacket, FriendlyByteBuf packet) {
             packet.writeByte(actionStatePacket.groupName.length());
             packet.writeCharSequence(actionStatePacket.groupName, StandardCharsets.US_ASCII);
             packet.writeShort(actionStatePacket.entries.size());
@@ -49,25 +49,24 @@ public record ActionStatePacket(String groupName, List<Entry> entries) {
         }
 
         @Override
-        public ActionStatePacket decode(FriendlyByteBuf packet) {
+        public ActionGroupStatePacket decode(FriendlyByteBuf packet) {
             String namespace = packet.readCharSequence(packet.readByte(), StandardCharsets.US_ASCII).toString();
             var entryLength = packet.readShort();
             var list = new ArrayList<Entry>(entryLength);
             for (var i = 0; i < entryLength; i++) {
                 list.add(Entry.decode(namespace, ParCool.getActionRegistry(), packet));
             }
-            return new ActionStatePacket(namespace, list);
+            return new ActionGroupStatePacket(namespace, list);
         }
 
-        @OnlyIn(Dist.DEDICATED_SERVER)
         @Override
-        public void handleInPhysicalServer(ActionStatePacket actionStatePacket, Supplier<NetworkEvent.Context> contextSupplier) {
+        public void handleInLogicalServer(ActionGroupStatePacket actionStatePacket, Supplier<NetworkEvent.Context> contextSupplier) {
             throw new UnsupportedOperationException();
         }
 
         @OnlyIn(Dist.CLIENT)
         @Override
-        public void handleInPhysicalClient(ActionStatePacket actionStatePacket, Supplier<NetworkEvent.Context> contextSupplier) {
+        public void handleInLogicalClient(ActionGroupStatePacket actionStatePacket, Supplier<NetworkEvent.Context> contextSupplier) {
             throw new UnsupportedOperationException();
         }
     }

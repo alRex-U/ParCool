@@ -1,6 +1,5 @@
 package com.alrex.parcool.api.stamina;
 
-import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.ParCoolMobEffects;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.network.StaminaPacket;
@@ -8,7 +7,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.PacketDistributor;
 
 public abstract class AbstractLocalStamina implements IReadableStamina {
     @OnlyIn(Dist.CLIENT)
@@ -50,7 +48,7 @@ public abstract class AbstractLocalStamina implements IReadableStamina {
 
     public final void sync() {
         if (dirty) {
-            ParCool.getConnection().send(PacketDistributor.SERVER.noArg(), new StaminaPacket(owner.getUUID(), true, this.copyAsReadOnly()));
+            StaminaPacket.CtoS.HANDLER.send(owner, new StaminaPacket(this.copyAsReadOnly()));
             dirty = false;
         }
     }

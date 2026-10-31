@@ -33,15 +33,14 @@ public record SkilltreePacket(List<SkillTree> skillTrees) {
             return new SkilltreePacket(list);
         }
 
-        @OnlyIn(Dist.DEDICATED_SERVER)
         @Override
-        public void handleInPhysicalServer(SkilltreePacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
+        public void handleInLogicalServer(SkilltreePacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
             throw new UnsupportedOperationException();
         }
 
         @OnlyIn(Dist.CLIENT)
         @Override
-        public void handleInPhysicalClient(SkilltreePacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
+        public void handleInLogicalClient(SkilltreePacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
             var player = Minecraft.getInstance().player;
             if (player == null) return;
             Parkourability.get(player).syncSkillTree(packet.skillTrees);

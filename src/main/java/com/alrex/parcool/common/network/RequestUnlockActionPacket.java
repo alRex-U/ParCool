@@ -26,9 +26,8 @@ public record RequestUnlockActionPacket(ActionEntry<?> action) {
             );
         }
 
-        @OnlyIn(Dist.DEDICATED_SERVER)
         @Override
-        public void handleInPhysicalServer(RequestUnlockActionPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
+        public void handleInLogicalServer(RequestUnlockActionPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
             var player = contextSupplier.get().getSender();
             if (player == null) return;
             var parkourability = Parkourability.get(player);
@@ -37,11 +36,8 @@ public record RequestUnlockActionPacket(ActionEntry<?> action) {
 
         @OnlyIn(Dist.CLIENT)
         @Override
-        public void handleInPhysicalClient(RequestUnlockActionPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
-            var player = contextSupplier.get().getSender();
-            if (player == null) return;
-            var parkourability = Parkourability.get(player);
-            parkourability.getCapabilities().unlock(player, packet.action);
+        public void handleInLogicalClient(RequestUnlockActionPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
+            throw new UnsupportedOperationException();
         }
     };
 }

@@ -1,6 +1,6 @@
 package com.alrex.parcool.api.action;
 
-import com.alrex.parcool.common.network.ActionStatePacket;
+import com.alrex.parcool.common.network.ActionGroupStatePacket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,7 +29,7 @@ public class SynchronizedDataHolder {
     }
 
     @Nullable
-    public ActionStatePacket.Entry packToEntry(ActionStatePacket.Type type, ActionEntry<?> holder) {
+    public ActionGroupStatePacket.Entry packToEntry(ActionGroupStatePacket.Type type, ActionEntry<?> holder) {
         if (this == EMPTY) return packToEntry$returnIfEmpty(type, holder);
 
         int index = -1;
@@ -49,20 +49,20 @@ public class SynchronizedDataHolder {
         buffer.flip();
         var dataArray = new byte[buffer.limit()];
         buffer.get(dataArray);
-        return new ActionStatePacket.Entry(type, holder, dataArray);
+        return new ActionGroupStatePacket.Entry(type, holder, dataArray);
     }
 
     @Nullable
-    private ActionStatePacket.Entry packToEntry$returnIfEmpty(ActionStatePacket.Type type, ActionEntry<?> holder) {
-        if (type == ActionStatePacket.Type.DATA) return null;
-        return new ActionStatePacket.Entry(type, holder, new byte[0]);
+    private ActionGroupStatePacket.Entry packToEntry$returnIfEmpty(ActionGroupStatePacket.Type type, ActionEntry<?> holder) {
+        if (type == ActionGroupStatePacket.Type.DATA) return null;
+        return new ActionGroupStatePacket.Entry(type, holder, new byte[0]);
     }
 
     private static <T> void packToEntry$writeToBuffer(ByteBuffer buffer, SynchronizedProperty<T> property) {
         property.getHandler().write(buffer, property.get());
     }
 
-    public void acceptPacket(ActionStatePacket.Entry entry) {
+    public void acceptPacket(ActionGroupStatePacket.Entry entry) {
         var packetBuffer = ByteBuffer.wrap(entry.data());
         while (packetBuffer.hasRemaining()) {
             var index = packetBuffer.get();

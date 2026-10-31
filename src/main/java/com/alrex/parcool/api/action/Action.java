@@ -5,12 +5,12 @@ import com.alrex.parcool.api.stamina.AbstractLocalStamina;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.IRequestable;
-import com.alrex.parcool.common.network.ActionStatePacket;
+import com.alrex.parcool.common.network.ActionGroupStatePacket;
 import com.alrex.parcool.common.network.ActionStateSetPacket;
+import com.alrex.parcool.common.network.PlayerActionPacket;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -121,14 +121,16 @@ public abstract class Action {
 		start();
 		var player = parkourability.player();
         var clientSide = player.level.isClientSide();
-        var packet = clientSide
-				? ActionStateSetPacket.fromClient(parkourability.player().getUUID())
-				: ActionStateSetPacket.fromServer(parkourability.player().getUUID());
-		packet.add(new ActionStatePacket(
+		var packet = new ActionStateSetPacket();
+		packet.add(new ActionGroupStatePacket(
 				entry.id().getNamespace(),
-				Collections.singletonList(getSynchronizedData().packToEntry(ActionStatePacket.Type.START, entry))
+				Collections.singletonList(getSynchronizedData().packToEntry(ActionGroupStatePacket.Type.START, entry))
 		));
-        ParCool.getConnection().send(clientSide ? PacketDistributor.SERVER.noArg() : PacketDistributor.ALL.noArg(), packet);
+		if (clientSide) {
+			PlayerActionPacket.CtoS.HANDLER.send(player, new PlayerActionPacket(packet));
+		} else {
+			PlayerActionPacket.StoC.HANDLER.send(player, new PlayerActionPacket(packet), true);
+		}
 	}
 
 	protected final boolean isPossible() {

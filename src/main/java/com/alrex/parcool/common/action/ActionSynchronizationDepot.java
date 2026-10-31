@@ -2,30 +2,37 @@ package com.alrex.parcool.common.action;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.network.ActionStateSetPacket;
-import com.alrex.parcool.common.network.MultiActionStateSetPacket;
+import com.alrex.parcool.common.network.MultiPlayerActionPacket;
+import com.alrex.parcool.common.network.PlayerActionPacket;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.LinkedList;
+import java.util.UUID;
 
 public class ActionSynchronizationDepot {
-    private final LinkedList<ActionStateSetPacket> packets = new LinkedList<>();
+    private record Entry(UUID playerID, ActionStateSetPacket stateSetPacket, boolean acceptsInLocalPlayer) {
+    }
 
-    public void requestSync(ActionStateSetPacket packet) {
-        packets.add(packet);
+    private final LinkedList<Entry> entries = new LinkedList<>();
+
+    public void requestSync(UUID playerID, ActionStateSetPacket packet, boolean acceptsInLocalPlayer) {
+        entries.add(new Entry(playerID, packet, acceptsInLocalPlayer));
     }
 
     public void tick() {
-        if (!packets.isEmpty()) {
+        if (!entries.isEmpty()) {
             ParCool.getConnection().send(PacketDistributor.ALL.noArg(), packToPacket());
         }
     }
 
-    private MultiActionStateSetPacket packToPacket() {
-        var multiPacket = new MultiActionStateSetPacket();
-        for (var packet : packets) {
+    private MultiPlayerActionPacket packToPacket() {
+        var multiPacket = new MultiPlayerActionPacket();
+        for (var entry : entries) {
+            var packet = new PlayerActionPacket.StoC();
+            packet.set(entry.playerID, new PlayerActionPacket(entry.stateSetPacket), entry.acceptsInLocalPlayer);
             multiPacket.add(packet);
         }
-        packets.clear();
+        entries.clear();
         return multiPacket;
     }
 }

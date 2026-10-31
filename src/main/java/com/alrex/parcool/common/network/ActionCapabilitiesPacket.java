@@ -33,15 +33,14 @@ public record ActionCapabilitiesPacket(ActionCapabilities capabilities, Target t
             return new ActionCapabilitiesPacket(caps, target);
         }
 
-        @OnlyIn(Dist.DEDICATED_SERVER)
         @Override
-        public void handleInPhysicalServer(ActionCapabilitiesPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
+        public void handleInLogicalServer(ActionCapabilitiesPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
             throw new UnsupportedOperationException();
         }
 
         @OnlyIn(Dist.CLIENT)
         @Override
-        public void handleInPhysicalClient(ActionCapabilitiesPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
+        public void handleInLogicalClient(ActionCapabilitiesPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
             var player = Minecraft.getInstance().player;
             if (player == null) return;
             var parkourability = Parkourability.get(player);
