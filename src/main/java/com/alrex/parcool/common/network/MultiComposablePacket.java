@@ -25,39 +25,40 @@ public abstract class MultiComposablePacket<T> {
         return new DefaultHandler<>(constructor, childHandler);
     }
 
-    private record DefaultHandler<U, V extends MultiComposablePacket<U>>(Supplier<V> constructor,
-                                                                         IHandler<U> childHandler) implements IHandler<V> {
+    private record DefaultHandler<PAYLOAD, COMPOSED extends MultiComposablePacket<PAYLOAD>>(
+            Supplier<COMPOSED> constructor,
+            IHandler<PAYLOAD> childHandler
+    ) implements IHandler<COMPOSED> {
         @Override
-        public void encode(V msg, FriendlyByteBuf packet) {
+        public void encode(COMPOSED msg, FriendlyByteBuf packet) {
             MultiComposablePacket.encode(msg, packet, childHandler);
         }
 
         @Override
-        public V decode(FriendlyByteBuf packet) {
+        public COMPOSED decode(FriendlyByteBuf packet) {
             return MultiComposablePacket.decode(constructor.get(), packet, childHandler);
         }
 
         @OnlyIn(Dist.CLIENT)
         @Override
-        public void handleInPhysicalClient(V msg, Supplier<NetworkEvent.Context> contextSupplier) {
-            MultiComposablePacket.handleInPhysicalClient(msg, contextSupplier, childHandler);
+        public void handleInLogicalClient(COMPOSED msg, Supplier<NetworkEvent.Context> contextSupplier) {
+            MultiComposablePacket.handleInLogicalClient(msg, contextSupplier, childHandler);
         }
 
-        @OnlyIn(Dist.DEDICATED_SERVER)
         @Override
-        public void handleInPhysicalServer(V msg, Supplier<NetworkEvent.Context> contextSupplier) {
-            MultiComposablePacket.handleInPhysicalServer(msg, contextSupplier, childHandler);
+        public void handleInLogicalServer(COMPOSED msg, Supplier<NetworkEvent.Context> contextSupplier) {
+            MultiComposablePacket.handleInLogicalServer(msg, contextSupplier, childHandler);
         }
     }
 
-    public static <U, V extends MultiComposablePacket<U>> void encode(V msg, FriendlyByteBuf packet, IHandler<U> childHandler) {
+    public static <PAYLOAD, COMPOSED extends MultiComposablePacket<PAYLOAD>> void encode(COMPOSED msg, FriendlyByteBuf packet, IHandler<PAYLOAD> childHandler) {
         packet.writeInt(msg.msgList.size());
         for (var singleMsg : msg.msgList) {
             childHandler.encode(singleMsg, packet);
         }
     }
 
-    public static <U, V extends MultiComposablePacket<U>> V decode(V msg, FriendlyByteBuf packet, IHandler<U> childHandler) {
+    public static <PAYLOAD, COMPOSED extends MultiComposablePacket<PAYLOAD>> COMPOSED decode(COMPOSED msg, FriendlyByteBuf packet, IHandler<PAYLOAD> childHandler) {
         var composedPacketCount = packet.readInt();
         for (var i = 0; i < composedPacketCount; i++) {
             msg.add(childHandler.decode(packet));
@@ -66,16 +67,15 @@ public abstract class MultiComposablePacket<T> {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static <U, V extends MultiComposablePacket<U>> void handleInPhysicalClient(V msg, Supplier<NetworkEvent.Context> contextSupplier, IHandler<U> childHandler) {
+    public static <PAYLOAD, COMPOSED extends MultiComposablePacket<PAYLOAD>> void handleInLogicalClient(COMPOSED msg, Supplier<NetworkEvent.Context> contextSupplier, IHandler<PAYLOAD> childHandler) {
         for (var singleMsg : msg.msgList) {
-            childHandler.handleInPhysicalClient(singleMsg, contextSupplier);
+            childHandler.handleInLogicalClient(singleMsg, contextSupplier);
         }
     }
 
-    @OnlyIn(Dist.DEDICATED_SERVER)
-    public static <U, V extends MultiComposablePacket<U>> void handleInPhysicalServer(V msg, Supplier<NetworkEvent.Context> contextSupplier, IHandler<U> childHandler) {
+    public static <PAYLOAD, COMPOSED extends MultiComposablePacket<PAYLOAD>> void handleInLogicalServer(COMPOSED msg, Supplier<NetworkEvent.Context> contextSupplier, IHandler<PAYLOAD> childHandler) {
         for (var singleMsg : msg.msgList) {
-            childHandler.handleInPhysicalServer(singleMsg, contextSupplier);
+            childHandler.handleInLogicalServer(singleMsg, contextSupplier);
         }
     }
 }

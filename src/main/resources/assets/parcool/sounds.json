@@ -5,6 +5,16 @@
       "parcool:action/breakfall"
     ]
   },
+  "action.breakfall.perfect": {
+    "subtitle": "subtitle.parcool.action.breakfall.perfect",
+    "sounds": [
+      {
+        "name": "minecraft:random/anvil_land",
+        "volume": 0.65,
+        "pitch": 2
+      }
+    ]
+  },
   "action.dodge": {
     "subtitle": "subtitle.parcool.action.dodge",
     "sounds": [

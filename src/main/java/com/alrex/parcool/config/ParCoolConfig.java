@@ -43,6 +43,7 @@ public class ParCoolConfig {
 				ForgeConfigSpec.EnumValue<HUDType> type,
 				ForgeConfigSpec.BooleanValue showAlways,
 				ForgeConfigSpec.BooleanValue hideAutomatically,
+				ForgeConfigSpec.BooleanValue showStatusIndicator,
 				ForgeConfigSpec.IntValue offsetHorizontal,
 				ForgeConfigSpec.IntValue offsetVertical
 		) {
@@ -63,6 +64,7 @@ public class ParCoolConfig {
 
 		public final ForgeConfigSpec.BooleanValue enableActionSounds;
 		public final ForgeConfigSpec.BooleanValue showTargetIndicator;
+		public final ForgeConfigSpec.BooleanValue substituteSprintForFastRun;
 		public final ForgeConfigSpec.IntValue targetIndicatorSize;
 		public final ForgeConfigSpec.BooleanValue debugRope;
 		public final StaminaHud staminaHud;
@@ -103,6 +105,7 @@ public class ParCoolConfig {
 						builder.defineEnum("stamina_hud_type", HUDType.Light),
 						builder.define("show_always", false),
 						builder.define("hide_automatically", true),
+						builder.define("show_status_indicator", true),
 						builder.defineInRange("hud_offset_h", 0, -100, 100),
 						builder.defineInRange("hud_offset_v", 0, -100, 100)
 				);
@@ -129,6 +132,9 @@ public class ParCoolConfig {
 			builder.push("other");
 			{
 				enableActionSounds = builder.define("enable_sounds", true);
+				substituteSprintForFastRun = builder
+						.comment("Make actions needing fast-run available with normal sprint")
+						.define("enable_actions_with_sprint", false);
 			}
 			builder.pop();
 			builtConfig = builder.build();
@@ -176,6 +182,7 @@ public class ParCoolConfig {
         public final ForgeConfigSpec.BooleanValue damageWithoutGlove;
         public final ForgeConfigSpec.BooleanValue enableSkillTree;
 		public final ForgeConfigSpec.BooleanValue enableSkillTreeUi;
+		public final ForgeConfigSpec.IntValue breakfallJustTimeInputAcceptanceTick;
 		public final GrapplingHook grapplingHook;
 
 		public final ResourceLocation getStaminaTypeID() {
@@ -229,6 +236,9 @@ public class ParCoolConfig {
 				damageWithoutGlove = builder
 						.comment("Whether you take damage when you use some actions like WallSlide without traceur's gloves")
 						.define("damage_without_glove", true);
+				breakfallJustTimeInputAcceptanceTick = builder
+						.comment("Input acceptance duration of perfect-breakfall in tick, perfect breakfall is disabled if this value is 0")
+						.defineInRange("breakfall_just_time_input_tick", 0, 0, Integer.MAX_VALUE);
             }
             builder.pop();
 			builder.push("grappling_hook");

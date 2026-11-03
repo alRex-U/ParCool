@@ -4,6 +4,7 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.common.Parkourability;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
@@ -11,7 +12,15 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record EnableActionPacket(ActionEntry<?> action, boolean enable) {
-    public static final IHandler<EnableActionPacket> HANDLER = new IHandler<>() {
+    public static class StoC extends PlayerTargetPacket.StoC<EnableActionPacket> {
+        public static final StoCHandler<EnableActionPacket, EnableActionPacket.StoC> HANDLER = getStoCHandler(EnableActionPacket.StoC::new, EnableActionPacket.HANDLER);
+    }
+
+    public static class CtoS extends PlayerTargetPacket.CtoS<EnableActionPacket> {
+        public static final CtoSHandler<EnableActionPacket, EnableActionPacket.CtoS> HANDLER = getCtoSHandler(EnableActionPacket.CtoS::new, EnableActionPacket.HANDLER);
+    }
+
+    public static final PlayerTargetPacket.IPayloadHandler<EnableActionPacket> HANDLER = new PlayerTargetPacket.IPayloadHandler<>() {
         @Override
         public void encode(EnableActionPacket packet, FriendlyByteBuf buf) {
             var groupName = packet.action.id().getNamespace();
@@ -28,21 +37,18 @@ public record EnableActionPacket(ActionEntry<?> action, boolean enable) {
             );
         }
 
-        @OnlyIn(Dist.DEDICATED_SERVER)
         @Override
-        public void handleInPhysicalServer(EnableActionPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
-            var player = contextSupplier.get().getSender();
-            if (player == null) return;
-            var parkourability = Parkourability.get(player);
+        public void handleInLogicalServer(EnableActionPacket packet, Player target, Supplier<NetworkEvent.Context> contextSupplier) {
+            var parkourability = Parkourability.get(target);
             parkourability.getEnabledActions().set(packet.action, packet.enable);
+
+            StoC.HANDLER.send(target, packet, false);
         }
 
         @OnlyIn(Dist.CLIENT)
         @Override
-        public void handleInPhysicalClient(EnableActionPacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
-            var player = contextSupplier.get().getSender();
-            if (player == null) return;
-            var parkourability = Parkourability.get(player);
+        public void handleInLogicalClient(EnableActionPacket packet, Player target, Supplier<NetworkEvent.Context> contextSupplier) {
+            var parkourability = Parkourability.get(target);
             parkourability.getEnabledActions().set(packet.action, packet.enable);
         }
     };

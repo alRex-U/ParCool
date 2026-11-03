@@ -16,5 +16,6 @@ public class AddAttributesHandler {
         event.add(EntityType.PLAYER, ParCoolAttributes.FAST_SWIM_SPEED.get());
         event.add(EntityType.PLAYER, ParCoolAttributes.SLIDE_DOWN_DECELERATION.get());
         event.add(EntityType.PLAYER, ParCoolAttributes.HORIZONTAL_WALL_RUN_DURATION.get());
+        event.add(EntityType.PLAYER, ParCoolAttributes.CHARGE_JUMP_POWER_SCALE.get());
     }
 }

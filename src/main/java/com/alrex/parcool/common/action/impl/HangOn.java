@@ -12,11 +12,13 @@ import com.alrex.parcool.common.action.ActionExtension;
 import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.InteractingWallDirection;
 import com.alrex.parcool.common.action.ParCoolActions;
+import com.alrex.parcool.common.math.Vec2XZ;
 import com.alrex.parcool.util.EntityUtil;
 import com.alrex.parcool.util.MathUtil;
 import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
@@ -74,12 +76,12 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
 
     @Override
     public boolean canStart() {
-        return cooldown == 0 && input.isActive() && (startingHangState = getHangState()) != null;
+        return cooldown == 0 && input().isActive() && (startingHangState = getHangState()) != null;
     }
 
     @Override
     public boolean canContinue() {
-        return cooldown == 0 && input.isActive() && currentHangState != null && !ParCoolKeyBinds.JUMP.state().isJustPressed();
+        return cooldown == 0 && input().isActive() && currentHangState != null && !ParCoolKeyBinds.JUMP.state().isJustPressed();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -312,10 +314,27 @@ public class HangOn extends ContinuableAction implements ActionExtension.LeaveFr
         var downReach = -playerBB.getYsize() * 0.2;
         var collision = Entity.collideBoundingBox(player, new Vec3(0, downReach, 0), grabbingBB, level, Collections.emptyList());
         if (collision.y > downReach) {
+            var grabbingPoint = getGrabbingPoint(playerBB, direction).withY(grabbingBB.minY + collision.y - 0.1);
+            var grabbingBlockPos = new BlockPos(grabbingPoint);
+            if (!level.isLoaded(grabbingBlockPos)) return null;
+            if (level.getBlockState(grabbingBlockPos).getFriction(level, grabbingBlockPos, player) > 0.9) return null;
+
             var legBB = new AABB(playerBB.minX, playerBB.minY, playerBB.minZ, playerBB.maxX, playerBB.minY + playerBB.getYsize() / 3, playerBB.maxZ).expandTowards(direction.getSignX() * xRange, 0, direction.getSignZ() * zRange);
             return new HangState(direction, grabbingBB, collision.y, !level.noCollision(legBB));
         }
         return null;
+    }
+
+    private static Vec2XZ getGrabbingPoint(AABB playerBB, InteractingWallDirection direction) {
+        var center = playerBB.getCenter();
+        double x = center.x, z = center.z;
+        if (direction.getSignX() != 0) {
+            x += direction.getSignX() * playerBB.getXsize() * (0.5 + REACH_SCALE);
+        }
+        if (direction.getSignZ() != 0) {
+            z += direction.getSignZ() * playerBB.getZsize() * (0.5 + REACH_SCALE);
+        }
+        return new Vec2XZ(x, z);
     }
 
     private static AABB getGrabbingHandAABB(AABB playerBB, InteractingWallDirection direction) {

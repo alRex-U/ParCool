@@ -1,6 +1,5 @@
 package com.alrex.parcool.common.action;
 
-import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.Action;
 import com.alrex.parcool.api.action.ContinuableAction;
 import com.alrex.parcool.api.action.ParCoolActionEvent;
@@ -8,8 +7,9 @@ import com.alrex.parcool.api.stamina.AbstractLocalStamina;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.network.ActionCapabilitiesPacket;
-import com.alrex.parcool.common.network.ActionStatePacket;
+import com.alrex.parcool.common.network.ActionGroupStatePacket;
 import com.alrex.parcool.common.network.ActionStateSetPacket;
+import com.alrex.parcool.common.network.PlayerActionPacket;
 import com.alrex.parcool.common.stamina.StaminaSynchronizationDepot;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,7 +19,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -51,7 +50,7 @@ public class ActionProcessor {
 
 		var player = event.player;
 		var parkourability = Parkourability.get(player);
-		Map<String, LinkedList<ActionStatePacket.Entry>> synchronizedData = new TreeMap<>();
+		Map<String, LinkedList<ActionGroupStatePacket.Entry>> synchronizedData = new TreeMap<>();
 		if (event.side.isClient()) {
 			onTick$doPreprocessInClient(parkourability);
 		} else {
@@ -108,48 +107,46 @@ public class ActionProcessor {
 		}
 	}
 
-	private void onTick$sendActionSyncPacket(Parkourability parkourability, LogicalSide side, Map<String, LinkedList<ActionStatePacket.Entry>> synchronizedData) {
-		var list = new LinkedList<ActionStatePacket>();
+	private void onTick$sendActionSyncPacket(Parkourability parkourability, LogicalSide side, Map<String, LinkedList<ActionGroupStatePacket.Entry>> synchronizedData) {
+		var list = new LinkedList<ActionGroupStatePacket>();
 		for (var entry : synchronizedData.entrySet()) {
 			if (entry.getValue().isEmpty()) continue;
-			list.add(new ActionStatePacket(entry.getKey(), entry.getValue()));
+			list.add(new ActionGroupStatePacket(entry.getKey(), entry.getValue()));
 		}
 		if (list.isEmpty()) return;
 
-		var packet = side == LogicalSide.CLIENT
-				? ActionStateSetPacket.fromClient(parkourability.player().getUUID())
-				: ActionStateSetPacket.fromServer(parkourability.player().getUUID());
+		var packet = new ActionStateSetPacket();
 		for (var subPacket : list) {
 			packet.add(subPacket);
 		}
 		if (side.isClient()) {
-            ParCool.getConnection().send(PacketDistributor.SERVER.noArg(), packet);
+			PlayerActionPacket.CtoS.HANDLER.send(parkourability.player(), new PlayerActionPacket(packet));
 		} else {
-			getActionSyncDepot().requestSync(packet);
+			getActionSyncDepot().requestSync(parkourability.player().getUUID(), packet, true);
 		}
 	}
 
-	private void processAction(Parkourability parkourability, LogicalSide logicalSide, Action action, Map<String, LinkedList<ActionStatePacket.Entry>> synchronizedData) {
+	private void processAction(Parkourability parkourability, LogicalSide logicalSide, Action action, Map<String, LinkedList<ActionGroupStatePacket.Entry>> synchronizedData) {
 		var player = parkourability.player();
 		var triggeredSide = action.getEntry().option().triggeredSide();
 		boolean needSync = (triggeredSide.isClient() && player.isLocalPlayer())
 				|| (triggeredSide.isServer() && logicalSide.isServer());
 		action.tick();
-		ActionStatePacket.Type type = ActionStatePacket.Type.DATA;
+		ActionGroupStatePacket.Type type = ActionGroupStatePacket.Type.DATA;
 		if (needSync) {
 			if (action instanceof ContinuableAction continuableAction && continuableAction.isDoing()) {
 				if (!(continuableAction.isPossibleToContinue())) {
 					MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.Finish.Pre(parkourability.player(), continuableAction));
 					continuableAction.finish();
 					MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.Finish.Post(parkourability.player(), continuableAction));
-					type = ActionStatePacket.Type.FINISH;
+					type = ActionGroupStatePacket.Type.FINISH;
 				}
 			} else {
 				if (action.isReadyToStart()) {
 					MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.Start.Pre(parkourability.player(), action));
 					action.start();
 					MinecraftForge.EVENT_BUS.post(new ParCoolActionEvent.Start.Post(parkourability.player(), action));
-					type = ActionStatePacket.Type.START;
+					type = ActionGroupStatePacket.Type.START;
 				}
 			}
 		}

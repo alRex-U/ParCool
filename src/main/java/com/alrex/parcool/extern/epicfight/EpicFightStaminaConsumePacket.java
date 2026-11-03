@@ -21,9 +21,8 @@ public record EpicFightStaminaConsumePacket(float value) {
             return new EpicFightStaminaConsumePacket(packet.readFloat());
         }
 
-        @OnlyIn(Dist.DEDICATED_SERVER)
         @Override
-        public void handleInPhysicalServer(EpicFightStaminaConsumePacket staminaPacket, Supplier<NetworkEvent.Context> contextSupplier) {
+        public void handleInLogicalServer(EpicFightStaminaConsumePacket staminaPacket, Supplier<NetworkEvent.Context> contextSupplier) {
             var player = contextSupplier.get().getSender();
             if (player == null) return;
             var patch = AdditionalMods.epicFight().getPlayerPatch(player);
@@ -34,7 +33,7 @@ public record EpicFightStaminaConsumePacket(float value) {
 
         @OnlyIn(Dist.CLIENT)
         @Override
-        public void handleInPhysicalClient(EpicFightStaminaConsumePacket staminaPacket, Supplier<NetworkEvent.Context> contextSupplier) {
+        public void handleInLogicalClient(EpicFightStaminaConsumePacket staminaPacket, Supplier<NetworkEvent.Context> contextSupplier) {
             var player = contextSupplier.get().getSender();
             if (player == null) return;
             var patch = AdditionalMods.epicFight().getPlayerPatch(player);

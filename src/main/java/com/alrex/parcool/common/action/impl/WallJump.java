@@ -15,6 +15,7 @@ import com.alrex.parcool.util.EntityUtil;
 import com.alrex.parcool.util.MathUtil;
 import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,12 +28,14 @@ public class WallJump extends Action {
 
     private final SynchronizedDataHolder dataHolder;
     private final SynchronizedProperty<Vec3> propertyJumpVec;
+    private final SynchronizedProperty<Boolean> propertySlippyWall;
     private final SynchronizedProperty<Type> propertyJumpType;
 
     public WallJump(Parkourability parkourability, ActionEntry<? extends Action> entry) {
         super(parkourability, entry);
         dataHolder = SynchronizedDataHolder.create(entry,
                 propertyJumpVec = SynchronizedProperty.newVec3(),
+                propertySlippyWall = SynchronizedProperty.newBoolean(),
                 propertyJumpType = SynchronizedProperty.newEnum(Type.class)
         );
     }
@@ -65,7 +68,8 @@ public class WallJump extends Action {
         var jumpVec = propertyJumpVec.getOrDefaultIfNull(Vec3.ZERO);
         parkourability.player().setDeltaMovement(
                 deltaMovement.x + jumpVec.x,
-                deltaMovement.y > jumpVec.y ? deltaMovement.y + jumpVec.y : jumpVec.y,
+                (deltaMovement.y > jumpVec.y ? deltaMovement.y + jumpVec.y : jumpVec.y)
+                        * (propertySlippyWall.getOrDefaultIfNull(false) ? 0.5f : 1),
                 deltaMovement.z + jumpVec.z
         );
         for (var listener : parkourability.getActions().getExtensionListeners(ActionExtension.LeaveFromWallListener.class)) {
@@ -101,6 +105,10 @@ public class WallJump extends Action {
         jumpVec = jumpVec.add(wall.asVec().reverse().scale(0.12));
         propertyJumpVec.set(jumpVec);
         propertyJumpType.set(lookVec.cross(wall.asVec()).y < 0 ? Type.LEFT : Type.RIGHT);
+
+        var blockPos = new BlockPos(player.position().add(wall.asVec()));
+        var level = player.level;
+        propertySlippyWall.set(level.getBlockState(blockPos).getFriction(level, blockPos, player) > 0.9f);
 
         return true;
     }

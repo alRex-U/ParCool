@@ -7,15 +7,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 
 @OnlyIn(Dist.CLIENT)
 public class AnimationSystemEventHandler {
     @SubscribeEvent
-    public static void onTick(TickEvent.ClientTickEvent event) {
+    public static void onTick(TickEvent.LevelTickEvent event) {
+        if (event.side == LogicalSide.SERVER) return;
         if (event.phase == TickEvent.Phase.END) {
-            var level = Minecraft.getInstance().level;
-            if (level == null) return;
-            for (var p : level.players()) {
+            for (var p : event.level.players()) {
                 if (p instanceof IPlayerAnimatorHolder holder) {
                     holder.getParCoolPlayerAnimator().tick();
                 }

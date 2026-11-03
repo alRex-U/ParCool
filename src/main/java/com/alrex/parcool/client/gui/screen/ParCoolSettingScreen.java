@@ -173,7 +173,7 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
                                     font, width - 60, 6, 56, 24,
                                     Component.translatable("parcool.gui.text.enabled"),
                                     Component.translatable("parcool.gui.text.disabled"),
-                                    (state) -> ParCool.getConnection().sendToServer(new EnableActionPacket(action, state))
+                                    (state) -> EnableActionPacket.CtoS.HANDLER.send(parkourability.player(), new EnableActionPacket(action, state))
                             )
                     )
             ));
@@ -194,9 +194,29 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
             if (!parkourability.learned(action)) continue;
             var actionControl = clientConfig.get(action);
             if (actionControl.instantInputType() != null) {
-                optionList.add(EnumOptionProvider.from(Component.translatable(action.getTranslationKey()), actionControl.instantInputType()));
+                optionList.add(new EnumOptionProvider<>(
+                        Component.translatable(action.getTranslationKey()),
+                        actionControl.instantInputType(),
+                        value -> {
+                            actionControl.instantInputType().set(value);
+                            if (minecraft == null) return;
+                            var player = minecraft.player;
+                            if (player == null) return;
+                            Parkourability.get(player).get(action).updateInput();
+                        })
+                );
             } else if (actionControl.continuousInputType() != null) {
-                optionList.add(EnumOptionProvider.from(Component.translatable(action.getTranslationKey()), actionControl.continuousInputType()));
+                optionList.add(new EnumOptionProvider<>(
+                        Component.translatable(action.getTranslationKey()),
+                        actionControl.continuousInputType(),
+                        value -> {
+                            actionControl.continuousInputType().set(value);
+                            if (minecraft == null) return;
+                            var player = minecraft.player;
+                            if (player == null) return;
+                            Parkourability.get(player).get(action).updateInput();
+                        })
+                );
             }
         }
         return createOptionList(x, y, width, height, Collections.singletonList(new OptionGroup(
@@ -226,7 +246,8 @@ public class ParCoolSettingScreen extends ParCoolTabletScreen {
                 ),
                 new OptionGroup(Component.translatable("parcool.config.group.misc"),
                         List.of(
-                                BooleanOptionProvider.from(config.enableActionSounds)
+                                BooleanOptionProvider.from(config.enableActionSounds),
+                                BooleanOptionProvider.from(config.substituteSprintForFastRun)
                         ),
                         Collections.emptyList()
                 )

@@ -37,6 +37,12 @@ public interface ActionExtension {
         void onChangeBlock(BlockPos pos);
     }
 
+    interface IndicatorStatusProvider extends ActionExtension {
+        boolean requestStatusIndicator();
+
+        float getStatusIndicatorValue();
+    }
+
     public static final List<Class<? extends ActionExtension>> EXTENSIONS = List.of(
             VisibilityListener.class,
             LandListener.class,
@@ -44,7 +50,8 @@ public interface ActionExtension {
             KeyMapTriggeredListener.class,
             AttackedListener.class,
             LeaveFromWallListener.class,
-            BlockChangedInClientListener.class
+            BlockChangedInClientListener.class,
+            IndicatorStatusProvider.class
     );
 
     final class Handler<T extends ActionExtension> {

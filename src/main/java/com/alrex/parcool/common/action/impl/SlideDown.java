@@ -52,6 +52,7 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
                 ParCoolActions.HANG_ON,
                 ParCoolActions.POLE_CLIMB,
                 ParCoolActions.DIVE,
+                ParCoolActions.HORIZONTAL_WALL_RUN,
                 ParCoolActions.CASTAWAY
         ));
         dataHolder = SynchronizedDataHolder.create(entry,
@@ -85,7 +86,7 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
         if (tickSinceCanceled < 3 || parkourability.player().getDeltaMovement().y >= -1e-4) {
             return false;
         }
-        if (input.isActive()) {
+        if (input().isActive()) {
             var direction = parkourability.getAdditionalProperties().getDefaultWallInteraction();
             if (direction == null) return false;
             propertyDirection.set(direction);
@@ -199,10 +200,19 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
 
     @Override
     public void onWorkingTickInLocalClient() {
+        var direction = propertyDirection.get();
+        if (direction == null) return;
+
         var player = parkourability.player();
         var attr = player.getAttribute(ParCoolAttributes.SLIDE_DOWN_DECELERATION.get());
         if (attr == null) return;
-        parkourability.player().setDeltaMovement(parkourability.player().getDeltaMovement().multiply(0, 1. - attr.getValue(), 0));
+
+        var pos = player.position();
+        var blockPos = new BlockPos(pos.x + direction.asVec().x, pos.y, pos.z + direction.asVec().z);
+        var blockFriction = player.level.getBlockState(blockPos).getFriction(player.level, blockPos, player);
+        var deceleration = (1. - attr.getValue() * (blockFriction > 0.9f ? 0.5 : 1.));
+
+        parkourability.player().setDeltaMovement(parkourability.player().getDeltaMovement().multiply(0, deceleration, 0));
     }
 
     @Override
@@ -210,7 +220,13 @@ public class SlideDown extends ContinuableAction implements ActionExtension.Leav
         var player = parkourability.player();
         var attr = player.getAttribute(ParCoolAttributes.SLIDE_DOWN_DECELERATION.get());
         if (attr == null) return;
-        player.fallDistance *= (float) (1. - attr.getValue());
+        var direction = propertyDirection.get();
+        if (direction == null) return;
+        var pos = player.position();
+        var blockPos = new BlockPos(pos.x + direction.asVec().x, pos.y, pos.z + direction.asVec().z);
+        if (!player.level.isLoaded(blockPos)) return;
+        var blockFriction = player.level.getBlockState(blockPos).getFriction(player.level, blockPos, player);
+        player.fallDistance *= (float) (1. - attr.getValue() * (blockFriction > 0.9f ? 0.5 : 1.));
 
         if (damageCoolTime <= 0) {
             if (damageCount <= 0) return;
