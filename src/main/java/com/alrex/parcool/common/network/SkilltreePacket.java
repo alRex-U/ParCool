@@ -4,7 +4,6 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.skilltree.SkillTree;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -51,8 +50,7 @@ public record SkilltreePacket(List<SkillTree> skillTrees) implements CustomPacke
         @OnlyIn(Dist.CLIENT)
         @Override
         public void handleInLogicalClient(SkilltreePacket packet, IPayloadContext context) {
-            var player = Minecraft.getInstance().player;
-            if (player == null) return;
+            var player = context.player();
             Parkourability.get(player).syncSkillTree(packet.skillTrees);
         }
     };

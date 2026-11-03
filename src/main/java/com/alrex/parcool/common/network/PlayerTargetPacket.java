@@ -1,12 +1,9 @@
 package com.alrex.parcool.common.network;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -143,13 +140,11 @@ public abstract class PlayerTargetPacket<T> {
             return composed;
         }
 
-        @OnlyIn(Dist.CLIENT)
         @Override
         public void handleInLogicalClient(COMPOSED composed, IPayloadContext context) {
             if (composed.targetID == null || composed.internalPacket == null) return;
 
-            Player player = Minecraft.getInstance().player;
-            if (player == null) return;
+            Player player = context.player();
             if (player.getUUID().equals(composed.targetID)) {
                 if (composed.acceptsInLocalPlayer)
                     internalHandler.handleInLogicalClient(composed.internalPacket, player, context);
