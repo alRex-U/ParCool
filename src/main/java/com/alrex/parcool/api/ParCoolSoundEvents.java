@@ -4,13 +4,14 @@ import com.alrex.parcool.ParCool;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ParCoolSoundEvents {
     private static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, ParCool.MOD_ID);
 
     public static final DeferredHolder<SoundEvent, SoundEvent> BREAKFALL = register("action.breakfall");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BREAKFALL_PERFECT = register("action.breakfall.perfect");
     public static final DeferredHolder<SoundEvent, SoundEvent> DODGE = register("action.dodge");
     public static final DeferredHolder<SoundEvent, SoundEvent> VAULT = register("action.vault");
     public static final DeferredHolder<SoundEvent, SoundEvent> HANG_ON = register("action.hang_on");

@@ -39,11 +39,18 @@ public class LightStaminaHUD implements IStaminaHUD {
 	}
 
 	@Override
-    public void render(GuiGraphics guiGraphics, Parkourability parkourability, StaminaDisplayContext currentContext, StaminaDisplayContext oldContext, DeltaTracker deltaTracker) {
-        var partialTick = deltaTracker.getGameTimeDeltaPartialTick(true);
-		if (!valueChanging && tickValueChangingOrNotChanging > 40 && ParCool.getConfig().client().staminaHud.hideAutomatically().get())
-			return;
+	public void render(
+			GuiGraphics guiGraphics,
+			Parkourability parkourability,
+			StaminaDisplayContext currentContext,
+			StaminaDisplayContext oldContext,
+			boolean showStatusIndicator,
+			float statusValue,
+			float oldStatusValue,
+			DeltaTracker deltaTracker
+	) {
 		var player = parkourability.player();
+		var partialTick = deltaTracker.getGameTimeDeltaPartialTick(true);
         final boolean inexhaustible = player.hasEffect(ParCoolMobEffects.INEXHAUSTIBLE);
 
 		float staminaScale = (float) (Mth.lerp(partialTick, oldContext.value(), currentContext.value()) / currentContext.maxValue());
@@ -51,20 +58,23 @@ public class LightStaminaHUD implements IStaminaHUD {
 		if (staminaScale > 1) staminaScale = 1;
 		staminaScale *= 10f;
 
-		// TODO: Is it actually needed to show cooldown or other status on hud?
-		// float statusScale = showStatus ? MathUtil.lerp(oldStatusValue, statusValue, partialTick) * 10f : 0f;
+		float statusScale = showStatusIndicator ? Mth.lerp(partialTick, oldStatusValue, statusValue) * 10f : 0f;
 
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		RenderSystem.setShaderTexture(0, TEXTURE_LOCATION);
         final int width = guiGraphics.guiWidth();
         final int height = guiGraphics.guiHeight();
 		int baseX = width / 2 + 91 + ParCool.getConfig().client().staminaHud.offsetHorizontal().get();
-        int baseY = height - Minecraft.getInstance().gui.rightHeight + ParCool.getConfig().client().staminaHud.offsetVertical().get();
+		int baseY = height - Minecraft.getInstance().gui.rightHeight + ParCool.getConfig().client().staminaHud.offsetVertical().get();
+		var overlaySprite = ParCoolTextures.guiSprite(STAMINA_BRIGHT_OVERLAY);
 		for (int i = 0; i < 10; i++) {
 			TextureAtlasSprite staminaSprite;
 			int x = baseX - i * 8 - 9;
 			int offsetY = 0;
 			int fillPhase;
+			boolean showBrightOverlay = showStatusIndicator && statusScale > i;
+			float partialOverlayScale = 0f;
+			if (showBrightOverlay) partialOverlayScale = Math.min(statusScale - i, 1f);
 			if (staminaScale < i) fillPhase = 0;
 			else if (staminaScale < i + 0.5f) fillPhase = 1;
 			else fillPhase = 2;
@@ -99,8 +109,23 @@ public class LightStaminaHUD implements IStaminaHUD {
 			} else if (i + 1 > staminaScale && staminaScale > i && currentContext.value() < oldContext.value()) {
 				offsetY = consumingStaminaVibration;
 			}
+			int y = baseY + offsetY;
 
             guiGraphics.blit(x, baseY + offsetY, 0, 9, 9, staminaSprite);
+
+			if (showBrightOverlay) {
+				var spriteContent = overlaySprite.contents();
+				var partialX = (int) (spriteContent.width() * (1f - partialOverlayScale));
+				RenderSystem.enableBlend();
+				guiGraphics.innerBlit(
+						overlaySprite.atlasLocation(),
+						x + partialX, x + spriteContent.width(),
+						y, y + spriteContent.height(), 0,
+						overlaySprite.getU(16f * (partialX / (float) spriteContent.width())), overlaySprite.getU1(),
+						overlaySprite.getV0(), overlaySprite.getV1()
+				);
+				RenderSystem.disableBlend();
+			}
 		}
         Minecraft.getInstance().gui.rightHeight += 10;
 	}

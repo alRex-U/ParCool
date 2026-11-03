@@ -4,6 +4,7 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionCapabilities;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +35,7 @@ public record ActionCapabilitiesPacket(ActionCapabilities capabilities, Target t
         @Override
         public ActionCapabilitiesPacket decode(ByteBuf packet) {
             var target = Target.values()[packet.readByte() % Target.values().length];
-            var caps = new ActionCapabilities(ParCool.getActionRegistry());
+            var caps = new ActionCapabilities(ParCool.getActionRegistry(), target == Target.ENABLED_ACTIONS);
             caps.read(packet);
             return new ActionCapabilitiesPacket(caps, target);
         }
@@ -46,7 +47,9 @@ public record ActionCapabilitiesPacket(ActionCapabilities capabilities, Target t
 
         @Override
         public void handleInLogicalClient(ActionCapabilitiesPacket packet, IPayloadContext context) {
-            var parkourability = Parkourability.get(context.player());
+            var player = Minecraft.getInstance().player;
+            if (player == null) return;
+            var parkourability = Parkourability.get(player);
             if (packet.target == Target.CAPABILITY) {
                 parkourability.updateActionCapability(packet.capabilities);
             } else {

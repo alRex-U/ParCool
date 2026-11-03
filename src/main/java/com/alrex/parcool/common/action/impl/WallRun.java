@@ -12,6 +12,7 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionExtension;
 import com.alrex.parcool.common.action.InteractingWallDirection;
 import com.alrex.parcool.common.action.ParCoolActions;
+import com.alrex.parcool.util.BlockUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -49,7 +50,7 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
 
         var player = parkourability.player();
         var lookAngle = player.getLookAngle();
-        if (lookAngle.y <= 0. || !parkourability.get(ParCoolActions.FAST_RUN).isDoing()) return false;
+        if (lookAngle.y <= 0. || !parkourability.get(ParCoolActions.SUPER_SPRINT).isDoing()) return false;
 
         if (!player.horizontalCollision) return false;
         var wallDirection = parkourability.getAdditionalProperties().getDefaultWallInteraction();
@@ -64,7 +65,12 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
         var jumpScale = getWallRunHeightScale(player, wallDirection, jumpHeight);
         if (jumpScale <= 0) return false;
 
-        runSpeed = 1.5 * Math.sqrt(jumpHeight * jumpScale * gravity);
+        var blockPos = BlockUtil.getBlockPos(player.position().add(wallDirection.asVec()));
+        var level = player.level();
+        if (!level.isLoaded(blockPos)) return false;
+
+        runSpeed = 1.5 * Math.sqrt(jumpHeight * jumpScale * gravity)
+                * (level.getBlockState(blockPos).getFriction(level, blockPos, player) > 0.9f ? 0.5 : 1);
 
         return true;
     }

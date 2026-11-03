@@ -11,6 +11,7 @@ import com.alrex.parcool.client.animation.system.IPlayerAnimatorHolder;
 import com.alrex.parcool.client.animation.system.math.MathUtil;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
+import com.alrex.parcool.common.action.ActionExtension;
 import com.alrex.parcool.common.action.ParCoolActions;
 import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.core.BlockPos;
@@ -25,7 +26,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 
-public class LongJump extends Action {
+public class LongJump extends Action implements ActionExtension.IndicatorStatusProvider {
     private static final int INPUT_ACCEPTANCE_TICK = 11;
     private static final int COOLDOWN = 30;
 
@@ -60,7 +61,7 @@ public class LongJump extends Action {
         if (shiftKey.state().isJustReleased()
                 && shiftKey.state().getPreviousPressedDurationTick() < INPUT_ACCEPTANCE_TICK
         ) {
-            var fastRun = parkourability.get(ParCoolActions.FAST_RUN);
+            var fastRun = parkourability.get(ParCoolActions.SUPER_SPRINT);
             if (fastRun.getNotDoingTick() >= INPUT_ACCEPTANCE_TICK
                     || (fastRun.getTickSinceStarted() - fastRun.getNotDoingTick()) < 14
             ) return false;
@@ -140,6 +141,24 @@ public class LongJump extends Action {
                         particleSpeed.z()
                 );
             }
+        }
+    }
+
+    @Override
+    public boolean requestStatusIndicator() {
+        if (cooldownTick > COOLDOWN - 10) return true;
+        return parkourability.get(ParCoolActions.SUPER_SPRINT).getNotDoingTick() < INPUT_ACCEPTANCE_TICK
+                && cooldownTick <= 0
+                && !parkourability.getStamina().isExhausted();
+    }
+
+    @Override
+    public float getStatusIndicatorValue() {
+        if (cooldownTick > COOLDOWN - 10) {
+            return (cooldownTick - (COOLDOWN - 10)) / 10f;
+        } else {
+            var fastRun = parkourability.get(ParCoolActions.SUPER_SPRINT);
+            return Mth.clamp((fastRun.getTickSinceStarted() - fastRun.getNotDoingTick()) / 14f, 0f, 1f);
         }
     }
 }

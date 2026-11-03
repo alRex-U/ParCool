@@ -43,7 +43,6 @@ public record SkilltreePacket(List<SkillTree> skillTrees) implements CustomPacke
             return new SkilltreePacket(list);
         }
 
-        @OnlyIn(Dist.DEDICATED_SERVER)
         @Override
         public void handleInLogicalServer(SkilltreePacket packet, IPayloadContext context) {
             throw new UnsupportedOperationException();

@@ -5,16 +5,16 @@ import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class AnimationSystemEventHandler {
     @SubscribeEvent
-    public static void onTick(ClientTickEvent.Pre event) {
-        var level = Minecraft.getInstance().level;
-        if (level == null) return;
+    public static void onTick(LevelTickEvent.Pre event) {
+        var level = event.getLevel();
+        if (!level.isClientSide) return;
         for (var p : level.players()) {
             if (p instanceof IPlayerAnimatorHolder holder) {
                 holder.getParCoolPlayerAnimator().tick();

@@ -13,6 +13,7 @@ import com.alrex.parcool.common.action.ActionExtension;
 import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.InteractingWallDirection;
 import com.alrex.parcool.common.action.ParCoolActions;
+import com.alrex.parcool.util.BlockUtil;
 import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -61,7 +62,7 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         if (tickSinceCanceled < 3) {
             return false;
         }
-        if (!input.isActive()) return false;
+        if (!input().isActive()) return false;
 
         var wallDirection = parkourability.getAdditionalProperties().getDefaultWallInteraction();
         if (wallDirection == null) return false;
@@ -78,7 +79,7 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         if (tickSinceCanceled < 3) {
             return false;
         }
-        if (!input.isActive()) return false;
+        if (!input().isActive()) return false;
 
         var wallDirection = parkourability.getAdditionalProperties().getDefaultWallInteraction();
         if (wallDirection == null) return false;
@@ -104,11 +105,13 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
             if (wallDirection == null) return null;
             var currentDelta = player.getDeltaMovement();
             var wallVec = wallDirection.asVec();
-            return new Vec3(
-                    currentDelta.x + wallVec.x / 16.,
-                    getDoingTick() < duration ? Math.max(0, currentDelta.y) : currentDelta.y * Math.min(1f, (getDoingTick() - duration) / duration),
-                    currentDelta.z + wallVec.z / 16.
-            );
+            if (getRunningBlockFriction() <= 0.9) {
+                return new Vec3(
+                        currentDelta.x + wallVec.x / 16.,
+                        getDoingTick() < duration ? Math.max(0, currentDelta.y) : currentDelta.y * Math.min(1f, (getDoingTick() - duration) / duration),
+                        currentDelta.z + wallVec.z / 16.
+                );
+            } else return new Vec3(currentDelta.x + wallVec.x / 16., currentDelta.y, currentDelta.z + wallVec.z / 16.);
         });
         if (ParCool.getConfig().client().enableActionSounds.get()) {
             Minecraft.getInstance().getSoundManager().play(new HorizontalWallRunSoundInstance(player, this));
@@ -173,6 +176,16 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
                 particlePos.z + (random.nextDouble() - 0.5) * 0.35,
                 particleMove.x, particleMove.y, particleMove.z
         );
+    }
+
+    private float getRunningBlockFriction() {
+        var wallDirection = propertyDirection.get();
+        if (wallDirection == null) return 1;
+        var player = parkourability.player();
+        var runningBlockPos = BlockUtil.getBlockPos(player.getBoundingBox().getCenter().add(wallDirection.asVec()));
+        var level = player.level();
+        if (!level.isLoaded(runningBlockPos)) return 1;
+        return level.getBlockState(runningBlockPos).getFriction(level, runningBlockPos, player);
     }
 
     @Override

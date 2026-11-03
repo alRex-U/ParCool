@@ -4,20 +4,16 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.common.action.ActionRegistry;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
-public record ActionStatePacket(String groupName, List<Entry> entries) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<ActionStatePacket> TYPE = new CustomPacketPayload.Type<>(ParCool.resourceLocation("action"));
+public record ActionGroupStatePacket(String groupName, List<Entry> entries) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<ActionGroupStatePacket> TYPE = new CustomPacketPayload.Type<>(ParCool.resourceLocation("action"));
 
     @Nonnull
     @Override
@@ -25,7 +21,7 @@ public record ActionStatePacket(String groupName, List<Entry> entries) implement
         return TYPE;
     }
 
-    public static IHandler<ActionStatePacket> HANDLER = new Handler();
+    public static IHandler<ActionGroupStatePacket> HANDLER = new Handler();
 
     public enum Type {
         START, DATA, FINISH
@@ -48,9 +44,9 @@ public record ActionStatePacket(String groupName, List<Entry> entries) implement
         }
     }
 
-    private static class Handler implements IHandler<ActionStatePacket> {
+    private static class Handler implements IHandler<ActionGroupStatePacket> {
         @Override
-        public void encode(ByteBuf packet, ActionStatePacket actionStatePacket) {
+        public void encode(ByteBuf packet, ActionGroupStatePacket actionStatePacket) {
             packet.writeByte(actionStatePacket.groupName.length());
             packet.writeCharSequence(actionStatePacket.groupName, StandardCharsets.US_ASCII);
             packet.writeShort(actionStatePacket.entries.size());
@@ -60,23 +56,23 @@ public record ActionStatePacket(String groupName, List<Entry> entries) implement
         }
 
         @Override
-        public ActionStatePacket decode(ByteBuf packet) {
+        public ActionGroupStatePacket decode(ByteBuf packet) {
             String namespace = packet.readCharSequence(packet.readByte(), StandardCharsets.US_ASCII).toString();
             var entryLength = packet.readShort();
             var list = new ArrayList<Entry>(entryLength);
             for (var i = 0; i < entryLength; i++) {
                 list.add(Entry.decode(namespace, ParCool.getActionRegistry(), packet));
             }
-            return new ActionStatePacket(namespace, list);
+            return new ActionGroupStatePacket(namespace, list);
         }
 
         @Override
-        public void handleInLogicalServer(ActionStatePacket actionStatePacket, IPayloadContext context) {
+        public void handleInLogicalServer(ActionGroupStatePacket actionStatePacket, IPayloadContext context) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void handleInLogicalClient(ActionStatePacket actionStatePacket, IPayloadContext context) {
+        public void handleInLogicalClient(ActionGroupStatePacket actionStatePacket, IPayloadContext context) {
             throw new UnsupportedOperationException();
         }
     }

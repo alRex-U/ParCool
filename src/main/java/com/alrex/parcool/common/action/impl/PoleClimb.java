@@ -61,7 +61,7 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
 
     @Override
     public boolean canContinue() {
-        if (!input.isActive() || cooldown > 0) return false;
+        if (!input().isActive() || cooldown > 0) return false;
         var currentWallDirection = parkourability.getAdditionalProperties().getDefaultWallInteraction();
         if (currentWallDirection == null) return false;
         if (!currentWallDirection.alongToAxis()) return false;
@@ -75,7 +75,7 @@ public class PoleClimb extends ContinuableAction implements ActionExtension.Leav
 
     @Override
     public boolean canStart() {
-        if (!input.isActive() || cooldown > 0) return false;
+        if (!input().isActive() || cooldown > 0) return false;
         if (Math.abs(parkourability.player().getDeltaMovement().y) > 0.4) return false;
         var currentWallDirection = parkourability.getAdditionalProperties().getDefaultWallInteraction();
         if (currentWallDirection == null) return false;

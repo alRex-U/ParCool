@@ -35,6 +35,7 @@
   "key.parcool.enable": "Enable/Disable ParCool",
 
   "subtitle.parcool.action.breakfall": "Player does breakfall",
+  "subtitle.parcool.action.breakfall.perfect": "Player lands perfectly",
   "subtitle.parcool.action.charge_jump": "Player does charge jump",
   "subtitle.parcool.action.climb_up": "Player climbs up",
   "subtitle.parcool.action.dodge": "Player dodges",
@@ -65,6 +66,7 @@
   "attribute.name.parcool.fast_swim.speed": "Fast Swim Speed",
   "attribute.name.parcool.slide_down.deceleration": "Slide Down Deceleration",
   "attribute.name.parcool.horizontal_wall_run.duration": "Horizontal Wall Run Duration",
+  "attribute.name.parcool.charge_jump.Power": "Charge Jump Power",
 
   "parcool.action.parcool.breakfall": "Breakfall",
   "parcool.action.parcool.castaway": "Castaway",
@@ -162,6 +164,7 @@
   "parcool.command.success.unlock.all": "unlock %s player's all actions",
   "parcool.command.success.lock.action": "lock %s player's [%s] action",
   "parcool.command.success.lock.all": "lock %s player's all actions",
+  "parcool.command.success.reset": " %s player's ParCool action status are reset",
   "parcool.command.success.status.unlocked": "[%s] of %s is unlocked:%s",
   "parcool.command.success.status.enabled": "[%s] of %s is enabled:%s",
   "parcool.command.success.stamina.get": "ParCool stamina of %s:%s",
@@ -179,6 +182,7 @@
   "parcool.config.hud.hide_automatically": "Hide Automatically",
   "parcool.config.hud.stamina_hud_type": "Stamina HUD",
   "parcool.config.other.enable_sounds": "Enable Action Sound",
+  "parcool.config.other.enable_actions_with_sprint": "Enable Actions needing Fast Run with only sprint",
   "parcool.config.grappling_hook.show_target_indicator": "Show Target Indicator",
   "parcool.link.discord": "Discord",
   "parcool.link.discord.atk": "ATK Studios",

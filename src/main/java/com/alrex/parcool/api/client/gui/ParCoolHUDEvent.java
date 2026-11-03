@@ -1,11 +1,12 @@
 package com.alrex.parcool.api.client.gui;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.Mth;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.ICancellableEvent;
 
-public class RenderParCoolHUDEvent extends Event {
-    public static class Render extends RenderParCoolHUDEvent {
+public class ParCoolHUDEvent extends Event {
+    public static class Render extends ParCoolHUDEvent {
         private final GuiGraphics graphics;
         private final float partialTick;
 
@@ -54,14 +55,18 @@ public class RenderParCoolHUDEvent extends Event {
         }
     }
 
-    public static class Update extends RenderParCoolHUDEvent {
+    public static class Update extends ParCoolHUDEvent {
         public static class StaminaContext extends Update {
-            private final StaminaDisplayContext currentContext;
+            private StaminaDisplayContext currentContext;
             private final StaminaDisplayContext oldContext;
 
             public StaminaContext(StaminaDisplayContext currentContext, StaminaDisplayContext oldContext) {
                 this.currentContext = currentContext;
                 this.oldContext = oldContext;
+            }
+
+            public void setCurrentContext(StaminaDisplayContext currentContext) {
+                this.currentContext = currentContext;
             }
 
             public StaminaDisplayContext getCurrentContext() {
@@ -70,6 +75,22 @@ public class RenderParCoolHUDEvent extends Event {
 
             public StaminaDisplayContext getOldContext() {
                 return oldContext;
+            }
+        }
+
+        public static class StatusIndicatorValue extends Update {
+            private float statusValue = -1f;
+
+            public void setStatusValue(float value) {
+                statusValue = value;
+            }
+
+            public float getStatusValue() {
+                return Mth.clamp(statusValue, 0f, 1f);
+            }
+
+            public boolean shouldShowIndicator() {
+                return statusValue >= 0f;
             }
         }
     }

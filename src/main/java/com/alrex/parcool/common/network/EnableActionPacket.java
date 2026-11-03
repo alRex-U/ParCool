@@ -5,25 +5,36 @@ import com.alrex.parcool.api.action.ActionEntry;
 import com.alrex.parcool.common.Parkourability;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
 
-public record EnableActionPacket(ActionEntry<?> action, boolean enable) implements CustomPacketPayload {
-    public static final Type<EnableActionPacket> TYPE = new Type<>(ParCool.resourceLocation("enable"));
+public record EnableActionPacket(ActionEntry<?> action, boolean enable) {
+    public static class StoC extends PlayerTargetPacket.StoC<EnableActionPacket> {
+        public static final StoCHandler<EnableActionPacket, EnableActionPacket.StoC> HANDLER = getStoCHandler(ParCool.resourceLocation("enable.s2c"), EnableActionPacket.StoC::new, EnableActionPacket.HANDLER);
 
-    @Nonnull
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+        @Nonnull
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return HANDLER.type;
+        }
     }
 
-    public static final IHandler<EnableActionPacket> HANDLER = new IHandler<>() {
+    public static class CtoS extends PlayerTargetPacket.CtoS<EnableActionPacket> {
+        public static final CtoSHandler<EnableActionPacket, EnableActionPacket.CtoS> HANDLER = getCtoSHandler(ParCool.resourceLocation("enable.c2s"), EnableActionPacket.CtoS::new, EnableActionPacket.HANDLER);
+
+        @Nonnull
         @Override
-        public void encode(ByteBuf buf, EnableActionPacket packet) {
+        public Type<? extends CustomPacketPayload> type() {
+            return HANDLER.type;
+        }
+    }
+
+    public static final PlayerTargetPacket.IPayloadHandler<EnableActionPacket> HANDLER = new PlayerTargetPacket.IPayloadHandler<>() {
+        @Override
+        public void encode(EnableActionPacket packet, ByteBuf buf) {
             var groupName = packet.action.id().getNamespace();
             buf.writeShort(groupName.length());
             buf.writeCharSequence(groupName, StandardCharsets.US_ASCII);
@@ -40,16 +51,16 @@ public record EnableActionPacket(ActionEntry<?> action, boolean enable) implemen
         }
 
         @Override
-        public void handleInLogicalServer(EnableActionPacket packet, IPayloadContext context) {
-            var player = context.player();
-            var parkourability = Parkourability.get(player);
+        public void handleInLogicalServer(EnableActionPacket packet, Player target, IPayloadContext context) {
+            var parkourability = Parkourability.get(target);
             parkourability.getEnabledActions().set(packet.action, packet.enable);
+
+            StoC.HANDLER.send(target, packet, false);
         }
 
         @Override
-        public void handleInLogicalClient(EnableActionPacket packet, IPayloadContext context) {
-            var player = context.player();
-            var parkourability = Parkourability.get(player);
+        public void handleInLogicalClient(EnableActionPacket packet, Player target, IPayloadContext context) {
+            var parkourability = Parkourability.get(target);
             parkourability.getEnabledActions().set(packet.action, packet.enable);
         }
     };

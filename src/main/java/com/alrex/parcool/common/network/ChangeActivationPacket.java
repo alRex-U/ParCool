@@ -2,53 +2,56 @@ package com.alrex.parcool.common.network;
 
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.common.Parkourability;
-import com.alrex.parcool.util.NetworkUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import javax.annotation.Nonnull;
-import java.util.UUID;
 
-public record ChangeActivationPacket(UUID playerID, boolean value, boolean fromClient) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<ChangeActivationPacket> TYPE = new CustomPacketPayload.Type<>(ParCool.resourceLocation("activate"));
+public record ChangeActivationPacket(boolean value) {
+    public static class StoC extends PlayerTargetPacket.StoC<ChangeActivationPacket> {
+        public static final StoCHandler<ChangeActivationPacket, ChangeActivationPacket.StoC> HANDLER = getStoCHandler(ParCool.resourceLocation("activate.s2c"), ChangeActivationPacket.StoC::new, ChangeActivationPacket.HANDLER);
 
-    @Nonnull
-    @Override
-    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+        @Nonnull
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return HANDLER.type;
+        }
     }
 
-    public static final IHandler<ChangeActivationPacket> HANDLER = new IHandler<>() {
+    public static class CtoS extends PlayerTargetPacket.CtoS<ChangeActivationPacket> {
+        public static final CtoSHandler<ChangeActivationPacket, ChangeActivationPacket.CtoS> HANDLER = getCtoSHandler(ParCool.resourceLocation("activate.c2s"), ChangeActivationPacket.CtoS::new, ChangeActivationPacket.HANDLER);
+
+        @Nonnull
         @Override
-        public void encode(ByteBuf buf, ChangeActivationPacket packet) {
-            buf.writeLong(packet.playerID.getMostSignificantBits());
-            buf.writeLong(packet.playerID.getLeastSignificantBits());
+        public Type<? extends CustomPacketPayload> type() {
+            return HANDLER.type;
+        }
+    }
+
+    public static final PlayerTargetPacket.IPayloadHandler<ChangeActivationPacket> HANDLER = new PlayerTargetPacket.IPayloadHandler<>() {
+        @Override
+        public void encode(ChangeActivationPacket packet, ByteBuf buf) {
             buf.writeBoolean(packet.value);
-            buf.writeBoolean(packet.fromClient);
         }
 
         @Override
         public ChangeActivationPacket decode(ByteBuf packet) {
-            return new ChangeActivationPacket(new UUID(packet.readLong(), packet.readLong()), packet.readBoolean(), packet.readBoolean());
+            return new ChangeActivationPacket(packet.readBoolean());
         }
 
         @Override
-        public void handleInLogicalServer(ChangeActivationPacket packet, IPayloadContext context) {
-            var player = NetworkUtil.getPlayerInLogicalServer(packet.playerID, context);
-            if (player == null) return;
-            var parkourability = Parkourability.get(player);
+        public void handleInLogicalServer(ChangeActivationPacket packet, Player target, IPayloadContext context) {
+            var parkourability = Parkourability.get(target);
             parkourability.syncActive(packet.value);
 
-            PacketDistributor.sendToAllPlayers(packet);
+            StoC.HANDLER.send(target, packet, false);
         }
 
         @Override
-        public void handleInLogicalClient(ChangeActivationPacket packet, IPayloadContext context) {
-            var player = NetworkUtil.getPlayerInLogicalClient(packet.playerID, context, packet.fromClient);
-            if (player == null) return;
-            var parkourability = Parkourability.get(player);
+        public void handleInLogicalClient(ChangeActivationPacket packet, Player target, IPayloadContext context) {
+            var parkourability = Parkourability.get(target);
             parkourability.syncActive(packet.value);
         }
     };

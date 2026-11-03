@@ -43,6 +43,7 @@ public class ParCoolConfig {
                 ModConfigSpec.EnumValue<HUDType> type,
                 ModConfigSpec.BooleanValue showAlways,
                 ModConfigSpec.BooleanValue hideAutomatically,
+                ModConfigSpec.BooleanValue showStatusIndicator,
                 ModConfigSpec.IntValue offsetHorizontal,
                 ModConfigSpec.IntValue offsetVertical
 		) {
@@ -63,6 +64,7 @@ public class ParCoolConfig {
 
 		public final ModConfigSpec.BooleanValue enableActionSounds;
 		public final ModConfigSpec.BooleanValue showTargetIndicator;
+        public final ModConfigSpec.BooleanValue substituteSprintForFastRun;
 		public final ModConfigSpec.IntValue targetIndicatorSize;
 		public final ModConfigSpec.BooleanValue debugRope;
 		public final StaminaHud staminaHud;
@@ -103,6 +105,7 @@ public class ParCoolConfig {
 						builder.defineEnum("stamina_hud_type", HUDType.Light),
 						builder.define("show_always", false),
 						builder.define("hide_automatically", true),
+                        builder.define("show_status_indicator", true),
 						builder.defineInRange("hud_offset_h", 0, -100, 100),
 						builder.defineInRange("hud_offset_v", 0, -100, 100)
 				);
@@ -129,6 +132,9 @@ public class ParCoolConfig {
 			builder.push("other");
 			{
 				enableActionSounds = builder.define("enable_sounds", true);
+                substituteSprintForFastRun = builder
+                        .comment("Make actions needing fast-run available with normal sprint")
+                        .define("enable_actions_with_sprint", false);
 			}
 			builder.pop();
 			builtConfig = builder.build();
@@ -177,6 +183,7 @@ public class ParCoolConfig {
         public final ModConfigSpec.BooleanValue damageWithoutGlove;
         public final ModConfigSpec.BooleanValue enableSkillTree;
 		public final ModConfigSpec.BooleanValue enableSkillTreeUi;
+        public final ModConfigSpec.IntValue breakfallJustTimeInputAcceptanceTick;
         public final GrapplingHook grapplingHook;
 
 		public final ResourceLocation getStaminaTypeID() {
@@ -230,6 +237,9 @@ public class ParCoolConfig {
 				damageWithoutGlove = builder
 						.comment("Whether you take damage when you use some actions like WallSlide without traceur's gloves")
 						.define("damage_without_glove", true);
+                breakfallJustTimeInputAcceptanceTick = builder
+                        .comment("Input acceptance duration of perfect-breakfall in tick, perfect breakfall is disabled if this value is 0")
+                        .defineInRange("breakfall_just_time_input_tick", 0, 0, Integer.MAX_VALUE);
             }
             builder.pop();
 			builder.push("grappling_hook");

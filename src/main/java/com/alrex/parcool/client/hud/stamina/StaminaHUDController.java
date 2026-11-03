@@ -1,10 +1,12 @@
 package com.alrex.parcool.client.hud.stamina;
 
 import com.alrex.parcool.ParCool;
-import com.alrex.parcool.api.client.gui.RenderParCoolHUDEvent;
+import com.alrex.parcool.api.action.Action;
+import com.alrex.parcool.api.client.gui.ParCoolHUDEvent;
 import com.alrex.parcool.api.client.gui.StaminaDisplayContext;
 import com.alrex.parcool.api.stamina.AbstractLocalStamina;
 import com.alrex.parcool.common.Parkourability;
+import com.alrex.parcool.common.action.ActionExtension;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -23,6 +25,9 @@ public class StaminaHUDController implements LayeredDraw.Layer {
 
 	private StaminaDisplayContext currentContext = StaminaDisplayContext.DEFAULT;
 	private StaminaDisplayContext oldContext = StaminaDisplayContext.DEFAULT;
+	private boolean showStatus = false;
+	private float statusValue = 0f;
+	private float oldStatusValue = 0f;
 	private int tickValueNotChange;
 
 	public StaminaHUDController() {
@@ -33,7 +38,9 @@ public class StaminaHUDController implements LayeredDraw.Layer {
 		var player = Minecraft.getInstance().player;
 		if (player == null) return;
 		oldContext = currentContext;
-		if (Parkourability.get(player).getStamina() instanceof AbstractLocalStamina localStamina) {
+		oldStatusValue = statusValue;
+		var parkourability = Parkourability.get(player);
+		if (parkourability.getStamina() instanceof AbstractLocalStamina localStamina) {
 			currentContext = oldContext.next(localStamina);
 		}
 		lightStaminaHUD.tick(player, currentContext, oldContext);
@@ -43,7 +50,23 @@ public class StaminaHUDController implements LayeredDraw.Layer {
 			tickValueNotChange = 0;
 		}
 
-        NeoForge.EVENT_BUS.post(new RenderParCoolHUDEvent.Update.StaminaContext(currentContext, oldContext));
+		var staminaUpdateEvent = new ParCoolHUDEvent.Update.StaminaContext(currentContext, oldContext);
+		NeoForge.EVENT_BUS.post(staminaUpdateEvent);
+		currentContext = staminaUpdateEvent.getCurrentContext();
+
+		if (ParCool.getConfig().client().showTargetIndicator.get()) {
+			var indicatorUpdateEvent = new ParCoolHUDEvent.Update.StatusIndicatorValue();
+			for (var provider : parkourability.getActions().getExtensionListeners(ActionExtension.IndicatorStatusProvider.class)) {
+				if (provider.requestStatusIndicator() && provider instanceof Action action && parkourability.permit(action.getEntry()))
+					indicatorUpdateEvent.setStatusValue(provider.getStatusIndicatorValue());
+			}
+			NeoForge.EVENT_BUS.post(indicatorUpdateEvent);
+			showStatus = indicatorUpdateEvent.shouldShowIndicator();
+			statusValue = (indicatorUpdateEvent.getStatusValue() + oldStatusValue) / 2f;
+		} else {
+			showStatus = false;
+			statusValue = 0;
+		}
 	}
 
 	@Override
@@ -51,21 +74,35 @@ public class StaminaHUDController implements LayeredDraw.Layer {
 		AbstractClientPlayer player = Minecraft.getInstance().player;
 		if (player == null) return;
 		Parkourability parkourability = Parkourability.get(player);
+		if (!(parkourability.getStamina() instanceof AbstractLocalStamina localStamina)) return;
 
-		if (tickValueNotChange > 40 && !ParCool.getConfig().client().staminaHud.showAlways().get()) {
-			return;
+		var config = ParCool.getConfig().client().staminaHud;
+		if (!config.showAlways().get()) {
+			if (!showStatus) {
+				if (config.hideAutomatically().get() && tickValueNotChange > 40) {
+					return;
+				}
+				if (localStamina.isInfinite()) return;
+			}
 		}
-		if (parkourability.getStamina() instanceof AbstractLocalStamina localStamina && !localStamina.showHud()) {
-			return;
-		}
+		if (!localStamina.showHud()) return;
 
-        if (NeoForge.EVENT_BUS.post(new RenderParCoolHUDEvent.Render.Stamina.Pre(guiGraphics, deltaTracker.getGameTimeDeltaPartialTick(true), currentContext, oldContext)).isCanceled())
+		if (NeoForge.EVENT_BUS.post(new ParCoolHUDEvent.Render.Stamina.Pre(guiGraphics, deltaTracker.getGameTimeDeltaPartialTick(true), currentContext, oldContext)).isCanceled())
 			return;
 
-		if (ParCool.getConfig().client().staminaHud.type().get() == HUDType.Light) {
-            lightStaminaHUD.render(guiGraphics, parkourability, currentContext, oldContext, deltaTracker);
+		if (config.type().get() == HUDType.Light) {
+			lightStaminaHUD.render(
+					guiGraphics,
+					parkourability,
+					currentContext,
+					oldContext,
+					showStatus,
+					statusValue,
+					oldStatusValue,
+					deltaTracker
+			);
 		}
 
-        NeoForge.EVENT_BUS.post(new RenderParCoolHUDEvent.Render.Stamina.Post(guiGraphics, deltaTracker.getGameTimeDeltaPartialTick(true), currentContext, oldContext));
+		NeoForge.EVENT_BUS.post(new ParCoolHUDEvent.Render.Stamina.Post(guiGraphics, deltaTracker.getGameTimeDeltaPartialTick(true), currentContext, oldContext));
 	}
 }

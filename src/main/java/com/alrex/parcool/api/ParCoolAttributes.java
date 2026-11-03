@@ -5,8 +5,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ParCoolAttributes {
     private static final DeferredRegister<Attribute> ATTRIBUTES = DeferredRegister.create(Registries.ATTRIBUTE, ParCool.MOD_ID);
@@ -18,6 +18,7 @@ public class ParCoolAttributes {
     public static final DeferredHolder<Attribute, Attribute> FAST_SWIM_SPEED = register("parcool.fast_swim.speed", 0.04, 0, 10);
     public static final DeferredHolder<Attribute, Attribute> SLIDE_DOWN_DECELERATION = register("parcool.slide_down.deceleration", 0.1, 0, 1);
     public static final DeferredHolder<Attribute, Attribute> HORIZONTAL_WALL_RUN_DURATION = register("parcool.horizontal_wall_run.duration", 20, 0, 10000);
+    public static final DeferredHolder<Attribute, Attribute> CHARGE_JUMP_POWER_SCALE = register("parcool.charge_jump.power", 1, 0, 10000);
 
     private static DeferredHolder<Attribute, Attribute> register(String name, double defaultValue, double min, double max) {
         return ATTRIBUTES.register(name, () -> new RangedAttribute("attribute.name." + name, defaultValue, min, max).setSyncable(true));

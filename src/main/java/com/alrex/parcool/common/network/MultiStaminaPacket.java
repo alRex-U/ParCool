@@ -5,7 +5,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import javax.annotation.Nonnull;
 
-public class MultiStaminaPacket extends MultiComposablePacket<StaminaPacket> {
+public class MultiStaminaPacket extends MultiComposablePacket<StaminaPacket.StoC> {
     public static final Type<MultiStaminaPacket> TYPE = new Type<>(ParCool.resourceLocation("stamina.compose"));
 
     @Nonnull
@@ -14,5 +14,5 @@ public class MultiStaminaPacket extends MultiComposablePacket<StaminaPacket> {
         return TYPE;
     }
 
-    public static final IHandler<MultiStaminaPacket> HANDLER = getDefaultHandler(MultiStaminaPacket::new, StaminaPacket.HANDLER);
+    public static final IHandler<MultiStaminaPacket> HANDLER = getDefaultHandler(MultiStaminaPacket::new, StaminaPacket.StoC.HANDLER);
 }

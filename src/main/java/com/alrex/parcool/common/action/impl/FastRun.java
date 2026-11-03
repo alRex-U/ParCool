@@ -21,7 +21,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.UUID;
 
 public class FastRun extends ContinuableAction {
     private static final ResourceLocation FAST_RUNNING_MODIFIER_ID = ParCool.resourceLocation("modi.fast_run");
@@ -48,7 +47,7 @@ public class FastRun extends ContinuableAction {
     public boolean canStart() {
         return parkourability.player().isSprinting()
                 && !((LocalPlayer) parkourability.player()).isMovingSlowly()
-                && input.isActive();
+                && input().isActive();
     }
 
     @Override

@@ -46,7 +46,6 @@ public class GrapplingHookItemRenderer extends BlockEntityWithoutLevelRenderer {
         BakedModel model = minecraft.getModelManager().getModel(flat ? GUI_MODEL : HELD_MODEL);
 
         poseStack.pushPose();
-
         poseStack.translate(0.5, 0.5, 0.5);
         minecraft.getItemRenderer().render(stack, displayContext, false, poseStack, buffer, light, overlay, model);
         poseStack.popPose();

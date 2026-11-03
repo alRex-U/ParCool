@@ -19,7 +19,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class FastSwim extends ContinuableAction {
     private static final BehaviorEnforcer.ID ENFORCE_SPRINT_ID = BehaviorEnforcer.newID();
@@ -40,7 +39,7 @@ public class FastSwim extends ContinuableAction {
     public boolean canStart() {
         return parkourability.player().isSwimming()
                 && !((LocalPlayer) parkourability.player()).isMovingSlowly()
-                && input.isActive();
+                && input().isActive();
     }
 
     @Override

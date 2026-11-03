@@ -126,9 +126,9 @@ public class Parkourability {
 		if (activationDirty) {
 			activationDirty = false;
 			if (player.level().isClientSide) {
-				PacketDistributor.sendToServer(new ChangeActivationPacket(player.getUUID(), active, true));
+				ChangeActivationPacket.CtoS.HANDLER.send(player, new ChangeActivationPacket(active));
 			} else {
-				PacketDistributor.sendToAllPlayers(new ChangeActivationPacket(player.getUUID(), active, false));
+				ChangeActivationPacket.StoC.HANDLER.send(player, new ChangeActivationPacket(active), true);
 			}
 		}
 	}

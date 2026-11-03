@@ -6,8 +6,6 @@ import com.alrex.parcool.common.Parkourability;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import javax.annotation.Nonnull;
@@ -47,9 +45,7 @@ public record RequestUnlockActionPacket(ActionEntry<?> action) implements Custom
 
         @Override
         public void handleInLogicalClient(RequestUnlockActionPacket packet, IPayloadContext context) {
-            if (!(context.player() instanceof ServerPlayer serverPlayer)) return;
-            var parkourability = Parkourability.get(serverPlayer);
-            parkourability.getCapabilities().unlock(serverPlayer, packet.action);
+            throw new UnsupportedOperationException();
         }
     };
 }
