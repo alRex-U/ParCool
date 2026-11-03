@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -45,9 +46,14 @@ public class GrapplingHookItemRenderer extends BlockEntityWithoutLevelRenderer {
         BakedModel model = minecraft.getModelManager().getModel(flat ? GUI_MODEL : HELD_MODEL);
 
         poseStack.pushPose();
-
-        poseStack.translate(0.5, 0.5, 0.5);
-        minecraft.getItemRenderer().render(stack, transformType, false, poseStack, buffer, light, overlay, model);
+        {
+            poseStack.translate(0.5, 0.5, 0.5);
+            if (flat) {
+                minecraft.getItemRenderer().render(stack, transformType, false, poseStack, buffer, 15728880, OverlayTexture.NO_OVERLAY, model);
+            } else {
+                minecraft.getItemRenderer().render(stack, transformType, false, poseStack, buffer, light, overlay, model);
+            }
+        }
         poseStack.popPose();
     }
 }
