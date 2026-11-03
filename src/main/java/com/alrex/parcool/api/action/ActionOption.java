@@ -82,6 +82,8 @@ public class ActionOption {
     public ActionOption needPose(@Nullable Pose pose) {
         if (pose == null) {
             neededPoses = Collections.emptyList();
+        } else {
+            neededPoses = Collections.singletonList(pose);
         }
         return this;
     }
