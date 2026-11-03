@@ -66,6 +66,7 @@
   "attribute.name.parcool.fast_swim.speed": "Fast Swim Speed",
   "attribute.name.parcool.slide_down.deceleration": "Slide Down Deceleration",
   "attribute.name.parcool.horizontal_wall_run.duration": "Horizontal Wall Run Duration",
+  "attribute.name.parcool.charge_jump.Power": "Charge Jump Power",
 
   "parcool.action.parcool.breakfall": "Breakfall",
   "parcool.action.parcool.castaway": "Castaway",

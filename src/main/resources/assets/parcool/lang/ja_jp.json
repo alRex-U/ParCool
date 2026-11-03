@@ -60,6 +60,7 @@
   "attribute.name.parcool.fast_swim.speed": "ファストスウィムの速さ",
   "attribute.name.parcool.slide_down.deceleration": "壁滑りの減速",
   "attribute.name.parcool.horizontal_wall_run.duration": "水平ウォールラン時間",
+  "attribute.name.parcool.charge_jump.Power": "溜めジャンプの跳躍力",
   "parcool.action.parcool.breakfall": "ブレイクフォール",
   "parcool.action.parcool.castaway": "キャスタウェイ",
   "parcool.action.parcool.charge_jump": "溜めジャンプ",

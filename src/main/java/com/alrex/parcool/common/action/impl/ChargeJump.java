@@ -1,6 +1,7 @@
 package com.alrex.parcool.common.action.impl;
 
 import com.alrex.parcool.ParCool;
+import com.alrex.parcool.api.ParCoolAttributes;
 import com.alrex.parcool.api.ParCoolSoundEvents;
 import com.alrex.parcool.api.action.*;
 import com.alrex.parcool.client.animation.AnimationRegistries;
@@ -79,8 +80,11 @@ public class ChargeJump extends ContinuableAction implements ActionExtension.Jum
         if (isDoing() && parkourability.player().level.isClientSide()) {
             jumped = true;
             propertyJumpTriggered.set(Boolean.TRUE);
-            var deltaMove = parkourability.player().getDeltaMovement();
-            parkourability.player().setDeltaMovement(deltaMove.x, deltaMove.y + 0.16 * chargingTick / CHARGE_DURATION, deltaMove.z);
+            var player = parkourability.player();
+            var deltaMove = player.getDeltaMovement();
+            var attr = player.getAttribute(ParCoolAttributes.CHARGE_JUMP_POWER_SCALE.get());
+            if (attr == null) return;
+            player.setDeltaMovement(deltaMove.x, deltaMove.y + attr.getValue() * 0.16 * chargingTick / CHARGE_DURATION, deltaMove.z);
         }
     }
 
