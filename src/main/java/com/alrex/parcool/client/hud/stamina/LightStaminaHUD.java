@@ -111,12 +111,14 @@ public class LightStaminaHUD implements IStaminaHUD {
             guiGraphics.blit(x, baseY + offsetY, 0, 9, 9, staminaSprite);
 
 			if (showBrightOverlay) {
-				var partialX = (int) (overlaySprite.getWidth() * (1f - partialOverlayScale));
+				var spriteContent = overlaySprite.contents();
+				var partialX = (int) (spriteContent.width() * (1f - partialOverlayScale));
 				RenderSystem.enableBlend();
 				guiGraphics.innerBlit(
-						x + partialX, x + overlaySprite.getWidth(),
-						y, y + overlaySprite.getHeight(), 0,
-						overlaySprite.getU(16f * (partialX / (float) overlaySprite.getWidth())), overlaySprite.getU1(),
+						overlaySprite.atlasLocation(),
+						x + partialX, x + spriteContent.width(),
+						y, y + spriteContent.height(), 0,
+						overlaySprite.getU(16f * (partialX / (float) spriteContent.width())), overlaySprite.getU1(),
 						overlaySprite.getV0(), overlaySprite.getV1()
 				);
 				RenderSystem.disableBlend();

@@ -141,7 +141,7 @@ public abstract class PlayerTargetPacket<T> {
                 if (composed.acceptsInLocalPlayer)
                     internalHandler.handleInLogicalClient(composed.internalPacket, player, contextSupplier);
             } else {
-                player = player.level.getPlayerByUUID(composed.targetID);
+                player = player.level().getPlayerByUUID(composed.targetID);
                 if (player != null)
                     internalHandler.handleInLogicalClient(composed.internalPacket, player, contextSupplier);
             }

@@ -11,11 +11,11 @@ import com.alrex.parcool.client.animation.system.PlayerAnimator;
 import com.alrex.parcool.client.input.ParCoolKeyBinds;
 import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionExtension;
+import com.alrex.parcool.util.BlockUtil;
 import com.alrex.parcool.util.EntityUtil;
 import com.alrex.parcool.util.MathUtil;
 import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -106,8 +106,8 @@ public class WallJump extends Action {
         propertyJumpVec.set(jumpVec);
         propertyJumpType.set(lookVec.cross(wall.asVec()).y < 0 ? Type.LEFT : Type.RIGHT);
 
-        var blockPos = new BlockPos(player.position().add(wall.asVec()));
-        var level = player.level;
+        var blockPos = BlockUtil.getBlockPos(player.position().add(wall.asVec()));
+        var level = player.level();
         propertySlippyWall.set(level.getBlockState(blockPos).getFriction(level, blockPos, player) > 0.9f);
 
         return true;

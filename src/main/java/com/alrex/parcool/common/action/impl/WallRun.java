@@ -12,6 +12,7 @@ import com.alrex.parcool.common.Parkourability;
 import com.alrex.parcool.common.action.ActionExtension;
 import com.alrex.parcool.common.action.InteractingWallDirection;
 import com.alrex.parcool.common.action.ParCoolActions;
+import com.alrex.parcool.util.BlockUtil;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -64,8 +65,8 @@ public class WallRun extends Action implements ActionExtension.JumpListener {
         var jumpScale = getWallRunHeightScale(player, wallDirection, jumpHeight);
         if (jumpScale <= 0) return false;
 
-        var blockPos = new BlockPos(player.position().add(wallDirection.asVec()));
-        var level = player.level;
+        var blockPos = BlockUtil.getBlockPos(player.position().add(wallDirection.asVec()));
+        var level = player.level();
         if (!level.isLoaded(blockPos)) return false;
 
         runSpeed = 1.5 * Math.sqrt(jumpHeight * jumpScale * gravity)

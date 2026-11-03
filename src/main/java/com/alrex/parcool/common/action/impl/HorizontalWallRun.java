@@ -13,6 +13,7 @@ import com.alrex.parcool.common.action.ActionExtension;
 import com.alrex.parcool.common.action.BehaviorEnforcer;
 import com.alrex.parcool.common.action.InteractingWallDirection;
 import com.alrex.parcool.common.action.ParCoolActions;
+import com.alrex.parcool.util.BlockUtil;
 import com.alrex.parcool.util.VectorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -181,8 +182,8 @@ public class HorizontalWallRun extends ContinuableAction implements ActionExtens
         var wallDirection = propertyDirection.get();
         if (wallDirection == null) return 1;
         var player = parkourability.player();
-        var runningBlockPos = new BlockPos(player.getBoundingBox().getCenter().add(wallDirection.asVec()));
-        var level = player.level;
+        var runningBlockPos = BlockUtil.getBlockPos(player.getBoundingBox().getCenter().add(wallDirection.asVec()));
+        var level = player.level();
         if (!level.isLoaded(runningBlockPos)) return 1;
         return level.getBlockState(runningBlockPos).getFriction(level, runningBlockPos, player);
     }

@@ -164,8 +164,9 @@ public class Breakfall extends Action implements ActionExtension.LandListener {
         var player = parkourability.player();
         var pos = player.position();
         var rand = player.getRandom();
+        var level = player.level();
         for (int i = 0; i < 12; i++) {
-            player.level.addParticle(ParticleTypes.END_ROD,
+            level.addParticle(ParticleTypes.END_ROD,
                     pos.x(),
                     pos.y() + player.getBbHeight() / 2,
                     pos.z(),

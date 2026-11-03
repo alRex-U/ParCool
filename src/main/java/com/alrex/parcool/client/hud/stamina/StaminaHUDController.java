@@ -6,6 +6,7 @@ import com.alrex.parcool.api.client.gui.ParCoolHUDEvent;
 import com.alrex.parcool.api.client.gui.StaminaDisplayContext;
 import com.alrex.parcool.api.stamina.AbstractLocalStamina;
 import com.alrex.parcool.common.Parkourability;
+import com.alrex.parcool.common.action.ActionExtension;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -84,13 +85,13 @@ public class StaminaHUDController implements IGuiOverlay {
 		}
 		if (!localStamina.showHud()) return;
 
-        if (MinecraftForge.EVENT_BUS.post(new RenderParCoolHUDEvent.Render.Stamina.Pre(forgeGui, guiGraphics, partialTick, width, height, currentContext, oldContext)))
+		if (MinecraftForge.EVENT_BUS.post(new ParCoolHUDEvent.Render.Stamina.Pre(forgeGui, guiGraphics, partialTick, width, height, currentContext, oldContext)))
 			return;
 
 		if (config.type().get() == HUDType.Light) {
 			lightStaminaHUD.render(
-					gui,
-					poseStack,
+					forgeGui,
+					guiGraphics,
 					parkourability,
 					currentContext,
 					oldContext,
@@ -103,6 +104,6 @@ public class StaminaHUDController implements IGuiOverlay {
 			);
 		}
 
-		MinecraftForge.EVENT_BUS.post(new ParCoolHUDEvent.Render.Stamina.Post(gui, guiGraphics, partialTick, width, height, currentContext, oldContext));
+		MinecraftForge.EVENT_BUS.post(new ParCoolHUDEvent.Render.Stamina.Post(forgeGui, guiGraphics, partialTick, width, height, currentContext, oldContext));
 	}
 }
