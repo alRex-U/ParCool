@@ -4,6 +4,7 @@ import com.alrex.parcool.ParCool;
 import com.alrex.parcool.extern.ModManager;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.loading.FMLEnvironment;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 
@@ -18,7 +19,11 @@ public class EpicFightManager extends ModManager {
     public void init() {
         super.init();
         if (!isInstalled()) return;
-        ModLoadingContext.get().getActiveContainer().getEventBus().register(new EpicFightModLoadEventHandler());
+        var eventBus = ModLoadingContext.get().getActiveContainer().getEventBus();
+        eventBus.register(new EpicFightModLoadEventHandler());
+        if (FMLEnvironment.dist.isClient()) {
+            EpicFightGeckoArmorFix.init(eventBus);
+        }
     }
 
     @Nullable
