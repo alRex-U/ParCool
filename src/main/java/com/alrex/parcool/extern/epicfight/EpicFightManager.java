@@ -3,6 +3,8 @@ package com.alrex.parcool.extern.epicfight;
 import com.alrex.parcool.ParCool;
 import com.alrex.parcool.extern.ModManager;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.ModLoadingContext;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -19,6 +21,13 @@ public class EpicFightManager extends ModManager {
         super.init();
         if (!isInstalled()) return;
         ModLoadingContext.get().getActiveContainer().getEventBus().register(new EpicFightModLoadEventHandler());
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void initInClient() {
+        if (!isInstalled()) return;
+        EpicFightRenderCompat.init();
     }
 
     @Nullable
