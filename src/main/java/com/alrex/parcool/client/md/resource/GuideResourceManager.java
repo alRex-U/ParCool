@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 @OnlyIn(Dist.CLIENT)
 public class GuideResourceManager extends SimplePreparableReloadListener<GuideResource> {
@@ -65,7 +64,6 @@ public class GuideResourceManager extends SimplePreparableReloadListener<GuideRe
     protected GuideResource prepare(@Nonnull ResourceManager resourceManager, @Nonnull ProfilerFiller profilerFiller) {
         var langCode = Minecraft.getInstance().options.languageCode;
         var map = new TreeMap<PageEntry, CompiledMarkdown>();
-        var loadingPages = new TreeSet<PageEntry>();
         var groupsEntries = new ArrayList<PageGroupEntry>();
         resourceManager.getResource(PAGES_LOCATION).ifPresent(resource -> {
             try (var reader = resource.openAsReader()) {
@@ -81,7 +79,6 @@ public class GuideResourceManager extends SimplePreparableReloadListener<GuideRe
                     if (group.generate != null) {
                         generatePageEntries(group.generate, pageEntries);
                     }
-                    loadingPages.addAll(pageEntries);
                     groupsEntries.add(new PageGroupEntry(
                             group.group,
                             pageEntries.stream().toList()
@@ -91,23 +88,33 @@ public class GuideResourceManager extends SimplePreparableReloadListener<GuideRe
                 LOGGER.error("{} at loading guide pages.json, skip all guide resources", e.getClass().getSimpleName());
             }
         });
-        for (var pageEntry : loadingPages) {
-            var location = pageEntry.resourceLocation();
-            var pageLocation = new ResourceLocation(location.getNamespace(), String.format("parcool_guide/%s/%s", langCode, location.getPath()));
-            var pageResource = resourceManager.getResource(pageLocation);
-            if (pageResource.isEmpty() && !langCode.equals("en_us")) {
-                pageLocation = new ResourceLocation(location.getNamespace(), String.format("parcool_guide/en_us/%s", location.getPath()));
-                pageResource = resourceManager.getResource(pageLocation);
-            }
-            ResourceLocation finalPageLocation = pageLocation;
-            pageResource.ifPresent(resource -> {
-                try (var reader = resource.openAsReader()) {
-                    map.put(pageEntry, MarkdownParser.parse(reader));
-                } catch (IOException e) {
-                    LOGGER.error("{} at loading guide pageId [{}]", e.getClass().getSimpleName(), finalPageLocation);
+        int succeededPages = 0, skippedPages = 0;
+        for (var i = 0; i < groupsEntries.size(); i++) {
+            var groupEntry = groupsEntries.get(i);
+            var pageList = new ArrayList<PageEntry>(); // list of only existing entries
+            for (var pageEntry : groupEntry.content()) {
+                var location = pageEntry.resourceLocation();
+                var pageLocation = new ResourceLocation(location.getNamespace(), String.format("parcool_guide/%s/%s", langCode, location.getPath()));
+                var pageResource = resourceManager.getResource(pageLocation);
+                if (pageResource.isEmpty() && !langCode.equals("en_us")) {
+                    pageLocation = new ResourceLocation(location.getNamespace(), String.format("parcool_guide/en_us/%s", location.getPath()));
+                    pageResource = resourceManager.getResource(pageLocation);
                 }
-            });
+                ResourceLocation finalPageLocation = pageLocation;
+                pageResource.ifPresent(resource -> {
+                    try (var reader = resource.openAsReader()) {
+                        map.put(pageEntry, MarkdownParser.parse(reader));
+                        pageList.add(pageEntry);
+                    } catch (IOException e) {
+                        LOGGER.error("{} at loading guide pageId [{}]", e.getClass().getSimpleName(), finalPageLocation);
+                    }
+                });
+                if (pageResource.isPresent()) succeededPages++;
+                else skippedPages++;
+            }
+            groupsEntries.set(i, new PageGroupEntry(groupEntry.translationKey(), pageList.stream().toList()));
         }
+        LOGGER.info("ParCool Guide resource loading finished / {} loaded : {} skipped", succeededPages, skippedPages);
         return new GuideResource(groupsEntries.stream().toList(), map);
     }
 
