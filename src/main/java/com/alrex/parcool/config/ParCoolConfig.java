@@ -6,12 +6,15 @@ import com.alrex.parcool.client.hud.stamina.HUDType;
 import com.alrex.parcool.common.action.ActionRegistry;
 import com.alrex.parcool.common.stamina.StaminaTypeRegistry;
 import com.alrex.parcool.common.stamina.StaminaTypes;
+import com.electronwill.nightconfig.core.CommentedConfig;
+import com.electronwill.nightconfig.toml.TomlFormat;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 
 import javax.annotation.Nullable;
+import java.nio.charset.StandardCharsets;
 import java.util.TreeMap;
 
 public class ParCoolConfig {
@@ -22,11 +25,39 @@ public class ParCoolConfig {
 
 	public void register(ModLoadingContext loadingContext) {
 		loadingContext.registerConfig(ModConfig.Type.CLIENT, client.builtConfig);
-		loadingContext.registerConfig(ModConfig.Type.SERVER, server.builtConfig);
+		// Forge does not sync COMMON configs to clients; ConfigSyncPacket does that instead.
+		var container = loadingContext.getActiveContainer();
+		serverModConfig = new ModConfig(ModConfig.Type.COMMON, server.builtConfig, container);
+		container.addConfig(serverModConfig);
 	}
 
 	private final Client client;
 	private final Server server;
+	private ModConfig serverModConfig;
+	private volatile boolean usingSyncedServerConfig = false;
+
+	public boolean isServerModConfig(ModConfig config) {
+		return config == serverModConfig;
+	}
+
+	public byte[] serializeServerConfig() {
+		return TomlFormat.instance().createWriter()
+				.writeToString(serverModConfig.getConfigData())
+				.getBytes(StandardCharsets.UTF_8);
+	}
+
+	public void applySyncedServerConfig(byte[] data) {
+		CommentedConfig synced = TomlFormat.instance().createParser()
+				.parse(new String(data, StandardCharsets.UTF_8));
+		server.builtConfig.setConfig(synced);
+		usingSyncedServerConfig = true;
+	}
+
+	public void restoreLocalServerConfig() {
+		if (!usingSyncedServerConfig) return;
+		usingSyncedServerConfig = false;
+		server.builtConfig.setConfig(serverModConfig.getConfigData());
+	}
 
 	public Client client() {
 		return client;
