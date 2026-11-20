@@ -183,7 +183,7 @@ publishMods {
 
     curseforge {
         projectId = '482378'
-        accessToken = env.fetch("API_TOKEN_PARCOOL_CURSEFORGE")
+        accessToken = env.fetchOrNull("API_TOKEN_PARCOOL_CURSEFORGE")
         minecraftVersions.add(minecraft_version)
         projectSlug = 'parcool'
 
@@ -196,7 +196,7 @@ publishMods {
     }
     modrinth {
         projectId = 'Fsvx2bdR'
-        accessToken = env.fetch("API_TOKEN_PARCOOL_MODRINTH")
+        accessToken = env.fetchOrNull("API_TOKEN_PARCOOL_MODRINTH")
         minecraftVersions.add(minecraft_version)
 
         announcementTitle = 'Download from Modrinth'
@@ -209,7 +209,7 @@ publishMods {
             # ParCool: ${minecraft_version}-${mod_version} is released!
             
 """.stripIndent() + changelogText
-        webhookUrl = env.fetch("API_TOKEN_PARCOOL_DISCORD_WEBHOOK_URL")
+        webhookUrl = env.fetchOrNull("API_TOKEN_PARCOOL_DISCORD_WEBHOOK_URL")
         setPlatforms(publishMods.platforms.curseforge, publishMods.platforms.modrinth)
         style {
             look = 'MODERN'
