@@ -1,5 +1,6 @@
 package com.alrex.parcool.proxy;
 
+import com.alrex.parcool.ParCool;
 import com.alrex.parcool.client.GrappleCameraHandler;
 import com.alrex.parcool.client.GrappleTargetOverlay;
 import com.alrex.parcool.client.animation.AnimationRegistries;
@@ -29,6 +30,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -61,6 +63,7 @@ public class ClientProxy extends CommonProxy {
         bus.register(GrappleRopeRenderer.class);
         bus.register(GrappleTargetOverlay.class);
 		bus.register(new PassiveAnimationProcessor());
+		bus.addListener((ClientPlayerNetworkEvent.LoggingOut event) -> ParCool.getConfig().restoreLocalServerConfig());
 
 		var registerAnimationEntryEvent = new RegisterAnimationEntryEvent();
 		FMLJavaModLoadingContext.get().getModEventBus().post(registerAnimationEntryEvent);
@@ -149,6 +152,12 @@ public class ClientProxy extends CommonProxy {
 				.decoder(SkilltreePacket.HANDLER::decode)
 				.encoder(SkilltreePacket.HANDLER::encode)
 				.consumerMainThread(SkilltreePacket.HANDLER::handleInPhysicalClient)
+				.add();
+		instance.messageBuilder(ConfigSyncPacket.class, index++)
+				.noResponse()
+				.decoder(ConfigSyncPacket.HANDLER::decode)
+				.encoder(ConfigSyncPacket.HANDLER::encode)
+				.consumerMainThread(ConfigSyncPacket.HANDLER::handleInPhysicalClient)
 				.add();
 	}
 

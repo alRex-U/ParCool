@@ -88,5 +88,11 @@ public class ServerProxy extends CommonProxy {
 				.encoder(SkilltreePacket.HANDLER::encode)
 				.consumerMainThread(SkilltreePacket.HANDLER::handleInPhysicalServer)
 				.add();
+		instance.messageBuilder(ConfigSyncPacket.class, index++)
+				.noResponse()
+				.decoder(ConfigSyncPacket.HANDLER::decode)
+				.encoder(ConfigSyncPacket.HANDLER::encode)
+				.consumerMainThread(ConfigSyncPacket.HANDLER::handleInPhysicalServer)
+				.add();
 	}
 }

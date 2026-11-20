@@ -1,5 +1,6 @@
 package com.alrex.parcool.proxy;
 
+import com.alrex.parcool.common.handlers.ConfigSyncHandler;
 import com.alrex.parcool.common.handlers.PlayerEventHandler;
 import com.alrex.parcool.common.resource.skilltree.SkilltreeResourceManager;
 import com.alrex.parcool.server.command.CommandRegistry;
@@ -13,6 +14,8 @@ public abstract class CommonProxy {
 
 	public void init() {
         MinecraftForge.EVENT_BUS.register(PlayerEventHandler.class);
+		MinecraftForge.EVENT_BUS.register(ConfigSyncHandler.class);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(ConfigSyncHandler::onConfigReloading);
 		MinecraftForge.EVENT_BUS.addListener(CommandRegistry::onRegisterCommand);
 		MinecraftForge.EVENT_BUS.addListener(SkilltreeResourceManager::register);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(CommandRegistry::registerArgumentTypes);
